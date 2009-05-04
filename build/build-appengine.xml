@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="webserver-start" name="build_control_for_google_appengine" basedir="..">
+	
+	<description>
+		Basic build system for Web Application development
+		with target to manage the Google App Engine Web container
+	</description>
+	
+	<property file="${user.home}/local.build.properties"
+		description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
+	/>
+
+	<import file="build.xml" optional="false" taskname="base_build_control" />
+	
+	<property name="google.appengine.sdk.dir"
+		description="Location of the Google App Engine SDK"
+		location="../appengine-java-sdk"
+	/>
+	
+	<import file="${google.appengine.sdk.dir}/config/user/ant-macros.xml" />
+
+	<!-- ················ -->
+	<!-- Public variables -->
+	<!-- ················ -->
+	
+	<property environment="env"/>
+
+	<property name="rwa.hostname"
+		description="Name of the local host. Update it in your local.build.properties file."
+		value="${env.COMPUTERNAME}"
+	/>
+	
+	<property name="rwa.serverPort"
+		description="Port number used by the Web server"
+		value="9999"
+	/>
+
+	<!-- ·············· -->
+	<!-- Public targets -->
+	<!-- ·············· -->
+
+    <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean">
+    </target>
+
+    <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
+		<copy todir="src/war/WEB-INF/lib" flatten="true">
+			<fileset dir="${google.appengine.sdk.dir}/lib/user">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+    </target>
+
+    <target name="webserver-start" description="start the configured webserver" depends="webserver-stop">
+		<echo>Target: webserver-start</echo>
+    	<antcall target="step-appengine-start" />
+    </target>
+    
+    <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-info-get">
+		<echo>Target: webserver-start-debug</echo>
+    	<antcall target="step-appengine-start-debug" />
+    </target>
+    
+    <target name="webserver-stop" description="stop the configured webserver" depends="step-info-get">
+		<echo>Target: webserver-stop</echo>
+		<condition property="webserver.started">
+			<socket server="localhost" port="${rwa.serverPort}"/>
+		</condition>
+    	<antcall target="step-appengine-stop" />
+		<!--sleep seconds="2" /-->
+    </target>
+	
+	<!--
+    <target name="undeploy" description="undeploy the application" depends="step-info-get">
+		<echo>Target: undeploy</echo>
+		<antcall target="step-application-undeploy" />
+    </target>
+    
+	<target name="deploy" description="compile, package, and deploy the application" depends="step-info-get">
+		<echo>Target: deploy</echo>
+		<antcall target="step-application-deploy" />
+	</target>
+
+	<target name="redeploy" description="compile, package, and redeploy the application">
+		<echo>Target: redeploy</echo>
+		<antcall target="undeploy" />
+		<antcall target="deploy" />
+	</target>
+	-->
+	
+	<!-- ················· -->
+	<!-- Private variables -->
+	<!-- ················· -->
+	
+	<!-- ··············· -->
+	<!-- Private targets -->
+	<!-- ··············· -->
+	
+	<target name="step-datanucleus-enhance" depends="compile">
+		<delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
+		<copy todir="src/war/WEB-INF/classes">
+			<fileset dir="src/java">
+				<include name="META-INF/**/*" />
+			</fileset>
+		</copy>
+		<enhance_war war="${basedir}/src/war" />
+	</target>
+
+	<!-- Jetty start/stop: http://ptrthomas.wordpress.com/2009/01/24/how-to-start-and-stop-jetty-revisited/ -->
+
+	<target name="step-appengine-start" depends="step-datanucleus-enhance">
+		<dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war" />
+	</target>
+
+	<target name="step-appengine-start-debug" depends="step-datanucleus-enhance">
+		<dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war">
+			<options>
+				<arg value="--jvm_flag=-Xdebug"/>
+				<arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${rwa.serverPort}"/>
+			</options>
+		</dev_appserver>
+	</target>
+
+	<target name="step-appengine-stop" if="webserver.started">
+	</target>
+
+	<target name="step-appengine-kill" if="webserver.started">
+		<exec executable="${temp.dir}${file.separator}pskill.exe" spawn="true" >
+			<arg value="-accepteula" />
+			<arg value="java.exe" />
+		</exec>
+	</target>
+
+</project>

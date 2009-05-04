@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context
+	docBase="${catalina.home}/webapps/@rwa.contextRoot@"
+	reloadable="true"
+    antiResourceLocking="false"
+    antiJARLocking="false"
+>
+	<Resource
+		auth="Container"
+		driverClassName="@rwa.dbDriver@"
+		maxActive="10"
+		maxIdle="3"
+		maxWait="3000"
+		name="jdbc/DATASOURCE"
+		password="@rwa.dbAdminPassword@"
+		type="javax.sql.DataSource"
+		url="@rwa.dbURL@"
+		username="@rwa.dbAdminUsername@"
+		validationQuery="values(1)"
+	/>
+
+	<Environment name="databaseName" type="java.lang.String" value="@rwa.dbName@"/>
+
+</Context>

@@ -1,0 +1,233 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin: 0;
+	border: 0 none;
+	padding: 0;
+}
+
+body, th, td {
+    font-family: Tahoma, Segoe UI, Arial, Bitstream Vera Sans, Verdana, Helvetica, sans-serif;
+    font-size: 9pt;
+}
+
+#introFlash {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	border: 0 none;
+	padding: 0;
+	background: #fff url('../images/loading.gif') no-repeat center center;
+	position: absolute;
+	z-index: 999;
+}
+
+#introFlash>div {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+}
+
+#introFlash>div>span {
+    background-color:#F9F9F9;
+   	border: 1px solid #BFBFBF;
+   	padding: 4px;
+   	line-height: 30px;
+}
+
+#header {
+    font-size: 16pt;
+    text-align: center;
+    margin-top: 5px;
+}
+
+#footer {
+	text-align: right;
+}
+
+#header>img, #footer>img {
+	vertical-align: middle;
+}
+
+
+#header .globalCommand {
+	margin: 0;
+    padding: 0;
+    float: right;
+}
+
+#header .globalCommand.dijitComboBox {
+	font-size: 10pt;
+	width: 120px;
+	margin: 10px 5px 0 0;
+}
+
+#header a.globalCommand {
+	margin-top: 5px;
+}
+
+#header a.globalCommand>img {
+    vertical-align: middle;
+	margin: 0 6px 2px 6px;
+    border: 0 none;
+    padding: 0;
+}
+
+.hiddenToNonAuthenticated {
+	display: none;
+}
+
+.a11y {
+	display: none;
+}
+
+.documentedText {
+	background-color: #eee;
+	padding: 0 2px;
+}
+
+.searchField.dijitTextBox {
+	padding: 5px;
+}
+
+.searchField.dijitButton .dijitButtonContents {
+	padding: 2px;
+}
+
+.areaBox {
+	float: right;
+	border: 1px solid rgb(204, 204, 204);
+	padding: 5px;
+}
+
+.areaLabel {
+	text-align: center;
+	margin-top: 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid rgb(204, 204, 204);
+}
+
+.countryField {
+	width: 100px;
+}
+
+.postalCodeField {
+	width: 100px;
+}
+
+.distanceField {
+	width: 60px;
+}
+
+.silkIcon {
+    background-repeat:no-repeat;
+    text-align:center;
+    height:18px;
+    width:18px;
+}
+
+.silkAcceptIcon {
+    background-image:url(../images/accept.png);
+}
+
+.silkCancelIcon {
+    background-image:url(../images/cancel.png);
+}
+
+.silkCloseIcon {
+    background-image:url(../images/asterisk_orange.png);
+}
+
+.silkAddIcon {
+    background-image:url(../images/add.png);
+}
+
+.silkSearchIcon {
+    background-image:url(../images/search.png);
+}
+
+.silkRemoveIcon {
+    background-image:url(../images/delete.png);
+}
+
+.silkViewIcon {
+    background-image:url(../images/page_white_text.png);
+}
+
+.silkEditIcon {
+    background-image:url(../images/page_white_edit.png);
+}
+
+.silkSelectIcon {
+    background-image:url(../images/page_white_go.png);
+}
+
+#helpSystemDialog {
+    height: 445px;
+    width: 60%;
+}
+
+.helpContainer {
+    height: 400px; /* Overriden in help-standalone to '100%' */
+}
+
+.helpContainer p {
+	margin: 0;
+    padding: 5px 40px 2px 10px;
+}
+
+.helpContainer img {
+	margin: 0;
+	border: 0 none;
+	padding: 0;
+	text-align: center;
+}
+
+.helpContainer dt {
+    font-weight: bold;
+    padding: 5px 40px 2px 10px;
+}
+
+.helpContainer dd {
+    padding: 2px 30px 2px 30px;
+}
+
+.settingsAccordion.dijitAccordionPane .dijitAccordionBody {
+	padding: 10px;
+}
+
+.settingsAccordion.dijitAccordionPane .dijitAccordionBody label {
+	width: 100px;
+	margin: 5px 0;
+	display: inline-block;
+}
+
+table.attributeValueList {
+	border: 1px solid #CCC;
+}
+
+table.attributeValueList td.title {
+	background: #E9E9E9 url(/images/tabEnabled.png) repeat-x scroll center top;
+	text-align: center;
+	height: 20px;
+	border: 1px solid #EEE;
+}
+
+table.attributeValueList td.attribute {
+	text-align: right;
+	vertical-align: top;
+	padding: 5px 10px 3px 5px;
+}
+
+table.attributeValueList td.value {
+	whitespace: no-wrap;
+	vertical-align: top;
+	padding: 3px 5px 3px 0;
+}
+
+table.attributeValueList td.value span.hint{
+	font-size: smaller;
+	color: grey;
+}

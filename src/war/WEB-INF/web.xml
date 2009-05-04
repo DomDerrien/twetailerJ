@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
+		<servlet-name>consumers</servlet-name>
+		<servlet-class>com.twetailer.j2ee.ConsumersServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>consumers</servlet-name>
+		<url-pattern>/API/consumers/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>requests</servlet-name>
+		<servlet-class>com.twetailer.j2ee.RequestsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>requests</servlet-name>
+		<url-pattern>/API/requests/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>products</servlet-name>
+		<servlet-class>com.twetailer.j2ee.ProductsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>products</servlet-name>
+		<url-pattern>/API/products/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>maezel</servlet-name>
+		<servlet-class>com.twetailer.j2ee.MaezelServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>maezel</servlet-name>
+		<url-pattern>/API/maezel/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>

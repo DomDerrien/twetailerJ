@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+	<header creationtool="developers" creationtoolversion="1.0"
+		datatype="PlainText" segtype="paragraph" adminlang="en" srclang="Français"
+		o-tmf="RichWebApps">
+	</header>
+	<body>
+		<tu tuid="bundle_language" datatype="Text">
+			<prop type="x-tier">dojotk</prop>
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="fr">
+				<seg>Français</seg>
+			</tuv>
+		</tu>
+		<tu tuid="unit_test_sample" datatype="Text">
+			<prop type="x-tier">dojotk</prop>
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="fr">
+				<seg>N/A</seg>
+			</tuv>
+		</tu>
+		<tu tuid="redirectionMsg" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Redirection...<br/>Cliquer <a href="{0}">ici</a> pour forcer la redirection.</seg>
+			</tuv>
+		</tu>
+		<tu tuid="applicationName" datatype="Text">
+			<prop type="x-tier">dojotk</prop>
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Console de Twetailer</seg>
+			</tuv>
+		</tu>
+		<tu tuid="splashScreenMsg" datatype="Text">
+			<prop type="x-tier">dojotk</prop>
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>S'il vous plaît, patientez pendant que la console se construit...</seg>
+			</tuv>
+		</tu>
+		<tu tuid="globalCommandLogin" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Connexion</seg>
+			</tuv>
+		</tu>
+		<tu tuid="globalCommandLogout" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Déconnexion</seg>
+			</tuv>
+		</tu>
+		<tu tuid="globalCommandHelp" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Aide</seg>
+			</tuv>
+		</tu>
+		<tu tuid="loginFormPaneTitle" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Point de vérification de l'identité</seg>
+			</tuv>
+		</tu>
+		<tu tuid="loginFormPaneMessage" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Vous n'êtes pas connecté.</seg>
+			</tuv>
+		</tu>
+		<tu tuid="loginFormPaneUsernameLabel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Courriel</seg>
+			</tuv>
+		</tu>
+		<tu tuid="loginFormPanePasswordLabel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Mot de passe</seg>
+			</tuv>
+		</tu>
+		<tu tuid="loginFormPaneAdministrativeStateLabel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Authentification en tant qu'administrateur</seg>
+			</tuv>
+		</tu>
+		<tu tuid="loginFormPaneActionLabel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Se connecter</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorConsumer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Consommateur</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorConsumerAllProducts" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Tous les produits</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorConsumerYourRequests" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Vos requêtes</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorConsumerYourAccount" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Votre compte</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorRetailer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Distributeur</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorRetailerAllRequests" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Toutes les requêtes</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorRetailerYourRequests" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Vos requêtes</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorRetailerYourProducts" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Vos produits</seg>
+			</tuv>
+		</tu>
+		<tu tuid="pageSelectorRetailerYourStore" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Votre magasin</seg>
+			</tuv>
+		</tu>
+		<tu tuid="consumerSearchCriteriaFieldLabel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Critère de recherche</seg>
+			</tuv>
+		</tu>
+		<tu tuid="consumerSearchCriteriaFieldInvalidMsg" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Un mot-clé d'au moins {0} caractères est requis.</seg>
+			</tuv>
+		</tu>
+		<tu tuid="consumerSearchButtonLabel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Rechercher parmi les produits</seg>
+			</tuv>
+		</tu>
+		<tu tuid="consumerSearchLocationInfoMsg" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Depuis\u00a0: <span class="documentedText" title="{1}">{0}</span></seg>
+			</tuv>
+		</tu>
+		<tu tuid="consumerSearchLocationNonLoggedInHint" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Estimation parce que vous n'est pas authentifié</seg>
+			</tuv>
+		</tu>
+		<tu tuid="consumerSearchLocationLoggedInHint" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Extraite des préférences</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnIndex" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Index</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnName" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Nom</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnDescription" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Description</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnLocation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Localisation</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnCriteria" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Critère de sélection</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnExpiration" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Expiration (jours)</seg>
+			</tuv>
+		</tu>
+		<tu tuid="tableColumnCreationDate" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en">
+				<seg>Date de création</seg>
+			</tuv>
+		</tu>
+	</body>
+</tmx>

@@ -1,0 +1,33 @@
+<!-- <base> is the base project directory -->
+<!-- Current directory: <base>/test/war/ -->
+<!-- Dojo directory: <base>/src/war/js/dojo/dojo -->
+<!-- JSUnit directory: <base>/bin/jsunit/app -->
+
+<html>
+<head>
+	<title>JSUnit test suite</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+	<!-- JSUnit related definitions -->
+	<script language="javascript" src="../../bin/jsunit/app/jsUnitCore.js"></script>
+	
+</head>
+<body>
+
+	<!--  Test related definitions -->
+	<script language="javascript">
+		function suite() {
+			var output = new top.jsUnitTestSuite();
+			
+			// Path relative to the location of <base>/bin/jsunit/TestRunner.html
+            output.addTestPage("../../test/war/domderrien/util/TestStringUtils.html");
+            output.addTestPage("../../test/war/domderrien/i18n/TestLabelExtractor.html");
+           
+            output.addTestPage("../../test/war/twetailer/TestConsole.html");
+
+            return output;
+		}
+	</script>
+		
+</body>
+</html>		

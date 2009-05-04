@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Twetailer Maezel's Machine</title>	
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF8"> 
+	<link rel="shortcut icon" href="/images/logo/favicon.ico" /> 
+	<link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
+
+	<!-- Normal load of local resources -->
+	<style type="text/css">
+		@import "/js/dojo/resources/dojo.css";
+		@import "/js/dijit/themes/dijit.css";
+		@import "/js/dijit/themes/tundra/tundra.css";
+		@import "/js/dojox/grid/resources/Grid.css";
+		@import "/js/dojox/grid/resources/tundraGrid.css";
+		@import "/css/console.css";
+		
+		ol>li {
+			padding-top: 10px;
+		}
+	</style>
+	<!-- To be used when loading dojo from a Cross-Domain Network (CDN) - ->
+	<style type="text/css">
+		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/resources/dojo.css";
+		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/dijit.css";
+		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";
+		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojox/grid/resources/Grid.css";
+		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojox/grid/resources/tundraGrid.css";
+		@import "/css/console.css";
+		
+		ol>li {
+			padding-top: 10px;
+		}
+	</style>
+	<!- -  -->
+
+</head>
+<body class="tundra">
+
+	<div id="introFlash">
+		<div><span>Please, wait while the Console is being built...</span></div>
+	</div>
+
+	<!-- Normal load of local resources -->
+	<script
+		djConfig="parseOnLoad: false, isDebug: false, baseUrl: '../js/dojo/', modulePaths: { twetailer: '/js/twetailer'}"
+		src="/js/dojo/dojo.js"
+		type="text/javascript"
+	></script>
+	<!-- To be used when loading dojo from a Cross-Domain Network (CDN) - ->
+	<script
+		djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer'}"
+		src="http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/dojo.xd.js"
+		type="text/javascript"
+	></script>
+	<!- - -->
+
+	<script type="text/javascript">
+	dojo.require("dijit.layout.BorderContainer");
+	dojo.require("dijit.layout.AccordionContainer");
+	dojo.require("dijit.layout.TabContainer");
+	dojo.require("dijit.layout.ContentPane");
+	dojo.require("dojox.grid.DataGrid");
+	dojo.require("dojox.grid.cells");
+	dojo.require("dijit.Dialog");
+	dojo.require("dijit.form.Form");
+	dojo.require("dijit.form.Button");
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require("dijit.form.TimeTextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.NumberSpinner");
+	dojo.require("dijit.form.CurrencyTextBox");
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require("dijit.form.FilteringSelect");
+	dojo.require("dijit.form.CheckBox");
+	dojo.require("dijit.form.MultiSelect");
+	dojo.require("dijit.form.Textarea");
+	// dojo.require("dijit.Editor");
+	dojo.require("twetailer.Console");
+	dojo.require("dojo.parser");
+	dojo.addOnLoad(function(){
+		dojo.parser.parse();
+		//twetailer.Console.init();
+		dojo.fadeOut({
+			node: "introFlash",
+			delay: 500,
+			onEnd: function() {
+				dojo.style("introFlash", "display", "none");
+			}
+		}).play();
+	});
+	</script>
+
+	<div
+		dojoType="dijit.layout.BorderContainer"
+		gutters="false"
+		style="width: 100%; height: 100%;"
+	>
+		<div
+			dojoType="dijit.layout.ContentPane"
+			id="header"
+			region="top"
+		>
+			<!-- Need to be in reverse order because this <div /> is "float: right;" -->
+			<a
+				 alt="Console Help System"
+				 class="globalCommand"
+				 href="help-standalone.html"
+				 onClick="dijit.byId('helpSystemDialog').show(); return false;"
+				 target="_blank"
+				 title="Console Help System"
+			><img src="/images/help.png" width="16" height="16" /></a>
+			<img src="/images/logo/logo-48x48.png" width="48" height="48" />
+			Twetailer Maezel's Machine
+		</div>
+
+		<div
+			dojoType="dijit.layout.TabContainer"
+			id="pageSelectorSystem"
+			region="center"
+		>
+			<div
+				dojoType="dijit.layout.ContentPane"
+				id="request-building"
+				title="Request Building"
+			>
+			<ol>
+				<li>
+					Give the Twitter ID and check if the contact is already known.<br/>
+					<input dojoType="dijit.form.TextBox" id="tID" type="text">
+					<button dojoType="dijit.form.Button">Check presence</button><br/>
+					If the user is new, go to step 2. Otherwise go to step 4.
+				</li>
+				<li>
+					Choose one response according to the keyword pertinence and number.
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value'));"
+							target="twitterPopup"
+						>D[tID] Welcome. Sorry, your search criterion does not match any product in our catalog.</a></li>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value'));"
+							target="twitterPopup"
+						>D[tID] Welcome. Sorry, your search criteria do not match any product in our catalog.</a></li>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value'));"
+							target="twitterPopup"
+						>D[tID] Welcome. Your search criteria can match products.</a></li>
+					</ul>
+					If Twetailer area is correct go to step 5, otherwise end this conversation.
+				</li>
+				<li>
+					Generate a new request number
+					<button dojoType="dijit.form.Button">Get request #</button>
+					<input dojoType="dijit.form.TextBox" id="rID" type="text">
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID], do you want to save the request and be notified when the product is available? Reply with: confirm r[rID]</a></li>
+					</ul>
+				</li>
+				<li>
+					Query the consumer to check if he/she wants to keep the same request parameters as her last request.
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID], do you use the last given location or do you have new coordinates? Reply with: same-loc:r[rID] or new-loc:r[rID]</a></li>
+					</ul>
+					If the consumer replies "new-loc", go step 5.
+					If the consumer replies "same-loc", go step 7.
+				</li>
+				<li>
+					Ask for the consumer location
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID], we need your postal and country codes with loc:[postal]/[country] r[rID], or your geo-coordinates with geo:[lat]/[long] r[rID]</a></li>
+					</ul>
+					<input dojoType="dijit.form.TextBox" id="postalCode" type="text" value="postal code">
+					<select dojoType="dijit.form.FilteringSelect" id="country">
+						<option value="CA" selected="true">Canada</option>
+						<option value="US">United States of America</option>
+					</select>
+					or
+					<input dojoType="dijit.form.TextBox" type="text" value="lattitude">
+					<input dojoType="dijit.form.TextBox" type="text" value="longitude"><br/>
+					If the area is NOT covered, reply with this link to end the conversation:
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID], sorry Twetailer does not cover your area yet!</a></li>
+					</ul> 
+				</li>
+				<li>
+					Ask for an acceptable distance around the location
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID], please tell us how many km or mi around your location is OK. Reply with distance:[50]km r[rID] or distance:[25]mi r[rID]</a></li>
+					</ul>
+					<input dojoType="dijit.form.TextBox" id="distance" type="text" value="distance">
+					<select dojoType="dijit.form.FilteringSelect" id="distanceUnit">
+						<option value="km" selected="true">Kilimeters</option>
+						<option value="mi">Miles</option>
+					</select>
+				</li>
+				<li>
+					Ask for the request expiration
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID], for how many days is your search valid? Between 2 and 7. Reply with: exp:[5] r[rID]</a></li>
+					</ul>
+					<select dojoType="dijit.form.FilteringSelect" id="expiration">
+						<option value="2">2</option>
+						<option value="3" selected="true">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+					</select>
+				</li>
+				<li>
+					Save the request and send the URL
+					<button dojoType="dijit.form.Button">Save request</button>
+					<input dojoType="dijit.form.TextBox" id="rURL" type="text">
+					<ul>
+						<li><a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rID\]/g,dijit.byId('rID').attr('value'));"
+							target="twitterPopup"
+						>D[tID] Your request is saved. You'll be notified if a retailer can provide the product.</a><br/>
+							<a
+							href="http://twitter.com/home/?status="
+							onclick="this.href+=this.innerHTML.replace('[tID]',dijit.byId('tID').attr('value')).replace(/\[rURL\]/g,dijit.byId('rURL').attr('value'));"
+							target="twitterPopup"
+						>D[tID] In the meantime, you can review the request details at [rURL].</a>
+					</ul>
+				</li>
+			</ol>
+			</div>
+			<div
+				dojoType="dijit.layout.ContentPane"
+				id="request-search"
+				title="Request Search & Update"
+			>
+			</div>
+		</div>
+</body>
+</html>

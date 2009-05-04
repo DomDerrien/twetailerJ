@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="deploy" name="build_control_for_tomcat" basedir="..">
+	
+	<description>
+		Basic build system for Web Application development
+		with target to manage the Web container Tomcat
+	</description>
+	
+	<property file="${user.home}/local.build.properties"
+		description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
+	/>
+	
+	<import file="build.xml" optional="false" taskname="base_build_control" />
+	
+	<!-- ················ -->
+	<!-- Public variables -->
+	<!-- ················ -->
+	
+	<property environment="env"/>
+
+	<property name="rwa.hostname"
+		description="Name of the local host. Update it in your local.build.properties file."
+		value="${env.COMPUTERNAME}"
+	/>
+	
+	<!--property name="tomcat.install.dir"
+		description="Absolute directory where Tomcat should be installed. Note that the path length MUST be lower than 60 characters. Update it in your local.build.properties file."
+		value="C:\Program Files\Apache Software Foundation\Tomcat 6.0"
+	/-->
+
+	<!-- ·············· -->
+	<!-- Public targets -->
+	<!-- ·············· -->
+	
+    <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean">
+		<echo>Target: clean</echo>
+		<!-- Do local clean-up -->
+		<delete file="src/WebContent/META-INF/context.xml" />
+		<delete file="src/WebContent/WEB-INF/classes/logging.properties" />
+		<delete dir="src/WebContent/WEB-INF/classes" />
+		<!-- Uninstall WebSphere Application Server -->
+		<available property="tomcat.already.installed" type="dir" file="${tomcat.install.dir}" />
+		<antcall target="step-tomcat-stop" />
+		<antcall target="step-tomcat-uninstall" />
+	</target>
+
+    <target name="init" description="get external dependencies and prepare the build environment" depends="step-tomcat-check-path, base_build_control.init">
+		<echo>Target: init</echo>
+		<!-- Install Tomcat -->
+		<!-- Tomcat 5.5 --><available property="tomcat.already.loaded" file="${temp.dir}/tomcat-5.5.zip" />
+		<!-- Tomcat 6.0 - -> available property="tomcat.already.loaded" file="${temp.dir}/tomcat-6.0.zip" /-->
+		<available property="tomcat.already.installed" type="dir" file="${tomcat.install.dir}" />
+		<antcall target="step-tomcat-install" />
+		<!-- Copy the tomcat-users.xml -->
+		<copy
+			file="deps/tools/containers/tomcat/tomcat-users.tmpl"
+			tofile="${tomcat.install.dir}/conf/tomcat-users.xml"
+			overwrite="yes"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+	</target>
+	
+    <target name="webserver-start" description="start the configured webserver" depends="step-info-get">
+		<echo>Target: webserver-start</echo>
+    	<antcall target="step-tomcat-start" />
+    </target>
+    
+    <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-info-get">
+		<echo>Target: webserver-start-debug</echo>
+    	<antcall target="step-tomcat-start-debug" />
+    </target>
+    
+    <target name="webserver-stop" description="stop the configured webserver" depends="step-info-get">
+		<echo>Target: webserver-stop</echo>
+		<available property="tomcat.already.installed" type="dir" file="${tomcat.install.dir}" />
+    	<antcall target="step-tomcat-stop" />
+    </target>
+	
+    <target name="undeploy" description="undeploy the application" depends="step-info-get">
+		<echo>Target: undeploy</echo>
+		<delete file="src/WebContent/META-INF/context.xml" />
+		<delete file="src/WebContent/WEB-INF/classes/logging.properties" />
+		<antcall target="step-application-undeploy" />
+    </target>
+    
+	<target name="deploy" description="compile, package, and deploy the application" depends="step-info-get">
+		<echo>Target: deploy</echo>
+		<echo>Installing the application on Tomcat located: ${tomcat.install.dir}</echo>
+		<!-- Copy the context information -->
+		<copy
+			file="deps/tools/containers/tomcat/context.tmpl"
+			tofile="src/WebContent/META-INF/context.xml"
+			overwrite="yes"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<!-- Copy the logging setup -->
+		<mkdir dir="src/WebContent/WEB-INF/classes" />
+		<copy file="deps/tools/containers/tomcat/logging.properties" todir="src/WebContent/WEB-INF/classes" />
+		<!-- Package and deploy application -->
+		<!-- antcall target="package" /-->
+		<antcall target="base_build_control.compile" />
+		<antcall target="base_build_control.step-package-jar" />
+		<antcall target="base_build_control.step-package-war" />
+		<antcall target="step-application-deploy" />
+	</target>
+
+	<target name="redeploy" description="compile, package, and redeploy the application">
+		<echo>Target: redeploy</echo>
+		<antcall target="undeploy" />
+		<antcall target="deploy" />
+	</target>
+	
+	<!-- ················· -->
+	<!-- Private variables -->
+	<!-- ················· -->
+	
+	<path id="tomcat.classpath">
+		<filelist dir="deps/tools/containers">
+			<file name="catalina-ant.jar" />
+		</filelist>
+	</path>
+	
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+	
+	<taskdef name="start" classname="org.apache.catalina.ant.StartTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+	
+	<taskdef name="stop" classname="org.apache.catalina.ant.StopTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+	
+	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+	
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+	
+	<!-- ··············· -->
+	<!-- Private targets -->
+	<!-- ··············· -->
+	
+	<target name="step-tomcat-check-path" unless="tomcat.install.dir">
+		<fail message="The 'tomcat.install.dir' property should be set with the installation directory of Tomcat server. Use your 'local.build.properties' to set it."/>
+	</target>
+
+	<target name="step-tomcat-install" unless="tomcat.already.installed">
+		<echo>Tomcat Installation Directory: ${tomcat.install.dir}</echo>
+		<!-- Install Tomcat 5.5 -->
+	    <unzip src="deps/tools/containers/tomcat/apache-tomcat-5.5.27.zip" dest="${temp.dir}" />
+		<move file="${temp.dir}/apache-tomcat-5.5.27" tofile="${tomcat.install.dir}" overwrite="no"/>
+		<!-- Copy the runtime dependencies for Tomcat 5.5 -->
+		<copy file="deps/lib/xalan/xalan-2.7.0.jar" tofile="${tomcat.install.dir}/common/endorsed/xalan-2.7.0.jar" />
+		<copy file="deps/lib/xerces/xercesImpl-2.4.0.jar" tofile="${tomcat.install.dir}/common/endorsed/xercesImpl.jar" />
+		<copy file="deps/lib/xml-apis/xml-apis-1.3.02.jar" tofile="${tomcat.install.dir}/common/endorsed/xml-apis.jar" />
+		<copy file="deps/lib/db2/db2jcc-8.2.jar" tofile="${tomcat.install.dir}/common/lib/db2jcc.jar" />
+		<copy file="deps/lib/db2/db2jcc_license_cu-8.2.jar" tofile="${tomcat.install.dir}/common/lib/db2jcc_license_cu.jar" />
+		<copy file="deps/lib/oracle/ojdbc14-10.2.0.1.0.jar" tofile="${tomcat.install.dir}/common/lib/ojdbc14.jar" />
+		<!-- Install Tomcat 6.0 - ->
+	    <unzip src="deps/tools/containers/tomcat/apache-tomcat-6.0.18.zip" dest="${temp.dir}" />
+		<move file="${temp.dir}/apache-tomcat-6.0.18" tofile="${tomcat.install.dir}" overwrite="no"/>
+		-->
+		<!-- Copy the runtime dependencies for Tomcat 6.0 - ->
+		<copy file="deps/lib/xalan/xalan-2.7.0.jar" tofile="${tomcat.install.dir}/lib/xalan-2.7.0.jar" />
+		<copy file="deps/lib/xerces/xercesImpl-2.4.0.jar" tofile="${tomcat.install.dir}/lib/xercesImpl.jar" />
+		<copy file="deps/lib/xml-apis/xml-apis-1.3.02.jar" tofile="${tomcat.install.dir}/lib/xml-apis.jar" />
+		<copy file="deps/lib/db2/db2jcc-8.2.jar" tofile="${tomcat.install.dir}/lib/db2jcc.jar" />
+		<copy file="deps/lib/db2/db2jcc_license_cu-8.2.jar" tofile="${tomcat.install.dir}/lib/db2jcc_license_cu.jar" />
+		<copy file="deps/lib/oracle/ojdbc14-10.2.0.1.0.jar" tofile="${tomcat.install.dir}/lib/ojdbc14.jar" />
+		-->
+	</target>
+
+	<target name="step-tomcat-uninstall" if="tomcat.already.installed">
+		<echo>WebSphere Installation Directory: ${tomcat.install.dir}</echo>
+		<move file="${tomcat.install.dir}" tofile="${tomcat.install.dir}.${DSTAMP}T${TSTAMP}" />
+	</target>
+
+	<target name="step-tomcat-start">
+		<!-- Call of ${temp.dir}/bin/catalina.bat -->
+		<exec executable="${tomcat.install.dir}\bin\catalina.bat" dir="${tomcat.install.dir}" spawn="true">
+			<env key="JRE_HOME" value="${java.home}" />
+			<env key="CATALINA_TMPDIR" value="${tomcat.install.dir}\temp" />
+			<arg value="start" />
+		</exec>
+	</target>
+
+	<target name="step-tomcat-start-debug">
+		<!-- Call of ${temp.dir}/bin/catalina.bat -->
+		<exec executable="${tomcat.install.dir}\bin\catalina.bat" dir="${tomcat.install.dir}" spawn="true">
+			<env key="JRE_HOME" value="${java.home}" />
+			<env key="CATALINA_TMPDIR" value="${tomcat.install.dir}\temp" />
+			<env key="JPDA_TRANSPORT" value="dt_socket" />
+			<env key="JPDA_ADDRESS" value="8000" />
+			<arg value="jpda" />
+			<arg value="start" />
+		</exec>
+	</target>
+
+	<target name="step-tomcat-stop" if="tomcat.already.installed">
+		<!-- Call of ${temp.dir}/bin/catalina.bat -->
+		<exec executable="${tomcat.install.dir}\bin\catalina.bat" dir="${tomcat.install.dir}">
+			<env key="JRE_HOME" value="${java.home}"/>
+			<env key="CATALINA_TMPDIR" value="${tomcat.install.dir}\temp" />
+			<arg value="stop" />
+		</exec>
+		<!-- Clean up the bin folder to remove data imported in debug mode -->
+		<delete dir="bin/classes" />
+	</target>
+
+	<target name="step-application-start">
+		<start
+			failonerror="true"
+			password="admin"
+			path="/${rwa.contextRoot}"
+			url="http://localhost:8080/manager"
+			username="admin"
+		/>
+	</target>
+
+	<target name="step-application-stop">
+		<stop
+			failonerror="true"
+			password="admin"
+			path="/${rwa.contextRoot}"
+			url="http://localhost:8080/manager"
+			username="admin"
+		/>
+	</target>
+	
+	<target name="step-application-deploy">
+		<deploy
+			failonerror="true"
+			localwar="${basedir}/bin/distribution/${rwa.contextRoot}-${rwa.release}.war"
+			password="admin"
+			path="/${rwa.contextRoot}"
+			update="true"
+			url="http://localhost:8080/manager"
+			username="admin"
+		/>
+	</target>
+	
+	<target name="step-application-undeploy">
+		<undeploy
+			failonerror="true"
+			password="admin"
+			path="/${rwa.contextRoot}"
+			url="http://localhost:8080/manager"
+			username="admin"
+		/>
+	</target>
+
+	<target name="step-application-republish">
+		<copy todir="${localTomcatFolder}/webapps/${rwa.contextRoot}" verbose="false" />
+		<reload
+			failonerror="true"
+			password="admin"
+			path="/${rwa.contextRoot}"
+			url="http://localhost:8080/manager"
+			username="admin"
+		/>
+	</target>
+
+</project>

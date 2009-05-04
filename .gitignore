@@ -1,0 +1,12 @@
+bin/*
+docs/generated-doc/*
+docs/test-reports/*
+src/war/js/dojo/*
+src/war/js/twetailer/nls/*
+src/war/WEB-INF/classes/com/*
+src/war/WEB-INF/classes/org/*
+src/war/WEB-INF/classes/labels*.properties" />
+src/war/WEB-INF/classes/languages.properties" />
+cobertura.ser
+*.class
+nop

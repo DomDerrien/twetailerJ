@@ -1,0 +1,54 @@
+<!-- WARNING: file to be placed in the folder instrumented by jscoverage! -->
+
+<!-- <base> is the base project directory -->
+<!-- Storage directory: <base>/test/war/ -->
+<!-- Runtime directory: <base>/bin/instrumented/ -->
+<!-- Dojo directory: <base>/bin/instrumented/js/dojo/dojo -->
+
+<html>
+<head>
+	<title>Unit test runner for jscoverage</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+	<!--  Dojo related definitions -->
+	<script language="JavaScript" type="text/javascript">
+		var djConfig = {
+			isDebug: false,
+			debugAtAllCosts: false,
+			modulePaths: { twetailer: '../../twetailer', domderrien: '../../domderrien' },
+			parseOnLoad: true,
+			locale: "en"
+		};
+	</script>
+	<script language="javascript" src="dojo/dojo/dojo.js"></script>
+	<script language="JavaScript" type="text/javascript">
+		dojo.require("dojo.parser"); // djConfig.parseOnLoad:true tells dojo to parse widgets on page load
+	</script>
+
+	<script language="javascript" src="JSCoverageSuite.js"></script>
+
+</head>
+<body onload="jscoverageOpenSummary();">
+
+	<p>
+	To be used in inverted mode only:
+	<button id="openReport" onclick="window.open('jscoverage.html');">Coverage report</button>
+	</p>
+	
+	<script language="javascript" src="domderrien/util/TestStringUtils.js"></script>
+	<script language="javascript">
+		jscoverageRunner();
+	</script>
+	
+	<script language="javascript" src="domderrien/i18n/TestLabelExtractor.js"></script>
+	<script language="javascript">
+		jscoverageRunner();
+	</script>
+	
+	<script language="javascript" src="twetailer/TestConsole.js"></script>
+	<script language="javascript">
+		jscoverageRunner();
+	</script>
+	
+</body>
+</html>		

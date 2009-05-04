@@ -1,0 +1,939 @@
+<project default="test" name="base_build_control" basedir="..">
+
+	<description>
+		Basic build system for Web Application development
+	</description>
+
+	<!-- ................ -->
+	<!-- Public variables -->
+	<!-- ................ -->
+
+	<property file="${user.home}/local.build.properties"
+		description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
+	/>
+
+	<property name="rwa.release"
+		description="Planned release of this build"
+		value="0.1"
+	/>
+
+	<property name="rwa.productName"
+		description="Product name"
+		value="Twetailer Console"
+	/>
+
+	<property name="rwa.productShortName"
+		description="Short name of the company used for the JavaScript namespace"
+		value="twetailer"
+	/>
+
+	<property name="rwa.contextRoot"
+		description="Application context root for the containers"
+		value="${rwa.productShortName}"
+	/>
+	
+	<property name="rwa.languageListFilename"
+		value="languages"
+	/>
+
+	<property name="rwa.localizedLabelBaseFilename"
+		value="labels"
+	/>
+
+	<property name="rwa.sessionTimeout"
+		description="HTTP session timeout, in minutes"
+		value="30"
+	/>
+
+	<property name="rwa.dbDriver"
+		description="Database driver"
+		value="org.apache.derby.jdbc.EmbeddedDriver"
+	/>
+
+	<property name="rwa.dbName"
+		description="Database name"
+		value="${rwa.productShortName}"
+	/>
+
+	<property name="rwa.dbURL"
+		description="Database URL"
+		value="jdbc:derby:${rwa.dbName}"
+	/>
+
+	<property name="rwa.dbAdminUsername"
+		description="Database administrator username"
+		value="admin"
+	/>
+
+	<property name="rwa.dbAdminPassword"
+		description="Database administrator password"
+		value="admin"
+	/>
+
+	<property name="temp.dir"
+		description="Temporary directory location. To reduce effects Eclipse automatic parsing, should be located outside the project structure."
+		value="${basedir}${file.separator}bin${file.separator}temp"
+	/>
+
+	<!--property name="no.cobertura.html.reports"
+		description="Prevents the generation of Cobertura reports (HTML format). Use local.build.properties to set it."
+		value="The value is not important, the presence of the property is only used..."
+	/-->
+	<!--property name="no.cobertura.xml.reports"
+		description="Prevents the generation of Cobertura reports (XML format). Use local.build.properties to set it."
+		value="The value is not important, the presence of the property is only used..."
+	/-->
+	<!--property name="no.javadoc.reports"
+		description="Prevents the generation of Java documentation. Use local.build.properties to set it."
+		value="The value is not important, the presence of the property is only used..."
+	/-->
+	<!--property name="no.jsdoc.reports"
+		description="Prevents the generation of JavaScript documentation. Use local.build.properties to set it."
+		value="The value is not important, the presence of the property is only used..."
+	/-->
+
+	<property name="firefox.browser.user.profile.dir"
+    	description="Location of the default user profile. Use local.build.properties to set it."
+		value="${user.home}\Application Data\Mozilla\Firefox\Profiles\[number].default"
+	/>
+	<property name="firefox.browser.location"
+    	description="Location of the executable. Use local.build.properties to set it."
+		value="${temp.dir}${file.separator}ff"
+	/>
+	<property name="firefox.browser.executable"
+    	description="Location of the executable. Use local.build.properties to set it."
+		value="${firefox.browser.location}${file.separator}firefox.exe"
+	/>
+	<property name="ie.browser.executable"
+    	description="Location of the executable. Use local.build.properties to set it."
+		value="C:\Program Files\Internet Explorer\iexplore.exe"
+	/>
+	<property name="chrome.browser.executable"
+    	description="Location of the executable. Use local.build.properties to set it."
+		value="${user.home}\Local Settings\Application Data\Google\Chrome\Application\chrome.exe"
+	/>
+	<!--property name="no.firefox.stop"
+		description="Prevents the automatic shutdown of the firefox running instances."
+		value="The value is not important, the presence of the property is only used..."
+	/-->
+	<property name="jsunit.browser.filenames"
+    	description="List of browsers in which to run tests when StandaloneTest is invoked on this machine."
+		value="${chrome.browser.executable}"
+	/>
+	<property name="jsunit.server.port"
+    	description="JSUnit webserver port"
+    	value="9898"
+    />
+	<property name="jsunit.timeout.seconds"
+    	description="Delay before considering a test being too long. In seconds"
+    	value="60"
+    />
+
+	<property name="javadoc.docs.copyright"
+    	description="Piece of information inserted at the end of all HTML pages produced by JavaDoc."
+    	value="Some rights resvered 2009 Twetailer.."
+    />
+	<property name="javadoc.docs.window.title"
+    	description="Piece of information inserted as the title page of all HTML pages produced by JavaDoc."
+    	value="Twetailer API and Console"
+    />
+	<!-- .............. -->
+	<!-- Public targets -->
+	<!-- .............. -->
+
+	<target name="clean" description="remove all created/copied files/directories at setup time" depends="step-info-get">
+		<echo>Target: clean</echo>
+		<delete includeemptydirs="yes" failonerror="no">
+			<fileset dir="${basedir}">
+				<include name="bin/**/*" />
+				<exclude name="build" />
+				<exclude name="deps" />
+				<exclude name="docs" />
+				<include name="docs/generated-doc/**/*" />
+				<include name="docs/test-reports/**/*" />
+				<exclude name="src" />
+				<include name="src/war/js/dojo/**/*" />
+				<include name="src/war/js/${rwa.productShortName}/nls/**/*" />
+				<include name="src/war/WEB-INF/classes/com/**/*" />
+				<include name="src/war/WEB-INF/classes/org/**/*" />
+				<include name="src/war/WEB-INF/classes/${rwa.localizedLabelBaseFilename}*.properties" />
+				<include name="src/war/WEB-INF/classes/${rwa.languageListFilename}*.properties" />
+				<exclude name="test" />
+			</fileset>
+			<fileset dir="${temp.dir}/stage" includes="**/*"/>
+		</delete>
+	</target>
+
+	<target name="init" description="get external dependencies and prepare the build environment" depends="step-info-get">
+		<echo>Target: init</echo>
+		<mkdir dir="${temp.dir}" />
+		<!--mkdir dir="bin" description="folder added to SCM" /-->
+		<!-- Setup JavaScript libraries -->
+		<available property="dojo.already.expanded" file="src/war/js/dojo/dojo/dojo.js" />
+		<antcall target="step-dojo-unzip" />
+		<!-- Setup Java test environment -->
+		<available property="cobertura.already.expanded" file="deps/lib/cobertura/asm-2.2.1.jar" />
+		<antcall target="step-cobertura-unzip" />
+		<!-- Setup JavaScript test environment -->
+		<available property="jsunit.already.expanded" type="dir" file="bin/jsunit/java/bin" />
+		<antcall target="step-jsunit-unzip" />
+		<available property="jscoverage.already.expanded" file="${temp.dir}/jscoverage.exe" />
+		<antcall target="step-jscoverage-unzip" />
+		<mkdir dir="${temp.dir}/ff" />
+		<available property="firefox.already.installed" file="${firefox.browser.executable}" />
+		<antcall target="step-firefox-install" />
+		<available property="firefox-profile.already.expanded" type="dir" file="${temp.dir}${file.separator}ff-profile" />
+		<antcall target="step-firefox-profile-unzip" />
+		<available property="pskill.already.expanded" file="${temp.dir}/pskill.exe" />
+		<antcall target="step-pskill-unzip" />
+		<!-- Setup documentation environment -->
+		<available property="jsdoc.already.expanded" type="dir" file="${temp.dir}/jsdoc" />
+		<antcall target="step-jsdoc-unzip" />
+	</target>
+
+	<target name="compile" description="compile the application" depends="step-info-get">
+		<echo>Target: compile</echo>
+		<!-- Verify JavaScript code -->
+		<!-- TODO: use JSLint -->
+		<!-- Compile Java code -->
+		<mkdir dir="src/war/WEB-INF/classes" />
+		<antcall target="step-compile" />
+		<!-- Process TMXs -->
+		<antcall target="step-tmx-convert" />
+		<!-- Verify Java coding rules -->
+		<!-- TODO: run verification tool -->
+		<copy file="src/resources/applicationSettings.properties" todir="src/war/WEB-INF/classes" />
+	</target>
+
+	<target name="package" description="compile and package the application" depends="compile">
+		<echo>Target: package</echo>
+		<!-- Produce documentations -->
+		<antcall target="step-javadoc-produce" />
+		<antcall target="step-jsdoc-produce" />
+		<!-- TODO: Miguel: generate HTML pages from the XSDs -->
+		<!-- Produce the JARs -->
+		<antcall target="step-package-jar" />
+		<!-- Generate timestamp or use static one -->
+		<!-- Copy the HTML/JSP/JavaScript files -->
+		<!-- Produce the WAR -->
+		<antcall target="step-package-war" />
+		<!-- Produce the EAR -->
+		<antcall target="step-package-ear" />
+	</target>
+
+	<target name="distribute" description="compile, package, and prepare the application" depends="init, test, package">
+		<echo>Target: distribute</echo>
+		<!-- Copy the files to be distributed -->
+		<antcall target="step-package-src-jar" />
+		<delete dir="bin/distribution/docs" failonerror="no" />
+		<copy todir="bin/distribution">
+			<fileset dir="docs" />
+		</copy>
+	</target>
+
+	<target name="test" description="compile, package, and test the application" depends="browser-start, compile">
+		<echo>Target: test</echo>
+		<mkdir dir="docs/test-reports" />
+		<mkdir dir="docs/test-reports/junit-xml" />
+		<mkdir dir="docs/test-reports/junit-html" />
+		<mkdir dir="docs/test-reports/cobertura-xml" />
+		<mkdir dir="docs/test-reports/cobertura-html" />
+		<antcall target="step-java-test" />
+		<mkdir dir="docs/test-reports/jsunit-xml" />
+		<mkdir dir="docs/test-reports/jsunit-html" />
+		<antcall target="step-javascript-test" />
+		<antcall target="browser-stop" />
+	</target>
+
+	<target name="browser-start" description="start the configured browser" depends="step-info-get">
+		<echo>Target: browser-start</echo>
+		<antcall target="step-firefox-start" />
+	</target>
+
+	<target name="browser-stop" description="stop any configured browser instance" depends="step-info-get">
+		<echo>Target: browser-stop</echo>
+		<antcall target="step-firefox-stop" />
+	</target>
+
+	<!-- ················· -->
+	<!-- Private variables -->
+	<!-- ················· -->
+
+	<defaultexcludes add="**/.copyarea.db" />
+
+	<!-- Property set later by "step-info-get" because <property /> are immutable
+	<property name="rwa.taggedDir" value="tagged" />
+	-->
+
+	<path id="tmxconverter.classpath">
+		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
+		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${rwa.languageListFilename}.properties file -->
+		<filelist dir="deps/lib">
+			<file name="xalan/xalan-2.7.0.jar" />
+			<file name="xerces/xercesImpl-2.4.0.jar" />
+			<file name="xml-apis/xml-apis-1.3.02.jar" />
+		</filelist>
+	</path>
+	
+	<path id="dojo-build.classpath">
+	</path>
+	
+	<fileset id="runtime.deps" dir="deps/lib">
+		<include name="apache/commons-lang-2.2.jar" />
+		<include name="apache/commons-logging-1.0.4.jar" />
+		<include name="src/resources/" />
+	</fileset>
+
+	<path id="java.compile.classpath">
+		<fileset refid="runtime.deps" />
+		<filelist dir="deps/lib">
+			<file name="xalan/xalan-2.7.0.jar" />
+			<file name="xerces/xercesImpl-2.4.0.jar" />
+			<file name="xml-apis/xml-apis-1.3.02.jar" />
+			<file name="junit/junit-4.6.jar" />
+			<!--file name="tomcat/j2ee.jar" /-->
+			<!--file name="was/j2ee-6.0.jar.jar" /-->
+			<file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.0.jar" />
+			<file name="jdo/jdo2-api-2.3-SNAPSHOT.jar" />
+		</filelist>
+	</path>
+
+	<path id="cobertura.classpath">
+		<path refid="java.compile.classpath" />
+		<filelist dir="deps/lib">
+			<file name="cobertura/cobertura.jar" />
+			<file name="cobertura/asm-2.2.1.jar" />
+			<file name="cobertura/asm-tree-2.2.1.jar" />
+			<file name="cobertura/jakarta-oro-2.0.8.jar" />
+			<file name="cobertura/log4j-1.2.9.jar" />
+		</filelist>
+	</path>
+
+	<taskdef name="cobertura-instrument" classname="net.sourceforge.cobertura.ant.InstrumentTask">
+		<classpath refid="cobertura.classpath" />
+	</taskdef>
+
+	<taskdef name="cobertura-report" classname="net.sourceforge.cobertura.ant.ReportTask">
+		<classpath refid="cobertura.classpath" />
+	</taskdef>
+
+	<path id="jsunit.classpath">
+		<fileset dir="bin/jsunit/java/bin">
+			<include name="jsunit.jar" />
+		</fileset>
+		<fileset dir="bin/jsunit/java/lib">
+			<include name="*.jar" />
+			<exclude name="ant.jar" />
+		</fileset>
+		<dirset dir="bin/jsunit/java/config" />
+	</path>
+
+	<filterchain id="genericFilterChain">
+		<replacetokens>
+			<token key="rwa.release" value="${rwa.release}" />
+			<token key="rwa.productName" value="${rwa.productName}" />
+			<token key="rwa.productShortName" value="${rwa.productShortName}" />
+			<token key="rwa.contextRoot" value="${rwa.contextRoot}" />
+			<token key="rwa.languageListFilename" value="${rwa.languageListFilename}" />
+			<token key="rwa.localizedLabelBaseFilename" value="${rwa.localizedLabelBaseFilename}" />
+			<token key="rwa.dbDriver" value="${rwa.dbDriver}" />
+			<token key="rwa.dbName" value="${rwa.dbName}" />
+			<token key="rwa.dbURL" value="${rwa.dbURL}" />
+			<token key="rwa.dbAdminUsername" value="${rwa.dbAdminUsername}" />
+			<token key="rwa.dbAdminPassword" value="${rwa.dbAdminPassword}" />
+			<token key="rwa.taggedDir" value="${rwa.taggedDir}" />
+			<token key="rwa.stageId" value="${rwa.stageId}" />
+			<token key="rwa.stageYear" value="${rwa.stageYear}" />
+			<token key="rwa.sessionTimeout" value="${rwa.sessionTimeout}" />
+		</replacetokens>
+	</filterchain>
+
+	<!-- ··············· -->
+	<!-- Private targets -->
+	<!-- ··············· -->
+
+	<target name="step-info-get" unless="rwa.stageId">
+		<tstamp description="Set the properties {DSTAMP, TSTAMP, TODAY} to the current time">
+			<format pattern="yyyy" property="rwa.stageYear" />
+		</tstamp>
+		<property name="rwa.stageId" value="${DSTAMP}.${TSTAMP}" />
+		<property name="rwa.taggedDir" value="${rwa.stageId}" />
+		<echo>
+			${ant.project.name}
+			${TODAY} (${rwa.stageId})
+			JVM version detected by Ant: ${ant.java.version}
+		</echo>
+	</target>
+
+	<target name="step-dojo-unzip" unless="dojo.already.expanded">
+		<delete dir="src/war/js/dojo" includeemptydirs="true" />
+		<mkdir dir="src/war/js/dojo" />
+		<unzip src="deps/tools/javascript/dojo-release-1.3.0-src.zip" dest="${temp.dir}">
+			<patternset>
+				<include name="dojo-release-1.3.0-src/dojo/**/*" />
+				<exclude name="dojo-release-1.3.0-src/dojo/tests/**/*" />
+				<include name="dojo-release-1.3.0-src/dijit/**/*" />
+				<exclude name="dojo-release-1.3.0-src/dijit/demos/**/*" />
+				<exclude name="dojo-release-1.3.0-src/dijit/tests/**/*" />
+				<include name="dojo-release-1.3.0-src/dojox/**/*" />
+				<exclude name="dojo-release-1.3.0-src/dojox/demos**/*" />
+				<exclude name="dojo-release-1.3.0-src/dojox/tests/**/*" />
+				<include name="dojo-release-1.3.0-src/util/**/*" />
+			</patternset>
+		</unzip>
+		<move file="${temp.dir}/dojo-release-1.3.0-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.0-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.0-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.0-src/util" todir="src/war/js/dojo" overwrite="yes" />
+	</target>
+
+	<target name="step-cobertura-unzip" unless="cobertura.already.expanded">
+		<unzip src="deps/tools/testing/cobertura-1.9.1-bin.zip" dest="${temp.dir}">
+			<patternset>
+				<include name="cobertura-1.9.1/cobertura.jar" />
+				<include name="cobertura-1.9.1/lib/*.jar" />
+			</patternset>
+		</unzip>
+		<move file="${temp.dir}/cobertura-1.9.1/cobertura.jar" todir="deps/lib/cobertura" overwrite="no" />
+		<move file="${temp.dir}/cobertura-1.9.1/lib/asm-2.2.1.jar" todir="deps/lib/cobertura" overwrite="no" />
+		<move file="${temp.dir}/cobertura-1.9.1/lib/asm-tree-2.2.1.jar" todir="deps/lib/cobertura" overwrite="no" />
+		<move file="${temp.dir}/cobertura-1.9.1/lib/jakarta-oro-2.0.8.jar" todir="deps/lib/cobertura" overwrite="no" />
+		<move file="${temp.dir}/cobertura-1.9.1/lib/log4j-1.2.9.jar" todir="deps/lib/cobertura" overwrite="no" />
+	</target>
+
+	<target name="step-jsunit-unzip" unless="jsunit.already.expanded">
+		<unzip src="deps/tools/testing/jsunit2.2alpha11.zip" dest="bin">
+			<patternset>
+				<include name="jsunit/build.xml" />
+				<include name="jsunit/testRunner.html" />
+				<include name="jsunit/app/**/*" />
+				<include name="jsunit/bin/**/*" />
+				<include name="jsunit/css/**/*" />
+				<include name="jsunit/images/**/*" />
+				<include name="jsunit/java/bin/**/*" />
+				<include name="jsunit/java/config/**/*" />
+				<include name="jsunit/java/lib/**/*" />
+				<exclude name="jsunit/java/source_core/**/*" />
+				<exclude name="jsunit/java/source_server/**/*" />
+				<exclude name="jsunit/java/testlib/**/*" />
+				<exclude name="jsunit/java/tests_core/**/*" />
+				<exclude name="jsunit/java/tests_server/**/*" />
+				<exclude name="jsunit/licenses/**/*" />
+				<exclude name="jsunit/logs/**/*" />
+				<exclude name="jsunit/tests/**/*" />
+			</patternset>
+		</unzip>
+	</target>
+
+	<target name="step-jscoverage-unzip" unless="jscoverage.already.expanded">
+		<unzip src="deps/tools/testing/jscoverage-0.4-windows.zip" dest="${temp.dir}">
+			<patternset>
+				<include name="jscoverage-0.4/jscoverage.exe" />
+			</patternset>
+		</unzip>
+		<move file="${temp.dir}/jscoverage-0.4/jscoverage.exe" todir="${temp.dir}" overwrite="no" />
+	</target>
+
+	<target name="step-firefox-install" unless="firefox.already.installed">
+		<exec executable="${basedir}${file.separator}deps${file.separator}tools${file.separator}browsers${file.separator}Firefox Setup 2.0.0.6.exe">
+			<arg value="/S" />
+			<arg value="/D=${firefox.browser.location}" />
+		</exec>
+	</target>
+
+	<target name="step-firefox-profile-unzip" unless="firefox-profile.already.expanded">
+		<unzip src="deps/tools/browsers/ff-profile.zip" dest="${temp.dir}" />
+	</target>
+
+	<target name="step-pskill-unzip" unless="pskill.already.expanded">
+		<unzip src="deps/tools/system/PsTools.zip" dest="${temp.dir}">
+			<patternset>
+				<include name="pskill.exe" />
+			</patternset>
+		</unzip>
+	</target>
+
+	<target name="step-jsdoc-unzip" unless="jsdoc.already.expanded">
+		<!-- Cannot unzip in ${temp.dir} because the relative path for the files in test\war MUST be maintained -->
+		<unzip src="deps/tools/documentation/jsdoc_toolkit-2.1.0.zip" dest="${temp.dir}/" />
+		<move file="${temp.dir}/jsdoc_toolkit-2.1.0" tofile="${temp.dir}/jsdoc" />
+	</target>
+
+	<target name="step-compile">
+		<delete dir="src/war/WEB-INF/classes/com" />
+		<delete dir="src/war/WEB-INF/classes/org" />
+		<mkdir dir="src/war/WEB-INF/classes"/>
+		<!--
+		Use following arguments to compile Java 1.5 code for JVM 1.4
+			source="1.5"
+			target="jsr14"
+		-->
+		<javac
+			destdir="src/war/WEB-INF/classes"
+			deprecation="true"
+			debug="true"
+			optimize="false"
+			excludes=""
+			srcdir="src/java"
+		>
+			<classpath refid="java.compile.classpath" />
+		</javac>
+		<javac
+			destdir="src/war/WEB-INF/classes"
+			deprecation="false"
+			debug="true"
+			optimize="false"
+			excludes=""
+			srcdir="test/java"
+		>
+			<classpath refid="java.compile.classpath" />
+		</javac>
+	</target>
+
+	<target name="step-tmx-convert">
+		<mkdir dir="src/war/js/${rwa.productShortName}/nls" />
+		<java
+			classname="org.domderrien.build.TMXConverter"
+			fork="false"
+		>
+			<classpath refid="tmxconverter.classpath" />
+			<jvmarg value="-Dfile.encoding=UTF-8" />
+			<arg value="-tmxFilenameBase" />
+			<arg value="${rwa.localizedLabelBaseFilename}" />
+			<arg value="-sourcePath" />
+			<arg value="${basedir}${file.separator}src${file.separator}resources" />
+			<arg value="-jsDestPath" />
+			<arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+			<arg value="-javaDestPath" />
+			<arg value="${temp.dir}" />
+			<arg value="-languageFilenameBase" />
+			<arg value="${rwa.languageListFilename}" />
+			<arg value="-buildStamp" />
+			<arg value="${rwa.stageId}" />
+		</java>
+		<native2ascii
+			src="${temp.dir}"
+			dest="src/war/WEB-INF/classes"
+			encoding="UTF8"
+			includes="*.properties-utf8" ext=".properties"
+		/>
+		<copy
+			file="src/war/WEB-INF/classes/${rwa.localizedLabelBaseFilename}.properties"
+			tofile="src/war/WEB-INF/classes/${rwa.localizedLabelBaseFilename}_en.properties"
+		/>
+		<mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+		<copy
+			file="src/war/js/${rwa.productShortName}/nls/${rwa.localizedLabelBaseFilename}.js"
+			todir="src/war/js/${rwa.productShortName}/nls/en"
+		/>
+		</target>
+
+	<target name="step-dojo-build">
+		<exec executable="build.bat" dir="src/war/js/dojo/util/buildscripts" spawn="true">
+			<!-- See: http://kb.mozillazine.org/Command_line_arguments -->
+			<arg value="profile=standard" />
+			<arg value="action=release" />
+		</exec>
+	</target>
+
+	<target name="step-package-jar">
+		<mkdir dir="bin/distribution" />
+		<delete file="bin/distribution/${rwa.productShortName}-${rwa.release}.jar" />
+		<copy todir="src/war/WEB-INF/classes" overwrite="yes">
+			<fileset dir="src/resources">
+				<include name="**/*.x*" />
+				<include name="**/*.properties" />
+				<exclude name="**/*.tmx" />
+			</fileset>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<jar destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.jar">
+			<fileset dir="src/war/WEB-INF/classes">
+				<include name="**/*" />
+				<exclude name="**/build/**" />
+				<exclude name="**/Test*.*" />
+				<exclude name="**/Mock*.*" />
+			</fileset>
+			<manifest>
+				<attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
+				<attribute name="Implementation-Version" value="${rwa.stageId}" />
+				<attribute name="Implementation-Vendor" value="${rwa.companyName}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="step-package-src-jar">
+		<mkdir dir="bin/distribution" />
+		<jar destfile="bin/distribution/${rwa.productShortName}-${rwa.release}-src.jar">
+			<fileset dir="src" excludes="**/package.html,**/*.db,**/*.keep*,**/*.contrib*"/>
+		</jar>
+		</target>
+
+		<target name="step-package-war" depends="step-info-get">
+			<mkdir dir="bin/distribution" />
+			<mkdir dir="${temp.dir}/stage" />
+			<war
+	        	destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.war"
+	            webxml="src/war/WEB-INF/web.xml"
+	            compress="true"
+			>
+				<fileset dir="src/war">
+					<exclude name="META-INF/application.xml" />
+					<exclude name="WEB-INF/web.xml" />
+				</fileset>
+				<manifest>
+					<attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
+					<attribute name="Implementation-Version" value="${rwa.stageId}" />
+					<attribute name="Implementation-Vendor" value="${rwa.companyName}" />
+				</manifest>
+			</war>
+		</target>
+
+	<!-- TODO:
+			- call dojo compression,
+			- copy files from src/war into ${temp.dir}/stage
+			- move files from ${temp.dir} into ${temp.dir}/stage/${stage.id} being excluded ${temp.dir}/stage/WEB-INF and ${temp.dir}/stage/index.jsp.tmpl
+			- copy $[temp.dir}/stage/index.jsp.tmpl to ${temp.dir}/stage/index.jsp to replace @stage.id@ by the value ${stage.id}
+			- copy ${temp.dir}/stage/index.jsp into ${temp.dir}/stage/${stage.id} and into ${temp.dir}/stage/${stage.id}/html
+			
+		<target name="step-package-war2" depends="step-info-get">
+		<delete dir="${temp.dir}/stage" includeemptydirs="yes" failonerror="false" />
+		<mkdir dir="${temp.dir}/stage" />
+		<copy todir="${temp.dir}/stage" overwrite="yes">
+			<fileset dir="src/war">
+				<include name="**/*" />
+				<exclude name="js/**/*"/>
+				<exclude name="**/*.ico" />
+				<exclude name="**/*.png" />
+				<exclude name="**/*.gif" />
+				<exclude name="**/*.svg" />
+				<exclude name="**/*.as" />
+				<exclude name="**/*.swf" />
+				<exclude name="**/*.sh" />
+				<exclude name="**/tests/**/*"/>
+			</fileset>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<copy todir="${temp.dir}/stage/${rwa.taggedDir}">
+			<fileset dir="src/war">
+				<include name="js/**/*" />
+				<exclude name="js/dojo/**/*"/>
+				<exclude name="**/*.ico" />
+				<exclude name="**/*.png" />
+				<exclude name="**/*.gif" />
+				<exclude name="**/*.svg" />
+				<exclude name="**/*.as" />
+				<exclude name="**/*.swf" />
+				<exclude name="**/*.sh" />
+				<exclude name="**/tests/**/*"/>
+			</fileset>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<copy todir="${temp.dir}/stage/${rwa.taggedDir}">
+			<fileset dir="war/tagged">
+				<include name="js/dojo/**/*"/>
+				<exclude name="js/dojo/util/**/*"/>
+				<include name="**/*.ico" />
+				<include name="**/*.png" />
+				<include name="**/*.gif" />
+				<include name="**/*.svg" />
+				<include name="**/*.as" />
+				<include name="**/*.swf" />
+				<include name="**/*.sh" />
+			</fileset>
+		</copy>
+		<mkdir dir="bin/distribution" />
+		<copy todir="${temp.dir}/stage/WEB-INF/lib" flatten="true" overwrite="yes">
+			<fileset dir="bin/distribution">
+				<include name="${rwa.productShortName}-${rwa.release}.jar" />
+			</fileset>
+			<fileset refid="runtime.deps" />
+		</copy>
+		<war
+        	destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.war"
+            webxml="${temp.dir}/stage/WEB-INF/web.xml"
+            compress="true"
+		>
+			<fileset dir="${temp.dir}/stage">
+				<exclude name="META-INF/application.xml" />
+			</fileset>
+			<manifest>
+				<attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
+				<attribute name="Implementation-Version" value="${rwa.stageId}" />
+				<attribute name="Implementation-Vendor" value="${rwa.companyName}" />
+			</manifest>
+		</war>
+	</target>
+	-->
+
+	<target name="step-package-ear">
+		<delete verbose="true" failonerror="false">
+			<fileset dir="bin/distribution">
+				<include name="${rwa.productShortName}-${rwa.release}.ear" />
+			</fileset>
+		</delete>
+		<copy file="src/java/META-INF/application.xml" todir="${temp.dir}/stage" overwrite="yes">
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<mkdir dir="bin/distribution" />
+		<ear
+        	destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.ear"
+            appxml="${temp.dir}/stage/application.xml"
+            compress="true"
+		>
+			<fileset dir="bin/distribution">
+				<include name="${rwa.productShortName}-${rwa.release}.war" />
+			</fileset>
+			<manifest>
+				<attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
+				<attribute name="Implementation-Version" value="${rwa.stageId}" />
+				<attribute name="Implementation-Vendor" value="${rw.companyName}" />
+			</manifest>
+		</ear>
+	</target>
+
+	<target name="step-java-test">
+		<!-- Run Cobertura on the top of JUnit -->
+		<antcall target="step-cobertura-instrument" />
+		<antcall target="step-junit-test" />
+		<antcall target="step-cobertura-xml-report" />
+		<antcall target="step-cobertura-html-report" />
+	</target>
+
+	<target name="step-cobertura-instrument">
+		<!-- Remove the coverage data file.-->
+		<delete file="cobertura.ser" />
+		<delete dir="bin/instrumented" />
+
+		<!--Instrument the application classes	-->
+		<cobertura-instrument todir="bin/instrumented">
+			<!-- Ignore log4j -->
+			<ignore regex="org.apache.log4j.*" />
+
+			<fileset dir="src/war/WEB-INF/classes">
+				<!-- Instrument all the application classes -->
+				<include name="**/*.class" />
+				<exclude name="**/Test*.class" />
+				<exclude name="**/Mock*.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="step-junit-test">
+		<junit
+			dir="${basedir}"
+			failureProperty="junit.test.failed"
+			fork="yes"
+			printSummary="yes"
+			haltOnError="true"
+			haltOnFailure="true"
+			timeout="10000"
+			maxMemory="512M"
+		>
+			<classpath location="bin/instrumented" />
+			<!-- Important: instrumented classes are before the original (uninstrumented) classes. -->
+			<classpath location="src/war/WEB-INF/classes" />
+			<classpath refid="cobertura.classpath" />
+
+			<formatter type="xml" />
+			<formatter usefile="false" type="plain" />
+
+			<test name="${testcase}" todir="docs/test-reports/junit-xml" if="testcase" />
+			<batchtest todir="docs/test-reports/junit-xml" unless="testcase">
+				<fileset dir="test/java">
+					<include name="**/Test*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="docs/test-reports/junit-xml">
+			<fileset dir="docs/test-reports/junit-xml">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="docs/test-reports/junit-html" />
+		</junitreport>
+	</target>
+
+	<target name="step-cobertura-xml-report" unless="no.cobertura.xml.reports">
+		<!-- Generate an XML file coverage -->
+		<cobertura-report srcdir="src" destdir="docs/test-reports/cobertura-xml" format="xml" />
+	</target>
+
+	<target name="step-cobertura-html-report" unless="no.cobertura.html.reports">
+		<!-- Generate a series of HTML files containing the coverage -->
+		<cobertura-report destdir="docs/test-reports/cobertura-html">
+			<fileset dir="src/java">
+				<include name="**/*.java" />
+				<exclude name="**/Test*.java" />
+				<exclude name="**/Mock*.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<target name="step-javascript-test">
+		<!-- Run JSUnit -->
+		<antcall target="step-jsunit-test" />
+		<antcall target="step-jsunit-report-transform" />
+		<antcall target="step-jscoverage-test" />
+	</target>
+
+	<target name="step-jsunit-test">
+		<junit
+			dir="${basedir}"
+			failureProperty="jsunit.test.failed"
+			fork="yes"
+			printSummary="yes"
+			haltonerror="true"
+			haltonfailure="true"
+			timeout="60000"
+			maxmemory="512M"
+		>
+			<classpath refid="jsunit.classpath" />
+
+			<formatter type="xml" />
+			<formatter usefile="false" type="plain" />
+
+			<sysproperty key="browserFileNames" value="${jsunit.browser.filenames}" />
+			<sysproperty key="closeBrowsersAfterTestRuns" value="yes" />
+			<sysproperty key="logsDirectory" value="${basedir}\docs\test-reports\jsunit-xml" />
+			<sysproperty key="port" value="${jsunit.server.port}" />
+			<sysproperty key="resourceBase" value="${basedir}" />
+			<sysproperty key="timeoutSeconds" value="${jsunit.timeout.seconds}" />
+			<!-- See: http://www.jsunit.net/documentation/standardQueryStrings.html -->
+			<sysproperty key="url" value="file:///${basedir}/bin/jsunit/testRunner.html?testPage=${basedir}/test/war/JSUnitSuite.html&amp;resultId=${rwa.productShortName}" />
+
+			<test name="net.jsunit.StandaloneTest" todir="${basedir}/docs/test-reports/jsunit-xml" />
+		</junit>
+	</target>
+	
+	<target name="step-jsunit-report-transform">
+		<concat destfile="docs/test-reports/jsunit-html/index.xml">
+			<header filtering="no" trimleading="yes">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;?xml-stylesheet type="text/xsl" href="xml2html.xsl"?&gt;</header>
+			<filelist dir="docs/test-reports/jsunit-xml" files="JSTEST-${rwa.contextRoot}.0.xml" />
+		</concat>
+		<copy file="deps/tools/testing/jsunit-results2html.xsl" tofile="docs/test-reports/jsunit-html/xml2html.xsl" />
+	</target>
+	
+	<target name="step-firefox-start">
+		<condition property="firefox.browser.running">
+			<or>
+				<available file="${firefox.browser.user.profile.dir}\parent.lock" />
+				<available file="${temp.dir}\ff-profile\parent.lock" />
+			</or>
+		</condition>
+		<antcall target="step-firefox-start-deeper" />
+	</target>
+
+	<target name="step-firefox-start-deeper" unless="firefox.browser.running">
+		<echo>Browser running: ${firefox.browser.running}</echo>
+		<exec executable="${firefox.browser.executable}" dir="${firefox.browser.location}" spawn="true">
+			<!-- See: http://kb.mozillazine.org/Command_line_arguments -->
+			<arg value="-profile" />
+			<arg value="${temp.dir}${file.separator}ff-profile" />
+			<!-- See: http://www.hiveminds.co.uk/node/3114 -->
+			<!-- env key="MOZ_NO_REMOTE" value="1" /-->
+		</exec>
+	</target>
+
+	<target name="step-firefox-stop" unless="no.firefox.stop">
+		<exec executable="${temp.dir}${file.separator}pskill.exe">
+			<arg value="-accepteula" />
+			<arg value="firefox.exe" />
+		</exec>
+	</target>
+
+	<target name="step-jscoverage-test">
+		<!-- Process only the JS application code -->
+		<mkdir dir="docs/test-reports/jscoverage-html" />
+		<mkdir dir="docs/test-reports/jscoverage-html/js" />
+		<delete dir="docs/test-reports/jscoverage-html/temp" failonerror="yes" />
+		<exec
+			dir="docs/test-reports/jscoverage-html"
+			executable="${temp.dir}/jscoverage.exe"
+		>
+			<arg value="--verbose" />
+			<!-- do not use no-instrument switch from jscoverage because it will always copy the files -->
+			<!--arg value="- -exclude=dojo/util" /-->
+			<!--arg value="- -no-instrument=dojo" /-->
+			<!--arg value="- -no-instrument=domderrien/i18n/nls" /-->
+			<!--arg value="- -no-instrument=${rwa.productShortName}/nls" /-->
+			<arg value="--exclude=dojo" />
+			<arg value="--exclude=domderrien/i18n/nls" />
+			<arg value="--exclude=${rwa.productShortName}/nls" />
+			<arg value="${basedir}/src/war/js" />
+			<arg value="temp" />
+		</exec>
+		<!-- Move the instrumented files -->
+		<mkdir dir="docs/test-reports/jscoverage-html/js" />
+		<move todir="docs/test-reports/jscoverage-html/js" overwrite="yes">
+			<fileset dir="docs/test-reports/jscoverage-html/temp" includes="**/*" />
+		</move>
+		<!-- Copy the dojo library -->
+		<mkdir dir="docs/test-reports/jscoverage-html/js/dojo" />
+		<copy todir="docs/test-reports/jscoverage-html/js/dojo" includeemptydirs="no" overwrite="no">
+			<fileset dir="src/war/js/dojo">
+				<exclude name="util/**/*" />
+				<exclude name="**/tests/**/*" />
+			</fileset>
+		</copy>
+		<!-- Copy the dictionaries -->
+		<mkdir dir="docs/test-reports/jscoverage-html/js/domderrien/i18n/nls" />
+		<copy todir="docs/test-reports/jscoverage-html/js/domderrien/i18n/nls" includeemptydirs="no" overwrite="yes">
+			<fileset dir="src/war/js/domderrien/i18n/nls" />
+		</copy>
+		<mkdir dir="docs/test-reports/jscoverage-html/js/${rwa.productShortName}/nls" />
+		<copy todir="docs/test-reports/jscoverage-html/js/${rwa.productShortName}/nls" includeemptydirs="no" overwrite="yes">
+			<fileset dir="src/war/js/${rwa.productShortName}/nls" />
+		</copy>
+		<!-- Copy the test files -->
+		<copy todir="docs/test-reports/jscoverage-html/js" includeemptydirs="no" overwrite="yes">
+			<fileset dir="test/war">
+				<include name="**/Test*.js" />
+				<include name="JSCoverageSuite.*" />
+			</fileset>
+		</copy>
+		<!-- Launch firefox to produce the coverage numbers -->
+		<exec executable="${chrome.browser.executable}" dir="${temp.dir}/ff">
+			<arg value="file:///${basedir}/docs/test-reports/jscoverage-html/js/jscoverage.html?url=JSCoverageSuite.html" />
+		</exec>
+		<!--exec executable="${chrome.browser.executable}" dir="${temp.dir}/ff">
+    		<arg value="file:///${basedir}/docs/test-reports/jscoverage-html/JSCoverageSuite.html" />
+    	</exec-->
+	</target>
+
+	<target name="step-javadoc-produce" unless="no.javadoc.reports">
+		<mkdir dir="docs/generated-doc/javadoc" />
+		<javadoc
+            use="true"
+            private="true"
+            destdir="docs/generated-doc/javadoc"
+            author="true"
+            version="true"
+            packagenames="com.${rwa.productShortName}.*,org.domderrien.*"
+            sourcepath="src/java"
+            windowtitle="${javadoc.docs.window.title}"
+        >
+			<classpath>
+				<path refid="java.compile.classpath" />
+			</classpath>
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
+			<bottom>
+				<![CDATA[<center>${javadoc.docs.copyright}</center>]]></bottom>
+		</javadoc>
+	</target>
+	
+	<target name="step-jsdoc-produce" unless="no.jsdoc.reports">
+		<mkdir dir="docs/generated-doc/jsdoc" />
+		<java jar="${temp.dir}/jsdoc/jsdoc-toolkit/jsrun.jar" fork="true" dir="${temp.dir}/jsdoc/jsdoc-toolkit">
+			<arg value="app/run.js" />
+			<arg value="-t=templates/jsdoc" />
+			<arg value="-d=${basedir}/docs/generated-doc/jsdoc" />
+			<arg value="-r=2" />
+			<arg value="${basedir}/src/war/js/${rwa.productShortName}/" />
+			<!-- List all files deeper than depth 2 -->
+				<!--arg value="${basedir}/src/war/js/${rwa.productShortName}/util/sample/sample.js" /-->
+		</java>
+	</target>
+
+</project>
