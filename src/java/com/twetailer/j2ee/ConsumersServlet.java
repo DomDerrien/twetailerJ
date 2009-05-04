@@ -173,7 +173,9 @@ public class ConsumersServlet extends BaseRESTServlet {
 			log.fine("queryObj: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding consumers
 			List<Consumer> consumers = queryObj == null ? null : (List<Consumer>) queryObj.execute();
-			consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+			if (consumers != null) {
+				consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+			}
 	    	return consumers;
 	    	// return queryObj == null ? null : (List<Consumer>) queryObj.execute();
     	}
