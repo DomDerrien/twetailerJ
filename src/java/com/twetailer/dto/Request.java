@@ -175,7 +175,7 @@ public class Request implements TransferObject {
 	public JsonObject toJson() {
 		JsonObject out = new GenericJsonObject();
 		out.put("key", getKey());
-		out.put("creationDate", DateUtils.millisecondsToISO(getCreationDate().getTime()));
+		out.put("creationDate", DateUtils.dateToISO(getCreationDate()));
 		out.put("consumerKey", getConsumerKey());
 		JsonArray jsonArray = new GenericJsonArray();
 		for(String criterion: getCriteria()) {
@@ -186,7 +186,7 @@ public class Request implements TransferObject {
 		if (getExpirationDate() == null) {
 			setExpirationDate(DEFAULT_EXPIRATION_DELAY);
 		}
-		out.put("expirationDate", DateUtils.millisecondsToISO(getExpirationDate().getTime()));
+		out.put("expirationDate", DateUtils.dateToISO(getExpirationDate()));
 		out.put("latitude", getLatitude());
 		out.put("longitude", getLongitude());
 		out.put("postalCode", getPostalCode());
@@ -196,7 +196,7 @@ public class Request implements TransferObject {
 	public void fromJson(JsonObject in) throws ParseException {
 		if (in.containsKey("key")) { setKey(in.getLong("key")); }
 		if (in.containsKey("consumerKey")) { setConsumerKey(in.getLong("consumerKey")); }
-		// if (in.containsKey("creationDate")) { setCreationDate(DateUtil.fromISOToDate(in.getString("creationDate"))); }
+		// if (in.containsKey("creationDate")) { setCreationDate(DateUtil.isoToDate(in.getString("creationDate"))); }
 		if (in.containsKey("criteria")) {
 			JsonArray jsonArray = in.getJsonArray("criteria");
 			for (int i=0; i<jsonArray.size(); ++i) {
