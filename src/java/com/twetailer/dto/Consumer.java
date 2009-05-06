@@ -171,7 +171,7 @@ public class Consumer implements TransferObject {
 		JsonObject out = new GenericJsonObject();
 		out.put("key", getKey());
 		out.put("address", getAddress());
-		out.put("creationDate", DateUtils.millisecondsToISO(getCreationDate().getTime()));
+		out.put("creationDate", DateUtils.dateToISO(getCreationDate()));
 		out.put("email", getEmail());
 		out.put("imId", getImId());
 		out.put("name", getName());
@@ -184,7 +184,7 @@ public class Consumer implements TransferObject {
 	public void fromJson(JsonObject in) throws ParseException {
 		if (in.containsKey("key")) { setKey(in.getLong("key")); }
 		if (in.containsKey("address")) { setAddress(in.getString("address")); }
-		// if (in.containsKey("creationDate")) { setCreationDate(DateUtil.fromISOToDate(in.getString("creationDate"))); }
+		// if (in.containsKey("creationDate")) { setCreationDate(DateUtil.isoToDate(in.getString("creationDate"))); }
 		if (in.containsKey("email")) { setEmail(in.getString("email")); }
 		if (in.containsKey("imId")) { setImId(in.getString("imId")); }
 		if (in.containsKey("name")) { setName(in.getString("name")); }
