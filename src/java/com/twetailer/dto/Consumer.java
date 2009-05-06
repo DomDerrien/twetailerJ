@@ -171,7 +171,7 @@ public class Consumer implements TransferObject {
 		JsonObject out = new GenericJsonObject();
 		out.put("key", getKey());
 		out.put("address", getAddress());
-		out.put("creationDate", DateUtils.toISO(getCreationDate().getTime()));
+		out.put("creationDate", DateUtils.millisecondsToISO(getCreationDate().getTime()));
 		out.put("email", getEmail());
 		out.put("imId", getImId());
 		out.put("name", getName());

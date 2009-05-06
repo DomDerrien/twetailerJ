@@ -175,7 +175,7 @@ public class Request implements TransferObject {
 	public JsonObject toJson() {
 		JsonObject out = new GenericJsonObject();
 		out.put("key", getKey());
-		out.put("creationDate", DateUtils.toISO(getCreationDate().getTime()));
+		out.put("creationDate", DateUtils.millisecondsToISO(getCreationDate().getTime()));
 		out.put("consumerKey", getConsumerKey());
 		JsonArray jsonArray = new GenericJsonArray();
 		for(String criterion: getCriteria()) {
@@ -186,7 +186,7 @@ public class Request implements TransferObject {
 		if (getExpirationDate() == null) {
 			setExpirationDate(DEFAULT_EXPIRATION_DELAY);
 		}
-		out.put("expirationDate", DateUtils.toISO(getExpirationDate().getTime()));
+		out.put("expirationDate", DateUtils.millisecondsToISO(getExpirationDate().getTime()));
 		out.put("latitude", getLatitude());
 		out.put("longitude", getLongitude());
 		out.put("postalCode", getPostalCode());
@@ -204,7 +204,7 @@ public class Request implements TransferObject {
 			}
 		}
 		if (in.containsKey("countryCode")) { setCountryCode(in.getString("countryCode")); }
-		if (in.containsKey("expirationDate")) { setExpirationDate(DateUtils.fromISOToDate(in.getString("expirationDate"))); }
+		if (in.containsKey("expirationDate")) { setExpirationDate(DateUtils.isoToDate(in.getString("expirationDate"))); }
 		if (in.containsKey("latitude")) { setLatitude(in.getString("latitude")); }
 		if (in.containsKey("longitude")) { setLongitude(in.getString("longitude")); }
 		if (in.containsKey("postalCode")) { setPostalCode(in.getString("postalCode")); }

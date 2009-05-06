@@ -12,24 +12,14 @@ import static org.junit.Assert.*;
 
 public class TestLabelExtractor {
 
-	@Before
-	public void setUp() throws Exception {
-		LabelExtractor.resetResourceBundleList();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-    
-    /************* Mock classes & local objects ***********************/
     class MockResourceBundle extends ListResourceBundle {
-        public final static String LABEL_0 = "0";   //$NON-NLS-1$
-        public final static String LABEL_1 = "1";   //$NON-NLS-1$ 
-        public final static String LABEL_10 = "10"; //$NON-NLS-1$
-        public final static String LABEL_11 = "11"; //$NON-NLS-1$
-        public final static String LABEL_12 = "12"; //$NON-NLS-1$
-        public final static String ERR_LABEL_0 = LabelExtractor.ERROR_MESSAGE_PREFIX + "0"; //$NON-NLS-1$
-        public final static String ERR_LABEL_1 = LabelExtractor.ERROR_MESSAGE_PREFIX + "1"; //$NON-NLS-1$
+        public final String LABEL_0 = "0";   //$NON-NLS-1$
+        public final String LABEL_1 = "1";   //$NON-NLS-1$ 
+        public final String LABEL_10 = "10"; //$NON-NLS-1$
+        public final String LABEL_11 = "11"; //$NON-NLS-1$
+        public final String LABEL_12 = "12"; //$NON-NLS-1$
+        public final String ERR_LABEL_0 = LabelExtractor.ERROR_MESSAGE_PREFIX + "0"; //$NON-NLS-1$
+        public final String ERR_LABEL_1 = LabelExtractor.ERROR_MESSAGE_PREFIX + "1"; //$NON-NLS-1$
         private Object[][] contents = new Object[][]{
             {LABEL_0, LABEL_0},
             {LABEL_1, LABEL_1},
@@ -42,8 +32,18 @@ public class TestLabelExtractor {
             return contents;
         }         
     }
+    
+    MockResourceBundle mock = new MockResourceBundle();
 
-    /************* Test Functions ***********************/
+	@Before
+	public void setUp() throws Exception {
+		LabelExtractor.resetResourceBundleList();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+    
     @Test
     public void testConstructor() {
     	new LabelExtractor();
@@ -51,7 +51,6 @@ public class TestLabelExtractor {
     @Test
     public void testSetResourceBundleI() {
     	// Set a resource bundle with a null locale reference
-        ResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, null);
         assertEquals(mock, LabelExtractor.getResourceBundle(null));
     }
@@ -59,7 +58,6 @@ public class TestLabelExtractor {
     @Test
     public void testSetResourceBundleII() {
     	// Set a resource bundle with a non null locale reference
-        ResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, Locale.US);
         assertEquals(mock, LabelExtractor.getResourceBundle(Locale.US));
     }
@@ -67,7 +65,6 @@ public class TestLabelExtractor {
     @Test
     public void testSetResourceBundleIII() {
     	// Set a resource bundle with a composite locale reference
-        ResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, Locale.CANADA_FRENCH);
         assertEquals(mock, LabelExtractor.getResourceBundle(Locale.CANADA_FRENCH));
     }
@@ -95,22 +92,20 @@ public class TestLabelExtractor {
 
     @Test
     public void testGetI() {
-        MockResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, Locale.US);
         // The label asked has an entry in the dictionary
-        assertEquals(mock.getString(MockResourceBundle.LABEL_0), LabelExtractor.get(MockResourceBundle.LABEL_0, Locale.US));
-        assertEquals(mock.getString(MockResourceBundle.LABEL_1), LabelExtractor.get(MockResourceBundle.LABEL_1, Locale.US));
-        assertEquals(mock.getString(MockResourceBundle.LABEL_10), LabelExtractor.get(MockResourceBundle.LABEL_0, Locale.US));
-        assertEquals(mock.getString(MockResourceBundle.LABEL_11), LabelExtractor.get(MockResourceBundle.LABEL_1, Locale.US));
+        assertEquals(mock.getString(mock.LABEL_0), LabelExtractor.get(mock.LABEL_0, Locale.US));
+        assertEquals(mock.getString(mock.LABEL_1), LabelExtractor.get(mock.LABEL_1, Locale.US));
+        assertEquals(mock.getString(mock.LABEL_10), LabelExtractor.get(mock.LABEL_0, Locale.US));
+        assertEquals(mock.getString(mock.LABEL_11), LabelExtractor.get(mock.LABEL_1, Locale.US));
     }
     
     @Test
     public void testGetII() {
-        MockResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, Locale.US);
         // The label asked has NO entry in the dictionary, the key is returned
         try {
-            mock.getString(MockResourceBundle.LABEL_12);
+            mock.getString(mock.LABEL_12);
             fail("MissingResourceException expected");
         }
         catch (MissingResourceException ex0) {
@@ -119,21 +114,19 @@ public class TestLabelExtractor {
         catch (Exception ex1) {
             fail("No other exception expected");
         }
-        assertEquals(MockResourceBundle.LABEL_12, LabelExtractor.get(MockResourceBundle.LABEL_12, Locale.US)); 
+        assertEquals(mock.LABEL_12, LabelExtractor.get(mock.LABEL_12, Locale.US)); 
     }
 
     @Test
     public void testGetIII() {
-        MockResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, Locale.US);
         // The label asked has an entry in the dictionary
-        assertEquals(mock.getString(LabelExtractor.ERROR_MESSAGE_PREFIX + MockResourceBundle.LABEL_0), LabelExtractor.get(0, Locale.US));
-        assertEquals(mock.getString(LabelExtractor.ERROR_MESSAGE_PREFIX + MockResourceBundle.LABEL_1), LabelExtractor.get(1, Locale.US));
+        assertEquals(mock.getString(LabelExtractor.ERROR_MESSAGE_PREFIX + mock.LABEL_0), LabelExtractor.get(0, Locale.US));
+        assertEquals(mock.getString(LabelExtractor.ERROR_MESSAGE_PREFIX + mock.LABEL_1), LabelExtractor.get(1, Locale.US));
     }
 
     @Test
     public void testGetIV() {
-        MockResourceBundle mock = new MockResourceBundle();
         LabelExtractor.setResourceBundle(mock, Locale.US);
         // The label returned is the given error code because the entry is not in the dictionary
         assertEquals("33", LabelExtractor.get(33, Locale.US));

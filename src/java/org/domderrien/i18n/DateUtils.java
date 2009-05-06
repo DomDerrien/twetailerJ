@@ -35,8 +35,8 @@ public class DateUtils {
      * @param timeInMilliseconds date to transform
      * @return ISO representation of the given date
      */
-    public static String toISO(long timeInMilliseconds) {
-        return toISO(new Date(timeInMilliseconds));
+    public static String millisecondsToISO(long timeInMilliseconds) {
+        return dateToISO(new Date(timeInMilliseconds));
     }
     
     /**
@@ -44,7 +44,7 @@ public class DateUtils {
      * @param date date to transform
      * @return ISO representation of the given date
      */
-    public static String toISO(Date date) {
+    public static String dateToISO(Date date) {
         return isoFormatter.format(date);
     }
     
@@ -54,8 +54,8 @@ public class DateUtils {
      * @return Date in milliseconds
      * @throws ParseException if the given string does not have the expected ISO format
      */
-    public static long fromISOToMilliseconds(String iso) throws ParseException {
-        return fromISOToDate(iso).getTime();
+    public static long isoToMilliseconds(String iso) throws ParseException {
+        return isoToDate(iso).getTime();
     }
     
     /**
@@ -64,7 +64,7 @@ public class DateUtils {
      * @return Date
      * @throws ParseException if the given string does not have the expected ISO format
      */
-    public static Date fromISOToDate(String iso) throws ParseException {
+    public static Date isoToDate(String iso) throws ParseException {
         if (iso == null || iso.length() == 0) {
             throw new ParseException("Cannot unserialize an empty ISO string", 0);
         }
