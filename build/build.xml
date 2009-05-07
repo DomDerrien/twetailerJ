@@ -141,7 +141,7 @@
 	<!-- Public targets -->
 	<!-- .............. -->
 
-	<target name="clean" description="remove all created/copied files/directories at setup time" depends="step-info-get">
+	<target name="clean" description="remove all created/copied files/directories at setup time" depends="step-info-get, step-configuration-clean">
 		<echo>Target: clean</echo>
 		<delete includeemptydirs="yes" failonerror="no">
 			<fileset dir="${basedir}">
@@ -197,12 +197,13 @@
 		<!-- TODO: use JSLint -->
 		<!-- Compile Java code -->
 		<mkdir dir="src/war/WEB-INF/classes" />
-		<antcall target="step-compile" />
+		<antcall target="step-java-compile" />
 		<!-- Process TMXs -->
 		<antcall target="step-tmx-convert" />
 		<!-- Verify Java coding rules -->
 		<!-- TODO: run verification tool -->
-		<copy file="src/resources/applicationSettings.properties" todir="src/war/WEB-INF/classes" />
+		<!-- Push configuration files -->
+		<antcall target="step-configuration-push" />
 	</target>
 
 	<target name="package" description="compile and package the application" depends="compile">
@@ -210,7 +211,6 @@
 		<!-- Produce documentations -->
 		<antcall target="step-javadoc-produce" />
 		<antcall target="step-jsdoc-produce" />
-		<!-- TODO: Miguel: generate HTML pages from the XSDs -->
 		<!-- Produce the JARs -->
 		<antcall target="step-package-jar" />
 		<!-- Generate timestamp or use static one -->
@@ -460,7 +460,7 @@
 		<move file="${temp.dir}/jsdoc_toolkit-2.1.0" tofile="${temp.dir}/jsdoc" />
 	</target>
 
-	<target name="step-compile">
+	<target name="step-java-compile">
 		<delete dir="src/war/WEB-INF/classes/com" />
 		<delete dir="src/war/WEB-INF/classes/org" />
 		<mkdir dir="src/war/WEB-INF/classes"/>
@@ -537,6 +537,53 @@
 		</exec>
 	</target>
 
+	<target name="step-configuration-clean">
+		<delete file="src/war/WEB-INF/web.xml" />
+		<delete file="src/war/WEB-INF/logging.properties" />
+		<delete file="src/war/WEB-INF/classes/applicationSettings.properties" />
+		<delete file="src/war/WEB-INF/classes/log4j.properties" />
+		<delete file="src/war/WEB-INF/classes/META-INF/application.xml" />
+	</target>
+
+	<target name="step-configuration-push">
+		<copy
+			file="src/resources/web.xml.tmpl"
+			tofile="src/war/WEB-INF/web.xml"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<copy
+			file="src/resources/logging.properties.tmpl"
+			tofile="src/war/WEB-INF/logging.properties"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<copy
+			file="src/resources/applicationSettings.properties.tmpl"
+			tofile="src/war/WEB-INF/classes/applicationSettings.properties"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<copy
+			file="src/resources/log4j.properties.tmpl"
+			tofile="src/war/WEB-INF/classes/log4j.properties"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<mkdir dir="src/war/WEB-INF/classes/META-INF" />
+		<copy
+			file="src/resources/application.xml.tmpl"
+			tofile="src/war/WEB-INF/classes/META-INF/application.xml"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+	</target>
+	
 	<target name="step-package-jar">
 		<mkdir dir="bin/distribution" />
 		<delete file="bin/distribution/${rwa.productShortName}-${rwa.release}.jar" />
@@ -579,7 +626,7 @@
 	            compress="true"
 			>
 				<fileset dir="src/war">
-					<exclude name="META-INF/application.xml" />
+					<exclude name="WEB-INF/classes/META-INF/application.xml" />
 					<exclude name="WEB-INF/web.xml" />
 				</fileset>
 				<manifest>
@@ -656,7 +703,7 @@
             compress="true"
 		>
 			<fileset dir="${temp.dir}/stage">
-				<exclude name="META-INF/application.xml" />
+				<exclude name="WEB-INF/classes/META-INF/application.xml" />
 			</fileset>
 			<manifest>
 				<attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
@@ -673,7 +720,7 @@
 				<include name="${rwa.productShortName}-${rwa.release}.ear" />
 			</fileset>
 		</delete>
-		<copy file="src/java/META-INF/application.xml" todir="${temp.dir}/stage" overwrite="yes">
+		<copy file="src/resources/application.xml.tmpl" tofile="${temp.dir}/stage/application.xml" overwrite="yes">
 			<filterchain refid="genericFilterChain" />
 		</copy>
 		<mkdir dir="bin/distribution" />

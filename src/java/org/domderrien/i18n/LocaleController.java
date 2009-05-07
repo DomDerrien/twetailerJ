@@ -72,7 +72,7 @@ public class LocaleController
     	Locale locale = getLocale(localeId);
         
         // Saving of the verified locale for the rest of the application
-        HttpSession session = null; // FIXME: request.getSession(false);
+        HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
             session.setAttribute(SESSION_LOCALE_ID_KEY, localeId);
         }
@@ -108,10 +108,12 @@ public class LocaleController
 
     	// Get the localeId from the request
         if (request != null) {
-            HttpSession session = null; // FIXME: request.getSession(false);
-            if (!skipSession && session != null) {
-                // Get the registered information
-                localeId = (String) session.getAttribute(SESSION_LOCALE_ID_KEY);
+            if (!skipSession) {
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                	// Get the registered information
+                	localeId = (String) session.getAttribute(SESSION_LOCALE_ID_KEY);
+                }
             }
             if (localeId == null || localeId.length() == 0) {
             	// Get the specified information
@@ -121,9 +123,10 @@ public class LocaleController
                 // Fall back on the preferred locale, as specified in the request headers
                 Locale locale = request.getLocale();
                 if (locale != null) {
-                    localeId = request.getLocale().getLanguage();
-                    String countryId = request.getLocale().getCountry();
-                    if (countryId != null && 0 < countryId.length()) {
+                    localeId = locale.getLanguage();
+                    String countryId = locale.getCountry();
+                    System.out.println("CountryId: " + countryId);
+                    if (0 < countryId.length()) {
                     	localeId += "_" + countryId;
                     }
                 }
@@ -184,7 +187,7 @@ public class LocaleController
     public static Locale getLocale(String localeId) {
         Locale locale = DEFAULT_LOCALE;
 
-        if (localeId != null) {
+        if (localeId != null && 0 < localeId.length()) {
             if (2 < localeId.length()) {
                 locale = new Locale(localeId.substring(0, 2), localeId.substring(3));
             }

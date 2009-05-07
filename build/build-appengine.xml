@@ -40,7 +40,7 @@
 	<!-- Public targets -->
 	<!-- ·············· -->
 
-    <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean">
+    <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean, step-configuration-clean">
     </target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
@@ -95,14 +95,31 @@
 	<!-- ··············· -->
 	<!-- Private targets -->
 	<!-- ··············· -->
-	
-	<target name="step-datanucleus-enhance" depends="compile">
-		<delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
-		<copy todir="src/war/WEB-INF/classes">
-			<fileset dir="src/java">
-				<include name="META-INF/**/*" />
-			</fileset>
+
+	<target name="step-configuration-clean">
+		<delete file="src/war/WEB-INF/appengine-web.xml" />
+		<delete file="src/war/WEB-INF/classes/META-INF/jdoconfig.xml" />
+	</target>
+
+	<target name="step-configuration-push" depends="base_build_control.step-configuration-push">
+		<copy 
+			file="src/resources/appengine-web.xml.tmpl"
+			tofile="src/war/WEB-INF/appengine-web.xml"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
 		</copy>
+		<copy 
+			file="src/resources/jdoconfig.xml.tmpl"
+			tofile="src/war/WEB-INF/classes/META-INF/jdoconfig.xml"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+	</target>
+	
+	<target name="step-datanucleus-enhance" depends="compile, step-configuration-push">
+		<delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
 		<enhance_war war="${basedir}/src/war" />
 	</target>
 
