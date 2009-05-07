@@ -202,11 +202,9 @@
 		<antcall target="step-tmx-convert" />
 		<!-- Verify Java coding rules -->
 		<!-- TODO: run verification tool -->
-		<!-- Push configuration files -->
-		<antcall target="step-configuration-push" />
 	</target>
 
-	<target name="package" description="compile and package the application" depends="compile">
+	<target name="package" description="compile and package the application"  depends="compile, step-configuration-push">
 		<echo>Target: package</echo>
 		<!-- Produce documentations -->
 		<antcall target="step-javadoc-produce" />

@@ -4,11 +4,8 @@ docs/test-reports/*
 src/war/js/dojo/*
 src/war/js/twetailer/nls/*
 src/war/WEB-INF/appengine-generated/*
-src/war/WEB-INF/classes/com/*
-src/war/WEB-INF/classes/org/*
-src/war/WEB-INF/classes/labels*.properties
-src/war/WEB-INF/classes/languages.properties
-src/war/WEB-INF/classes/applicationSettings.properties
+src/war/WEB-INF/classes/*
+src/war/WEB-INF/*.*
 cobertura.ser
 *.class
 nop
