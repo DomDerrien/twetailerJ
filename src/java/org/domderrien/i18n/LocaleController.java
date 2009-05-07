@@ -125,7 +125,6 @@ public class LocaleController
                 if (locale != null) {
                     localeId = locale.getLanguage();
                     String countryId = locale.getCountry();
-                    System.out.println("CountryId: " + countryId);
                     if (0 < countryId.length()) {
                     	localeId += "_" + countryId;
                     }

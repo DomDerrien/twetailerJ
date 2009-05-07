@@ -80,7 +80,7 @@ public class TestLabelExtractor {
     public void testGetResourceBundleII() {
     	// Expected to read a English file for the locale fr_CA => fallback on fr
         ResourceBundle rb = LabelExtractor.getResourceBundle(Locale.CANADA_FRENCH);
-        assertEquals("Fran\u00e7ais", rb.getString("bundle_language"));
+        assertEquals("Fran\ufffdais", rb.getString("bundle_language"));
     }
 
     @Test
