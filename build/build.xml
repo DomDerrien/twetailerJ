@@ -267,9 +267,9 @@
 		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
 		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${rwa.languageListFilename}.properties file -->
 		<filelist dir="deps/lib">
-			<file name="xalan/xalan-2.7.0.jar" />
-			<file name="xerces/xercesImpl-2.4.0.jar" />
-			<file name="xml-apis/xml-apis-1.3.02.jar" />
+			<file name="xml/xalan-2.7.0.jar" />
+			<file name="xml/xercesImpl-2.4.0.jar" />
+			<file name="xml/xml-apis-1.3.02.jar" />
 		</filelist>
 	</path>
 	
@@ -285,14 +285,14 @@
 	<path id="java.compile.classpath">
 		<fileset refid="runtime.deps" />
 		<filelist dir="deps/lib">
-			<file name="xalan/xalan-2.7.0.jar" />
-			<file name="xerces/xercesImpl-2.4.0.jar" />
-			<file name="xml-apis/xml-apis-1.3.02.jar" />
+			<file name="xml/xalan-2.7.0.jar" />
+			<file name="xml/xercesImpl-2.4.0.jar" />
+			<file name="xml/xml-apis-1.3.02.jar" />
 			<file name="junit/junit-4.6.jar" />
 			<!--file name="tomcat/j2ee.jar" /-->
 			<!--file name="was/j2ee-6.0.jar.jar" /-->
 			<file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
-			<file name="appengine/appengine-api-1.0-sdk-1.2.0.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.1.jar" />
 			<file name="jdo/jdo2-api-2.3-SNAPSHOT.jar" />
 		</filelist>
 	</path>
@@ -305,6 +305,8 @@
 			<file name="cobertura/asm-tree-2.2.1.jar" />
 			<file name="cobertura/jakarta-oro-2.0.8.jar" />
 			<file name="cobertura/log4j-1.2.9.jar" />
+			<file name="appengine/datanucleus-appengine-1.0.1.final.jar" />
+			<file name="datanucleus/datanucleus-core-1.1.0.jar" />
 		</filelist>
 	</path>
 
@@ -367,23 +369,23 @@
 	<target name="step-dojo-unzip" unless="dojo.already.expanded">
 		<delete dir="src/war/js/dojo" includeemptydirs="true" />
 		<mkdir dir="src/war/js/dojo" />
-		<unzip src="deps/tools/javascript/dojo-release-1.3.0-src.zip" dest="${temp.dir}">
+		<unzip src="deps/tools/javascript/dojo-release-1.3.1-src.zip" dest="${temp.dir}">
 			<patternset>
-				<include name="dojo-release-1.3.0-src/dojo/**/*" />
-				<exclude name="dojo-release-1.3.0-src/dojo/tests/**/*" />
-				<include name="dojo-release-1.3.0-src/dijit/**/*" />
-				<exclude name="dojo-release-1.3.0-src/dijit/demos/**/*" />
-				<exclude name="dojo-release-1.3.0-src/dijit/tests/**/*" />
-				<include name="dojo-release-1.3.0-src/dojox/**/*" />
-				<exclude name="dojo-release-1.3.0-src/dojox/demos**/*" />
-				<exclude name="dojo-release-1.3.0-src/dojox/tests/**/*" />
-				<include name="dojo-release-1.3.0-src/util/**/*" />
+				<include name="dojo-release-1.3.1-src/dojo/**/*" />
+				<exclude name="dojo-release-1.3.1-src/dojo/tests/**/*" />
+				<include name="dojo-release-1.3.1-src/dijit/**/*" />
+				<exclude name="dojo-release-1.3.1-src/dijit/demos/**/*" />
+				<exclude name="dojo-release-1.3.1-src/dijit/tests/**/*" />
+				<include name="dojo-release-1.3.1-src/dojox/**/*" />
+				<exclude name="dojo-release-1.3.1-src/dojox/demos**/*" />
+				<exclude name="dojo-release-1.3.1-src/dojox/tests/**/*" />
+				<include name="dojo-release-1.3.1-src/util/**/*" />
 			</patternset>
 		</unzip>
-		<move file="${temp.dir}/dojo-release-1.3.0-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
-		<move file="${temp.dir}/dojo-release-1.3.0-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
-		<move file="${temp.dir}/dojo-release-1.3.0-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
-		<move file="${temp.dir}/dojo-release-1.3.0-src/util" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.1-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.1-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.1-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
+		<move file="${temp.dir}/dojo-release-1.3.1-src/util" todir="src/war/js/dojo" overwrite="yes" />
 	</target>
 
 	<target name="step-cobertura-unzip" unless="cobertura.already.expanded">
@@ -459,8 +461,6 @@
 	</target>
 
 	<target name="step-java-compile">
-		<delete dir="src/war/WEB-INF/classes/com" />
-		<delete dir="src/war/WEB-INF/classes/org" />
 		<mkdir dir="src/war/WEB-INF/classes"/>
 		<!--
 		Use following arguments to compile Java 1.5 code for JVM 1.4
@@ -766,6 +766,7 @@
 	</target>
 
 	<target name="step-junit-test">
+		<antcall target="step-configuration-push" />
 		<junit
 			dir="${basedir}"
 			failureProperty="junit.test.failed"
@@ -798,6 +799,8 @@
 			</fileset>
 			<report format="frames" todir="docs/test-reports/junit-html" />
 		</junitreport>
+
+		<antcall target="step-configuration-clean" />
 	</target>
 
 	<target name="step-cobertura-xml-report" unless="no.cobertura.xml.reports">

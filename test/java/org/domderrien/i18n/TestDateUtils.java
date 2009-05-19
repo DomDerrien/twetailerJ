@@ -3,7 +3,6 @@ package org.domderrien.i18n;
 import static org.junit.Assert.*;
 
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 

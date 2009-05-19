@@ -31,7 +31,9 @@ public class MaezelServlet extends HttpServlet {
         JsonObject out = new GenericJsonObject();
         
         try {
-	        User loggedUser = Utils.getLoggedUser(true);
+        	// FIXME: covers the Maezel servlet with an "admin" security role 
+        	// http://code.google.com/appengine/docs/java/config/webxml.html#Security_and_Authentication
+	        User loggedUser = Utils.getLoggedUser();
 	        loggedUser.toString(); // To prevent warnings
 	
             String pathInfo = request.getPathInfo();

@@ -11,6 +11,9 @@ public class JsonSerializer {
 	private static final Pattern QUOTE_BACKSLASH_PATTERN = Pattern.compile(QUOTE_BACKSLASH_PATTERN_LITERAL);
 	
 	protected static String escape(String data) {
+		if (data == null) {
+			return JsonDelimiters.NULL_LABEL;
+		}
 		return QUOTE_BACKSLASH_PATTERN.matcher(data).replaceAll(QUOTE_BACKSLASH_REPLACEMENT_LITERAL);
 	}
 
@@ -46,6 +49,11 @@ public class JsonSerializer {
 		toStream(key, value, out, isFollowed);
 	}
 
+	public static void startObject(String key, double value, OutputStream out, boolean isFollowed) throws IOException {
+		startObject(out);
+		toStream(key, value, out, isFollowed);
+	}
+
 	public static void startObject(String key, boolean value, OutputStream out, boolean isFollowed) throws IOException {
 		startObject(out);
 		toStream(key, value, out, isFollowed);
@@ -56,7 +64,17 @@ public class JsonSerializer {
 		endObject(out, isFollowed);
 	}
 
-	public static void endObject(String key, int value, OutputStream out, boolean isFollowed) throws IOException {
+	public static void endObject(String key, long value, OutputStream out, boolean isFollowed) throws IOException {
+		toStream(key, value, out, false);
+		endObject(out, isFollowed);
+	}
+
+	public static void endObject(String key, double value, OutputStream out, boolean isFollowed) throws IOException {
+		toStream(key, value, out, false);
+		endObject(out, isFollowed);
+	}
+
+	public static void endObject(String key, boolean value, OutputStream out, boolean isFollowed) throws IOException {
 		toStream(key, value, out, false);
 		endObject(out, isFollowed);
 	}
@@ -65,7 +83,8 @@ public class JsonSerializer {
 	private final static String KEY_OTHER_VALUE_SEPARATOR = JsonDelimiters.QUOTE_STR + JsonDelimiters.COLONS_STR;
 
 	public static void introduceComplexValue(String key, OutputStream out) throws IOException {
-        out.write(getBytes(
+		out.write(
+			getBytes(
 				JsonDelimiters.QUOTE_STR + 
 				escape(key) + 
 				KEY_OTHER_VALUE_SEPARATOR
@@ -73,7 +92,8 @@ public class JsonSerializer {
 	}
 
 	public static void toStream(String key, String value, OutputStream out, boolean isFollowed) throws IOException {
-		out.write(getBytes(
+		out.write(
+			getBytes(
 				JsonDelimiters.QUOTE_STR + 
 				escape(key) + 
 				KEY_STRING_VALUE_SEPARATOR + 
@@ -84,7 +104,19 @@ public class JsonSerializer {
 	}
 
 	public static void toStream(String key, long value, OutputStream out, boolean isFollowed) throws IOException {
-		out.write(getBytes(
+		out.write(
+			getBytes(
+				JsonDelimiters.QUOTE_STR + 
+				escape(key) + 
+				KEY_OTHER_VALUE_SEPARATOR + 
+				value + 
+				(isFollowed ? JsonDelimiters.COMMA_STR : JsonDelimiters.EMPTY_STR)
+		));
+	}
+
+	public static void toStream(String key, double value, OutputStream out, boolean isFollowed) throws IOException {
+		out.write(
+			getBytes(
 				JsonDelimiters.QUOTE_STR + 
 				escape(key) + 
 				KEY_OTHER_VALUE_SEPARATOR + 
@@ -94,7 +126,8 @@ public class JsonSerializer {
 	}
 
 	public static void toStream(String key, boolean value, OutputStream out, boolean isFollowed) throws IOException {
-		out.write(getBytes(
+		out.write(
+			getBytes(
 				JsonDelimiters.QUOTE_STR + 
 				escape(key) + 
 				KEY_OTHER_VALUE_SEPARATOR + 
@@ -104,7 +137,8 @@ public class JsonSerializer {
 	}
 
 	public static void toStream(String value, OutputStream out, boolean isFollowed) throws IOException {
-		out.write(getBytes(
+		out.write(
+			getBytes(
 				JsonDelimiters.QUOTE_STR + 
 				escape(value) + 
 				JsonDelimiters.QUOTE_STR +
@@ -113,14 +147,24 @@ public class JsonSerializer {
 	}
 
 	public static void toStream(long value, OutputStream out, boolean isFollowed) throws IOException {
-		out.write(getBytes(
+		out.write(
+			getBytes(
+				value + 
+				(isFollowed ? JsonDelimiters.COMMA_STR : JsonDelimiters.EMPTY_STR)
+		));
+	}
+
+	public static void toStream(double value, OutputStream out, boolean isFollowed) throws IOException {
+		out.write(
+			getBytes(
 				value + 
 				(isFollowed ? JsonDelimiters.COMMA_STR : JsonDelimiters.EMPTY_STR)
 		));
 	}
 
 	public static void toStream(boolean value, OutputStream out, boolean isFollowed) throws IOException {
-		out.write(getBytes(
+		out.write(
+			getBytes(
 				(value ? "true" : "false") + 
 				(isFollowed ? JsonDelimiters.COMMA_STR : JsonDelimiters.EMPTY_STR)
 		));

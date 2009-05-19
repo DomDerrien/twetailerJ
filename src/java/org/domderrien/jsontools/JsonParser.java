@@ -40,7 +40,7 @@ public class JsonParser {
     private CharStream stream;
 
     /** Simple stream-like class implementing peek() and get() methods */
-    private class CharStream {
+    protected class CharStream {
         public CharStream(String stream) throws JsonException {
             string = new StringBuilder(stream == null ? "" : stream);
             index = 0;
@@ -120,6 +120,14 @@ public class JsonParser {
     }
 
     /**
+     * Return the loaded stream
+     * @return Serialized stream
+     */
+    public CharStream getStream() {
+    	return stream;
+    }
+
+    /**
      * Return the value from the stream if it is delimited by quotes
      * @return Value without the quotes
      * @throws JsonException If the format is not correct
@@ -182,7 +190,7 @@ public class JsonParser {
         return obj;
     }
 
-    private JsonObject parseJsonObject() throws JsonException {
+    protected JsonObject parseJsonObject() throws JsonException {
         GenericJsonObject jsonObject = new GenericJsonObject();
 
         match(JsonDelimiters.OPENING_BRACE);
@@ -205,7 +213,7 @@ public class JsonParser {
         return jsonObject;
     }
 
-    private JsonArray parseJsonArray() throws JsonException {
+    protected JsonArray parseJsonArray() throws JsonException {
         GenericJsonArray transferArray = new GenericJsonArray();
 
         match(JsonDelimiters.OPENING_SQUARE_BRACKET);
@@ -224,7 +232,7 @@ public class JsonParser {
         return transferArray;
     }
 
-    private Object parseValue() throws JsonException {
+    protected Object parseValue() throws JsonException {
         Object obj = null;
         switch(stream.peek(true)) {
             case JsonDelimiters.QUOTE:
@@ -264,7 +272,7 @@ public class JsonParser {
         return obj;
     }
 
-    private String parseString() throws JsonException {
+    protected String parseString() throws JsonException {
         StringBuilder str = new StringBuilder();
         char stringDelimiter = stream.peek(false);
         match(stringDelimiter);
@@ -287,7 +295,7 @@ public class JsonParser {
                         // (for now, fall through to an error)
                     default:
                         unescaped = JsonDelimiters.END_OF_STRING; //makes javac happy
-                        reportError("After " + JsonDelimiters.BACK_SLASH + ", unexpected character " + next);
+                        reportError("After " + JsonDelimiters.BACK_SLASH + ", unexpected character " + next + "(" + ((int) next) + ")");
                 }
                 str.append(unescaped);
             } else {
@@ -299,7 +307,7 @@ public class JsonParser {
         return str.toString();
     }
 
-    private Double parseNumber() throws JsonException {
+    protected Double parseNumber() throws JsonException {
         StringBuilder str = new StringBuilder();
         while(true) {
             char c = stream.peek(false);
@@ -313,13 +321,14 @@ public class JsonParser {
         Double obj = null;
         try {
             obj = Double.parseDouble(str.toString());
-        } catch(NumberFormatException e) {
+        }
+        catch(NumberFormatException e) {
             reportError("Unable to parse number: "+str);
         }
         return obj;
     }
 
-    private Boolean parseBoolean() throws JsonException {
+    protected Boolean parseBoolean() throws JsonException {
         Boolean obj = null;
         char c = stream.peek(false);
         switch(c){
@@ -339,7 +348,7 @@ public class JsonParser {
         return obj;
     }
 
-    private void match(char next) throws JsonException {
+    protected void match(char next) throws JsonException {
         String message = "Expected " + next;
         if (s_logger.isLoggable(Level.FINEST)) {
             message += ". Context: cursor being at position "+stream.index+" in the stream : ";
@@ -350,15 +359,15 @@ public class JsonParser {
         if(stream.get(true)!=next) reportError(message);
     }
 
-    private static boolean isSeparatorChar(char c) {
+    protected static boolean isSeparatorChar(char c) {
         return c==JsonDelimiters.SPACE || c==JsonDelimiters.TABULATION || c==JsonDelimiters.CARRIAGE_RETURN || c==JsonDelimiters.NEW_LINE;
     }
 
-    private static boolean isNumberChar(char c) {
+    protected static boolean isNumberChar(char c) {
         return Character.isDigit(c) || c=='.' || c=='-' || c=='+' || c=='e' || c=='E';
     }
 
-    private static void reportError(String message) throws JsonException {
+    protected static void reportError(String message) throws JsonException {
         throw new JsonException("INVALID_JSON_STREAM", message);
     }
 }

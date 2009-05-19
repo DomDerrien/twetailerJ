@@ -17,7 +17,7 @@ import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Request;
 
 @SuppressWarnings("serial")
-public class RequestsServlet extends BaseRESTServlet {
+public class RequestsServlet extends BaseRestlet {
 	private static final Logger log = Logger.getLogger(RequestsServlet.class.getName());
 
 	@Override

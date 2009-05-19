@@ -9,7 +9,7 @@ import com.google.appengine.api.users.User;
 import com.twetailer.DataSourceException;
 
 @SuppressWarnings("serial")
-public class ProductsServlet extends BaseRESTServlet {
+public class ProductsServlet extends BaseRestlet {
 	private static final Logger log = Logger.getLogger(ProductsServlet.class.getName());
 
 	@Override

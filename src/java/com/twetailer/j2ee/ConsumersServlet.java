@@ -14,7 +14,7 @@ import com.twetailer.DataSourceException;
 import com.twetailer.dto.Consumer;
 
 @SuppressWarnings("serial")
-public class ConsumersServlet extends BaseRESTServlet {
+public class ConsumersServlet extends BaseRestlet {
 	private static final Logger log = Logger.getLogger(ConsumersServlet.class.getName());
 
 	@Override

@@ -61,11 +61,11 @@ public class GenericJsonObject implements JsonObject {
                 output.append(((GenericJsonArray) value).toString(index + 1));
             }
             else if (value instanceof String) {
-            	output.append("{String}");
+            	output.append("String: ");
                 output.append("\"").append(value).append("\"");
             }
             else if (value instanceof String[]) {
-            	output.append("{String[]}");
+            	output.append("String[]: ");
             	String[] arrayOfStrings = (String[]) value;
             	int limit = arrayOfStrings.length;
             	if (limit == 0) {
@@ -77,8 +77,8 @@ public class GenericJsonObject implements JsonObject {
             	else {
     				output.append("[");
             		for (int i=0; i<limit; i++) {
-            			output.append("\"").append(arrayOfStrings[0]).append("\"");
-            			if (i != limit) {
+            			output.append("\"").append(arrayOfStrings[i]).append("\"");
+            			if (i != limit - 1) {
             				output.append(",");
             			}
             		}
@@ -86,7 +86,6 @@ public class GenericJsonObject implements JsonObject {
             	}
             }
             else {
-            	output.append("{other}");
                 output.append(value);
             }
         }
@@ -120,7 +119,7 @@ public class GenericJsonObject implements JsonObject {
         Boolean typedValue = Boolean.FALSE;
         if (value instanceof String[]) {
         	String[] arrayOfStrings = (String[]) value;
-        	if (arrayOfStrings.length == 0) {
+        	if (0 < arrayOfStrings.length) {
         		typedValue = Boolean.parseBoolean(arrayOfStrings[0]);
         	}
         }
@@ -135,12 +134,21 @@ public class GenericJsonObject implements JsonObject {
         Long typedValue = 0L;
         if (value instanceof String[]) {
         	String[] arrayOfStrings = (String[]) value;
-        	if (arrayOfStrings.length == 0) {
+        	if (0 < arrayOfStrings.length) {
         		typedValue = Long.parseLong(arrayOfStrings[0]);
         	}
         }
         else {
-        	typedValue = value == null ? 0L : (Long) value; 
+        	if (value == null) {
+        		typedValue = 0L;
+        	}
+        	else if (value instanceof Long) {
+        		typedValue = (Long) value;
+        	}
+        	else { // if (value instanceof Double) {
+        		// Because the JsonParser generates Double instances
+        		typedValue = ((Double) value).longValue();
+        	}
         }
         return typedValue.longValue();
     }
@@ -150,7 +158,7 @@ public class GenericJsonObject implements JsonObject {
         Double typedValue = 0.0D;
         if (value instanceof String[]) {
         	String[] arrayOfStrings = (String[]) value;
-        	if (arrayOfStrings.length == 0) {
+        	if (0 < arrayOfStrings.length) {
         		typedValue = Double.parseDouble(arrayOfStrings[0]);
         	}
         }
@@ -253,21 +261,24 @@ public class GenericJsonObject implements JsonObject {
 			String key = it.next();
 			Object value = hashMap.get(key);
 			if (value instanceof Boolean) {
-				JsonSerializer.toStream(key, (Boolean) value, out, it.hasNext());
+				JsonSerializer.toStream(key, ((Boolean) value).booleanValue(), out, it.hasNext());
 			}
 			else if (value instanceof Long) {
-				JsonSerializer.toStream(key, (Long) value, out, it.hasNext());
+				JsonSerializer.toStream(key, ((Long) value).longValue(), out, it.hasNext());
+			}
+			else if (value instanceof Double) {
+				JsonSerializer.toStream(key, ((Double) value).doubleValue(), out, it.hasNext());
 			}
 			else if (value instanceof String) {
 				JsonSerializer.toStream(key, (String) value, out, it.hasNext());
 			}
 			else if (value instanceof JsonObject) {
 				JsonSerializer.introduceComplexValue(key, out);
-				((JsonObject) value).toStream(out, isFollowed);
+				((JsonObject) value).toStream(out, it.hasNext());
 			}
-			else if (value instanceof JsonArray) {
+			else { // if (value instanceof JsonArray) {
 				JsonSerializer.introduceComplexValue(key, out);
-				((JsonArray) value).toStream(out, isFollowed);
+				((JsonArray) value).toStream(out, it.hasNext());
 			}
 		}
         JsonSerializer.endObject(out, isFollowed);

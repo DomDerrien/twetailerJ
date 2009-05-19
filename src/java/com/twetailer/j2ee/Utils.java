@@ -23,7 +23,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 public class Utils {
 	
-	private static final PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	private static PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
 	/**
 	 * Singleton accessor
@@ -31,7 +31,7 @@ public class Utils {
 	 * @return Initial instance of the <code>PersistenceManagerFactory</code> class
 	 */
 	public static PersistenceManagerFactory getPersistenceManagerFactory() {
-			return pmfInstance;
+		return pmfInstance;
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class Utils {
      * @param request Container of the HTTP request parameters
      * @param response Container for the request output stream
      */
-    protected static void configureHttpParameters(HttpServletRequest request, HttpServletResponse response) {
+    public static void configureHttpParameters(HttpServletRequest request, HttpServletResponse response) {
         // Set httpRequest encoding
         try {
             request.setCharacterEncoding("UTF-8");
@@ -73,22 +73,30 @@ public class Utils {
         response.setDateHeader ("Expires", 0); // prevents caching at the proxy server
     }
     
+    /* Injection entry point for tests */
+    static UserService userServiceForTest = null;
+    protected static void setUserService(UserService userService) {
+    	userServiceForTest = userService;
+    }
+    protected static UserService getUserService() {
+    	if (userServiceForTest != null) {
+    		return userServiceForTest;
+    	}
+    	return UserServiceFactory.getUserService();
+    }
+    
     /**
      * Return an instance of <code>User</code> class identifying the logged user
      * 
-     * @param isAdminRequired If set to <code>true</code>, the <code>admin</code> attribute of the logged user is checked
      * @return Instance of the <code>User</code> class representing the logged user
      * 
      * @throws RuntimeException When the request is not associated to an identified user, or if the user is not an administrator as expected
      */
-    protected static User getLoggedUser(boolean isAdminRequired) {
-        UserService userService = UserServiceFactory.getUserService();
+    protected static User getLoggedUser() {
+        UserService userService = getUserService();
         User loggedUser = userService.getCurrentUser();
         if (loggedUser == null) {
         	throw new RuntimeException("Query can be posted only by logged users.");
-        }
-        if (false && isAdminRequired) { // FIXME: verify the "admin" flag of the logged user
-        	throw new RuntimeException("Query can be posted only by identified administrators.");
         }
         return loggedUser;
     }
@@ -118,6 +126,6 @@ public class Utils {
     	for (String key: objects.keySet()) {
     		out.put(key, ((TransferObject) objects.get(key)).toJson());
     	}
-    	return out;
+        return out;
     }
 }

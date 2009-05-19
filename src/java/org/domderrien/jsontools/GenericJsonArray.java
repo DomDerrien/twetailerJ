@@ -201,10 +201,13 @@ public class GenericJsonArray implements JsonArray {
 		while (it.hasNext()) {
 			Object value = it.next();
 			if (value instanceof Boolean) {
-				JsonSerializer.toStream((Boolean) value, out, it.hasNext());
+				JsonSerializer.toStream(((Boolean) value).booleanValue(), out, it.hasNext());
 			}
 			else if (value instanceof Long) {
-				JsonSerializer.toStream((Long) value, out, it.hasNext());
+				JsonSerializer.toStream(((Long) value).longValue(), out, it.hasNext());
+			}
+			else if (value instanceof Double) {
+				JsonSerializer.toStream(((Double) value).doubleValue(), out, it.hasNext());
 			}
 			else if (value instanceof String) {
 				JsonSerializer.toStream((String) value, out, it.hasNext());
@@ -212,7 +215,7 @@ public class GenericJsonArray implements JsonArray {
 			else if (value instanceof JsonObject) {
 				((JsonObject) value).toStream(out, it.hasNext());
 			}
-			else if (value instanceof JsonArray) {
+			else { // if (value instanceof JsonArray) {
 				((JsonArray) value).toStream(out, it.hasNext());
 			}
 		}

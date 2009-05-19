@@ -70,8 +70,7 @@ public class JsonException extends Exception implements JsonObject {
      */
     public JsonException(String type, String message, Exception exception) {
         super(message == null ? type : message, exception);
-        put("isException", true);
-        put("exceptionId", new Long(id));
+        put("exceptionId", id);
         put("exceptionType", type);
         put("exceptionMessage", super.getMessage());
     }
@@ -81,23 +80,13 @@ public class JsonException extends Exception implements JsonObject {
         return internalStorage.toString();
     }
 
-    @Override
-    public String getMessage() {
-        String bundleId = internalStorage.getString("exceptionType");
-        String superMessage = super.getMessage();
-        if (superMessage == null || "".equals(superMessage) || bundleId.equals(superMessage) ) {
-            return "BundleId: " + bundleId;
-        }
-        return "BundleId: " + bundleId + " -- " + superMessage;
-    }
-
     /** accessor */
     protected long getExceptionId() {
-        return getLong("exceptionId");
+        return id;
     }
 
     /** accessor */
-    protected String getJsonExceptionType() {
+    protected String getExceptionType() {
         return getString("exceptionType");
     }
 
@@ -185,9 +174,10 @@ public class JsonException extends Exception implements JsonObject {
     }
 
 	public void toStream(OutputStream out, boolean isFollowed) throws IOException {
-		JsonSerializer.startObject("success", false, out, true);
-		JsonSerializer.toStream("exceptionId", getExceptionId(), out, true);
-		JsonSerializer.toStream("exceptionType", getJsonExceptionType(), out, true);
+        JsonSerializer.startObject("success", false, out, true);
+        JsonSerializer.toStream("isException", true, out, true);
+		JsonSerializer.toStream("exceptionId", id, out, true);
+		JsonSerializer.toStream("exceptionType", getExceptionType(), out, true);
 		JsonSerializer.toStream("exceptionMessage", getMessage(), out, true);
 		// JsonSerializer.introduceComplexValue("originalException", out);
 		// (new JsonException("SOURCE_EXCEPTION"), getCause()).toStream(out, isFollowed);
