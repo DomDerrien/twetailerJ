@@ -276,7 +276,7 @@ public class GenericJsonObject implements JsonObject {
 				JsonSerializer.introduceComplexValue(key, out);
 				((JsonObject) value).toStream(out, it.hasNext());
 			}
-			else { // if (value instanceof JsonArray) {
+			else if (value instanceof JsonArray) {
 				JsonSerializer.introduceComplexValue(key, out);
 				((JsonArray) value).toStream(out, it.hasNext());
 			}

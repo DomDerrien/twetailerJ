@@ -44,6 +44,9 @@ public class MaezelServlet extends HttpServlet {
             else if ("/checkId".equals(pathInfo)) {
             	// Create the consumer
             	String twitterId = in.containsKey("twitterId") ? in.getString("twitterId") : null;
+            	if (twitterId == null) {
+            	    throw new ClientException("twitterId cannot be null");
+            	}
             	Consumer consumer = (new ConsumersServlet()).createConsumer(null, null, twitterId);
             	// Return the consumer information
                 out.put("resource", consumer.toJson());

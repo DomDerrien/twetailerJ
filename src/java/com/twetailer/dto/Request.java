@@ -49,6 +49,12 @@ public class Request implements TransferObject {
 	
 	@Persistent
 	private String postalCode;
+    
+    @Persistent
+    private Double range;
+    
+    @Persistent
+    private String rangeUnit;
 
 	/**
 	 * Delay for the default expiration of a request
@@ -164,13 +170,29 @@ public class Request implements TransferObject {
 		this.longitude = longitude;
 	}
 
-	public String getPostalCode() {
-		return postalCode;
-	}
+    public String getPostalCode() {
+        return postalCode;
+    }
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public Double getRange() {
+        return range;
+    }
+
+    public void setRange(Double range) {
+        this.range = range;
+    }
+
+    public String getRangeUnit() {
+        return rangeUnit;
+    }
+
+    public void setRangeUnit(String rangeUnit) {
+        this.rangeUnit = rangeUnit;
+    }
 
 	public JsonObject toJson() {
 		JsonObject out = new GenericJsonObject();
@@ -190,6 +212,8 @@ public class Request implements TransferObject {
 		out.put("latitude", getLatitude());
 		out.put("longitude", getLongitude());
 		out.put("postalCode", getPostalCode());
+        out.put("range", getRange());
+        out.put("rangeUnit", getRangeUnit());
 		return out;
 	}
 
@@ -207,6 +231,8 @@ public class Request implements TransferObject {
 		if (in.containsKey("expirationDate")) { setExpirationDate(DateUtils.isoToDate(in.getString("expirationDate"))); }
 		if (in.containsKey("latitude")) { setLatitude(in.getString("latitude")); }
 		if (in.containsKey("longitude")) { setLongitude(in.getString("longitude")); }
-		if (in.containsKey("postalCode")) { setPostalCode(in.getString("postalCode")); }
+        if (in.containsKey("postalCode")) { setPostalCode(in.getString("postalCode")); }
+        if (in.containsKey("range")) { setRange(in.getDouble("range")); }
+        if (in.containsKey("rangeUnit")) { setRangeUnit(in.getString("rangeUnit")); }
 	}
 }

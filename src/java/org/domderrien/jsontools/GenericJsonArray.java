@@ -215,7 +215,7 @@ public class GenericJsonArray implements JsonArray {
 			else if (value instanceof JsonObject) {
 				((JsonObject) value).toStream(out, it.hasNext());
 			}
-			else { // if (value instanceof JsonArray) {
+			else if (value instanceof JsonArray) {
 				((JsonArray) value).toStream(out, it.hasNext());
 			}
 		}
