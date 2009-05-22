@@ -13,12 +13,12 @@
 
 	<import file="build.xml" optional="false" taskname="base_build_control" />
 	
-	<property name="google.appengine.sdk.dir"
+	<property name="appengine.sdk.dir"
 		description="Location of the Google App Engine SDK"
-		location="../appengine-java-sdk"
+		location="${basedir}/bin/appengine-java-sdk-1.2.1"
 	/>
 	
-	<import file="${google.appengine.sdk.dir}/config/user/ant-macros.xml" />
+	<import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
 
 	<!-- ················ -->
 	<!-- Public variables -->
@@ -52,7 +52,7 @@
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
 		<copy todir="src/war/WEB-INF/lib" flatten="true">
-			<fileset dir="${google.appengine.sdk.dir}/lib/user">
+			<fileset dir="${appengine.sdk.dir}/lib/user">
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
