@@ -1,21 +1,17 @@
 package com.twetailer.j2ee;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManager;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 
 import org.domderrien.MockHttpServletRequest;
 import org.domderrien.MockHttpServletResponse;
 import org.domderrien.MockLogger;
-import org.domderrien.MockOutputStream;
 import org.domderrien.MockServletOutputStream;
 import org.domderrien.jsontools.GenericJsonArray;
 import org.domderrien.jsontools.GenericJsonObject;
@@ -246,7 +242,6 @@ public class TestBaseRestlet {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testDoGetV() throws IOException {
         final String uid = "<!uid1212:>";
         final Map<String, ?> in = new HashMap<String, Object>();

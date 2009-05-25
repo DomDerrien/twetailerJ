@@ -269,7 +269,7 @@ public class TestJsonParser {
 
 	@Test(expected=JsonException.class)
     public void testTokenizeFromCorruptedInputStreamI() throws JsonException {
-        JsonParser t1 = new JsonParser(new MockInputStream("---") {
+        new JsonParser(new MockInputStream("---") {
             @Override
             public int read() throws IOException {
                 throw new IOException("done in purpose");

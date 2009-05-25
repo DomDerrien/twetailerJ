@@ -39,6 +39,8 @@ public class TestRequestServlet {
     @Test
     public void testGetLogger() {
         (new RequestsServlet()).getLogger();
+        assertTrue(true);
+        assertNull(null);
     }
 
     /*
