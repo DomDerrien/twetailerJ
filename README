@@ -2,10 +2,8 @@
 Required tools
 ========================================
 
-- 7Zip: http://www.7-zip.org/download.html
 - SUN Java SDK 1.6: http://java.sun.com/javase/downloads/index.jsp
 - Eclipse 3.4+: http://www.eclipse.org/downloads/
-- Apache Ant 1.7: http://ant.apache.org/bindownload.cgi
 - MSysGit 1.6: http://code.google.com/p/msysgit/
 
 ========================================
@@ -14,40 +12,40 @@ Initial development environment setup
 
 ** Note: all names between < and > are meant to be replaced by the corresponding information.
 
-1. Install 7Zip, Java SDK, Eclipse, Ant, and MSysGit
+1. Install 7Zip, Java SDK, Eclipse, and MSysGit
 2. Use GitHub Web page to fork Twetailer master repository (then you'll have you own copy into your account)
 3. Open a command line shell
 	3.1 Go to your Eclipse workspace directory: $cd <workspace.dir>
 	3.2 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
 	3.3 Clone your fork of Twetailer repository: $git clone git@github.com:<your.username>/twetailerJ
 	3.4 Keep a local reference of the master respository: $git remote add domderrien git://github.com/domderrien/twetailerJ
-	3.5 Move to the twetailerJ sub-directory: $cd twetailerJ
-	3.6 Unzip the Google App Engine SDK: $<7Zip.dir>\7z.exe x -obin deps\tools\containers\appengine-java-sdk-<last.version>.zip
-	3.7 Move to the build sub-directory: $cd build
-	3.8 Run the Ant command: $<ant.dir>\bin\ant.bat -f build\build-appengine.xml init
+	3.5 Move to the twetailerJ sub-directory: $cd twetailerJ\build
+	3.6 Run the Ant command: $init.bat
 	
 ========================================
 Day-to-day development
 ========================================
 
 1. Open Eclipse to update your files
-2. Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-3. Move to the twetailerJ\build directory: $cd <workspace.dir>\twetailerJ\build
-4. Run the tests with the Ant command: $<ant.dir>\bin\ant.bat -f build\build-appengine.xml test
-5. Run the App Engine server with the Ant command: $<ant.dir>\bin\ant.bat -f build\build-appengine.xml webserver-start
-6. Note that server can only be kill with the Task Manager... This might be fixed within a future release of the App Engine SDK
+2. Open a command line shell
+	2.1 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
+	2.2 Move to the twetailerJ\build directory: $cd <workspace.dir>\twetailerJ\build
+	2.3 Run the tests with the Ant command: $test.bat
+	2.4 Run the App Engine server with the Ant command: $webserver-start.bat
+	2.5 Press Control-C to stop the server
 
 ========================================
 Submit your updates
 ========================================
 
-1. Run the Ant command: $<ant.dir>\bin\ant.bat -f build\build-appengine.xml clean
-2. Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-3. Move to the twetailerJ directory: $cd <workspace.dir>\twetailerJ
-3. Use Git to submit your patch:
+1. Open a command line shell
+	1.1 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
+	1.2 Move to the twetailerJ directory: $cd <workspace.dir>\twetailerJ
+	1.3 Run the Ant command: $build\clean.bat
+	1.4 Use Git to submit your patch:
 		$git status
 		$git add <new.file.path>
 		$git commit -a -m "<informative.message.about.the.patch>"
 		$git push
-4. Or ZIP the Twetailer files and send them to dom.derrien@twetailer.com:
+	1.5 Or ZIP the Twetailer files and send them to dom.derrien@twetailer.com:
 		$<7Zip.dir>\7z.exe a -xr!.git -ptwtlr<YYYYMMDD.of.the.day> twetailerJ-patch-<YYYYMMDD.of.the.day>.7z ./*
