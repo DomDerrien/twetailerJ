@@ -13,7 +13,7 @@
 	import="com.google.appengine.api.users.UserServiceFactory"
 %><%
 	// Application settings
-	ResourceBundle appSettings = ResourceBundle.getBundle("applicationSettings", Locale.ROOT);
+	ResourceBundle appSettings = ResourceBundle.getBundle("applicationSettings", Locale.getDefault());
 	boolean useCDN = "y".equals(appSettings.getString("useCDN"));
 	String cdnBaseURL = appSettings.getString("cdnBaseURL");
 
@@ -63,7 +63,7 @@
 	if (useCDN) {
 	%><script
 		djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
-		src="http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/dojo.xd.js"
+		src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
 		type="text/javascript"
 	></script><%
 	}
