@@ -65,7 +65,7 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/getRequests".equals(pathInfo)) {
             	// Select the requests
-            	List<Request> requests = (new RequestsServlet()).getRequests(in.getString("qA"), in.getString("qV"));
+            	List<Request> requests = (new RequestsServlet()).getRequests(in.getString("qA"), in.getLong("qV"));
             	// Return request list
             	out.put("resources", Utils.toJson(requests));
             }

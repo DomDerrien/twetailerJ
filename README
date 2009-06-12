@@ -29,10 +29,10 @@ Day-to-day development
 1. Open Eclipse to update your files
 2. Open a command line shell
 	2.1 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-	2.2 Move to the twetailerJ\build directory: $cd <workspace.dir>\twetailerJ\build
-	2.3 Run the tests with the Ant command: $test.bat
-	2.4 Run the App Engine server with the Ant command: $webserver-start.bat
-	2.5 Press Control-C to stop the server
+	2.2 Move to the twetailerJ\build directory: $cd <workspace.dir>\twetailerJ
+	2.3 Run the tests with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml test
+	2.4 Run the App Engine server with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml webserver-start
+	2.5 User the task manager to kill the nested series of JVMs (with the name "java.exe")
 
 ========================================
 Submit your updates
@@ -49,3 +49,11 @@ Submit your updates
 		$git push
 	1.5 Or ZIP the Twetailer files and send them to dom.derrien@twetailer.com:
 		$<7Zip.dir>\7z.exe a -xr!.git -ptwtlr<YYYYMMDD.of.the.day> twetailerJ-patch-<YYYYMMDD.of.the.day>.7z ./*
+
+========================================
+Update the application
+========================================
+
+1. Copy the files to go on production in a folder like <workspace_dir>/twetailerJ-stage
+2. Test the ready-to-deploy code with: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml step-appengine-start
+3. Deploy the code with: bin\appengine-java-sdk-1.2.1\bin\appcfg.cmd --email=twetailer@gmail.com update src\war

@@ -80,7 +80,7 @@ public class RequestsServlet extends BaseRestlet {
     	finally {
     		pm.close();
     	}
-	}
+    }
     
     /**
      * Use the given pair {attribute; value} to get the corresponding Request instances
@@ -89,13 +89,29 @@ public class RequestsServlet extends BaseRestlet {
      * @param value Pattern for the search attribute
      * @return Collection of requests matching the given criteria
      */
+    protected List<Request> getRequests(String attribute, String value) throws DataSourceException {
+        return getRequests(attribute + " == \"" + value + "\"");
+    }
+    
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Request instances
+     * 
+     * @param attribute Name of the request attribute used a the search criteria
+     * @param value Pattern for the search attribute
+     * @return Collection of requests matching the given criteria
+     */
+    protected List<Request> getRequests(String attribute, Long value) throws DataSourceException {
+        return getRequests(attribute + " == " + value);
+    }
+    
     @SuppressWarnings("unchecked")
-	protected List<Request> getRequests(String attribute, String value) throws DataSourceException {
+    private List<Request> getRequests(String whereClause) throws DataSourceException {
     	PersistenceManager pm = getPersistenceManager();
     	try {
     		// Prepare the query
 	    	String queryStr = "select from " + Request.class.getName();
-	    	queryStr += " where " + attribute + " == '" + value + "'";
+            queryStr += " where " + whereClause;
+            queryStr += " order by creationDate desc";
 			Query queryObj = pm.newQuery(queryStr);
 			log.fine("queryObj: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding users
