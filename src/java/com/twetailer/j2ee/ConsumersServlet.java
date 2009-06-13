@@ -78,7 +78,7 @@ public class ConsumersServlet extends BaseRestlet {
     	String value = email != null ? email : imId != null ? imId : twitterId;
     	Consumer existingConsumer = getConsumer(attribute, value);
     	if (existingConsumer == null) {
-    		log.warning("Creating a consumer accout for: " + attribute + " = " + value);
+    		getLogger().warning("Create consumer account for: " + attribute + " = " + value);
 	    	PersistenceManager pm = getPersistenceManager();
 	    	try {
 	    		existingConsumer = new Consumer(email, imId, twitterId);
@@ -170,7 +170,7 @@ public class ConsumersServlet extends BaseRestlet {
 	    	String queryStr = "select from " + Consumer.class.getName();
 	    	queryStr += " where " + attribute + " == '" + value + "'";
 			Query queryObj = pm.newQuery(queryStr);
-			log.fine("queryObj: " + (queryObj == null ? "null" : queryObj.toString()));
+			getLogger().warning("Select consumer(s) with: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding consumers
 			List<Consumer> consumers = queryObj == null ? null : (List<Consumer>) queryObj.execute();
 			if (consumers != null) {

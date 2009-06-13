@@ -37,7 +37,7 @@ public class MaezelServlet extends HttpServlet {
 	        loggedUser.toString(); // To prevent warnings
 	
             String pathInfo = request.getPathInfo();
-            log.finer("Path Info: " + pathInfo);
+            log.warning("Path Info: " + pathInfo);
             
             if (pathInfo == null || pathInfo.length() == 0) {
             }
@@ -58,16 +58,27 @@ public class MaezelServlet extends HttpServlet {
             	if (consumer == null) {
             		throw new ClientException("Given Twitter identified does not match any exisiting account");
             	}
-            	// Create the request
-            	Long requestKey = (new RequestsServlet()).createRequest(in, consumer);
+            	// Create the demand
+            	Long demandKey = (new RequestsServlet()).createRequest(in, consumer);
             	// Return request identifier
-            	out.put("resourceId", requestKey);
+            	out.put("resourceId", demandKey);
             }
             else if ("/getRequests".equals(pathInfo)) {
-            	// Select the requests
-            	List<Request> requests = (new RequestsServlet()).getRequests(in.getString("qA"), in.getLong("qV"));
-            	// Return request list
-            	out.put("resources", Utils.toJson(requests));
+                // Select the demands
+                List<Request> demands = (new RequestsServlet()).getRequests(in.getString("qA"), in.getLong("qV"));
+                // Return demand list
+                out.put("resources", Utils.toJson(demands));
+            }
+            else if ("/getRequest".equals(pathInfo)) {
+                // Select the demands
+                Request demand = (new RequestsServlet()).getRequest(in.getLong("key"), in.getLong("consumerKey"));
+                // Return demand
+                out.put("resource", demand.toJson());
+            }
+            else if ("/deleteRequest".equals(pathInfo)) {
+                // Select the demands
+                (new RequestsServlet()).deleteRequest(in.getLong("key"), in.getLong("consumerKey"));
+                // If an error occurred, an exception has been thrown, and the status will be conveyed as is to the client 
             }
             
             out.put("success", true);

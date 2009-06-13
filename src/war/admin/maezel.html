@@ -7,20 +7,23 @@
 	<link rel="shortcut icon" href="/images/logo/favicon.ico" /> 
 	<link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
 
+	<!-- -->
+	<style type="text/css">
+		@import "/js/dojo/dojo/resources/dojo.css";
+		@import "/js/dojo/dijit/themes/tundra/tundra.css";
+		@import "/js/dojo/dojox/grid/resources/Grid.css";
+		@import "/js/dojo/dojox/grid/resources/tundraGrid.css";
+		@import "/css/console.css";
+	</style>
+	<!-- - ->
 	<style type="text/css">
 		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/resources/dojo.css";
 		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";
 		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojox/grid/resources/Grid.css";
 		@import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojox/grid/resources/tundraGrid.css";
 		@import "/css/console.css";
-		
-		#requestAttributes input {
-			margin-left: 100px;
-		}
-		#requestAttributes .label {
-			position: absolute;
-		}
 	</style>
+	<!- - -->
 
 </head>
 <body class="tundra">
@@ -29,12 +32,19 @@
 		<div><span>Please, wait while the Console is being built...</span></div>
 	</div>
 
-	<!-- Normal load of local resources -->
+	<!-- -->
+	<script
+		djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+		src="/js/dojo/dojo/dojo.js"
+		type="text/javascript"
+	></script>
+	<!-- - ->
 	<script
 		djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
 		src="http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/dojo.xd.js"
 		type="text/javascript"
 	></script>
+	<!- - -->
 
 	<script type="text/javascript">
 	dojo.require("dijit.layout.BorderContainer");
@@ -103,27 +113,34 @@
 			<div
 				dojoType="dijit.layout.ContentPane"
 				id="request-building"
-				title="Request Building"
+				title="Create"
 			>
 				<ol>
 					<li>
 						Copy consumer Twitter identifier:
 						<input dojoType="dijit.form.TextBox" id="create.twitterId" type="text">
-						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.checkId('create');">Check presence</button><br/>
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.checkId('create');">Check presence</button>
+						<ul>
+							<li>
+								Consumer key:
+								<input dojoType="dijit.form.TextBox" id="create.consumerKey" type="text" style="width: 50px;" readonly="true">
+								(should not be <code>0</code>)
+							</li>
+						</ul>
 					</li>
 					<li>
 						Copy consumer request:
 						<input dojoType="dijit.form.TextBox" id="create.request" type="text" style="width: 600px;">
-						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.extractAttributes(dijit.byId('create.request').attr('value'));">Extract data</button><br/>
 					</li>
 					<li>
-						Verify request attributes:
-						<ul id="requestAttributes">
-							<li><span class="label">Consumer key:</span><input dojoType="dijit.form.TextBox" id="create.consumerKey" type="text" style="width: 50px;" readonly="true"></li>
-							<li><span class="label">Criteria:</span><input dojoType="dijit.form.TextBox" id="create.criteria" type="text" style="width: 250px;" readonly="true"></li>
-							<li><span class="label">Expiration date:</span><input dojoType="dijit.form.TextBox" id="create.expirationDate" type="text" style="width: 100px;" readonly="true"></li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.extractAttributes(dijit.byId('create.request').attr('value'));">Extract data</button> and verify attributes:
+						<ul>
+							<li>Criteria:<input dojoType="dijit.form.TextBox" id="create.criteria" type="text" style="width: 250px;" readonly="true"></li>
+							<li>Expiration date:<input dojoType="dijit.form.TextBox" id="create.expirationDate" type="text" style="width: 100px;" readonly="true"></li>
 							<li>
-								<span class="label">Range:</span><input dojoType="dijit.form.TextBox" id="create.range" type="text" style="width: 50px;" readonly="true">
+								Range:<input dojoType="dijit.form.TextBox" id="create.range" type="text" style="width: 50px;" readonly="true">
 								<select
 									dojoType="dijit.form.FilteringSelect"
 									id="create.rangeUnit"
@@ -137,7 +154,7 @@
 								</select>
 							</li>
 							<li>
-								<span class="label">City:</span>
+								City:
 								<input dojoType="dijit.form.TextBox" id="create.postalCode" type="text" style="width: 100px;" readonly="true">
 								<select
 									dojoType="dijit.form.FilteringSelect"
@@ -152,11 +169,18 @@
 								</select>
 							</li>
 						</ul>
-						and <button dojoType="dijit.form.Button" onclick="twetailer.Maezel.createRequest();">Create demand</button>
 					</li>
 					<li>
-						Response to tweet:
-						<input dojoType="dijit.form.TextBox" id="create.response" type="text" style="width: 50px;">
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.createRequest();">Create demand</button>
+						<ul>
+							<li>
+								Demand identifier to be tweeted:
+								<input dojoType="dijit.form.TextBox" id="create.response" type="text" style="width: 50px;">\
+								(should not be <code>0</code>)
+							</li>
+						</ul>
+					</li>
+					<li>
 						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('create');">Tweet this!</button>
 					</li>
 				</ol>
@@ -164,72 +188,122 @@
 			<div
 				dojoType="dijit.layout.ContentPane"
 				id="request-search"
-				title="Request Search & Update"
+				title="List"
 			>
 				<ol>
 					<li>
 						Copy consumer Twitter identifier:
 						<input dojoType="dijit.form.TextBox" id="list.twitterId" type="text">
-						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.checkId('list');">Check presence</button><br/>
 					</li>
 					<li>
-						Verify consumer key: <input dojoType="dijit.form.TextBox" id="list.consumerKey" type="text" style="width: 50px;" readonly="true"><br/>
-						and <button dojoType="dijit.form.Button" onclick="twetailer.Maezel.listRequests();">Get list of demands</button>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.checkId('list');">Check presence</button>
+						<ul>
+							<li>
+								Consumer key:
+								<input dojoType="dijit.form.TextBox" id="list.consumerKey" type="text" style="width: 50px;" readonly="true">
+								(should not be <code>0</code>)
+							</li>
+						</ul>
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.listRequests();">Get list of demands</button>
 					</li>
 					<li>
 						Response(s) to tweet:
 						<ol>
-							<li id="list.bullet0" style="display: none;">
-								Demand 0:
+							<li id="list.bullet0" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response0" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 0);">Tweet this!</button>
 							</li>
-							<li id="list.bullet1" style="display: none;">
-								Demand 1:
+							<li id="list.bullet1" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response1" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 1);">Tweet this!</button>
 							</li>
-							<li id="list.bullet2" style="display: none;">
-								Demand 2:
+							<li id="list.bullet2" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response2" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 2);">Tweet this!</button>
 							</li>
-							<li id="list.bullet3" style="display: none;">
-								Demand 3:
+							<li id="list.bullet3" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response3" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 3);">Tweet this!</button>
 							</li>
-							<li id="list.bullet4" style="display: none;">
-								Demand 4:
+							<li id="list.bullet4" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response4" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 4);">Tweet this!</button>
 							</li>
-							<li id="list.bullet5" style="display: none;">
-								Demand 5:
+							<li id="list.bullet5" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response5" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 5);">Tweet this!</button>
 							</li>
-							<li id="list.bullet6" style="display: none;">
-								Demand 6:
+							<li id="list.bullet6" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response6" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 6);">Tweet this!</button>
 							</li>
-							<li id="list.bullet7" style="display: none;">
-								Demand 7:
+							<li id="list.bullet7" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response7" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 7);">Tweet this!</button>
 							</li>
-							<li id="list.bullet8" style="display: none;">
-								Demand 8:
+							<li id="list.bullet8" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response8" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 8);">Tweet this!</button>
 							</li>
-							<li id="list.bullet9" style="display: none;">
-								Demand 9:
+							<li id="list.bullet9" style="visibility: hidden;">
 								<input dojoType="dijit.form.TextBox" id="list.response9" type="text" style="width: 600px;">
 								<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('list', 9);">Tweet this!</button>
 							</li>
 						</ol>
+					</li>
+				</ol>
+			</div>
+			<div
+				dojoType="dijit.layout.ContentPane"
+				id="request-delete"
+				title="Delete"
+			>
+				<ol>
+					<li>
+						Copy consumer Twitter identifier:
+						<input dojoType="dijit.form.TextBox" id="delete.twitterId" type="text">
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.checkId('delete');">Check presence</button>
+						<ul>
+							<li>
+								Consumer key:
+								<input dojoType="dijit.form.TextBox" id="delete.consumerKey" type="text" style="width: 50px;" readonly="true">
+								(should not be <code>0</code>)
+							</li>
+						</ul>
+					</li>
+					<li>
+						Copy demand identifier:
+						<input dojoType="dijit.form.TextBox" id="delete.requestId" type="text"style="width: 50px;">
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.getRequest('delete');">Get demand</button>
+						<ul>
+							<li>
+								Demand:
+								<input dojoType="dijit.form.TextBox" id="delete.requestDetails" type="text" style="width: 600px;" readonly="true">
+								(should not be <code>null</code>)
+							</li>
+						</ul>
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('delete', 0 /*ask*/);">Tweet for a deletion confirmation</button>
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.deleteRequest('delete');">Delete demand</button>
+						<ul>
+							<li>
+								Response:
+								<input dojoType="dijit.form.TextBox" id="delete.response" type="text" style="width: 80px;" readonly="true">
+								(should not be <code>false</code>)
+							</li>
+						</ul>
+					</li>
+					<li>
+						<button dojoType="dijit.form.Button" onclick="twetailer.Maezel.openTwitterConsole('delete', 0 /*confirm*/);">Tweet the confirmation of the deletion</button>
 					</li>
 				</ol>
 			</div>

@@ -62,6 +62,7 @@ public class RequestsServlet extends BaseRestlet {
      * @throws DataSourceException If error reported when trying to create the request record
      */
 	protected Long createRequest(JsonObject parameters, Consumer consumer) throws ParseException, ClientException {
+        getLogger().warning("Create request for consumer id: " + consumer.getKey() + " with: " + parameters.toString());
     	PersistenceManager pm = getPersistenceManager();
     	try {
     		// Creates new request record and persist it
@@ -113,7 +114,7 @@ public class RequestsServlet extends BaseRestlet {
             queryStr += " where " + whereClause;
             queryStr += " order by creationDate desc";
 			Query queryObj = pm.newQuery(queryStr);
-			log.fine("queryObj: " + (queryObj == null ? "null" : queryObj.toString()));
+			getLogger().warning("Select request(s) with: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding users
 			List<Request> requests = queryObj == null ? null : (List<Request>) queryObj.execute();
 			requests.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -123,5 +124,59 @@ public class RequestsServlet extends BaseRestlet {
     	finally {
     		pm.close();
     	}
+    }
+    
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Request instance for the identified consumer
+     * 
+     * @param key Identifier of the request
+     * @param consumerKey Identifier of the request owner
+     * @return First request matching the given criteria or <code>null</code>
+     * @throws ClientException If the retrieved request does not belong to the specified user
+     * @throws ParseException s
+     */
+    protected Request getRequest(Long key, Long consumerKey) throws DataSourceException, ClientException, ParseException {
+        getLogger().warning("Get request with id: " + key);
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            Request request = pm.getObjectById(Request.class, key);
+            if (request == null) {
+                throw new ClientException("No request for identifier: " + key);
+            }
+            if (consumerKey != request.getConsumerKey()) {
+                throw new ClientException("Mismatch of consumer identifiers [" + consumerKey + "/" + request.getConsumerKey() + "]");
+            }
+            // return request; // FIXME: remove workaround for a bug in DataNucleus
+            return new Request(request.toJson());
+        }
+        finally {
+            pm.close();
+        }
+    }
+    
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Request instance for the identified consumer
+     * 
+     * @param key Identifier of the request
+     * @param consumerKey Identifier of the request owner
+     * @return First request matching the given criteria or <code>null</code>
+     * @throws ClientException If the retrieved request does not belong to the specified user
+     */
+    protected void deleteRequest(Long key, Long consumerKey) throws DataSourceException, ClientException {
+        getLogger().warning("Delete request with id: " + key);
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            Request request = pm.getObjectById(Request.class, key);
+            if (request == null) {
+                throw new ClientException("No request for identifier: " + key);
+            }
+            if (consumerKey != request.getConsumerKey()) {
+                throw new ClientException("Mismatch of consumer identifiers [" + consumerKey + "/" + request.getConsumerKey() + "]");
+            }
+            pm.deletePersistent(request);
+        }
+        finally {
+            pm.close();
+        }
     }
 }
