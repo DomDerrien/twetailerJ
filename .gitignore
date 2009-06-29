@@ -6,4 +6,5 @@ src/war/js/twetailer/nls/*
 src/war/WEB-INF/*
 cobertura.ser
 *.class
+*.log
 nop

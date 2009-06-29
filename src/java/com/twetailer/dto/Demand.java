@@ -6,37 +6,28 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
 
 import org.domderrien.i18n.DateUtils;
 import org.domderrien.jsontools.GenericJsonArray;
-import org.domderrien.jsontools.GenericJsonObject;
 import org.domderrien.jsontools.JsonArray;
 import org.domderrien.jsontools.JsonObject;
 import org.domderrien.jsontools.TransferObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Request implements TransferObject {
-	
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long key;
-	
-	@Persistent
-	private Date creationDate;
-	
-	@Persistent
-	private Long consumerKey;
+public class Demand extends Command implements TransferObject {
 	
 	@Persistent
 	private List<String> criteria;
+
+    public static final String CRITERIA = "criteria";
 	
 	@Persistent
 	private String countryCode;
+
+    public static final String COUNTRY_CODE = "countryCode";
 	
 	@Persistent
 	private Date expirationDate;
@@ -47,71 +38,46 @@ public class Request implements TransferObject {
 	@Persistent
 	private String longitude;
 	
-	@Persistent
-	private String postalCode;
+    @Persistent
+    private String postalCode;
+
+    public static final String POSTAL_CODE = "postalCode";
+
+    @Persistent
+    private Long quantity;
+
+    public static final String QUANTITY = "quantity";
     
     @Persistent
     private Double range;
+
+    public static final String RANGE = "range";
     
     @Persistent
     private String rangeUnit;
 
+    public static final String RANGE_UNIT = "rangeUnit";
+
+    public static final String EXPIRATION_DATE = "expirationDate";
+
 	/**
-	 * Delay for the default expiration of a request
+	 * Delay for the default expiration of a demand
 	 */
 	public final static int DEFAULT_EXPIRATION_DELAY = 7;
 	
 	/**
-	 * Creates a request
+	 * Creates a demand
 	 * 
 	 * @param in HTTP request parameters
 	 * @throws ParseException If the parameter extraction fails
 	 */
-	public Request(JsonObject parameters) throws ParseException {
+	public Demand(JsonObject parameters) throws ParseException {
+	    super();
 		fromJson(parameters);
-		setCreationDate(getNowDate());
 		if (getExpirationDate() == null) {
 			// Default expiration in one week
 			setExpirationDate(DEFAULT_EXPIRATION_DELAY);
 		}
-	}
-	
-	public Long getKey() {
-		return key;
-	}
-
-	public void setKey(Long key) {
-		this.key = key;
-	}
-
-	protected Calendar getNowCalendar() {
-		return DateUtils.getNowCalendar();
-	}
-
-	protected Date getNowDate() {
-		return getNowCalendar().getTime();
-	}
-	
-	public Date getCreationDate() {
-		if (creationDate == null) {
-			setCreationDate(getNowDate());
-		}
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		if (creationDate == null) {
-			throw new IllegalArgumentException("Non null Date instance required");
-		}
-		this.creationDate = creationDate;
-	}
-
-	public Long getConsumerKey() {
-		return consumerKey;
-	}
-
-	public void setConsumerKey(Long consumerId) {
-		this.consumerKey = consumerId;
 	}
 
 	public List<String> getCriteria() {
@@ -178,6 +144,14 @@ public class Request implements TransferObject {
         this.postalCode = postalCode;
     }
 
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
     public Double getRange() {
         return range;
     }
@@ -195,44 +169,43 @@ public class Request implements TransferObject {
     }
 
 	public JsonObject toJson() {
-		JsonObject out = new GenericJsonObject();
-		out.put("key", getKey());
-		out.put("creationDate", DateUtils.dateToISO(getCreationDate()));
-		out.put("consumerKey", getConsumerKey());
+	    // TODO: finish the constant definition for the serialization
+		JsonObject out = super.toJson();
 		JsonArray jsonArray = new GenericJsonArray();
 		for(String criterion: getCriteria()) {
 			jsonArray.add(criterion);
 		}
-		out.put("criteria", jsonArray);
-		out.put("countryCode", getCountryCode());
+		out.put(CRITERIA, jsonArray);
+		out.put(COUNTRY_CODE, getCountryCode());
 		if (getExpirationDate() == null) {
 			setExpirationDate(DEFAULT_EXPIRATION_DELAY);
 		}
-		out.put("expirationDate", DateUtils.dateToISO(getExpirationDate()));
+		out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
 		out.put("latitude", getLatitude());
 		out.put("longitude", getLongitude());
-		out.put("postalCode", getPostalCode());
-        out.put("range", getRange());
-        out.put("rangeUnit", getRangeUnit());
+		out.put(POSTAL_CODE, getPostalCode());
+        out.put(QUANTITY, getQuantity());
+        out.put(RANGE, getRange());
+        out.put(RANGE_UNIT, getRangeUnit());
 		return out;
 	}
 
 	public void fromJson(JsonObject in) throws ParseException {
-		if (in.containsKey("key")) { setKey(in.getLong("key")); }
-		if (in.containsKey("consumerKey")) { setConsumerKey(in.getLong("consumerKey")); }
-		// if (in.containsKey("creationDate")) { setCreationDate(DateUtil.isoToDate(in.getString("creationDate"))); }
-		if (in.containsKey("criteria")) {
-			JsonArray jsonArray = in.getJsonArray("criteria");
+        // TODO: finish the constant definition for the de-serialization
+	    super.fromJson(in);
+		if (in.containsKey(CRITERIA)) {
+			JsonArray jsonArray = in.getJsonArray(CRITERIA);
 			for (int i=0; i<jsonArray.size(); ++i) {
 				addCriterion((String) jsonArray.getString(i));
 			}
 		}
-		if (in.containsKey("countryCode")) { setCountryCode(in.getString("countryCode")); }
-		if (in.containsKey("expirationDate")) { setExpirationDate(DateUtils.isoToDate(in.getString("expirationDate"))); }
+		if (in.containsKey(COUNTRY_CODE)) { setCountryCode(in.getString(COUNTRY_CODE)); }
+		if (in.containsKey(EXPIRATION_DATE)) { setExpirationDate(DateUtils.isoToDate(in.getString(EXPIRATION_DATE))); }
 		if (in.containsKey("latitude")) { setLatitude(in.getString("latitude")); }
 		if (in.containsKey("longitude")) { setLongitude(in.getString("longitude")); }
-        if (in.containsKey("postalCode")) { setPostalCode(in.getString("postalCode")); }
-        if (in.containsKey("range")) { setRange(in.getDouble("range")); }
-        if (in.containsKey("rangeUnit")) { setRangeUnit(in.getString("rangeUnit")); }
+        if (in.containsKey(POSTAL_CODE)) { setPostalCode(in.getString(POSTAL_CODE)); }
+        if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
+        if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
+        if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
 	}
 }

@@ -44,43 +44,29 @@ public class Consumer implements TransferObject {
 	
 	@Persistent
 	private User systemUser;
-	
-	@Persistent
-	private String twitterId;
+    
+    @Persistent
+    private Long twitterId;
+    
+    // @Persistent
+    // private String twitterScreenName;
 
-	/**
-	 * Creates an account for regularly authenticated consumer.
-	 * 
-	 * The uniqueness of the account before persisting should be
-	 * enforced before creating this instance.
-	 * 
-	 * @param systemUser User object given by the environment
-	 */
-	public Consumer(User systemUser) {
-		setSystemUser(systemUser);
-		setName(systemUser.getNickname());
-		setEmail(systemUser.getEmail());
-		setCreationDate(getNowDate());
-	}
-
-	/**
-	 * Creates an account on behalf of the identified consumer
-	 * 
-	 * The uniqueness of the account before persisting should be
-	 * enforced before creating this instance.
-	 * 
-	 * @param email E-mail address of that customer
-	 * @param imId Instant messaging identifier of that customer
-	 * @param twitterId Twitter identifier of that customer
-	 */
-	public Consumer(String email, String imId, String twitterId) {
-		setName(email); // To always have a display name
-		setEmail(email);
-		setImId(imId);
-		setTwitterId(twitterId);
-		setCreationDate(getNowDate());
-	}
-	
+    /** Default constructor */
+    public Consumer() {
+        setCreationDate(getNowDate());
+    }
+    
+    /**
+     * Creates a consumer
+     * 
+     * @param in HTTP request parameters
+     * @throws ParseException If the parameter extraction fails
+     */
+    public Consumer(JsonObject parameters) throws ParseException {
+        this();
+        fromJson(parameters);
+    }
+    
 	public Long getKey() {
 		return key;
 	}
@@ -159,15 +145,23 @@ public class Consumer implements TransferObject {
 		this.systemUser = systemUser;
 	}
 
-	public String getTwitterId() {
-		return twitterId;
-	}
+    public Long getTwitterId() {
+        return twitterId;
+    }
 
-	public void setTwitterId(String twitterId) {
-		this.twitterId = twitterId;
-	}
+    public void setTwitterId(Long twitterId) {
+        this.twitterId = twitterId;
+    }
 
-	public JsonObject toJson() {
+    // public String getTwitterScreenName() {
+    //     return twitterScreenName;
+    // }
+
+    // public void setTwitterScreenName(String twitterScreenName) {
+    //     this.twitterScreenName = twitterScreenName;
+    // }
+
+    public JsonObject toJson() {
 		JsonObject out = new GenericJsonObject();
 		out.put("key", getKey());
 		out.put("address", getAddress());
@@ -177,7 +171,8 @@ public class Consumer implements TransferObject {
 		out.put("name", getName());
 		out.put("phoneNumber", getPhoneNumber());
 		// out.put("systemUser", getSystemUser());
-		out.put("twitterID", getTwitterId());
+        out.put("twitterId", getTwitterId());
+        // out.put("twitterScreenName", getTwitterScreenName());
 		return out;
 	}
 
@@ -190,6 +185,7 @@ public class Consumer implements TransferObject {
 		if (in.containsKey("name")) { setName(in.getString("name")); }
 		if (in.containsKey("phoneNumber")) { setPhoneNumber(in.getString("phoneNumber")); }
 		// if (in.containsKey("systemUser")) { setSystemUser(in.getObject("systemUser")); }
-		if (in.containsKey("twitterID")) { setTwitterId(in.getString("twitterID")); }
+        if (in.containsKey("twitterId")) { setTwitterId(in.getLong("twitterId")); }
+        // if (in.containsKey("twitterScreenName")) { setTwitterScreenName(in.getString("twitterScreenName")); }
 	}
 }

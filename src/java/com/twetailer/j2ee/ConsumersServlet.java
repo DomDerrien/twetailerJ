@@ -1,5 +1,6 @@
 package com.twetailer.j2ee;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,6 +11,7 @@ import org.domderrien.jsontools.JsonArray;
 import org.domderrien.jsontools.JsonObject;
 
 import com.google.appengine.api.users.User;
+import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
 import com.twetailer.dto.Consumer;
 
@@ -66,46 +68,21 @@ public class ConsumersServlet extends BaseRestlet {
     /**
      * Create the Consumer instance if it does not yet exist, or get the existing one
      * 
-     * @param email Optional e-mail address to be used to identify the new consumer account
-     * @param imId Optional instant messaging identifier to be used to identify the new consumer account
-     * @param twitterId Optional Twitter identifier to be used to identify the new consumer account
-     * @return The just created Consumer instance, or the corresponding one loaded from the data source
-     * 
-     * @throws DataSourceException Forward error reported when trying to get a consumer record
-     */
-    protected Consumer createConsumer(String email, String imId, String twitterId) throws DataSourceException {
-    	String attribute = email != null ? "email" : imId != null ? "imId" : "twitterId";
-    	String value = email != null ? email : imId != null ? imId : twitterId;
-    	Consumer existingConsumer = getConsumer(attribute, value);
-    	if (existingConsumer == null) {
-    		getLogger().warning("Create consumer account for: " + attribute + " = " + value);
-	    	PersistenceManager pm = getPersistenceManager();
-	    	try {
-	    		existingConsumer = new Consumer(email, imId, twitterId);
-        		pm.makePersistent(existingConsumer);
-	    	}
-	    	finally {
-	    		pm.close();
-	    	}
-    	}
-    	return existingConsumer;
-    }
-
-    /**
-     * Create the Consumer instance if it does not yet exist, or get the existing one
-     * 
      * @param loggedUser System entity to attach with the just created user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      * 
      * @throws DataSourceException Forward error reported when trying to get a consumer record
      */
-    protected Consumer createConsumer(User loggedUser) throws DataSourceException {
+    public Consumer createConsumer(User loggedUser) throws DataSourceException {
     	Consumer existingConsumer = getConsumer("email", loggedUser.getEmail());
     	if (existingConsumer == null) {
 	    	PersistenceManager pm = getPersistenceManager();
 	    	try {
 	    		// Creates new consumer record and persist it
-	    		existingConsumer = new Consumer(loggedUser);
+	    		existingConsumer = new Consumer();
+	    		existingConsumer.setSystemUser(loggedUser);
+    		    existingConsumer.setName(loggedUser.getNickname());
+    		    existingConsumer.setEmail(loggedUser.getEmail());
         		pm.makePersistent(existingConsumer);
 	    	}
 	    	finally {
@@ -132,6 +109,57 @@ public class ConsumersServlet extends BaseRestlet {
     }
 
     /**
+     * Create the Consumer instance
+     * 
+     * @param twitterId Twitter identifier to be used to identify the new consumer account
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     * 
+     * @throws DataSourceException Forward error reported when trying to get a consumer record
+     */
+    public Consumer createConsumer(twitter4j.User twitterUser) throws DataSourceException {
+        Consumer existingConsumer = getConsumer("twitterId", twitterUser.getId());
+        if (existingConsumer == null) {
+            getLogger().warning("Create consumer account for: " + twitterUser.getScreenName() + " [" + twitterUser.getId() + "]");
+            PersistenceManager pm = getPersistenceManager();
+            try {
+                existingConsumer = new Consumer();
+                existingConsumer.setName(twitterUser.getName());
+                existingConsumer.setAddress(twitterUser.getLocation());
+                existingConsumer.setTwitterId(Long.valueOf(twitterUser.getId()));
+                pm.makePersistent(existingConsumer);
+            }
+            finally {
+                pm.close();
+            }
+        }
+        return existingConsumer;
+    }
+
+    /**
+     * Use the given key to get the corresponding Consumer instance
+     * 
+     * @param key Identifier of the consumer
+     * @return First demand matching the given criteria or <code>null</code>
+     * @throws ClientException If the retrieved demand does not belong to the specified user
+     * @throws ParseException s
+     */
+    public Consumer getConsumer(Long key) throws DataSourceException, ClientException, ParseException {
+        getLogger().warning("Get consumer with id: " + key);
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            Consumer consumer = pm.getObjectById(Consumer.class, key);
+            if (consumer == null) {
+                throw new ClientException("No consumer for identifier: " + key);
+            }
+            // return consumer; // FIXME: remove workaround for a bug in DataNucleus
+            return new Consumer(consumer.toJson());
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
      * Use the given pair {attribute; value} to get the corresponding Consumer instance
      * 
      * @param attribute Name of the consumer attribute used a the search criteria
@@ -140,19 +168,19 @@ public class ConsumersServlet extends BaseRestlet {
      * 
      * @throws DataSourceException if the expected consumer is not found, or if too many consumers match the criteria
      */
-	protected Consumer getConsumer(String attribute, String value) throws DataSourceException {
-		// Select the corresponding consumers
-    	List<Consumer> consumers = getConsumers(attribute, value);
-    	// Report the possible problems
-    	if (consumers == null || consumers.size() == 0) {
-    		return null;
-    	}
-    	else if (1 < consumers.size()) {
-    		throw new DataSourceException("Abnormal number of returned Consumer resources: " + consumers.size());
-    	}
-    	else {
-    		return consumers.get(0);
-    	}
+    public Consumer getConsumer(String attribute, Object value) throws DataSourceException {
+        // Select the corresponding consumers
+        List<Consumer> consumers = getConsumers(attribute, value);
+        // Report the possible problems
+        if (consumers == null || consumers.size() == 0) {
+            return null;
+        }
+        else if (1 < consumers.size()) {
+            throw new DataSourceException("Abnormal number of returned Consumer resources: " + consumers.size());
+        }
+        else {
+            return consumers.get(0);
+        }
     }
     
     /**
@@ -163,12 +191,20 @@ public class ConsumersServlet extends BaseRestlet {
      * @return Collection of consumers matching the given criteria
      */
     @SuppressWarnings("unchecked")
-	protected List<Consumer> getConsumers(String attribute, String value) throws DataSourceException {
+	public List<Consumer> getConsumers(String attribute, Object value) throws DataSourceException {
     	PersistenceManager pm = getPersistenceManager();
     	try {
     		// Prepare the query
 	    	String queryStr = "select from " + Consumer.class.getName();
-	    	queryStr += " where " + attribute + " == '" + value + "'";
+	    	if (value instanceof String) {
+	    	    queryStr += " where " + attribute + " == '" + value + "'";
+	    	}
+	    	else if (value instanceof Long) {
+                queryStr += " where " + attribute + " == " + value;
+            }
+	    	else {
+	    	    throw new DataSourceException("Unsupported criteruia value type");
+	    	}
 			Query queryObj = pm.newQuery(queryStr);
 			getLogger().warning("Select consumer(s) with: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding consumers

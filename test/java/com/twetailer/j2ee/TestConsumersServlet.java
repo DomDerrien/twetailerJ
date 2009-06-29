@@ -101,7 +101,7 @@ public class TestConsumersServlet {
 	public void testGetConsumersIV() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		final Consumer selected = new Consumer("email", "im", "twitter");
+		final Consumer selected = new Consumer();
 		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings("serial")
 			public Query newQuery(String query) {
@@ -127,11 +127,11 @@ public class TestConsumersServlet {
 	public void testGetConsumersV() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		final Consumer selected = new Consumer("email", "im", "twitter");
-		final Consumer spare1 = new Consumer("email", "im", "twitter");
-		final Consumer spare2 = new Consumer("email", "im", "twitter");
-		final Consumer spare3 = new Consumer("email", "im", "twitter");
-		final Consumer spare4 = new Consumer("email", "im", "twitter");
+		final Consumer selected = new Consumer();
+		final Consumer spare1 = new Consumer();
+		final Consumer spare2 = new Consumer();
+		final Consumer spare3 = new Consumer();
+		final Consumer spare4 = new Consumer();
 		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings("serial")
 			public Query newQuery(String query) {
@@ -222,7 +222,7 @@ public class TestConsumersServlet {
 	public void testGetConsumerIV() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		final Consumer selected = new Consumer("email", "im", "twitter");
+		final Consumer selected = new Consumer();
 		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings("serial")
 			public Query newQuery(String query) {
@@ -247,8 +247,8 @@ public class TestConsumersServlet {
 	public void testGetConsumerV() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		final Consumer selected = new Consumer("email", "im", "twitter");
-		final Consumer spare = new Consumer("email", "im", "twitter");
+		final Consumer selected = new Consumer();
+		final Consumer spare = new Consumer();
 		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings("serial")
 			public Query newQuery(String query) {
@@ -281,58 +281,6 @@ public class TestConsumersServlet {
 				};
 			}
 		});
-		Consumer createdConsumer = mockConsumersServlet.createConsumer("a", "b", "c");
-		assertNotNull(createdConsumer);
-		assertEquals(createdConsumer, ((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-	
-	@Test
-	public void testCreateConsumerII() throws DataSourceException {
-		final Consumer existingConsumer = new Consumer("a", "b", "c");
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings("serial")
-			public Query newQuery(String query) {
-				return new MockQuery(){
-					public Object execute() {
-						List<Consumer> selection = new ArrayList<Consumer>();
-						selection.add(existingConsumer);
-						return selection;
-					}
-				};
-			}
-		});
-		Consumer createdConsumer = mockConsumersServlet.createConsumer("a", null, null);
-		assertNotNull(createdConsumer);
-		assertNull(((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
-		assertEquals(existingConsumer, createdConsumer);
-
-		createdConsumer = mockConsumersServlet.createConsumer(null, "b", null);
-		assertNotNull(createdConsumer);
-		assertNull(((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
-		assertEquals(existingConsumer, createdConsumer);
-
-		createdConsumer = mockConsumersServlet.createConsumer(null, null, "c");
-		assertNotNull(createdConsumer);
-		assertNull(((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
-		assertEquals(existingConsumer, createdConsumer);
-
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-	
-	@Test
-	public void testCreateConsumerIII() throws DataSourceException {
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings("serial")
-			public Query newQuery(String query) {
-				return new MockQuery(){
-					public Object execute() {
-						// Whatever the query is, no Consumer instance match
-						return null;
-					}
-				};
-			}
-		});
 		User systemUser = new User("email", "domain");
 		Consumer createdConsumer = mockConsumersServlet.createConsumer(systemUser);
 		assertNotNull(createdConsumer);
@@ -344,33 +292,8 @@ public class TestConsumersServlet {
 	}
 	
 	@Test
-	public void testCreateConsumerIV() throws DataSourceException {
-		final Consumer existingConsumer = new Consumer("a", "b", "c");
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings("serial")
-			public Query newQuery(String query) {
-				return new MockQuery(){
-					public Object execute() {
-						List<Consumer> selection = new ArrayList<Consumer>();
-						selection.add(existingConsumer);
-						return selection;
-					}
-				};
-			}
-		});
-		User systemUser = new User("email", "domain");
-		Consumer createdConsumer = mockConsumersServlet.createConsumer(systemUser);
-		assertNotNull(createdConsumer);
-		assertEquals(createdConsumer, ((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
-		assertEquals(existingConsumer, createdConsumer);
-		assertEquals("a", createdConsumer.getEmail()); // To verify it has not been updated
-		assertEquals(systemUser, createdConsumer.getSystemUser());
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-	
-	@Test
-	public void testCreateConsumerV() throws DataSourceException {
-		final Consumer existingConsumer = new Consumer("a", "b", "c");
+	public void testCreateConsumerII() throws DataSourceException {
+		final Consumer existingConsumer = new Consumer();
 		User systemUser = new User("email", "domain");
 		existingConsumer.setSystemUser(systemUser);
 		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
@@ -389,27 +312,6 @@ public class TestConsumersServlet {
 		assertNotNull(createdConsumer);
 		assertNull(((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
 		assertEquals(existingConsumer, createdConsumer);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-	
-	@Test(expected=DataSourceException.class)
-	public void testCreateConsumerVI() throws DataSourceException {
-		final Consumer existingConsumer = new Consumer("a", "b", "c");
-		User systemUser = new User("email", "domain");
-		existingConsumer.setSystemUser(systemUser);
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings("serial")
-			public Query newQuery(String query) {
-				return new MockQuery(){
-					public Object execute() {
-						List<Consumer> selection = new ArrayList<Consumer>();
-						selection.add(existingConsumer);
-						return selection;
-					}
-				};
-			}
-		});
-		mockConsumersServlet.createConsumer(new User("another-email", "domain"));
 		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
 	}
 }

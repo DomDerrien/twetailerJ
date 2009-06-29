@@ -16,7 +16,7 @@ import org.domderrien.jsontools.JsonObject;
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
 import com.twetailer.dto.Consumer;
-import com.twetailer.dto.Request;
+import com.twetailer.dto.Demand;
 
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
@@ -47,11 +47,11 @@ public class MaezelServlet extends HttpServlet {
             	if (twitterId == null) {
             	    throw new ClientException("twitterId cannot be null");
             	}
-            	Consumer consumer = (new ConsumersServlet()).createConsumer(null, null, twitterId);
+            	Consumer consumer = (new ConsumersServlet()).createConsumer(new User("email", "domain"));
             	// Return the consumer information
                 out.put("resource", consumer.toJson());
             }
-            else if ("/createRequest".equals(pathInfo)) {
+            else if ("/createDemand".equals(pathInfo)) {
             	// Look for the corresponding consumer account
             	String twitterId = in.containsKey("twitterId") ? in.getString("twitterId") : null;
             	Consumer consumer = (new ConsumersServlet()).getConsumer("twitterId", twitterId);
@@ -59,25 +59,25 @@ public class MaezelServlet extends HttpServlet {
             		throw new ClientException("Given Twitter identified does not match any exisiting account");
             	}
             	// Create the demand
-            	Long demandKey = (new RequestsServlet()).createRequest(in, consumer);
+            	Long demandKey = (new DemandsServlet()).createDemand(in, consumer);
             	// Return request identifier
             	out.put("resourceId", demandKey);
             }
-            else if ("/getRequests".equals(pathInfo)) {
+            else if ("/getDemands".equals(pathInfo)) {
                 // Select the demands
-                List<Request> demands = (new RequestsServlet()).getRequests(in.getString("qA"), in.getLong("qV"));
+                List<Demand> demands = (new DemandsServlet()).getDemands(in.getString("qA"), in.getLong("qV"));
                 // Return demand list
                 out.put("resources", Utils.toJson(demands));
             }
-            else if ("/getRequest".equals(pathInfo)) {
+            else if ("/getDemand".equals(pathInfo)) {
                 // Select the demands
-                Request demand = (new RequestsServlet()).getRequest(in.getLong("key"), in.getLong("consumerKey"));
+                Demand demand = (new DemandsServlet()).getDemand(in.getLong("key"), in.getLong("consumerKey"));
                 // Return demand
                 out.put("resource", demand.toJson());
             }
-            else if ("/deleteRequest".equals(pathInfo)) {
+            else if ("/deleteDemand".equals(pathInfo)) {
                 // Select the demands
-                (new RequestsServlet()).deleteRequest(in.getLong("key"), in.getLong("consumerKey"));
+                (new DemandsServlet()).deleteDemand(in.getLong("key"), in.getLong("consumerKey"));
                 // If an error occurred, an exception has been thrown, and the status will be conveyed as is to the client 
             }
             

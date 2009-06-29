@@ -21,7 +21,7 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 				load: function(response, request) {
 					var key = 0;
 					if (response.success) {
-						key = response.resource.key; 
+						key = response.resource.key;
 					}
 					dijit.byId(prefix + ".consumerKey").attr("value", key);
 				},

@@ -10,5 +10,21 @@
 	<classpathentry kind="lib" path="deps/lib/jdo/jdo2-api-2.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-1.0-sdk-1.2.1.jar"/>
 	<classpathentry kind="lib" path="deps/lib/junit/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="deps/lib/twitter4j/twitter4j-2.0.8.jar" sourcepath="deps/lib/twitter4j/twitter4j-2.0.8-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/twitter4j/twitter4j-2.0.8-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="deps/lib/easymock/easymock-2.5.1.jar" sourcepath="deps/lib/easymock/easymock-2.5.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/easymock/easymock-2.5.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="deps/lib/easymock/easymockclassextension.jar" sourcepath="deps/lib/easymock/easymockclassextension-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/easymock/easymockclassextension-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="deps/lib/easymock/cglib-nodep-2.2.jar"/>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
 </classpath>

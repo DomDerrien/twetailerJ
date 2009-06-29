@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.google.appengine.api.users.User;
 
-public class TestRequestServlet {
+public class TestDemandServlet {
 
     static final User user = new User("test-email", "test-domain");
     
@@ -38,7 +38,7 @@ public class TestRequestServlet {
 
     @Test
     public void testGetLogger() {
-        (new RequestsServlet()).getLogger();
+        (new DemandsServlet()).getLogger();
         assertTrue(true);
         assertNull(null);
     }
@@ -70,12 +70,12 @@ public class TestRequestServlet {
     }
 
     @Test
-    public void testCreateRequest() {
+    public void testCreateDemand() {
         fail("Not yet implemented");
     }
 
     @Test
-    public void testGetRequests() {
+    public void testGetDemands() {
         fail("Not yet implemented");
     }
     */
