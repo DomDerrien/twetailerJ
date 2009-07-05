@@ -48,6 +48,7 @@
 		<delete file="src/war/WEB-INF/lib/geronimo-jpa_3.0_spec-1.1.1.jar" />
 		<delete file="src/war/WEB-INF/lib/geronimo-jta_1.1_spec-1.1.1.jar" />
 		<delete file="src/war/WEB-INF/lib/jdo2-api-2.3-SNAPSHOT.jar" />
+		<delete file="src/war/WEB-INF/lib/twitter4j-2.0.8.jar" />
 	</target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
@@ -128,6 +129,12 @@
 	
 	<target name="step-datanucleus-enhance" depends="compile, step-configuration-push">
 		<delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
+		<delete failonerror="yes">
+			<fileset dir="src/war/WEB-INF/classes">
+				<include name="**/Test*.*" />
+				<include name="**/Mock*.*" />
+			</fileset>
+		</delete>
 		<enhance_war war="${basedir}/src/war" />
 	</target>
 

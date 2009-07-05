@@ -1,6 +1,7 @@
 package com.twetailer.adapter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.domderrien.i18n.DateUtils;
+import org.domderrien.jsontools.GenericJsonObject;
 import org.domderrien.jsontools.JsonException;
 import org.domderrien.jsontools.JsonObject;
 import org.easymock.classextension.EasyMock;
@@ -26,11 +27,13 @@ import twitter4j.User;
 
 import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
-import com.twetailer.dto.Command;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
+import com.twetailer.dto.Settings;
 import com.twetailer.j2ee.ConsumersServlet;
 import com.twetailer.j2ee.DemandsServlet;
+import com.twetailer.j2ee.SettingsServlet;
+import com.twetailer.settings.CommandSettings;
 
 public class TestTwitterAdapter {
 
@@ -86,56 +89,59 @@ public class TestTwitterAdapter {
     @Test
     public void testParseOneWordTag() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 product");
-        assertEquals("product", data.getString(Demand.CRITERIA));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
     }
 
     @Test
     public void testParseOneWordTagPrefixed() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 tags:product");
-        assertEquals("product", data.getString(Demand.CRITERIA));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
     }
 
     @Test
     public void testParseMultipleWordsTag() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 brand product part");
-        assertEquals("brand product part", data.getString(Demand.CRITERIA));
+        assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
+        assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
     }
 
     @Test
     public void testParseMultipleWordsTagPrefixed() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 tags:brand product part");
-        assertEquals("brand product part", data.getString(Demand.CRITERIA));
+        assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
+        assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
     }
 
     @Test
     public void testParseExpirationI() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 expires:2050-01-01");
-        assertEquals(DateUtils.isoToMilliseconds("2050-01-01T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationII() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 expires: 2050-01-01");
-        assertEquals(DateUtils.isoToMilliseconds("2050-01-01T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationIII() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 expires: 20500101");
-        assertEquals(DateUtils.isoToMilliseconds("2050-01-01T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationIV() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 expires:50-01-01");
-        assertEquals(DateUtils.isoToMilliseconds("2050-01-01T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     public void testParseExpirationShort() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:21 exp:2050-01-01");
-        assertEquals(DateUtils.isoToMilliseconds("2050-01-01T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
@@ -271,14 +277,14 @@ public class TestTwitterAdapter {
     public void testParseCompositeI() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:1234 exp:2050-12-31");
         assertEquals(1234, data.getLong(Demand.KEY));
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseCompositeII() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:1234 range: 10 mi exp:2050-12-31");
         assertEquals(1234, data.getLong(Demand.KEY));
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
     }
@@ -287,7 +293,7 @@ public class TestTwitterAdapter {
     public void testParseCompositeIII() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:1234 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
         assertEquals(1234, data.getLong(Demand.KEY));
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
         assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
@@ -298,7 +304,7 @@ public class TestTwitterAdapter {
     public void testParseCompositeIV() throws ClientException, ParseException {
         JsonObject data = adapter.parseMessage("ref:1234 qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
         assertEquals(1234, data.getLong(Demand.KEY));
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
         assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
@@ -308,54 +314,66 @@ public class TestTwitterAdapter {
 
     @Test
     public void testParseCompositeV() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
+        String keywords = "Wii  console\tremote \t control";
         JsonObject data = adapter.parseMessage("qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca " + keywords);
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
         assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        assertEquals(keywords, data.getString(Demand.CRITERIA));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+        }
     }
 
     @Test
     public void testParseCompositeVI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = adapter.parseMessage("qty:12 range: 10 mi exp:2050-12-31 " + keywords + " locale: h0h 0h0 ca");
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
         assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        assertEquals(keywords, data.getString(Demand.CRITERIA));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+        }
     }
 
     @Test
     public void testParseCompositeVII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = adapter.parseMessage("qty:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca");
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
         assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        assertEquals(keywords, data.getString(Demand.CRITERIA));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+        }
     }
 
     @Test
     public void testParseCompositeVIII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = adapter.parseMessage("" + keywords + " qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
-        assertEquals(DateUtils.isoToMilliseconds("2050-12-31T23:59:59"), data.getLong(Demand.EXPIRATION_DATE));
+        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
         assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        assertEquals(keywords, data.getString(Demand.CRITERIA));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+        }
     }
 
     @Test
@@ -364,25 +382,60 @@ public class TestTwitterAdapter {
         JsonObject data = adapter.parseMessage("action:demand ref:1234" + keywords);
         assertEquals("demand", data.getString(Demand.ACTION));
         assertEquals(1234, data.getLong(Demand.KEY));
-        assertEquals(keywords, data.getString(Demand.CRITERIA));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+        }
     }
 
     @Test(expected=com.twetailer.ClientException.class)
-    public void testParseIncompleteMessageI() throws ClientException, ParseException {
+    public void testParseIncompleteMessage() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         adapter.parseMessage("action:demand " + keywords);
     }
 
-    @Test(expected=com.twetailer.ClientException.class)
-    public void testParseIncompleteMessageII() throws ClientException, ParseException {
+    @Test
+    public void testVerifyDefaultValuesI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        adapter.parseMessage("action:demand loc:h0h0h0 ca " + keywords);
+        JsonObject data = new GenericJsonObject();
+        assertEquals(0, data.size());
+        data = adapter.parseMessage("wii console loc:h0h0h0 ca" + keywords, data);
+        assertTrue(0 < data.size());
+        Demand stub = new Demand(new GenericJsonObject());
+        for (CommandSettings.Prefix prefix : CommandSettings.Prefix.values()) {
+            if (prefix != CommandSettings.Prefix.reference) {
+                assertTrue(data.containsKey(stub.getAttributeLabel(prefix)));
+            }
+        }
+        Assert.assertEquals(1, data.getLong(stub.getAttributeLabel(CommandSettings.Prefix.quantity)));
+        Assert.assertEquals(25, data.getLong(stub.getAttributeLabel(CommandSettings.Prefix.range)));
     }
 
-    @Test(expected=com.twetailer.ClientException.class)
-    public void testParseIncompleteMessageIII() throws ClientException, ParseException {
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testVerifyDefaultValuesII() throws ClientException, ParseException, JsonException {
         String keywords = "Wii console remote control";
-        adapter.parseMessage("action:demand exp:2050-01-01" + keywords);
+        Demand stub = new Demand(new GenericJsonObject());
+        stub.setAction(CommandSettings.Action.cancel);
+        stub.setExpirationDate(new Date(2000, 0, 1));
+        stub.setCountryCode("--");
+        stub.setPostalCode("--");
+        stub.setQuantity(0L);
+        stub.setKey(0L);
+        stub.setRange(0D);
+        stub.setRangeUnit("--");
+        stub.addCriterion("--");
+        stub.setTweetId(0L);
+        JsonObject data = stub.toJson();
+        data = adapter.parseMessage("wii console loc:h0h0h0 ca" + keywords, data);
+        assertTrue(0 < data.size());
+        for (CommandSettings.Prefix prefix : CommandSettings.Prefix.values()) {
+            if (prefix != CommandSettings.Prefix.reference) {
+                assertTrue(data.containsKey(stub.getAttributeLabel(prefix)));
+            }
+        }
+        Assert.assertNotSame(CommandSettings.Action.cancel.toString(), data.getString(stub.getAttributeLabel(CommandSettings.Prefix.action)));
+        Assert.assertEquals(CommandSettings.Action.demand.toString(), data.getString(stub.getAttributeLabel(CommandSettings.Prefix.action)));
     }
 
     @Test
@@ -391,7 +444,10 @@ public class TestTwitterAdapter {
         JsonObject data = adapter.parseMessage("!update ref:1234" + keywords);
         assertEquals("update", data.getString(Demand.ACTION));
         assertEquals(1234, data.getLong(Demand.KEY));
-        assertEquals(keywords, data.getString(Demand.CRITERIA));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+        }
     }
 
     @Test
@@ -405,6 +461,16 @@ public class TestTwitterAdapter {
                     }
                 };
             }
+            @Override
+            @SuppressWarnings("serial")
+            public SettingsServlet getSettingsServlet() {
+                return new SettingsServlet() {
+                    @Override
+                    public Settings getSettings() {
+                        return new Settings();
+                    }
+                };
+            }
         };
         adapter.processDirectMessages();
     }
@@ -412,11 +478,22 @@ public class TestTwitterAdapter {
     @Test
     public void testProcessDirectMessageWithNoMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         TwitterAdapter adapter = new TwitterAdapter() {
+            @Override
             @SuppressWarnings("serial")
             public Twitter getTwitterAccount() {
                 return new Twitter() {
                     public List<DirectMessage> getDirectMessages(Paging paging) {
                         return new ArrayList<DirectMessage>();
+                    }
+                };
+            }
+            @Override
+            @SuppressWarnings("serial")
+            public SettingsServlet getSettingsServlet() {
+                return new SettingsServlet() {
+                    @Override
+                    public Settings getSettings() {
+                        return new Settings();
                     }
                 };
             }
@@ -673,7 +750,6 @@ public class TestTwitterAdapter {
         final int senderId = 1111;
         final int dmId = 2222;
         final long consumerKey = 333;
-        final long demandKey = 4444;
         // Sender mock
         User sender = createUser(senderId, true, null);
         // DirectMessage mock
@@ -728,7 +804,6 @@ public class TestTwitterAdapter {
         final int senderId = 1111;
         final int dmId = 2222;
         final long consumerKey = 333;
-        final long demandKey = 4444;
         // Sender mock
         User sender = createUser(senderId, true, null);
         // DirectMessage mock

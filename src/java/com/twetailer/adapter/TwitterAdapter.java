@@ -1,17 +1,20 @@
 package com.twetailer.adapter;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.domderrien.i18n.DateUtils;
+import org.domderrien.jsontools.GenericJsonArray;
 import org.domderrien.jsontools.GenericJsonObject;
 import org.domderrien.jsontools.JsonException;
 import org.domderrien.jsontools.JsonObject;
-import org.domderrien.jsontools.JsonParser;
 
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
@@ -22,60 +25,66 @@ import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
+import com.twetailer.dto.Settings;
 import com.twetailer.j2ee.ConsumersServlet;
 import com.twetailer.j2ee.DemandsServlet;
+import com.twetailer.j2ee.SettingsServlet;
+import com.twetailer.settings.CommandSettings;
 
 public class TwitterAdapter {
    
-    private Map<String, Pattern> patterns;
+    private static final Logger log = Logger.getLogger(TwitterAdapter.class.getName());
 
     /**
      * Default constructor using English keywords for the tweet parser and the response generator
      */
     public TwitterAdapter() throws JsonException {
-        this((new JsonParser(
-                "{" +
-                "'act':['action:','!']," +
-                "'exp':['expires:','exp:']," +
-                "'loc':['locale:','loc:']," +
-                "'qty':['quantity:','qty:']," +
-                "'ref':['reference:','ref:']," +
-                "'rng':['range:','rng:']," +
-                "'tag':['tags:','']" +
-                "}"
-        )).getJsonObject());
+        this(Locale.US);
+    }
+
+    private JsonObject possibleActions;
+
+    /**
+     * Initialize the tweet parser and the response generator for the given locale
+     * @param locale
+     * @throws JsonException
+     */
+    public TwitterAdapter(Locale locale) throws JsonException {
+        this(CommandSettings.getPrefixes(locale));
+        possibleActions = CommandSettings.getActions(locale);
     }
     
-    private JsonObject localizedKeywords;
-    
+    private Map<CommandSettings.Prefix, Pattern> patterns;
+
     /**
      * Extract the localized prefix matching the keywords (long and short versions)
      * and insert the corresponding regular expression pattern in the pattern list
      * 
+     * @param keywords set of localized prefix labels
      * @param keyword identifier of the prefix to process
      * @param expression part of the regular expression that extracts the parameters for the identified prefix
      */
-    private void preparePattern(String keyword, String expression) {
-        String longPrefix = localizedKeywords.getJsonArray(keyword).getString(0);
-        String shortPrefix = localizedKeywords.getJsonArray(keyword).getString(1);
+    private void preparePattern(JsonObject keywords, CommandSettings.Prefix keyword, String expression) {
+        String longPrefix = keywords.getJsonArray(keyword.toString()).getString(0);
+        String shortPrefix = keywords.getJsonArray(keyword.toString()).getString(1);
         patterns.put(keyword, Pattern.compile("((?:" + longPrefix + "|" + shortPrefix + ")" + expression + ")", Pattern.CASE_INSENSITIVE));
     }
 
     /**
      * Initialize the adapter for a given set of localized command prefixes
+     * 
+     * @param keywords set of localized prefix labels
      */
-    public TwitterAdapter(JsonObject keywords) throws JsonException {
-        localizedKeywords = keywords;
+    protected TwitterAdapter(JsonObject keywords) throws JsonException {
+        patterns = new HashMap<CommandSettings.Prefix, Pattern>();
         
-        patterns = new HashMap<String, Pattern>();
-        
-        preparePattern("act", "\\s*\\w+");
-        preparePattern("exp", "\\s*[\\d\\-]+");
-        preparePattern("loc", "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
-        preparePattern("qty", "\\s*\\d+");
-        preparePattern("ref", "\\s*\\d+");
-        preparePattern("rng", "\\s*\\d+\\s*(?:mi|km)");
-        preparePattern("tag", "?(?:\\w\\s*)+");
+        preparePattern(keywords, CommandSettings.Prefix.action, "\\s*\\w+");
+        preparePattern(keywords, CommandSettings.Prefix.expiration, "\\s*[\\d\\-]+");
+        preparePattern(keywords, CommandSettings.Prefix.location, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
+        preparePattern(keywords, CommandSettings.Prefix.quantity, "\\s*\\d+");
+        preparePattern(keywords, CommandSettings.Prefix.reference, "\\s*\\d+");
+        preparePattern(keywords, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
+        preparePattern(keywords, CommandSettings.Prefix.tags, "?(?:\\w\\s*)+");
     }
 
     /**
@@ -103,68 +112,73 @@ public class TwitterAdapter {
     public JsonObject parseMessage (String message, JsonObject demand) throws ClientException, ParseException {
         Matcher matcher;
         boolean oneFieldOverriden = false;
-        // Reset some fields of the previous demand
-        demand.put(Demand.KEY, 0L);
-        demand.put(Demand.ACTION, "demamd");
-        demand.put(Demand.CRITERIA, (String) null);
-        demand.put(Demand.QUANTITY, 1L);
-        demand.put(Demand.RANGE, 25);
-        demand.put(Demand.RANGE_UNIT, "km");
+        log.warning("Message to parse: " + message);
         // Action
         try {
-            matcher = patterns.get("act").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.action).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            demand.put(Demand.ACTION, getAction(currentGroup.toLowerCase()));
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.action), getAction(currentGroup.toLowerCase()));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
-            // Not a mandatory attribute
+            // Default settings
+            String actionLabelForDemand = possibleActions.getJsonArray(CommandSettings.Action.demand.toString()).getString(0);
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.action), actionLabelForDemand);
         }
         // Expiration
         try {
-            matcher = patterns.get("exp").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.expiration).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            demand.put(Demand.EXPIRATION_DATE, getDate(currentGroup));
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.expiration), getDate(currentGroup));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
-            // Not a mandatory attribute
+            // Default settings
+            if (!demand.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.expiration))) {
+                Calendar now = DateUtils.getNowCalendar();
+                now.set(Calendar.MONTH, now.get(Calendar.MONTH) + 1);
+                demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.expiration), DateUtils.dateToISO(now.getTime()));
+            }
         }
         // Locale
         try {
-            matcher = patterns.get("loc").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.location).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
             demand.put(Demand.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase());
-            demand.put(Demand.POSTAL_CODE, getPostalCode(currentGroup, demand.getString(Demand.COUNTRY_CODE)).toUpperCase());
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.location), getPostalCode(currentGroup, demand.getString(Demand.COUNTRY_CODE)).toUpperCase());
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
-            // Not a mandatory attribute
+            // Mandatory attribute that cannot be defaulted
         }
         // Quantity
         try {
-            matcher = patterns.get("qty").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.quantity).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            demand.put(Demand.QUANTITY, getQuantity(currentGroup));
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.quantity), getQuantity(currentGroup));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
-            // Not a mandatory attribute
+            String label = Demand.getAttributeLabel(CommandSettings.Prefix.quantity);
+            if (!demand.containsKey(label) || demand.getLong(label) == 0L) {
+                demand.put(label, 1L);
+            }
         }
         // Reference
+        demand.remove(Demand.getAttributeLabel(CommandSettings.Prefix.reference)); // Reset
         try {
-            matcher = patterns.get("ref").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.reference).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            demand.put(Demand.KEY, getQuantity(currentGroup));
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.reference), getQuantity(currentGroup));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
@@ -173,23 +187,26 @@ public class TwitterAdapter {
         }
         // Range
         try {
-            matcher = patterns.get("rng").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.range).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
             demand.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase());
-            demand.put(Demand.RANGE, getRange(currentGroup, demand.getString(Demand.RANGE_UNIT)));
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.range), getRange(currentGroup, demand.getString(Demand.RANGE_UNIT)));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
-            // Not a mandatory attribute
+            // Default settings
+            if (!demand.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.range))) { demand.put(Demand.RANGE, 25.0D); }
+            if (!demand.containsKey(Demand.RANGE_UNIT)) { demand.put(Demand.RANGE_UNIT, "km"); }
         }
         // Tags
+        demand.remove(Demand.getAttributeLabel(CommandSettings.Prefix.tags)); // Reset
         try {
-            matcher = patterns.get("tag").matcher(message);
+            matcher = patterns.get(CommandSettings.Prefix.tags).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            demand.put(Demand.CRITERIA, getTags(currentGroup));
+            demand.put(Demand.getAttributeLabel(CommandSettings.Prefix.tags), new GenericJsonArray(getTags(currentGroup)));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
@@ -199,7 +216,8 @@ public class TwitterAdapter {
         if (!oneFieldOverriden) {
             throw new ClientException("No query field has been correctly extracted");
         }
-        if (demand.getLong(Demand.KEY) == 0L && (demand.getLong(Demand.EXPIRATION_DATE) == 0L || demand.getString(Demand.POSTAL_CODE) == null)) {
+        if ((!demand.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.reference)) || demand.getLong(Demand.getAttributeLabel(CommandSettings.Prefix.reference)) == 0L) && (!demand.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.location)) || demand.getString(Demand.getAttributeLabel(CommandSettings.Prefix.location)) == null)) {
+            log.finest(demand.toString());
             throw new ClientException("New demand must have an expiration date and a location");
         }
         return demand;
@@ -228,7 +246,7 @@ public class TwitterAdapter {
      * @return valid expiration date
      * @throws ParseException if the date format is invalid
      */
-    private static Long getDate(String pattern) throws ParseException {
+    private static String getDate(String pattern) throws ParseException {
         // TODO: ensure the date is in the future
         String date = pattern.substring(pattern.indexOf(":") + 1).trim();
         if (date.indexOf('-') == -1) {
@@ -236,13 +254,11 @@ public class TwitterAdapter {
             String month = date.substring(date.length() - 4, date.length() - 2);
             String year = date.substring(0, date.length() - 4);
             date = year + "-" + month + "-" + day;
-            System.out.println(pattern + " --> " + date);
         }
         if (date.length() == 8) {
             date = "20" + date;
-            System.out.println(pattern + " --> " + date);
         }
-        return DateUtils.isoToMilliseconds(date + "T23:59:59");
+        return date + "T23:59:59";
     }
     
     /**
@@ -250,9 +266,9 @@ public class TwitterAdapter {
      * @param pattern Parameters extracted by a regular expression
      * @return valid distance
      */
-    private static Long getRange(String pattern, String rangeUnit) {
+    private static Double getRange(String pattern, String rangeUnit) {
         // Extract the number after the prefix, taking care of excluding the part with the range unit
-        return Long.parseLong(pattern.substring(pattern.indexOf(":") + 1, pattern.length() - rangeUnit.length()).trim());
+        return Double.parseDouble(pattern.substring(pattern.indexOf(":") + 1, pattern.length() - rangeUnit.length()).trim());
     }
     
     /**
@@ -298,11 +314,12 @@ public class TwitterAdapter {
      * @param pattern Parameters extracted by a regular expression
      * @return tags
      */
-    private static String getTags(String pattern) {
+    private static String[] getTags(String pattern) {
+        String keywords = pattern;
         if (pattern.startsWith("tags:")) {
-            return pattern.substring("tags:".length());
+            keywords = pattern.substring("tags:".length());
         }
-        return pattern;
+        return keywords.split("\\s+");
     }
     
     private Twitter _twitterAccount;
@@ -344,12 +361,39 @@ public class TwitterAdapter {
         return _demandsServlet;
     }
     
-    public void processDirectMessages() throws TwitterException, DataSourceException, ParseException, ClientException {
-        processDirectMessages(1L);
+    private SettingsServlet _settingsServlet;
+    
+    /**
+     * Accessor provided for unit tests
+     * @return Settings servlet instance
+     */
+    public SettingsServlet getSettingsServlet() {
+        if (_settingsServlet == null) {
+            _settingsServlet = new SettingsServlet();
+        }
+        return _settingsServlet;
+    }
+    
+    public Long processDirectMessages() throws TwitterException, DataSourceException, ParseException, ClientException {
+        SettingsServlet settingsServlet = getSettingsServlet();
+        Settings settings = settingsServlet.getSettings();
+        Long sinceId = settings.getLastProcessDirectMessageId();
+        log.warning("Last process DM id: " + sinceId);
+        Long lastId = processDirectMessages(sinceId);
+        if (lastId != sinceId) {
+            log.warning("New value for the process DM id: " + lastId);
+            settings.setLastProcessDirectMessageId(lastId);
+            settingsServlet.updateSettings(settings);
+        }
+        return lastId;
     }
     
     public Long processDirectMessages(Long sinceId) throws TwitterException, DataSourceException, ParseException, ClientException {
         Long lastId = sinceId;
+        log.warning("Identifier of the last processed DM: " + sinceId);
+        log.fine("Identifier of the last processed DM: " + sinceId);
+        log.finer("Identifier of the last processed DM: " + sinceId);
+        log.finest("Identifier of the last processed DM: " + sinceId);
         // Get the list of direct messages
         Twitter twitterAccount = getTwitterAccount();
         List<DirectMessage> messages = twitterAccount.getDirectMessages(new Paging(sinceId));
@@ -375,7 +419,10 @@ public class TwitterAdapter {
                 JsonObject latestDemand = new GenericJsonObject();
                 try {
                     JsonObject newCommand = parseMessage(dm.getText(), latestDemand);
-                    if ("demand".equals(newCommand.getString(Demand.ACTION))) {
+                    String demandLongLabel = possibleActions.getJsonArray(CommandSettings.Action.demand.toString()).getString(0);
+                    String demandShortLabel = possibleActions.getJsonArray(CommandSettings.Action.demand.toString()).getString(1);
+                    String demandGivenLabel = newCommand.getString(Demand.ACTION);
+                    if (demandLongLabel.equals(demandGivenLabel) || demandShortLabel.equals(demandGivenLabel)) {
                         Long persistedDemandKey = getDemandsServlet().createDemand(newCommand, consumer);
                         // TODO: use localized message
                         twitterAccount.sendDirectMessage(senderScreenName, "Demand ref:" + persistedDemandKey + " saved. Use this reference to update the demand.");

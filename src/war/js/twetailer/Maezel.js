@@ -12,6 +12,21 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 
 		module.init = function() {
 		};
+		
+		module.processDMs = function() {
+			dojo.xhrGet({
+				content: null, 
+				handleAs: "json",
+				load: function(response, request) {
+					var key = 0;
+					if (response.success) {
+						alert("New index: " + response.newSinceId);
+					}
+				},
+				preventCache: true,
+				url: "/API/maezel/processDMs"
+			});
+		};
 
 		module.checkId = function(prefix) {
 			var twitterId = dijit.byId(prefix + '.twitterId').attr('value');

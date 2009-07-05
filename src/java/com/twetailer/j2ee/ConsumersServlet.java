@@ -1,6 +1,7 @@
 package com.twetailer.j2ee;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -75,8 +76,8 @@ public class ConsumersServlet extends BaseRestlet {
      */
     public Consumer createConsumer(User loggedUser) throws DataSourceException {
     	Consumer existingConsumer = getConsumer("email", loggedUser.getEmail());
+        PersistenceManager pm = getPersistenceManager();
     	if (existingConsumer == null) {
-	    	PersistenceManager pm = getPersistenceManager();
 	    	try {
 	    		// Creates new consumer record and persist it
 	    		existingConsumer = new Consumer();
@@ -91,7 +92,6 @@ public class ConsumersServlet extends BaseRestlet {
     	}
     	else {
     		if (existingConsumer.getSystemUser() == null) {
-    	    	PersistenceManager pm = getPersistenceManager();
     	    	try {
     	    		// Update existing consumer with system user record
     	    		existingConsumer.setSystemUser(loggedUser);
@@ -175,12 +175,10 @@ public class ConsumersServlet extends BaseRestlet {
         if (consumers == null || consumers.size() == 0) {
             return null;
         }
-        else if (1 < consumers.size()) {
+        if (1 < consumers.size()) {
             throw new DataSourceException("Abnormal number of returned Consumer resources: " + consumers.size());
         }
-        else {
-            return consumers.get(0);
-        }
+        return consumers.get(0);
     }
     
     /**
@@ -195,20 +193,24 @@ public class ConsumersServlet extends BaseRestlet {
     	PersistenceManager pm = getPersistenceManager();
     	try {
     		// Prepare the query
-	    	String queryStr = "select from " + Consumer.class.getName();
-	    	if (value instanceof String) {
-	    	    queryStr += " where " + attribute + " == '" + value + "'";
-	    	}
-	    	else if (value instanceof Long) {
-                queryStr += " where " + attribute + " == " + value;
+            Query queryObj = pm.newQuery(Consumer.class);
+            queryObj.setFilter(attribute + " == value");
+            queryObj.setOrdering("creationDate desc");
+            if (value instanceof String) {
+                queryObj.declareParameters("String value");
             }
-	    	else {
-	    	    throw new DataSourceException("Unsupported criteruia value type");
-	    	}
-			Query queryObj = pm.newQuery(queryStr);
+            else if (value instanceof Long) {
+                queryObj.declareParameters("Long value");
+            }
+            else if (value instanceof Date) {
+                queryObj.declareParameters("Date value");
+            }
+            else {
+                throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
+            }
 			getLogger().warning("Select consumer(s) with: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding consumers
-			List<Consumer> consumers = queryObj == null ? null : (List<Consumer>) queryObj.execute();
+			List<Consumer> consumers = (List<Consumer>) queryObj.execute(value);
 			if (consumers != null) {
 				consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
 			}

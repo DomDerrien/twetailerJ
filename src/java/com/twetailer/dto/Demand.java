@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -16,7 +17,9 @@ import org.domderrien.jsontools.JsonArray;
 import org.domderrien.jsontools.JsonObject;
 import org.domderrien.jsontools.TransferObject;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+import com.twetailer.settings.CommandSettings;
+
+@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Demand extends Command implements TransferObject {
 	
 	@Persistent
@@ -167,6 +170,17 @@ public class Demand extends Command implements TransferObject {
     public void setRangeUnit(String rangeUnit) {
         this.rangeUnit = rangeUnit;
     }
+    
+    public static String getAttributeLabel(CommandSettings.Prefix prefix) {
+        String inherited = Command.getAttributeLabel(prefix);
+        if (inherited != null) return inherited;
+        if (prefix == CommandSettings.Prefix.expiration) return EXPIRATION_DATE;
+        if (prefix == CommandSettings.Prefix.location) return POSTAL_CODE;
+        if (prefix == CommandSettings.Prefix.quantity) return QUANTITY;
+        if (prefix == CommandSettings.Prefix.range) return RANGE;
+        if (prefix == CommandSettings.Prefix.tags) return CRITERIA;
+        return null;
+    }
 
 	public JsonObject toJson() {
 	    // TODO: finish the constant definition for the serialization
@@ -177,9 +191,6 @@ public class Demand extends Command implements TransferObject {
 		}
 		out.put(CRITERIA, jsonArray);
 		out.put(COUNTRY_CODE, getCountryCode());
-		if (getExpirationDate() == null) {
-			setExpirationDate(DEFAULT_EXPIRATION_DELAY);
-		}
 		out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
 		out.put("latitude", getLatitude());
 		out.put("longitude", getLongitude());

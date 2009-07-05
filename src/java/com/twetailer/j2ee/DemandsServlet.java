@@ -1,6 +1,7 @@
 package com.twetailer.j2ee;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -95,21 +96,24 @@ public class DemandsServlet extends BaseRestlet {
     	PersistenceManager pm = getPersistenceManager();
     	try {
     		// Prepare the query
-	    	String queryStr = "select from " + Demand.class.getName();
+            Query queryObj = pm.newQuery(Demand.class);
+            queryObj.setFilter(attribute + " == value");
+            queryObj.setOrdering("creationDate desc");
             if (value instanceof String) {
-                queryStr += " where " + attribute + " == '" + value + "'";
+                queryObj.declareParameters("String value");
             }
             else if (value instanceof Long) {
-                queryStr += " where " + attribute + " == " + value;
+                queryObj.declareParameters("Long value");
+            }
+            else if (value instanceof Date) {
+                queryObj.declareParameters("Date value");
             }
             else {
-                throw new DataSourceException("Unsupported criteruia value type");
+                throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
             }
-            queryStr += " order by creationDate desc";
-			Query queryObj = pm.newQuery(queryStr);
 			getLogger().warning("Select demand(s) with: " + (queryObj == null ? "null" : queryObj.toString()));
 	    	// Select the corresponding users
-			List<Demand> demands = queryObj == null ? null : (List<Demand>) queryObj.execute();
+			List<Demand> demands = (List<Demand>) queryObj.execute(value);
 			demands.size(); // FIXME: remove workaround for a bug in DataNucleus
 	    	return demands;
 	    	// return queryObj == null ? null : (List<Consumer>) queryObj.execute();

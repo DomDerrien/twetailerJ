@@ -26,6 +26,17 @@ public class GenericJsonArray implements JsonArray {
         arrayList = list;
     }
 
+    /**
+     * Constructor made of an existing array
+     */
+    public GenericJsonArray(Object[] list) {
+        int limit = list.length;
+        arrayList = new ArrayList<Object>(limit);
+        for (int i = 0; i < limit; ++i) {
+            arrayList.add(list[i]);
+        }
+    }
+
     @Override
     public String toString() {
         return toString(0);

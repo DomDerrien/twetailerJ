@@ -15,6 +15,7 @@ import org.domderrien.jsontools.JsonObject;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
+import com.twetailer.adapter.TwitterAdapter;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
 
@@ -40,6 +41,10 @@ public class MaezelServlet extends HttpServlet {
             log.warning("Path Info: " + pathInfo);
             
             if (pathInfo == null || pathInfo.length() == 0) {
+            }
+            else if ("/processDMs".equals(pathInfo)) {
+                Long newSinceId = (new TwitterAdapter()).processDirectMessages();
+                out.put("newSinceId", newSinceId);
             }
             else if ("/checkId".equals(pathInfo)) {
             	// Create the consumer

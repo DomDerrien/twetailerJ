@@ -228,6 +228,9 @@ public abstract class BaseRestlet extends HttpServlet {
      * @return Persistence manager instance
      */
     protected PersistenceManager getPersistenceManager() {
-        return Utils.getPersistenceManager();
+        PersistenceManager pm = Utils.getPersistenceManager();
+        pm.setDetachAllOnCommit(true);
+        pm.setCopyOnAttach(false);
+        return pm;
     }
 }

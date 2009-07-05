@@ -17,7 +17,7 @@ import org.domderrien.jsontools.TransferObject;
 
 import com.google.appengine.api.users.User;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Consumer implements TransferObject {
 	
 	@PrimaryKey
