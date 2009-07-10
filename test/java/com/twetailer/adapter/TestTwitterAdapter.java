@@ -2,6 +2,7 @@ package com.twetailer.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotSame;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -51,56 +52,56 @@ public class TestTwitterAdapter {
     @Test(expected=java.lang.NullPointerException.class)
     public void testParseNull() throws ClientException, ParseException {
         // Cannot pass a null reference
-        adapter.parseMessage(null);
+        adapter.parseTweet(null);
     }
 
     @Test(expected=com.twetailer.ClientException.class)
     public void testParseEmpty() throws ClientException, ParseException {
         // At least the twitter identifier of the sender is required
-        JsonObject data = adapter.parseMessage("");
+        JsonObject data = adapter.parseTweet("");
         assertEquals(0, data.size());
     }
 
     @Test(expected=com.twetailer.ClientException.class)
     public void testParseWithOnlySeparators() throws ClientException, ParseException {
         // At least the twitter identifier of the sender is required
-        JsonObject data = adapter.parseMessage(" \t \r\n ");
+        JsonObject data = adapter.parseTweet(" \t \r\n ");
         assertEquals(0, data.size());
     }
 
     @Test
     public void testParseReferenceI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("reference:21");
+        JsonObject data = adapter.parseTweet("reference:21");
         assertEquals(21, data.getLong(Demand.KEY));
     }
 
     @Test
     public void testParseReferenceII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("reference: 21");
+        JsonObject data = adapter.parseTweet("reference: 21");
         assertEquals(21, data.getLong(Demand.KEY));
     }
 
     @Test
     public void testParseReferenceShort() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21");
+        JsonObject data = adapter.parseTweet("ref:21");
         assertEquals(21, data.getLong(Demand.KEY));
     }
 
     @Test
     public void testParseOneWordTag() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 product");
+        JsonObject data = adapter.parseTweet("ref:21 product");
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
     }
 
     @Test
     public void testParseOneWordTagPrefixed() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 tags:product");
+        JsonObject data = adapter.parseTweet("ref:21 tags:product");
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
     }
 
     @Test
     public void testParseMultipleWordsTag() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 brand product part");
+        JsonObject data = adapter.parseTweet("ref:21 brand product part");
         assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
         assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
@@ -108,7 +109,7 @@ public class TestTwitterAdapter {
 
     @Test
     public void testParseMultipleWordsTagPrefixed() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 tags:brand product part");
+        JsonObject data = adapter.parseTweet("ref:21 tags:brand product part");
         assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
         assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
@@ -116,173 +117,173 @@ public class TestTwitterAdapter {
 
     @Test
     public void testParseExpirationI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 expires:2050-01-01");
+        JsonObject data = adapter.parseTweet("ref:21 expires:2050-01-01");
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 expires: 2050-01-01");
+        JsonObject data = adapter.parseTweet("ref:21 expires: 2050-01-01");
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationIII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 expires: 20500101");
+        JsonObject data = adapter.parseTweet("ref:21 expires: 20500101");
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationIV() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 expires:50-01-01");
+        JsonObject data = adapter.parseTweet("ref:21 expires:50-01-01");
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationShort() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 exp:2050-01-01");
+        JsonObject data = adapter.parseTweet("ref:21 exp:2050-01-01");
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseRangeI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 range:1mi");
+        JsonObject data = adapter.parseTweet("ref:21 range:1mi");
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 range: 1mi");
+        JsonObject data = adapter.parseTweet("ref:21 range: 1mi");
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeIII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 range: 1 mi");
+        JsonObject data = adapter.parseTweet("ref:21 range: 1 mi");
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeIV() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 range:1234567mi");
+        JsonObject data = adapter.parseTweet("ref:21 range:1234567mi");
         assertEquals(1234567, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeV() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 range:1km");
+        JsonObject data = adapter.parseTweet("ref:21 range:1km");
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("km", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeVI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 range:100 km");
+        JsonObject data = adapter.parseTweet("ref:21 range:100 km");
         assertEquals(100, data.getLong(Demand.RANGE));
         assertEquals("km", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeShort() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 rng:1mi");
+        JsonObject data = adapter.parseTweet("ref:21 rng:1mi");
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseLocaleI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 locale:h3c2n6 ca");
+        JsonObject data = adapter.parseTweet("ref:21 locale:h3c2n6 ca");
         assertEquals("H3C2N6", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 locale: h3c 2n6 ca");
+        JsonObject data = adapter.parseTweet("ref:21 locale: h3c 2n6 ca");
         assertEquals("H3C 2N6", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 locale:h3c2n6-ca");
+        JsonObject data = adapter.parseTweet("ref:21 locale:h3c2n6-ca");
         assertEquals("H3C2N6", data.getString(Demand.POSTAL_CODE));
         assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIV() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 locale:97323 us");
+        JsonObject data = adapter.parseTweet("ref:21 locale:97323 us");
         assertEquals("97323", data.getString(Demand.POSTAL_CODE));
         assertEquals("US", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleV() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 locale:97323-12345 us");
+        JsonObject data = adapter.parseTweet("ref:21 locale:97323-12345 us");
         assertEquals("97323-12345", data.getString(Demand.POSTAL_CODE));
         assertEquals("US", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleVI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 locale:97323-12345-us");
+        JsonObject data = adapter.parseTweet("ref:21 locale:97323-12345-us");
         assertEquals("97323-12345", data.getString(Demand.POSTAL_CODE));
         assertEquals("US", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleShort() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 loc:97343-us");
+        JsonObject data = adapter.parseTweet("ref:21 loc:97343-us");
         assertEquals("97343", data.getString(Demand.POSTAL_CODE));
         assertEquals("US", data.getString(Demand.COUNTRY_CODE));
     }
 
     @Test
     public void testParseQuantityI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 quantity:21");
+        JsonObject data = adapter.parseTweet("ref:21 quantity:21");
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 quantity: 21");
+        JsonObject data = adapter.parseTweet("ref:21 quantity: 21");
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityIII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 quantity: 21 qty: 12");
+        JsonObject data = adapter.parseTweet("ref:21 quantity: 21 qty: 12");
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityShort() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 qty:21");
+        JsonObject data = adapter.parseTweet("ref:21 qty:21");
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseMixedCase() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:21 RaNge: 25 kM");
+        JsonObject data = adapter.parseTweet("ref:21 RaNge: 25 kM");
         assertEquals(25, data.getLong(Demand.RANGE));
         assertEquals("km", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseCompositeI() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:1234 exp:2050-12-31");
+        JsonObject data = adapter.parseTweet("ref:1234 exp:2050-12-31");
         assertEquals(1234, data.getLong(Demand.KEY));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseCompositeII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:1234 range: 10 mi exp:2050-12-31");
+        JsonObject data = adapter.parseTweet("ref:1234 range: 10 mi exp:2050-12-31");
         assertEquals(1234, data.getLong(Demand.KEY));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
@@ -291,7 +292,7 @@ public class TestTwitterAdapter {
 
     @Test
     public void testParseCompositeIII() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:1234 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
+        JsonObject data = adapter.parseTweet("ref:1234 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
         assertEquals(1234, data.getLong(Demand.KEY));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
@@ -302,7 +303,7 @@ public class TestTwitterAdapter {
 
     @Test
     public void testParseCompositeIV() throws ClientException, ParseException {
-        JsonObject data = adapter.parseMessage("ref:1234 qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
+        JsonObject data = adapter.parseTweet("ref:1234 qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
         assertEquals(1234, data.getLong(Demand.KEY));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
@@ -315,7 +316,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseCompositeV() throws ClientException, ParseException {
         String keywords = "Wii  console\tremote \t control";
-        JsonObject data = adapter.parseMessage("qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca " + keywords);
+        JsonObject data = adapter.parseTweet("qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca " + keywords);
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
@@ -331,7 +332,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseCompositeVI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseMessage("qty:12 range: 10 mi exp:2050-12-31 " + keywords + " locale: h0h 0h0 ca");
+        JsonObject data = adapter.parseTweet("qty:12 range: 10 mi exp:2050-12-31 " + keywords + " locale: h0h 0h0 ca");
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
@@ -347,7 +348,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseCompositeVII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseMessage("qty:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca");
+        JsonObject data = adapter.parseTweet("qty:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca");
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
@@ -363,7 +364,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseCompositeVIII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseMessage("" + keywords + " qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
+        JsonObject data = adapter.parseTweet("" + keywords + " qty:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
@@ -379,7 +380,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseActionI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseMessage("action:demand ref:1234" + keywords);
+        JsonObject data = adapter.parseTweet("action:demand ref:1234" + keywords);
         assertEquals("demand", data.getString(Demand.ACTION));
         assertEquals(1234, data.getLong(Demand.KEY));
         String[] parts = keywords.split("\\s+");
@@ -388,10 +389,11 @@ public class TestTwitterAdapter {
         }
     }
 
-    @Test(expected=com.twetailer.ClientException.class)
+    @Test
     public void testParseIncompleteMessage() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        adapter.parseMessage("action:demand " + keywords);
+        adapter.parseTweet("action:demand " + keywords);
+        // Now, the function consuming the incomplete tweet does the checking
     }
 
     @Test
@@ -399,16 +401,16 @@ public class TestTwitterAdapter {
         String keywords = "Wii console remote control";
         JsonObject data = new GenericJsonObject();
         assertEquals(0, data.size());
-        data = adapter.parseMessage("wii console loc:h0h0h0 ca" + keywords, data);
+        data = adapter.parseTweet("wii console loc:h0h0h0 ca" + keywords, data);
         assertTrue(0 < data.size());
-        Demand stub = new Demand(new GenericJsonObject());
+        new Demand(new GenericJsonObject());
         for (CommandSettings.Prefix prefix : CommandSettings.Prefix.values()) {
             if (prefix != CommandSettings.Prefix.reference) {
-                assertTrue(data.containsKey(stub.getAttributeLabel(prefix)));
+                assertTrue(data.containsKey(Demand.getAttributeLabel(prefix)));
             }
         }
-        Assert.assertEquals(1, data.getLong(stub.getAttributeLabel(CommandSettings.Prefix.quantity)));
-        Assert.assertEquals(25, data.getLong(stub.getAttributeLabel(CommandSettings.Prefix.range)));
+        Assert.assertEquals(1, data.getLong(Demand.getAttributeLabel(CommandSettings.Prefix.quantity)));
+        Assert.assertEquals(25, data.getLong(Demand.getAttributeLabel(CommandSettings.Prefix.range)));
     }
 
     @Test
@@ -427,21 +429,21 @@ public class TestTwitterAdapter {
         stub.addCriterion("--");
         stub.setTweetId(0L);
         JsonObject data = stub.toJson();
-        data = adapter.parseMessage("wii console loc:h0h0h0 ca" + keywords, data);
+        data = adapter.parseTweet("wii console loc:h0h0h0 ca" + keywords, data);
         assertTrue(0 < data.size());
         for (CommandSettings.Prefix prefix : CommandSettings.Prefix.values()) {
             if (prefix != CommandSettings.Prefix.reference) {
-                assertTrue(data.containsKey(stub.getAttributeLabel(prefix)));
+                assertTrue(data.containsKey(Demand.getAttributeLabel(prefix)));
             }
         }
-        Assert.assertNotSame(CommandSettings.Action.cancel.toString(), data.getString(stub.getAttributeLabel(CommandSettings.Prefix.action)));
-        Assert.assertEquals(CommandSettings.Action.demand.toString(), data.getString(stub.getAttributeLabel(CommandSettings.Prefix.action)));
+        Assert.assertNotSame(CommandSettings.Action.cancel.toString(), data.getString(Demand.getAttributeLabel(CommandSettings.Prefix.action)));
+        Assert.assertEquals(CommandSettings.Action.demand.toString(), data.getString(Demand.getAttributeLabel(CommandSettings.Prefix.action)));
     }
 
     @Test
     public void testParseActionII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseMessage("!update ref:1234" + keywords);
+        JsonObject data = adapter.parseTweet("!update ref:1234" + keywords);
         assertEquals("update", data.getString(Demand.ACTION));
         assertEquals(1234, data.getLong(Demand.KEY));
         String[] parts = keywords.split("\\s+");
@@ -534,9 +536,10 @@ public class TestTwitterAdapter {
         assertEquals(servlet, adapter.getDemandsServlet());
     }
 
+    @SuppressWarnings("deprecation")
     private User createUser(int id, boolean isFollowing, String screenName) {
         User user = EasyMock.createMock(User.class);
-        EasyMock.expect(user.getId()).andReturn(id).once();
+        EasyMock.expect(user.getId()).andReturn(id).atLeastOnce();
         EasyMock.expect(user.isFollowing()).andReturn(isFollowing).once();
         if (screenName != null) {
             EasyMock.expect(user.getScreenName()).andReturn(screenName).once();
@@ -563,7 +566,7 @@ public class TestTwitterAdapter {
     public void testProcessDirectMessageFromNewSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
-        final long consumerKey = 333;
+        final long consumerKey = 3333L;
         // Sender mock
         User sender = createUser(senderId, false, null); // <-- The sender does not follow @twetailer
         // DirectMessage mock
@@ -620,7 +623,7 @@ public class TestTwitterAdapter {
         
         // Test itself
         Long newSinceId = adapter.processDirectMessages(1L);
-        assertEquals(Long.valueOf(dmId), newSinceId);
+        assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
     }
 
     @Test
@@ -674,7 +677,7 @@ public class TestTwitterAdapter {
         
         // Test itself
         Long newSinceId = adapter.processDirectMessages(1L);
-        assertEquals(Long.valueOf(dmId), newSinceId);
+        assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
     }
     
     @Test

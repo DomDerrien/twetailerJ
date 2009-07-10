@@ -27,30 +27,42 @@ public class Consumer implements TransferObject {
 	@Persistent
 	private String address;
 	
+	public final static String ADDRESS = "address";
+	
 	@Persistent
 	private Date creationDate;
 	
+	public final static String CREATION_DATE = "creationDate";
 	@Persistent
 	private String email;
 	
+	public final static String EMAIL = "email";
+	
 	@Persistent
 	private String imId;
+    
+    public final static String IM_ID = "imId";
 	
 	@Persistent
 	private String name;
 	
+    public final static String NAME = "name";
+
 	@Persistent
 	private String phoneNumber;
+    
+    public final static String PHONE_NUMBER = "phoneNb";
 	
 	@Persistent
 	private User systemUser;
     
+    public final static String SYSTEM_USER = "sysUser";
+    
     @Persistent
     private Long twitterId;
     
-    // @Persistent
-    // private String twitterScreenName;
-
+    public final static String TWITTER_ID = "twitterId";
+    
     /** Default constructor */
     public Consumer() {
         setCreationDate(getNowDate());
@@ -153,39 +165,30 @@ public class Consumer implements TransferObject {
         this.twitterId = twitterId;
     }
 
-    // public String getTwitterScreenName() {
-    //     return twitterScreenName;
-    // }
-
-    // public void setTwitterScreenName(String twitterScreenName) {
-    //     this.twitterScreenName = twitterScreenName;
-    // }
 
     public JsonObject toJson() {
 		JsonObject out = new GenericJsonObject();
 		out.put("key", getKey());
-		out.put("address", getAddress());
-		out.put("creationDate", DateUtils.dateToISO(getCreationDate()));
-		out.put("email", getEmail());
-		out.put("imId", getImId());
-		out.put("name", getName());
-		out.put("phoneNumber", getPhoneNumber());
-		// out.put("systemUser", getSystemUser());
-        out.put("twitterId", getTwitterId());
-        // out.put("twitterScreenName", getTwitterScreenName());
+		out.put(ADDRESS, getAddress());
+		out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate()));
+		out.put(EMAIL, getEmail());
+		out.put(IM_ID, getImId());
+		out.put(NAME, getName());
+		out.put(PHONE_NUMBER, getPhoneNumber());
+		// out.put(SYSTEM_USER, getSystemUser());
+        out.put(TWITTER_ID, getTwitterId());
 		return out;
 	}
 
 	public void fromJson(JsonObject in) throws ParseException {
 		if (in.containsKey("key")) { setKey(in.getLong("key")); }
-		if (in.containsKey("address")) { setAddress(in.getString("address")); }
-		// if (in.containsKey("creationDate")) { setCreationDate(DateUtil.isoToDate(in.getString("creationDate"))); }
-		if (in.containsKey("email")) { setEmail(in.getString("email")); }
-		if (in.containsKey("imId")) { setImId(in.getString("imId")); }
-		if (in.containsKey("name")) { setName(in.getString("name")); }
-		if (in.containsKey("phoneNumber")) { setPhoneNumber(in.getString("phoneNumber")); }
-		// if (in.containsKey("systemUser")) { setSystemUser(in.getObject("systemUser")); }
-        if (in.containsKey("twitterId")) { setTwitterId(in.getLong("twitterId")); }
-        // if (in.containsKey("twitterScreenName")) { setTwitterScreenName(in.getString("twitterScreenName")); }
+		if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
+		// if (in.containsKey(CREATION_DATE)) { setCreationDate(DateUtil.isoToDate(in.getString(CREATION_DATE))); }
+		if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
+		if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
+		if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
+		if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+		// if (in.containsKey(SYSTEM_USER)) { setSystemUser(in.getObject(SYSTEM_USER)); }
+        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
 	}
 }

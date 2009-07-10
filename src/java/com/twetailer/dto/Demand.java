@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -22,16 +21,21 @@ import com.twetailer.settings.CommandSettings;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Demand extends Command implements TransferObject {
 	
-	@Persistent
-	private List<String> criteria;
+    @Persistent
+    private Long consumerKey = 0L;
 
-    public static final String CRITERIA = "criteria";
-	
+    public static final String CONSUMER_KEY = "consumerKey";
+    
 	@Persistent
 	private String countryCode;
 
     public static final String COUNTRY_CODE = "countryCode";
 	
+    @Persistent
+    private List<String> criteria;
+
+    public static final String CRITERIA = "criteria";
+    
 	@Persistent
 	private Date expirationDate;
 	
@@ -83,6 +87,22 @@ public class Demand extends Command implements TransferObject {
 		}
 	}
 
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public Long getConsumerKey() {
+        return consumerKey;
+    }
+
+    public void setConsumerKey(Long consumerId) {
+        this.consumerKey = consumerId;
+    }
+    
 	public List<String> getCriteria() {
 		return criteria;
 	}
@@ -96,14 +116,6 @@ public class Demand extends Command implements TransferObject {
 			criteria = new ArrayList<String>();
 		}
 		criteria.add(criterion);
-	}
-
-	public String getCountryCode() {
-		return countryCode;
-	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
 	}
 
 	public Date getExpirationDate() {
@@ -189,8 +201,9 @@ public class Demand extends Command implements TransferObject {
 		for(String criterion: getCriteria()) {
 			jsonArray.add(criterion);
 		}
+        out.put(COUNTRY_CODE, getCountryCode());
+        out.put(CONSUMER_KEY, getConsumerKey());
 		out.put(CRITERIA, jsonArray);
-		out.put(COUNTRY_CODE, getCountryCode());
 		out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
 		out.put("latitude", getLatitude());
 		out.put("longitude", getLongitude());
@@ -211,6 +224,7 @@ public class Demand extends Command implements TransferObject {
 			}
 		}
 		if (in.containsKey(COUNTRY_CODE)) { setCountryCode(in.getString(COUNTRY_CODE)); }
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
 		if (in.containsKey(EXPIRATION_DATE)) { setExpirationDate(DateUtils.isoToDate(in.getString(EXPIRATION_DATE))); }
 		if (in.containsKey("latitude")) { setLatitude(in.getString("latitude")); }
 		if (in.containsKey("longitude")) { setLongitude(in.getString("longitude")); }

@@ -210,36 +210,48 @@ public class GenericJsonObject implements JsonObject {
     }
 
     /** @see java.util.Map#put */
-    protected void putArbitrary(String key, Object object) {
+    protected void putObject(String key, Object object) {
         hashMap.put(key, object);
     }
 
     public void put(String key, boolean value) {
-        putArbitrary(key, value ? Boolean.TRUE : Boolean.FALSE);
+        put(key, value ? Boolean.TRUE : Boolean.FALSE);
+    }
+
+    public void put(String key, Boolean value) {
+        putObject(key, value);
     }
 
     public void put(String key, long value) {
-        putArbitrary(key, new Long(value));
+        put(key, Long.valueOf(value));
+    }
+
+    public void put(String key, Long value) {
+        putObject(key, value);
     }
 
     public void put(String key, double value) {
-        putArbitrary(key, new Double(value));
+        put(key, Double.valueOf(value));
+    }
+
+    public void put(String key, Double value) {
+        putObject(key, value);
     }
 
     public void put(String key, String value) {
-        putArbitrary(key, (Object) value);
+        putObject(key, (Object) value);
     }
 
     public void put(String key, JsonObject value) {
-        putArbitrary(key, (Object) value);
+        putObject(key, (Object) value);
     }
 
     public void put(String key, JsonArray value) {
-        putArbitrary(key, (Object) value);
+        putObject(key, (Object) value);
     }
 
     public void put(String key, JsonException value) {
-        putArbitrary(key, (Object) value);
+        putObject(key, (Object) value);
     }
 
     public void remove(String key) {

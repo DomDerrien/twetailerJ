@@ -13,7 +13,6 @@ import org.domderrien.jsontools.JsonObject;
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
-import com.twetailer.dto.Demand;
 import com.twetailer.dto.Settings;
 
 @SuppressWarnings("serial")

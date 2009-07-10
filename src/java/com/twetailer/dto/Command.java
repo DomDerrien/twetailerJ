@@ -3,6 +3,7 @@ package com.twetailer.dto;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -29,11 +30,6 @@ public class Command {
     private CommandSettings.Action action;
     
     public static final String ACTION = "action";
-    
-    @Persistent
-    private Long consumerKey = 0L;
-
-    public static final String CONSUMER_KEY = "consumerKey";
     
     @Persistent
     private Date creationDate = DateUtils.getNowDate();
@@ -83,14 +79,6 @@ public class Command {
         this.key = key;
     }
 
-    public Long getConsumerKey() {
-        return consumerKey;
-    }
-
-    public void setConsumerKey(Long consumerId) {
-        this.consumerKey = consumerId;
-    }
-    
     public Date getCreationDate() {
         if (creationDate == null) {
             setCreationDate(getNowDate());
@@ -161,7 +149,6 @@ public class Command {
         JsonObject out = new GenericJsonObject();
         out.put(KEY, getKey());
         out.put(ACTION, getAction().toString());
-        out.put(CONSUMER_KEY, getConsumerKey());
         out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate()));
         out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate()));
         out.put(STATE, getState().toString());
@@ -174,8 +161,9 @@ public class Command {
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
         // if (in.containsKey(CREATION_DATE)) { setCreationDate(DateUtils.isoToDate(in.getString(CREATION_DATE))); }
         // if (in.containsKey(MODIFICATION_DATE)) { setModificationDate(DateUtils.isoToDate(in.getString(MODIFICATION_DATE))); }
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
-        // if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
+        Logger.getLogger("Command").warning("contains tweet_id: " + in.containsKey(TWEET_ID));
+        if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
+        Logger.getLogger("Command").warning("Saved tweed_id: " + getTweetId());
     }
 }

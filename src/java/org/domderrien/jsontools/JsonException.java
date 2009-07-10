@@ -2,6 +2,8 @@ package org.domderrien.jsontools;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 /**
@@ -137,11 +139,23 @@ public class JsonException extends Exception implements JsonObject {
         internalStorage.put(key, value);
     }
 
+    public void put(String key, Boolean value) {
+        internalStorage.put(key, value);
+    }
+
     public void put(String key, long value) {
         internalStorage.put(key, value);
     }
 
+    public void put(String key, Long value) {
+        internalStorage.put(key, value);
+    }
+
     public void put(String key, double value) {
+        internalStorage.put(key, value);
+    }
+
+    public void put(String key, Double value) {
         internalStorage.put(key, value);
     }
 
@@ -177,11 +191,14 @@ public class JsonException extends Exception implements JsonObject {
         JsonSerializer.startObject("success", false, out, true);
         JsonSerializer.toStream("isException", true, out, true);
 		JsonSerializer.toStream("exceptionId", id, out, true);
-		JsonSerializer.toStream("exceptionType", getExceptionType(), out, true);
+		// JsonSerializer.toStream("exceptionType", getExceptionType(), out, true);
 		JsonSerializer.toStream("exceptionMessage", getMessage(), out, true);
+        StringWriter sw = new StringWriter();
+        printStackTrace(new PrintWriter(sw));
+        JsonSerializer.toStream("exceptionStackTrace", sw.toString(), out, true);
 		// JsonSerializer.introduceComplexValue("originalException", out);
 		// (new JsonException("SOURCE_EXCEPTION"), getCause()).toStream(out, isFollowed);
-		String originalMessage = getCause() == null ? "<nop>" : getCause().getMessage() == null ? "<nop>" : getCause().getMessage();
+		String originalMessage = getCause() == null ? "[no cause]" : getCause().getMessage() == null ? "[no cause message]" : getCause().getMessage();
 		JsonSerializer.endObject("orginalException", originalMessage, out, isFollowed);
 	}
 }

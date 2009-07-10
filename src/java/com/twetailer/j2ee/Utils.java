@@ -23,14 +23,22 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 public class Utils {
 	
-	private static PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	private static PersistenceManagerFactory pmfInstance = null;
 
+	/** Setter for the injection of a mock */
+	protected static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
+	    pmfInstance = pmf;
+	}
+	
 	/**
 	 * Singleton accessor
 	 * 
 	 * @return Initial instance of the <code>PersistenceManagerFactory</code> class
 	 */
 	public static PersistenceManagerFactory getPersistenceManagerFactory() {
+	    if (pmfInstance == null) {
+	        pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	    }
 		return pmfInstance;
 	}
 

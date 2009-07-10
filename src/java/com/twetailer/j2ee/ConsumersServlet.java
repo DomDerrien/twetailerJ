@@ -202,6 +202,10 @@ public class ConsumersServlet extends BaseRestlet {
             else if (value instanceof Long) {
                 queryObj.declareParameters("Long value");
             }
+            else if (value instanceof Integer) {
+                queryObj.declareParameters("Long value");
+                value = Long.valueOf((Integer) value);
+            }
             else if (value instanceof Date) {
                 queryObj.declareParameters("Date value");
             }

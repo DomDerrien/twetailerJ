@@ -20,8 +20,6 @@ public class DateUtils {
 	/**
 	 * Get the current date for the local time zone
 	 * @return Current date/time
-	 * 
-	 * @deprecated
 	 */
 	public static Date getNowDate() {
 		return getNowCalendar().getTime();

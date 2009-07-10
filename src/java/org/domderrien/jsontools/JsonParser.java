@@ -200,7 +200,7 @@ public class JsonParser {
             match(JsonDelimiters.COLONS);
 
             // Get value & store
-            jsonObject.putArbitrary(key, parseValue());
+            jsonObject.putObject(key, parseValue());
 
             // Skip comma, if present
             if(stream.peek(true)!=JsonDelimiters.CLOSING_BRACE) {
@@ -219,7 +219,7 @@ public class JsonParser {
         match(JsonDelimiters.OPENING_SQUARE_BRACKET);
         while(stream.peek(true)!=JsonDelimiters.CLOSING_SQUARE_BRACKET && stream.peek(true)!=JsonDelimiters.END_OF_STRING) {
             // Get value & store
-            transferArray.add( parseValue() );
+            transferArray.addObject( parseValue() );
 
             // Skip comma, if present
             if(stream.peek(true)!=JsonDelimiters.CLOSING_SQUARE_BRACKET) {

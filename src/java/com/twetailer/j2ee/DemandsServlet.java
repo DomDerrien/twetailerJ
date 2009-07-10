@@ -69,7 +69,7 @@ public class DemandsServlet extends BaseRestlet {
     		// Creates new demand record and persist it
     		Demand newDemand = new Demand(parameters);
     		Long consumerId = newDemand.getConsumerKey();
-    		if (consumerId == null) {
+    		if (consumerId == null || consumerId == 0L) {
     			newDemand.setConsumerKey(consumer.getKey());
     		}
     		else if (consumerId != consumer.getKey()) {
@@ -104,6 +104,10 @@ public class DemandsServlet extends BaseRestlet {
             }
             else if (value instanceof Long) {
                 queryObj.declareParameters("Long value");
+            }
+            else if (value instanceof Integer) {
+                queryObj.declareParameters("Long value");
+                value = Long.valueOf((Integer) value);
             }
             else if (value instanceof Date) {
                 queryObj.declareParameters("Date value");

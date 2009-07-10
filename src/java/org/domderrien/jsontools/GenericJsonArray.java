@@ -97,7 +97,11 @@ public class GenericJsonArray implements JsonArray {
     }
 
     public long getLong(int index) {
-        return ((Double) getObject(index)).longValue();
+        Object value = getObject(index);
+        if (value instanceof Double) {
+            return ((Double) getObject(index)).longValue();
+        }
+        return ((Long) getObject(index)).longValue();
     }
 
     public double getDouble(int index) {
@@ -121,7 +125,7 @@ public class GenericJsonArray implements JsonArray {
     }
 
     /** @see java.util.List#add  */
-    protected void add(Object object) {
+    protected void addObject(Object object) {
         arrayList.add(object);
     }
 
@@ -129,32 +133,44 @@ public class GenericJsonArray implements JsonArray {
         add(value ? Boolean.TRUE : Boolean.FALSE);
     }
 
+    public void add(Boolean value) {
+        addObject(value);
+    }
+
     public void add(long value) {
-        add(new Double(value));
+        add(Long.valueOf(value));
+    }
+
+    public void add(Long value) {
+        addObject(value);
     }
 
     public void add(double value) {
-        add(new Double(value));
+        add(Double.valueOf(value));
+    }
+
+    public void add(Double value) {
+        addObject(value);
     }
 
     public void add(String value) {
-        add((Object) value);
+        addObject(value);
     }
 
     public void add(JsonObject value) {
-        add((Object) value);
+        addObject(value);
     }
 
     public void add(JsonArray value) {
-        add((Object) value);
+        addObject(value);
     }
 
     public void add(JsonException value) {
-        add((Object) value);
+        addObject(value);
     }
 
     /** @see java.util.List#set */
-    protected void set(int index, Object object) {
+    protected void setObject(int index, Object object) {
         if (index == arrayList.size()) {
             arrayList.add(object);
             return;
@@ -166,28 +182,40 @@ public class GenericJsonArray implements JsonArray {
         set(index, value ? Boolean.TRUE : Boolean.FALSE);
     }
 
+    public void set(int index, Boolean value) {
+        setObject(index, value);
+    }
+
     public void set(int index, long value) {
-        set(index, new Double(value));
+        set(index, Long.valueOf(value));
+    }
+
+    public void set(int index, Long value) {
+        setObject(index, value);
     }
 
     public void set(int index, double value) {
-        set(index, new Double(value));
+        set(index, Double.valueOf(value));
+    }
+
+    public void set(int index, Double value) {
+        setObject(index, value);
     }
 
     public void set(int index, String value) {
-        set(index, (Object) value);
+        setObject(index, value);
     }
 
     public void set(int index, JsonObject value) {
-        set(index, (Object) value);
+        setObject(index, value);
     }
 
     public void set(int index, JsonArray value) {
-        set(index, (Object) value);
+        setObject(index, value);
     }
 
     public void set(int index, JsonException value) {
-        set(index, (Object) value);
+        setObject(index, value);
     }
 
     public void remove(int index) {

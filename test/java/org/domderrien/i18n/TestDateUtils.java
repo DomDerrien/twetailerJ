@@ -31,7 +31,6 @@ public class TestDateUtils {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
 	public void testGetNowDate() {
 		DateUtils.getNowDate();
 	}

@@ -18,6 +18,7 @@ import org.domderrien.jsontools.GenericJsonObject;
 import org.domderrien.jsontools.JsonArray;
 import org.domderrien.jsontools.JsonObject;
 import org.domderrien.jsontools.TransferObject;
+import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,19 +37,27 @@ public class TestUtils {
 
     @Test
     public void testConstructor() {
+        PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
+        Utils.setPersistenceManagerFactory(pmf);
         new Utils();
     }
 
     @Test
     public void testGetPersistenceManagerFactory() {
-		PersistenceManagerFactory pmf = Utils.getPersistenceManagerFactory();
+        PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
+        Utils.setPersistenceManagerFactory(pmf);
+		pmf = Utils.getPersistenceManagerFactory();
 		assertNotNull(pmf);
 		assertEquals(pmf, Utils.getPersistenceManagerFactory());
 	}
 
 	@Test
 	public void testGetPersistenceManager() {
-		PersistenceManager pm = Utils.getPersistenceManager();
+        PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
+        EasyMock.expect(pmf.getPersistenceManager()).andReturn(EasyMock.createMock(PersistenceManager.class)).once();
+        EasyMock.replay(pmf);
+        Utils.setPersistenceManagerFactory(pmf);
+        PersistenceManager pm = Utils.getPersistenceManager();
 		assertNotNull(pm);
 	}
 
