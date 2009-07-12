@@ -1,10 +1,13 @@
 package com.twetailer.settings;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-import org.domderrien.jsontools.JsonException;
+import org.domderrien.i18n.LabelExtractor;
+import org.domderrien.jsontools.GenericJsonArray;
+import org.domderrien.jsontools.GenericJsonObject;
 import org.domderrien.jsontools.JsonObject;
-import org.domderrien.jsontools.JsonParser;
 
 public class CommandSettings {
     
@@ -15,37 +18,31 @@ public class CommandSettings {
         quantity,
         reference,
         range,
+        state,
         tags
     }
+    
+    private static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
 
-    public static JsonObject getPrefixes(Locale locale) throws JsonException {
-        String definition = "{}";
-        if (Locale.US.equals(locale)) {
-            // TODO: load the definition from a localized resource bundle
-            definition = "{" +
-                "'" + Prefix.action + "':['action:','!']," +
-                "'" + Prefix.expiration + "':['expires:','exp:']," +
-                "'" + Prefix.location + "':['locale:','loc:']," +
-                "'" + Prefix.quantity + "':['quantity:','qty:']," +
-                "'" + Prefix.reference + "':['reference:','ref:']," +
-                "'" + Prefix.range + "':['range:','rng:']," +
-                "'" + Prefix.tags + "':['tags:','']" +
-                "}";
+    /**
+     * Loads the labels for the attribute prefixes for the specified locale
+     * @param locale Used to access the localized resource bundle
+     * @return A JsonObject with the localized labels, one JsonArray of values per defined prefix
+     */
+    public static JsonObject getPrefixes(Locale locale) {
+        if (!localizedPrefixes.containsKey(locale)) {
+            JsonObject prefixes = new GenericJsonObject();
+            for(Prefix prefix: Prefix.values()) {
+                prefixes.put(
+                        prefix.toString(),
+                        new GenericJsonArray(
+                                LabelExtractor.get("ta_prefix_" + prefix.toString(), locale).split(",")
+                        )
+                );
+            }
+            localizedPrefixes.put(locale, prefixes);
         }
-        else if (Locale.FRENCH.equals(locale)) {
-            // TODO: load the definition from a localized resource bundle
-            definition = "{" +
-                "'" + Prefix.action + "':['action:','!']," +
-                "'" + Prefix.expiration + "':['expire:','exp:']," +
-                "'" + Prefix.location + "':['localisation:','loc:']," +
-                "'" + Prefix.quantity + "':['quantité:','qté:']," +
-                "'" + Prefix.reference + "':['réference:','réf:']," +
-                "'" + Prefix.range + "':['distance:','dst:']," +
-                "'" + Prefix.tags + "':['mots-clés:','']" +
-                "}";
-        }
-        JsonObject prefixes = (new JsonParser(definition)).getJsonObject();
-        return prefixes;
+        return localizedPrefixes.get(locale);
     }
 
     public enum Action {
@@ -63,43 +60,26 @@ public class CommandSettings {
         www
     }
 
-    public static JsonObject getActions(Locale locale) throws JsonException {
-        String definition = "{}";
-        if (Locale.US.equals(locale)) {
-            // TODO: load the definition from a localized resource bundle
-            definition = "{" +
-                "'" + Action.cancel + "':['cancel','can']," +
-                "'" + Action.close + "':['close','clo']," +
-                "'" + Action.confirm + "':['confirm','con']," +
-                "'" + Action.decline + "':['decline:','dec']," +
-                "'" + Action.demand + "':['demand','dem']," +
-                "'" + Action.help + "':['help','?']," +
-                "'" + Action.list + "':['list','lis']," +
-                "'" + Action.propose + "':['propose','pro']," +
-                "'" + Action.shop + "':['shop','sho']," +
-                "'" + Action.supply + "':['supply','sup']," +
-                "'" + Action.wish + "':['wish','wis']," +
-                "'" + Action.www + "':['www','web']" +
-                "}";
+    private static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
+
+    /**
+     * Loads the labels for the action commands for the specified locale
+     * @param locale Used to access the localized resource bundle
+     * @return A JsonObject with the localized labels, one JsonArray of values per defined action
+     */
+    public static JsonObject getActions(Locale locale) {
+        if (!localizedActions.containsKey(locale)) {
+            JsonObject actions = new GenericJsonObject();
+            for(Action action: Action.values()) {
+                actions.put(
+                        action.toString(),
+                        new GenericJsonArray(
+                                LabelExtractor.get("ta_action_" + action.toString(), locale).split(",")
+                        )
+                );
+            }
+            localizedActions.put(locale, actions);
         }
-        else if (Locale.FRENCH.equals(locale)) {
-            // TODO: load the definition from a localized resource bundle
-            definition = "{" +
-                "'" + Action.cancel + "':['annule','anu']," +
-                "'" + Action.close + "':['ferme','fer']," +
-                "'" + Action.confirm + "':['confirme','con']," +
-                "'" + Action.decline + "':['décline','déc']," +
-                "'" + Action.demand + "':['demande','dem']," +
-                "'" + Action.list + "':['aide','?']," +
-                "'" + Action.list + "':['liste','lis']," +
-                "'" + Action.propose + "':['propose','pro']," +
-                "'" + Action.shop + "':['magazine','mag']," +
-                "'" + Action.supply + "':['fournit','fou']," +
-                "'" + Action.wish + "':['voeux','voe']," +
-                "'" + Action.www + "':['www','web']" +
-                "}";
-        }
-        JsonObject actions = (new JsonParser(definition)).getJsonObject();
-        return actions;
+        return localizedActions.get(locale);
     }
 }

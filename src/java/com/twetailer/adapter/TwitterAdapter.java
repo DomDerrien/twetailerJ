@@ -38,6 +38,7 @@ public class TwitterAdapter {
 
     /**
      * Default constructor using English keywords for the tweet parser and the response generator
+     * @deprecated
      */
     public TwitterAdapter() throws JsonException {
         this(Locale.US);
@@ -51,20 +52,33 @@ public class TwitterAdapter {
      * @throws JsonException
      */
     public TwitterAdapter(Locale locale) throws JsonException {
-        this(CommandSettings.getPrefixes(locale));
         possibleActions = CommandSettings.getActions(locale);
+
+        JsonObject possiblePrefixes = CommandSettings.getPrefixes(locale);
+        patterns = new HashMap<CommandSettings.Prefix, Pattern>();
+        
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.action, "\\s*\\w+");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.expiration, "\\s*[\\d\\-]+");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.location, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.quantity, "\\s*\\d+");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.reference, "\\s*\\d+");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.tags, "?(?:\\w\\s*)+");
     }
     
     private Map<CommandSettings.Prefix, Pattern> patterns;
 
     private String createPatternWithOptionalEndingCharacters(String prefix) {
+        if (prefix.length() == 1) {
+            return prefix;
+        }
         String pattern = "";
         int prefixEnd = prefix.length();
         while(3 < prefixEnd) {
             prefixEnd --;
             pattern = "(?:" + prefix.charAt(prefixEnd) + pattern + ")?";
         }
-        return prefix.subSequence(0, prefixEnd) + pattern;
+        return prefix.subSequence(0, prefixEnd) + pattern + ":";
     }
     
     /**
@@ -76,34 +90,13 @@ public class TwitterAdapter {
      * @param expression part of the regular expression that extracts the parameters for the identified prefix
      */
     private void preparePattern(JsonObject keywords, CommandSettings.Prefix keyword, String expression) {
-        // FIXME: use these patterns instead of the fixed words
         String prefix = keywords.getJsonArray(keyword.toString()).getString(0);
         String pattern = createPatternWithOptionalEndingCharacters(prefix);
         for(int i = 1; i < keywords.getJsonArray(keyword.toString()).size(); i++) {
             prefix = keywords.getJsonArray(keyword.toString()).getString(i);
             pattern += "|" + createPatternWithOptionalEndingCharacters(prefix);
         }
-
-        String longPrefix = keywords.getJsonArray(keyword.toString()).getString(0);
-        String shortPrefix = keywords.getJsonArray(keyword.toString()).getString(1);
-        patterns.put(keyword, Pattern.compile("((?:" + longPrefix + "|" + shortPrefix + ")" + expression + ")", Pattern.CASE_INSENSITIVE));
-    }
-
-    /**
-     * Initialize the adapter for a given set of localized command prefixes
-     * 
-     * @param keywords set of localized prefix labels
-     */
-    protected TwitterAdapter(JsonObject keywords) throws JsonException {
-        patterns = new HashMap<CommandSettings.Prefix, Pattern>();
-        
-        preparePattern(keywords, CommandSettings.Prefix.action, "\\s*\\w+");
-        preparePattern(keywords, CommandSettings.Prefix.expiration, "\\s*[\\d\\-]+");
-        preparePattern(keywords, CommandSettings.Prefix.location, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
-        preparePattern(keywords, CommandSettings.Prefix.quantity, "\\s*\\d+");
-        preparePattern(keywords, CommandSettings.Prefix.reference, "\\s*\\d+");
-        preparePattern(keywords, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
-        preparePattern(keywords, CommandSettings.Prefix.tags, "?(?:\\w\\s*)+");
+        patterns.put(keyword, Pattern.compile("((?:" + pattern + ")" + expression + ")", Pattern.CASE_INSENSITIVE));
     }
 
     /**
@@ -532,8 +525,15 @@ public class TwitterAdapter {
      * @return <code>true</code> if both values match, <code>false</code> otherwise.
      */
     protected boolean isA(String actualValue, CommandSettings.Action expectedAction) {
-        String demandLongLabel = possibleActions.getJsonArray(expectedAction.toString()).getString(0);
-        String demandShortLabel = possibleActions.getJsonArray(expectedAction.toString()).getString(1);
-        return demandLongLabel.equals(actualValue) || demandShortLabel.equals(actualValue);
+        JsonArray acceptedValues = possibleActions.getJsonArray(expectedAction.toString());
+        int acceptedValueNb = acceptedValues.size();
+        int acceptedValueIdx = 0;
+        while (acceptedValueIdx < acceptedValueNb) {
+            if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
+                return true;
+            }
+            acceptedValueIdx++;
+        }
+        return false;
     }
 }

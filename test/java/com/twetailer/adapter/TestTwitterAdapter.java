@@ -2,6 +2,7 @@ package com.twetailer.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 
 import java.text.ParseException;
@@ -41,6 +42,7 @@ public class TestTwitterAdapter {
     private TwitterAdapter adapter;
     
     @Before
+    @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
         adapter = new TwitterAdapter();
     }
@@ -380,7 +382,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseActionI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseTweet("action:demand ref:1234" + keywords);
+        JsonObject data = adapter.parseTweet("action:demand ref:1234 " + keywords);
         assertEquals("demand", data.getString(Demand.ACTION));
         assertEquals(1234, data.getLong(Demand.KEY));
         String[] parts = keywords.split("\\s+");
@@ -401,12 +403,12 @@ public class TestTwitterAdapter {
         String keywords = "Wii console remote control";
         JsonObject data = new GenericJsonObject();
         assertEquals(0, data.size());
-        data = adapter.parseTweet("wii console loc:h0h0h0 ca" + keywords, data);
+        data = adapter.parseTweet("loc:h0h0h0 ca " + keywords, data);
         assertTrue(0 < data.size());
         new Demand(new GenericJsonObject());
         for (CommandSettings.Prefix prefix : CommandSettings.Prefix.values()) {
-            if (prefix != CommandSettings.Prefix.reference) {
-                assertTrue(data.containsKey(Demand.getAttributeLabel(prefix)));
+            if (prefix != CommandSettings.Prefix.reference && prefix != CommandSettings.Prefix.state) {
+                assertTrue("Attribute with " + prefix + " not default-ed!", data.containsKey(Demand.getAttributeLabel(prefix)));
             }
         }
         Assert.assertEquals(1, data.getLong(Demand.getAttributeLabel(CommandSettings.Prefix.quantity)));
@@ -429,10 +431,10 @@ public class TestTwitterAdapter {
         stub.addCriterion("--");
         stub.setTweetId(0L);
         JsonObject data = stub.toJson();
-        data = adapter.parseTweet("wii console loc:h0h0h0 ca" + keywords, data);
+        data = adapter.parseTweet("loc:h0h0h0 ca " + keywords, data);
         assertTrue(0 < data.size());
         for (CommandSettings.Prefix prefix : CommandSettings.Prefix.values()) {
-            if (prefix != CommandSettings.Prefix.reference) {
+            if (prefix != CommandSettings.Prefix.reference && prefix != CommandSettings.Prefix.state) {
                 assertTrue(data.containsKey(Demand.getAttributeLabel(prefix)));
             }
         }
@@ -443,7 +445,7 @@ public class TestTwitterAdapter {
     @Test
     public void testParseActionII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = adapter.parseTweet("!update ref:1234" + keywords);
+        JsonObject data = adapter.parseTweet("!update ref:1234 " + keywords);
         assertEquals("update", data.getString(Demand.ACTION));
         assertEquals(1234, data.getLong(Demand.KEY));
         String[] parts = keywords.split("\\s+");
@@ -453,8 +455,10 @@ public class TestTwitterAdapter {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testProcessDirectMessageWithNoMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         TwitterAdapter adapter = new TwitterAdapter() {
+            @Override
             @SuppressWarnings("serial")
             public Twitter getTwitterAccount() {
                 return new Twitter() {
@@ -478,6 +482,7 @@ public class TestTwitterAdapter {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testProcessDirectMessageWithNoMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         TwitterAdapter adapter = new TwitterAdapter() {
             @Override
@@ -562,7 +567,7 @@ public class TestTwitterAdapter {
     }
     
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessDirectMessageFromNewSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -627,7 +632,7 @@ public class TestTwitterAdapter {
     }
 
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessDirectMessageFromExistingSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -681,7 +686,7 @@ public class TestTwitterAdapter {
     }
     
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessDirectMessageWithOneCorrectMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -748,7 +753,7 @@ public class TestTwitterAdapter {
     }
     
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessDirectMessageWithIncorrectMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -802,7 +807,7 @@ public class TestTwitterAdapter {
     }
 
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessDirectMessageWithUnsupportedAction() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -853,5 +858,19 @@ public class TestTwitterAdapter {
         // Test itself
         Long newSinceId = adapter.processDirectMessages(1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
+    }
+
+    @Test
+    public void testVariousActionsI() {
+        assertTrue(adapter.isA("cancel", CommandSettings.Action.cancel));
+        assertTrue(adapter.isA("delete", CommandSettings.Action.cancel));
+        assertFalse(adapter.isA("destroy", CommandSettings.Action.cancel));
+    }
+
+    @Test
+    public void testVariousActionsII() {
+        assertTrue(adapter.isA("help", CommandSettings.Action.help));
+        assertTrue(adapter.isA("?", CommandSettings.Action.help));
+        assertFalse(adapter.isA("sos", CommandSettings.Action.help));
     }
 }
