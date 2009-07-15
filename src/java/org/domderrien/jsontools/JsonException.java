@@ -1,5 +1,6 @@
 package org.domderrien.jsontools;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -79,7 +80,14 @@ public class JsonException extends Exception implements JsonObject {
 
     @Override
     public String toString() {
-        return internalStorage.toString();
+        try {
+            OutputStream fakeOutput = new ByteArrayOutputStream();
+            toStream(fakeOutput, true);
+            return fakeOutput.toString();
+        }
+        catch (IOException e) {
+            return internalStorage.toString();
+        }
     }
 
     /** accessor */

@@ -101,7 +101,7 @@ public class ConsumersServlet extends BaseRestlet {
     	    		pm.close();
     	    	}
     		}
-    		else if (existingConsumer.getSystemUser() != loggedUser) {
+    		else if (!existingConsumer.getSystemUser().equals(loggedUser)) {
         		throw new DataSourceException("Just retrieved a Consumer instance that does not correspond to the logged user");
     		}
     	}

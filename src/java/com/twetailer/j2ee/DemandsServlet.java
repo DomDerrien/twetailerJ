@@ -70,7 +70,7 @@ public class DemandsServlet extends BaseRestlet {
         if (consumerId == null || consumerId == 0L) {
             newDemand.setConsumerKey(consumerKey);
         }
-        else if (consumerId != consumerKey) {
+        else if (!consumerKey.equals(consumerId)) {
             throw new ClientException("Mismatch of consumer identifiers [" + consumerId + "/" + consumerKey + "]");
         }
         return createDemand(newDemand);
@@ -191,7 +191,7 @@ public class DemandsServlet extends BaseRestlet {
         if (demand == null) {
             throw new ClientException("No demand for identifier: " + key);
         }
-        if (consumerKey != demand.getConsumerKey()) {
+        if (!consumerKey.equals(demand.getConsumerKey())) {
             throw new ClientException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
         }
         return demand;
@@ -249,7 +249,7 @@ public class DemandsServlet extends BaseRestlet {
             Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), consumerKey);
             updatedDemand.fromJson(parameters);
             Long consumerId = updatedDemand.getConsumerKey();
-            if (consumerId != consumerKey) {
+            if (!consumerKey.equals(consumerId)) {
                 throw new ClientException("Mismatch of consumer identifiers [" + consumerId + "/" + consumerKey + "]");
             }
             return updateDemand(pm, updatedDemand);
