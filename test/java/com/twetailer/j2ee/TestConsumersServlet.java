@@ -23,7 +23,7 @@ public class TestConsumersServlet {
 		protected void setPersistenceManager(PersistenceManager pm) {
 			mockPM = pm;
 		}
-	    protected PersistenceManager getPersistenceManager() {
+	    public PersistenceManager getPersistenceManager() {
 	    	return mockPM;
 	    }
 	}

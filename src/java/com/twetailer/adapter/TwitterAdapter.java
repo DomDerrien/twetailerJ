@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jdo.PersistenceManager;
+
 import org.domderrien.i18n.DateUtils;
 import org.domderrien.jsontools.GenericJsonArray;
 import org.domderrien.jsontools.GenericJsonObject;
@@ -46,6 +48,8 @@ public class TwitterAdapter {
 
     private JsonObject possibleActions;
 
+    private JsonObject possiblePrefixes;
+
     /**
      * Initialize the tweet parser and the response generator for the given locale
      * @param locale
@@ -54,7 +58,7 @@ public class TwitterAdapter {
     public TwitterAdapter(Locale locale) throws JsonException {
         possibleActions = CommandSettings.getActions(locale);
 
-        JsonObject possiblePrefixes = CommandSettings.getPrefixes(locale);
+        possiblePrefixes = CommandSettings.getPrefixes(locale);
         patterns = new HashMap<CommandSettings.Prefix, Pattern>();
         
         preparePattern(possiblePrefixes, CommandSettings.Prefix.action, "\\s*\\w+");
@@ -130,30 +134,30 @@ public class TwitterAdapter {
             matcher = patterns.get(CommandSettings.Prefix.action).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.action), getAction(currentGroup.toLowerCase()));
+            command.put(Demand.ACTION, getAction(currentGroup.toLowerCase()));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
             // Default settings
             String actionLabelForDemand = possibleActions.getJsonArray(CommandSettings.Action.demand.toString()).getString(0);
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.action), actionLabelForDemand);
+            command.put(Demand.ACTION, actionLabelForDemand);
         }
         // Expiration
         try {
             matcher = patterns.get(CommandSettings.Prefix.expiration).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.expiration), getDate(currentGroup));
+            command.put(Demand.EXPIRATION_DATE, getDate(currentGroup));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
             // Default settings
-            if (!command.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.expiration))) {
+            if (!command.containsKey(Demand.EXPIRATION_DATE)) {
                 Calendar now = DateUtils.getNowCalendar();
                 now.set(Calendar.MONTH, now.get(Calendar.MONTH) + 1);
-                command.put(Demand.getAttributeLabel(CommandSettings.Prefix.expiration), DateUtils.dateToISO(now.getTime()));
+                command.put(Demand.EXPIRATION_DATE, DateUtils.dateToISO(now.getTime()));
             }
         }
         // Locale
@@ -162,7 +166,7 @@ public class TwitterAdapter {
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
             command.put(Demand.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase());
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.location), getPostalCode(currentGroup, command.getString(Demand.COUNTRY_CODE)).toUpperCase());
+            command.put(Demand.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Demand.COUNTRY_CODE)).toUpperCase());
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
@@ -174,23 +178,22 @@ public class TwitterAdapter {
             matcher = patterns.get(CommandSettings.Prefix.quantity).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.quantity), getQuantity(currentGroup));
+            command.put(Demand.QUANTITY, getQuantity(currentGroup));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
-            String label = Demand.getAttributeLabel(CommandSettings.Prefix.quantity);
-            if (!command.containsKey(label) || command.getLong(label) == 0L) {
-                command.put(label, 1L);
+            if (!command.containsKey(Demand.QUANTITY) || command.getLong(Demand.QUANTITY) == 0L) {
+                command.put(Demand.QUANTITY, 1L);
             }
         }
         // Reference
-        command.remove(Demand.getAttributeLabel(CommandSettings.Prefix.reference)); // Reset
+        command.remove(Demand.KEY); // Reset
         try {
             matcher = patterns.get(CommandSettings.Prefix.reference).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.reference), getQuantity(currentGroup));
+            command.put(Demand.KEY, getQuantity(currentGroup));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
@@ -203,22 +206,22 @@ public class TwitterAdapter {
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
             command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase());
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.range), getRange(currentGroup, command.getString(Demand.RANGE_UNIT)));
+            command.put(Demand.RANGE, getRange(currentGroup, command.getString(Demand.RANGE_UNIT)));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
         catch(IllegalStateException ex) {
             // Default settings
-            if (!command.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.range))) { command.put(Demand.RANGE, 25.0D); }
+            if (!command.containsKey(Demand.RANGE)) { command.put(Demand.RANGE, 25.0D); }
             if (!command.containsKey(Demand.RANGE_UNIT)) { command.put(Demand.RANGE_UNIT, "km"); }
         }
         // Tags
-        command.remove(Demand.getAttributeLabel(CommandSettings.Prefix.tags)); // Reset
+        command.remove(Demand.CRITERIA); // Reset
         try {
             matcher = patterns.get(CommandSettings.Prefix.tags).matcher(message);
             matcher.find(); // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Demand.getAttributeLabel(CommandSettings.Prefix.tags), new GenericJsonArray(getTags(currentGroup)));
+            command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
             message = matcher.replaceFirst("");
             oneFieldOverriden = true;
         }
@@ -344,6 +347,9 @@ public class TwitterAdapter {
         if (command.containsKey(Demand.KEY)) {
             tweet.append(CommandSettings.Prefix.reference).append(":").append(command.getLong(Demand.KEY)).append(space);
         }
+        if (command.containsKey(Demand.STATE)) {
+            tweet.append(CommandSettings.Prefix.state).append(":").append(command.getString(Demand.STATE)).append(space);
+        }
         if (command.containsKey(Demand.EXPIRATION_DATE)) {
             tweet.append(CommandSettings.Prefix.expiration).append(":").append(command.getString(Demand.EXPIRATION_DATE).substring(0, 10)).append(space);
         }
@@ -439,10 +445,12 @@ public class TwitterAdapter {
         // Get the list of direct messages
         Twitter twitterAccount = getTwitterAccount();
         List<DirectMessage> messages = twitterAccount.getDirectMessages(new Paging(1, 200, sinceId));
+        String referenceLabel = possiblePrefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0);
         // Process each messages one-by-one
         int limit = messages == null ? 0 : messages.size();
         for (int i=0; i<limit; i++) {
             DirectMessage dm = messages.get(i);
+            long dmId = dm.getId();
             // Get Twetailer account
             twitter4j.User sender = dm.getSender();
             Consumer consumer = checkConsumer(sender);
@@ -452,44 +460,133 @@ public class TwitterAdapter {
                 twitterAccount.updateStatus("@" + senderScreenName + " You must follow @twetailer and then send your request privately via Direct Messages.");
                 break;
             }
-            // Check if the tweet has been already process
-            long dmId = dm.getId();
-            DemandsServlet demandsServlet = getDemandsServlet();
-            List<Demand> demands; /* = demandsServlet.getDemands(Demand.TWEET_ID, Long.valueOf(dmId));
-            if (0 < demands.size()) {
-                break;
-            }*/
-            // Get latest demand for this user
-            JsonObject latestDemand = new GenericJsonObject();
             // Evaluate the new demand
             try {
-                JsonObject newCommand = parseTweet(dm.getText(), latestDemand);
-                newCommand.put(Demand.TWEET_ID, dmId);
+                JsonObject newCommand = parseTweet(dm.getText(), new GenericJsonObject());
                 String newAction = newCommand.getString(Demand.ACTION);
-                if (isA(newAction, CommandSettings.Action.demand)) {
-                    if ((!newCommand.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.reference)) || newCommand.getLong(Demand.getAttributeLabel(CommandSettings.Prefix.reference)) == 0L) &&
-                            (!newCommand.containsKey(Demand.getAttributeLabel(CommandSettings.Prefix.location)) || newCommand.getString(Demand.getAttributeLabel(CommandSettings.Prefix.location)) == null)) {
-                        twitterAccount.sendDirectMessage(senderScreenName, "Error: " + "New demand must have a location. Tweet \"action:help\" or \"!help\" or \"?\" for details.");
+                Long refAttr = newCommand.getLong(Demand.KEY);
+                if (isA(newAction, CommandSettings.Action.help)) {
+                    JsonArray tags = newCommand.getJsonArray(Demand.CRITERIA);
+                    if (tags.size() == 0) {
+                        twitterAccount.sendDirectMessage(senderScreenName, "Help: type \"!help <action>\" to get contextuel help per action one verb at a time. Or \"!help help\" to get the list of supported commands.");
+                    }
+                    else if (CommandSettings.Action.demand.toString().equals(tags.getString(0))) {
+                        twitterAccount.sendDirectMessage(senderScreenName, "Help: \"demand\" is the default action, used to create or update a demand.");
+                    }
+                    // FIXME: implement all variations
+                    else {
+                        twitterAccount.sendDirectMessage(senderScreenName, "Help: command not supported. Current set: {demand, list, cancel}.");
+                    }
+                }
+                else if (refAttr == 0L) { 
+                    // Check if the tweet has been already process
+                    /* FIXME: CommandsServlet commandsServlet = getCommandsServlet();
+                    List<Command> commands; = commandsServlet.getCommands(Demand.TWEET_ID, Long.valueOf(dmId));
+                    if (0 < commands.size()) {
+                        break;
+                    }*/
+                    newCommand.put(Demand.TWEET_ID, dmId);
+                    if(isA(newAction, CommandSettings.Action.demand)) {
+                        DemandsServlet demandsServlet = getDemandsServlet();
+                        // Get the latest demand or the default one
+                        /* FIXME: finish implementation
+                        List<Demand> demands = demandsServlet.getDemands(Demand.CONSUMER_KEY, newCommand.getLong(Demand.CONSUMER_KEY));
+                        demands.toString();
+                        */
+                        Demand newDemand = demandsServlet.createDemand(newCommand, consumer.getKey());
+                        if (newDemand.getState() == CommandSettings.State.incomplete) {
+                            twitterAccount.sendDirectMessage(senderScreenName, "Error: " + "New demand with " + referenceLabel + ":" + newDemand.getKey() + " must have a location. Tweet \"action:help\" or \"!help\" or \"?\" for details.");
+                        }
+                        else {
+                            twitterAccount.sendDirectMessage(senderScreenName, "Demand " + referenceLabel + ":" + newDemand.getKey() + " created. Use this reference to update the demand.");
+                        }
+                    }
+                    else if (isA(newAction, CommandSettings.Action.list)) {
+                        // FIXME: list only active demands
+                        DemandsServlet demandsServlet = getDemandsServlet();
+                        List<Demand> demands = demandsServlet.getDemands(Demand.CONSUMER_KEY, consumer.getKey());
+                        if (demands.size() == 0) {
+                            twitterAccount.sendDirectMessage(senderScreenName, "No active demand");
+                        }
+                        else {
+                            twitterAccount.sendDirectMessage(senderScreenName, "This message is followed by " + demands.size() + " tweet(s) (one per active demand)");
+                            for (Demand demand: demands) {
+                                twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                            }
+                        }
+                    }
+                    else if (isA(newAction, CommandSettings.Action.shop)) {
+                        throw new ClientException("Shop creation: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.supply)) {
+                        throw new ClientException("Supply creation: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.wish)) {
+                        throw new ClientException("Wish creation: not yet implemented");
                     }
                     else {
-                        Long persistedDemandKey = demandsServlet.createDemand(newCommand, consumer);
-                        // TODO: use localized message
-                        twitterAccount.sendDirectMessage(senderScreenName, "Demand ref:" + persistedDemandKey + " saved. Use this reference to update the demand.");
+                        throw new ClientException("Command " + newAction + " might be applied to existing resource with the required " + referenceLabel + " parameter.");
                     }
-                }
-                else if (isA(newAction, CommandSettings.Action.list)) {
-                    demands = demandsServlet.getDemands(Demand.CONSUMER_KEY, consumer.getKey());
-                    for (Demand demand: demands) {
-                        log.warning(demand.getTweetId() + " -- " + generateTweet(demand.toJson()));
-                        twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
-                    }
-                }
-                else if (isA(newAction, CommandSettings.Action.cancel)) {
-                    
                 }
                 else {
-                    // TODO: use localized message
-                    twitterAccount.sendDirectMessage(senderScreenName, "Command not supported yet.");
+                    if (isA(newAction, CommandSettings.Action.cancel)) {
+                        DemandsServlet demandsServlet = getDemandsServlet();
+                        PersistenceManager pm = demandsServlet.getPersistenceManager();
+                        try {
+                            Demand demand = demandsServlet.getDemand(pm, refAttr, consumer.getKey());
+                            demand.setState(CommandSettings.State.cancelled);
+                            demandsServlet.updateDemand(pm, demand);
+                            twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                        }
+                        finally {
+                            pm.close();
+                        }
+                    }
+                    else if (isA(newAction, CommandSettings.Action.close)) {
+                        throw new ClientException("Closing identified command: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.confirm)) {
+                        throw new ClientException("Confirming identified command: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.decline)) {
+                        throw new ClientException("Declining identified command: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.demand)) {
+                        DemandsServlet demandsServlet = getDemandsServlet();
+                        PersistenceManager pm = demandsServlet.getPersistenceManager();
+                        try {
+                            Demand demand = demandsServlet.getDemand(pm, refAttr, consumer.getKey());
+                            demand.fromJson(newCommand);
+                            demandsServlet.updateDemand(pm, demand);
+                            twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                        }
+                        finally {
+                            pm.close();
+                        }
+                    }
+                    else if (isA(newAction, CommandSettings.Action.list)) {
+                        DemandsServlet demandsServlet = getDemandsServlet();
+                        Demand demand = demandsServlet.getDemand(refAttr, consumer.getKey());
+                        twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                    }
+                    else if (isA(newAction, CommandSettings.Action.propose)) {
+                        throw new ClientException("Proposing identified command: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.shop)) {
+                        throw new ClientException("Shop creation: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.supply)) {
+                        throw new ClientException("Supply creation: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.wish)) {
+                        throw new ClientException("Wish creation: not yet implemented");
+                    }
+                    else if (isA(newAction, CommandSettings.Action.www)) {
+                        throw new ClientException("www/web: not yet implemented");
+                    }
+                    else {
+                        throw new ClientException("Command " + newAction + " is not supported.");
+                    }
                 }
             }
             catch(ClientException ex) {

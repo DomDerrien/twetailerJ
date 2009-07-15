@@ -16,6 +16,7 @@ import org.domderrien.jsontools.JsonObject;
 import org.domderrien.jsontools.TransferObject;
 
 import com.google.appengine.api.users.User;
+import com.twetailer.ClientException;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Consumer implements TransferObject {
@@ -76,15 +77,25 @@ public class Consumer implements TransferObject {
      */
     public Consumer(JsonObject parameters) throws ParseException {
         this();
-        fromJson(parameters);
+        try {
+            fromJson(parameters);
+        }
+        catch (ClientException e) {
+            // No risk to override an existing value because this is a newly (an empty) object instace
+        }
     }
     
 	public Long getKey() {
 		return key;
 	}
 
-	public void setKey(Long key) {
-		this.key = key;
+	public void setKey(Long key) throws ClientException {
+        if (this.key == null) {
+            this.key = key;
+        }
+        else if (!this.key.equals(key)) {
+            throw new ClientException("Cannot override the key of an object with a new one");
+        }
 	}
 
 	public String getAddress() {
@@ -180,7 +191,7 @@ public class Consumer implements TransferObject {
 		return out;
 	}
 
-	public void fromJson(JsonObject in) throws ParseException {
+	public void fromJson(JsonObject in) throws ParseException, ClientException {
 		if (in.containsKey("key")) { setKey(in.getLong("key")); }
 		if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
 		// if (in.containsKey(CREATION_DATE)) { setCreationDate(DateUtil.isoToDate(in.getString(CREATION_DATE))); }

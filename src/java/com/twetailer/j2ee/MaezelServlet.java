@@ -24,7 +24,7 @@ public class MaezelServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(MaezelServlet.class.getName());
 
 	@Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     	Utils.configureHttpParameters(request, response);
 
@@ -64,9 +64,9 @@ public class MaezelServlet extends HttpServlet {
             		throw new ClientException("Given Twitter identified does not match any exisiting account");
             	}
             	// Create the demand
-            	Long demandKey = (new DemandsServlet()).createDemand(in, consumer);
+            	Demand demand = (new DemandsServlet()).createDemand(in, consumer.getKey());
             	// Return request identifier
-            	out.put("resourceId", demandKey);
+            	out.put("resourceId", demand.getKey());
             }
             else if ("/getDemands".equals(pathInfo)) {
                 // Select the demands

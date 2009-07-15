@@ -64,7 +64,7 @@ public class SettingsServlet extends BaseRestlet {
             Query queryObj = pm.newQuery(Settings.class);
             queryObj.setFilter("name == value");
             queryObj.declareParameters("String value");
-			getLogger().warning("Select settings with: " + (queryObj == null ? "null" : queryObj.toString()));
+			getLogger().warning("Select settings with: " + queryObj.toString());
 	    	// Select the corresponding settings
 			List<Settings> settingsList = (List<Settings>) queryObj.execute(Settings.APPLICATION_SETTINGS_ID);
 	        if (settingsList == null || settingsList.size() == 0) {
@@ -73,10 +73,11 @@ public class SettingsServlet extends BaseRestlet {
 	        if (1 < settingsList.size()) {
 	            return new Settings();
 	        }
-	        Long sinceId = settingsList.get(0).getLastProcessDirectMessageId();
-            settingsList.get(0).setLastProcessDirectMessageId(1L);
-            settingsList.get(0).setLastProcessDirectMessageId(sinceId);
-	        return settingsList.get(0);
+	        Settings settings = settingsList.get(0);
+	        Long sinceId = settings.getLastProcessDirectMessageId();
+            settings.setLastProcessDirectMessageId(1L);
+            settings.setLastProcessDirectMessageId(sinceId);
+	        return settings;
     	}
     	finally {
     		pm.close();

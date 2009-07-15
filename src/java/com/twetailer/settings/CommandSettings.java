@@ -82,4 +82,11 @@ public class CommandSettings {
         }
         return localizedActions.get(locale);
     }
+
+    public enum State {
+        incomplete,
+        completed,
+        processed,
+        cancelled
+    }
 }

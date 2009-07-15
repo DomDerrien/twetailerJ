@@ -3,7 +3,6 @@ package com.twetailer.dto;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -14,11 +13,14 @@ import javax.jdo.annotations.PrimaryKey;
 import org.domderrien.i18n.DateUtils;
 import org.domderrien.jsontools.GenericJsonObject;
 import org.domderrien.jsontools.JsonObject;
+import org.domderrien.jsontools.TransferObject;
 
+import com.twetailer.ClientException;
 import com.twetailer.settings.CommandSettings;
+import com.twetailer.settings.CommandSettings.State;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Command {
+public class Command implements TransferObject {
 
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -40,13 +42,6 @@ public class Command {
     private Date modificationDate = DateUtils.getNowDate();
 
     public static final String MODIFICATION_DATE = "modificationDate";
-
-    public enum State {
-        incomplete,
-        completed,
-        processed,
-        cancelled
-    }
 
     @Persistent
     private State state = State.incomplete;
@@ -75,8 +70,13 @@ public class Command {
         return key;
     }
 
-    public void setKey(Long key) {
-        this.key = key;
+    public void setKey(Long key) throws ClientException {
+        if (this.key == null) {
+            this.key = key;
+        }
+        else if (!this.key.equals(key)) {
+            throw new ClientException("Cannot override the key of an object with a new one");
+        }
     }
 
     public Date getCreationDate() {
@@ -139,12 +139,6 @@ public class Command {
         this.tweetId = tweetId;
     }
 
-    public static String getAttributeLabel(CommandSettings.Prefix prefix) {
-        if (prefix == CommandSettings.Prefix.action) return ACTION;
-        if (prefix == CommandSettings.Prefix.reference) return KEY;
-        return null;
-    }
-
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         out.put(KEY, getKey());
@@ -156,14 +150,13 @@ public class Command {
         return out;
     }
 
-    public void fromJson(JsonObject in) throws ParseException {
+    public void fromJson(JsonObject in) throws ParseException, ClientException {
         if (in.containsKey(KEY)) { setKey(in.getLong(KEY)); }
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
         // if (in.containsKey(CREATION_DATE)) { setCreationDate(DateUtils.isoToDate(in.getString(CREATION_DATE))); }
+        // FIXME: set the modification to now!
         // if (in.containsKey(MODIFICATION_DATE)) { setModificationDate(DateUtils.isoToDate(in.getString(MODIFICATION_DATE))); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
-        Logger.getLogger("Command").warning("contains tweet_id: " + in.containsKey(TWEET_ID));
         if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
-        Logger.getLogger("Command").warning("Saved tweed_id: " + getTweetId());
     }
 }

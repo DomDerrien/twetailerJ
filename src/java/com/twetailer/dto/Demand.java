@@ -14,12 +14,12 @@ import org.domderrien.i18n.DateUtils;
 import org.domderrien.jsontools.GenericJsonArray;
 import org.domderrien.jsontools.JsonArray;
 import org.domderrien.jsontools.JsonObject;
-import org.domderrien.jsontools.TransferObject;
 
-import com.twetailer.settings.CommandSettings;
+import com.twetailer.ClientException;
+import com.twetailer.settings.CommandSettings.State;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Demand extends Command implements TransferObject {
+public class Demand extends Command {
 	
     @Persistent
     private Long consumerKey = 0L;
@@ -72,19 +72,26 @@ public class Demand extends Command implements TransferObject {
 	 */
 	public final static int DEFAULT_EXPIRATION_DELAY = 7;
 	
-	/**
+    
+    /** Default constructor */
+    public Demand() {
+        super();
+    }
+
+    /**
 	 * Creates a demand
 	 * 
 	 * @param in HTTP request parameters
 	 * @throws ParseException If the parameter extraction fails
 	 */
 	public Demand(JsonObject parameters) throws ParseException {
-	    super();
-		fromJson(parameters);
-		if (getExpirationDate() == null) {
-			// Default expiration in one week
-			setExpirationDate(DEFAULT_EXPIRATION_DELAY);
-		}
+	    this();
+        try {
+            fromJson(parameters);
+        }
+        catch (ClientException e) {
+            // No risk to override an existing value because this is a newly (an empty) object instace
+        }
 	}
 
     public String getCountryCode() {
@@ -182,17 +189,6 @@ public class Demand extends Command implements TransferObject {
     public void setRangeUnit(String rangeUnit) {
         this.rangeUnit = rangeUnit;
     }
-    
-    public static String getAttributeLabel(CommandSettings.Prefix prefix) {
-        String inherited = Command.getAttributeLabel(prefix);
-        if (inherited != null) return inherited;
-        if (prefix == CommandSettings.Prefix.expiration) return EXPIRATION_DATE;
-        if (prefix == CommandSettings.Prefix.location) return POSTAL_CODE;
-        if (prefix == CommandSettings.Prefix.quantity) return QUANTITY;
-        if (prefix == CommandSettings.Prefix.range) return RANGE;
-        if (prefix == CommandSettings.Prefix.tags) return CRITERIA;
-        return null;
-    }
 
 	public JsonObject toJson() {
 	    // TODO: finish the constant definition for the serialization
@@ -214,7 +210,7 @@ public class Demand extends Command implements TransferObject {
 		return out;
 	}
 
-	public void fromJson(JsonObject in) throws ParseException {
+	public void fromJson(JsonObject in) throws ParseException, ClientException {
         // TODO: finish the constant definition for the de-serialization
 	    super.fromJson(in);
 		if (in.containsKey(CRITERIA)) {
@@ -232,5 +228,23 @@ public class Demand extends Command implements TransferObject {
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
+
+        checkForCompletion();
+	}
+	
+	protected void checkForCompletion() {
+	    if (getState() == State.incomplete) {
+	        if (getCriteria() != null && 0 < getCriteria().size()) {
+	            if (getExpirationDate() != null) {
+	                if (getRange() != null && 5.0D <= getRange().doubleValue()) {
+	                    if (getCountryCode() != null && getPostalCode() != null || getLatitude() != null && getLongitude() != null) {
+	                        if (getQuantity() != null && 0L < getQuantity().longValue()) {
+	                            setState(State.completed);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
 	}
 }
