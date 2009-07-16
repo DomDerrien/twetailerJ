@@ -296,8 +296,8 @@
 			<!--file name="tomcat/j2ee.jar" /-->
 			<!--file name="was/j2ee-6.0.jar.jar" /-->
 			<file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
-			<file name="appengine/appengine-api-1.0-sdk-1.2.1.jar" />
-			<file name="jdo/jdo2-api-2.3-SNAPSHOT.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.2.jar" />
+			<file name="jdo/jdo2-api-2.3-ea.jar" />
 		</filelist>
 	</path>
 
@@ -309,8 +309,8 @@
 			<file name="cobertura/asm-tree-2.2.1.jar" />
 			<file name="cobertura/jakarta-oro-2.0.8.jar" />
 			<file name="cobertura/log4j-1.2.9.jar" />
-			<file name="appengine/datanucleus-appengine-1.0.1.final.jar" />
-			<file name="datanucleus/datanucleus-core-1.1.0.jar" />
+			<file name="datanucleus/datanucleus-appengine-1.0.2.final.jar" />
+			<file name="datanucleus/datanucleus-core-1.1.4.jar" />
 		</filelist>
 	</path>
 

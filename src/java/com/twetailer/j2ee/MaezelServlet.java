@@ -90,12 +90,6 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
         	log.warning("doGet().exception: " + ex);
-            if (log.getLevel() == Level.FINE) {
-            	ex.printStackTrace();
-            	if (ex.getCause() != null) {
-            		ex.getCause().printStackTrace();
-            	}
-            }
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 

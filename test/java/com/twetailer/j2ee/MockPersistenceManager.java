@@ -289,5 +289,10 @@ public class MockPersistenceManager implements PersistenceManager {
 	public void setDetachAllOnCommit(boolean arg0) {}
 	public void setIgnoreCache(boolean arg0) {}
 	public void setMultithreaded(boolean arg0) {}
+    public void setQueryTimeoutMillis(Integer arg0) {}
 	public void setUserObject(Object arg0) {}
+    public Integer getQueryTimeoutMillis() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

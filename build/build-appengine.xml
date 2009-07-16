@@ -15,7 +15,7 @@
 	
 	<property name="appengine.sdk.dir"
 		description="Location of the Google App Engine SDK"
-		location="${basedir}/bin/appengine-java-sdk-1.2.1"
+		location="${basedir}/bin/appengine-java-sdk-1.2.2"
 	/>
 	
 	<import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
@@ -41,14 +41,11 @@
 	<!-- ·············· -->
 
     <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean, step-configuration-clean">
-		<delete file="src/war/WEB-INF/lib/appengine-api-1.0-sdk-1.2.1.jar" />
-		<delete file="src/war/WEB-INF/lib/datanucleus-appengine-1.0.1.final.jar" />
-		<delete file="src/war/WEB-INF/lib/datanucleus-core-1.1.0.jar" />
-		<delete file="src/war/WEB-INF/lib/datanucleus-jpa-1.1.0.jar" />
-		<delete file="src/war/WEB-INF/lib/geronimo-jpa_3.0_spec-1.1.1.jar" />
-		<delete file="src/war/WEB-INF/lib/geronimo-jta_1.1_spec-1.1.1.jar" />
-		<delete file="src/war/WEB-INF/lib/jdo2-api-2.3-SNAPSHOT.jar" />
-		<delete file="src/war/WEB-INF/lib/twitter4j-2.0.8.jar" />
+		<delete file="src/war/WEB-INF/lib/appengine*.jar" />
+		<delete file="src/war/WEB-INF/lib/datanucleus*.jar" />
+		<delete file="src/war/WEB-INF/lib/geronimo*.jar" />
+		<delete file="src/war/WEB-INF/lib/jdo2*.jar" />
+		<delete file="src/war/WEB-INF/lib/twitter4j*.jar" />
 	</target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">

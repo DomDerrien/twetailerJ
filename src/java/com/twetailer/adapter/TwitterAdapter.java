@@ -592,8 +592,8 @@ public class TwitterAdapter {
             catch(Exception ex) {
                 // TODO: use localized message
                 twitterAccount.sendDirectMessage(senderScreenName, "Error: " + ex.getMessage());
-                JsonException translatedEx = new JsonException("Error while processing message " + dmId + ": " + dm.getText(), ex);
-                log.warning(translatedEx.toString());
+                // JsonException translatedEx = new JsonException("Error while processing message " + dmId + ": " + dm.getText(), ex);
+                // log.warning(translatedEx.toString());
             }
             if (lastId < dmId) {
                 lastId = dmId;

@@ -94,4 +94,17 @@ public class MockQuery implements Query {
 	public void setTimeoutMillis(int arg0) {}
 	public void setUnique(boolean arg0) {}
 	public void setUnmodifiable() {}
+    public void cancel(Thread arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+    public void cancelAll() {}
+    public Boolean getSerializeRead() {
+        return null;
+    }
+    public Integer getTimeoutMillis() {
+        return null;
+    }
+    public void setSerializeRead(Boolean arg0) {}
+    public void setTimeoutMillis(Integer arg0) {}
 }
