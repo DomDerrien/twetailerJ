@@ -49,6 +49,10 @@
 		</note>
 	</header>
 	<body>
+	
+		<!-- =================== -->
+		<!-- Default definitions -->
+		<!-- =================== -->
 
 		<tu tuid="bundle_language" datatype="Text">
 			<prop type="x-tier">dojotk</prop>
@@ -72,6 +76,296 @@
 				<seg>N/A</seg>
 			</tuv>
 		</tu>
+
+		<!-- ======================= -->
+		<!-- Core engine definitions -->
+		<!-- ======================= -->
+
+		<tu tuid="command_state_open" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>open</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="command_state_published" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>published</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="command_state_proposed" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>proposed</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="command_state_confirmed" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>confirmed</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="command_state_closed" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>closed</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="command_state_canceled" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>canceled</seg>
+			</tuv>
+		</tu>
+
+		<!-- ================================ -->
+		<!-- Command line related definitions -->
+		<!-- ================================ -->
+
+		<tu tuid="cmdLine_prefix_action" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>action,command,!</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_expiration" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>expiration,expires</seg>
+			</tuv>
+		</tu>
+		
+		<tu tuid="cmdLine_prefix_location" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the location attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>location,locale</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_quantity" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>quantity,qty</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_reference" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>reference,id,identifier</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_range" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the range attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>range,rng,distance</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_state" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the state attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>state</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_tags" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				For the command line arguments, accepted labels for the tags attribute.
+				Important: keywords MUST be comma-separated, without extra-spaces!
+				IMPORTANT: the trailing comma is required to let tags being presented without prefix
+			</note>
+			<tuv xml:lang="en">
+				<seg>tags,keywords,keys,</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_cancel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>cancel,delete</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_close" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>close</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_confirm" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>confirm</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_decline" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>decline</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_demand" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>demand</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_help" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>help,?</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_list" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>list</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_propose" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>propose</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_shop" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>shop</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_supply" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>supply</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_wish" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>wish</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_action_www" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>www,web</seg>
+			</tuv>
+		</tu>
+
+		<!-- =========================== -->
+		<!-- Twitter adapter definitions -->
+		<!-- =========================== -->
+
+		<tu tuid="ta_messageToNonFollower" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the Twitter adapter, message sent to non followers. {0} is the sender screen name.</note>
+			<tuv xml:lang="en">
+				<seg>"@{0} You must follow @twetailer and then send your request privately via Direct Messages.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="ta_acknowledgeIncompleteDemandCreated" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				For the Twitter adapter, confirmation of a demand creation, but has to inform it's not yet read for publication, because it's incomplete.
+				{0}: dynamically generated demand reference
+			</note>
+			<tuv xml:lang="en">
+				<seg>New demand with reference:{0} must have a location. Tweet "!help topic:demand" for details.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="ta_acknowledgeDemandCreated" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				For the Twitter adapter, confirmation of a demand creation, ready for publication.
+				{0}: dynamically generated demand reference
+			</note>
+			<tuv xml:lang="en">
+				<seg>Your search's reference number is {0}. Please include "ref:{0}" in all your related messages...</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="ta_responseToListCommandForNoResult" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				For the Twitter adapter, inform that no result can be displayed for the !list command.
+			</note>
+			<tuv xml:lang="en">
+				<seg>You have no active demand.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="ta_responseToSpecificListCommandForNoResult" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				For the Twitter adapter, inform that no result can be displayed for the !list command with the given reference.
+				{0}: repetition of the reference passed as an argument to the !list command
+			</note>
+			<tuv xml:lang="en">
+				<seg>No demand matches reference:{0}.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="ta_introductionToResponseToListCommandWithManyResults" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				For the Twitter adapter, introduce the series of tweets to be sent in response to a !list command.
+				{0}: number of messages to be sent
+			</note>
+			<tuv xml:lang="en">
+				<seg>This message is followed by {0} tweet(s) (one per active demand).</seg>
+			</tuv>
+		</tu>
+
+		<!-- =================== -->
+		<!-- Console definitions -->
+		<!-- =================== -->
 
 		<tu tuid="redirectionMsg" datatype="Text">
 			<prop type="x-tier">javarb</prop>
@@ -357,170 +651,6 @@
 			<note>Label for table column headers</note>
 			<tuv xml:lang="en">
 				<seg>Creation Date</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_action" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>action,command,!</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_expiration" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>expiration,expires</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="ta_prefix_location" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the location attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>location,locale</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_quantity" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>quantity,qty</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_reference" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>reference,id,identifier</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_range" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the range attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>range,rng,distance</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_state" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the state attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>state</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_prefix_tags" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>
-				For the Twitter Adapter, accepted labels for the tags attribute.
-				Important: keywords MUST be comma-separated, without extra-spaces!
-				IMPORTANT: the trailing comma is required to let tags being presented without prefix
-			</note>
-			<tuv xml:lang="en">
-				<seg>tags,keywords,keys,</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_cancel" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>cancel,delete</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_close" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>close</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_confirm" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>confirm</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_decline" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>decline</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_demand" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>demand</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_help" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>help,?</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_list" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>list</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_propose" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>propose</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_shop" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>shop</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_supply" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>supply</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_wish" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>wish</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="ta_action_www" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the Twitter Adapter, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>www,web</seg>
 			</tuv>
 		</tu>
 

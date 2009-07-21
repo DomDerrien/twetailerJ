@@ -1,5 +1,6 @@
 package com.twetailer.settings;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -51,4 +52,17 @@ public class TestCommandSettings {
         }
     }
 
+    @Test
+    public void testVariousActionsI() {
+        assertTrue(CommandSettings.isAction(CommandSettings.Action.cancel, "cancel", Locale.ENGLISH));
+        assertTrue(CommandSettings.isAction(CommandSettings.Action.cancel, "delete", Locale.ENGLISH));
+        assertFalse(CommandSettings.isAction(CommandSettings.Action.cancel, "destroy", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testVariousActionsII() {
+        assertTrue(CommandSettings.isAction(CommandSettings.Action.help, "help", Locale.ENGLISH));
+        assertTrue(CommandSettings.isAction(CommandSettings.Action.help, "?", Locale.ENGLISH));
+        assertFalse(CommandSettings.isAction(CommandSettings.Action.help, "sos", Locale.ENGLISH));
+    }
 }

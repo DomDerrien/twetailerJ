@@ -43,9 +43,8 @@ public class TestTwitterAdapter {
     private TwitterAdapter adapter;
     
     @Before
-    @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
-        adapter = new TwitterAdapter();
+        adapter = new TwitterAdapter(Locale.ENGLISH);
     }
 
     @After
@@ -265,9 +264,17 @@ public class TestTwitterAdapter {
     }
 
     @Test
-    public void testParseQuantityShort() throws ClientException, ParseException {
+    public void testParseQuantityShortI() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 qty:21");
         assertEquals(21, data.getLong(Demand.QUANTITY));
+    }
+    
+    @Test
+    public void testParseQuantityShortII() throws ClientException, ParseException {
+        JsonObject data = adapter.parseTweet("ref:  21    qty:  \t 50   ");
+        System.out.println(data.toString());
+        assertEquals(21, data.getLong(Demand.KEY));
+        assertEquals(50, data.getLong(Demand.QUANTITY));
     }
 
     @Test
@@ -906,19 +913,5 @@ public class TestTwitterAdapter {
         // Test itself
         Long newSinceId = adapter.processDirectMessages(1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-    }
-
-    @Test
-    public void testVariousActionsI() {
-        assertTrue(adapter.isA("cancel", CommandSettings.Action.cancel));
-        assertTrue(adapter.isA("delete", CommandSettings.Action.cancel));
-        assertFalse(adapter.isA("destroy", CommandSettings.Action.cancel));
-    }
-
-    @Test
-    public void testVariousActionsII() {
-        assertTrue(adapter.isA("help", CommandSettings.Action.help));
-        assertTrue(adapter.isA("?", CommandSettings.Action.help));
-        assertFalse(adapter.isA("sos", CommandSettings.Action.help));
     }
 }
