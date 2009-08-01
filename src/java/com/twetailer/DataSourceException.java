@@ -2,8 +2,8 @@ package com.twetailer;
 
 import java.text.ParseException;
 
-import org.domderrien.jsontools.JsonObject;
-import org.domderrien.jsontools.TransferObject;
+import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.TransferObject;
 
 @SuppressWarnings("serial")
 public class DataSourceException extends Exception implements TransferObject {
@@ -16,7 +16,7 @@ public class DataSourceException extends Exception implements TransferObject {
 		super(message, ex);
 	}
 	
-	public void fromJson(JsonObject in) throws ParseException {
+	public TransferObject fromJson(JsonObject in) throws ParseException {
 		throw new RuntimeException("not yet implemented!");
 	}
 

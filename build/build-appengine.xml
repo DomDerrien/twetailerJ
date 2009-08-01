@@ -45,6 +45,7 @@
 		<delete file="src/war/WEB-INF/lib/datanucleus*.jar" />
 		<delete file="src/war/WEB-INF/lib/geronimo*.jar" />
 		<delete file="src/war/WEB-INF/lib/jdo2*.jar" />
+		<delete file="src/war/WEB-INF/lib/domderrien*.jar" />
 		<delete file="src/war/WEB-INF/lib/twitter4j*.jar" />
 	</target>
 
@@ -54,6 +55,7 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
+		<copy file="deps/lib/domderrien/domderrien-0.8.jar" todir="src/war/WEB-INF/lib"/>
 		<copy file="deps/lib/twitter4j/twitter4j-2.0.8.jar" todir="src/war/WEB-INF/lib"/>
     </target>
 

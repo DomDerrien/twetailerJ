@@ -159,7 +159,7 @@ public class LabelExtractor
         ResourceBundle rb = (ResourceBundle) resourceBundles.get(rbId);
         if (rb == null) {
         	// Get the resource bundle filename from the application settings and return the identified file
-            ResourceBundle applicationSettings = ResourceBundle.getBundle("applicationSettings", locale); //$NON-NLS-1$
+            ResourceBundle applicationSettings = ResourceBundle.getBundle("domderrien-i18n", locale); //$NON-NLS-1$
         	rb = ResourceBundle.getBundle(applicationSettings.getString("localizedLabelFilename"), locale);
             resourceBundles.put(rbId, rb);
         }

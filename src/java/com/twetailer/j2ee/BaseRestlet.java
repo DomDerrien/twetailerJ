@@ -11,10 +11,10 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.domderrien.jsontools.GenericJsonObject;
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonException;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.DataSourceException;

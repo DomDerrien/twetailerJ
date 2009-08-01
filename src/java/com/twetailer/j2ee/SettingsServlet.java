@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;

@@ -2,16 +2,16 @@ package com.twetailer.j2ee;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.domderrien.jsontools.GenericJsonObject;
-import org.domderrien.jsontools.JsonException;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonUtils;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
@@ -70,9 +70,9 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/getDemands".equals(pathInfo)) {
                 // Select the demands
-                List<Demand> demands = (new DemandsServlet()).getDemands(in.getString("qA"), in.getLong("qV"));
+                List<Demand> demands = (new DemandsServlet()).getDemands(in.getString("qA"), in.getLong("qV"), 0);
                 // Return demand list
-                out.put("resources", Utils.toJson(demands));
+                out.put("resources", JsonUtils.toJson(demands));
             }
             else if ("/getDemand".equals(pathInfo)) {
                 // Select the demands

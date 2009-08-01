@@ -1,20 +1,23 @@
 package com.twetailer.j2ee;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
 import com.twetailer.dto.Demand;
+import com.twetailer.validator.LocaleValidator;
 
 @SuppressWarnings("serial")
 public class DemandsServlet extends BaseRestlet {
@@ -66,6 +69,11 @@ public class DemandsServlet extends BaseRestlet {
         getLogger().warning("Create demand for consumer id: " + consumerKey + " with: " + parameters.toString());
         // Creates new demand record and persist it
         Demand newDemand = new Demand(parameters);
+        // Validate the state
+        newDemand.checkForCompletion();
+        // Validate the location
+        LocaleValidator.getGeoCoordinates(newDemand);
+        // Updates the identifier of the creator consumer
         Long consumerId = newDemand.getConsumerKey();
         if (consumerId == null || consumerId == 0L) {
             newDemand.setConsumerKey(consumerKey);
@@ -73,6 +81,7 @@ public class DemandsServlet extends BaseRestlet {
         else if (!consumerKey.equals(consumerId)) {
             throw new ClientException("Mismatch of consumer identifiers [" + consumerId + "/" + consumerKey + "]");
         }
+        // Persist it
         return createDemand(newDemand);
     }
 
@@ -99,16 +108,17 @@ public class DemandsServlet extends BaseRestlet {
      * 
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of demands matching the given criteria
      * 
      * @throws DataSourceException If given value cannot matched a data store type
      * 
      * @see DemandsServlet#getDemands(PersistenceManager, String, Object)
      */
-    public List<Demand> getDemands(String attribute, Object value) throws DataSourceException {
+    public List<Demand> getDemands(String attribute, Object value, int limit) throws DataSourceException {
     	PersistenceManager pm = getPersistenceManager();
         try {
-            return getDemands(pm, attribute, value);
+            return getDemands(pm, attribute, value, limit);
         }
         finally {
             pm.close();
@@ -121,12 +131,13 @@ public class DemandsServlet extends BaseRestlet {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of demands matching the given criteria
      * 
      * @throws DataSourceException If given value cannot matched a data store type
      */
     @SuppressWarnings("unchecked")
-    public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value) throws DataSourceException {
+    public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
 		// Prepare the query
         Query queryObj = pm.newQuery(Demand.class);
         queryObj.setFilter(attribute + " == value");
@@ -147,11 +158,50 @@ public class DemandsServlet extends BaseRestlet {
         else {
             throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
         }
-		getLogger().warning("Select demand(s) with: " + (queryObj == null ? "null" : queryObj.toString()));
-    	// Select the corresponding users
+        if (0 < limit) {
+            queryObj.setRange(0, limit);
+        }
+        getLogger().warning("Select demand(s) with: " + queryObj.toString());
+    	// Select the corresponding resources
 		List<Demand> demands = (List<Demand>) queryObj.execute(value);
 		demands.size(); // FIXME: remove workaround for a bug in DataNucleus
     	return demands;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  111");
+        StringBuilder filterDefinition = new StringBuilder();
+        StringBuilder parameterDefinitions = new StringBuilder();
+        List<Object> values = new ArrayList<Object>(parameters.size());
+        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  222");
+        for(String parameterName: parameters.keySet()) {
+            filterDefinition.append(" && " + parameterName + " == " + parameterName + "Value");
+            parameterDefinitions.append(", ");
+            Object parameterValue = parameters.get(parameterName);
+            if (parameterValue instanceof String) { parameterDefinitions.append("String " + parameterName + "Value"); }
+            else if (parameterValue instanceof Long) { parameterDefinitions.append("Long " + parameterName + "Value"); }
+            else if (parameterValue instanceof Integer) {
+                parameterDefinitions.append("Long " + parameterName + "Value");
+                parameterValue = Long.valueOf((Integer) parameterValue);
+            }
+            else if (parameterValue instanceof Date) { parameterDefinitions.append("Date " + parameterName + "Value"); }
+            values.add(parameterValue);
+        }
+        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  333");
+        Query queryObj = pm.newQuery(Demand.class);
+        queryObj.setFilter(filterDefinition.substring(" && ".length()));
+        queryObj.declareParameters(parameterDefinitions.substring(", ".length()));
+        if (0 < limit) {
+            queryObj.setRange(0, limit);
+        }
+        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  444 -- " + queryObj.toString());
+        getLogger().warning("Select demand(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Demand> demands = (List<Demand>) queryObj.executeWithArray(values);
+        demands.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return demands;
     }
     
     /**

@@ -8,8 +8,9 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonUtils;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
@@ -58,7 +59,7 @@ public class ConsumersServlet extends BaseRestlet {
     		}
     	} // FIXME: verify the specified attribute name belongs to a list of authorized attributes
     	// Select and return the corresponding consumers
-    	return Utils.toJson(getConsumers(queryAttribute, queryValue));
+    	return JsonUtils.toJson(getConsumers(queryAttribute, queryValue));
 	}
 
 	@Override

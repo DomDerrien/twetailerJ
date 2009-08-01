@@ -97,6 +97,14 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="command_state_forwarded" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>forwarded</seg>
+			</tuv>
+		</tu>
+
 		<tu tuid="command_state_proposed" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
@@ -305,7 +313,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the Twitter adapter, message sent to non followers. {0} is the sender screen name.</note>
 			<tuv xml:lang="en">
-				<seg>"@{0} You must follow @twetailer and then send your request privately via Direct Messages.</seg>
+				<seg>@{0} You must follow @twetailer and then send your request privately via Direct Messages.</seg>
 			</tuv>
 		</tu>
 

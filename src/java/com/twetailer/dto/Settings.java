@@ -8,8 +8,8 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.domderrien.jsontools.GenericJsonObject;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Settings {

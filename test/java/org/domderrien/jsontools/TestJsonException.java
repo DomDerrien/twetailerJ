@@ -193,8 +193,6 @@ public class TestJsonException {
         assertTrue(out.getStream().contains("isException"));
         assertTrue(out.getStream().contains("true"));
         assertTrue(out.getStream().contains("exceptionId"));
-        assertTrue(out.getStream().contains("exceptionType"));
-        assertTrue(out.getStream().contains(exceptionType));
         assertTrue(out.getStream().contains("exceptionMessage"));
         assertTrue(out.getStream().contains(message));
         assertTrue(out.getStream().contains("orginalException"));
@@ -216,10 +214,7 @@ public class TestJsonException {
         assertTrue(out.getStream().contains("isException"));
         assertTrue(out.getStream().contains("true"));
         assertTrue(out.getStream().contains("exceptionId"));
-        assertTrue(out.getStream().contains("exceptionType"));
-        assertTrue(out.getStream().contains(exceptionType));
         assertTrue(out.getStream().contains("exceptionMessage"));
-        assertTrue(out.getStream().contains(exceptionType));
         assertTrue(out.getStream().contains("orginalException"));
         assertTrue(out.getStream().contains(message));
     }
@@ -239,11 +234,8 @@ public class TestJsonException {
         assertTrue(out.getStream().contains("isException"));
         assertTrue(out.getStream().contains("true"));
         assertTrue(out.getStream().contains("exceptionId"));
-        assertTrue(out.getStream().contains("exceptionType"));
-        assertTrue(out.getStream().contains(exceptionType));
         assertTrue(out.getStream().contains("exceptionMessage"));
         assertTrue(out.getStream().contains("null"));
-        assertTrue(out.getStream().contains(exceptionType));
         assertTrue(out.getStream().contains("orginalException"));
         assertTrue(out.getStream().contains("[no cause message]"));
 	}

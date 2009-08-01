@@ -3,8 +3,6 @@ package org.domderrien.jsontools;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Map;
 
 /**
@@ -201,9 +199,11 @@ public class JsonException extends Exception implements JsonObject {
 		JsonSerializer.toStream("exceptionId", id, out, true);
 		// JsonSerializer.toStream("exceptionType", getExceptionType(), out, true);
 		JsonSerializer.toStream("exceptionMessage", getMessage(), out, true);
+		/** / // This call to printStackTrace() causes a StackOverflowException because of Corbetura instrumentation
         StringWriter sw = new StringWriter();
         printStackTrace(new PrintWriter(sw));
-        JsonSerializer.toStream("exceptionStackTrace", sw.toString(), out, true);
+        JsonSerializer.toStream("exceptionStackTrace", sw.getBuffer().substring(0, 100), out, true);
+        /**/
 		// JsonSerializer.introduceComplexValue("originalException", out);
 		// (new JsonException("SOURCE_EXCEPTION"), getCause()).toStream(out, isFollowed);
 		String originalMessage = getCause() == null ? "[no cause]" : getCause().getMessage() == null ? "[no cause message]" : getCause().getMessage();

@@ -2,8 +2,8 @@ package com.twetailer.j2ee;
 
 import java.util.logging.Logger;
 
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.DataSourceException;

@@ -15,7 +15,8 @@ o-tmf="RichWebApps">
 <!-- Core engine definitions -->
 <!-- ======================= -->
 <tu tuid="command_state_open" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>nouvelle</seg></tuv></tu>
-<tu tuid="command_state_proposed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>publiée</seg></tuv></tu>
+<tu tuid="command_state_published" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>publiée</seg></tuv></tu>
+<tu tuid="command_state_forwarded" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>transmise</seg></tuv></tu>
 <tu tuid="command_state_proposed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>proposée</seg></tuv></tu>
 <tu tuid="command_state_confirmed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>confirmée</seg></tuv></tu>
 <tu tuid="command_state_closed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>fermée</seg></tuv></tu>
@@ -46,7 +47,7 @@ o-tmf="RichWebApps">
 <!-- =========================== -->
 <!-- Twitter adapter definitions -->
 <!-- =========================== -->
-<tu tuid="ta_messageToNonFollower" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>"@{0} Vous devez suivre @twetailer et envoyez vos requêtes confidentiellement par Messages Directs.</seg></tuv></tu>
+<tu tuid="ta_messageToNonFollower" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>@{0} Vous devez suivre @twetailer et envoyez vos requêtes confidentiellement par Messages Directs.</seg></tuv></tu>
 <tu tuid="ta_acknowledgeIncompleteDemandCreated" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>La nouvelle demande référence:{1} doit être localisée. Soumettez le message "!aide sujet:demande" pour plus de détails.</seg></tuv></tu>
 <tu tuid="ta_acknowledgeDemandCreated" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>La demande référence:{1} vient d'être crée et va être publication. Utilisez cette référence pour mettre à jour votre demande.</seg></tuv></tu>
 <tu tuid="ta_responseToListCommandForNoResult" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>Vous n'avez pas de demande active.</seg></tuv></tu>

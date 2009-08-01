@@ -1,8 +1,6 @@
 package com.twetailer.j2ee;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.jdo.JDOHelper;
@@ -11,11 +9,6 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.domderrien.jsontools.GenericJsonArray;
-import org.domderrien.jsontools.GenericJsonObject;
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonObject;
-import org.domderrien.jsontools.TransferObject;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -107,33 +100,5 @@ public class Utils {
         	throw new RuntimeException("Query can be posted only by logged users.");
         }
         return loggedUser;
-    }
-
-	/**
-	 * Serialize the given list of <code>TransfertObject</code> instance to be send on the wire
-	 * 
-	 * @param objects List of serialize-able objects
-	 * return object ready to be serialized
-	 */
-    protected static JsonArray toJson(List<?> objects) {
-    	JsonArray out = new GenericJsonArray();
-    	for (Object object: objects) {
-    		out.add(((TransferObject) object).toJson());
-    	}
-    	return out;
-    }
-
-	/**
-	 * Serialize the given map of <code>TransfertObject</code> instance to be send on the wire
-	 * 
-	 * @param objects Map of serialize-able objects
-	 * return object ready to be serialized
-	 */
-    protected static JsonObject toJson(Map<String, ?> objects) {
-    	JsonObject out = new GenericJsonObject();
-    	for (String key: objects.keySet()) {
-    		out.put(key, ((TransferObject) objects.get(key)).toJson());
-    	}
-        return out;
     }
 }

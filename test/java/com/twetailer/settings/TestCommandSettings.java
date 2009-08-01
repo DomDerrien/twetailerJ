@@ -7,8 +7,10 @@ import static org.junit.Assert.assertNotSame;
 
 import java.util.Locale;
 
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonObject;
 import org.junit.Test;
+
+import com.twetailer.validator.CommandSettings;
 
 public class TestCommandSettings {
 

@@ -1,6 +1,8 @@
 package com.twetailer.j2ee;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -12,12 +14,13 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
-import org.domderrien.MockHttpServletRequest;
-import org.domderrien.MockHttpServletResponse;
-import org.domderrien.jsontools.GenericJsonObject;
-import org.domderrien.jsontools.JsonArray;
-import org.domderrien.jsontools.JsonObject;
-import org.domderrien.jsontools.TransferObject;
+import domderrien.mocks.MockHttpServletRequest;
+import domderrien.mocks.MockHttpServletResponse;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonUtils;
+import domderrien.jsontools.TransferObject;
 import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -123,20 +126,21 @@ public class TestUtils {
 	    final JsonObject converted = new GenericJsonObject();
 	    List<TransferObject> list = new ArrayList<TransferObject>();
 	    list.add(new TransferObject() {
-            public void fromJson(JsonObject in) throws ParseException {
+            public TransferObject fromJson(JsonObject in) throws ParseException {
+                return null;
             }
             public JsonObject toJson() {
                 return converted;
             }
         });
-	    JsonArray array = Utils.toJson(list);
+	    JsonArray array = JsonUtils.toJson(list);
 	    assertEquals(1, array.size());
 		assertEquals(converted, array.getJsonObject(0));
     }
 
     @Test(expected=NullPointerException.class)
     public void testListToJsonII() {
-        Utils.toJson((List <?>) null);
+        JsonUtils.toJson((List <?>) null);
 	}
 
 	@Test
@@ -144,20 +148,21 @@ public class TestUtils {
         final JsonObject converted = new GenericJsonObject();
         Map<String, TransferObject> map = new HashMap<String, TransferObject>();
         map.put("test", new TransferObject() {
-            public void fromJson(JsonObject in) throws ParseException {
+            public TransferObject fromJson(JsonObject in) throws ParseException {
+                return null;
             }
             public JsonObject toJson() {
                 return converted;
             }
         });
-        JsonObject object = Utils.toJson(map);
+        JsonObject object = JsonUtils.toJson(map);
         assertEquals(1, object.size());
         assertEquals(converted, object.getJsonObject("test"));
 	}
 
     @Test(expected=NullPointerException.class)
     public void testMapToJsonII() {
-        Utils.toJson((Map <String, ?>) null);
+        JsonUtils.toJson((Map <String, ?>) null);
     }
 
 }

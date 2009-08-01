@@ -1,21 +1,17 @@
 package com.twetailer.adapter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import junit.framework.Assert;
 
-import org.domderrien.jsontools.GenericJsonObject;
-import org.domderrien.jsontools.JsonException;
-import org.domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +32,7 @@ import com.twetailer.dto.Settings;
 import com.twetailer.j2ee.ConsumersServlet;
 import com.twetailer.j2ee.DemandsServlet;
 import com.twetailer.j2ee.SettingsServlet;
-import com.twetailer.settings.CommandSettings;
+import com.twetailer.validator.CommandSettings;
 
 public class TestTwitterAdapter {
 
@@ -407,43 +403,6 @@ public class TestTwitterAdapter {
     }
 
     @Test
-    public void testVerifyDefaultValuesI() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
-        JsonObject data = new GenericJsonObject();
-        assertEquals(0, data.size());
-        data = adapter.parseTweet("loc:h0h0h0 ca " + keywords, data);
-        assertTrue(0 < data.size());
-        new Demand(new GenericJsonObject());
-        Assert.assertEquals(0, data.getLong(Demand.KEY));
-        Assert.assertEquals(1, data.getLong(Demand.QUANTITY));
-        Assert.assertEquals(25, data.getLong(Demand.RANGE));
-        Assert.assertEquals("km", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    public void testVerifyDefaultValuesII() throws ClientException, ParseException, JsonException {
-        String keywords = "Wii console remote control";
-        Demand stub = new Demand(new GenericJsonObject());
-        stub.setAction(CommandSettings.Action.cancel);
-        stub.setExpirationDate(new Date(2000, 0, 1));
-        stub.setCountryCode("--");
-        stub.setPostalCode("--");
-        stub.setQuantity(0L);
-        stub.setKey(0L);
-        stub.setRange(0D);
-        stub.setRangeUnit("--");
-        stub.addCriterion("--");
-        stub.setTweetId(0L);
-        JsonObject data = stub.toJson();
-        data = adapter.parseTweet("loc:h0h0h0 ca " + keywords, data);
-        assertTrue(0 < data.size());
-        Assert.assertEquals(0, data.getLong(Demand.KEY));
-        Assert.assertNotSame(CommandSettings.Action.cancel.toString(), data.getString(Demand.ACTION));
-        Assert.assertEquals(CommandSettings.Action.demand.toString(), data.getString(Demand.ACTION));
-    }
-
-    @Test
     public void testParseActionII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = adapter.parseTweet("!update ref:1234 " + keywords);
@@ -611,12 +570,7 @@ public class TestTwitterAdapter {
                 assertEquals(senderId, twitterId);         // <-- Verify the correct creation submission
                 Consumer consumer = new Consumer();
                 consumer.setTwitterId(Long.valueOf(twitterId));
-                try {
-                    consumer.setKey(consumerKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instace
-                }
+                consumer.setKey(consumerKey);
                 return consumer;
             }
         };
@@ -670,12 +624,7 @@ public class TestTwitterAdapter {
                 assertEquals(Long.valueOf(senderId), (Long) value);
                 Consumer consumer = new Consumer();
                 consumer.setTwitterId((Long) value);
-                try {
-                    consumer.setKey(consumerKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instace
-                }
+                consumer.setKey(consumerKey);
                 return consumer;
             }
         };
@@ -732,27 +681,23 @@ public class TestTwitterAdapter {
                 assertEquals(Long.valueOf(senderId), (Long) value);
                 Consumer consumer = new Consumer();
                 consumer.setTwitterId((Long) value);
-                try {
-                    consumer.setKey(consumerKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instance
-                }
+                consumer.setKey(consumerKey);
                 return consumer;
             }
         };
         // DemandsServlet mock
         final DemandsServlet demandsServlet = new DemandsServlet() {
             @Override
+            public List<Demand> getDemands(String key, Object value, int limit) {
+                assertEquals("consumerKey", key);                     // <-- Sender is already known
+                assertEquals(Long.valueOf(consumerKey), (Long) value);
+                return new ArrayList<Demand>();
+            }
+            @Override
             public Demand createDemand(JsonObject parameters, Long consumerKey) {
                 assertEquals("H0H0H0", parameters.getString(Demand.POSTAL_CODE));
                 Demand demand = new Demand();
-                try {
-                    demand.setKey(demandKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instance
-                }
+                demand.setKey(demandKey);
                 return demand;
             }
         };
@@ -799,7 +744,7 @@ public class TestTwitterAdapter {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(String.valueOf(senderId), id);
-                Assert.assertTrue(text.contains("Error"));
+                Assert.assertTrue(text.contains("location"));
                 return dm;
             }
         };
@@ -811,27 +756,23 @@ public class TestTwitterAdapter {
                 assertEquals(Long.valueOf(senderId), (Long) value);
                 Consumer consumer = new Consumer();
                 consumer.setTwitterId((Long) value);
-                try {
-                    consumer.setKey(consumerKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instace
-                }
+                consumer.setKey(consumerKey);
                 return consumer;
             }
         };
         // DemandsServlet mock
         final DemandsServlet demandsServlet = new DemandsServlet() {
             @Override
+            public List<Demand> getDemands(String key, Object value, int limit) {
+                assertEquals("consumerKey", key);                     // <-- Sender is already known
+                assertEquals(Long.valueOf(consumerKey), (Long) value);
+                return new ArrayList<Demand>();
+            }
+            @Override
             public Demand createDemand(JsonObject parameters, Long consumerKey) {
                 assertEquals(null, parameters.getString(Demand.POSTAL_CODE));
                 Demand demand = new Demand();
-                try {
-                    demand.setKey(demandKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instance
-                }
+                demand.setKey(demandKey);
                 return demand;
             }
         };
@@ -889,13 +830,17 @@ public class TestTwitterAdapter {
                 assertEquals(Long.valueOf(senderId), (Long) value);
                 Consumer consumer = new Consumer();
                 consumer.setTwitterId((Long) value);
-                try {
-                    consumer.setKey(consumerKey);
-                }
-                catch (ClientException e) {
-                    // No risk to override an existing value because this is a newly (an empty) object instace
-                }
+                consumer.setKey(consumerKey);
                 return consumer;
+            }
+        };
+        // DemandsServlet mock
+        final DemandsServlet demandsServlet = new DemandsServlet() {
+            @Override
+            public List<Demand> getDemands(String key, Object value, int limit) {
+                assertEquals("consumerKey", key);                     // <-- Sender is already known
+                assertEquals(Long.valueOf(consumerKey), (Long) value);
+                return new ArrayList<Demand>();
             }
         };
         // TwitterAdapter mock 
@@ -907,6 +852,10 @@ public class TestTwitterAdapter {
             @Override
             public ConsumersServlet getConsumersServlet() {
                 return consumersServlet;
+            }
+            @Override
+            public DemandsServlet getDemandsServlet() {
+                return demandsServlet;
             }
         };
         
