@@ -17,7 +17,6 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 
 import twitter4j.DirectMessage;
@@ -36,32 +35,27 @@ import com.twetailer.j2ee.SettingsServlet;
 import com.twetailer.validator.CommandSettings;
 
 public class TwitterAdapter {
-   
+
     private static final Logger log = Logger.getLogger(TwitterAdapter.class.getName());
 
     /**
      * Default constructor using English keywords for the tweet parser and the response generator
      * @deprecated
      */
-    public TwitterAdapter() throws JsonException {
+    public TwitterAdapter() {
         this(Locale.US);
     }
-
-    private JsonObject possibleActions;
 
     private JsonObject possiblePrefixes;
 
     /**
      * Initialize the tweet parser and the response generator for the given locale
      * @param locale
-     * @throws JsonException
      */
-    public TwitterAdapter(Locale locale) throws JsonException {
-        possibleActions = CommandSettings.getActions(locale);
-
+    public TwitterAdapter(Locale locale) {
         possiblePrefixes = CommandSettings.getPrefixes(locale);
         patterns = new HashMap<CommandSettings.Prefix, Pattern>();
-        
+
         preparePattern(possiblePrefixes, CommandSettings.Prefix.action, "\\s*\\w+");
         preparePattern(possiblePrefixes, CommandSettings.Prefix.expiration, "\\s*[\\d\\-]+");
         preparePattern(possiblePrefixes, CommandSettings.Prefix.location, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
@@ -70,7 +64,7 @@ public class TwitterAdapter {
         preparePattern(possiblePrefixes, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
         preparePattern(possiblePrefixes, CommandSettings.Prefix.tags, "?(?:\\w\\s*)+");
     }
-    
+
     private Map<CommandSettings.Prefix, Pattern> patterns;
 
     private String createPatternWithOptionalEndingCharacters(String prefix) {
@@ -85,11 +79,11 @@ public class TwitterAdapter {
         }
         return prefix.subSequence(0, prefixEnd) + pattern + ":";
     }
-    
+
     /**
      * Extract the localized prefix matching the keywords (long and short versions)
      * and insert the corresponding regular expression pattern in the pattern list
-     * 
+     *
      * @param keywords set of localized prefix labels
      * @param keyword identifier of the prefix to process
      * @param expression part of the regular expression that extracts the parameters for the identified prefix
@@ -106,7 +100,7 @@ public class TwitterAdapter {
 
     /**
      * Parse the given tweet with the set of given localized prefixes
-     * 
+     *
      * @param message message are returned by the Twitter page
      * @return JsonObject with all message attributes correctly extracted from the given message
      * @throws ClientException If the query is malformed
@@ -199,7 +193,7 @@ public class TwitterAdapter {
         }
         return command;
     }
-   
+
     /**
      * Helper extracting commands
      * @param pattern Parameters extracted by a regular expression
@@ -216,7 +210,7 @@ public class TwitterAdapter {
         // TODO: validate the command among a list
         return command;
     }
-    
+
     /**
      * Helper extracting an expiration date
      * @param pattern Parameters extracted by a regular expression
@@ -237,7 +231,7 @@ public class TwitterAdapter {
         }
         return date + "T23:59:59";
     }
-    
+
     /**
      * Helper extracting a distance
      * @param pattern Parameters extracted by a regular expression
@@ -247,7 +241,7 @@ public class TwitterAdapter {
         // Extract the number after the prefix, taking care of excluding the part with the range unit
         return Double.parseDouble(pattern.substring(pattern.indexOf(":") + 1, pattern.length() - rangeUnit.length()).trim());
     }
-    
+
     /**
      * Helper extracting distance unit
      * @param pattern Parameters extracted by a regular expression
@@ -257,7 +251,7 @@ public class TwitterAdapter {
         // Range unit can be {km; mi}, just 2-character wide
         return pattern.substring(pattern.length() - 2);
     }
-    
+
     /**
      * Helper extracting country codes
      * @param pattern Parameters extracted by a regular expression
@@ -267,7 +261,7 @@ public class TwitterAdapter {
         // Range unit can be {us; ca}, just 2-character wide
         return pattern.substring(pattern.length() - 2);
     }
-    
+
     /**
      * Helper extracting postal code
      * @param pattern Parameters extracted by a regular expression
@@ -276,7 +270,7 @@ public class TwitterAdapter {
     private static String getPostalCode(String pattern, String countryCode) {
         return pattern.substring(pattern.indexOf(":") + 1, pattern.length() - countryCode.length() - 1).trim();
     }
-    
+
     /**
      * Helper extracting quantities
      * @param pattern Parameters extracted by a regular expression
@@ -285,7 +279,7 @@ public class TwitterAdapter {
     private static long getQuantity(String pattern) {
         return Long.parseLong(pattern.substring(pattern.indexOf(":") + 1).trim());
     }
-    
+
     /**
      * Helper extracting tags
      * @param pattern Parameters extracted by a regular expression
@@ -298,9 +292,9 @@ public class TwitterAdapter {
         }
         return keywords.split("\\s+");
     }
-    
+
     /**
-     * Prepare a message to be submit Twitter 
+     * Prepare a message to be submit Twitter
      * @param command Command to convert
      * @return Serialized command
      */
@@ -323,7 +317,7 @@ public class TwitterAdapter {
             tweet.append(CommandSettings.Prefix.location).append(":").append(command.getString(Demand.POSTAL_CODE)).append(space).append(command.getString(Demand.COUNTRY_CODE)).append(space);
         }
         if (command.containsKey(Demand.RANGE_UNIT) && command.containsKey(Demand.RANGE)) {
-            tweet.append(CommandSettings.Prefix.range).append(":").append(command.getDouble(Demand.RANGE)).append(space).append(command.getString(Demand.RANGE_UNIT)).append(space);
+            tweet.append(CommandSettings.Prefix.range).append(":").append(command.getDouble(Demand.RANGE)).append(command.getString(Demand.RANGE_UNIT)).append(space);
         }
         if (command.containsKey(Demand.QUANTITY)) {
             tweet.append(CommandSettings.Prefix.quantity).append(":").append(command.getLong(Demand.QUANTITY)).append(space);
@@ -351,9 +345,15 @@ public class TwitterAdapter {
         }
         return _twitterAccount;
     }
-    
+
+    public void sendDirectMessage(Twitter twitterAccount, String recipientScreenName, String message) throws TwitterException {
+        log.warning("Before sending a DM to " + recipientScreenName + ": " + message);
+        twitterAccount.sendDirectMessage(recipientScreenName, message);
+        log.warning("DM successfully sent!");
+    }
+
     private ConsumersServlet _consumersServlet;
-    
+
     /**
      * Accessor provided for unit tests
      * @return Consumer servlet instance
@@ -364,9 +364,9 @@ public class TwitterAdapter {
         }
         return _consumersServlet;
     }
-    
+
     private DemandsServlet _demandsServlet;
-    
+
     /**
      * Accessor provided for unit tests
      * @return Demand servlet instance
@@ -377,9 +377,9 @@ public class TwitterAdapter {
         }
         return _demandsServlet;
     }
-    
+
     private SettingsServlet _settingsServlet;
-    
+
     /**
      * Accessor provided for unit tests
      * @return Settings servlet instance
@@ -390,7 +390,7 @@ public class TwitterAdapter {
         }
         return _settingsServlet;
     }
-    
+
     public Long processDirectMessages() throws TwitterException, DataSourceException, ParseException, ClientException {
         SettingsServlet settingsServlet = getSettingsServlet();
         Settings settings = settingsServlet.getSettings();
@@ -404,13 +404,13 @@ public class TwitterAdapter {
         }
         return lastId;
     }
-    
+
     /**
      * Extract commands from the pending Direct Messages and acts accordingly
-     * 
+     *
      * @param sinceId identifier of the last process direct message
      * @return Updated direct message identifier if new DMs have been processed, or the given one if none has been processed
-     * 
+     *
      * @throws TwitterException
      * @throws DataSourceException
      * @throws ParseException
@@ -419,18 +419,21 @@ public class TwitterAdapter {
     protected Long processDirectMessages(Long sinceId) throws TwitterException, DataSourceException, ParseException, ClientException {
         return processDirectMessages(sinceId, Locale.ENGLISH);
     }
-    
+
     @SuppressWarnings("deprecation")
     protected Long processDirectMessages(Long sinceId, Locale locale) throws TwitterException, DataSourceException, ParseException, ClientException {
         long lastId = sinceId;
         // Get the list of direct messages
         Twitter twitterAccount = getTwitterAccount();
-        List<DirectMessage> messages = twitterAccount.getDirectMessages(new Paging(1, 200, sinceId));
+        log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
+        List<DirectMessage> messages = twitterAccount.getDirectMessages(new Paging(1, 2, sinceId));
         String referenceLabel = possiblePrefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0);
         // Process each messages one-by-one
-        int limit = messages == null ? 0 : messages.size();
-        for (int i=0; i<limit; i++) {
-            DirectMessage dm = messages.get(i);
+        int idx = messages == null ? 0 : messages.size(); // To start by the end of the message queue
+        log.warning(idx + " direct messages to process (temporary limited to 1 DM per operation)");
+        while (0 < idx) {
+            --idx;
+            DirectMessage dm = messages.get(idx);
             long dmId = dm.getId();
             // Get Twetailer account
             twitter4j.User sender = dm.getSender();
@@ -448,17 +451,17 @@ public class TwitterAdapter {
                 if (CommandSettings.isAction(CommandSettings.Action.help, newAction, locale)) {
                     JsonArray tags = newCommand.getJsonArray(Demand.CRITERIA);
                     if (tags.size() == 0) {
-                        twitterAccount.sendDirectMessage(senderScreenName, "Help: type \"!help <action>\" to get contextuel help per action one verb at a time. Or \"!help help\" to get the list of supported commands.");
+                        sendDirectMessage(twitterAccount, senderScreenName, "Help: type \"!help <action>\" to get contextuel help per action one verb at a time. Or \"!help help\" to get the list of supported commands.");
                     }
                     else if (CommandSettings.Action.demand.toString().equals(tags.getString(0))) {
-                        twitterAccount.sendDirectMessage(senderScreenName, "Help: \"demand\" is the default action, used to create or update a demand.");
+                        sendDirectMessage(twitterAccount, senderScreenName, "Help: \"demand\" is the default action, used to create or update a demand.");
                     }
                     // FIXME: implement all variations
                     else {
-                        twitterAccount.sendDirectMessage(senderScreenName, "Help: command not supported. Current set: {demand, list, cancel}.");
+                        sendDirectMessage(twitterAccount, senderScreenName, "Help: command not supported. Current set: {demand, list, cancel}.");
                     }
                 }
-                else if (refAttr == 0L) { 
+                else if (refAttr == 0L) {
                     newCommand.put(Demand.TWEET_ID, dmId);
                     if(CommandSettings.isAction(CommandSettings.Action.demand, newAction, locale)) {
                         DemandsServlet demandsServlet = getDemandsServlet();
@@ -471,7 +474,7 @@ public class TwitterAdapter {
                             latestDemand.setAction(CommandSettings.Action.demand);
                             latestDemand.setCreationDate(DateUtils.getNowDate());
                             latestDemand.setCriteria(null);
-                            Date latestCreationDate = latestDemand.getCreationDate(); 
+                            Date latestCreationDate = latestDemand.getCreationDate();
                             Date latestExpirationDate = latestDemand.getExpirationDate();
                             long latestExpirationDelay = (latestExpirationDate.getTime() - latestCreationDate.getTime()) / 24 / 60 / 60 / 1000;
                             latestDemand.setExpirationDate((int) latestExpirationDelay);
@@ -493,7 +496,8 @@ public class TwitterAdapter {
                         // Persist the new demand
                         Demand newDemand = demandsServlet.createDemand(newCommand, consumer.getKey());
                         if (newDemand.getState() == CommandSettings.State.open) {
-                            twitterAccount.sendDirectMessage(
+                            sendDirectMessage(
+                                    twitterAccount,
                                     senderScreenName,
                                     LabelExtractor.get(
                                             "ta_acknowledgeIncompleteDemandCreated",
@@ -503,7 +507,8 @@ public class TwitterAdapter {
                             );
                         }
                         else {
-                            twitterAccount.sendDirectMessage(
+                            sendDirectMessage(
+                                    twitterAccount,
                                     senderScreenName,
                                     LabelExtractor.get(
                                             "ta_acknowledgeDemandCreated",
@@ -512,13 +517,15 @@ public class TwitterAdapter {
                                     )
                             );
                         }
+                        sendDirectMessage(twitterAccount, senderScreenName, generateTweet(newDemand.toJson()));
                     }
                     else if (CommandSettings.isAction(CommandSettings.Action.list, newAction, locale)) {
                         // FIXME: list only active demands
                         DemandsServlet demandsServlet = getDemandsServlet();
                         List<Demand> demands = demandsServlet.getDemands(Demand.CONSUMER_KEY, consumer.getKey(), 0);
                         if (demands.size() == 0) {
-                            twitterAccount.sendDirectMessage(
+                            sendDirectMessage(
+                                    twitterAccount,
                                     senderScreenName,
                                     LabelExtractor.get(
                                             "ta_responseToListCommandForNoResult",
@@ -527,7 +534,8 @@ public class TwitterAdapter {
                             );
                         }
                         else {
-                            twitterAccount.sendDirectMessage(
+                            sendDirectMessage(
+                                    twitterAccount,
                                     senderScreenName,
                                     LabelExtractor.get(
                                             "ta_introductionToResponseToListCommandWithManyResults",
@@ -536,7 +544,7 @@ public class TwitterAdapter {
                                     )
                             );
                             for (Demand demand: demands) {
-                                twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                                sendDirectMessage(twitterAccount, senderScreenName, generateTweet(demand.toJson()));
                             }
                         }
                     }
@@ -563,7 +571,7 @@ public class TwitterAdapter {
                             demand.setState(CommandSettings.State.canceled);
                             demandsServlet.updateDemand(pm, demand);
                             // Echo back the updated demand
-                            twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                            sendDirectMessage(twitterAccount, senderScreenName, generateTweet(demand.toJson()));
                         }
                         finally {
                             pm.close();
@@ -587,7 +595,7 @@ public class TwitterAdapter {
                             demand.fromJson(newCommand);
                             demandsServlet.updateDemand(pm, demand);
                             // Echo back the updated demand
-                            twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                            sendDirectMessage(twitterAccount, senderScreenName, generateTweet(demand.toJson()));
                         }
                         finally {
                             pm.close();
@@ -598,10 +606,11 @@ public class TwitterAdapter {
                         Demand demand = demandsServlet.getDemand(refAttr, consumer.getKey());
                         if (demand != null) {
                             // Echo back the specified demand
-                            twitterAccount.sendDirectMessage(senderScreenName, generateTweet(demand.toJson()));
+                            sendDirectMessage(twitterAccount, senderScreenName, generateTweet(demand.toJson()));
                         }
                         else {
-                            twitterAccount.sendDirectMessage(
+                            sendDirectMessage(
+                                    twitterAccount,
                                     senderScreenName,
                                     LabelExtractor.get(
                                             "ta_responseToSpecificListCommandForNoResult",
@@ -634,17 +643,18 @@ public class TwitterAdapter {
             catch(Exception ex) {
                 // TODO: use localized message
                 // ex.printStackTrace();
-                twitterAccount.sendDirectMessage(senderScreenName, "Error: " + ex.getMessage());
+                sendDirectMessage(twitterAccount, senderScreenName, "Error: " + ex.getMessage());
             }
             if (lastId < dmId) {
                 lastId = dmId;
             }
+            break; // FIXME: temporary limitation to process one DM at a time :(
         }
         return Long.valueOf(lastId);
     }
-    
+
     /**
-     * Return the Consumer instance representing the Twitter user, an instance that may have been just created if the Twitter user is a new one 
+     * Return the Consumer instance representing the Twitter user, an instance that may have been just created if the Twitter user is a new one
      * @param user Twitter user
      * @return Consumer instance that represents the Twitter user
      * @throws DataSourceException If the Consumer cannot be retrieved or created

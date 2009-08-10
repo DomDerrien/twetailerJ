@@ -29,7 +29,7 @@ public class LocaleValidator {
     }
     
     protected static Double[] getGeoCoordinates(String postalCode, String countryCode) {
-        Double[] coordinates = new Double[2];
+        Double[] coordinates = new Double[] {Demand.INVALID_COORDINATE, Demand.INVALID_COORDINATE};
         if (countryCode == "US") {
             // http://geocoder.us/service/csv/geocode?zip=95472
             try {
@@ -60,6 +60,10 @@ public class LocaleValidator {
                     if (line.indexOf("<longt>") != -1) {
                         coordinates[1] = Double.valueOf(line.substring(line.indexOf("<longt>") + "<longt>".length()));
                     }
+                }
+                if (90.0d < coordinates[1]) {
+                    // Reset
+                    coordinates[0] = coordinates[1] = Demand.INVALID_COORDINATE;
                 }
                 reader.close();
     

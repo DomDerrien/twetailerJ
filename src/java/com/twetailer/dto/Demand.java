@@ -61,13 +61,14 @@ public class Demand extends Entity {
 
     public static final String EXPIRATION_DATE = "expirationDate";
 	
+    public static final Double INVALID_COORDINATE = Double.valueOf(-1.0D);
 	@Persistent
-	private Double latitude = Double.valueOf(-1.0D);
+	private Double latitude = INVALID_COORDINATE;
 
     public static final String LATITUDE = "latitude";
 	
 	@Persistent
-	private Double longitude = Double.valueOf(-1.0D);
+	private Double longitude = INVALID_COORDINATE;
 
     public static final String LONGITUDE = "longitude";
 	
@@ -244,7 +245,12 @@ public class Demand extends Entity {
     }
 
     public void setRangeUnit(String rangeUnit) {
-        this.rangeUnit = rangeUnit;
+        if ("miles" == rangeUnit) {
+            this.rangeUnit = "mi";
+        }
+        else {
+            this.rangeUnit = rangeUnit;
+        }
     }
 
 	public JsonObject toJson() {
@@ -289,15 +295,15 @@ public class Demand extends Entity {
 			}
 		}
 		boolean resetCurrentLocation = false;
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(COUNTRY_CODE) && in.getString(COUNTRY_CODE).equals(getCountryCode());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(POSTAL_CODE) && in.getString(POSTAL_CODE).equals(getPostalCode());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(LATITUDE) && in.getString(LATITUDE).equals(getLatitude());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(LONGITUDE) && in.getString(LONGITUDE).equals(getLongitude());
+        resetCurrentLocation = resetCurrentLocation || in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
+        resetCurrentLocation = resetCurrentLocation || in.containsKey(POSTAL_CODE) && !in.getString(POSTAL_CODE).equals(getPostalCode());
+        resetCurrentLocation = resetCurrentLocation || in.containsKey(LATITUDE) && !in.getString(LATITUDE).equals(getLatitude());
+        resetCurrentLocation = resetCurrentLocation || in.containsKey(LONGITUDE) && !in.getString(LONGITUDE).equals(getLongitude());
         if (resetCurrentLocation) {
             setCountryCode(null);
             setPostalCode(null);
-            setLatitude(-1.0D);
-            setLongitude(-1.0D);
+            setLatitude(INVALID_COORDINATE);
+            setLongitude(INVALID_COORDINATE);
         }
         if (in.containsKey(COUNTRY_CODE)) { setCountryCode(in.getString(COUNTRY_CODE)); }
 		if (in.containsKey(EXPIRATION_DATE)) {
@@ -306,7 +312,7 @@ public class Demand extends Entity {
                 setExpirationDate(expirationDate);
             }
             catch (ParseException e) {
-                setExpirationDate(7); // Default to an expiration 7 days in the future
+                setExpirationDate(30); // Default to an expiration 30 days in the future
             }
 	    }
 		if (in.containsKey(LATITUDE)) { setLatitude(in.getDouble(LATITUDE)); }
@@ -322,11 +328,11 @@ public class Demand extends Entity {
 	public void checkForCompletion() {
 	    if (getState() == State.open) {
 	        if (getCriteria() != null && 0 < getCriteria().size()) {
-	            if (getExpirationDate() != null) {
-	                if (getRange() != null && 5.0D <= getRange().doubleValue()) {
-	                    if (getCountryCode() != null && getPostalCode() != null || getLatitude() != null && getLongitude() != null) {
+	            if (getExpirationDate() != null && DateUtils.getNowDate().getTime() < getExpirationDate().getTime()) {
+	                if (getRange() != null && 1.0D <= getRange().doubleValue()) {
+	                    if (getCountryCode() != null && getPostalCode() != null || !INVALID_COORDINATE.equals(getLatitude()) && !INVALID_COORDINATE.equals(getLongitude())) {
 	                        if (getQuantity() != null && 0L < getQuantity().longValue()) {
-	                            setState(State.open);
+	                            setState(State.published);
 	                        }
 	                    }
 	                }

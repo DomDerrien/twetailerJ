@@ -18,7 +18,7 @@ public class ProductsServlet extends BaseRestlet {
 	}
 
 	@Override
-	protected String createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+	protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
 		return null;
 	}
 

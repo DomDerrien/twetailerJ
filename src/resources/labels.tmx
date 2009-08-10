@@ -5,7 +5,7 @@
 		datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
 		o-tmf="Twetailer">
 		<note>
-			This TMX file is the master repository for the English labels used in the Olympia application.
+			This TMX file is the master repository for the English labels used in the Twetailer application.
 			The content is edited by the developers who generate the unique identifiers, the notes for the
 			translators, the label/message to be displayed, and custom tags used by the build system.
 
@@ -205,7 +205,7 @@
 				IMPORTANT: the trailing comma is required to let tags being presented without prefix
 			</note>
 			<tuv xml:lang="en">
-				<seg>tags,keywords,keys,</seg>
+				<seg>tags,keywords,keys,tag,keyword,key</seg>
 			</tuv>
 		</tu>
 
@@ -313,7 +313,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the Twitter adapter, message sent to non followers. {0} is the sender screen name.</note>
 			<tuv xml:lang="en">
-				<seg>@{0} You must follow @twetailer and then send your request privately via Direct Messages.</seg>
+				<seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like d twetailer ...</seg>
 			</tuv>
 		</tu>
 
@@ -324,7 +324,7 @@
 				{0}: dynamically generated demand reference
 			</note>
 			<tuv xml:lang="en">
-				<seg>New demand with reference:{0} must have a location. Tweet "!help topic:demand" for details.</seg>
+				<seg>Please update the Demand with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
 			</tuv>
 		</tu>
 
@@ -335,7 +335,7 @@
 				{0}: dynamically generated demand reference
 			</note>
 			<tuv xml:lang="en">
-				<seg>Your search's reference number is {0}. Please include "ref:{0}" in all your related messages...</seg>
+				<seg>Listing your request for reference:{0}... You can send "!help" for more options afterwards.</seg>
 			</tuv>
 		</tu>
 
@@ -345,7 +345,7 @@
 				For the Twitter adapter, inform that no result can be displayed for the !list command.
 			</note>
 			<tuv xml:lang="en">
-				<seg>You have no active demand.</seg>
+				<seg>You have no active Demands</seg>
 			</tuv>
 		</tu>
 
@@ -356,7 +356,7 @@
 				{0}: repetition of the reference passed as an argument to the !list command
 			</note>
 			<tuv xml:lang="en">
-				<seg>No demand matches reference:{0}.</seg>
+				<seg>Demand reference:{0} cannot be found</seg>
 			</tuv>
 		</tu>
 
@@ -367,7 +367,7 @@
 				{0}: number of messages to be sent
 			</note>
 			<tuv xml:lang="en">
-				<seg>This message is followed by {0} tweet(s) (one per active demand).</seg>
+				<seg>This message is followed by {0} tweet(s) - one per active demand...</seg>
 			</tuv>
 		</tu>
 

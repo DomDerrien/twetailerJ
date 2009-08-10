@@ -58,4 +58,4 @@ Update the application
 
 1. Copy the files to go on production in a folder like <workspace_dir>/twetailerJ-stage
 2. Test the ready-to-deploy code with: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml step-appengine-start
-3. Deploy the code with: bin\appengine-java-sdk-1.2.1\bin\appcfg.cmd --email=twetailer@gmail.com update src\war
+3. Deploy the code with: bin\appengine-java-sdk-1.2.2\bin\appcfg.cmd --email=twetailer@gmail.com update src\war

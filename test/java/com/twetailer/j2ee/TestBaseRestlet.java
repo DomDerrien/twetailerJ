@@ -36,7 +36,7 @@ public class TestBaseRestlet {
             return new MockLogger(MockBaseRestlet.class.getName(), null);
         }
 		@Override
-		protected String createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+		protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
 			return null;
 		}
 		@Override

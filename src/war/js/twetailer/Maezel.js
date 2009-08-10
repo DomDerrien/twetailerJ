@@ -13,11 +13,14 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 		module.init = function() {
 		};
 		
-		module.processDMs = function() {
+		module.processDMs = function(buttonId) {
+			dijit.byId(buttonId).setDisabled(true);
+			displayResponse(null);
 			dojo.xhrGet({
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
+					dijit.byId(buttonId).setDisabled(false);
 					displayResponse(response);
 				},
 				preventCache: true,
@@ -25,28 +28,31 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 			});
 		};
 		
-		module.processPubDemands = function() {
-			alert("Not yet implemented!");
-			/*
+		module.processPubDemands = function(buttonId) {
+			dijit.byId(buttonId).setDisabled(true);
+			displayResponse(null);
 			dojo.xhrGet({
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
+					dijit.byId(buttonId).setDisabled(false);
 					displayResponse(response);
 				},
 				preventCache: true,
-				url: "/API/maezel/processPublishedDemands"
+				url: "/API/maezel/processPubDemands"
 			});
-			*/
 		};
 		
-		module.processProposals = function() {
+		module.processProposals = function(buttonId) {
+			dijit.byId(buttonId).setDisabled(true);
 			alert("Not yet implemented!");
 			/*
+			displayResponse(null);
 			dojo.xhrGet({
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
+					dijit.byId(buttonId).setDisabled(false);
 					displayResponse(response);
 				},
 				preventCache: true,
@@ -57,10 +63,15 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 		
 		var displayResponse = function(response) {
 			var feedbackArea = dojo.byId("feedbackArea");
-			feedbackArea.innerHTML =
-				"<br/>----- " + (new Date()) + " -----<br/>" +
-				dojo.toJson(response, true) + "<br/>" +
-				feedbackArea.innerHTML;
+			if (response != null) {
+				feedbackArea.innerHTML =
+					"<br/>----- " + (new Date()) + " -----<br/>" +
+					dojo.toJson(response, true) + "<br/>" +
+					feedbackArea.innerHTML;
+			}
+			else {
+				feedbackArea.innerHTML = "<br/>..." + feedbackArea.innerHTML;
+			}
 		}
 	})(); // End of the function limiting the scope of the private variables
 }

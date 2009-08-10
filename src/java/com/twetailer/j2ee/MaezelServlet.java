@@ -1,7 +1,7 @@
 package com.twetailer.j2ee;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -11,29 +11,29 @@ import javax.servlet.http.HttpServletResponse;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
-import domderrien.jsontools.JsonUtils;
 
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
 import com.twetailer.adapter.TwitterAdapter;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
+import com.twetailer.dto.Retailer;
+import com.twetailer.dto.Store;
+import com.twetailer.task.DemandProcessor;
 
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(MaezelServlet.class.getName());
 
-	@Override
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @Override
+	@SuppressWarnings("deprecation")
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     	Utils.configureHttpParameters(request, response);
 
-        JsonObject in = new GenericJsonObject(request.getParameterMap());
+        // JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
         
         try {
-        	// FIXME: covers the Maezel servlet with an "admin" security role 
-        	// http://code.google.com/appengine/docs/java/config/webxml.html#Security_and_Authentication
 	        User loggedUser = Utils.getLoggedUser();
 	        loggedUser.toString(); // To prevent warnings
 	
@@ -43,47 +43,34 @@ public class MaezelServlet extends HttpServlet {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
             else if ("/processDMs".equals(pathInfo)) {
-                Long newSinceId = (new TwitterAdapter()).processDirectMessages();
+                Long newSinceId = new TwitterAdapter().processDirectMessages();
                 out.put("newSinceId", newSinceId);
             }
-            else if ("/checkId".equals(pathInfo)) {
-            	// Create the consumer
-            	String twitterId = in.containsKey("twitterId") ? in.getString("twitterId") : null;
-            	if (twitterId == null) {
-            	    throw new ClientException("twitterId cannot be null");
-            	}
-            	Consumer consumer = (new ConsumersServlet()).createConsumer(new User("email", "domain"));
-            	// Return the consumer information
-                out.put("resource", consumer.toJson());
+            else if ("/processPubDemands".equals(pathInfo)) {
+                new DemandProcessor().process(Locale.ENGLISH);
             }
-            else if ("/createDemand".equals(pathInfo)) {
-            	// Look for the corresponding consumer account
-            	String twitterId = in.containsKey("twitterId") ? in.getString("twitterId") : null;
-            	Consumer consumer = (new ConsumersServlet()).getConsumer("twitterId", twitterId);
-            	if (consumer == null) {
-            		throw new ClientException("Given Twitter identified does not match any exisiting account");
-            	}
-            	// Create the demand
-            	Demand demand = (new DemandsServlet()).createDemand(in, consumer.getKey());
-            	// Return request identifier
-            	out.put("resourceId", demand.getKey());
+            else if ("/processProposals".equals(pathInfo)) {
+                new DemandProcessor().process(Locale.ENGLISH);
             }
-            else if ("/getDemands".equals(pathInfo)) {
-                // Select the demands
-                List<Demand> demands = (new DemandsServlet()).getDemands(in.getString("qA"), in.getLong("qV"), 0);
-                // Return demand list
-                out.put("resources", JsonUtils.toJson(demands));
+            else if ("/createHohoho".equals(pathInfo)) {
+                Store northPole = new Store();
+                northPole.setCountryCode("CA");
+                northPole.setPostalCode("H0H 0H0");
+                northPole.setAddress("North Pole / Pôle nord");
+                northPole.setLatitude(Demand.INVALID_COORDINATE);
+                northPole.setLongitude(Demand.INVALID_COORDINATE);
+                northPole.setEmail("robot@twetailer.com");
+                new StoresServlet().createStore(northPole);
+
+                User jackTroll = new User("jacktroll@twetailer.com", "twetailer.com");
+                Consumer temp = new ConsumersServlet().createConsumer(jackTroll);
+                temp.setName("Jack the Troll");
+                temp.setTwitterId(62414620L);
+                Retailer temp2 = new RetailersServlet().createRetailer(temp, northPole);
+                log.warning("Jack created -- " + temp2.getKey());
             }
-            else if ("/getDemand".equals(pathInfo)) {
-                // Select the demands
-                Demand demand = (new DemandsServlet()).getDemand(in.getLong("key"), in.getLong("consumerKey"));
-                // Return demand
-                out.put("resource", demand.toJson());
-            }
-            else if ("/deleteDemand".equals(pathInfo)) {
-                // Select the demands
-                (new DemandsServlet()).deleteDemand(in.getLong("key"), in.getLong("consumerKey"));
-                // If an error occurred, an exception has been thrown, and the status will be conveyed as is to the client 
+            else {
+                throw new ClientException("Unsupported query path");
             }
             
             out.put("success", true);

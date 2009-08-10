@@ -16,6 +16,7 @@ import domderrien.jsontools.JsonObject;
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
+import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
 import com.twetailer.validator.LocaleValidator;
 
@@ -29,8 +30,10 @@ public class DemandsServlet extends BaseRestlet {
 	}
 
 	@Override
-	protected String createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
-		throw new RuntimeException("Not yet implemented!");
+	protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException, ClientException {
+	    Consumer consumer = new ConsumersServlet().getConsumer("email", loggedUser.getEmail());
+	    Demand demand = createDemand(parameters, consumer.getKey());
+		return demand.toJson();
 	}
 
 	@Override
@@ -60,19 +63,18 @@ public class DemandsServlet extends BaseRestlet {
      * @param consumerKey Identifier of the demand owner
      * @return Just created resource
      * 
-     * @throws ParseException If the data extraction fails
      * @throws ClientException If the data given by the client are incorrect
      * 
      * @see DemandsServlet#createDemand(Demand)
      */
-	public Demand createDemand(JsonObject parameters, Long consumerKey) throws ParseException, ClientException {
+	public Demand createDemand(JsonObject parameters, Long consumerKey) throws ClientException {
         getLogger().warning("Create demand for consumer id: " + consumerKey + " with: " + parameters.toString());
         // Creates new demand record and persist it
         Demand newDemand = new Demand(parameters);
-        // Validate the state
-        newDemand.checkForCompletion();
         // Validate the location
         LocaleValidator.getGeoCoordinates(newDemand);
+        // Validate the state
+        newDemand.checkForCompletion();
         // Updates the identifier of the creator consumer
         Long consumerId = newDemand.getConsumerKey();
         if (consumerId == null || consumerId == 0L) {
@@ -95,7 +97,6 @@ public class DemandsServlet extends BaseRestlet {
         PersistenceManager pm = getPersistenceManager();
         try {
             pm.makePersistent(demand);
-            // Return the identifier of the just created demand
             return demand;
         }
         finally {
@@ -140,28 +141,7 @@ public class DemandsServlet extends BaseRestlet {
     public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
 		// Prepare the query
         Query queryObj = pm.newQuery(Demand.class);
-        queryObj.setFilter(attribute + " == value");
-        queryObj.setOrdering("creationDate desc");
-        if (value instanceof String) {
-            queryObj.declareParameters("String value");
-        }
-        else if (value instanceof Long) {
-            queryObj.declareParameters("Long value");
-        }
-        else if (value instanceof Integer) {
-            queryObj.declareParameters("Long value");
-            value = Long.valueOf((Integer) value);
-        }
-        else if (value instanceof Date) {
-            queryObj.declareParameters("Date value");
-        }
-        else {
-            throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
-        }
-        if (0 < limit) {
-            queryObj.setRange(0, limit);
-        }
-        getLogger().warning("Select demand(s) with: " + queryObj.toString());
+        prepareQuery(queryObj, attribute, value, limit);
     	// Select the corresponding resources
 		List<Demand> demands = (List<Demand>) queryObj.execute(value);
 		demands.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -205,7 +185,7 @@ public class DemandsServlet extends BaseRestlet {
     }
     
     /**
-     * Use the given pair {attribute; value} to get the corresponding Demand instance for the identified consumer
+     * Use the given reference to get the corresponding Demand instance for the identified consumer
      * 
      * @param key Identifier of the demand
      * @param consumerKey Identifier of the demand owner
@@ -227,7 +207,7 @@ public class DemandsServlet extends BaseRestlet {
     }
     
     /**
-     * Use the given pair {attribute; value} to get the corresponding Demand instance for the identified consumer while leaving the given persistence manager open for future updates
+     * Use the given reference to get the corresponding Demand instance for the identified consumer while leaving the given persistence manager open for future updates
      * 
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the demand
@@ -244,6 +224,7 @@ public class DemandsServlet extends BaseRestlet {
         if (!consumerKey.equals(demand.getConsumerKey())) {
             throw new ClientException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
         }
+        demand.getCriteria().size();
         return demand;
     }
     
@@ -302,6 +283,9 @@ public class DemandsServlet extends BaseRestlet {
             if (!consumerKey.equals(consumerId)) {
                 throw new ClientException("Mismatch of consumer identifiers [" + consumerId + "/" + consumerKey + "]");
             }
+            // Validate the state
+            updatedDemand.checkForCompletion();
+            // Persist updated demand
             return updateDemand(pm, updatedDemand);
         }
         finally {
@@ -320,6 +304,9 @@ public class DemandsServlet extends BaseRestlet {
     public Demand updateDemand(Demand demand) {
         PersistenceManager pm = getPersistenceManager();
         try {
+            // Validate the state
+            demand.checkForCompletion();
+            // Persist updated demand
             return updateDemand(pm, demand);
         }
         finally {
