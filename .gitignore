@@ -7,4 +7,5 @@ src/war/WEB-INF/*
 cobertura.ser
 *.class
 *.log
+*.tmp
 nop
