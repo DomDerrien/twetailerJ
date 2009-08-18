@@ -76,7 +76,7 @@ public class Utils {
     
     /* Injection entry point for tests */
     static UserService userServiceForTest = null;
-    protected static void setUserService(UserService userService) {
+    public static void setUserService(UserService userService) {
     	userServiceForTest = userService;
     }
     protected static UserService getUserService() {

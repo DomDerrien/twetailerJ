@@ -66,6 +66,11 @@ public class Entity implements TransferObject {
         this.creationDate = creationDate;
     }
     
+    public void resetCoreDates() {
+        setCreationDate(DateUtils.getNowDate());
+        setModificationDate(getCreationDate());
+    }
+    
     public Date getModificationDate() {
         return modificationDate;
     }

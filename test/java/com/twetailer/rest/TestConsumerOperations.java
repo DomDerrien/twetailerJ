@@ -1,4 +1,4 @@
-package com.twetailer.j2ee;
+package com.twetailer.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,9 @@ import com.google.appengine.api.users.User;
 import com.twetailer.DataSourceException;
 import com.twetailer.dto.Consumer;
 
-public class TestConsumersServlet {
+public class TestConsumerOperations {
 
-	@SuppressWarnings("serial")
-	class MockConsumersServlet extends ConsumersServlet {
+	class MockConsumerOperation extends ConsumerOperations {
 		PersistenceManager mockPM;
 		protected void setPersistenceManager(PersistenceManager pm) {
 			mockPM = pm;
@@ -28,11 +27,11 @@ public class TestConsumersServlet {
 	    }
 	}
 	
-	MockConsumersServlet mockConsumersServlet;
+	MockConsumerOperation mockConsumerOperations;
 
 	@Before
 	public void setUp() throws Exception {
-		mockConsumersServlet = new MockConsumersServlet();
+		mockConsumerOperations = new MockConsumerOperation();
 	}
 
 	@After
@@ -43,7 +42,7 @@ public class TestConsumersServlet {
 	public void testGetConsumersI() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
             @Override
             @SuppressWarnings({ "unchecked", "serial" })
             public Query newQuery(Class clazz) {
@@ -64,21 +63,22 @@ public class TestConsumersServlet {
                     @Override
                     public List<Object> execute(Object value) {
                         assertEquals(qV, value);
-                        return null;
+                        return new ArrayList<Object>();
                     }
                 };
             }
 		});
-		List<Consumer> consumers = mockConsumersServlet.getConsumers(qA, qV);
-		assertNull(consumers);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+        assertNotNull(consumers);
+        assertEquals(0, consumers.size());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 
 	@Test
 	public void testGetConsumersII() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -86,21 +86,22 @@ public class TestConsumersServlet {
                     @Override
                     public List<Object> execute(Object value) {
 						// Whatever the query is, no Consumer instance match
-						return null;
+                        return new ArrayList<Object>();
 					}
 				};
 			}
 		});
-		List<Consumer> consumers = mockConsumersServlet.getConsumers(qA, qV);
-		assertNull(consumers);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+        assertNotNull(consumers);
+        assertEquals(0, consumers.size());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 
 	@Test
 	public void testGetConsumersIII() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -113,10 +114,10 @@ public class TestConsumersServlet {
 				};
 			}
 		});
-		List<Consumer> consumers = mockConsumersServlet.getConsumers(qA, qV);
+		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
         assertNotNull(consumers);
 		assertEquals(0, consumers.size());
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 
 	@Test
@@ -124,7 +125,7 @@ public class TestConsumersServlet {
 		final String qA = "a";
 		final String qV = "b";
 		final Consumer selected = new Consumer();
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -139,11 +140,11 @@ public class TestConsumersServlet {
 				};
 			}
 		});
-		List<Consumer> consumers = mockConsumersServlet.getConsumers(qA, qV);
+		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
 		assertNotNull(consumers);
 		assertEquals(1, consumers.size());
 		assertEquals(selected, consumers.get(0));
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 
 	@Test
@@ -155,7 +156,7 @@ public class TestConsumersServlet {
 		final Consumer spare2 = new Consumer();
 		final Consumer spare3 = new Consumer();
 		final Consumer spare4 = new Consumer();
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -174,7 +175,7 @@ public class TestConsumersServlet {
 				};
 			}
 		});
-		List<Consumer> consumers = mockConsumersServlet.getConsumers(qA, qV);
+		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
 		assertNotNull(consumers);
 		assertEquals(5, consumers.size());
 		assertEquals(selected, consumers.get(0));
@@ -182,52 +183,48 @@ public class TestConsumersServlet {
 		assertEquals(spare2, consumers.get(2));
 		assertEquals(spare3, consumers.get(3));
 		assertEquals(spare4, consumers.get(4));
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 
-	@Test
+	@Test(expected=DataSourceException.class)
 	public void testGetConsumerI() throws DataSourceException {
-		final String qA = "a";
-		final String qV = "b";
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		final long key = 1234L;
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+            @Override
+            public <T> T getObjectById(Class<T> arg0, Object arg1) {
+                assertEquals(key, ((Long) arg1).longValue());
+                return null;
+            }
+		});
+		try {
+		    mockConsumerOperations.getConsumer(key);
+		}
+		finally {
+		    assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		}
+	}
+
+	@Test
+	public void testGetConsumerIV() throws DataSourceException {
+        final long key = 1234L;
+		final Consumer selected = new Consumer();
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+            @Override
             @SuppressWarnings("unchecked")
-            public Query newQuery(Class clazz) {
-                assertEquals(Consumer.class, clazz);
-				return new MockQuery();
-			}
+            public <T> T getObjectById(Class<T> arg0, Object arg1) {
+                assertEquals(key, ((Long) arg1).longValue());
+                return (T) selected;
+            }
 		});
-		Consumer consumer = mockConsumersServlet.getConsumer(qA, qV);
-		assertNull(consumer);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		Consumer consumer = mockConsumerOperations.getConsumer(key);
+		assertNotNull(consumer);
+		assertEquals(selected, consumer);
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 
 	@Test
-	public void testGetConsumerII() throws DataSourceException {
-		final String qA = "a";
-		final String qV = "b";
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
-                assertEquals(Consumer.class, clazz);
-				return new MockQuery(){
-                    @Override
-                    public List<Object> execute(Object value) {
-						// Whatever the query is, no Consumer instance match
-						return null;
-					}
-				};
-			}
-		});
-		Consumer consumer = mockConsumersServlet.getConsumer(qA, qV);
-		assertNull(consumer);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-
-	@Test
-	public void testGetConsumerIII() throws DataSourceException {
-		final String qA = "a";
-		final String qV = "b";
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+	public void testCreateConsumerI() throws DataSourceException {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -240,86 +237,14 @@ public class TestConsumersServlet {
 				};
 			}
 		});
-		Consumer consumer = mockConsumersServlet.getConsumer(qA, qV);
-		assertNull(consumer);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-
-	@Test
-	public void testGetConsumerIV() throws DataSourceException {
-		final String qA = "a";
-		final String qV = "b";
-		final Consumer selected = new Consumer();
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
-                assertEquals(Consumer.class, clazz);
-				return new MockQuery(){
-                    @Override
-                    public List<Object> execute(Object value) {
-						// Whatever the query is, one Consumer instance match
-						List<Object> selection = new ArrayList<Object>();
-						selection.add(selected);
-						return selection;
-					}
-				};
-			}
-		});
-		Consumer consumer = mockConsumersServlet.getConsumer(qA, qV);
-		assertNotNull(consumer);
-		assertEquals(selected, consumer);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-
-	@Test(expected=DataSourceException.class)
-	public void testGetConsumerV() throws DataSourceException {
-		final String qA = "a";
-		final String qV = "b";
-		final Consumer selected = new Consumer();
-		final Consumer spare = new Consumer();
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
-                assertEquals(Consumer.class, clazz);
-				return new MockQuery(){
-                    @Override
-                    public List<Object> execute(Object value) {
-						// Whatever the query is, one Consumer instance match
-						List<Object> selection = new ArrayList<Object>();
-						selection.add(selected);
-						selection.add(spare);
-						return selection;
-					}
-				};
-			}
-		});
-		mockConsumersServlet.getConsumer(qA, qV);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
-	}
-	
-	@Test
-	public void testCreateConsumerI() throws DataSourceException {
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
-                assertEquals(Consumer.class, clazz);
-				return new MockQuery(){
-                    @Override
-                    public List<Object> execute(Object value) {
-						// Whatever the query is, no Consumer instance match
-						return null;
-					}
-				};
-			}
-		});
 		User systemUser = new User("email", "domain");
-		Consumer createdConsumer = mockConsumersServlet.createConsumer(systemUser);
+		Consumer createdConsumer = mockConsumerOperations.createConsumer(systemUser);
 		assertNotNull(createdConsumer);
-		assertEquals(createdConsumer, ((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
+		assertEquals(createdConsumer, ((MockPersistenceManager) mockConsumerOperations.getPersistenceManager()).getPersistedObject());
 		assertEquals("email", createdConsumer.getEmail());
 		assertEquals("email", createdConsumer.getName());
 		assertEquals(systemUser, createdConsumer.getSystemUser());
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 	
 	@Test
@@ -327,7 +252,7 @@ public class TestConsumersServlet {
 		final Consumer existingConsumer = new Consumer();
 		User systemUser = new User("email", "domain");
 		existingConsumer.setSystemUser(systemUser);
-		mockConsumersServlet.setPersistenceManager(new MockPersistenceManager() {
+		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -341,10 +266,10 @@ public class TestConsumersServlet {
 				};
 			}
 		});
-		Consumer createdConsumer = mockConsumersServlet.createConsumer(systemUser);
+		Consumer createdConsumer = mockConsumerOperations.createConsumer(systemUser);
 		assertNotNull(createdConsumer);
-		assertNull(((MockPersistenceManager) mockConsumersServlet.getPersistenceManager()).getPersistedObject());
+		assertNull(((MockPersistenceManager) mockConsumerOperations.getPersistenceManager()).getPersistedObject());
 		assertEquals(existingConsumer, createdConsumer);
-		assertTrue(mockConsumersServlet.getPersistenceManager().isClosed());
+		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 }

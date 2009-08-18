@@ -323,9 +323,4 @@ public class TestBaseRestlet {
     @Test
     public void testDoDelete() throws IOException {
     }
-
-    @Test(expected=java.lang.NoClassDefFoundError.class)
-    public void testGetPersistenceManager() throws IOException {
-        new MockBaseRestlet().getPersistenceManager();
-    }
 }

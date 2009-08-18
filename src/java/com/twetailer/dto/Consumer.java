@@ -1,5 +1,7 @@
 package com.twetailer.dto;
 
+import java.util.Locale;
+
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -26,6 +28,16 @@ public class Consumer extends Entity {
 	private String imId;
     
     public final static String IM_ID = "imId";
+
+    @Persistent
+    private Long locationKey;
+    
+    public final static String LOCATION_KEY = "locationKey";
+
+    @Persistent
+    private Locale locale = Locale.ENGLISH;
+    
+    public final static String LANGUAGE = "locale";
 	
 	@Persistent
 	private String name;
@@ -86,6 +98,30 @@ public class Consumer extends Entity {
 		this.imId = imId;
 	}
 
+    public Long getLocationKey() {
+        return locationKey;
+    }
+
+    public void setLocationKey(Long locationKey) {
+        this.locationKey = locationKey;
+    }
+
+    public Locale getLocale() {
+        if (locale == null) {
+            return Locale.ENGLISH;
+        }
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public void setLocale(String language) {
+        if (Locale.FRENCH.getLanguage().equals(language)) { this.locale = Locale.FRENCH; }
+        else { this.locale = Locale.ENGLISH; } // Default locale
+    }
+
 	public String getName() {
 		return name;
 	}
@@ -123,6 +159,8 @@ public class Consumer extends Entity {
 		out.put(ADDRESS, getAddress());
 		out.put(EMAIL, getEmail());
 		out.put(IM_ID, getImId());
+        out.put(LOCATION_KEY, getLocationKey());
+        out.put(LANGUAGE, getLocale().getLanguage());
 		out.put(NAME, getName());
 		out.put(PHONE_NUMBER, getPhoneNumber());
 		// out.put(SYSTEM_USER, getSystemUser());
@@ -135,6 +173,8 @@ public class Consumer extends Entity {
 		if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
 		if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
 		if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(LANGUAGE)) { setLocale(in.getString(LANGUAGE)); }
 		if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
 		if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
 		// if (in.containsKey(SYSTEM_USER)) { setSystemUser(in.getObject(SYSTEM_USER)); }

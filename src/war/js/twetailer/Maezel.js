@@ -28,6 +28,21 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 			});
 		};
 		
+		module.validateOpenDemands = function(buttonId) {
+			dijit.byId(buttonId).setDisabled(true);
+			displayResponse(null);
+			dojo.xhrGet({
+				content: null, 
+				handleAs: "json",
+				load: function(response, request) {
+					dijit.byId(buttonId).setDisabled(false);
+					displayResponse(response);
+				},
+				preventCache: true,
+				url: "/API/maezel/validateOpenDemands"
+			});
+		};
+		
 		module.processPubDemands = function(buttonId) {
 			dijit.byId(buttonId).setDisabled(true);
 			displayResponse(null);
@@ -66,7 +81,7 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 			if (response != null) {
 				feedbackArea.innerHTML =
 					"<br/>----- " + (new Date()) + " -----<br/>" +
-					dojo.toJson(response, true) + "<br/>" +
+					dojo.toJson(response, true).replace(/</g, "&lt;").replace(/>/g, "&gt") + "<br/>" +
 					feedbackArea.innerHTML;
 			}
 			else {

@@ -89,6 +89,14 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="command_state_invalid" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>One of the possible states a command can have</note>
+			<tuv xml:lang="en">
+				<seg>invalid</seg>
+			</tuv>
+		</tu>
+
 		<tu tuid="command_state_published" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
@@ -317,17 +325,6 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="ta_acknowledgeIncompleteDemandCreated" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>
-				For the Twitter adapter, confirmation of a demand creation, but has to inform it's not yet read for publication, because it's incomplete.
-				{0}: dynamically generated demand reference
-			</note>
-			<tuv xml:lang="en">
-				<seg>Please update the Demand with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
-			</tuv>
-		</tu>
-
 		<tu tuid="ta_acknowledgeDemandCreated" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
@@ -368,6 +365,92 @@
 			</note>
 			<tuv xml:lang="en">
 				<seg>This message is followed by {0} tweet(s) - one per active demand...</seg>
+			</tuv>
+		</tu>
+
+		<!-- ============================ -->
+		<!-- Demand validator definitions -->
+		<!-- ============================ -->
+
+		<tu tuid="dv_demandShouldHaveAtLeastOneTag" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer the demand should have at least one tag. {0} is the demand reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your demand reference:{0} should have at least one tag.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_demandExpirationShouldBeInFuture" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer the expiration date should be in the future. {0} is the demand reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your demand reference:{0} should have its expiration date in the future.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_demandRangeInKMTooSmall" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer the range is too small. {0} is the demand reference. {1} is the too small distance.</note>
+			<tuv xml:lang="en">
+				<seg>The range ({1} km) for the demand reference:{0} is too small. It should be greater than 5 km.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_demandRangeInMilesTooSmall" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer the range is too small. {0} is the demand reference. {1} is the too small distance.</note>
+			<tuv xml:lang="en">
+				<seg>The range ({1} mi) for the demand reference:{0} is too small. It should be greater than 3 miles.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_demandShouldConcernAtLeastOneItem" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer the quantity cannot be 0. {0} is the demand reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your demand reference:{0} should concern at least one item.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_demandShouldHaveALocation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer that the location information is missing. {0} is the demand reference.</note>
+			<tuv xml:lang="en">
+				<seg>Please update the Demand with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_demandShouldHaveAValidLocation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer that the location information is invalid. {0} is the demand reference, {1} is the given postal code, and {2} is the country code.</note>
+			<tuv xml:lang="en">
+				<seg>The locale \u0022{1} {2}\u0022 given demand reference:{0} cannot be resolved. Please provide a valid locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_unableToGetLocationInformation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the consumer that the information for the locale cannot be retrieved.</note>
+			<tuv xml:lang="en">
+				<seg>The locale information for demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
+			</tuv>
+		</tu>
+
+		<!-- ====================================== -->
+		<!-- Published demand processor definitions -->
+		<!-- ====================================== -->
+
+
+		<tu tuid="dp_informNewDemand" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Inform a retailer about a new demand.
+				{0} is the reference of the demand.
+				{1} is the demand tags separated by a comma.
+				{2} is the expiration date in ISO format.
+			</note>
+			<tuv xml:lang="en">
+				<seg>Can you serve the demand reference:{0} with the tags: {1}? The expiration date is: {2}.</seg>
 			</tuv>
 		</tu>
 

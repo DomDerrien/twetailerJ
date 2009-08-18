@@ -1,4 +1,4 @@
-package com.twetailer.j2ee;
+package com.twetailer.rest;
 
 import java.util.Collection;
 import java.util.Map;

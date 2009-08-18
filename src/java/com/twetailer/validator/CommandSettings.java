@@ -153,6 +153,7 @@ public class CommandSettings {
 
     public enum State {
         open,
+        invalid,
         published,
         forwarded,
         proposed,

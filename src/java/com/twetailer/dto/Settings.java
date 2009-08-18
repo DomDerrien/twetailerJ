@@ -1,7 +1,5 @@
 package com.twetailer.dto;
 
-import java.text.ParseException;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -69,7 +67,7 @@ public class Settings {
         return out;
     }
 
-    public void fromJson(JsonObject in) throws ParseException {
+    public void fromJson(JsonObject in) {
         // if (in.containsKey(KEY)) { setKey(in.getLong(KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(LAST_PROCESSED_DIRECT_MESSAGE_ID)) { setLastProcessDirectMessageId(in.getLong(LAST_PROCESSED_DIRECT_MESSAGE_ID)); }

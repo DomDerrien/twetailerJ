@@ -1,4 +1,4 @@
-package com.twetailer.j2ee;
+package com.twetailer.rest;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -6,46 +6,18 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonObject;
-
-import com.google.appengine.api.users.User;
 import com.twetailer.DataSourceException;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Retailer;
 import com.twetailer.dto.Store;
 
-@SuppressWarnings("serial")
-public class RetailersServlet extends BaseRestlet {
-	private static final Logger log = Logger.getLogger(RetailersServlet.class.getName());
+public class RetailerOperations extends BaseOperations {
+    private static final Logger log = Logger.getLogger(RetailerOperations.class.getName());
 
-	@Override
-	protected Logger getLogger() {
-		return log;
-	}
-
-	@Override
-	protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
-		return null;
-	}
-
-	@Override
-	protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
-	}
-
-	@Override
-	protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
-		return null;
-	}
-
-	@Override
-	protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
-		return null;
-	}
-
-	@Override
-	protected void updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
-	}
+    @Override
+    protected Logger getLogger() {
+        return log;
+    }
 
     /**
      * Create the Retailer instance with the given parameters
@@ -53,8 +25,30 @@ public class RetailersServlet extends BaseRestlet {
      * @param consumer Existing consumer account to extend
      * @param store Existing store where the retailer works
      * @return Just created resource
+     * 
+     * @see RetailerOperations#createRetailer(PersistenceManager, Consumer, Store)
      */
     public Retailer createRetailer(Consumer consumer, Store store) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createRetailer(pm, consumer, store);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Retailer instance with the given parameters
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumer Existing consumer account to extend
+     * @param store Existing store where the retailer works
+     * @return Just created resource
+     * 
+     * @see RetailerOperations#createRetailer(PersistenceManager, Retailer)
+     */
+    public Retailer createRetailer(PersistenceManager pm, Consumer consumer, Store store) {
         Retailer retailer = new Retailer();
         
         // Copy the user's attribute
@@ -70,24 +64,19 @@ public class RetailersServlet extends BaseRestlet {
         retailer.setStoreKey(store.getKey());
         
         // Persist the account
-        return createRetailer(retailer);
+        return createRetailer(pm, retailer);
     }
 
     /**
      * Create the Retailer instance with the given parameters
      * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param retailer Resource to persist
      * @return Just created resource
      */
-    public Retailer createRetailer(Retailer retailer) {
-        PersistenceManager pm = getPersistenceManager();
-        try {
-            pm.makePersistent(retailer);
-            return retailer;
-        }
-        finally {
-            pm.close();
-        }
+    public Retailer createRetailer(PersistenceManager pm, Retailer retailer) {
+        pm.makePersistent(retailer);
+        return retailer;
     }
     
     /**
@@ -128,9 +117,42 @@ public class RetailersServlet extends BaseRestlet {
         // Prepare the query
         Query queryObj = pm.newQuery(Retailer.class);
         prepareQuery(queryObj, attribute, value, limit);
+        getLogger().warning("Select retailer(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Retailer> retailers = (List<Retailer>) queryObj.execute(value);
         retailers.size(); // FIXME: remove workaround for a bug in DataNucleus
         return retailers;
+    }
+    
+    /**
+     * Persist the given (probably updated) resource
+     * 
+     * @param retailer Resource to update
+     * @return Updated resource
+     * 
+     * @see RetailerOperations#updateRetailer(PersistenceManager, Retailer)
+     */
+    public Retailer updateRetailer(Retailer retailer) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            // Persist updated retailer
+            return updateRetailer(pm, retailer);
+        }
+        finally {
+            pm.close();
+        }
+    }
+    
+    /**
+     * Persist the given (probably updated) resource while leaving the given persistence manager open for future updates
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param retailer Resource to update
+     * @return Updated resource
+     */
+    public Retailer updateRetailer(PersistenceManager pm, Retailer retailer) {
+        getLogger().warning("Updating retailer with id: " + retailer.getKey());
+        pm.makePersistent(retailer);
+        return retailer;
     }
 }

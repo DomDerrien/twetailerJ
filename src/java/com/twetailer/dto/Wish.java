@@ -1,6 +1,5 @@
 package com.twetailer.dto;
 
-import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,11 +17,10 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 import com.twetailer.validator.CommandSettings;
-import com.twetailer.validator.LocaleValidator;
 import com.twetailer.validator.CommandSettings.State;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Demand extends Entity {
+public class Wish extends Entity {
 	
     /*** Command ***/
     
@@ -46,7 +44,7 @@ public class Demand extends Entity {
     
     public static final String TWEET_ID = "tweetId";
 
-    /*** Demand ***/
+    /*** Wish ***/
     
     @Persistent
     private List<String> criteria = new ArrayList<String>();
@@ -57,37 +55,20 @@ public class Demand extends Entity {
 	private Date expirationDate;
 
     public static final String EXPIRATION_DATE = "expirationDate";
-	
-    @Persistent
-    private Long locationKey;
-    
-    public final static String LOCATION_KEY = "locationKey";
-    
-    @Persistent
-    private List<Long> proposalKeys = new ArrayList<Long>();
 
-    public static final String PROPOSAL_KEYS = "proposalKeys";
-    
     @Persistent
-    private Long quantity = 1L;
+    private Long quantity;
 
     public static final String QUANTITY = "quantity";
-    
-    @Persistent
-    private Double range = 25.0D;
 
-    public static final String RANGE = "range";
-    
-    @Persistent
-    private String rangeUnit = LocaleValidator.KILOMETER_UNIT;
-
-    public static final String RANGE_UNIT = "rangeUnit";
-
+	/**
+	 * Delay for the default expiration of a demand
+	 */
+	public final static int DEFAULT_EXPIRATION_DELAY = 7;
+	
     /** Default constructor */
-    public Demand() {
+    public Wish() {
         super();
-        setAction(CommandSettings.Action.demand);
-        setDefaultExpirationDate();
     }
 
     /**
@@ -95,7 +76,7 @@ public class Demand extends Entity {
 	 * 
 	 * @param in HTTP request parameters
 	 */
-	public Demand(JsonObject parameters) {
+	public Wish(JsonObject parameters) {
 	    this();
         fromJson(parameters);
 	}
@@ -143,7 +124,7 @@ public class Demand extends Entity {
     }
 
     /*** Demand ***/
-
+    
 	public List<String> getCriteria() {
 		return criteria;
 	}
@@ -153,9 +134,9 @@ public class Demand extends Entity {
 	}
 
 	public void addCriterion(String criterion) {
-	    if (!criteria.contains(criterion)) {
-	        criteria.add(criterion);
-	    }
+        if (!criteria.contains(criterion)) {
+            criteria.add(criterion);
+        }
 	}
     
     public void resetCriteria() {
@@ -169,7 +150,7 @@ public class Demand extends Entity {
     public void removeCriterion(String criterion) {
         criteria.remove(criterion);
     }
-    
+
 	public Date getExpirationDate() {
 		return expirationDate;
 	}
@@ -182,59 +163,13 @@ public class Demand extends Entity {
             throw new IllegalArgumentException("Expiration date cannot be in the past");
         }
 		this.expirationDate = expirationDate;
-    }
-	
-    /**
-     * Delay for the default expiration of a demand
-     */
-    public final static int DEFAULT_EXPIRATION_DELAY = 30;
-    
-    /**
-     * Push the expiration to a defined default in the future
-     */
-    public void setDefaultExpirationDate() {
-        setExpirationDate(DEFAULT_EXPIRATION_DELAY);
-    }
+	}
 
-    public void setExpirationDate(int delayInDays) {
+	public void setExpirationDate(int delayInDays) {
 		Calendar limit = DateUtils.getNowCalendar();
 		limit.set(Calendar.DAY_OF_MONTH, limit.get(Calendar.DAY_OF_MONTH) + delayInDays);
 		this.expirationDate = limit.getTime();
 	}
-
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        this.locationKey = locationKey;
-    }
-
-    public List<Long> getProposalKeys() {
-        return proposalKeys;
-    }
-
-    public void setProposalKeys(List<Long> proposalKeys) {
-        this.proposalKeys = proposalKeys;
-    }
-    
-    public void addProposalKey(Long proposalKey) {
-        if (!proposalKeys.contains(proposalKey)) {
-            proposalKeys.add(proposalKey);
-        }
-    }
-    
-    public void resetProposalKeys() {
-        int idx = proposalKeys.size();
-        while (0 < idx) {
-            --idx;
-            this.proposalKeys.remove(idx);
-        }
-    }
-
-    public void removeProposalKey(Long proposalKey) {
-        proposalKeys.remove(proposalKey);
-    }
 
     public Long getQuantity() {
         return quantity;
@@ -244,29 +179,10 @@ public class Demand extends Entity {
         this.quantity = quantity;
     }
 
-    public Double getRange() {
-        return range;
-    }
-
-    public void setRange(Double range) {
-        this.range = range;
-    }
-
-    public String getRangeUnit() {
-        return rangeUnit;
-    }
-
-    public void setRangeUnit(String rangeUnit) {
-        if ("miles" == rangeUnit) {
-            this.rangeUnit = "mi";
-        }
-        else {
-            this.rangeUnit = rangeUnit;
-        }
-    }
-
 	public JsonObject toJson() {
+	    // TODO: finish the constant definition for the serialization
 		JsonObject out = super.toJson();
+		JsonArray jsonArray = new GenericJsonArray();
         /*** Command ***/
         out.put(ACTION, getAction().toString());
         out.put(CONSUMER_KEY, getConsumerKey());
@@ -274,17 +190,13 @@ public class Demand extends Entity {
         out.put(TWEET_ID, getTweetId());
 		/*** Demand ***/
         if (getCriteria() != null) {
-            JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
                 jsonArray.add(criterion);
             }
-            out.put(CRITERIA, jsonArray);
 		}
+		out.put(CRITERIA, jsonArray);
 		out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
-        out.put(LOCATION_KEY, getLocationKey());
         out.put(QUANTITY, getQuantity());
-        out.put(RANGE, getRange());
-        out.put(RANGE_UNIT, getRangeUnit());
 		return out;
 	}
 
@@ -297,25 +209,25 @@ public class Demand extends Entity {
         if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
         /*** Demand ***/
 		if (in.containsKey(CRITERIA)) {
+		    boolean additionMode = true;
 			JsonArray jsonArray = in.getJsonArray(CRITERIA);
-			boolean additionMode = true;
 			for (int i=0; i<jsonArray.size(); ++i) {
-			    if ("+".equals(jsonArray.getString(0))) {
-			        additionMode = true;
-			    }
-			    else if ("-".equals(jsonArray.getString(0))) {
-			        additionMode = false;
-			    }
-			    else if (i == 0) {
-			        resetCriteria();
-	                addCriterion(jsonArray.getString(i));
-			    }
-			    else if (additionMode) {
+                if ("+".equals(jsonArray.getString(0))) {
+                    additionMode = true;
+                }
+                else if ("-".equals(jsonArray.getString(0))) {
+                    additionMode = false;
+                }
+                else if (i == 0) {
+                    resetCriteria();
                     addCriterion(jsonArray.getString(i));
-			    }
-			    else {
+                }
+                else if (additionMode) {
+                    addCriterion(jsonArray.getString(i));
+                }
+                else {
                     removeCriterion(jsonArray.getString(i));
-			    }
+                }
 			}
 		}
 		if (in.containsKey(EXPIRATION_DATE)) {
@@ -327,32 +239,7 @@ public class Demand extends Entity {
                 setExpirationDate(30); // Default to an expiration 30 days in the future
             }
 	    }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
-        if (in.containsKey(PROPOSAL_KEYS)) {
-            boolean additionMode = true;
-            JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                if ("+".equals(jsonArray.getString(0))) {
-                    additionMode = true;
-                }
-                else if ("-".equals(jsonArray.getString(0))) {
-                    additionMode = false;
-                }
-                else if (i == 0) {
-                    resetCriteria();
-                    addProposalKey(jsonArray.getLong(i));
-                }
-                else if (additionMode) {
-                    addProposalKey(jsonArray.getLong(i));
-                }
-                else {
-                    removeProposalKey(jsonArray.getLong(i));
-                }
-            }
-        }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
-        if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
-        if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
         
         return this;
 	}

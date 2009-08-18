@@ -1,14 +1,11 @@
 package com.twetailer.j2ee;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -231,55 +228,5 @@ public abstract class BaseRestlet extends HttpServlet {
         }
 
         out.toStream(response.getOutputStream(), false);
-    }
-
-    /**
-     * Accessor isolated to facilitate tests by IOP
-     * 
-     * @return Persistence manager instance
-     */
-    public PersistenceManager getPersistenceManager() {
-        PersistenceManager pm = Utils.getPersistenceManager();
-        pm.setDetachAllOnCommit(true);
-        pm.setCopyOnAttach(false);
-        return pm;
-    }
-    
-    /**
-     * Prepare the query with the given parameters
-     * 
-     * @param query Object to prepare
-     * @param attribute Name of the demand attribute used a the search criteria
-     * @param value Pattern for the search attribute
-     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Updated query
-     * 
-     * @throws DataSourceException If given value cannot matched a data store type
-     */
-    public Query prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
-        query.setFilter(attribute + " == value");
-        query.setOrdering("creationDate desc");
-        if (value instanceof String) {
-            query.declareParameters("String value");
-        }
-        else if (value instanceof Long) {
-            query.declareParameters("Long value");
-        }
-        else if (value instanceof Integer) {
-            query.declareParameters("Long value");
-            value = Long.valueOf((Integer) value);
-        }
-        else if (value instanceof Date) {
-            query.declareParameters("Date value");
-        }
-        else {
-            throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
-        }
-        if (0 < limit) {
-            query.setRange(0, limit);
-        }
-        getLogger().warning("Select demand(s) with: " + query.toString());
-
-        return query;
     }
 }

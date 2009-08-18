@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.jdo.PersistenceManager;
+
 import junit.framework.Assert;
 
-import domderrien.jsontools.JsonException;
-import domderrien.jsontools.JsonObject;
 import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -28,15 +28,48 @@ import com.twetailer.ClientException;
 import com.twetailer.DataSourceException;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
+import com.twetailer.dto.Location;
 import com.twetailer.dto.Settings;
-import com.twetailer.j2ee.ConsumersServlet;
-import com.twetailer.j2ee.DemandsServlet;
-import com.twetailer.j2ee.SettingsServlet;
+import com.twetailer.rest.BaseOperations;
+import com.twetailer.rest.ConsumerOperations;
+import com.twetailer.rest.DemandOperations;
+import com.twetailer.rest.LocationOperations;
+import com.twetailer.rest.MockPersistenceManager;
+import com.twetailer.rest.SettingsOperations;
 import com.twetailer.validator.CommandSettings;
+
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 
 public class TestTwitterAdapter {
 
     private TwitterAdapter adapter;
+    
+    private class MockBaseOperations extends BaseOperations {
+        @Override
+        public PersistenceManager getPersistenceManager() {
+            return new MockPersistenceManager();
+        }
+    };
+    
+    private class MockSettingsOperations extends SettingsOperations {
+        @Override
+        public Settings getSettings() {
+            return new Settings();
+        }
+        @Override
+        public Settings getSettings(PersistenceManager pm) {
+            return new Settings();
+        }
+        @Override
+        public Settings updateSettings(Settings settings) {
+            return settings;
+        }
+        @Override
+        public Settings updateSettings(PersistenceManager pm, Settings settings) {
+            return settings;
+        }
+    };
     
     @Before
     public void setUp() throws Exception {
@@ -195,50 +228,50 @@ public class TestTwitterAdapter {
     @Test
     public void testParseLocaleI() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 locale:h3c2n6 ca");
-        assertEquals("H3C2N6", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleII() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 locale: h3c 2n6 ca");
-        assertEquals("H3C 2N6", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H3C 2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIII() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 locale:h3c2n6-ca");
-        assertEquals("H3C2N6", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIV() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 locale:97323 us");
-        assertEquals("97323", data.getString(Demand.POSTAL_CODE));
-        assertEquals("US", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("97323", data.getString(Location.POSTAL_CODE));
+        assertEquals("US", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleV() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 locale:97323-12345 us");
-        assertEquals("97323-12345", data.getString(Demand.POSTAL_CODE));
-        assertEquals("US", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
+        assertEquals("US", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleVI() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 locale:97323-12345-us");
-        assertEquals("97323-12345", data.getString(Demand.POSTAL_CODE));
-        assertEquals("US", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
+        assertEquals("US", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleShort() throws ClientException, ParseException {
         JsonObject data = adapter.parseTweet("ref:21 loc:97343-us");
-        assertEquals("97343", data.getString(Demand.POSTAL_CODE));
-        assertEquals("US", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("97343", data.getString(Location.POSTAL_CODE));
+        assertEquals("US", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
@@ -303,8 +336,8 @@ public class TestTwitterAdapter {
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
@@ -314,8 +347,8 @@ public class TestTwitterAdapter {
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
     }
 
@@ -326,8 +359,8 @@ public class TestTwitterAdapter {
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -342,8 +375,8 @@ public class TestTwitterAdapter {
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -358,8 +391,8 @@ public class TestTwitterAdapter {
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -374,8 +407,8 @@ public class TestTwitterAdapter {
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Demand.POSTAL_CODE));
-        assertEquals("CA", data.getString(Demand.COUNTRY_CODE));
+        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals("CA", data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -415,90 +448,48 @@ public class TestTwitterAdapter {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
+    public void testParseActionIII() throws ClientException, ParseException {
+        JsonObject data = adapter.parseTweet("action:list ref:1234");
+        assertEquals("list", data.getString(Demand.ACTION));
+        assertEquals(1234, data.getLong(Demand.KEY));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
-        TwitterAdapter adapter = new TwitterAdapter() {
-            @Override
-            @SuppressWarnings("serial")
-            public Twitter getTwitterAccount() {
-                return new Twitter() {
-                    public List<DirectMessage> getDirectMessages(Paging paging) {
-                        return null;
-                    }
-                };
+        // Inject a fake Twitter account
+        TwitterUtils.releaseTwitterAccount(new Twitter() {
+            public List<DirectMessage> getDirectMessages(Paging paging) {
+                return null;
             }
-            @Override
-            @SuppressWarnings("serial")
-            public SettingsServlet getSettingsServlet() {
-                return new SettingsServlet() {
-                    @Override
-                    public Settings getSettings() {
-                        return new Settings();
-                    }
-                };
-            }
-        };
+        });
+        TwitterAdapter adapter = new TwitterAdapter(Locale.ENGLISH);
+        adapter._baseOperations = new MockBaseOperations();
+        adapter.settingsOperations = new MockSettingsOperations();
+        
         adapter.processDirectMessages();
+        
+        // Remove the fake Twitter account
+        TwitterUtils.getTwitterAccount();
     }
 
     @Test
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
-        TwitterAdapter adapter = new TwitterAdapter() {
-            @Override
-            @SuppressWarnings("serial")
-            public Twitter getTwitterAccount() {
-                return new Twitter() {
-                    public List<DirectMessage> getDirectMessages(Paging paging) {
-                        return new ArrayList<DirectMessage>();
-                    }
-                };
+        // Inject a fake Twitter account
+        TwitterUtils.releaseTwitterAccount(new Twitter() {
+            public List<DirectMessage> getDirectMessages(Paging paging) {
+                return new ArrayList<DirectMessage>();
             }
-            @Override
-            @SuppressWarnings("serial")
-            public SettingsServlet getSettingsServlet() {
-                return new SettingsServlet() {
-                    @Override
-                    public Settings getSettings() {
-                        return new Settings();
-                    }
-                };
-            }
-        };
+        });
+        TwitterAdapter adapter = new TwitterAdapter(Locale.ENGLISH);
+        adapter._baseOperations = new MockBaseOperations();
+        adapter.settingsOperations = new MockSettingsOperations();
+        
         adapter.processDirectMessages();
-    }
-
-    @Test
-    public void testAccessorI() {
-        adapter.getTwitterAccount();
-    }
-
-    @Test
-    public void testAccessorII() {
-        adapter.getConsumersServlet();
-    }
-
-    @Test
-    public void testAccessorIII() {
-        adapter.getDemandsServlet();
-    }
-
-    @Test
-    public void testAccessorIV() {
-        Twitter twitterAccount = adapter.getTwitterAccount();
-        assertEquals(twitterAccount, adapter.getTwitterAccount());
-    }
-
-    @Test
-    public void testAccessorV() {
-        ConsumersServlet servlet = adapter.getConsumersServlet();
-        assertEquals(servlet, adapter.getConsumersServlet());
-    }
-
-    @Test
-    public void testAccessorVI() {
-        DemandsServlet servlet = adapter.getDemandsServlet();
-        assertEquals(servlet, adapter.getDemandsServlet());
+        
+        // Remove the fake Twitter account
+        TwitterUtils.getTwitterAccount();
     }
 
     @SuppressWarnings("deprecation")
@@ -527,7 +518,7 @@ public class TestTwitterAdapter {
     }
     
     @Test
-    @SuppressWarnings({ "serial", "deprecation" })
+    @SuppressWarnings({ "serial" })
     public void testProcessDirectMessageFromNewSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -547,7 +538,7 @@ public class TestTwitterAdapter {
             @Override
             public Status updateStatus(String status) {
                 Assert.assertTrue(status.startsWith("@" + String.valueOf(senderId)));
-                Assert.assertTrue(status.contains("follow @twetailer"));
+                Assert.assertTrue(status.contains("Follow Twetailer"));
                 return null;
             }
             @Override
@@ -556,16 +547,12 @@ public class TestTwitterAdapter {
                 return null;
             }
         };
-        // ConsumersServlet mock
-        final ConsumersServlet consumersServlet = new ConsumersServlet() {
+        // Inject the fake Twitter account
+        TwitterUtils.releaseTwitterAccount(twitterAccount);
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(String key, Object value) {
-                assertEquals("twitterId", key);
-                assertEquals(Long.valueOf(senderId), (Long) value);
-                return null;                                        // <-- Unknown consumer who needs to be created
-            }
-            @Override
-            public Consumer createConsumer(User twitterAccount) {
+            public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
                 int twitterId = twitterAccount.getId();
                 assertEquals(senderId, twitterId);         // <-- Verify the correct creation submission
                 Consumer consumer = new Consumer();
@@ -575,85 +562,28 @@ public class TestTwitterAdapter {
             }
         };
         // TwitterAdapter mock 
-        TwitterAdapter adapter = new TwitterAdapter() {
-            @Override
-            public Twitter getTwitterAccount() {
-                return twitterAccount;
-            }
-            @Override
-            public ConsumersServlet getConsumersServlet() {
-                return consumersServlet;
-            }
-        };
+        TwitterAdapter adapter = new TwitterAdapter(Locale.ENGLISH);
+        adapter._baseOperations = new MockBaseOperations();
+        adapter.consumerOperations = consumerOperations;
         
         // Test itself
-        Long newSinceId = adapter.processDirectMessages(1L);
+        Long newSinceId = adapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
-    }
-
-    @Test
-    @SuppressWarnings({ "serial", "deprecation" })
-    public void testProcessDirectMessageFromExistingSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
-        final int senderId = 1111;
-        final int dmId = 2222;
-        final long consumerKey = 333;
-        // Sender mock
-        User sender = createUser(senderId, false, null); // <-- The sender does not follow @twetailer
-        // DirectMessage mock
-        final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, null);
-        // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                messages.add(dm);
-                return messages;
-            }
-            @Override
-            public Status updateStatus(String status) {
-                Assert.assertTrue(status.startsWith("@" + String.valueOf(senderId)));
-                Assert.assertTrue(status.contains("follow @twetailer"));
-                return null;
-            }
-        };
-        // ConsumersServlet mock
-        final ConsumersServlet consumersServlet = new ConsumersServlet() {
-            @Override
-            public Consumer getConsumer(String key, Object value) {
-                assertEquals("twitterId", key);                     // <-- Sender is already known
-                assertEquals(Long.valueOf(senderId), (Long) value);
-                Consumer consumer = new Consumer();
-                consumer.setTwitterId((Long) value);
-                consumer.setKey(consumerKey);
-                return consumer;
-            }
-        };
-        // TwitterAdapter mock 
-        TwitterAdapter adapter = new TwitterAdapter() {
-            @Override
-            public Twitter getTwitterAccount() {
-                return twitterAccount;
-            }
-            @Override
-            public ConsumersServlet getConsumersServlet() {
-                return consumersServlet;
-            }
-        };
         
-        // Test itself
-        Long newSinceId = adapter.processDirectMessages(1L);
-        assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
+        // Remove the fake Twitter account
+        TwitterUtils.getTwitterAccount();
     }
     
     static String referenceLabel = CommandSettings.getPrefixes(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0);
-    
+
     @Test
-    @SuppressWarnings({ "serial", "deprecation" })
+    @SuppressWarnings({ "serial" })
     public void testProcessDirectMessageWithOneCorrectMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
         final long consumerKey = 333;
         final long demandKey = 4444;
+        final long locationKey = 55555;
         // Sender mock
         User sender = createUser(senderId, true, null);
         // DirectMessage mock
@@ -673,132 +603,72 @@ public class TestTwitterAdapter {
                 return dm;
             }
         };
-        // ConsumersServlet mock
-        final ConsumersServlet consumersServlet = new ConsumersServlet() {
+        // Inject the fake Twitter account
+        TwitterUtils.releaseTwitterAccount(twitterAccount);
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(String key, Object value) {
-                assertEquals("twitterId", key);
-                assertEquals(Long.valueOf(senderId), (Long) value);
+            public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
+                int twitterId = twitterAccount.getId();
+                assertEquals(senderId, twitterId);         // <-- Verify the correct creation submission
                 Consumer consumer = new Consumer();
-                consumer.setTwitterId((Long) value);
+                consumer.setTwitterId(Long.valueOf(twitterId));
                 consumer.setKey(consumerKey);
                 return consumer;
             }
         };
-        // DemandsServlet mock
-        final DemandsServlet demandsServlet = new DemandsServlet() {
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(String key, Object value, int limit) {
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals("consumerKey", key);                     // <-- Sender is already known
                 assertEquals(Long.valueOf(consumerKey), (Long) value);
                 return new ArrayList<Demand>();
             }
             @Override
-            public Demand createDemand(JsonObject parameters, Long consumerKey) {
-                assertEquals("H0H0H0", parameters.getString(Demand.POSTAL_CODE));
+            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) {
+                assertEquals(2, parameters.getJsonArray(Demand.CRITERIA).size());
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 return demand;
             }
         };
-        // TwitterAdapter mock 
-        TwitterAdapter adapter = new TwitterAdapter() {
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
             @Override
-            public Twitter getTwitterAccount() {
-                return twitterAccount;
+            public Location getLocation(PersistenceManager pm, Long givenLocationKey) {
+                assertEquals(locationKey, givenLocationKey.longValue());
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
             }
             @Override
-            public ConsumersServlet getConsumersServlet() {
-                return consumersServlet;
-            }
-            @Override
-            public DemandsServlet getDemandsServlet() {
-                return demandsServlet;
-            }
-        };
-        
-        // Test itself
-        Long newSinceId = adapter.processDirectMessages(1L);
-        assertEquals(Long.valueOf(dmId), newSinceId);
-    }
-    
-    @Test
-    @SuppressWarnings({ "serial", "deprecation" })
-    public void testProcessDirectMessageWithIncorrectMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
-        final int senderId = 1111;
-        final int dmId = 2222;
-        final long consumerKey = 333;
-        final long demandKey = 4444;
-        // Sender mock
-        User sender = createUser(senderId, true, null);
-        // DirectMessage mock
-        final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "!demand wii console qty:10");
-        // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                messages.add(dm);
-                return messages;
-            }
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) {
-                assertEquals(String.valueOf(senderId), id);
-                Assert.assertTrue(text.contains("location"));
-                return dm;
-            }
-        };
-        // ConsumersServlet mock
-        final ConsumersServlet consumersServlet = new ConsumersServlet() {
-            @Override
-            public Consumer getConsumer(String key, Object value) {
-                assertEquals("twitterId", key);
-                assertEquals(Long.valueOf(senderId), (Long) value);
-                Consumer consumer = new Consumer();
-                consumer.setTwitterId((Long) value);
-                consumer.setKey(consumerKey);
-                return consumer;
-            }
-        };
-        // DemandsServlet mock
-        final DemandsServlet demandsServlet = new DemandsServlet() {
-            @Override
-            public List<Demand> getDemands(String key, Object value, int limit) {
-                assertEquals("consumerKey", key);                     // <-- Sender is already known
-                assertEquals(Long.valueOf(consumerKey), (Long) value);
-                return new ArrayList<Demand>();
-            }
-            @Override
-            public Demand createDemand(JsonObject parameters, Long consumerKey) {
-                assertEquals(null, parameters.getString(Demand.POSTAL_CODE));
-                Demand demand = new Demand();
-                demand.setKey(demandKey);
-                return demand;
+            public Location createLocation(PersistenceManager pm, JsonObject parameters) {
+                assertEquals("H0H0H0", parameters.getString(Location.POSTAL_CODE));
+                Location location = new Location();
+                location.setPostalCode("H0H0H0");
+                location.setCountryCode("CA");
+                location.setKey(locationKey);
+                return location;
             }
         };
         // TwitterAdapter mock 
-        TwitterAdapter adapter = new TwitterAdapter() {
-            @Override
-            public Twitter getTwitterAccount() {
-                return twitterAccount;
-            }
-            @Override
-            public ConsumersServlet getConsumersServlet() {
-                return consumersServlet;
-            }
-            @Override
-            public DemandsServlet getDemandsServlet() {
-                return demandsServlet;
-            }
-        };
+        TwitterAdapter adapter = new TwitterAdapter(Locale.ENGLISH);
+        adapter._baseOperations = new MockBaseOperations();
+        adapter.consumerOperations = consumerOperations;
+        adapter.demandOperations = demandOperations;
+        adapter.locationOperations = locationOperations;
         
         // Test itself
-        Long newSinceId = adapter.processDirectMessages(1L);
+        Long newSinceId = adapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
+        
+        // Remove the fake Twitter account
+        TwitterUtils.getTwitterAccount();
     }
 
     @Test
-    @SuppressWarnings({ "serial", "deprecation" })
+    @SuppressWarnings({ "serial" })
     public void testProcessDirectMessageWithUnsupportedAction() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -822,18 +692,21 @@ public class TestTwitterAdapter {
                 return dm;
             }
         };
-        // ConsumersServlet mock
-        final ConsumersServlet consumersServlet = new ConsumersServlet() {
+        // Inject the fake Twitter account
+        TwitterUtils.releaseTwitterAccount(twitterAccount);
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(String key, Object value) {
-                assertEquals("twitterId", key);
-                assertEquals(Long.valueOf(senderId), (Long) value);
+            public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
+                int twitterId = twitterAccount.getId();
+                assertEquals(senderId, twitterId);         // <-- Verify the correct creation submission
                 Consumer consumer = new Consumer();
-                consumer.setTwitterId((Long) value);
+                consumer.setTwitterId(Long.valueOf(twitterId));
                 consumer.setKey(consumerKey);
                 return consumer;
             }
         };
+        /*
         // DemandsServlet mock
         final DemandsServlet demandsServlet = new DemandsServlet() {
             @Override
@@ -843,24 +716,17 @@ public class TestTwitterAdapter {
                 return new ArrayList<Demand>();
             }
         };
+        */
         // TwitterAdapter mock 
-        TwitterAdapter adapter = new TwitterAdapter() {
-            @Override
-            public Twitter getTwitterAccount() {
-                return twitterAccount;
-            }
-            @Override
-            public ConsumersServlet getConsumersServlet() {
-                return consumersServlet;
-            }
-            @Override
-            public DemandsServlet getDemandsServlet() {
-                return demandsServlet;
-            }
-        };
+        TwitterAdapter adapter = new TwitterAdapter(Locale.ENGLISH);
+        adapter._baseOperations = new MockBaseOperations();
+        adapter.consumerOperations = consumerOperations;
         
         // Test itself
-        Long newSinceId = adapter.processDirectMessages(1L);
+        Long newSinceId = adapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
+        
+        // Remove the fake Twitter account
+        TwitterUtils.getTwitterAccount();
     }
 }
