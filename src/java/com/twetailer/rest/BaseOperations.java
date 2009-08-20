@@ -75,7 +75,7 @@ public class BaseOperations {
      * Factory for the ConsumerOperations instance
      * @return ConsumerOperations instance
      */
-    public ConsumerOperations getConsumerOperation() {
+    public ConsumerOperations getConsumerOperations() {
         if (_consumerOperations == null) {
             _consumerOperations = new ConsumerOperations();
         }
@@ -88,7 +88,7 @@ public class BaseOperations {
      * Factory for the DemandOperations instance
      * @return DemandOperations instance
      */
-    public DemandOperations getDemandOperation() {
+    public DemandOperations getDemandOperations() {
         if (_demandOperations == null) {
             _demandOperations = new DemandOperations();
         }
@@ -101,7 +101,7 @@ public class BaseOperations {
      * Factory for the LocationOperations instance
      * @return LocationOperations instance
      */
-    public LocationOperations getLocationOperation() {
+    public LocationOperations getLocationOperations() {
         if (_locationOperations == null) {
             _locationOperations = new LocationOperations();
         }
@@ -114,7 +114,7 @@ public class BaseOperations {
      * Factory for the ProductOperations instance
      * @return ProductOperations instance
      */
-    public ProductOperations getProductOperation() {
+    public ProductOperations getProductOperations() {
         if (_productOperations == null) {
             _productOperations = new ProductOperations();
         }
@@ -127,7 +127,7 @@ public class BaseOperations {
      * Factory for the ProposalOperations instance
      * @return ProposalOperations instance
      */
-    public ProposalOperations getProposalOperation() {
+    public ProposalOperations getProposalOperations() {
         if (_proposalOperations == null) {
             _proposalOperations = new ProposalOperations();
         }
@@ -140,7 +140,7 @@ public class BaseOperations {
      * Factory for the RetailerOperations instance
      * @return RetailerOperations instance
      */
-    public RetailerOperations getRetailerOperation() {
+    public RetailerOperations getRetailerOperations() {
         if (_retailerOperations == null) {
             _retailerOperations = new RetailerOperations();
         }
@@ -153,7 +153,7 @@ public class BaseOperations {
      * Factory for the SettingsOperations instance
      * @return SettingsOperations instance
      */
-    public SettingsOperations getSettingsOperation() {
+    public SettingsOperations getSettingsOperations() {
         if (_settingsOperations == null) {
             _settingsOperations = new SettingsOperations();
         }
@@ -166,7 +166,7 @@ public class BaseOperations {
      * Factory for the StoreOperations instance
      * @return StoreOperations instance
      */
-    public StoreOperations getStoreOperation() {
+    public StoreOperations getStoreOperations() {
         if (_storeOperations == null) {
             _storeOperations = new StoreOperations();
         }

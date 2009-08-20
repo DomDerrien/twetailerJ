@@ -1,5 +1,6 @@
 package com.twetailer.rest;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -79,7 +80,10 @@ public class StoreOperations extends BaseOperations {
      * @throws DataSourceException If the retrieved store does not belong to the specified user
      */
     public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
-        getLogger().warning("Get store with id: " + key);
+        if (key == null || key == 0L) {
+            throw new InvalidParameterException("Invalid key; cannot retrieve the Store instance");
+        }
+        getLogger().warning("Get Store instance with id: " + key);
         Store store = pm.getObjectById(Store.class, key);
         if (store == null) {
             throw new DataSourceException("No store for identifier: " + key);

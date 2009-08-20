@@ -17,6 +17,9 @@ public class TwitterUtils {
     
     private static String twetailerScreenName = "twtlr";
     private static String twetailerPassword = "twetailer@shortcut0";
+    
+    private static String robotScreenName = "jacktroll";
+    private static String robotPassword = "twetailer@robot1";
 
     public static String getTwetailerScreenName() {
         return twetailerScreenName;
@@ -34,30 +37,72 @@ public class TwitterUtils {
         twetailerPassword = password;
     }
 
-    private static List<Twitter> _twitterAccounts = new ArrayList<Twitter>();
+    public static String getRobotScreenName() {
+        return robotScreenName;
+    }
+
+    public static void setRobotScreenName(String screenName) {
+        robotScreenName = screenName;
+    }
+
+    public static String getRobotPassword() {
+        return robotPassword;
+    }
+
+    public static void setRobotPassword(String password) {
+        robotPassword = password;
+    }
+
+    private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 
     /**
      * Accessor provided for unit tests
      * @return Twitter account controller
      * 
-     * @see TwitterUtils#releaseTwitterAccount(Twitter)
+     * @see TwitterUtils#releaseTwetailerAccount(Twitter)
      */
-    public synchronized static Twitter getTwitterAccount() {
-        int size = _twitterAccounts.size();
+    public synchronized static Twitter getTwetailerAccount() {
+        int size = _twetailerAccounts.size();
         if (size == 0) {
             return new Twitter(TwitterUtils.getTwetailerScreenName(), TwitterUtils.getTwetailerPassword());
         }
-        return _twitterAccounts.remove(size - 1);
+        return _twetailerAccounts.remove(size - 1);
     }
     
 
     /**
      * Allow to return the Twitter account object to the pool
      * 
-     * @see TwitterUtils#getTwitterAccount(Twitter)
+     * @see TwitterUtils#getTwetailerAccount(Twitter)
      */
-    public static void releaseTwitterAccount(Twitter account) {
-        _twitterAccounts.add(account);
+    public static void releaseTwetailerAccount(Twitter account) {
+        _twetailerAccounts.add(account);
+    }
+
+    private static List<Twitter> _robotAccounts = new ArrayList<Twitter>();
+
+    /**
+     * Accessor provided for unit tests
+     * @return Twitter account controller
+     * 
+     * @see TwitterUtils#releaseRobotAccount(Twitter)
+     */
+    public synchronized static Twitter getRobotAccount() {
+        int size = _robotAccounts.size();
+        if (size == 0) {
+            return new Twitter(TwitterUtils.getRobotScreenName(), TwitterUtils.getRobotPassword());
+        }
+        return _robotAccounts.remove(size - 1);
+    }
+    
+
+    /**
+     * Allow to return the Twitter account object to the pool
+     * 
+     * @see TwitterUtils#getRobotAccount(Twitter)
+     */
+    public static void releaseRobotAccount(Twitter account) {
+        _robotAccounts.add(account);
     }
     
     /**
@@ -66,12 +111,21 @@ public class TwitterUtils {
      * @throws TwitterException If the message submission fails
      */
     public static void sendPublicMessage(String message) throws TwitterException {
-        Twitter twitterAccount = getTwitterAccount();
+        sendPublicMessage(getTwetailerAccount(), message);
+    }
+    
+    /**
+     * Use the given account to send public message
+     * @param account identifies the message sender
+     * @param message message to be tweeted
+     * @throws TwitterException If the message submission fails
+     */
+    protected static void sendPublicMessage(Twitter account, String message) throws TwitterException {
         try {
-            twitterAccount.updateStatus(message);
+            account.updateStatus(message);
         }
         finally {
-            releaseTwitterAccount(twitterAccount);
+            releaseTwetailerAccount(account);
         }
     }
     
@@ -82,22 +136,32 @@ public class TwitterUtils {
      * @throws TwitterException If the message submission fails
      */
     public static void sendDirectMessage(String recipientScreenName, String message) throws TwitterException {
-        Twitter twitterAccount = getTwitterAccount();
+        sendDirectMessage(getTwetailerAccount(), recipientScreenName, message);
+    }
+    
+    /**
+     * Use the Twetailer account to send a Direct Message to the identified recipient
+     * @param account identifies the message sender
+     * @param recipientScreenName identifier of the recipient
+     * @param message message to be tweeted
+     * @throws TwitterException If the message submission fails
+     */
+    protected static void sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
         try {
             if (isDevelopmentMode) {
                 log.info("Before sending a DM to " + recipientScreenName + ": " + message);
             }
             else if (isDebugMode) {
                 log.fine("Before sending a DM to " + recipientScreenName + ": " + message);
-                twitterAccount.sendDirectMessage(recipientScreenName, message);
+                account.sendDirectMessage(recipientScreenName, message);
                 log.fine("DM successfully sent!");
             }
             else {
-                twitterAccount.sendDirectMessage(recipientScreenName, message);
+                account.sendDirectMessage(recipientScreenName, message);
             }
         }
         finally {
-            releaseTwitterAccount(twitterAccount);
+            releaseTwetailerAccount(account);
         }
     }
 
@@ -108,13 +172,23 @@ public class TwitterUtils {
      * @throws TwitterException If the message retrieval fails
      */
     public static List<DirectMessage> getDirectMessages(long sinceId) throws TwitterException {
-        Twitter twitterAccount = getTwitterAccount();
+        return getDirectMessages(getTwetailerAccount(), sinceId);
+    }
+
+    /**
+     * Return the Direct Messages received to the Twetailer account, after the identified message 
+     * @param account identifies the message sender
+     * @param sinceId identifier of the last processed Direct Message
+     * @return List of Direct Messages not yet processed-can be empty
+     * @throws TwitterException If the message retrieval fails
+     */
+    public static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
         try {
             log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
-            return twitterAccount.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 2 DMs retrieved at a time
+            return account.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 2 DMs retrieved at a time
         }
         finally {
-            releaseTwitterAccount(twitterAccount);
+            releaseTwetailerAccount(account);
         }
     }
 }

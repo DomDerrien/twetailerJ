@@ -243,7 +243,6 @@ public class TestConsumerOperations {
 		assertEquals(createdConsumer, ((MockPersistenceManager) mockConsumerOperations.getPersistenceManager()).getPersistedObject());
 		assertEquals("email", createdConsumer.getEmail());
 		assertEquals("email", createdConsumer.getName());
-		assertEquals(systemUser, createdConsumer.getSystemUser());
 		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
 	
@@ -251,7 +250,6 @@ public class TestConsumerOperations {
 	public void testCreateConsumerII() throws DataSourceException {
 		final Consumer existingConsumer = new Consumer();
 		User systemUser = new User("email", "domain");
-		existingConsumer.setSystemUser(systemUser);
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public Query newQuery(Class clazz) {

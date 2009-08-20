@@ -458,7 +458,7 @@ public class TestTwitterAdapter {
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Inject a fake Twitter account
-        TwitterUtils.releaseTwitterAccount(new Twitter() {
+        TwitterUtils.releaseTwetailerAccount(new Twitter() {
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 return null;
             }
@@ -470,14 +470,14 @@ public class TestTwitterAdapter {
         adapter.processDirectMessages();
         
         // Remove the fake Twitter account
-        TwitterUtils.getTwitterAccount();
+        TwitterUtils.getTwetailerAccount();
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Inject a fake Twitter account
-        TwitterUtils.releaseTwitterAccount(new Twitter() {
+        TwitterUtils.releaseTwetailerAccount(new Twitter() {
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 return new ArrayList<DirectMessage>();
             }
@@ -489,7 +489,7 @@ public class TestTwitterAdapter {
         adapter.processDirectMessages();
         
         // Remove the fake Twitter account
-        TwitterUtils.getTwitterAccount();
+        TwitterUtils.getTwetailerAccount();
     }
 
     @SuppressWarnings("deprecation")
@@ -548,7 +548,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwitterAccount(twitterAccount);
+        TwitterUtils.releaseTwetailerAccount(twitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -571,7 +571,7 @@ public class TestTwitterAdapter {
         assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
         
         // Remove the fake Twitter account
-        TwitterUtils.getTwitterAccount();
+        TwitterUtils.getTwetailerAccount();
     }
     
     static String referenceLabel = CommandSettings.getPrefixes(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0);
@@ -604,7 +604,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwitterAccount(twitterAccount);
+        TwitterUtils.releaseTwetailerAccount(twitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -664,7 +664,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
         
         // Remove the fake Twitter account
-        TwitterUtils.getTwitterAccount();
+        TwitterUtils.getTwetailerAccount();
     }
 
     @Test
@@ -693,7 +693,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwitterAccount(twitterAccount);
+        TwitterUtils.releaseTwetailerAccount(twitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -727,6 +727,6 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
         
         // Remove the fake Twitter account
-        TwitterUtils.getTwitterAccount();
+        TwitterUtils.getTwetailerAccount();
     }
 }

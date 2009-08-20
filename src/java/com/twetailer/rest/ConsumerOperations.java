@@ -1,5 +1,6 @@
 package com.twetailer.rest;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -55,7 +56,6 @@ public class ConsumerOperations extends BaseOperations {
 
         // Creates new consumer record and persist it
         Consumer newConsumer = new Consumer();
-        newConsumer.setSystemUser(loggedUser);
         newConsumer.setName(loggedUser.getNickname());
         newConsumer.setEmail(loggedUser.getEmail());
         pm.makePersistent(newConsumer);
@@ -140,6 +140,10 @@ public class ConsumerOperations extends BaseOperations {
      * @throws DataSourceException If the retrieved consumer does not belong to the specified user
      */
     public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
+        if (key == null || key == 0L) {
+            throw new InvalidParameterException("Invalid key; cannot retrieve the Consumer instance");
+        }
+        getLogger().warning("Get Consumer instance with id: " + key);
         Consumer consumer = pm.getObjectById(Consumer.class, key);
         if (consumer == null) {
             throw new DataSourceException("No consumer for identifier: " + key);

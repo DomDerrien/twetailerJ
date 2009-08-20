@@ -96,13 +96,8 @@ public class SettingsOperations extends BaseOperations {
      */
     public Settings updateSettings(PersistenceManager pm, Settings update) throws DataSourceException {
         getLogger().warning("Update application settings");
-        // Get the saved settings
-        Settings updated = getSettings(pm);
-        // Merge with the proposed update
-        updated.fromJson(update.toJson());
-        // Push the data to the back-end
-        pm.makePersistent(updated);
+        pm.makePersistent(update);
         // FIXME: save a copy in the memory cache
-        return updated;
+        return update;
     }
 }

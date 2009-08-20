@@ -6,12 +6,15 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import domderrien.jsontools.JsonObject;
 
 import com.twetailer.dto.Location;
 
 public class LocaleValidator {
+
+    private static final Logger log = Logger.getLogger(LocaleValidator.class.getName());
 
     public static final String KILOMETER_UNIT = "km";
     public static final String MILE_UNIT = "mi";
@@ -33,6 +36,7 @@ public class LocaleValidator {
     
     protected static Double[] getGeoCoordinates(String postalCode, String countryCode) {
         Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
+        log.warning("Try to resolve: " + postalCode + " " + countryCode);
         // Test case
         if ("H0H0H0".equals(postalCode)) {
             coordinates[0] = 90.0D;
@@ -40,7 +44,7 @@ public class LocaleValidator {
             return coordinates;
         }
         // Postal code in USA
-        if (Locale.US.equals(countryCode)) {
+        if (Locale.US.getCountry().equals(countryCode)) {
             // http://geocoder.us/service/csv/geocode?zip=95472
             try {
                 URL url = new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode);
@@ -59,7 +63,7 @@ public class LocaleValidator {
             return coordinates;
         }
         // Postal code in Canada
-        if (Locale.CANADA.equals(countryCode)) {
+        if (Locale.CANADA.getCountry().equals(countryCode)) {
             // http://geocoder.ca/?geoit=xml&postal=h8p3r8
             try {
                 URL url = new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode);
@@ -67,10 +71,10 @@ public class LocaleValidator {
                 String line; // Only one line expected
                 while ((line = reader.readLine()) != null) {
                     if (line.indexOf("<latt>") != -1) {
-                        coordinates[0] = Double.valueOf(line.substring(line.indexOf("<latt>") + "<latt>".length()));
+                        coordinates[0] = Double.valueOf(line.substring(line.indexOf("<latt>") + "<latt>".length(), line.indexOf("</latt>")));
                     }
                     if (line.indexOf("<longt>") != -1) {
-                        coordinates[1] = Double.valueOf(line.substring(line.indexOf("<longt>") + "<longt>".length()));
+                        coordinates[1] = Double.valueOf(line.substring(line.indexOf("<longt>") + "<longt>".length(), line.indexOf("</longt>")));
                     }
                 }
                 if (90.0d < coordinates[1]) {

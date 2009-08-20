@@ -1,5 +1,6 @@
 package com.twetailer.rest;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -132,7 +133,10 @@ public class DemandOperations extends BaseOperations {
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
      */
     public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
-        getLogger().warning("Get demand with id: " + key);
+        if (key == null || key == 0L) {
+            throw new InvalidParameterException("Invalid key; cannot retrieve the Demand instance");
+        }
+        getLogger().warning("Get Demand instance with id: " + key);
         Demand demand = pm.getObjectById(Demand.class, key);
         if (demand == null) {
             throw new DataSourceException("No demand for identifier: " + key);

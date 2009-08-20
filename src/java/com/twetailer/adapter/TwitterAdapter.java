@@ -39,10 +39,10 @@ public class TwitterAdapter {
     private static final Logger log = Logger.getLogger(TwitterAdapter.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperation();
-    protected DemandOperations demandOperations = _baseOperations.getDemandOperation();
-    protected LocationOperations locationOperations = _baseOperations.getLocationOperation();
-    protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperation();
+    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     private JsonObject possiblePrefixes;
 
@@ -60,7 +60,7 @@ public class TwitterAdapter {
         preparePattern(possiblePrefixes, CommandSettings.Prefix.quantity, "\\s*\\d+");
         preparePattern(possiblePrefixes, CommandSettings.Prefix.reference, "\\s*\\d+");
         preparePattern(possiblePrefixes, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
-        preparePattern(possiblePrefixes, CommandSettings.Prefix.tags, "?(?:\\w\\s*)+");
+        preparePattern(possiblePrefixes, CommandSettings.Prefix.tags, "?(?:\\+\\s*|\\-\\s*|\\w\\s*)+");
     }
 
     private Map<CommandSettings.Prefix, Pattern> patterns;
@@ -411,11 +411,13 @@ public class TwitterAdapter {
                         Demand latestDemand = null;
                         if (0 < demands.size()) {
                             latestDemand = demands.get(0);
+                            // Transfer the demand into a new object
+                            latestDemand = new Demand(latestDemand.toJson()); // To avoid attempts to persist the object
                             // Reset sensitive fields
                             latestDemand.resetKey();
                             latestDemand.resetCoreDates();
                             latestDemand.setAction(CommandSettings.Action.demand);
-                            latestDemand.setCriteria(null);
+                            latestDemand.resetCriteria();
                             latestDemand.setDefaultExpirationDate();
                             latestDemand.setState(CommandSettings.State.open);
                         }
@@ -439,7 +441,7 @@ public class TwitterAdapter {
                                         senderLocale
                                 )
                         );
-                        Location location = newDemand.getLocationKey() == null ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
+                        Location location = newDemand.getLocationKey() == null || newDemand.getLocationKey() == 0L ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
                         TwitterUtils.sendDirectMessage(senderScreenName, generateTweet(newDemand, location, senderLocale));
                     }
                     else if (CommandSettings.isAction(CommandSettings.Action.list, newAction, senderLocale)) {
@@ -502,6 +504,11 @@ public class TwitterAdapter {
                         throw new ClientException("Declining identified command: not yet implemented");
                     }
                     else if (CommandSettings.isAction(CommandSettings.Action.demand, newAction, senderLocale)) {
+                        // Extracts the new location
+                        Location newLocation = locationOperations.createLocation(pm, newCommand);
+                        if (newLocation != null) {
+                            newCommand.put(Demand.LOCATION_KEY, newLocation.getKey());
+                        }
                         // Update the demand attributes
                         Demand demand = demandOperations.getDemand(pm, refAttr, consumer.getKey());
                         demand.fromJson(newCommand);
@@ -509,7 +516,7 @@ public class TwitterAdapter {
                         demand.resetProposalKeys(); // All existing proposals are removed
                         demandOperations.updateDemand(pm, demand);
                         // Echo back the updated demand
-                        Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
+                        Location location = demand.getLocationKey() == null || demand.getLocationKey() == 0L ? null : locationOperations.getLocation(pm, demand.getLocationKey());
                         TwitterUtils.sendDirectMessage(senderScreenName, generateTweet(demand, location, senderLocale));
                     }
                     else if (CommandSettings.isAction(CommandSettings.Action.list, newAction, senderLocale)) {
@@ -552,7 +559,7 @@ public class TwitterAdapter {
             }
             catch(Exception ex) {
                 // TODO: use localized message
-                // ex.printStackTrace();
+                ex.printStackTrace();
                 TwitterUtils.sendDirectMessage(senderScreenName, "Error: " + ex.getMessage());
             }
             if (lastId < dmId) {

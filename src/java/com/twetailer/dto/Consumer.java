@@ -9,8 +9,6 @@ import javax.jdo.annotations.Persistent;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
-import com.google.appengine.api.users.User;
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Consumer extends Entity {
     
@@ -29,15 +27,21 @@ public class Consumer extends Entity {
     
     public final static String IM_ID = "imId";
 
+    private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
+    private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
+
     @Persistent
-    private Long locationKey;
+    private String language = ENGLISH_LANGUAGE;
+    
+    public final static String LANGUAGE = "locale";
+
+    @Persistent
+    private Long locationKey = 0L;
     
     public final static String LOCATION_KEY = "locationKey";
 
-    @Persistent
-    private Locale locale = Locale.ENGLISH;
-    
-    public final static String LANGUAGE = "locale";
+    // Volatile attribute
+    // private Loc// ale locale;
 	
 	@Persistent
 	private String name;
@@ -48,11 +52,6 @@ public class Consumer extends Entity {
 	private String phoneNumber;
     
     public final static String PHONE_NUMBER = "phoneNb";
-	
-	@Persistent
-	private User systemUser;
-    
-    public final static String SYSTEM_USER = "sysUser";
     
     @Persistent
     private Long twitterId;
@@ -98,6 +97,15 @@ public class Consumer extends Entity {
 		this.imId = imId;
 	}
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        if (FRENCH_LANGUAGE.equals(language)) { this.language = language; }
+        else { this.language = ENGLISH_LANGUAGE; } // Default language
+    }
+
     public Long getLocationKey() {
         return locationKey;
     }
@@ -107,19 +115,8 @@ public class Consumer extends Entity {
     }
 
     public Locale getLocale() {
-        if (locale == null) {
-            return Locale.ENGLISH;
-        }
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    public void setLocale(String language) {
-        if (Locale.FRENCH.getLanguage().equals(language)) { this.locale = Locale.FRENCH; }
-        else { this.locale = Locale.ENGLISH; } // Default locale
+        if (FRENCH_LANGUAGE.equals(language)) { return Locale.FRENCH; }
+        return Locale.ENGLISH; // Default language
     }
 
 	public String getName() {
@@ -138,14 +135,6 @@ public class Consumer extends Entity {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public User getSystemUser() {
-		return systemUser;
-	}
-
-	public void setSystemUser(User systemUser) {
-		this.systemUser = systemUser;
-	}
-
     public Long getTwitterId() {
         return twitterId;
     }
@@ -160,10 +149,9 @@ public class Consumer extends Entity {
 		out.put(EMAIL, getEmail());
 		out.put(IM_ID, getImId());
         out.put(LOCATION_KEY, getLocationKey());
-        out.put(LANGUAGE, getLocale().getLanguage());
+        out.put(LANGUAGE, getLanguage());
 		out.put(NAME, getName());
 		out.put(PHONE_NUMBER, getPhoneNumber());
-		// out.put(SYSTEM_USER, getSystemUser());
         out.put(TWITTER_ID, getTwitterId());
 		return out;
 	}
@@ -174,10 +162,9 @@ public class Consumer extends Entity {
 		if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
 		if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
-        if (in.containsKey(LANGUAGE)) { setLocale(in.getString(LANGUAGE)); }
+        if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
 		if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
 		if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
-		// if (in.containsKey(SYSTEM_USER)) { setSystemUser(in.getObject(SYSTEM_USER)); }
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
         return this;
 	}

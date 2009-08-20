@@ -18,7 +18,7 @@ public class ConsumersServlet extends BaseRestlet {
 	private static final Logger log = Logger.getLogger(ConsumersServlet.class.getName());
 
     private BaseOperations _baseOperations = new BaseOperations();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperation();
+    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
         
 	@Override
 	protected Logger getLogger() {

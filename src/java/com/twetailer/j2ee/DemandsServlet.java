@@ -22,8 +22,8 @@ public class DemandsServlet extends BaseRestlet {
 	private static final Logger log = Logger.getLogger(DemandsServlet.class.getName());
 
     private BaseOperations _baseOperations = new BaseOperations();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperation();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperation();
+    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
         
 	@Override
 	protected Logger getLogger() {

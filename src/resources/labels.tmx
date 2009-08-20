@@ -450,7 +450,25 @@
 				{2} is the expiration date in ISO format.
 			</note>
 			<tuv xml:lang="en">
-				<seg>Can you serve the demand reference:{0} with the tags: {1}? The expiration date is: {2}.</seg>
+				<seg>Can you serve demand reference:{0} with the tags: {1}? The expiration date is: {2}.</seg>
+			</tuv>
+		</tu>
+
+		<!-- ========================= -->
+		<!-- Robot message definitions -->
+		<!-- ========================= -->
+
+
+		<tu tuid="robot_submitProposal" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Inform twetailer there's a proposition.
+				{0} is the reference of the demand.
+				{1} is the demand tags.
+				{2} is the store key
+			</note>
+			<tuv xml:lang="en">
+				<seg>!propose ref:{0} tags:{1} price:free store:{2}</seg>
 			</tuv>
 		</tu>
 

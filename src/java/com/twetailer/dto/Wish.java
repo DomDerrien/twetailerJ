@@ -180,7 +180,6 @@ public class Wish extends Entity {
     }
 
 	public JsonObject toJson() {
-	    // TODO: finish the constant definition for the serialization
 		JsonObject out = super.toJson();
 		JsonArray jsonArray = new GenericJsonArray();
         /*** Command ***/

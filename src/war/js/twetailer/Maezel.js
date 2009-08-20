@@ -14,13 +14,13 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 		};
 		
 		module.processDMs = function(buttonId) {
-			dijit.byId(buttonId).setDisabled(true);
+			dijit.byId(buttonId).attr('disabled', true);
 			displayResponse(null);
 			dojo.xhrGet({
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
-					dijit.byId(buttonId).setDisabled(false);
+					dijit.byId(buttonId).attr('disabled', false);
 					displayResponse(response);
 				},
 				preventCache: true,
@@ -29,13 +29,13 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 		};
 		
 		module.validateOpenDemands = function(buttonId) {
-			dijit.byId(buttonId).setDisabled(true);
+			dijit.byId(buttonId).attr('disabled', true);
 			displayResponse(null);
 			dojo.xhrGet({
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
-					dijit.byId(buttonId).setDisabled(false);
+					dijit.byId(buttonId).attr('disabled', false);
 					displayResponse(response);
 				},
 				preventCache: true,
@@ -44,13 +44,13 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 		};
 		
 		module.processPubDemands = function(buttonId) {
-			dijit.byId(buttonId).setDisabled(true);
+			dijit.byId(buttonId).attr('disabled', true);
 			displayResponse(null);
 			dojo.xhrGet({
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
-					dijit.byId(buttonId).setDisabled(false);
+					dijit.byId(buttonId).attr('disabled', false);
 					displayResponse(response);
 				},
 				preventCache: true,
@@ -58,8 +58,23 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 			});
 		};
 		
+		module.processRobotMessages = function(buttonId) {
+			dijit.byId(buttonId).attr('disabled', true);
+			displayResponse(null);
+			dojo.xhrGet({
+				content: null, 
+				handleAs: "json",
+				load: function(response, request) {
+					dijit.byId(buttonId).attr('disabled', false);
+					displayResponse(response);
+				},
+				preventCache: true,
+				url: "/API/maezel/processRobotMessages"
+			});
+		};
+		
 		module.processProposals = function(buttonId) {
-			dijit.byId(buttonId).setDisabled(true);
+			dijit.byId(buttonId).attr('disabled', true);
 			alert("Not yet implemented!");
 			/*
 			displayResponse(null);
@@ -67,7 +82,7 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 				content: null, 
 				handleAs: "json",
 				load: function(response, request) {
-					dijit.byId(buttonId).setDisabled(false);
+					dijit.byId(buttonId).attr('disabled', false);
 					displayResponse(response);
 				},
 				preventCache: true,

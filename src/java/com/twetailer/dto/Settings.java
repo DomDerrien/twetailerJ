@@ -24,9 +24,12 @@ public class Settings {
     public static final String NAME = "name";
     
     @Persistent
-    private Long lastProcessDirectMessageId;
+    private Long lastProcessDirectMessageId = 0L;
     
     public static final String LAST_PROCESSED_DIRECT_MESSAGE_ID = "lastProcessDirectMessageId";
+    
+    @Persistent
+    private Long lastRobotDirectMessageId = 0L;
     
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
 
@@ -52,6 +55,14 @@ public class Settings {
 
     public void setLastProcessDirectMessageId(Long lastProcessDirectMessageId) {
         this.lastProcessDirectMessageId = lastProcessDirectMessageId;
+    }
+
+    public Long getLastRobotDirectMessageId() {
+        return lastRobotDirectMessageId;
+    }
+
+    public void setLastRobotDirectMessageId(Long lastRoboProcessDirectMessageId) {
+        this.lastRobotDirectMessageId = lastRoboProcessDirectMessageId;
     }
     
     public Settings() {

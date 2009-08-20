@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.User;
 import com.twetailer.ClientException;
 import com.twetailer.adapter.TwitterAdapter;
+import com.twetailer.adapter.TwitterRobot;
 import com.twetailer.dto.Consumer;
 import com.twetailer.dto.Demand;
 import com.twetailer.dto.Location;
@@ -36,11 +37,11 @@ public class MaezelServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(MaezelServlet.class.getName());
 
     private BaseOperations _baseOperations = new BaseOperations();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperation();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperation();
-    private LocationOperations locationOperations = _baseOperations.getLocationOperation();
-    private RetailerOperations retailerOperations = _baseOperations.getRetailerOperation();
-    private StoreOperations storeOperations = _baseOperations.getStoreOperation();
+    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    private LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    private RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    private StoreOperations storeOperations = _baseOperations.getStoreOperations();
         
     @Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -67,6 +68,9 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/processPubDemands".equals(pathInfo)) {
                 new DemandProcessor().process(Locale.ENGLISH);
+            }
+            else if ("/processRobotMessages".equals(pathInfo)) {
+                new TwitterRobot().processDirectMessages();
             }
             else if ("/processProposals".equals(pathInfo)) {
                 new DemandProcessor().process(Locale.ENGLISH);
@@ -157,6 +161,7 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
         	log.warning("doGet().exception: " + ex);
+        	ex.printStackTrace();
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 

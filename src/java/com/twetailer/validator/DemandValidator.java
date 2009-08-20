@@ -27,9 +27,9 @@ public class DemandValidator {
     private static final Logger log = Logger.getLogger(DemandValidator.class.getName());
 
     private BaseOperations _baseOperations = new BaseOperations();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperation();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperation();
-    private LocationOperations locationOperations = _baseOperations.getLocationOperation();
+    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    private LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
     public void process() throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();

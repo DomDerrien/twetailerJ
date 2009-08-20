@@ -29,10 +29,10 @@ public class DemandProcessor {
     private static final Logger log = Logger.getLogger(DemandProcessor.class.getName());
     
     private BaseOperations _baseOperations = new BaseOperations();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperation();
-    private LocationOperations locationOperations = _baseOperations.getLocationOperation();
-    private RetailerOperations retailerOperations = _baseOperations.getRetailerOperation();
-    private StoreOperations storeOperations = _baseOperations.getStoreOperation();
+    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    private LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    private RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    private StoreOperations storeOperations = _baseOperations.getStoreOperations();
     
     public void process(Locale locale) throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();

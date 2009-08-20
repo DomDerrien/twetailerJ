@@ -1,5 +1,6 @@
 package com.twetailer.rest;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -129,7 +130,10 @@ public class LocationOperations extends BaseOperations {
      * @throws DataSourceException If the location cannot be retrieved
      */
     public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
-        getLogger().warning("Get location with id: " + key);
+        if (key == null || key == 0L) {
+            throw new InvalidParameterException("Invalid key; cannot retrieve the Location instance");
+        }
+        getLogger().warning("Get Location instance with id: " + key);
         Location location = pm.getObjectById(Location.class, key);
         if (location == null) {
             throw new DataSourceException("No location for identifier: " + key);

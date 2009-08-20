@@ -149,6 +149,9 @@ public class Demand extends Entity {
 	}
 
 	public void setCriteria(List<String> criteria) {
+	    if (criteria == null) {
+	        throw new InvalidParameterException("Cannot nuulify the attribute “criteria” of type List<String>");
+	    }
 		this.criteria = criteria;
 	}
 
@@ -176,7 +179,7 @@ public class Demand extends Entity {
 
 	public void setExpirationDate(Date expirationDate) {
         if (expirationDate == null) {
-            throw new IllegalArgumentException("Non null Date instance required");
+            throw new IllegalArgumentException("Cannot nullify the attribute “expirationDate” of type Date reference");
         }
         if (expirationDate.getTime() < DateUtils.getNowDate().getTime()) {
             throw new IllegalArgumentException("Expiration date cannot be in the past");
@@ -215,6 +218,9 @@ public class Demand extends Entity {
     }
 
     public void setProposalKeys(List<Long> proposalKeys) {
+        if (proposalKeys == null) {
+            throw new InvalidParameterException("Cannot nuulify the attribute “proposalKeys” of type List<Long>");
+        }
         this.proposalKeys = proposalKeys;
     }
     
@@ -225,11 +231,13 @@ public class Demand extends Entity {
     }
     
     public void resetProposalKeys() {
+        proposalKeys = new ArrayList<Long>();
+        /* Objects just loaded have a null property, even if initialized per default!
         int idx = proposalKeys.size();
         while (0 < idx) {
             --idx;
-            this.proposalKeys.remove(idx);
-        }
+            proposalKeys.remove(idx);
+        }*/
     }
 
     public void removeProposalKey(Long proposalKey) {
@@ -300,10 +308,10 @@ public class Demand extends Entity {
 			JsonArray jsonArray = in.getJsonArray(CRITERIA);
 			boolean additionMode = true;
 			for (int i=0; i<jsonArray.size(); ++i) {
-			    if ("+".equals(jsonArray.getString(0))) {
+			    if ("+".equals(jsonArray.getString(i))) {
 			        additionMode = true;
 			    }
-			    else if ("-".equals(jsonArray.getString(0))) {
+			    else if ("-".equals(jsonArray.getString(i))) {
 			        additionMode = false;
 			    }
 			    else if (i == 0) {
@@ -332,10 +340,10 @@ public class Demand extends Entity {
             boolean additionMode = true;
             JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);
             for (int i=0; i<jsonArray.size(); ++i) {
-                if ("+".equals(jsonArray.getString(0))) {
+                if ("+".equals(jsonArray.getString(i))) {
                     additionMode = true;
                 }
-                else if ("-".equals(jsonArray.getString(0))) {
+                else if ("-".equals(jsonArray.getString(i))) {
                     additionMode = false;
                 }
                 else if (i == 0) {

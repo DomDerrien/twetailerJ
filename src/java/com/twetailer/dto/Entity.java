@@ -61,7 +61,7 @@ public class Entity implements TransferObject {
 
     public void setCreationDate(Date creationDate) {
         if (creationDate == null) {
-            throw new IllegalArgumentException("Non null Date instance required");
+            throw new IllegalArgumentException("Cannot nullify the attribute “creationDate” of type Date reference");
         }
         this.creationDate = creationDate;
     }
@@ -75,9 +75,13 @@ public class Entity implements TransferObject {
         return modificationDate;
     }
 
+    public void updateModificationDate() {
+        setModificationDate(DateUtils.getNowDate());
+    }
+
     public void setModificationDate(Date modificationDate) {
         if (modificationDate == null) {
-            throw new IllegalArgumentException("Non null Date instance required");
+            throw new IllegalArgumentException("Cannot nullify the attribute “modificationDate” of type Date reference");
         }
         this.modificationDate = modificationDate;
     }
@@ -105,7 +109,7 @@ public class Entity implements TransferObject {
                 // Ignored error, the date stays not set
             }
         }
-        setModificationDate(DateUtils.getNowDate());
+        updateModificationDate();
         return this;
     }
 }
