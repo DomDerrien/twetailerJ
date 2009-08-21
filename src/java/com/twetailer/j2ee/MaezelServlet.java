@@ -1,6 +1,7 @@
 package com.twetailer.j2ee;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -95,17 +96,17 @@ public class MaezelServlet extends HttpServlet {
                 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
-                    List<Location> locations = locationOperations.getLocations(pm, Location.POSTAL_CODE, request.getParameter("postalCode"), 0);
-                    Location northPole = locations.get(0);
+                    Long locationKey = Long.parseLong(request.getParameter("locationKey"));
+                    
+                    Location location = locationOperations.getLocation(pm, locationKey);
+                    location.setHasStore(Boolean.TRUE);
+                    locationOperations.updateLocation(pm, location);
                     
                     Store santaFactory = new Store();
-                    santaFactory.setLocationKey(northPole.getKey());
+                    santaFactory.setLocationKey(locationKey);
                     santaFactory.setAddress(request.getParameter("address"));
                     santaFactory.setName(request.getParameter("name"));
                     storeOperations.createStore(pm, santaFactory);
-                    
-                    northPole.setHasStore(Boolean.TRUE);
-                    locationOperations.updateLocation(pm, northPole);
                 }
                 finally {
                     pm.close();
@@ -117,25 +118,19 @@ public class MaezelServlet extends HttpServlet {
     
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
-                    Store store = storeOperations.getStore(pm, Long.valueOf(request.getParameter("storeKey")));
-    
-                    User jackTroll = new User("jacktroll@twetailer.com", "twetailer.com");
-                    Consumer jack = consumerOperations.createConsumer(pm, jackTroll);
-                    jack.setName(request.getParameter("name"));
-                    jack.setTwitterId(62414620L);
-                    jack.setLocationKey(store.getLocationKey());
-                    jack = consumerOperations.updateConsumer(pm, jack);
+                    Consumer consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter("consumerKey")));
+                    Long storeKey = Long.valueOf(request.getParameter("storeKey"));
                     
-                    Retailer jackTheRetailer = retailerOperations.createRetailer(pm, jack, store);
+                    Retailer retailer = retailerOperations.createRetailer(pm, consumer, storeKey);
                     String[] supplies = request.getParameter("supplies").split(" ");
                     for (int i = 0; i < supplies.length; i++) {
-                        jackTheRetailer.addSupply(supplies[i]);
+                        retailer.addCriterion(supplies[i]);
                     }
-                    retailerOperations.updateRetailer(pm, jackTheRetailer);
                 }
                 finally {
                     pm.close();
                 }
+                
             }
             else if ("/createDemand".equals(pathInfo)) {
                 // Supported formats:

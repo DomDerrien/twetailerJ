@@ -13,7 +13,7 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 		module.init = function() {
 		};
 		
-		module.processDMs = function(buttonId) {
+		module.delegateProcess = function(buttonId, processor) {
 			dijit.byId(buttonId).attr('disabled', true);
 			displayResponse(null);
 			dojo.xhrGet({
@@ -24,73 +24,9 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 					displayResponse(response);
 				},
 				preventCache: true,
-				url: "/API/maezel/processDMs"
+				url: "/API/maezel/" + processor
 			});
 		};
-		
-		module.validateOpenDemands = function(buttonId) {
-			dijit.byId(buttonId).attr('disabled', true);
-			displayResponse(null);
-			dojo.xhrGet({
-				content: null, 
-				handleAs: "json",
-				load: function(response, request) {
-					dijit.byId(buttonId).attr('disabled', false);
-					displayResponse(response);
-				},
-				preventCache: true,
-				url: "/API/maezel/validateOpenDemands"
-			});
-		};
-		
-		module.processPubDemands = function(buttonId) {
-			dijit.byId(buttonId).attr('disabled', true);
-			displayResponse(null);
-			dojo.xhrGet({
-				content: null, 
-				handleAs: "json",
-				load: function(response, request) {
-					dijit.byId(buttonId).attr('disabled', false);
-					displayResponse(response);
-				},
-				preventCache: true,
-				url: "/API/maezel/processPubDemands"
-			});
-		};
-		
-		module.processRobotMessages = function(buttonId) {
-			dijit.byId(buttonId).attr('disabled', true);
-			displayResponse(null);
-			dojo.xhrGet({
-				content: null, 
-				handleAs: "json",
-				load: function(response, request) {
-					dijit.byId(buttonId).attr('disabled', false);
-					displayResponse(response);
-				},
-				preventCache: true,
-				url: "/API/maezel/processRobotMessages"
-			});
-		};
-		
-		module.processProposals = function(buttonId) {
-			dijit.byId(buttonId).attr('disabled', true);
-			alert("Not yet implemented!");
-			/*
-			displayResponse(null);
-			dojo.xhrGet({
-				content: null, 
-				handleAs: "json",
-				load: function(response, request) {
-					dijit.byId(buttonId).attr('disabled', false);
-					displayResponse(response);
-				},
-				preventCache: true,
-				url: "/API/maezel/processProposals"
-			});
-			*/
-		};
-		
 		var displayResponse = function(response) {
 			var feedbackArea = dojo.byId("feedbackArea");
 			if (response != null) {

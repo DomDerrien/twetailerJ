@@ -1,5 +1,6 @@
 package com.twetailer.rest;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,15 +24,15 @@ public class RetailerOperations extends BaseOperations {
      * Create the Retailer instance with the given parameters
      * 
      * @param consumer Existing consumer account to extend
-     * @param store Existing store where the retailer works
+     * @param store storeKey identifier of the store where the retailer works
      * @return Just created resource
      * 
      * @see RetailerOperations#createRetailer(PersistenceManager, Consumer, Store)
      */
-    public Retailer createRetailer(Consumer consumer, Store store) {
+    public Retailer createRetailer(Consumer consumer, Long storeKey) {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return createRetailer(pm, consumer, store);
+            return createRetailer(pm, consumer, storeKey);
         }
         finally {
             pm.close();
@@ -43,25 +44,25 @@ public class RetailerOperations extends BaseOperations {
      * 
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Existing consumer account to extend
-     * @param store Existing store where the retailer works
+     * @param store storeKey identifier of the store where the retailer works
      * @return Just created resource
      * 
      * @see RetailerOperations#createRetailer(PersistenceManager, Retailer)
      */
-    public Retailer createRetailer(PersistenceManager pm, Consumer consumer, Store store) {
+    public Retailer createRetailer(PersistenceManager pm, Consumer consumer, Long storeKey) {
         Retailer retailer = new Retailer();
         
-        // Copy the user's attribute
-        retailer.setAddress(consumer.getAddress());
-        retailer.setEmail(consumer.getEmail());
-        retailer.setImId(consumer.getImId());
         retailer.setName(consumer.getName());
-        retailer.setPhoneNumber(consumer.getPhoneNumber());
+        retailer.setConsumerKey(consumer.getKey());
+        
+        // Copy the user's attribute
+        retailer.setImId(consumer.getImId());
+        retailer.setEmail(consumer.getEmail());
         retailer.setTwitterId(consumer.getTwitterId());
         
         // Attach to the store
-        retailer.setStoreKey(store.getKey());
-        
+        retailer.setStoreKey(storeKey);
+
         // Persist the account
         return createRetailer(pm, retailer);
     }
@@ -76,6 +77,55 @@ public class RetailerOperations extends BaseOperations {
     public Retailer createRetailer(PersistenceManager pm, Retailer retailer) {
         pm.makePersistent(retailer);
         return retailer;
+    }
+
+    /**
+     * Use the given key to get the corresponding Retailer instance
+     * 
+     * @param key Identifier of the retailer
+     * @return First retailer matching the given criteria or <code>null</code>
+     * 
+     * @throws DataSourceException If the retrieved retailer does not belong to the specified user
+     * 
+     * @see RetailerOperations#getRetailer(PersistenceManager, Long)
+     */
+    public Retailer getRetailer(Long key) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return getRetailer(pm, key);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given key to get the corresponding Retailer instance
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param key Identifier of the retailer
+     * @return First retailer matching the given criteria or <code>null</code>
+     * 
+     * @throws DataSourceException If the retailer cannot be retrieved
+     */
+    public Retailer getRetailer(PersistenceManager pm, Long key) throws DataSourceException {
+        if (key == null || key == 0L) {
+            throw new InvalidParameterException("Invalid key; cannot retrieve the Retailer instance");
+        }
+        getLogger().warning("Get Retailer instance with id: " + key);
+        try {
+            Retailer retailer = pm.getObjectById(Retailer.class, key);
+            if (retailer == null) {
+                throw new DataSourceException("No retailer for identifier: " + key);
+            }
+            if (retailer.getCriteria() != null) {
+                retailer.getCriteria().size();
+            }
+            return retailer;
+        }
+        catch(Exception ex) {
+            throw new DataSourceException("Error while retrieving retailer for identifier: " + key + " -- ex: " + ex.getMessage());
+        }
     }
     
     /**
@@ -151,6 +201,7 @@ public class RetailerOperations extends BaseOperations {
      */
     public Retailer updateRetailer(PersistenceManager pm, Retailer retailer) {
         getLogger().warning("Updating retailer with id: " + retailer.getKey());
+        retailer.setCriteriaKack(retailer.getCriteria()); // FIXME: if the array is not copied, the updated array won't be persisted!
         pm.makePersistent(retailer);
         return retailer;
     }

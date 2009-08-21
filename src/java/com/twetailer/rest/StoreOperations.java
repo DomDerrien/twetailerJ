@@ -84,12 +84,17 @@ public class StoreOperations extends BaseOperations {
             throw new InvalidParameterException("Invalid key; cannot retrieve the Store instance");
         }
         getLogger().warning("Get Store instance with id: " + key);
-        Store store = pm.getObjectById(Store.class, key);
-        if (store == null) {
-            throw new DataSourceException("No store for identifier: " + key);
+        try {
+            Store store = pm.getObjectById(Store.class, key);
+            if (store == null) {
+                throw new DataSourceException("No store for identifier: " + key);
+            }
+            return store; // FIXME: remove workaround for a bug in DataNucleus
+            // return new Store(store.toJson());
         }
-        return store; // FIXME: remove workaround for a bug in DataNucleus
-        // return new Store(store.toJson());
+        catch(Exception ex) {
+            throw new DataSourceException("Error while retrieving store for identifier: " + key + " -- ex: " + ex.getMessage());
+        }
     }
     
     /**

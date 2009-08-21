@@ -134,12 +134,17 @@ public class LocationOperations extends BaseOperations {
             throw new InvalidParameterException("Invalid key; cannot retrieve the Location instance");
         }
         getLogger().warning("Get Location instance with id: " + key);
-        Location location = pm.getObjectById(Location.class, key);
-        if (location == null) {
-            throw new DataSourceException("No location for identifier: " + key);
+        try {
+            Location location = pm.getObjectById(Location.class, key);
+            if (location == null) {
+                throw new DataSourceException("No location for identifier: " + key);
+            }
+            return location; // FIXME: remove workaround for a bug in DataNucleus
+            // return new Location(location.toJson());
         }
-        return location; // FIXME: remove workaround for a bug in DataNucleus
-        // return new Location(location.toJson());
+        catch(Exception ex) {
+            throw new DataSourceException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage());
+        }
     }
     
     /**
@@ -206,18 +211,18 @@ public class LocationOperations extends BaseOperations {
             range = range * 1.8;
         }
         Double latitude = location.getLatitude();
-        latitude = 0.0D; // FIXME
         Double topLatitude = latitude + range * 0.001; // TODO: verify the formula
         Double bottomLatitude = latitude - range * 0.001; // TODO: verify the formula
         
         // The horizontal gap is latitude dependent for the meridians
-        range = range / Math.cos(latitude); // TODO: verify the formula
+        range = range / Math.abs(Math.cos(latitude)); // TODO: verify the formula
         Double longitude = location.getLongitude();
-        longitude = 90.0D; // FIXME
-        Double leftLongitude = longitude + range * 0.001; // TODO: verify the formula
-        Double rightLongitude = longitude - range * 0.001; // TODO: verify the formula
+        Double leftLongitude = longitude - range * 0.001; // TODO: verify the formula
+        Double rightLongitude = longitude + range * 0.001; // TODO: verify the formula
         // FIXME: take into account that the value can be greater than 360° and smaller than 0°
         // FIXME: that means two request have to be done at the limit...
+        
+        log.finest("Box limits [left; rigth] / [top; bottom] : [" + leftLongitude + "; " + rightLongitude + "] / [" + topLatitude + "; " + bottomLatitude + "]");
         
         /****************************************************************************************************************
          * Ideal case not feasible because of App Engine limitation:  Only one inequality filter per query is supported.
@@ -226,8 +231,8 @@ public class LocationOperations extends BaseOperations {
          * query.setFilter(
          *         Location.LATITUDE + " > bottomLatitude && " +
          *         Location.LATITUDE + " < topLatitude && " +
-         *         Location.LONGITUDE + " > rightLongitude && " +
-         *         Location.LONGITUDE + " < leftLongitude && " +
+         *         Location.LONGITUDE + " > leftLongitude && " +
+         *         Location.LONGITUDE + " < rightLongitude && " +
          *         Location.HAS_STORE + " != hasStore"
          * );
          * query.declareParameters("Double topLatitude, Double bottomLatitude, Double leftLongitude, Double rightLongitude, Boolean hasStore");
@@ -252,18 +257,26 @@ public class LocationOperations extends BaseOperations {
         getLogger().warning("Select location(s) with: " + query.toString());
         
         // Execute the query
-        List<Location> locations = (List<Location>) query.executeWithArray(true, topLatitude, bottomLatitude);
+        List<Location> locations = (List<Location>) query.executeWithArray(Boolean.TRUE, topLatitude, bottomLatitude);
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+        log.finest(locations.size() + " location(s) loaded");
         
         List<Location> selection = new ArrayList<Location>();
         for (Location spot: locations) {
             if (location.hasStore()) {
-                if (rightLongitude < location.getLongitude() && location.getLongitude() < leftLongitude) {
+                if (leftLongitude < location.getLongitude() && location.getLongitude() < rightLongitude) {
                     selection.add(spot);
                 }
+                else {
+                    log.finest("Location " + location.getKey() + " (" + location.getLongitude() + ") has not the correct longitude, outside the box [" + rightLongitude + "; " + leftLongitude + "]");
+                }
+            }
+            else {
+                log.finest("Location " + location.getKey() + " has no store attached -> " + location.hasStore());
             }
         }
         
+        log.finest(selection.size() + " location(s) selected");
         return selection;
     }
    

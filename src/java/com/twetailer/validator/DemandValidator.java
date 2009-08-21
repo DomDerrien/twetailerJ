@@ -59,7 +59,7 @@ public class DemandValidator {
                     }
                     else {
                         Long locationKey = demand.getLocationKey();
-                        if (locationKey == null) {
+                        if (locationKey == null || locationKey == 0) {
                             message = LabelExtractor.get("dv_demandShouldHaveALocation", new Object[] { demand.getKey() }, locale);
                         }
                         else {

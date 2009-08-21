@@ -416,7 +416,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>Inform the consumer that the location information is missing. {0} is the demand reference.</note>
 			<tuv xml:lang="en">
-				<seg>Please update the Demand with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+				<seg>Please update the Demand reference:{0} with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
 			</tuv>
 		</tu>
 

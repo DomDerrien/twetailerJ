@@ -1,5 +1,6 @@
 package com.twetailer.dto;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +13,27 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
-import com.google.appengine.api.users.User;
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Retailer extends Entity {
 
-    /*** Consumer ***/
+    /*** Retailer ***/
     @Persistent
-    private String address;
+    private Long creatorKey;
     
-    public final static String ADDRESS = "address";
+    public final static String CREATOR_KEY = "creatorKey";
+
+    @Persistent
+    private Long consumerKey;
+    
+    public final static String CONSUMER_KEY = "consumerKey";
+    
+    @Persistent
+    private List<String> criteria = new ArrayList<String>();
+    
+    @Persistent
+    private List<String> criteriaHack = new ArrayList<String>();
+    
+    public final static String  CRITERIA = "criteria";
     
     @Persistent
     private String email;
@@ -32,6 +44,11 @@ public class Retailer extends Entity {
     private String imId;
     
     public final static String IM_ID = "imId";
+
+    @Persistent
+    private Boolean isStoreAdmin;
+    
+    public final static String IS_STORE_ADMIN_KEY = "isStoreAdmin";
 
     @Persistent
     private Long locationKey;
@@ -47,27 +64,6 @@ public class Retailer extends Entity {
     private String phoneNumber;
     
     public final static String PHONE_NUMBER = "phoneNb";
-    
-    @Persistent
-    private User systemUser;
-    
-    public final static String SYSTEM_USER = "sysUser";
-    
-    @Persistent
-    private Long twitterId;
-    
-    public final static String TWITTER_ID = "twitterId";
-
-    /*** Retailer ***/
-    @Persistent
-    private Long creatorKey;
-    
-    public final static String CREATOR_KEY = "creatorKey";
-
-    @Persistent
-    private Boolean isStoreAdmin;
-    
-    public final static String IS_STORE_ADMIN_KEY = "isStoreAdmin";
 
     @Persistent
     private Long storeKey;
@@ -80,9 +76,9 @@ public class Retailer extends Entity {
     public final static String SCORE = "score";
     
     @Persistent
-    private List<String> supplies = new ArrayList<String>();
-
-    public static final String SUPPLIES = "supplies";
+    private Long twitterId;
+    
+    public final static String TWITTER_ID = "twitterId";
     
     /** Default constructor */
     public Retailer() {
@@ -99,13 +95,60 @@ public class Retailer extends Entity {
         fromJson(parameters);
     }
     
-    /*** Consumer ***/
-    public String getAddress() {
-        return address;
+    public Long getCreatorKey() {
+        return creatorKey;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCreatorKey(Long creatorKey) {
+        this.creatorKey = creatorKey;
+    }
+
+    public void addCriterion(String criterion) {
+        if (!criteria.contains(criterion)) {
+            criteria.add(criterion);
+        }
+    }
+    
+    public void resetCriteria() {
+        int idx = criteria.size();
+        while (0 < idx) {
+            --idx;
+            this.criteria.remove(idx);
+        }
+    }
+
+    public void removeCriterion(String criterion) {
+        criteria.remove(criterion);
+    }
+
+    public Long getConsumerKey() {
+        return consumerKey;
+    }
+
+    public void setConsumerKey(Long consumerKey) {
+        this.consumerKey = consumerKey;
+    }
+
+    public List<String> getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(List<String> criteria) {
+        if (criteria == null) {
+            throw new InvalidParameterException("Cannot nullify the attribute 'criteria' of type List<String>");
+        }
+        this.criteria = criteria;
+    }
+
+    public List<String> getCriteriaHack() {
+        return criteriaHack;
+    }
+
+    public void setCriteriaKack(List<String> criteriaHack) {
+        if (criteriaHack == null) {
+            throw new InvalidParameterException("Cannot nullify the attribute 'criteriaHack' of type List<String>");
+        }
+        this.criteriaHack = criteriaHack;
     }
 
     public String getEmail() {
@@ -122,6 +165,14 @@ public class Retailer extends Entity {
 
     public void setImId(String imId) {
         this.imId = imId;
+    }
+
+    public Boolean isStoreAdmin() {
+        return isStoreAdmin;
+    }
+
+    public void setIsStoreAdmin(Boolean isStoreAdmin) {
+        this.isStoreAdmin = isStoreAdmin;
     }
 
     public Long getLocationKey() {
@@ -148,39 +199,6 @@ public class Retailer extends Entity {
         this.phoneNumber = phoneNumber;
     }
 
-    public User getSystemUser() {
-        return systemUser;
-    }
-
-    public void setSystemUser(User systemUser) {
-        this.systemUser = systemUser;
-    }
-
-    public Long getTwitterId() {
-        return twitterId;
-    }
-
-    public void setTwitterId(Long twitterId) {
-        this.twitterId = twitterId;
-    }
-
-    /*** Retailer ***/
-	public Long getCreatorKey() {
-        return creatorKey;
-    }
-
-    public void setCreatorKey(Long creatorKey) {
-        this.creatorKey = creatorKey;
-    }
-
-    public Boolean isStoreAdmin() {
-        return isStoreAdmin;
-    }
-
-    public void setIsStoreAdmin(Boolean isStoreAdmin) {
-        this.isStoreAdmin = isStoreAdmin;
-    }
-
     public Long getStoreKey() {
         return storeKey;
     }
@@ -197,77 +215,44 @@ public class Retailer extends Entity {
         this.score = score;
     }
 
-    public List<String> getSupplies() {
-        return supplies;
+    public Long getTwitterId() {
+        return twitterId;
     }
 
-    public void setSupplies(List<String> supplies) {
-        this.supplies = supplies;
-    }
-
-    public void addSupply(String supply) {
-        if (!supplies.contains(supply)) {
-            supplies.add(supply);
-        }
-    }
-    
-    public void resetSupplies() {
-        int idx = supplies.size();
-        while (0 < idx) {
-            --idx;
-            this.supplies.remove(idx);
-        }
-    }
-
-    public void removeSupply(String supply) {
-        supplies.remove(supply);
+    public void setTwitterId(Long twitterId) {
+        this.twitterId = twitterId;
     }
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        /*** Consumer ***/
-        out.put(ADDRESS, getAddress());
+        out.put(CREATOR_KEY, getCreatorKey());
+        out.put(CONSUMER_KEY, getConsumerKey());
+        if (getCriteria() != null) {
+            JsonArray jsonArray = new GenericJsonArray();
+            for(String criterion: getCriteria()) {
+                jsonArray.add(criterion);
+            }
+            out.put(CRITERIA, jsonArray);
+        }
         out.put(EMAIL, getEmail());
         out.put(IM_ID, getImId());
+        out.put(IS_STORE_ADMIN_KEY, isStoreAdmin());
         out.put(LOCATION_KEY, getLocationKey());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
-        // out.put(SYSTEM_USER, getSystemUser());
-        out.put(TWITTER_ID, getTwitterId());
-        /*** Retailer ***/
-        out.put(CREATOR_KEY, getCreatorKey());
-        out.put(IS_STORE_ADMIN_KEY, isStoreAdmin());
         out.put(STORE_KEY, getStoreKey());
         out.put(SCORE, getScore());
-        if (getSupplies() != null) {
-            JsonArray jsonArray = new GenericJsonArray();
-            for(String supply: getSupplies()) {
-                jsonArray.add(supply);
-            }
-            out.put(SUPPLIES, jsonArray);
-        }
+        out.put(TWITTER_ID, getTwitterId());
 		return out;
 	}
 
 	public TransferObject fromJson(JsonObject in) {
 	    super.fromJson(in);
-	    /*** Consumer ***/
-        if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
-        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
-        if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
-        // if (in.containsKey(SYSTEM_USER)) { setSystemUser(in.getObject(SYSTEM_USER)); }
-        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
-        /*** Retailer ***/
         if (in.containsKey(CREATOR_KEY)) { setCreatorKey(in.getLong(CREATOR_KEY)); }
-        if (in.containsKey(IS_STORE_ADMIN_KEY)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN_KEY)); }
-        if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
-        if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
-        if (in.containsKey(SUPPLIES)) {
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(CRITERIA)) {
             boolean additionMode = true;
-            JsonArray jsonArray = in.getJsonArray(SUPPLIES);
+            JsonArray jsonArray = in.getJsonArray(CRITERIA);
             for (int i=0; i<jsonArray.size(); ++i) {
                 if ("+".equals(jsonArray.getString(0))) {
                     additionMode = true;
@@ -276,17 +261,26 @@ public class Retailer extends Entity {
                     additionMode = false;
                 }
                 else if (i == 0) {
-                    resetSupplies();
-                    addSupply(jsonArray.getString(i));
+                    resetCriteria();
+                    addCriterion(jsonArray.getString(i));
                 }
                 else if (additionMode) {
-                    addSupply(jsonArray.getString(i));
+                    addCriterion(jsonArray.getString(i));
                 }
                 else {
-                    removeSupply(jsonArray.getString(i));
+                    removeCriterion(jsonArray.getString(i));
                 }
             }
         }
+        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
+        if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
+        if (in.containsKey(IS_STORE_ADMIN_KEY)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN_KEY)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
+        if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
+        if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
+        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
 		return this;
 	}
 }

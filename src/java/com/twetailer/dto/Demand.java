@@ -150,7 +150,7 @@ public class Demand extends Entity {
 
 	public void setCriteria(List<String> criteria) {
 	    if (criteria == null) {
-	        throw new InvalidParameterException("Cannot nuulify the attribute “criteria” of type List<String>");
+	        throw new InvalidParameterException("Cannot nullify the attribute 'criteria' of type List<String>");
 	    }
 		this.criteria = criteria;
 	}
@@ -179,7 +179,7 @@ public class Demand extends Entity {
 
 	public void setExpirationDate(Date expirationDate) {
         if (expirationDate == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute “expirationDate” of type Date reference");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'expirationDate' of type Date reference");
         }
         if (expirationDate.getTime() < DateUtils.getNowDate().getTime()) {
             throw new IllegalArgumentException("Expiration date cannot be in the past");
@@ -219,7 +219,7 @@ public class Demand extends Entity {
 
     public void setProposalKeys(List<Long> proposalKeys) {
         if (proposalKeys == null) {
-            throw new InvalidParameterException("Cannot nuulify the attribute “proposalKeys” of type List<Long>");
+            throw new InvalidParameterException("Cannot nuulify the attribute 'proposalKeys' of type List<Long>");
         }
         this.proposalKeys = proposalKeys;
     }

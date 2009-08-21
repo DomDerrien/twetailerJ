@@ -44,11 +44,15 @@ public class DemandProcessor {
                 // TODO: use the retailer score to ping the ones with highest score first.
                 for(Retailer retailer: retailers) {
                     try {
+                        StringBuilder tags = new StringBuilder(); 
+                        for(String tag: demand.getCriteria()) {
+                            tags.append(tag).append(" ");
+                        }
                         TwitterUtils.sendDirectMessage(
                                 retailer.getTwitterId().toString(),
                                 LabelExtractor.get(
                                         "dp_informNewDemand",
-                                        new Object[] { demand.getKey(), demand.getCriteria().toArray().toString(), demand.getExpirationDate() },
+                                        new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
                                         locale
                                 )
                         );
@@ -79,7 +83,7 @@ public class DemandProcessor {
         for (Retailer retailer: retailers) {
             long score = 0;
             for (String tag: demand.getCriteria()) {
-                if (retailer.getSupplies().contains(tag)) {
+                if (retailer.getCriteria() != null && retailer.getCriteria().contains(tag)) {
                     ++ score;
                     break; // TODO: check if it's useful to continue counting
                 }

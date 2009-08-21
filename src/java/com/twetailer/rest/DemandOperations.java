@@ -137,15 +137,20 @@ public class DemandOperations extends BaseOperations {
             throw new InvalidParameterException("Invalid key; cannot retrieve the Demand instance");
         }
         getLogger().warning("Get Demand instance with id: " + key);
-        Demand demand = pm.getObjectById(Demand.class, key);
-        if (demand == null) {
-            throw new DataSourceException("No demand for identifier: " + key);
+        try {
+            Demand demand = pm.getObjectById(Demand.class, key);
+            if (demand == null) {
+                throw new DataSourceException("No demand for identifier: " + key);
+            }
+            if (!consumerKey.equals(demand.getConsumerKey())) {
+                throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
+            }
+            demand.getCriteria().size();
+            return demand;
         }
-        if (!consumerKey.equals(demand.getConsumerKey())) {
-            throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
+        catch(Exception ex) {
+            throw new DataSourceException("Error while retrieving demand for identifier: " + key + " -- ex: " + ex.getMessage());
         }
-        demand.getCriteria().size();
-        return demand;
     }
     
     /**

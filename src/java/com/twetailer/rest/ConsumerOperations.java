@@ -144,12 +144,17 @@ public class ConsumerOperations extends BaseOperations {
             throw new InvalidParameterException("Invalid key; cannot retrieve the Consumer instance");
         }
         getLogger().warning("Get Consumer instance with id: " + key);
-        Consumer consumer = pm.getObjectById(Consumer.class, key);
-        if (consumer == null) {
-            throw new DataSourceException("No consumer for identifier: " + key);
+        try {
+            Consumer consumer = pm.getObjectById(Consumer.class, key);
+            if (consumer == null) {
+                throw new DataSourceException("No consumer for identifier: " + key);
+            }
+            return consumer; // FIXME: remove workaround for a bug in DataNucleus
+            // return new Consumer(consumer.toJson());
         }
-        return consumer; // FIXME: remove workaround for a bug in DataNucleus
-        // return new Consumer(consumer.toJson());
+        catch(Exception ex) {
+            throw new DataSourceException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage());
+        }
     }
 
     /**
