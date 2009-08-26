@@ -23,6 +23,10 @@ if (!dojo._hasResource["twetailer.Maezel"]) {
 					dijit.byId(buttonId).attr('disabled', false);
 					displayResponse(response);
 				},
+				error: function(error, request) {
+					dijit.byId(buttonId).attr('disabled', false);
+					displayResponse(response);
+				},
 				preventCache: true,
 				url: "/API/maezel/" + processor
 			});
