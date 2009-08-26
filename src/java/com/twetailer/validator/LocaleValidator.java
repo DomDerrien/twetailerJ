@@ -88,9 +88,32 @@ public class LocaleValidator {
             catch (IOException e) { }
             return coordinates;
         }
-        if (Locale.FRANCE.equals(countryCode)) {
-        }
         return coordinates;
+    }
+
+    private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
+    private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
+    public static final String DEFAULT_LANGUAGE = ENGLISH_LANGUAGE;
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
+    public static String checkLanguage(String language) {
+        if (FRENCH_LANGUAGE.equals(language)) { return language; }
+        if (ENGLISH_LANGUAGE.equals(language)) { return language; }
+        return DEFAULT_LANGUAGE; // Default language
+    }
+
+    public static Locale getLocale(String language) {
+        if (FRENCH_LANGUAGE.equals(language)) { return Locale.FRENCH; }
+        else if (ENGLISH_LANGUAGE.equals(language)) { return Locale.ENGLISH; }
+        return DEFAULT_LOCALE; // Default language
+    }
+
+    private static final String DEFAULT_COUNTRY_CODE = Locale.US.getCountry();
+
+    public static String checkCountryCode(String countryCode) {
+        if (Locale.CANADA.getCountry().equals(countryCode)) { return countryCode; }
+        if (Locale.US.getCountry().equals(countryCode)) { return countryCode; }
+        return DEFAULT_COUNTRY_CODE; // Default country code
     }
 
 }

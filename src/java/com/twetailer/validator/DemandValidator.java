@@ -26,12 +26,12 @@ public class DemandValidator {
     
     private static final Logger log = Logger.getLogger(DemandValidator.class.getName());
 
-    private BaseOperations _baseOperations = new BaseOperations();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    private LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    private static BaseOperations _baseOperations = new BaseOperations();
+    private static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    private static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    private static LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
-    public void process() throws DataSourceException {
+    public static void process() throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         Date nowDate = DateUtils.getNowDate();
         Long nowTime = nowDate.getTime();
@@ -60,7 +60,7 @@ public class DemandValidator {
                     else {
                         Long locationKey = demand.getLocationKey();
                         if (locationKey == null || locationKey == 0) {
-                            message = LabelExtractor.get("dv_demandShouldHaveALocation", new Object[] { demand.getKey() }, locale);
+                            message = LabelExtractor.get("dv_demandShouldHaveALocale", new Object[] { demand.getKey() }, locale);
                         }
                         else {
                             try {
@@ -68,7 +68,7 @@ public class DemandValidator {
                                 if (Location.INVALID_COORDINATE.equals(location.getLatitude()) || Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                     location = LocaleValidator.getGeoCoordinates(location);
                                     if (Location.INVALID_COORDINATE.equals(location.getLatitude()) || Location.INVALID_COORDINATE.equals(location.getLongitude())) {
-                                        message = LabelExtractor.get("dv_demandShouldHaveAValidLocation", new Object[] { demand.getKey(), location.getPostalCode(), location.getCountryCode() }, locale);
+                                        message = LabelExtractor.get("dv_demandShouldHaveAValidLocale", new Object[] { demand.getKey(), location.getPostalCode(), location.getCountryCode() }, locale);
                                     }
                                     else {
                                         locationOperations.updateLocation(pm, location);
@@ -76,7 +76,7 @@ public class DemandValidator {
                                 }
                             }
                             catch (DataSourceException ex) {
-                                message = LabelExtractor.get("dv_unableToGetLocationInformation", new Object[] { demand.getKey() }, locale);
+                                message = LabelExtractor.get("dv_unableToGetLocaleInformation", new Object[] { demand.getKey() }, locale);
                             }
                        }
                     }

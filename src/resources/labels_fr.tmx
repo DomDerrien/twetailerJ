@@ -26,7 +26,8 @@ o-tmf="RichWebApps">
 <!-- ================================ -->
 <tu tuid="cmdLine_prefix_action" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>action,commande,!</seg></tuv></tu>
 <tu tuid="cmdLine_prefix_expiration" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>expiration,expire</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_location" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>lieu,localization</seg></tuv></tu>
+<tu tuid="cmdLine_prefix_help" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>aide,?</seg></tuv></tu>
+<tu tuid="cmdLine_prefix_locale" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>lieu,localization</seg></tuv></tu>
 <tu tuid="cmdLine_prefix_quantity" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>quantité,qté,quantite,qte</seg></tuv></tu>
 <tu tuid="cmdLine_prefix_reference" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>référence,reference,identifiant</seg></tuv></tu>
 <tu tuid="cmdLine_prefix_range" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>distance,rayon</seg></tuv></tu>
@@ -40,7 +41,6 @@ o-tmf="RichWebApps">
 <tu tuid="cmdLine_action_help" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>aide,?</seg></tuv></tu>
 <tu tuid="cmdLine_action_list" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>lister,afficher</seg></tuv></tu>
 <tu tuid="cmdLine_action_propose" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>proposer</seg></tuv></tu>
-<tu tuid="cmdLine_action_shop" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>magaziner,shopping</seg></tuv></tu>
 <tu tuid="cmdLine_action_supply" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>fournir</seg></tuv></tu>
 <tu tuid="cmdLine_action_wish" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>vœux,voeux</seg></tuv></tu>
 <tu tuid="cmdLine_action_www" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>www,web</seg></tuv></tu>
@@ -68,27 +68,5 @@ o-tmf="RichWebApps">
 <tu tuid="loginFormPanePasswordLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Mot de passe</seg></tuv></tu>
 <tu tuid="loginFormPaneAdministrativeStateLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Authentification en tant qu'administrateur</seg></tuv></tu>
 <tu tuid="loginFormPaneActionLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Se connecter</seg></tuv></tu>
-<tu tuid="pageSelectorConsumer" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Consommateur</seg></tuv></tu>
-<tu tuid="pageSelectorConsumerAllProducts" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Tous les produits</seg></tuv></tu>
-<tu tuid="pageSelectorConsumerYourRequests" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Vos requêtes</seg></tuv></tu>
-<tu tuid="pageSelectorConsumerYourAccount" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Votre compte</seg></tuv></tu>
-<tu tuid="pageSelectorRetailer" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Distributeur</seg></tuv></tu>
-<tu tuid="pageSelectorRetailerAllRequests" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Toutes les requêtes</seg></tuv></tu>
-<tu tuid="pageSelectorRetailerYourRequests" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Vos requêtes</seg></tuv></tu>
-<tu tuid="pageSelectorRetailerYourProducts" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Vos produits</seg></tuv></tu>
-<tu tuid="pageSelectorRetailerYourStore" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Votre magasin</seg></tuv></tu>
-<tu tuid="consumerSearchCriteriaFieldLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Critère de recherche</seg></tuv></tu>
-<tu tuid="consumerSearchCriteriaFieldInvalidMsg" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Un mot-clé d'au moins {0} caractères est requis.</seg></tuv></tu>
-<tu tuid="consumerSearchButtonLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Rechercher parmi les produits</seg></tuv></tu>
-<tu tuid="consumerSearchLocationInfoMsg" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Depuis\u00a0: <span class="documentedText" title="{1}">{0}</span></seg></tuv></tu>
-<tu tuid="consumerSearchLocationNonLoggedInHint" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Estimation parce que vous n'est pas authentifié</seg></tuv></tu>
-<tu tuid="consumerSearchLocationLoggedInHint" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Extraite des préférences</seg></tuv></tu>
-<tu tuid="tableColumnIndex" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Index</seg></tuv></tu>
-<tu tuid="tableColumnName" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Nom</seg></tuv></tu>
-<tu tuid="tableColumnDescription" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Description</seg></tuv></tu>
-<tu tuid="tableColumnLocation" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Localisation</seg></tuv></tu>
-<tu tuid="tableColumnCriteria" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Critère de sélection</seg></tuv></tu>
-<tu tuid="tableColumnExpiration" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Expiration (jours)</seg></tuv></tu>
-<tu tuid="tableColumnCreationDate" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Date de création</seg></tuv></tu>
 </body>
 </tmx>

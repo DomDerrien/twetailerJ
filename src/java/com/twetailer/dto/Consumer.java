@@ -6,6 +6,8 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import com.twetailer.validator.LocaleValidator;
+
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -27,22 +29,16 @@ public class Consumer extends Entity {
     
     public final static String IM_ID = "imId";
 
-    private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
-    private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
-
     @Persistent
-    private String language = ENGLISH_LANGUAGE;
+    private String language = LocaleValidator.DEFAULT_LANGUAGE;
     
-    public final static String LANGUAGE = "locale";
+    public final static String LANGUAGE = "language";
 
     @Persistent
     private Long locationKey = 0L;
     
     public final static String LOCATION_KEY = "locationKey";
 
-    // Volatile attribute
-    // private Loc// ale locale;
-	
 	@Persistent
 	private String name;
 	
@@ -102,8 +98,7 @@ public class Consumer extends Entity {
     }
 
     public void setLanguage(String language) {
-        if (FRENCH_LANGUAGE.equals(language)) { this.language = language; }
-        else { this.language = ENGLISH_LANGUAGE; } // Default language
+        this.language = LocaleValidator.checkLanguage(language);
     }
 
     public Long getLocationKey() {
@@ -115,8 +110,7 @@ public class Consumer extends Entity {
     }
 
     public Locale getLocale() {
-        if (FRENCH_LANGUAGE.equals(language)) { return Locale.FRENCH; }
-        return Locale.ENGLISH; // Default language
+        return LocaleValidator.getLocale(language);
     }
 
 	public String getName() {

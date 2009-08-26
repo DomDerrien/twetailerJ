@@ -2,7 +2,6 @@ package com.twetailer.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -28,13 +27,13 @@ public class DemandProcessor {
     
     private static final Logger log = Logger.getLogger(DemandProcessor.class.getName());
     
-    private BaseOperations _baseOperations = new BaseOperations();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    private LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    private RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
-    private StoreOperations storeOperations = _baseOperations.getStoreOperations();
+    private static BaseOperations _baseOperations = new BaseOperations();
+    private static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    private static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    private static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    private static StoreOperations storeOperations = _baseOperations.getStoreOperations();
     
-    public void process(Locale locale) throws DataSourceException {
+    public static void process() throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         List<Demand> demands = demandOperations.getDemands(pm, Demand.STATE, CommandSettings.State.published.toString(), 0);
         for(Demand demand: demands) {
@@ -53,7 +52,7 @@ public class DemandProcessor {
                                 LabelExtractor.get(
                                         "dp_informNewDemand",
                                         new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
-                                        locale
+                                        retailer.getLocale()
                                 )
                         );
                     }
@@ -68,7 +67,7 @@ public class DemandProcessor {
         }
     }
 
-    protected List<Retailer> identifyRetailers(PersistenceManager pm, Demand demand, Location location) throws DataSourceException {
+    protected static List<Retailer> identifyRetailers(PersistenceManager pm, Demand demand, Location location) throws DataSourceException {
         // Get the stores around the demanded location
         List<Location> locations = locationOperations.getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), 0);
         List<Store> stores = storeOperations.getStores(pm, locations, 0);

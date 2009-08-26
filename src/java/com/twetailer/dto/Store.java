@@ -33,6 +33,8 @@ public class Store extends Entity {
     private String name;
     
     public final static String NAME = "name";
+    
+    public static final String STORE_KEY = "storeKey";
 
     @Persistent
     private String phoneNumber;
@@ -98,6 +100,7 @@ public class Store extends Entity {
         out.put(LOCATION_KEY, getLocationKey());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
+        out.put(STORE_KEY, getKey());
         return out;
     }
 
@@ -108,6 +111,7 @@ public class Store extends Entity {
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        if (in.containsKey(STORE_KEY)) {setKey(in.getLong(STORE_KEY)); }
         return this;
     }
 }

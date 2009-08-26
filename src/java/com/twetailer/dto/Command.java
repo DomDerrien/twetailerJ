@@ -23,6 +23,8 @@ public class Command extends Entity {
 
     public static final String CONSUMER_KEY = "consumerKey";
     
+    public static final String NEED_HELP = "needHelp";
+    
     @Persistent
     private State state = State.open;
     

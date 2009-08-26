@@ -1,6 +1,7 @@
 package com.twetailer.j2ee;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -61,20 +62,20 @@ public class MaezelServlet extends HttpServlet {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
             else if ("/processDMs".equals(pathInfo)) {
-                Long newSinceId = new TwitterAdapter(Locale.ENGLISH).processDirectMessages();
+                Long newSinceId = TwitterAdapter.processDirectMessages();
                 out.put("newSinceId", newSinceId);
             }
             else if ("/validateOpenDemands".equals(pathInfo)) {
-                new DemandValidator().process();
+                DemandValidator.process();
             }
             else if ("/processPubDemands".equals(pathInfo)) {
-                new DemandProcessor().process(Locale.ENGLISH);
+                DemandProcessor.process();
             }
             else if ("/processRobotMessages".equals(pathInfo)) {
-                new TwitterRobot().processDirectMessages();
+                TwitterRobot.processDirectMessages();
             }
             else if ("/processProposals".equals(pathInfo)) {
-                new DemandProcessor().process(Locale.ENGLISH);
+                throw new InvalidParameterException("Not yet implemented");
             }
             else if ("/createLocation".equals(pathInfo)) {
                 // Supported formats:

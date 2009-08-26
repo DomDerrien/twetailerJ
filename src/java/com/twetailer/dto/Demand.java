@@ -78,6 +78,8 @@ public class Demand extends Entity {
 
     public static final String RANGE = "range";
     
+    public static final String REFERENCE = "reference";
+    
     @Persistent
     private String rangeUnit = LocaleValidator.KILOMETER_UNIT;
 
@@ -293,6 +295,7 @@ public class Demand extends Entity {
         out.put(QUANTITY, getQuantity());
         out.put(RANGE, getRange());
         out.put(RANGE_UNIT, getRangeUnit());
+        out.put(REFERENCE, getKey());
 		return out;
 	}
 
@@ -361,6 +364,7 @@ public class Demand extends Entity {
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
+        if (in.containsKey(REFERENCE)) {setKey(in.getLong(REFERENCE)); }
         
         return this;
 	}

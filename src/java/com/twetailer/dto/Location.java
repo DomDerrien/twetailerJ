@@ -4,6 +4,8 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import com.twetailer.validator.LocaleValidator;
+
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
@@ -58,7 +60,7 @@ public class Location extends Entity {
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+        this.countryCode = LocaleValidator.checkCountryCode(countryCode);
     }
 
     public Double getLatitude() {

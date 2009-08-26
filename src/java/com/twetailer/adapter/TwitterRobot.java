@@ -21,11 +21,11 @@ import domderrien.i18n.LabelExtractor;
 
 public class TwitterRobot {
     
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected StoreOperations storesOperations = _baseOperations.getStoreOperations();
-    protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static StoreOperations storesOperations = _baseOperations.getStoreOperations();
+    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
-    public Long processDirectMessages() throws TwitterException, DataSourceException {
+    public static Long processDirectMessages() throws TwitterException, DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
             Settings settings = settingsOperations.getSettings(pm);
@@ -41,7 +41,7 @@ public class TwitterRobot {
             pm.close();
         }
     }
-    public Long processDirectMessages(PersistenceManager pm, Long sinceId) throws TwitterException, DataSourceException {
+    public static Long processDirectMessages(PersistenceManager pm, Long sinceId) throws TwitterException, DataSourceException {
         Long lastId = sinceId;
         List<DirectMessage> messages = TwitterUtils.getDirectMessages(TwitterUtils.getRobotAccount(), sinceId);
         for (DirectMessage message: messages) {

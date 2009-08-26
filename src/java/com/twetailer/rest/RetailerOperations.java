@@ -59,6 +59,7 @@ public class RetailerOperations extends BaseOperations {
         retailer.setImId(consumer.getImId());
         retailer.setEmail(consumer.getEmail());
         retailer.setTwitterId(consumer.getTwitterId());
+        retailer.setLanguage(consumer.getLanguage());
         
         // Attach to the store
         retailer.setStoreKey(storeKey);

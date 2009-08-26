@@ -6,15 +6,13 @@ import java.util.logging.Logger;
 
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class TwitterUtils {
     private static final Logger log = Logger.getLogger(TwitterUtils.class.getName());
 
-    private static boolean isDebugMode = false;
-    private static boolean isDevelopmentMode = false;
-    
     private static String twetailerScreenName = "twtlr";
     private static String twetailerPassword = "twetailer@shortcut0";
     
@@ -106,23 +104,61 @@ public class TwitterUtils {
     }
     
     /**
-     * Use the Twetailer account to send public message (to update Twetailer public status)
-     * @param message message to be tweeted
-     * @throws TwitterException If the message submission fails
+     * Accessor provided for the unit tests
      */
-    public static void sendPublicMessage(String message) throws TwitterException {
-        sendPublicMessage(getTwetailerAccount(), message);
+    protected static void resetAccountLists() {
+        _twetailerAccounts.clear();
+        _robotAccounts.clear();
+    }
+    
+    /**
+     * Use the Twetailer account to send public message (to update Twetailer public status)
+     * 
+     * @param message message to be tweeted
+     * @return Status of the operation
+     * 
+     * @throws TwitterException If the message submission fails
+     * 
+     * @see TwitterUtils#sendPublicMessage(Twitter, String)
+     */
+    public static Status sendPublicMessage(String message) throws TwitterException {
+        Twitter account = getTwetailerAccount();
+        try {
+            return sendPublicMessage(account, message);
+        }
+        finally {
+            releaseTwetailerAccount(account);
+        }
     }
     
     /**
      * Use the given account to send public message
+     * 
      * @param account identifies the message sender
      * @param message message to be tweeted
+     * @return Status of the operation
+     * 
      * @throws TwitterException If the message submission fails
      */
-    protected static void sendPublicMessage(Twitter account, String message) throws TwitterException {
+    protected static Status sendPublicMessage(Twitter account, String message) throws TwitterException {
+        return account.updateStatus(message);
+    }
+    
+    /**
+     * Use the Twetailer account to send a Direct Message to the identified recipient
+     * 
+     * @param recipientScreenName identifier of the recipient
+     * @param message message to be tweeted
+     * @return Corresponding DirectMessage instance
+     * 
+     * @throws TwitterException If the message submission fails
+     * 
+     * @see TwitterUtils#sendDirectMessage(Twitter, String, String)
+     */
+    public static DirectMessage sendDirectMessage(String recipientScreenName, String message) throws TwitterException {
+        Twitter account = getTwetailerAccount();
         try {
-            account.updateStatus(message);
+            return sendDirectMessage(account, recipientScreenName, message);
         }
         finally {
             releaseTwetailerAccount(account);
@@ -131,64 +167,50 @@ public class TwitterUtils {
     
     /**
      * Use the Twetailer account to send a Direct Message to the identified recipient
-     * @param recipientScreenName identifier of the recipient
-     * @param message message to be tweeted
-     * @throws TwitterException If the message submission fails
-     */
-    public static void sendDirectMessage(String recipientScreenName, String message) throws TwitterException {
-        sendDirectMessage(getTwetailerAccount(), recipientScreenName, message);
-    }
-    
-    /**
-     * Use the Twetailer account to send a Direct Message to the identified recipient
+     * 
      * @param account identifies the message sender
      * @param recipientScreenName identifier of the recipient
      * @param message message to be tweeted
+     * @return Corresponding DirectMessage instance
+     * 
      * @throws TwitterException If the message submission fails
      */
-    protected static void sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
-        try {
-            if (isDevelopmentMode) {
-                log.info("Before sending a DM to " + recipientScreenName + ": " + message);
-            }
-            else if (isDebugMode) {
-                log.fine("Before sending a DM to " + recipientScreenName + ": " + message);
-                account.sendDirectMessage(recipientScreenName, message);
-                log.fine("DM successfully sent!");
-            }
-            else {
-                account.sendDirectMessage(recipientScreenName, message);
-            }
-        }
-        finally {
-            releaseTwetailerAccount(account);
-        }
+    protected static DirectMessage sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
+        log.fine("Before sending a DM to " + recipientScreenName + ": " + message);
+        return account.sendDirectMessage(recipientScreenName, message);
     }
 
     /**
      * Return the Direct Messages received to the Twetailer account, after the identified message 
+     * 
      * @param sinceId identifier of the last processed Direct Message
      * @return List of Direct Messages not yet processed-can be empty
+     * 
      * @throws TwitterException If the message retrieval fails
+     * 
+     * @see TwitterUtils#getDirectMessages(Twitter, Long)
      */
     public static List<DirectMessage> getDirectMessages(long sinceId) throws TwitterException {
-        return getDirectMessages(getTwetailerAccount(), sinceId);
+        Twitter account = getTwetailerAccount();
+        try {
+            return getDirectMessages(account, sinceId);
+        }
+        finally {
+            releaseTwetailerAccount(account);
+        }
     }
 
     /**
      * Return the Direct Messages received to the Twetailer account, after the identified message 
+     * 
      * @param account identifies the message sender
      * @param sinceId identifier of the last processed Direct Message
      * @return List of Direct Messages not yet processed-can be empty
+     * 
      * @throws TwitterException If the message retrieval fails
      */
     public static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
-        try {
-            log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
-            return account.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 2 DMs retrieved at a time
-        }
-        finally {
-            releaseTwetailerAccount(account);
-        }
+        log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
+        return account.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 2 DMs retrieved at a time
     }
 }

@@ -15,7 +15,8 @@ public class CommandSettings {
     public enum Prefix {
         action,
         expiration,
-        location,
+        help,
+        locale,
         quantity,
         reference,
         range,
@@ -46,39 +47,6 @@ public class CommandSettings {
         }
         return localizedPrefixes.get(locale);
     }
-    
-    /**
-     * Verify if the given value matches the given command action
-     * 
-     * @param expectedPrefix prefix to consider for the match
-     * @param actualValue value submitted for a command prefix
-     * @param locale Identifies the language to consider
-     * @return <code>true</code> if both values match, <code>false</code> otherwise.
-     */
-    public static boolean isPrefix(CommandSettings.Prefix expectedPrefix, String actualValue, Locale locale) {
-        return isPrefix(getPrefixes(locale), expectedPrefix, actualValue);
-    }
-    
-    /**
-     * Verify if the given value matches the given command action
-     * 
-     * @param supportedPrefixes list of localized action labels
-     * @param expectedPrefix prefix to consider for the match
-     * @param actualValue value submitted for a command prefix
-     * @return <code>true</code> if both values match, <code>false</code> otherwise.
-     */
-    protected static boolean isPrefix(JsonObject supportedPrefixes, CommandSettings.Prefix expectedPrefix, String actualValue) {
-        JsonArray acceptedValues = supportedPrefixes.getJsonArray(expectedPrefix.toString());
-        int acceptedValueNb = acceptedValues.size();
-        int acceptedValueIdx = 0;
-        while (acceptedValueIdx < acceptedValueNb) {
-            if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
-                return true;
-            }
-            acceptedValueIdx++;
-        }
-        return false;
-    }
 
     public enum Action {
         cancel,
@@ -89,7 +57,6 @@ public class CommandSettings {
         help,
         list,
         propose,
-        shop,
         supply,
         wish,
         www
@@ -118,38 +85,6 @@ public class CommandSettings {
         return localizedActions.get(locale);
     }
     
-    /**
-     * Verify if the given value matches the given command action
-     * 
-     * @param expectedAction command action to consider for the match
-     * @param actualValue value submitted for a command action
-     * @param locale Identifies the language to consider
-     * @return <code>true</code> if both values match, <code>false</code> otherwise.
-     */
-    public static boolean isAction(CommandSettings.Action expectedAction, String actualValue, Locale locale) {
-        return isAction(getActions(locale), expectedAction, actualValue);
-    }
-    
-    /**
-     * Verify if the given value matches the given command action
-     * 
-     * @param supportedActions list of localized action labels
-     * @param expectedAction command action to consider for the match
-     * @param actualValue value submitted for a command action
-     * @return <code>true</code> if both values match, <code>false</code> otherwise.
-     */
-    protected static boolean isAction(JsonObject supportedActions, CommandSettings.Action expectedAction, String actualValue) {
-        JsonArray acceptedValues = supportedActions.getJsonArray(expectedAction.toString());
-        int acceptedValueNb = acceptedValues.size();
-        int acceptedValueIdx = 0;
-        while (acceptedValueIdx < acceptedValueNb) {
-            if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
-                return true;
-            }
-            acceptedValueIdx++;
-        }
-        return false;
-    }
 
     public enum State {
         open,
@@ -180,4 +115,46 @@ public class CommandSettings {
         }
         return localizedActions.get(locale);
     }
+    
+    private static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+    
+    /**
+     * Loads the list of registered labels and the list of keyword list themselves for the specified locale
+     * @param locale Used to access the localized resource bundle
+     * @return A JsonObject with the localized labels, one JsonArray of values per defined help keyword
+     */
+   public static JsonObject getHelpKeywords(Locale locale) {
+        JsonObject helpKeywords = localizedHelpKeywords.get(locale);
+        if (helpKeywords == null) {
+            helpKeywords = new GenericJsonObject();
+            String keywordList = LabelExtractor.get("help_list_keywords" , locale);
+            String[] keywords = keywordList.split(",");
+            for(String keyword: keywords) {
+                helpKeywords.put(keyword, LabelExtractor.get("help_equivalents_keyword_" + keyword, locale));
+            }
+            localizedHelpKeywords.put(locale, helpKeywords);
+        }
+        return helpKeywords;
+    }
+
+   /**
+    * Verify if the given value is an equivalent of the expected value
+    * 
+    * @param equivalentList list of localized keywords with their equivalents
+    * @param expectedValue command action to consider for the match
+    * @param actualValue value submitted for a command action
+    * @return <code>true</code> if both values match, <code>false</code> otherwise.
+    */
+   public static boolean isEquivalentTo(JsonObject equivalentList, String expectedValue, String actualValue) {
+       JsonArray acceptedValues = equivalentList.getJsonArray(expectedValue);
+       int acceptedValueNb = acceptedValues.size();
+       int acceptedValueIdx = 0;
+       while (acceptedValueIdx < acceptedValueNb) {
+           if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
+               return true;
+           }
+           acceptedValueIdx++;
+       }
+       return false;
+   }
 }

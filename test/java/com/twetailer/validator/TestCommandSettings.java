@@ -1,4 +1,4 @@
-package com.twetailer.settings;
+package com.twetailer.validator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -7,10 +7,11 @@ import static org.junit.Assert.assertNotSame;
 
 import java.util.Locale;
 
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import org.junit.Test;
-
-import com.twetailer.validator.CommandSettings;
 
 public class TestCommandSettings {
 
@@ -56,15 +57,28 @@ public class TestCommandSettings {
 
     @Test
     public void testVariousActionsI() {
-        assertTrue(CommandSettings.isAction(CommandSettings.Action.cancel, "cancel", Locale.ENGLISH));
-        assertTrue(CommandSettings.isAction(CommandSettings.Action.cancel, "delete", Locale.ENGLISH));
-        assertFalse(CommandSettings.isAction(CommandSettings.Action.cancel, "destroy", Locale.ENGLISH));
+        JsonArray equivalents = new GenericJsonArray();
+        equivalents.add("cancel");
+        equivalents.add("delete");
+        equivalents.add("stop");
+        JsonObject actions = new GenericJsonObject();
+        actions.put(CommandSettings.Action.cancel.toString(), equivalents);
+
+        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), "cancel"));
+        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), "delete"));
+        assertFalse(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), "destroy"));
     }
 
     @Test
     public void testVariousActionsII() {
-        assertTrue(CommandSettings.isAction(CommandSettings.Action.help, "help", Locale.ENGLISH));
-        assertTrue(CommandSettings.isAction(CommandSettings.Action.help, "?", Locale.ENGLISH));
-        assertFalse(CommandSettings.isAction(CommandSettings.Action.help, "sos", Locale.ENGLISH));
+        JsonArray equivalents = new GenericJsonArray();
+        equivalents.add("help");
+        equivalents.add("?");
+        JsonObject actions = new GenericJsonObject();
+        actions.put(CommandSettings.Action.help.toString(), equivalents);
+
+        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.help.toString(), "help"));
+        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.help.toString(), "?"));
+        assertFalse(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.help.toString(), "sos"));
     }
 }

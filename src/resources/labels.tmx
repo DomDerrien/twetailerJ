@@ -165,11 +165,19 @@
 			</tuv>
 		</tu>
 		
-		<tu tuid="cmdLine_prefix_location" datatype="Text">
+		<tu tuid="cmdLine_prefix_help" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>For the command line arguments, accepted labels for the location attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>location,locale</seg>
+				<seg>help,?</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_locale" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>locale,location</seg>
 			</tuv>
 		</tu>
 
@@ -278,14 +286,6 @@
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
 				<seg>propose</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="cmdLine_action_shop" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
-			<tuv xml:lang="en">
-				<seg>shop</seg>
 			</tuv>
 		</tu>
 
@@ -412,23 +412,23 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_demandShouldHaveALocation" datatype="Text">
+		<tu tuid="dv_demandShouldHaveALocale" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>Inform the consumer that the location information is missing. {0} is the demand reference.</note>
+			<note>Inform the consumer that the locale information is missing. {0} is the demand reference.</note>
 			<tuv xml:lang="en">
 				<seg>Please update the Demand reference:{0} with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_demandShouldHaveAValidLocation" datatype="Text">
+		<tu tuid="dv_demandShouldHaveAValidLocale" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>Inform the consumer that the location information is invalid. {0} is the demand reference, {1} is the given postal code, and {2} is the country code.</note>
+			<note>Inform the consumer that the locale information is invalid. {0} is the demand reference, {1} is the given postal code, and {2} is the country code.</note>
 			<tuv xml:lang="en">
 				<seg>The locale \u0022{1} {2}\u0022 given demand reference:{0} cannot be resolved. Please provide a valid locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_unableToGetLocationInformation" datatype="Text">
+		<tu tuid="dv_unableToGetLocaleInformation" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>Inform the consumer that the information for the locale cannot be retrieved.</note>
 			<tuv xml:lang="en">
@@ -571,195 +571,6 @@
 			<note>Label of the button/link starting the authentication verification</note>
 			<tuv xml:lang="en">
 				<seg>Log In</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorConsumer" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a top level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Consumer</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorConsumerAllProducts" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>All Products</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorConsumerYourRequests" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Your Requests</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorConsumerYourAccount" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Your Account</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorRetailer" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a top level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Retailer</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorRetailerAllRequests" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>All Requests</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorRetailerYourRequests" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Your Requests</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorRetailerYourProducts" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Your Products</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="pageSelectorRetailerYourStore" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of a nested level page selector</note>
-			<tuv xml:lang="en">
-				<seg>Your Store</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="consumerSearchCriteriaFieldLabel" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of the search criteria field</note>
-			<tuv xml:lang="en">
-				<seg>Search criteria</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="consumerSearchCriteriaFieldInvalidMsg" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Message printed when the one of the required parameters to command a search is invalid</note>
-			<tuv xml:lang="en">
-				<seg>At least one keyword of {0} characters is required.</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="consumerSearchButtonLabel" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label of the button commanding the search</note>
-			<tuv xml:lang="en">
-				<seg>Scan products</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="consumerSearchLocationInfoMsg" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>
-				Message reporting the user's location, automatically detected or retrieved from his/her preferences.
-				See related translation units:
-					consumerSearchLocationNonLoggedInHint
-					consumerSearchLocationLoggedInHint
-			</note>
-			<tuv xml:lang="en">
-				<seg>From location: <span class="documentedText" title="{1}">{0}</span></seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="consumerSearchLocationNonLoggedInHint" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Hint displayed when the user's location is detected automatically</note>
-			<tuv xml:lang="en">
-				<seg>Estimated because you're not logged in</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="consumerSearchLocationLoggedInHint" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Hint displayed when the user's location is loaded from the preferences</note>
-			<tuv xml:lang="en">
-				<seg>Retrieved from your preferences</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnIndex" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Index</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnName" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Name</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnDescription" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Description</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnLocation" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Location</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnCriteria" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Selection criteria</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnExpiration" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Expiration (days)</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnCreationDate" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Creation Date</seg>
-			</tuv>
-		</tu>
-
-		<tu tuid="tableColumnCreationDate" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Label for table column headers</note>
-			<tuv xml:lang="en">
-				<seg>Creation Date</seg>
 			</tuv>
 		</tu>
 

@@ -3,10 +3,13 @@ package com.twetailer.dto;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+
+import com.twetailer.validator.LocaleValidator;
 
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
@@ -51,10 +54,15 @@ public class Retailer extends Entity {
     public final static String IS_STORE_ADMIN_KEY = "isStoreAdmin";
 
     @Persistent
+    private String language = LocaleValidator.DEFAULT_LANGUAGE;
+    
+    public final static String LANGUAGE = "language";
+
+    @Persistent
     private Long locationKey;
     
     public final static String LOCATION_KEY = "locationKey";
-    
+
     @Persistent
     private String name;
     
@@ -175,12 +183,24 @@ public class Retailer extends Entity {
         this.isStoreAdmin = isStoreAdmin;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = LocaleValidator.checkLanguage(language);
+    }
+
     public Long getLocationKey() {
         return locationKey;
     }
 
     public void setLocationKey(Long locationKey) {
         this.locationKey = locationKey;
+    }
+    
+    public Locale getLocale() {
+        return LocaleValidator.getLocale(language);
     }
 
     public String getName() {
