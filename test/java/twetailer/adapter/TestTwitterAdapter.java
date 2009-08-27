@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListResourceBundle;
 import java.util.Locale;
 
 import javax.jdo.PersistenceManager;
@@ -609,7 +610,7 @@ public class TestTwitterAdapter {
         JsonObject states = TwitterAdapter.localizedStates.get(locale);
         
         String response = TwitterAdapter.generateTweet(demand, location, prefixes, actions, locale);
-
+        
         assertNotNull(response);
         assertNotSame(0, response.length());
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0) + ":1"));
@@ -975,7 +976,7 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("help_definition_prefix_" + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
                 return dm;
             }
         };
@@ -1029,7 +1030,7 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("help_definition_prefix_" + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
                 return dm;
             }
         };
@@ -1083,7 +1084,7 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("help_definition_prefix_" + CommandSettings.Prefix.expiration.toString(), Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.expiration.toString(), Locale.ENGLISH)));
                 return dm;
             }
         };
@@ -1137,7 +1138,7 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("help_definition_prefix_" + CommandSettings.Prefix.range.toString(), Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.range.toString(), Locale.ENGLISH)));
                 return dm;
             }
         };
@@ -1191,7 +1192,7 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("help_definition_action_" + CommandSettings.Action.demand.toString(), Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_ACTION_PREFIX + CommandSettings.Action.demand.toString(), Locale.ENGLISH)));
                 return dm;
             }
         };
@@ -1228,16 +1229,15 @@ public class TestTwitterAdapter {
         final int dmId = 2222;
         final long consumerKey = 333;
         final String senderScreenName = "Tom";
-        final String helpKeyword = "deposit";
-        final String helpKeywordEquivalent = "prepay";
+        final String helpKeyword = "deposit-test";
+        final String helpKeywordEquivalent = "prepay-test";
 
         // Simplified list of registered help keywords
         JsonArray equivalents = new GenericJsonArray();
         equivalents.add(helpKeyword);
-        equivalents.add("on account");
         equivalents.add(helpKeywordEquivalent);
         JsonObject helpKeywords = new GenericJsonObject();
-        helpKeywords.put("deposit", equivalents);
+        helpKeywords.put(helpKeyword, equivalents);
         TwitterAdapter.localizedHelpKeywords.clear();
         TwitterAdapter.localizedHelpKeywords.put(Locale.ENGLISH, helpKeywords);
         
@@ -1257,7 +1257,7 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("help_definition_keyword_" + helpKeyword, Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
                 return dm;
             }
         };

@@ -1,19 +1,30 @@
 package twetailer.rest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
+import javax.jdo.PersistenceManagerFactory;
 
+import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import com.google.appengine.api.users.User;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
+import twitter4j.MockTwitterUser;
+import twitter4j.TwitterException;
+
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.User;
 
 public class TestConsumerOperations {
 
@@ -27,25 +38,30 @@ public class TestConsumerOperations {
 	    }
 	}
 	
-	MockConsumerOperation mockConsumerOperations;
-
+	private MockConsumerOperation mockConsumerOperations;
+    private MockAppEngineEnvironment mockEnvironment;
+    
 	@Before
 	public void setUp() throws Exception {
 		mockConsumerOperations = new MockConsumerOperation();
+		
+        mockEnvironment = new MockAppEngineEnvironment();
+        mockEnvironment.setUp();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+        mockEnvironment.tearDown();
 	}
 
-	@Test
+    @Test
 	public void testGetConsumersI() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
             @Override
             @SuppressWarnings({ "unchecked", "serial" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
                     @Override
@@ -80,7 +96,7 @@ public class TestConsumerOperations {
 		final String qV = "b";
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
 				return new MockQuery(){
                     @Override
@@ -103,7 +119,7 @@ public class TestConsumerOperations {
 		final String qV = "b";
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
 				return new MockQuery(){
                     @Override
@@ -127,7 +143,7 @@ public class TestConsumerOperations {
 		final Consumer selected = new Consumer();
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
 				return new MockQuery(){
                     @Override
@@ -158,7 +174,7 @@ public class TestConsumerOperations {
 		final Consumer spare4 = new Consumer();
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
 				return new MockQuery(){
                     @Override
@@ -220,13 +236,27 @@ public class TestConsumerOperations {
 		assertNotNull(consumer);
 		assertEquals(selected, consumer);
 		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
-	}
+    }
+
+    @Test(expected=InvalidParameterException.class)
+    public void testGetConsumerV() throws DataSourceException {
+        BaseOperations bOps = new BaseOperations();
+        PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        bOps.getConsumerOperations().getConsumer(pm, null);
+    }
+
+    @Test(expected=InvalidParameterException.class)
+    public void testGetConsumerVI() throws DataSourceException {
+        BaseOperations bOps = new BaseOperations();
+        PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        bOps.getConsumerOperations().getConsumer(pm, 0L);
+    }
 
 	@Test
 	public void testCreateConsumerI() throws DataSourceException {
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
 				return new MockQuery(){
                     @Override
@@ -252,7 +282,7 @@ public class TestConsumerOperations {
 		User systemUser = new User("email", "domain");
 		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
-            public Query newQuery(Class clazz) {
+            public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
 				return new MockQuery(){
                     @Override
@@ -270,4 +300,128 @@ public class TestConsumerOperations {
 		assertEquals(existingConsumer, createdConsumer);
 		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
 	}
+
+    @Test
+    public void testCreateConsumerIII() throws DataSourceException {
+        User user = new User("test", "test.com");
+        
+        BaseOperations bOps = new BaseOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        bOps.getConsumerOperations().createConsumer(user);
+        
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Tries to recreate it
+        bOps.getConsumerOperations().createConsumer(user);
+        
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testCreateConsumerIV() throws DataSourceException, TwitterException {
+        final String name = "test";
+        MockTwitterUser user = new MockTwitterUser() {
+            @Override
+            public String getName() {
+                return name;
+            }
+        };
+        
+        BaseOperations bOps = new BaseOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        bOps.getConsumerOperations().createConsumer(user);
+        
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Tries to recreate it
+        bOps.getConsumerOperations().createConsumer(user);
+        
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    public void testUpdateConsumerI() throws DataSourceException {
+        final Long twitterId = 2122312321L;
+        User user = new User("test", "test.com");
+        
+        BaseOperations bOps = new BaseOperations();
+        PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        try {
+            // Create the user once
+            Consumer consumer = bOps.getConsumerOperations().createConsumer(pm, user);
+            
+            // Update it
+            consumer.setTwitterId(twitterId);
+            
+            // Persist the update
+            consumer = bOps.getConsumerOperations().updateConsumer(pm, consumer);
+            
+            // Close the persistence manager and open a new one for a separate query
+            pm.close();
+            pm = mockEnvironment.getPersistenceManager();
+            
+            // Search for the update instance
+            List<Consumer> consumers = bOps.getConsumerOperations().getConsumers("email", "test", 1);
+            assertNotNull(consumers.size());
+            assertEquals(1, consumers.size());
+            assertEquals(twitterId, consumers.get(0).getTwitterId());
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Test
+    public void testUpdateConsumerII() throws DataSourceException {
+        
+        final PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        BaseOperations bOps = new BaseOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+        try {
+            // Create the user once
+            Consumer consumer = bOps.getConsumerOperations().createConsumer(new User("test", "domain"));
+            
+            // Update it
+            consumer.setTwitterId(12345L);
+            
+            // Persist the update
+            consumer = bOps.getConsumerOperations().updateConsumer(consumer);
+        }
+        finally {
+            pm.close();
+        }
+    }
 }

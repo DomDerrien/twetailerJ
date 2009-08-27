@@ -47,7 +47,7 @@ public class TestBaseOperations {
 	public void tearDown() throws Exception {
 	}
 
-    @Test(expected=java.lang.NoClassDefFoundError.class)
+    @Test
     public void testGetPersistenceManager() throws IOException {
         new MockBaseOperations().getPersistenceManager();
     }
