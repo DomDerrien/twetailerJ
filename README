@@ -17,8 +17,8 @@ Initial development environment setup
 3. Open a command line shell
 	3.1 Go to your Eclipse workspace directory: $cd <workspace.dir>
 	3.2 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-	3.3 Launch Git Bash from <workspace.dir> & clone your fork of Twetailer repository: $git clone git@github.com:<your.username>/twetailerJ
-	3.4 Keep a local reference of the master respository: $git remote add <your.username> git://github.com/<your.username>/twetailerJ
+	3.3 Launch Git Bash from <workspace.dir> & clone your fork of Twetailer repository: $git clone git@github.com:DomDerrien/twetailerJ.git
+	3.4 Keep a local reference of the master respository: $git remote add <your.username> git@/github.com/<your.username>/twetailerJ.git
 	3.5 Move to the twetailerJ sub-directory: $cd twetailerJ
 	3.6 Create the bin directory: $mkdir bin
 	3.7 Unzip the ant program: $<7Zip.dir>\7z.exe x -obin deps\tools\system\apache-ant-1.7.1-bin.zip
