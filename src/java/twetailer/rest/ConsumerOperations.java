@@ -158,50 +158,6 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
-     * Use the given pair {attribute; value} to get the corresponding Consumer instance
-     * 
-     * @param attribute Name of the consumer attribute used a the search criteria
-     * @param value Pattern for the search attribute
-     * @return Consumer matching the search criteria
-     * 
-     * @throws DataSourceException if the expected consumer is not found, or if too many consumers match the criteria
-     * 
-     * @see ConsumerOperations#getConsumer(PersistenceManager, String, Object)
-     * /
-    public Consumer getConsumer(String attribute, Object value) throws DataSourceException {
-        PersistenceManager pm = getPersistenceManager();
-        try {
-            return getConsumer(pm, attribute, value);
-        }
-        finally {
-            pm.close();
-        }
-    }*/ // FIXME: remove that convenient code ;)
-
-    /**
-     * Use the given pair {attribute; value} to get the corresponding Consumer instance
-     * 
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the consumer attribute used a the search criteria
-     * @param value Pattern for the search attribute
-     * @return Consumer matching the search criteria
-     * 
-     * @throws DataSourceException if the expected consumer is not found, or if too many consumers match the criteria
-     * /
-    public Consumer getConsumer(PersistenceManager pm, String attribute, Object value) throws DataSourceException {
-        // Select the corresponding consumers
-        List<Consumer> consumers = getConsumers(pm, attribute, value, 1);
-        // Report the possible problems
-        if (consumers == null || consumers.size() == 0) {
-            return null;
-        }
-        if (1 < consumers.size()) {
-            throw new DataSourceException("Abnormal number of returned Consumer resources: " + consumers.size());
-        }
-        return consumers.get(0);
-    }*/ // FIXME: remove that convenient code ;)
-    
-    /**
      * Use the given pair {attribute; value} to get the corresponding Consumer instances
      * 
      * @param attribute Name of the consumer attribute used a the search criteria

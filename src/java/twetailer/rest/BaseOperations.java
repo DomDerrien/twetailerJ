@@ -3,7 +3,9 @@ package twetailer.rest;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import twetailer.DataSourceException;
@@ -21,13 +23,32 @@ public class BaseOperations {
         return _log;
     }
 
+    private static PersistenceManagerFactory pmfInstance = null;
+
+    /** Setter for the injection of a mock */
+    protected static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
+        pmfInstance = pmf;
+    }
+    
+    /**
+     * Singleton accessor
+     * 
+     * @return Initial instance of the <code>PersistenceManagerFactory</code> class
+     */
+    public static PersistenceManagerFactory getPersistenceManagerFactory() {
+        if (pmfInstance == null) {
+            pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+        }
+        return pmfInstance;
+    }
+
     /**
      * Accessor isolated to facilitate tests by IOP
      * 
      * @return Persistence manager instance
      */
     public PersistenceManager getPersistenceManager() {
-        PersistenceManager pm = Utils.getPersistenceManager();
+        PersistenceManager pm = getPersistenceManagerFactory().getPersistenceManager();
         pm.setDetachAllOnCommit(true);
         pm.setCopyOnAttach(false);
         return pm;

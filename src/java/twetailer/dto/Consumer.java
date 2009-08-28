@@ -35,7 +35,7 @@ public class Consumer extends Entity {
     public final static String LANGUAGE = "language";
 
     @Persistent
-    private Long locationKey = 0L;
+    private Long locationKey;
     
     public final static String LOCATION_KEY = "locationKey";
 
@@ -142,7 +142,7 @@ public class Consumer extends Entity {
 		out.put(ADDRESS, getAddress());
 		out.put(EMAIL, getEmail());
 		out.put(IM_ID, getImId());
-        out.put(LOCATION_KEY, getLocationKey());
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(LANGUAGE, getLanguage());
 		out.put(NAME, getName());
 		out.put(PHONE_NUMBER, getPhoneNumber());
@@ -155,7 +155,7 @@ public class Consumer extends Entity {
 		if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
 		if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
 		if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.containsKey(LOCATION_KEY) ? in.getLong(LOCATION_KEY) : null); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
 		if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
 		if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }

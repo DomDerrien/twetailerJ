@@ -11,11 +11,11 @@
 // Press Ctrl-c to copy an element, and to store the whole UML diagram to the system clipboard.
 // Select "Custom elements &gt; New..." to create new element types.
 //
-// This text will be stored with each diagram;  use it for notes.</help_text><element><type>com.umlet.element.base.Class</type><coordinates><x>610</x><y>130</y><w>150</w><h>70</h></coordinates><panel_attributes>Entity
+// This text will be stored with each diagram;  use it for notes.</help_text><element><type>com.umlet.element.base.Class</type><coordinates><x>600</x><y>130</y><w>150</w><h>70</h></coordinates><panel_attributes>Entity
 --
 + key: Long
 # creationDate: Date
-+ modificationDate: Date</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>170</x><y>150</y><w>170</w><h>330</h></coordinates><panel_attributes>Consumer
++ modificationDate: Date</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>160</x><y>160</y><w>170</w><h>320</h></coordinates><panel_attributes>Consumer
 --
 + name: String
 + email: String
@@ -23,7 +23,6 @@
 + smsNb: String
 + facebookId: String
 + twitterId: Long
-+ twitterScreenName: String
 --
 + cancel(demandKey)
 + confirm(proposalKey)
@@ -38,8 +37,12 @@
 + shareWish(key, friendKey)
 + commentStore(key, text)
 + commentProduct(key, text)
-fg=orange</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>370</x><y>560</y><w>180</w><h>160</h></coordinates><panel_attributes>Retailer
+fg=orange</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>360</x><y>540</y><w>180</w><h>220</h></coordinates><panel_attributes>Retailer
 --
++ name: String
++ email: String
++ imId: String
++ twitterId: String
 + supplies: String[]
 + creatorKey: Long
 + isStoreAdmin: Boolean=false
@@ -50,14 +53,15 @@ fg=orange</panel_attributes><additional_attributes/></element><element><type>com
 + getDemand(key)
 + listProposals(state)
 + getProposal(key)
-fg=#008cc00</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>280</x><y>459</y><w>130</w><h>121</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;110;101</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>430</x><y>300</y><w>150</w><h>120</h></coordinates><panel_attributes>Location
+fg=#008cc00</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>270</x><y>459</y><w>130</w><h>101</h></coordinates><panel_attributes>lt=-
+is also&gt;</panel_attributes><additional_attributes>20;20;110;81</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>420</x><y>300</y><w>150</w><h>120</h></coordinates><panel_attributes>Location
 --
 + address: String
 + postalCode: String
 + countryCode: Enum
 + latitude: Double=-1.0
 + longitude: Double=-1.0
-- storeKey: Long=0</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>630</x><y>460</y><w>140</w><h>130</h></coordinates><panel_attributes>Store
+- storeKey: Long=0</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>620</x><y>460</y><w>140</w><h>130</h></coordinates><panel_attributes>Store
 --
 + name: String
 + brand: String
@@ -66,17 +70,17 @@ fg=#008cc00</panel_attributes><additional_attributes/></element><element><type>c
 + faxNb: String
 + openingHours: String
 + supplies: String[]
-fg=#888800</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>529</x><y>538</y><w>121</w><h>52</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+fg=#888800</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>519</x><y>538</y><w>121</w><h>52</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=1
 m2=1..*
-works at&gt;</panel_attributes><additional_attributes>101;32;20;32</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>319</x><y>318</y><w>131</w><h>52</h></coordinates><panel_attributes>lt=-
-lives at&gt;</panel_attributes><additional_attributes>20;32;111;32</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>520</x><y>400</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=-
+works at&gt;</panel_attributes><additional_attributes>101;32;20;32</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>309</x><y>318</y><w>131</w><h>52</h></coordinates><panel_attributes>lt=-
+lives at&gt;</panel_attributes><additional_attributes>20;32;111;32</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>510</x><y>400</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=-
 &lt;is located at
 m1=1..*
-m2=1</panel_attributes><additional_attributes>110;90;20;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>590</x><y>800</y><w>110</w><h>60</h></coordinates><panel_attributes>Product
+m2=1</panel_attributes><additional_attributes>110;90;20;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>580</x><y>800</y><w>110</w><h>60</h></coordinates><panel_attributes>Product
 --
 + upc: String
-+ website: URL</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>180</x><y>580</y><w>140</w><h>120</h></coordinates><panel_attributes>Demand
++ website: URL</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>170</x><y>580</y><w>140</w><h>120</h></coordinates><panel_attributes>Demand
 --
 state: Enum="open"
 tags: String[]
@@ -84,49 +88,49 @@ expirationDate: Date
 range: Double=25
 rangeUnit: String="km"
 quantity: Long=1
-fg=orange</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>299</x><y>399</y><w>201</w><h>231</h></coordinates><panel_attributes>lt=-
+fg=orange</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>270</x><y>399</y><w>220</w><h>201</h></coordinates><panel_attributes>lt=-
 in this area&gt;
 m1=1..*
-m2=1</panel_attributes><additional_attributes>20;211;181;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>390</x><y>790</y><w>120</w><h>70</h></coordinates><panel_attributes>Proposal
+m2=1</panel_attributes><additional_attributes>20;181;200;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>380</x><y>790</y><w>120</w><h>70</h></coordinates><panel_attributes>Proposal
 --
 + tags: String[]
 + unitPrice: Double
 + currency: Enum
-fg=#00cc00</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>214</x><y>459</y><w>92</w><h>141</h></coordinates><panel_attributes>lt=-
+fg=#00cc00</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>204</x><y>459</y><w>92</w><h>141</h></coordinates><panel_attributes>lt=-
 looks for&gt;
-m2=*</panel_attributes><additional_attributes>46;20;46;121</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>401</x><y>700</y><w>98</w><h>110</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>46;20;46;121</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>391</x><y>739</y><w>98</w><h>71</h></coordinates><panel_attributes>lt=-
 proposes&gt;
-m2=0..*</panel_attributes><additional_attributes>49;20;49;90</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>490</x><y>790</y><w>120</w><h>40</h></coordinates><panel_attributes>lt=-
+m2=0..*</panel_attributes><additional_attributes>49;20;49;51</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>480</x><y>790</y><w>120</w><h>40</h></coordinates><panel_attributes>lt=-
 m1=0..1
-m2=*</panel_attributes><additional_attributes>20;20;100;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>290</x><y>669</y><w>120</w><h>161</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>20;20;100;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>260</x><y>680</y><w>140</w><h>180</h></coordinates><panel_attributes>lt=-
 &lt; is offered to
 m1=1
-m2=*</panel_attributes><additional_attributes>20;20;100;141</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>180</x><y>770</y><w>130</w><h>90</h></coordinates><panel_attributes>Wish
+m2=*</panel_attributes><additional_attributes>20;20;120;160</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>170</x><y>770</y><w>130</w><h>90</h></coordinates><panel_attributes>Wish
 --
 tags: String[]
 expirationDate: Date
 quantity: Long=1
 --
 transform():Demand
-fg=orange</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>212</x><y>669</y><w>96</w><h>121</h></coordinates><panel_attributes>lt=-
+fg=orange</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>202</x><y>669</y><w>96</w><h>121</h></coordinates><panel_attributes>lt=-
 &lt;becomes
-m2=0..1</panel_attributes><additional_attributes>48;20;48;101</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>87</x><y>459</y><w>143</w><h>361</h></coordinates><panel_attributes>lt=-
+m2=0..1</panel_attributes><additional_attributes>48;20;48;101</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>77</x><y>459</y><w>143</w><h>361</h></coordinates><panel_attributes>lt=-
 wishes&gt;
-m2=*</panel_attributes><additional_attributes>123;20;43;101;43;301;93;341</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>93</x><y>98</y><w>117</w><h>122</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>123;20;43;101;43;301;93;341</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>83</x><y>108</y><w>117</w><h>92</h></coordinates><panel_attributes>lt=-
 is friend with&gt;
 m1=*
-m2=*</panel_attributes><additional_attributes>77;102;57;102;57;32;97;32;97;52</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>630</x><y>640</y><w>150</w><h>90</h></coordinates><panel_attributes>Review
+m2=*</panel_attributes><additional_attributes>77;72;57;72;57;32;97;32;97;52</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>620</x><y>640</y><w>150</w><h>90</h></coordinates><panel_attributes>Review
 --
 + rating: Long
 + authorName: String
 + comment: String
-# taggedAbuse: Boolean</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>690</x><y>569</y><w>40</w><h>91</h></coordinates><panel_attributes>lt=-
-m1=1..*</panel_attributes><additional_attributes>20;71;20;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>620</x><y>709</y><w>100</w><h>111</h></coordinates><panel_attributes>lt=-
-m1=1..*</panel_attributes><additional_attributes>80;20;20;91</additional_attributes></element><element><type>com.umlet.element.base.Note</type><coordinates><x>510</x><y>130</y><w>90</w><h>50</h></coordinates><panel_attributes>All classes
+# taggedAbuse: Boolean</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>680</x><y>569</y><w>40</w><h>91</h></coordinates><panel_attributes>lt=-
+m1=1..*</panel_attributes><additional_attributes>20;71;20;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>610</x><y>709</y><w>100</w><h>111</h></coordinates><panel_attributes>lt=-
+m1=1..*</panel_attributes><additional_attributes>80;20;20;91</additional_attributes></element><element><type>com.umlet.element.base.Note</type><coordinates><x>500</x><y>130</y><w>90</w><h>50</h></coordinates><panel_attributes>All classes
 inherit from
 Entity.
 bg=yellow
-fg=red</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Note</type><coordinates><x>620</x><y>370</y><w>160</w><h>70</h></coordinates><panel_attributes>Classes “Company”
+fg=red</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Note</type><coordinates><x>610</x><y>370</y><w>160</w><h>70</h></coordinates><panel_attributes>Classes “Company”
 and “Department” can
 be added to accomodate
 large suppliers

@@ -36,6 +36,8 @@ Day-to-day development
 	2.3 Run the tests with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml test
 	2.4 Run the App Engine server with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml webserver-start
 	2.5 User the task manager to kill the nested series of JVMs (with the name "java.exe")
+3. Run a specific Java test suite
+    3.1 Run the tests with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml step-datanucleus-enhance-for-tests step-java-test -Dtestcase=twetailer.validator.TestCommandSettings
 
 ========================================
 Submit your updates

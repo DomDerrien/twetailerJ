@@ -31,5 +31,10 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-0.8-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar"/>
+	<classpathentry kind="lib" path="deps/lib/appengine/appengine-local-runtime.jar"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.2.final.jar"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-core-1.1.4-gae.jar"/>
+	<classpathentry kind="lib" path="deps/lib/junit/aeftools.jar"/>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
 </classpath>

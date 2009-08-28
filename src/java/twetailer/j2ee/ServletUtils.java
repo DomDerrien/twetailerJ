@@ -14,36 +14,8 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-public class Utils {
+public class ServletUtils {
 	
-	private static PersistenceManagerFactory pmfInstance = null;
-
-	/** Setter for the injection of a mock */
-	protected static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
-	    pmfInstance = pmf;
-	}
-	
-	/**
-	 * Singleton accessor
-	 * 
-	 * @return Initial instance of the <code>PersistenceManagerFactory</code> class
-	 */
-	public static PersistenceManagerFactory getPersistenceManagerFactory() {
-	    if (pmfInstance == null) {
-	        pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
-	    }
-		return pmfInstance;
-	}
-
-	/**
-	 * Use the <code>PersistenceManagerFactory</code> singleton to generate a new persistence layer manager
-	 * 
-	 * @return New instance of the <code>PersistenceManager</code> class
-	 */
-	public static PersistenceManager getPersistenceManager() {
-			return getPersistenceManagerFactory().getPersistenceManager();
-	}
-
 	/**
 	 * Fixed pattern for the regular expression extracting the resource keys from the URIs
 	 */
