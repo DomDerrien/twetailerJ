@@ -59,6 +59,8 @@
 		<copy file="deps/lib/twitter4j/twitter4j-2.0.8.jar" todir="src/war/WEB-INF/lib"/>
     </target>
 
+	<target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
+	
     <target name="webserver-start" description="start the configured webserver" depends="webserver-stop">
 		<echo>Target: webserver-start</echo>
     	<antcall target="step-appengine-start" />
@@ -134,6 +136,11 @@
 				<include name="**/Mock*.*" />
 			</fileset>
 		</delete>
+		<enhance_war war="${basedir}/src/war" />
+	</target>
+	
+	<target name="step-datanucleus-enhance-for-tests" depends="compile, step-configuration-push">
+		<delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
 		<enhance_war war="${basedir}/src/war" />
 	</target>
 

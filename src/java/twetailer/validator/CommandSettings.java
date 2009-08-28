@@ -90,12 +90,13 @@ public class CommandSettings {
         open,
         invalid,
         published,
-        forwarded,
-        proposed,
         confirmed,
+        settled,
         closed,
         canceled
     }
+
+    private static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
 
     /**
      * Loads the labels for the command states for the specified locale
@@ -103,18 +104,25 @@ public class CommandSettings {
      * @return A JsonObject with the localized labels, one label per state
      */
     public static JsonObject getStates(Locale locale) {
-        if (!localizedActions.containsKey(locale)) {
-            JsonObject actions = new GenericJsonObject();
-            for(Action action: Action.values()) {
-                actions.put(
-                        action.toString(),
-                        LabelExtractor.get("command_state_" + action.toString(), locale)
+        if (!localizedStates.containsKey(locale)) {
+            JsonObject states = new GenericJsonObject();
+            for(State state: State.values()) {
+                states.put(
+                        state.toString(),
+                        LabelExtractor.get("command_state_" + state.toString(), locale)
                 );
             }
-            localizedActions.put(locale, actions);
+            localizedStates.put(locale, states);
         }
-        return localizedActions.get(locale);
+        return localizedStates.get(locale);
     }
+    
+    public final static String HELP_INTRODUCTION_MESSAGE_ID = "help_introduction";
+    private final static String HELP_KEYWORD_LIST_ID = "help_keyword_list";
+    private final static String HELP_KEYWORD_EQUIVALENTS_PREFIX = "help_keyword_equivalents_";
+    public final static String HELP_DEFINITION_PREFIX_PREFIX = "help_definition_prefix_";
+    public final static String HELP_DEFINITION_ACTION_PREFIX = "help_definition_action_";
+    public final static String HELP_DEFINITION_KEYWORD_PREFIX = "help_definition_keyword_";
     
     private static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
     
@@ -127,10 +135,10 @@ public class CommandSettings {
         JsonObject helpKeywords = localizedHelpKeywords.get(locale);
         if (helpKeywords == null) {
             helpKeywords = new GenericJsonObject();
-            String keywordList = LabelExtractor.get("help_list_keywords" , locale);
+            String keywordList = LabelExtractor.get(HELP_KEYWORD_LIST_ID , locale);
             String[] keywords = keywordList.split(",");
             for(String keyword: keywords) {
-                helpKeywords.put(keyword, LabelExtractor.get("help_equivalents_keyword_" + keyword, locale));
+                helpKeywords.put(keyword, LabelExtractor.get(HELP_KEYWORD_EQUIVALENTS_PREFIX + keyword, locale));
             }
             localizedHelpKeywords.put(locale, helpKeywords);
         }

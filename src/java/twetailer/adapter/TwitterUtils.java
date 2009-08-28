@@ -211,6 +211,6 @@ public class TwitterUtils {
      */
     public static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
         log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
-        return account.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 2 DMs retrieved at a time
+        return account.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 1 DMs retrieved at a time
     }
 }

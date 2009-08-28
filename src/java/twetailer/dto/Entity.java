@@ -44,7 +44,9 @@ public class Entity implements TransferObject {
 
     public void setKey(Long key) {
         if (this.key == null) {
-            this.key = key;
+            if (key != 0L) {
+                this.key = key;
+            }
         }
         else if (!this.key.equals(key)) {
             throw new IllegalArgumentException("Cannot override the key of an object with a new one");
@@ -96,8 +98,7 @@ public class Entity implements TransferObject {
 
     public TransferObject fromJson(JsonObject in) {
         if (in.containsKey(KEY)) {
-            Long inKey = in.getLong(KEY);
-            setKey(inKey == 0L ? null : inKey);
+            setKey(in.getLong(KEY));
         }
         if (in.containsKey(CREATION_DATE)) {
             Date creationDate;

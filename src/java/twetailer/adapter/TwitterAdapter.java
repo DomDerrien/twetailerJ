@@ -353,7 +353,7 @@ public class TwitterAdapter {
         if (demand.getKey() != null) {
             tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)).append(":").append(demand.getKey()).append(space);
         }
-        JsonObject states = localizedStates.get(locale); 
+        JsonObject states = localizedStates.get(locale);
         tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0)).append(":").append(states.getString(demand.getState().toString())).append(space);
         // FIXME: update DateUtils with a good formatter ;)
         tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToISO(demand.getExpirationDate()).substring(0, 10)).append(space);
@@ -496,10 +496,13 @@ public class TwitterAdapter {
                 action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
             }
             */
+            else {
+                action = CommandSettings.Action.demand.toString();
+            }
         }
         // Alternate case of the help being asked as an action...
         if (CommandSettings.isEquivalentTo(prefixes, CommandSettings.Prefix.help.toString(), action)) {
-            processHelpCommand(sender, prefixes, actions, command.getJsonArray(Demand.CRITERIA).getString(0), locale);
+            processHelpCommand(sender, prefixes, actions, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
             return;
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), action)) {
@@ -564,28 +567,35 @@ public class TwitterAdapter {
                 keyword += current;
             }
         }
+        // Tweet the default help message if there's no keyword
+        if (keyword.length() == 0) {
+            TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
+            return;
+        }
         // Check if the keyword is a prefix
         for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
             if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("help_definition_prefix_" + prefix, locale));
+                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + prefix, locale));
                 return;
             }
         }
         // Check if the keyword is an action
         for (CommandSettings.Action action: CommandSettings.Action.values()) {
             if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("help_definition_action_" + action, locale));
+                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_ACTION_PREFIX + action, locale));
                 return;
             }
         }
         // Check of the keyword is one registered
         JsonObject helpKeywords = localizedHelpKeywords.get(locale);
         for (String helpKeyword: helpKeywords.getMap().keySet()) {
-            if (CommandSettings.isEquivalentTo(helpKeywords, helpKeyword, keyword)) {
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("help_definition_keyword_" + helpKeyword, locale));
+            if (helpKeyword.equals(keyword)) {
+                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, locale));
                 return;
             }
         }
+        // Tweet the default help message if the given keyword is not recognized
+        TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
     }
     
     protected static void processCancelCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws ClientException, DataSourceException, TwitterException {
@@ -691,7 +701,7 @@ public class TwitterAdapter {
             }
             // Update of the latest command (can be the default one) with the just extracted parameters
             command = latestDemand.fromJson(command).toJson();
-            if (newLocationKey != null && newLocationKey != command.getLong(Demand.LOCATION_KEY)) {
+            if (newLocationKey != null && newLocationKey != 0L && newLocationKey != command.getLong(Demand.LOCATION_KEY)) {
                 command.put(Demand.LOCATION_KEY, newLocationKey);
             }
             // Persist the new demand
@@ -719,7 +729,7 @@ public class TwitterAdapter {
         // 3. Get the details about the identified product
         // 4. Get the details about the identified store
         //
-        if (command.getString(Demand.REFERENCE) != null) {
+        if (command.containsKey(Demand.REFERENCE)) {
             Long reference = command.getLong(Demand.REFERENCE);
             Demand demand = demandOperations.getDemand(pm, reference, consumer.getKey());
             if (demand != null) {

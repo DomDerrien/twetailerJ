@@ -313,10 +313,8 @@
 			<prop type="x-tier">javarb</prop>
 			<note>Help text associated to the prefix 'action'</note>
 			<tuv xml:lang="en">
-				<seg>
-					Welcome to Twetailer. Whenever you look for something, post your demand to Twetailer.\\\
-					If you're a consumer, tweet 'help consumer'. If you're a retailer then tweet 'help retailer'.
-				</seg>
+				<seg>Welcome to Twetailer. Whenever you look for something, post your demand to Twetailer.\
+					 If you're a consumer, tweet 'help consumer'. If you're a retailer then tweet 'help retailer'.</seg>
 			</tuv>
 		</tu>
 
@@ -324,10 +322,8 @@
 			<prop type="x-tier">javarb</prop>
 			<note>Help text associated to the prefix 'action'</note>
 			<tuv xml:lang="en">
-				<seg>
-					This prefix introduces a command, like 'demand' or 'list' followed by other attributes.\\\
-					A useful shortcut is the exclamation mark (!). The command 'action:list' can be submitted as '!list'.
-				</seg>
+				<seg>This prefix introduces a command, like 'demand' or 'list' followed by other attributes.|\
+					A useful shortcut is the exclamation mark (!). The command 'action:list' can be submitted as '!list'.</seg>
 			</tuv>
 		</tu>
 
@@ -585,16 +581,14 @@
 			<prop type="x-tier">javarb</prop>
 			<note>Help text associated to the keyword 'consumer'</note>
 			<tuv xml:lang="en">
-				<seg>
-					Whenever you look for something, post your demand to Twetailer.\\\
-					Tweet something like 'wii console'. The first time, please give your postal code and the country code with 'loc: 95423 US'.\\\
-					Twetailer will broadcast your demand to the retailers in your area.\\\
-					If any retailer propose something, Twetailer will forward the proposal to you immediately.\\\
-					If you accept a proposal, the retailer should keep it and you can pick it up at his store later.\\\
-					The ability to reserve a product is offered as a free service by Twetailer.\\\
-					In a near future, you will be able to purchase the product online to secure your reservation. Stay tuned.\\\
-					All feedback can be posted on http://www.twetailer.com/feedback.
-				</seg>
+				<seg>Whenever you look for something, post your demand to Twetailer.|\
+					 Tweet something like 'wii console'. The first time, please give your postal code and the country code with 'loc: 95423 US'.|\
+					 Twetailer will broadcast your demand to the retailers in your area.|\
+					 If any retailer propose something, Twetailer will forward the proposal to you immediately.|\
+					 If you accept a proposal, the retailer should keep it and you can pick it up at his store later.|\
+					 The ability to reserve a product is offered as a free service by Twetailer.|\
+					 In a near future, you will be able to purchase the product online to secure your reservation. Stay tuned.|\
+					 All feedback can be posted on http://www.twetailer.com/feedback.</seg>
 			</tuv>
 		</tu>
 

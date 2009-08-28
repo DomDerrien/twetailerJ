@@ -32,7 +32,7 @@ public class Demand extends Entity {
     public static final String ACTION = "action";
     
     @Persistent
-    private Long consumerKey = 0L;
+    private Long consumerKey;
 
     public static final String CONSUMER_KEY = "consumerKey";
     
@@ -279,7 +279,7 @@ public class Demand extends Entity {
 		JsonObject out = super.toJson();
         /*** Command ***/
         out.put(ACTION, getAction().toString());
-        out.put(CONSUMER_KEY, getConsumerKey());
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         out.put(STATE, getState().toString());
         out.put(TWEET_ID, getTweetId());
 		/*** Demand ***/
@@ -291,7 +291,7 @@ public class Demand extends Entity {
             out.put(CRITERIA, jsonArray);
 		}
 		out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
-        out.put(LOCATION_KEY, getLocationKey());
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(QUANTITY, getQuantity());
         out.put(RANGE, getRange());
         out.put(RANGE_UNIT, getRangeUnit());
@@ -303,7 +303,7 @@ public class Demand extends Entity {
 	    super.fromJson(in);
 	    /*** Command ***/
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.containsKey(CONSUMER_KEY) ? in.getLong(CONSUMER_KEY) : null); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
         if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
         /*** Demand ***/
@@ -338,7 +338,7 @@ public class Demand extends Entity {
                 setExpirationDate(30); // Default to an expiration 30 days in the future
             }
 	    }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.containsKey(LOCATION_KEY) ? in.getLong(LOCATION_KEY) : null); }
         if (in.containsKey(PROPOSAL_KEYS)) {
             boolean additionMode = true;
             JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);
@@ -364,7 +364,7 @@ public class Demand extends Entity {
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
-        if (in.containsKey(REFERENCE)) {setKey(in.getLong(REFERENCE)); }
+        if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }
         
         return this;
 	}
