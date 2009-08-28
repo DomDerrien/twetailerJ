@@ -9,7 +9,6 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import twetailer.DataSourceException;
-import twetailer.j2ee.Utils;
 
 public class BaseOperations {
     private static final Logger _log = Logger.getLogger(BaseOperations.class.getName());
@@ -26,7 +25,7 @@ public class BaseOperations {
     private static PersistenceManagerFactory pmfInstance = null;
 
     /** Setter for the injection of a mock */
-    protected static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
+    public static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
         pmfInstance = pmf;
     }
     

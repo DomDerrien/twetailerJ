@@ -331,7 +331,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>Help text associated to the prefix 'expiration'</note>
 			<tuv xml:lang="en">
-				<seg>Steven -- expiration</seg>
+				<seg>Steven -- expiration -- here it is!!!</seg>
 			</tuv>
 		</tu>
 

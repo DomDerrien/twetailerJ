@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import com.google.appengine.api.users.User;
 import twetailer.j2ee.MockUserService;
-import twetailer.j2ee.Utils;
+import twetailer.j2ee.ServletUtils;
 
 public class TestBaseOperations {
 
@@ -27,7 +27,7 @@ public class TestBaseOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        Utils.setUserService(new MockUserService(){
+        ServletUtils.setUserService(new MockUserService(){
             @Override
             public User getCurrentUser() {
                 return user;

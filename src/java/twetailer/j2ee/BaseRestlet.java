@@ -95,13 +95,13 @@ public abstract class BaseRestlet extends HttpServlet {
     @Override
     @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Utils.configureHttpParameters(request, response);
+        ServletUtils.configureHttpParameters(request, response);
 
         JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = Utils.getLoggedUser();
+            User loggedUser = ServletUtils.getLoggedUser();
 
             String pathInfo = request.getPathInfo();
             getLogger().fine("Path Info: " + pathInfo);
@@ -116,7 +116,7 @@ public abstract class BaseRestlet extends HttpServlet {
             }
             else if (Pattern.matches("/(\\w+)", pathInfo)) {
                 // Get the key
-                Matcher keyMatcher = Utils.uriKeyPattern.matcher(pathInfo);
+                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
                 keyMatcher.matches();
                 String key = keyMatcher.group(1);
                 // Get consumer by key
@@ -143,13 +143,13 @@ public abstract class BaseRestlet extends HttpServlet {
     @Override
     @SuppressWarnings("unchecked")
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Utils.configureHttpParameters(request, response);
+        ServletUtils.configureHttpParameters(request, response);
 
         JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = Utils.getLoggedUser();
+            User loggedUser = ServletUtils.getLoggedUser();
             loggedUser.toString(); // To prevent warnings
 
             String pathInfo = request.getPathInfo();
@@ -174,13 +174,13 @@ public abstract class BaseRestlet extends HttpServlet {
     @Override
     @SuppressWarnings("unchecked")
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Utils.configureHttpParameters(request, response);
+        ServletUtils.configureHttpParameters(request, response);
 
         JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = Utils.getLoggedUser();
+            User loggedUser = ServletUtils.getLoggedUser();
             loggedUser.toString(); // To prevent warnings
 
             out.put("resourceId", createResource(in, loggedUser));
@@ -202,13 +202,12 @@ public abstract class BaseRestlet extends HttpServlet {
     @Override
     @SuppressWarnings("unchecked")
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Utils.configureHttpParameters(request, response);
 
         JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = Utils.getLoggedUser();
+            User loggedUser = ServletUtils.getLoggedUser();
             loggedUser.toString(); // To prevent warnings
 
             String pathInfo = request.getPathInfo();

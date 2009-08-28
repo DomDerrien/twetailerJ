@@ -16,7 +16,7 @@ public class TestDemandServlet {
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        Utils.setUserService(new MockUserService(){
+        ServletUtils.setUserService(new MockUserService(){
             @Override
             public User getCurrentUser() {
                 return user;

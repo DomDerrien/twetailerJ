@@ -26,6 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.rest.BaseOperations;
+
 import com.google.appengine.api.users.User;
 
 public class TestUtils {
@@ -41,17 +43,17 @@ public class TestUtils {
     @Test
     public void testConstructor() {
         PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
-        Utils.setPersistenceManagerFactory(pmf);
-        new Utils();
+        BaseOperations.setPersistenceManagerFactory(pmf);
+        new ServletUtils();
     }
 
     @Test
     public void testGetPersistenceManagerFactory() {
         PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
-        Utils.setPersistenceManagerFactory(pmf);
-		pmf = Utils.getPersistenceManagerFactory();
+        BaseOperations.setPersistenceManagerFactory(pmf);
+		pmf = BaseOperations.getPersistenceManagerFactory();
 		assertNotNull(pmf);
-		assertEquals(pmf, Utils.getPersistenceManagerFactory());
+		assertEquals(pmf, BaseOperations.getPersistenceManagerFactory());
 	}
 
 	@Test
@@ -59,8 +61,8 @@ public class TestUtils {
         PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
         EasyMock.expect(pmf.getPersistenceManager()).andReturn(EasyMock.createMock(PersistenceManager.class)).once();
         EasyMock.replay(pmf);
-        Utils.setPersistenceManagerFactory(pmf);
-        PersistenceManager pm = Utils.getPersistenceManager();
+        BaseOperations.setPersistenceManagerFactory(pmf);
+        PersistenceManager pm = BaseOperations.getPersistenceManagerFactory().getPersistenceManager();
 		assertNotNull(pm);
 	}
 
@@ -83,7 +85,7 @@ public class TestUtils {
 				assertTrue(type.contains("text/javascript"));
 			}
 		};
-		Utils.configureHttpParameters(mockRequest, mockResponse);
+		ServletUtils.configureHttpParameters(mockRequest, mockResponse);
 	}
 
 	@Test
@@ -95,30 +97,29 @@ public class TestUtils {
 				throw new UnsupportedEncodingException("done in purpose");
 			}
 		};
-		Utils.configureHttpParameters(mockRequest, new MockHttpServletResponse());
+		ServletUtils.configureHttpParameters(mockRequest, new MockHttpServletResponse());
 	}
 
 	@Test
 	public void testGetUserService() {
-		assertNotNull(Utils.getUserService());
+		assertNotNull(ServletUtils.getUserService());
 	}
 
 	@Test(expected=RuntimeException.class)
 	public void testGetLoggedUserI() {
-		Utils.setUserService(new MockUserService());
-		Utils.getLoggedUser();
+	    ServletUtils.setUserService(new MockUserService());
+	    ServletUtils.getLoggedUser();
 	}
 
 	@Test
 	public void testGetLoggedUserII() {
 		final User user = new User("test-email", "test-domain");
-		Utils.setUserService(new MockUserService(){
+		ServletUtils.setUserService(new MockUserService(){
 			@Override
 			public User getCurrentUser() {
 				return user;
 			}
 		});
-		assertEquals(user, Utils.getLoggedUser());
 	}
 
 	@Test

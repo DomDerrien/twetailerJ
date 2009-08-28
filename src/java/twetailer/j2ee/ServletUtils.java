@@ -3,9 +3,6 @@ package twetailer.j2ee;
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

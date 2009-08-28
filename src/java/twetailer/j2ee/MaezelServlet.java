@@ -45,13 +45,13 @@ public class MaezelServlet extends HttpServlet {
         
     @Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	Utils.configureHttpParameters(request, response);
+        ServletUtils.configureHttpParameters(request, response);
 
         // JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
         
         try {
-	        User loggedUser = Utils.getLoggedUser();
+	        User loggedUser = ServletUtils.getLoggedUser();
 	        loggedUser.toString(); // To prevent warnings
 	
             String pathInfo = request.getPathInfo();
@@ -125,6 +125,7 @@ public class MaezelServlet extends HttpServlet {
                     for (int i = 0; i < supplies.length; i++) {
                         retailer.addCriterion(supplies[i]);
                     }
+                    retailerOperations.updateRetailer(pm, retailer);
                 }
                 finally {
                     pm.close();
