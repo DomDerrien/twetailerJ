@@ -93,8 +93,10 @@ public class MockAppEngineEnvironment {
 
         // Clean up the App Engine data store
         ApiProxyLocalImpl proxy = (ApiProxyLocalImpl) ApiProxy.getDelegate();
-        LocalDatastoreService datastoreService = (LocalDatastoreService) proxy.getService("datastore_v3");
-        datastoreService.clearProfiles();
+        if (proxy != null) {
+            LocalDatastoreService datastoreService = (LocalDatastoreService) proxy.getService("datastore_v3");
+            datastoreService.clearProfiles();
+        }
 
         // Clean up the App Engine services
         ApiProxy.setDelegate(null);

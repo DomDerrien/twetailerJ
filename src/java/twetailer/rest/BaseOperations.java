@@ -64,7 +64,7 @@ public class BaseOperations {
      * 
      * @throws DataSourceException If given value cannot matched a data store type
      */
-    public Query prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
+    public static Query prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
         query.setFilter(attribute + " == value");
         query.setOrdering("creationDate desc");
         if (value instanceof String) {
@@ -79,6 +79,9 @@ public class BaseOperations {
         }
         else if (value instanceof Date) {
             query.declareParameters("Date value");
+        }
+        else if (value instanceof Boolean) {
+            query.declareParameters("Boolean value");
         }
         else {
             throw new DataSourceException("Unsupported criteria value type: " + value.getClass());

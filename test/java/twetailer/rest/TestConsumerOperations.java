@@ -37,19 +37,19 @@ public class TestConsumerOperations {
 	}
 	
 	private MockConsumerOperation mockConsumerOperations;
-    private MockAppEngineEnvironment mockEnvironment;
+    private MockAppEngineEnvironment mockAppEngineEnvironment;
     
 	@Before
 	public void setUp() throws Exception {
 		mockConsumerOperations = new MockConsumerOperation();
 		
-        mockEnvironment = new MockAppEngineEnvironment();
-        mockEnvironment.setUp();
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        mockAppEngineEnvironment.setUp();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-        mockEnvironment.tearDown();
+        mockAppEngineEnvironment.tearDown();
 	}
 
     @Test
@@ -239,14 +239,14 @@ public class TestConsumerOperations {
     @Test(expected=InvalidParameterException.class)
     public void testGetConsumerV() throws DataSourceException {
         BaseOperations bOps = new BaseOperations();
-        PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         bOps.getConsumerOperations().getConsumer(pm, null);
     }
 
     @Test(expected=InvalidParameterException.class)
     public void testGetConsumerVI() throws DataSourceException {
         BaseOperations bOps = new BaseOperations();
-        PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         bOps.getConsumerOperations().getConsumer(pm, 0L);
     }
 
@@ -306,7 +306,7 @@ public class TestConsumerOperations {
         BaseOperations bOps = new BaseOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockEnvironment.getPersistenceManager();
+                return mockAppEngineEnvironment.getPersistenceManager();
             }
         };
 
@@ -343,7 +343,7 @@ public class TestConsumerOperations {
         BaseOperations bOps = new BaseOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockEnvironment.getPersistenceManager();
+                return mockAppEngineEnvironment.getPersistenceManager();
             }
         };
 
@@ -372,7 +372,7 @@ public class TestConsumerOperations {
         User user = new User("test", "test.com");
         
         BaseOperations bOps = new BaseOperations();
-        PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         try {
             // Create the user once
             Consumer consumer = bOps.getConsumerOperations().createConsumer(pm, user);
@@ -385,7 +385,7 @@ public class TestConsumerOperations {
             
             // Close the persistence manager and open a new one for a separate query
             pm.close();
-            pm = mockEnvironment.getPersistenceManager();
+            pm = mockAppEngineEnvironment.getPersistenceManager();
             
             // Search for the update instance
             List<Consumer> consumers = bOps.getConsumerOperations().getConsumers("email", "test", 1);
@@ -401,7 +401,7 @@ public class TestConsumerOperations {
     @Test
     public void testUpdateConsumerII() throws DataSourceException {
         
-        final PersistenceManager pm = mockEnvironment.getPersistenceManager();
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         BaseOperations bOps = new BaseOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
