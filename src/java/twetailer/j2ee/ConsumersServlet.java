@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import com.google.appengine.api.users.User;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.ConsumerOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;

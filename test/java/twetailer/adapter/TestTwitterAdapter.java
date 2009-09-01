@@ -33,12 +33,12 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Settings;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.ConsumerOperations;
-import twetailer.rest.DemandOperations;
-import twetailer.rest.LocationOperations;
-import twetailer.rest.MockPersistenceManager;
-import twetailer.rest.SettingsOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
+import twetailer.dao.MockPersistenceManager;
+import twetailer.dao.SettingsOperations;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 

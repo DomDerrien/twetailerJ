@@ -22,11 +22,11 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.ConsumerOperations;
-import twetailer.rest.DemandOperations;
-import twetailer.rest.LocationOperations;
-import twetailer.rest.SettingsOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.validator.CommandSettings;
 
 import domderrien.i18n.DateUtils;

@@ -13,9 +13,9 @@ import twitter4j.TwitterException;
 import twetailer.DataSourceException;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.SettingsOperations;
-import twetailer.rest.StoreOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.SettingsOperations;
+import twetailer.dao.StoreOperations;
 
 import domderrien.i18n.LabelExtractor;
 

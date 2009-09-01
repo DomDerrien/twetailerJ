@@ -10,9 +10,9 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.ConsumerOperations;
-import twetailer.rest.DemandOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;

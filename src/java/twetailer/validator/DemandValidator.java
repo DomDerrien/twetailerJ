@@ -14,10 +14,10 @@ import twetailer.adapter.TwitterUtils;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.ConsumerOperations;
-import twetailer.rest.DemandOperations;
-import twetailer.rest.LocationOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;

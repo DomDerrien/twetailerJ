@@ -1,4 +1,4 @@
-package twetailer.rest;
+package twetailer.dao;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

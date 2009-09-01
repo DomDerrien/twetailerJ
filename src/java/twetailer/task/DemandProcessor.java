@@ -14,11 +14,11 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
-import twetailer.rest.BaseOperations;
-import twetailer.rest.DemandOperations;
-import twetailer.rest.LocationOperations;
-import twetailer.rest.RetailerOperations;
-import twetailer.rest.StoreOperations;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
+import twetailer.dao.RetailerOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.validator.CommandSettings;
 
 import domderrien.i18n.LabelExtractor;

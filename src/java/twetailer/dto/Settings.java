@@ -1,5 +1,7 @@
 package twetailer.dto;
 
+import java.io.Serializable;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -10,7 +12,10 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Settings {
+public class Settings implements Serializable {
+
+    /** Required to be able to save the settings into the cache */
+    private static final long serialVersionUID = -7877518547014483177L;
 
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -24,12 +29,12 @@ public class Settings {
     public static final String NAME = "name";
     
     @Persistent
-    private Long lastProcessDirectMessageId = 0L;
+    private Long lastProcessDirectMessageId = 1L;
     
     public static final String LAST_PROCESSED_DIRECT_MESSAGE_ID = "lastProcessDirectMessageId";
     
     @Persistent
-    private Long lastRobotDirectMessageId = 0L;
+    private Long lastRobotDirectMessageId = 1L;
     
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
 
@@ -67,7 +72,6 @@ public class Settings {
     
     public Settings() {
         setName(APPLICATION_SETTINGS_ID);
-        setLastProcessDirectMessageId(1L);
     }
 
     public JsonObject toJson() {

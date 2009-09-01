@@ -1,4 +1,4 @@
-package twetailer.rest;
+package twetailer.dao;
 
 import java.util.ArrayList;
 import java.util.Date;

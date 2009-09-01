@@ -1,8 +1,12 @@
-package twetailer.rest;
+package twetailer.dao;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.CacheManager;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -27,13 +31,57 @@ public class SettingsOperations extends BaseOperations {
      * @see SettingsOperations#getSettings(PersistenceManager)
      */
     public Settings getSettings() throws DataSourceException {
+        return getSettings(true);
+    }
+
+    /**
+     * Retrieve the application saved settings
+     * 
+     * @param useCache can be used to bypass the cache
+     * @return Application settings loaded from the back-end or the default values <code>null</code>
+     * 
+     * @throws ClientException If the retrieved demand does not belong to the specified user
+     * 
+     * @see SettingsOperations#getSettings(PersistenceManager)
+     */
+    public Settings getSettings(boolean checkCache) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
+            if (checkCache) {
+                Settings settings = getSettingsFromCache();
+                if (settings != null) {
+                    return settings;
+                }
+            }
             return getSettings(pm);
         }
         finally {
             pm.close();
         }
+    }
+    
+    /**
+     * Accessor for the unit tests
+     * 
+     * @return A working cache instance
+     * 
+     * @throws CacheException If the cache instance creation fails
+     */
+    protected Cache getCache() throws CacheException {
+        return CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+    }
+    
+    /**
+     * Return the settings object that have been saved into the cache
+     * 
+     * @return Cached settings if any
+     */
+    public Settings getSettingsFromCache() {
+        try {
+            return (Settings) getCache().get(Settings.APPLICATION_SETTINGS_ID);
+        }
+        catch(CacheException ex) {}
+        return null;
     }
 
     /**
@@ -46,7 +94,6 @@ public class SettingsOperations extends BaseOperations {
      */
     @SuppressWarnings("unchecked")
     public Settings getSettings(PersistenceManager pm) throws DataSourceException {
-        // FIXME: lookup in the memory cache first
         // Prepare the query
         Query queryObj = pm.newQuery(Settings.class);
         queryObj.setFilter("name == value");
@@ -54,17 +101,12 @@ public class SettingsOperations extends BaseOperations {
         getLogger().warning("Select settings with: " + queryObj.toString());
         // Select the corresponding settings
         List<Settings> settingsList = (List<Settings>) queryObj.execute(Settings.APPLICATION_SETTINGS_ID);
-        if (settingsList == null || settingsList.size() == 0) {
-            return new Settings();
+        if (settingsList.size() == 0) {
+            Settings settings = new Settings();
+            updateSettingsInCache(settings);
+            return settings;
         }
-        if (1 < settingsList.size()) {
-            return new Settings();
-        }
-        Settings settings = settingsList.get(0);
-        Long sinceId = settings.getLastProcessDirectMessageId();
-        settings.setLastProcessDirectMessageId(1L);
-        settings.setLastProcessDirectMessageId(sinceId);
-        return settings;
+        return settingsList.get(0);
     }
     
     /**
@@ -79,11 +121,25 @@ public class SettingsOperations extends BaseOperations {
     public Settings updateSettings(Settings update) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return updateSettings(pm, update);
+            Settings settings = getSettings(pm);
+            settings.fromJson(update.toJson()); // Merge the update
+            return updateSettings(pm, settings);
         }
         finally {
             pm.close();
         }
+    }
+    
+    /**
+     * Update transparently the cache with the new settings
+     */
+    @SuppressWarnings("unchecked")
+    public Settings updateSettingsInCache(Settings update) {
+        try {
+            getCache().put(Settings.APPLICATION_SETTINGS_ID, update);
+        }
+        catch(CacheException ex) {}
+        return update;
     }
 
     /**
@@ -96,8 +152,8 @@ public class SettingsOperations extends BaseOperations {
      */
     public Settings updateSettings(PersistenceManager pm, Settings update) throws DataSourceException {
         getLogger().warning("Update application settings");
+        updateSettingsInCache(update);
         pm.makePersistent(update);
-        // FIXME: save a copy in the memory cache
         return update;
     }
 }
