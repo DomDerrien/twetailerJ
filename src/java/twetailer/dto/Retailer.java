@@ -33,9 +33,6 @@ public class Retailer extends Entity {
     @Persistent
     private List<String> criteria = new ArrayList<String>();
     
-    @Persistent
-    private List<String> criteriaHack = new ArrayList<String>();
-    
     public final static String  CRITERIA = "criteria";
     
     @Persistent
@@ -112,12 +109,18 @@ public class Retailer extends Entity {
     }
 
     public void addCriterion(String criterion) {
+        if (criteria == null) {
+            criteria = new ArrayList<String>();
+        }
         if (!criteria.contains(criterion)) {
             criteria.add(criterion);
         }
     }
     
     public void resetCriteria() {
+        if (criteria == null) {
+            return;
+        }
         int idx = criteria.size();
         while (0 < idx) {
             --idx;
@@ -126,6 +129,9 @@ public class Retailer extends Entity {
     }
 
     public void removeCriterion(String criterion) {
+        if (criteria == null) {
+            return;
+        }
         criteria.remove(criterion);
     }
 
@@ -146,17 +152,6 @@ public class Retailer extends Entity {
             throw new InvalidParameterException("Cannot nullify the attribute 'criteria' of type List<String>");
         }
         this.criteria = criteria;
-    }
-
-    public List<String> getCriteriaHack() {
-        return criteriaHack;
-    }
-
-    public void setCriteriaKack(List<String> criteriaHack) {
-        if (criteriaHack == null) {
-            throw new InvalidParameterException("Cannot nullify the attribute 'criteriaHack' of type List<String>");
-        }
-        this.criteriaHack = criteriaHack;
     }
 
     public String getEmail() {

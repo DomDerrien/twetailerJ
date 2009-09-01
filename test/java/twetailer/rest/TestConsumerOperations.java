@@ -26,23 +26,10 @@ import com.google.appengine.api.users.User;
 
 public class TestConsumerOperations {
 
-	class MockConsumerOperation extends ConsumerOperations {
-		PersistenceManager mockPM;
-		protected void setPersistenceManager(PersistenceManager pm) {
-			mockPM = pm;
-		}
-	    public PersistenceManager getPersistenceManager() {
-	    	return mockPM;
-	    }
-	}
-	
-	private MockConsumerOperation mockConsumerOperations;
     private MockAppEngineEnvironment mockAppEngineEnvironment;
     
 	@Before
 	public void setUp() throws Exception {
-		mockConsumerOperations = new MockConsumerOperation();
-		
         mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
 	}
@@ -53,10 +40,10 @@ public class TestConsumerOperations {
 	}
 
     @Test
-	public void testGetConsumersI() throws DataSourceException {
+	public void testGetsI() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+		final PersistenceManager pm = new MockPersistenceManager() {
             @Override
             @SuppressWarnings({ "unchecked", "serial" })
             public javax.jdo.Query newQuery(Class clazz) {
@@ -81,18 +68,24 @@ public class TestConsumerOperations {
                     }
                 };
             }
-		});
-		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+		List<Consumer> consumers = ops.getConsumers(qA, qV, 0);
         assertNotNull(consumers);
         assertEquals(0, consumers.size());
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 
 	@Test
-	public void testGetConsumersII() throws DataSourceException {
+	public void testGetsII() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+		final PersistenceManager pm = new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -104,18 +97,24 @@ public class TestConsumerOperations {
 					}
 				};
 			}
-		});
-		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+		List<Consumer> consumers = ops.getConsumers(qA, qV, 0);
         assertNotNull(consumers);
         assertEquals(0, consumers.size());
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 
 	@Test
-	public void testGetConsumersIII() throws DataSourceException {
+	public void testGetsIII() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+		final PersistenceManager pm = new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -127,19 +126,25 @@ public class TestConsumerOperations {
 					}
 				};
 			}
-		});
-		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+		List<Consumer> consumers = ops.getConsumers(qA, qV, 0);
         assertNotNull(consumers);
 		assertEquals(0, consumers.size());
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 
 	@Test
-	public void testGetConsumersIV() throws DataSourceException {
+	public void testGetsIV() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
 		final Consumer selected = new Consumer();
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+		final PersistenceManager pm = new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -153,16 +158,22 @@ public class TestConsumerOperations {
 					}
 				};
 			}
-		});
-		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+		List<Consumer> consumers = ops.getConsumers(qA, qV, 0);
 		assertNotNull(consumers);
 		assertEquals(1, consumers.size());
 		assertEquals(selected, consumers.get(0));
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 
 	@Test
-	public void testGetConsumersV() throws DataSourceException {
+	public void testGetsV() throws DataSourceException {
 		final String qA = "a";
 		final String qV = "b";
 		final Consumer selected = new Consumer();
@@ -170,7 +181,7 @@ public class TestConsumerOperations {
 		final Consumer spare2 = new Consumer();
 		final Consumer spare3 = new Consumer();
 		final Consumer spare4 = new Consumer();
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+		final PersistenceManager pm = new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -188,8 +199,14 @@ public class TestConsumerOperations {
 					}
 				};
 			}
-		});
-		List<Consumer> consumers = mockConsumerOperations.getConsumers(qA, qV, 0);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+		List<Consumer> consumers = ops.getConsumers(qA, qV, 0);
 		assertNotNull(consumers);
 		assertEquals(5, consumers.size());
 		assertEquals(selected, consumers.get(0));
@@ -197,62 +214,98 @@ public class TestConsumerOperations {
 		assertEquals(spare2, consumers.get(2));
 		assertEquals(spare3, consumers.get(3));
 		assertEquals(spare4, consumers.get(4));
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 
-	@Test(expected=DataSourceException.class)
-	public void testGetConsumerI() throws DataSourceException {
-		final long key = 1234L;
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+    @Test
+    public void testGetI() throws DataSourceException {
+        final long key = 1234L;
+        final PersistenceManager pm = new MockPersistenceManager() {
             @Override
             public <T> T getObjectById(Class<T> arg0, Object arg1) {
                 assertEquals(key, ((Long) arg1).longValue());
                 return null;
             }
-		});
-		try {
-		    mockConsumerOperations.getConsumer(key);
-		}
-		finally {
-		    assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
-		}
-	}
+        };
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+        try {
+            ops.getConsumer(key);
+        }
+        finally {
+            assertTrue(ops.getPersistenceManager().isClosed());
+        }
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testGetII() throws DataSourceException {
+        final long key = 1234L;
+        final PersistenceManager pm = new MockPersistenceManager() {
+            @Override
+            public <T> T getObjectById(Class<T> arg0, Object arg1) {
+                assertEquals(key, ((Long) arg1).longValue());
+                throw new InvalidParameterException("done in purpose");
+            }
+        };
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+        try {
+            ops.getConsumer(key);
+        }
+        finally {
+            assertTrue(ops.getPersistenceManager().isClosed());
+        }
+    }
 
 	@Test
-	public void testGetConsumerIV() throws DataSourceException {
+	public void testGetIV() throws DataSourceException {
         final long key = 1234L;
 		final Consumer selected = new Consumer();
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+		final PersistenceManager pm = new MockPersistenceManager() {
             @Override
             @SuppressWarnings("unchecked")
             public <T> T getObjectById(Class<T> arg0, Object arg1) {
                 assertEquals(key, ((Long) arg1).longValue());
                 return (T) selected;
             }
-		});
-		Consumer consumer = mockConsumerOperations.getConsumer(key);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+		Consumer consumer = ops.getConsumer(key);
 		assertNotNull(consumer);
 		assertEquals(selected, consumer);
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
     }
 
     @Test(expected=InvalidParameterException.class)
-    public void testGetConsumerV() throws DataSourceException {
-        BaseOperations bOps = new BaseOperations();
+    public void testGetV() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        bOps.getConsumerOperations().getConsumer(pm, null);
+        ops.getConsumer(pm, null);
     }
 
     @Test(expected=InvalidParameterException.class)
-    public void testGetConsumerVI() throws DataSourceException {
-        BaseOperations bOps = new BaseOperations();
+    public void testGetVI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        bOps.getConsumerOperations().getConsumer(pm, 0L);
+        ops.getConsumer(pm, 0L);
     }
 
 	@Test
-	public void testCreateConsumerI() throws DataSourceException {
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
+	public void testCreateI() throws DataSourceException {
+        final MockPersistenceManager pm = new MockPersistenceManager() {
 			@SuppressWarnings({ "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
@@ -264,46 +317,56 @@ public class TestConsumerOperations {
 					}
 				};
 			}
-		});
-		User systemUser = new User("email", "domain");
-		Consumer createdConsumer = mockConsumerOperations.createConsumer(systemUser);
+		};
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm;
+            }
+        };
+        Consumer createdConsumer = ops.createConsumer(new User("email", "domain"));
 		assertNotNull(createdConsumer);
-		assertEquals(createdConsumer, ((MockPersistenceManager) mockConsumerOperations.getPersistenceManager()).getPersistedObject());
+		assertEquals(createdConsumer, ((MockPersistenceManager) ops.getPersistenceManager()).getPersistedObject());
 		assertEquals("email", createdConsumer.getEmail());
 		assertEquals("email", createdConsumer.getName());
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 	
 	@Test
-	public void testCreateConsumerII() throws DataSourceException {
+	public void testCreateII() throws DataSourceException {
 		final Consumer existingConsumer = new Consumer();
-		User systemUser = new User("email", "domain");
-		mockConsumerOperations.setPersistenceManager(new MockPersistenceManager() {
-			@SuppressWarnings({ "serial", "unchecked" })
+        final MockPersistenceManager pm = new MockPersistenceManager() {
+            @SuppressWarnings({ "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-				return new MockQuery(){
+                return new MockQuery(){
                     @Override
                     public List<Object> execute(Object value) {
-						List<Object> selection = new ArrayList<Object>();
-						selection.add(existingConsumer);
-						return selection;
-					}
-				};
-			}
-		});
-		Consumer createdConsumer = mockConsumerOperations.createConsumer(systemUser);
+                        List<Object> selection = new ArrayList<Object>();
+                        selection.add(existingConsumer);
+                        return selection;
+                    }
+                };
+            }
+        };
+		ConsumerOperations ops = new ConsumerOperations() {
+		    @Override
+		    public PersistenceManager getPersistenceManager() {
+		        return pm;
+		    }
+		};
+		Consumer createdConsumer = ops.createConsumer(new User("email", "domain"));
 		assertNotNull(createdConsumer);
-		assertNull(((MockPersistenceManager) mockConsumerOperations.getPersistenceManager()).getPersistedObject());
+		assertNull(((MockPersistenceManager) ops.getPersistenceManager()).getPersistedObject());
 		assertEquals(existingConsumer, createdConsumer);
-		assertTrue(mockConsumerOperations.getPersistenceManager().isClosed());
+		assertTrue(ops.getPersistenceManager().isClosed());
 	}
 
     @Test
-    public void testCreateConsumerIII() throws DataSourceException {
+    public void testCreateIII() throws DataSourceException {
         User user = new User("test", "test.com");
         
-        BaseOperations bOps = new BaseOperations() {
+        ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return mockAppEngineEnvironment.getPersistenceManager();
@@ -315,14 +378,14 @@ public class TestConsumerOperations {
         assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Create the user once
-        bOps.getConsumerOperations().createConsumer(user);
+        ops.createConsumer(user);
         
         // Verify there's one instance
         query = new Query(Consumer.class.getSimpleName());
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Tries to recreate it
-        bOps.getConsumerOperations().createConsumer(user);
+        ops.createConsumer(user);
         
         // Verify there's still one instance
         query = new Query(Consumer.class.getSimpleName());
@@ -331,7 +394,7 @@ public class TestConsumerOperations {
 
     @Test
     @SuppressWarnings("serial")
-    public void testCreateConsumerIV() throws DataSourceException, TwitterException {
+    public void testCreateIV() throws DataSourceException, TwitterException {
         final String name = "test";
         MockTwitterUser user = new MockTwitterUser() {
             @Override
@@ -340,7 +403,7 @@ public class TestConsumerOperations {
             }
         };
         
-        BaseOperations bOps = new BaseOperations() {
+        ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return mockAppEngineEnvironment.getPersistenceManager();
@@ -352,14 +415,14 @@ public class TestConsumerOperations {
         assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Create the user once
-        bOps.getConsumerOperations().createConsumer(user);
+        ops.createConsumer(user);
         
         // Verify there's one instance
         query = new Query(Consumer.class.getSimpleName());
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Tries to recreate it
-        bOps.getConsumerOperations().createConsumer(user);
+        ops.createConsumer(user);
         
         // Verify there's still one instance
         query = new Query(Consumer.class.getSimpleName());
@@ -367,59 +430,71 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testUpdateConsumerI() throws DataSourceException {
+    public void testUpdateI() throws DataSourceException {
         final Long twitterId = 2122312321L;
         User user = new User("test", "test.com");
         
-        BaseOperations bOps = new BaseOperations();
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        try {
-            // Create the user once
-            Consumer consumer = bOps.getConsumerOperations().createConsumer(pm, user);
-            
-            // Update it
-            consumer.setTwitterId(twitterId);
-            
-            // Persist the update
-            consumer = bOps.getConsumerOperations().updateConsumer(pm, consumer);
-            
-            // Close the persistence manager and open a new one for a separate query
-            pm.close();
-            pm = mockAppEngineEnvironment.getPersistenceManager();
-            
-            // Search for the update instance
-            List<Consumer> consumers = bOps.getConsumerOperations().getConsumers("email", "test", 1);
-            assertNotNull(consumers.size());
-            assertEquals(1, consumers.size());
-            assertEquals(twitterId, consumers.get(0).getTwitterId());
-        }
-        finally {
-            pm.close();
-        }
+        ConsumerOperations ops = new ConsumerOperations();
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(pm, user);
+        
+        // Update it
+        consumer.setTwitterId(twitterId);
+        
+        // Persist the update
+        consumer = ops.updateConsumer(pm, consumer);
+        
+        // Close the persistence manager and open a new one for a separate query
+        pm.close();
+        pm = mockAppEngineEnvironment.getPersistenceManager();
+        
+        // Search for the update instance
+        List<Consumer> consumers = ops.getConsumers("email", "test", 1);
+        assertNotNull(consumers.size());
+        assertEquals(1, consumers.size());
+        assertEquals(twitterId, consumers.get(0).getTwitterId());
     }
 
     @Test
-    public void testUpdateConsumerII() throws DataSourceException {
+    public void testUpdateII() throws DataSourceException {
         
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        BaseOperations bOps = new BaseOperations() {
+        ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return pm;
             }
         };
-        try {
-            // Create the user once
-            Consumer consumer = bOps.getConsumerOperations().createConsumer(new User("test", "domain"));
-            
-            // Update it
-            consumer.setTwitterId(12345L);
-            
-            // Persist the update
-            consumer = bOps.getConsumerOperations().updateConsumer(consumer);
-        }
-        finally {
-            pm.close();
-        }
+        // Create the user once
+        Consumer consumer = ops.createConsumer(pm, new User("test", "domain"));
+        
+        // Update it
+        consumer.setTwitterId(12345L);
+        
+        // Persist the update
+        consumer = ops.updateConsumer(consumer); // This function will close the PersistenceManager instance
+        
+        assertTrue(pm.isClosed());
+    }
+
+    @Test(expected=javax.jdo.JDOFatalUserException.class)
+    public void testUpdateIII() throws DataSourceException {
+        
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+        // Create the user once
+        Consumer consumer = ops.createConsumer(new User("test", "domain"));
+        
+        // Update it
+        consumer.setTwitterId(12345L);
+        
+        // Persist the update
+        consumer = ops.updateConsumer(consumer); // This is going to throw the JDOFatalUserExcepion because the update should be done with the same PersistenceManager instance
     }
 }

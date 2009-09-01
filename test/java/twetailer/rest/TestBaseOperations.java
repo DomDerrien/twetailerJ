@@ -9,6 +9,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -89,6 +91,44 @@ public class TestBaseOperations {
 
     @Test
     @SuppressWarnings("serial")
+    public void testPrepareQueryWithStringParameter() throws DataSourceException {
+        String parameter = "";
+        final String parameterName = "key";
+        final String parameterType = parameter.getClass().getSimpleName();
+        
+        MockQuery query = new MockQuery() {
+            String variableName;
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.startsWith(parameterName));
+                variableName = arg.substring(arg.indexOf("==") + "==".length()).trim();
+                assertNotNull(variableName);
+                assertNotSame(0, variableName.length());
+            }
+            @Override
+            public void declareParameters(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertFalse(arg.contains(","));
+                assertNotNull(variableName);
+                assertNotSame(0, variableName.length());
+                assertNotSame(-1, arg.indexOf(parameterType));
+                assertNotSame(-1, arg.indexOf(variableName));
+                assertTrue(arg.indexOf(parameterType) < arg.indexOf(variableName));
+            }
+            @Override
+            public void setRange(long start, long size) {
+                fail("Range should stay unset to get the maximum values");
+            }
+        };
+        
+        BaseOperations.prepareQuery(query, parameterName, parameter, 0);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
     public void testPrepareQueryWithLongParameter() throws DataSourceException {
         Long parameter = 0L;
         final String parameterName = "key";
@@ -165,10 +205,48 @@ public class TestBaseOperations {
 
     @Test
     @SuppressWarnings("serial")
-    public void testPrepareQueryWithStringParameter() throws DataSourceException {
-        String parameter = "";
+    public void testPrepareQueryWithDoubleParameter() throws DataSourceException {
+        Double parameter = 3.14159D;
         final String parameterName = "key";
         final String parameterType = parameter.getClass().getSimpleName();
+        
+        MockQuery query = new MockQuery() {
+            String variableName;
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.startsWith(parameterName));
+                variableName = arg.substring(arg.indexOf("==") + "==".length()).trim();
+                assertNotNull(variableName);
+                assertNotSame(0, variableName.length());
+            }
+            @Override
+            public void declareParameters(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertFalse(arg.contains(","));
+                assertNotNull(variableName);
+                assertNotSame(0, variableName.length());
+                assertNotSame(-1, arg.indexOf(parameterType));
+                assertNotSame(-1, arg.indexOf(variableName));
+                assertTrue(arg.indexOf(parameterType) < arg.indexOf(variableName));
+            }
+            @Override
+            public void setRange(long start, long size) {
+                fail("Range should stay unset to get the maximum values");
+            }
+        };
+        
+        BaseOperations.prepareQuery(query, parameterName, parameter, 0);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithFloatParameter() throws DataSourceException {
+        Float parameter = 3.14159f;
+        final String parameterName = "key";
+        final String parameterType = Double.class.getSimpleName(); // Float falls back on Double!
         
         MockQuery query = new MockQuery() {
             String variableName;
@@ -295,11 +373,80 @@ public class TestBaseOperations {
     }
 
     @Test(expected=DataSourceException.class)
+    public void testPrepareQueryWithNullValue() throws DataSourceException {
+        JsonObject parameter = null;
+        final String parameterName = "key";
+        
+        BaseOperations.prepareQuery(new MockQuery(), parameterName, parameter, 0);
+    }
+
+    @Test(expected=DataSourceException.class)
     public void testPrepareQueryWithUnsupportedParameter() throws DataSourceException {
         JsonObject parameter = new GenericJsonObject();
         final String parameterName = "key";
         
         BaseOperations.prepareQuery(new MockQuery(), parameterName, parameter, 0);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithManyParameters() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("name", "test");
+        parameters.put("check", Boolean.FALSE);
+        parameters.put("date", new Date());
+        
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                for (String name: parameters.keySet()) {
+                    int index = arg.indexOf(name, 0);
+                    assertNotSame(-1, index);
+                    index = arg.indexOf("==", index + name.length());
+                    assertNotSame(-1, index);
+                    index = arg.indexOf(name + "Value", index + "==".length());
+                    assertNotSame(-1, index);
+                }
+            }
+            @Override
+            public void declareParameters(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                for (String name: parameters.keySet()) {
+                    int index = arg.indexOf(parameters.get(name).getClass().getSimpleName(), 0);
+                    assertNotSame(-1, index);
+                    index = arg.indexOf(name + "Value", index + name.length());
+                    assertNotSame(-1, index);
+                }
+            }
+            @Override
+            public void setRange(long start, long size) {
+                fail("Range should stay unset to get the maximum values");
+            }
+        };
+        
+        BaseOperations.prepareQuery(query, parameters, 0);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithManyParametersAndRangeSet() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("name", "test");
+        
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setRange(long start, long size) {
+                assertEquals(0, start);
+                assertEquals(12345, size);
+            }
+        };
+        
+        BaseOperations.prepareQuery(query, parameters, 12345);
     }
 
     @Test

@@ -86,11 +86,7 @@ public class StoreOperations extends BaseOperations {
         getLogger().warning("Get Store instance with id: " + key);
         try {
             Store store = pm.getObjectById(Store.class, key);
-            if (store == null) {
-                throw new DataSourceException("No store for identifier: " + key);
-            }
-            return store; // FIXME: remove workaround for a bug in DataNucleus
-            // return new Store(store.toJson());
+            return store;
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving store for identifier: " + key + " -- ex: " + ex.getMessage());
@@ -134,7 +130,7 @@ public class StoreOperations extends BaseOperations {
     public List<Store> getStores(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Store.class);
-        prepareQuery(queryObj, attribute, value, limit);
+        value = prepareQuery(queryObj, attribute, value, limit);
         getLogger().warning("Select stores(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Store> stores = (List<Store>) queryObj.execute(value);

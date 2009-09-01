@@ -1,8 +1,6 @@
 package twetailer.rest;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -139,9 +137,6 @@ public class DemandOperations extends BaseOperations {
         getLogger().warning("Get Demand instance with id: " + key);
         try {
             Demand demand = pm.getObjectById(Demand.class, key);
-            if (demand == null) {
-                throw new DataSourceException("No demand for identifier: " + key);
-            }
             if (!consumerKey.equals(demand.getConsumerKey())) {
                 throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
             }
@@ -190,7 +185,7 @@ public class DemandOperations extends BaseOperations {
     public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Demand.class);
-        prepareQuery(queryObj, attribute, value, limit);
+        value = prepareQuery(queryObj, attribute, value, limit);
         getLogger().warning("Select demand(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Demand> demands = (List<Demand>) queryObj.execute(value);
@@ -198,38 +193,24 @@ public class DemandOperations extends BaseOperations {
         return demands;
     }
     
+    /**
+     * Use the given pairs {attribute; value} to get the corresponding Demand instances while leaving the given persistence manager open for future updates
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of demands matching the given criteria
+     * 
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
     @SuppressWarnings("unchecked")
     public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
-        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  111");
-        StringBuilder filterDefinition = new StringBuilder();
-        StringBuilder parameterDefinitions = new StringBuilder();
-        List<Object> values = new ArrayList<Object>(parameters.size());
-        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  222");
-        for(String parameterName: parameters.keySet()) {
-            filterDefinition.append(" && " + parameterName + " == " + parameterName + "Value");
-            parameterDefinitions.append(", ");
-            Object parameterValue = parameters.get(parameterName);
-            if (parameterValue instanceof String) { parameterDefinitions.append("String " + parameterName + "Value"); }
-            else if (parameterValue instanceof Long) { parameterDefinitions.append("Long " + parameterName + "Value"); }
-            else if (parameterValue instanceof Integer) {
-                parameterDefinitions.append("Long " + parameterName + "Value");
-                parameterValue = Long.valueOf((Integer) parameterValue);
-            }
-            else if (parameterValue instanceof Date) { parameterDefinitions.append("Date " + parameterName + "Value"); }
-            values.add(parameterValue);
-        }
-        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  333");
-        Query queryObj = pm.newQuery(Demand.class);
-        queryObj.setFilter(filterDefinition.substring(" && ".length()));
-        queryObj.declareParameters(parameterDefinitions.substring(", ".length()));
-        if (0 < limit) {
-            queryObj.setRange(0, limit);
-        }
-        log.warning("=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*  444 -- " + queryObj.toString());
-        getLogger().warning("Select demand(s) with: " + queryObj.toString());
+        Query query = pm.newQuery(Demand.class);
+        Object[] values = prepareQuery(query, parameters, limit);
+        getLogger().warning("Select demand(s) with: " + query.toString());
         // Select the corresponding resources
-        List<Demand> demands = (List<Demand>) queryObj.executeWithArray(values);
+        List<Demand> demands = (List<Demand>) query.executeWithArray(values);
         demands.size(); // FIXME: remove workaround for a bug in DataNucleus
         return demands;
     }
@@ -250,10 +231,6 @@ public class DemandOperations extends BaseOperations {
         try {
             Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), consumerKey);
             updatedDemand.fromJson(parameters);
-            Long consumerId = updatedDemand.getConsumerKey();
-            if (!consumerKey.equals(consumerId)) {
-                throw new DataSourceException("Mismatch of consumer identifiers [" + consumerId + "/" + consumerKey + "]");
-            }
             // Persist updated demand
             return updateDemand(pm, updatedDemand);
         }

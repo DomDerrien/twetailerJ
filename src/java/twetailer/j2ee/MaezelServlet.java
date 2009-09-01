@@ -121,11 +121,17 @@ public class MaezelServlet extends HttpServlet {
                     Long storeKey = Long.valueOf(request.getParameter("storeKey"));
                     
                     Retailer retailer = retailerOperations.createRetailer(pm, consumer, storeKey);
+
+                    pm.close();
+                    pm = _baseOperations.getPersistenceManager();
+                    
+                    Retailer reload = retailerOperations.getRetailer(pm, retailer.getKey());
+
                     String[] supplies = request.getParameter("supplies").split(" ");
                     for (int i = 0; i < supplies.length; i++) {
                         retailer.addCriterion(supplies[i]);
                     }
-                    retailerOperations.updateRetailer(pm, retailer);
+                    retailerOperations.updateRetailer(pm, reload);
                 }
                 finally {
                     pm.close();

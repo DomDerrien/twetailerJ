@@ -146,11 +146,7 @@ public class ConsumerOperations extends BaseOperations {
         getLogger().warning("Get Consumer instance with id: " + key);
         try {
             Consumer consumer = pm.getObjectById(Consumer.class, key);
-            if (consumer == null) {
-                throw new DataSourceException("No consumer for identifier: " + key);
-            }
-            return consumer; // FIXME: remove workaround for a bug in DataNucleus
-            // return new Consumer(consumer.toJson());
+            return consumer;
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage());
@@ -194,7 +190,7 @@ public class ConsumerOperations extends BaseOperations {
     public List<Consumer> getConsumers(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Consumer.class);
-        prepareQuery(queryObj, attribute, value, 0);
+        value = prepareQuery(queryObj, attribute, value, 0);
         getLogger().warning("Select consumer(s) with: " + queryObj.toString());
         // Select the corresponding consumers
         List<Consumer> consumers = (List<Consumer>) queryObj.execute(value);

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.validator.LocaleValidator;
@@ -28,9 +29,11 @@ public class LocationOperations extends BaseOperations {
      * @param parameters HTTP location parameters
      * @return Just created resource
      * 
+     * @throws ClientException If mandatory attributes are missing 
+     * 
      * @see LocationOperations#createLocation(Location)
      */
-    public Location createLocation(JsonObject parameters) {
+    public Location createLocation(JsonObject parameters) throws ClientException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return createLocation(pm, parameters);
@@ -54,10 +57,7 @@ public class LocationOperations extends BaseOperations {
         // Creates new location record and persist it
         Location newLocation = new Location(parameters);
         // Persist it
-        if (newLocation.getPostalCode() != null && newLocation.getCountryCode() != null) {
-            return createLocation(pm, newLocation);
-        }
-        return null;
+        return createLocation(pm, newLocation);
     }
 
     /**
@@ -87,8 +87,19 @@ public class LocationOperations extends BaseOperations {
      */
     public Location createLocation(PersistenceManager pm, Location location) {
         try {
-            // Try to retrieve the same location
-            List<Location> locations = getLocations(pm, Location.POSTAL_CODE, location.getPostalCode(), 1);
+            List<Location> locations = null;
+            // Check the location attributes
+            if (location.getPostalCode() != null) { // && location.getCountryCode() != null) { // A country code being automatically created, so no need to verify the null value
+                // Try to retrieve from its postal and country codes
+                locations = getLocations(pm, location.getPostalCode(), location.getCountryCode());
+            }
+            else if (location.getLatitude() != Location.INVALID_COORDINATE && location.getLongitude() != Location.INVALID_COORDINATE) {
+                // Try to retrieve from the geo-coordinates
+                locations = getLocations(pm, location.getLatitude(), location.getLongitude());
+            }
+            else {
+                throw new InvalidParameterException("Location object should have a valid pair of {postal; country} or {latitude; longitude}.");
+            }
             if (0 < locations.size()) {
                 return locations.get(0);
             }
@@ -136,11 +147,7 @@ public class LocationOperations extends BaseOperations {
         getLogger().warning("Get Location instance with id: " + key);
         try {
             Location location = pm.getObjectById(Location.class, key);
-            if (location == null) {
-                throw new DataSourceException("No location for identifier: " + key);
-            }
-            return location; // FIXME: remove workaround for a bug in DataNucleus
-            // return new Location(location.toJson());
+            return location;
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage());
@@ -184,10 +191,58 @@ public class LocationOperations extends BaseOperations {
     public List<Location> getLocations(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Location.class);
-        prepareQuery(queryObj, attribute, value, limit);
+        value = prepareQuery(queryObj, attribute, value, limit);
         getLogger().warning("Select location(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Location> locations = (List<Location>) queryObj.execute(value);
+        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return locations;
+    }
+    
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param postalCode postal code of the searched location
+     * @param countryCode country code of the searched location
+     * @return Collection of locations matching the given criteria
+     * 
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery(Location.class);
+        queryObj.setFilter(Location.POSTAL_CODE + " == postal && " + Location.COUNTRY_CODE + " == country");
+        queryObj.declareParameters("String postal, String country");
+        getLogger().warning("Select location(s) with: " + queryObj.toString());
+        queryObj.setOrdering("creationDate desc");
+        // Select the corresponding resources
+        List<Location> locations = (List<Location>) queryObj.execute(postalCode, countryCode);
+        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return locations;
+    }
+    
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param latitude latitude of the searched location
+     * @param longitude longitude of the searched location
+     * @return Collection of locations matching the given criteria
+     * 
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Location> getLocations(PersistenceManager pm, Double latitude, Double longitude) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery(Location.class);
+        queryObj.setFilter(Location.LATITUDE + " == lat && " + Location.LONGITUDE + " == long");
+        queryObj.declareParameters("Double lat, Double long");
+        queryObj.setOrdering("creationDate desc");
+        getLogger().warning("Select location(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Location> locations = (List<Location>) queryObj.execute(latitude, longitude);
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
         return locations;
     }
@@ -222,7 +277,7 @@ public class LocationOperations extends BaseOperations {
         // FIXME: take into account that the value can be greater than 360° and smaller than 0°
         // FIXME: that means two request have to be done at the limit...
         
-        log.finest("Box limits [left; rigth] / [top; bottom] : [" + leftLongitude + "; " + rightLongitude + "] / [" + topLatitude + "; " + bottomLatitude + "]");
+        log.finest("Box limits [left; rigth] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
         
         /****************************************************************************************************************
          * Ideal case not feasible because of App Engine limitation:  Only one inequality filter per query is supported.
@@ -233,9 +288,9 @@ public class LocationOperations extends BaseOperations {
          *         Location.LATITUDE + " < topLatitude && " +
          *         Location.LONGITUDE + " > leftLongitude && " +
          *         Location.LONGITUDE + " < rightLongitude && " +
-         *         Location.HAS_STORE + " != hasStore"
+         *         Location.HAS_STORE + " == hasStoreRegistered"
          * );
-         * query.declareParameters("Double topLatitude, Double bottomLatitude, Double leftLongitude, Double rightLongitude, Boolean hasStore");
+         * query.declareParameters("Double topLatitude, Double bottomLatitude, Double leftLongitude, Double rightLongitude, Boolean hasStoreRegistered");
          * if (0 < limit) {
          *     query.setRange(0, limit);
          * }
@@ -246,11 +301,11 @@ public class LocationOperations extends BaseOperations {
         // Prepare the query
         Query query = pm.newQuery(Location.class);
         query.setFilter(
-                // Location.HAS_STORE + " == hasStore && " + // FIXME: understand why this equality breaks the query!
+                Location.HAS_STORE + " == hasStoreRegistered && " +
                 Location.LATITUDE + " > bottomLatitude && " +
                 Location.LATITUDE + " < topLatitude"
         );
-        query.declareParameters("Boolean hasStore, Double topLatitude, Double bottomLatitude");
+        query.declareParameters("Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
         if (0 < limit) {
             query.setRange(0, limit);
         }
@@ -263,16 +318,8 @@ public class LocationOperations extends BaseOperations {
         
         List<Location> selection = new ArrayList<Location>();
         for (Location spot: locations) {
-            if (location.hasStore()) {
-                if (leftLongitude < location.getLongitude() && location.getLongitude() < rightLongitude) {
-                    selection.add(spot);
-                }
-                else {
-                    log.finest("Location " + location.getKey() + " (" + location.getLongitude() + ") has not the correct longitude, outside the box [" + rightLongitude + "; " + leftLongitude + "]");
-                }
-            }
-            else {
-                log.finest("Location " + location.getKey() + " has no store attached -> " + location.hasStore());
+            if (leftLongitude < spot.getLongitude() && spot.getLongitude() < rightLongitude) {
+                selection.add(spot);
             }
         }
         

@@ -120,8 +120,8 @@ public class Location extends Entity {
         boolean resetCurrentLocation = false;
         resetCurrentLocation = resetCurrentLocation || in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
         resetCurrentLocation = resetCurrentLocation || in.containsKey(POSTAL_CODE) && !in.getString(POSTAL_CODE).equals(getPostalCode());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(LATITUDE) && !in.getString(LATITUDE).equals(getLatitude());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(LONGITUDE) && !in.getString(LONGITUDE).equals(getLongitude());
+        resetCurrentLocation = resetCurrentLocation || in.containsKey(LATITUDE) && !getLatitude().equals(in.getDouble(LATITUDE));
+        resetCurrentLocation = resetCurrentLocation || in.containsKey(LONGITUDE) && !getLongitude().equals(in.getDouble(LONGITUDE));
         if (resetCurrentLocation) {
             setCountryCode(null);
             setPostalCode(null);

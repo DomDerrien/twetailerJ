@@ -63,7 +63,7 @@ public class RetailerOperations extends BaseOperations {
         
         // Attach to the store
         retailer.setStoreKey(storeKey);
-
+        
         // Persist the account
         return createRetailer(pm, retailer);
     }
@@ -116,9 +116,6 @@ public class RetailerOperations extends BaseOperations {
         getLogger().warning("Get Retailer instance with id: " + key);
         try {
             Retailer retailer = pm.getObjectById(Retailer.class, key);
-            if (retailer == null) {
-                throw new DataSourceException("No retailer for identifier: " + key);
-            }
             if (retailer.getCriteria() != null) {
                 retailer.getCriteria().size();
             }
@@ -166,7 +163,7 @@ public class RetailerOperations extends BaseOperations {
     public List<Retailer> getRetailers(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Retailer.class);
-        prepareQuery(queryObj, attribute, value, limit);
+        value = prepareQuery(queryObj, attribute, value, limit);
         getLogger().warning("Select retailer(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Retailer> retailers = (List<Retailer>) queryObj.execute(value);
@@ -202,8 +199,7 @@ public class RetailerOperations extends BaseOperations {
      */
     public Retailer updateRetailer(PersistenceManager pm, Retailer retailer) {
         getLogger().warning("Updating retailer with id: " + retailer.getKey());
-        retailer.setCriteriaKack(retailer.getCriteria()); // FIXME: if the array is not copied, the updated array won't be persisted!
-        pm.makePersistent(retailer);
+        retailer = pm.makePersistent(retailer);
         return retailer;
     }
 }

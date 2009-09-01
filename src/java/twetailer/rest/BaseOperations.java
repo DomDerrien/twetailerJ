@@ -1,6 +1,9 @@
 package twetailer.rest;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
@@ -54,7 +57,50 @@ public class BaseOperations {
     }
     
     /**
-     * Prepare the query with the given parameters
+     * Prepare the declaration for the SQL query according to the value's class
+     * 
+     * @param name parameter name
+     * @param value parameter value
+     * @return Array with the typed declaration and the updated value (updated when a conversion is required)
+     * 
+     * @throws DataSourceException If the parameter class is not supported
+     */
+    private static Object[] prepareParameter(String name, Object value) throws DataSourceException {
+        String declaration;
+        if (value == null) {
+            throw new DataSourceException("Cannot determine the class of an attribute with a null value");
+        }
+        if (value instanceof String) {
+            declaration = "String " + name;
+        }
+        else if (value instanceof Long) {
+            declaration = "Long " + name;
+        }
+        else if (value instanceof Integer) {
+            declaration = "Long " + name;
+            value = Long.valueOf((Integer) value);
+        }
+        else if (value instanceof Double) {
+            declaration = "Double " + name;
+        }
+        else if (value instanceof Float) {
+            declaration = "Double " + name;
+            value = Double.valueOf((Float) value);
+        }
+        else if (value instanceof Date) {
+            declaration = "Date " + name;
+        }
+        else if (value instanceof Boolean) {
+            declaration = "Boolean " + name;
+        }
+        else {
+            throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
+        }
+        return new Object[] { declaration, value };
+    }
+    
+    /**
+     * Prepare the query for one attribute matching one value
      * 
      * @param query Object to prepare
      * @param attribute Name of the demand attribute used a the search criteria
@@ -64,32 +110,45 @@ public class BaseOperations {
      * 
      * @throws DataSourceException If given value cannot matched a data store type
      */
-    public static Query prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
+    public static Object prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
         query.setFilter(attribute + " == value");
         query.setOrdering("creationDate desc");
-        if (value instanceof String) {
-            query.declareParameters("String value");
-        }
-        else if (value instanceof Long) {
-            query.declareParameters("Long value");
-        }
-        else if (value instanceof Integer) {
-            query.declareParameters("Long value");
-            value = Long.valueOf((Integer) value);
-        }
-        else if (value instanceof Date) {
-            query.declareParameters("Date value");
-        }
-        else if (value instanceof Boolean) {
-            query.declareParameters("Boolean value");
-        }
-        else {
-            throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
-        }
         if (0 < limit) {
             query.setRange(0, limit);
         }
-        return query;
+        Object[] preparation = prepareParameter("value", value);
+        query.declareParameters((String) preparation[0]); 
+        return preparation[1];
+    }
+    
+    /**
+     * Prepare the query for many attributes matching many values
+     * 
+     * @param query Object to prepare
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Updated query
+     * 
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    public static Object[] prepareQuery(Query query, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        StringBuilder filterDefinition = new StringBuilder();
+        StringBuilder parameterDefinitions = new StringBuilder();
+        List<Object> values = new ArrayList<Object>(parameters.size());
+        for(String parameterName: parameters.keySet()) {
+            Object[] preparation = prepareParameter(parameterName + "Value", parameters.get(parameterName));
+            filterDefinition.append(" && " + parameterName + " == " + parameterName + "Value");
+            parameterDefinitions.append(", ").append((String) preparation[0]);
+            values.add(preparation[1]);
+        }
+        query.setOrdering("creationDate desc");
+        query.setFilter(filterDefinition.substring(" && ".length()));
+        query.declareParameters(parameterDefinitions.substring(", ".length()));
+        if (0 < limit) {
+            query.setRange(0, limit);
+        }
+        return values.toArray();
     }
 
     private ConsumerOperations _consumerOperations;
