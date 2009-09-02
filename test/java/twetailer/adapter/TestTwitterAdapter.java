@@ -618,7 +618,7 @@ public class TestTwitterAdapter {
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0) + ":zzz " + Locale.CANADA.getCountry()));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0) + ":ZZZ " + Locale.CANADA.getCountry()));
     }
     
     @Test

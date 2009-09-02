@@ -264,6 +264,6 @@ public class TestDemand {
         
         object.fromJson(new JsonParser("{'" + Demand.EXPIRATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
         
-        assertEquals(date, object.getExpirationDate()); // Corrupted date did not alter the original date
+        assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(object.getExpirationDate())); // Corrupted date did not alter the original date
     }
 }

@@ -91,28 +91,29 @@ public class LocaleValidator {
         return coordinates;
     }
 
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
+
     private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
     private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
-    public static final String DEFAULT_LANGUAGE = ENGLISH_LANGUAGE;
-    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     public static String checkLanguage(String language) {
-        if (FRENCH_LANGUAGE.equals(language)) { return language; }
-        if (ENGLISH_LANGUAGE.equals(language)) { return language; }
+        if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return FRENCH_LANGUAGE; }
+        if (ENGLISH_LANGUAGE.equalsIgnoreCase(language)) { return ENGLISH_LANGUAGE; }
         return DEFAULT_LANGUAGE; // Default language
     }
 
     public static Locale getLocale(String language) {
-        if (FRENCH_LANGUAGE.equals(language)) { return Locale.FRENCH; }
-        else if (ENGLISH_LANGUAGE.equals(language)) { return Locale.ENGLISH; }
+        if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return Locale.FRENCH; }
+        else if (ENGLISH_LANGUAGE.equalsIgnoreCase(language)) { return Locale.ENGLISH; }
         return DEFAULT_LOCALE; // Default language
     }
 
-    private static final String DEFAULT_COUNTRY_CODE = Locale.US.getCountry();
+    public static final String DEFAULT_COUNTRY_CODE = Locale.US.getCountry();
 
     public static String checkCountryCode(String countryCode) {
-        if (Locale.CANADA.getCountry().equals(countryCode)) { return countryCode; }
-        if (Locale.US.getCountry().equals(countryCode)) { return countryCode; }
+        if (Locale.CANADA.getCountry().equalsIgnoreCase(countryCode)) { return Locale.CANADA.getCountry(); }
+        if (Locale.US.getCountry().equalsIgnoreCase(countryCode)) { return Locale.US.getCountry(); }
         return DEFAULT_COUNTRY_CODE; // Default country code
     }
 

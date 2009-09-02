@@ -13,12 +13,17 @@ import domderrien.jsontools.TransferObject;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Location extends Entity {
     
+    public static final Double INVALID_COORDINATE = Double.valueOf(-1.0D);
+
     @Persistent
     private String countryCode;
 
     public static final String COUNTRY_CODE = "countryCode";
     
-    public static final Double INVALID_COORDINATE = Double.valueOf(-1.0D);
+    @Persistent
+    private Boolean hasStore = Boolean.FALSE;
+
+    public static final String HAS_STORE = "hasStore";
 
     @Persistent
     private Double latitude = INVALID_COORDINATE;
@@ -34,11 +39,6 @@ public class Location extends Entity {
     private String postalCode;
 
     public static final String POSTAL_CODE = "postalCode";
-
-    @Persistent
-    private Boolean hasStore = Boolean.FALSE;
-
-    public static final String HAS_STORE = "hasStore";
     
     /** Default constructor */
     public Location() {
@@ -61,6 +61,18 @@ public class Location extends Entity {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = LocaleValidator.checkCountryCode(countryCode);
+    }
+
+    public boolean hasStore() {
+        return hasStore == null ? false : hasStore.booleanValue();
+    }
+
+    public Boolean getHasStore() {
+        return hasStore;
+    }
+
+    public void setHasStore(Boolean hasStore) {
+        this.hasStore = hasStore;
     }
 
     public Double getLatitude() {
@@ -92,25 +104,17 @@ public class Location extends Entity {
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
         if(this.postalCode != null) {
-            this.postalCode = this.postalCode.replaceAll("\\s", "");
+            this.postalCode = this.postalCode.replaceAll("\\s", "").replaceAll("\\-", "").toUpperCase();
         }
-    }
-
-    public Boolean hasStore() {
-        return hasStore;
-    }
-
-    public void setHasStore(Boolean hasStore) {
-        this.hasStore = hasStore;
     }
 
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject(); // super.toJson();
         out.put(COUNTRY_CODE, getCountryCode());
+        out.put(HAS_STORE, getHasStore());
         out.put(LATITUDE, getLatitude());
         out.put(LONGITUDE, getLongitude());
         out.put(POSTAL_CODE, getPostalCode());
-        out.put(HAS_STORE, hasStore());
         return out;
     }
 
@@ -118,7 +122,7 @@ public class Location extends Entity {
         // super.fromJson(in);
 
         boolean resetCurrentLocation = false;
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
+        resetCurrentLocation = in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
         resetCurrentLocation = resetCurrentLocation || in.containsKey(POSTAL_CODE) && !in.getString(POSTAL_CODE).equals(getPostalCode());
         resetCurrentLocation = resetCurrentLocation || in.containsKey(LATITUDE) && !getLatitude().equals(in.getDouble(LATITUDE));
         resetCurrentLocation = resetCurrentLocation || in.containsKey(LONGITUDE) && !getLongitude().equals(in.getDouble(LONGITUDE));
@@ -130,10 +134,10 @@ public class Location extends Entity {
         }
         
         if (in.containsKey(COUNTRY_CODE)) { setCountryCode(in.getString(COUNTRY_CODE)); }
+        if (in.containsKey(HAS_STORE)) { setHasStore(in.getBoolean(HAS_STORE)); }
         if (in.containsKey(LATITUDE)) { setLatitude(in.getDouble(LATITUDE)); }
         if (in.containsKey(LONGITUDE)) { setLongitude(in.getDouble(LONGITUDE)); }
         if (in.containsKey(POSTAL_CODE)) { setPostalCode(in.getString(POSTAL_CODE)); }
-        if (in.containsKey(HAS_STORE)) { setHasStore(in.getBoolean(HAS_STORE)); }
         
         return this;
     }
