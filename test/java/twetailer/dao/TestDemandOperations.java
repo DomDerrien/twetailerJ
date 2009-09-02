@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,13 +133,13 @@ public class TestDemandOperations {
         ops.getDemand(object.getKey(), 222L);
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetIII() throws ClientException, DataSourceException {
         DemandOperations ops = new DemandOperations();
         ops.getDemand(null, 111L);
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetIV() throws ClientException, DataSourceException {
         DemandOperations ops = new DemandOperations();
         ops.getDemand(0L, 111L);

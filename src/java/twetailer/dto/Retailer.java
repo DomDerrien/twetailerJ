@@ -1,6 +1,5 @@
 package twetailer.dto;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -149,7 +148,7 @@ public class Retailer extends Entity {
 
     public void setCriteria(List<String> criteria) {
         if (criteria == null) {
-            throw new InvalidParameterException("Cannot nullify the attribute 'criteria' of type List<String>");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
         }
         this.criteria = criteria;
     }

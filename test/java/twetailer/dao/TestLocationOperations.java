@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -87,7 +86,7 @@ public class TestLocationOperations {
         assertTrue(pm.isClosed());
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testCreateIII() throws ClientException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
@@ -122,7 +121,7 @@ public class TestLocationOperations {
         assertNotNull(object.getKey());
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testCreateVI() throws ClientException {
         JsonObject input = new GenericJsonObject();
         input.put(Location.LATITUDE, 45.0D);
@@ -130,7 +129,7 @@ public class TestLocationOperations {
         new LocationOperations().createLocation(input);
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testCreateVII() throws ClientException {
         JsonObject input = new GenericJsonObject();
         input.put(Location.COUNTRY_CODE, "CA");
@@ -175,13 +174,13 @@ public class TestLocationOperations {
         assertTrue(pm.isClosed());
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetIII() throws ClientException, DataSourceException {
         LocationOperations ops = new LocationOperations();
         ops.getLocation(null);
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetIV() throws ClientException, DataSourceException {
         LocationOperations ops = new LocationOperations();
         ops.getLocation(0L);

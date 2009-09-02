@@ -1,6 +1,5 @@
 package twetailer.dao;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -141,7 +140,7 @@ public class ConsumerOperations extends BaseOperations {
      */
     public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
         if (key == null || key == 0L) {
-            throw new InvalidParameterException("Invalid key; cannot retrieve the Consumer instance");
+            throw new IllegalArgumentException("Invalid key; cannot retrieve the Consumer instance");
         }
         getLogger().warning("Get Consumer instance with id: " + key);
         try {

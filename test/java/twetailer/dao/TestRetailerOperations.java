@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -70,12 +69,12 @@ public class TestRetailerOperations {
         assertEquals(item.getKey(), selected.getKey());
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetII() throws DataSourceException {
         new RetailerOperations().getRetailer(null);
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetIII() throws DataSourceException {
         new RetailerOperations().getRetailer(0L);
     }

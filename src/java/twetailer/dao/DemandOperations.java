@@ -1,6 +1,5 @@
 package twetailer.dao;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -132,7 +131,7 @@ public class DemandOperations extends BaseOperations {
      */
     public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
         if (key == null || key == 0L) {
-            throw new InvalidParameterException("Invalid key; cannot retrieve the Demand instance");
+            throw new IllegalArgumentException("Invalid key; cannot retrieve the Demand instance");
         }
         getLogger().warning("Get Demand instance with id: " + key);
         try {

@@ -1,6 +1,5 @@
 package twetailer.dao;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -111,7 +110,7 @@ public class RetailerOperations extends BaseOperations {
      */
     public Retailer getRetailer(PersistenceManager pm, Long key) throws DataSourceException {
         if (key == null || key == 0L) {
-            throw new InvalidParameterException("Invalid key; cannot retrieve the Retailer instance");
+            throw new IllegalArgumentException("Invalid key; cannot retrieve the Retailer instance");
         }
         getLogger().warning("Get Retailer instance with id: " + key);
         try {

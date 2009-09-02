@@ -38,12 +38,20 @@ public class Entity implements TransferObject {
         setModificationDate(DateUtils.getNowDate());
     }
 
+    public Entity(JsonObject parameters) {
+        this();
+        fromJson(parameters);
+    }
+
     public Long getKey() {
         return key;
     }
 
     public void setKey(Long key) {
-        if (this.key == null) {
+        if (key == null) {
+            resetKey();
+        }
+        else if (this.key == null) {
             if (key != 0L) {
                 this.key = key;
             }
@@ -101,9 +109,8 @@ public class Entity implements TransferObject {
             setKey(in.getLong(KEY));
         }
         if (in.containsKey(CREATION_DATE)) {
-            Date creationDate;
             try {
-                creationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
+                Date creationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
                 setCreationDate(creationDate);
             }
             catch (ParseException e) {

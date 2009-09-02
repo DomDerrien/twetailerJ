@@ -1,7 +1,6 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -73,7 +72,7 @@ public class MaezelServlet extends HttpServlet {
                 TwitterRobot.processDirectMessages();
             }
             else if ("/processProposals".equals(pathInfo)) {
-                throw new InvalidParameterException("Not yet implemented");
+                throw new IllegalArgumentException("Not yet implemented");
             }
             else if ("/createLocation".equals(pathInfo)) {
                 // Supported formats:

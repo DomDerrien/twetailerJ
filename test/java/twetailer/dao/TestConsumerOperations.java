@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -248,7 +247,7 @@ public class TestConsumerOperations {
             @Override
             public <T> T getObjectById(Class<T> arg0, Object arg1) {
                 assertEquals(key, ((Long) arg1).longValue());
-                throw new InvalidParameterException("done in purpose");
+                throw new IllegalArgumentException("done in purpose");
             }
         };
         ConsumerOperations ops = new ConsumerOperations() {
@@ -289,14 +288,14 @@ public class TestConsumerOperations {
 		assertTrue(ops.getPersistenceManager().isClosed());
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetV() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations();
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         ops.getConsumer(pm, null);
     }
 
-    @Test(expected=InvalidParameterException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testGetVI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations();
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();

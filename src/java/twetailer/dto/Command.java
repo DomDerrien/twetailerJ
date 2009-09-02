@@ -8,7 +8,6 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 import twetailer.validator.CommandSettings;
-import twetailer.validator.CommandSettings.State;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Command extends Entity {
@@ -19,14 +18,14 @@ public class Command extends Entity {
     public static final String ACTION = "action";
     
     @Persistent
-    private Long consumerKey = 0L;
+    private Long consumerKey;
 
     public static final String CONSUMER_KEY = "consumerKey";
     
     public static final String NEED_HELP = "needHelp";
     
     @Persistent
-    private State state = State.open;
+    private CommandSettings.State state = CommandSettings.State.open;
     
     public static final String STATE = "state";
 
@@ -64,16 +63,16 @@ public class Command extends Entity {
         this.consumerKey = consumerId;
     }
     
-    public State getState() {
+    public CommandSettings.State getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(CommandSettings.State state) {
         this.state = state;
     }
 
     public void setState(String state) {
-        this.state = State.valueOf(state);
+        this.state = CommandSettings.State.valueOf(state);
     }
     
     public Long getTweetId() {
@@ -86,10 +85,10 @@ public class Command extends Entity {
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(ACTION, getAction().toString());
-        out.put(CONSUMER_KEY, getConsumerKey());
+        if (getAction() != null) { out.put(ACTION, getAction().toString()); }
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         out.put(STATE, getState().toString());
-        out.put(TWEET_ID, getTweetId());
+        if (getTweetId() != null) { out.put(TWEET_ID, getTweetId()); }
         return out;
     }
 

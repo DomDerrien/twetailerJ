@@ -1,6 +1,5 @@
 package twetailer.dao;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -81,7 +80,7 @@ public class StoreOperations extends BaseOperations {
      */
     public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
         if (key == null || key == 0L) {
-            throw new InvalidParameterException("Invalid key; cannot retrieve the Store instance");
+            throw new IllegalArgumentException("Invalid key; cannot retrieve the Store instance");
         }
         getLogger().warning("Get Store instance with id: " + key);
         try {
@@ -176,7 +175,45 @@ public class StoreOperations extends BaseOperations {
             List<Store> stores = getStores(pm, Store.LOCATION_KEY, location.getKey(), limit);
             // Copy into the list to be returned
             selection.addAll(stores);
+            if (limit != 0) {
+                if (limit <= selection.size()) {
+                    break;
+                }
+                limit = limit - selection.size();
+            }
         }
         return selection;
+    }
+    
+    /**
+     * Persist the given (probably updated) resource
+     * 
+     * @param store Resource to update
+     * @return Updated resource
+     * 
+     * @see StoreOperations#updateStore(PersistenceManager, Store)
+     */
+    public Store updateStore(Store store) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            // Persist updated store
+            return updateStore(pm, store);
+        }
+        finally {
+            pm.close();
+        }
+    }
+    
+    /**
+     * Persist the given (probably updated) resource while leaving the given persistence manager open for future updates
+     * 
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param store Resource to update
+     * @return Updated resource
+     */
+    public Store updateStore(PersistenceManager pm, Store store) {
+        getLogger().warning("Updating store with id: " + store.getKey());
+        store = pm.makePersistent(store);
+        return store;
     }
 }

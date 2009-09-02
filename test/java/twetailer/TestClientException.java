@@ -1,6 +1,5 @@
 package twetailer;
 
-import java.security.InvalidParameterException;
 import java.text.ParseException;
 
 import org.junit.After;
@@ -24,7 +23,7 @@ public class TestClientException {
 
     @Test
     public void testConstructorII() {
-        new ClientException("test", new InvalidParameterException("test"));
+        new ClientException("test", new IllegalArgumentException("test"));
     }
 
     @Test(expected=RuntimeException.class)

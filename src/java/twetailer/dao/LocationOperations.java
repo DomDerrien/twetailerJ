@@ -1,6 +1,5 @@
 package twetailer.dao;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -98,7 +97,7 @@ public class LocationOperations extends BaseOperations {
                 locations = getLocations(pm, location.getLatitude(), location.getLongitude());
             }
             else {
-                throw new InvalidParameterException("Location object should have a valid pair of {postal; country} or {latitude; longitude}.");
+                throw new IllegalArgumentException("Location object should have a valid pair of {postal; country} or {latitude; longitude}.");
             }
             if (0 < locations.size()) {
                 return locations.get(0);
@@ -142,7 +141,7 @@ public class LocationOperations extends BaseOperations {
      */
     public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
         if (key == null || key == 0L) {
-            throw new InvalidParameterException("Invalid key; cannot retrieve the Location instance");
+            throw new IllegalArgumentException("Invalid key; cannot retrieve the Location instance");
         }
         getLogger().warning("Get Location instance with id: " + key);
         try {

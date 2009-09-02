@@ -146,7 +146,7 @@ public class Consumer extends Entity {
         out.put(LANGUAGE, getLanguage());
 		out.put(NAME, getName());
 		out.put(PHONE_NUMBER, getPhoneNumber());
-        out.put(TWITTER_ID, getTwitterId());
+        if (getTwitterId() != null) { out.put(TWITTER_ID, getTwitterId()); }
 		return out;
 	}
 
@@ -155,7 +155,7 @@ public class Consumer extends Entity {
 		if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
 		if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
 		if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.containsKey(LOCATION_KEY) ? in.getLong(LOCATION_KEY) : null); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
 		if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
 		if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
