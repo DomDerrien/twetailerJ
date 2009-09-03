@@ -64,7 +64,7 @@ public class Location extends Entity {
     }
 
     public boolean hasStore() {
-        return hasStore == null ? false : hasStore.booleanValue();
+        return Boolean.TRUE.equals(hasStore);
     }
 
     public Boolean getHasStore() {

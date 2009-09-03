@@ -20,15 +20,15 @@ public class Retailer extends Entity {
 
     /*** Retailer ***/
     @Persistent
-    private Long creatorKey;
-    
-    public final static String CREATOR_KEY = "creatorKey";
-
-    @Persistent
     private Long consumerKey;
     
     public final static String CONSUMER_KEY = "consumerKey";
     
+    @Persistent
+    private Long creatorKey;
+    
+    public final static String CREATOR_KEY = "creatorKey";
+
     @Persistent
     private List<String> criteria = new ArrayList<String>();
     
@@ -98,7 +98,22 @@ public class Retailer extends Entity {
         this();
         fromJson(parameters);
     }
+
+    /**
+     * Provided to reproduce the JDO behavior with Unit tests
+     */
+    protected void resetLists() {
+        criteria = null;
+    }
     
+    public Long getConsumerKey() {
+        return consumerKey;
+    }
+
+    public void setConsumerKey(Long consumerKey) {
+        this.consumerKey = consumerKey;
+    }
+
     public Long getCreatorKey() {
         return creatorKey;
     }
@@ -120,11 +135,7 @@ public class Retailer extends Entity {
         if (criteria == null) {
             return;
         }
-        int idx = criteria.size();
-        while (0 < idx) {
-            --idx;
-            this.criteria.remove(idx);
-        }
+        criteria = new ArrayList<String>();
     }
 
     public void removeCriterion(String criterion) {
@@ -132,14 +143,6 @@ public class Retailer extends Entity {
             return;
         }
         criteria.remove(criterion);
-    }
-
-    public Long getConsumerKey() {
-        return consumerKey;
-    }
-
-    public void setConsumerKey(Long consumerKey) {
-        this.consumerKey = consumerKey;
     }
 
     public List<String> getCriteria() {
@@ -169,12 +172,16 @@ public class Retailer extends Entity {
         this.imId = imId;
     }
 
-    public Boolean isStoreAdmin() {
+    public Boolean getIsStoreAdmin() {
         return isStoreAdmin;
     }
 
     public void setIsStoreAdmin(Boolean isStoreAdmin) {
         this.isStoreAdmin = isStoreAdmin;
+    }
+    
+    public boolean isStoreAdmin() {
+        return Boolean.TRUE.equals(isStoreAdmin);
     }
 
     public String getLanguage() {
@@ -239,8 +246,8 @@ public class Retailer extends Entity {
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(CREATOR_KEY, getCreatorKey());
-        out.put(CONSUMER_KEY, getConsumerKey());
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
+        if (getCreatorKey() != null) { out.put(CREATOR_KEY, getCreatorKey()); }
         if (getCriteria() != null) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
@@ -251,44 +258,31 @@ public class Retailer extends Entity {
         out.put(EMAIL, getEmail());
         out.put(IM_ID, getImId());
         out.put(IS_STORE_ADMIN_KEY, isStoreAdmin());
-        out.put(LOCATION_KEY, getLocationKey());
+        out.put(LANGUAGE, getLanguage());
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
-        out.put(STORE_KEY, getStoreKey());
-        out.put(SCORE, getScore());
-        out.put(TWITTER_ID, getTwitterId());
+        if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
+        if (getScore() != null) { out.put(SCORE, getScore()); }
+        if (getTwitterId() != null) { out.put(TWITTER_ID, getTwitterId()); }
 		return out;
 	}
 
 	public TransferObject fromJson(JsonObject in) {
 	    super.fromJson(in);
-        if (in.containsKey(CREATOR_KEY)) { setCreatorKey(in.getLong(CREATOR_KEY)); }
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(CREATOR_KEY)) { setCreatorKey(in.getLong(CREATOR_KEY)); }
         if (in.containsKey(CRITERIA)) {
-            boolean additionMode = true;
+            resetCriteria();
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
             for (int i=0; i<jsonArray.size(); ++i) {
-                if ("+".equals(jsonArray.getString(0))) {
-                    additionMode = true;
-                }
-                else if ("-".equals(jsonArray.getString(0))) {
-                    additionMode = false;
-                }
-                else if (i == 0) {
-                    resetCriteria();
-                    addCriterion(jsonArray.getString(i));
-                }
-                else if (additionMode) {
-                    addCriterion(jsonArray.getString(i));
-                }
-                else {
-                    removeCriterion(jsonArray.getString(i));
-                }
+                addCriterion(jsonArray.getString(i));
             }
         }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
         if (in.containsKey(IS_STORE_ADMIN_KEY)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN_KEY)); }
+        if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }

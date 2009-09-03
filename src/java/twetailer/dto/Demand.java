@@ -164,16 +164,25 @@ public class Demand extends Entity {
     }
 
     public void addCriterion(String criterion) {
+        if (criteria == null) {
+            criteria = new ArrayList<String>();
+        }
         if (!criteria.contains(criterion)) {
             criteria.add(criterion);
         }
     }
 
     public void resetCriteria() {
+        if (criteria == null) {
+            return;
+        }
         criteria = new ArrayList<String>();
     }
 
     public void removeCriterion(String criterion) {
+        if (criteria == null) {
+            return;
+        }
         criteria.remove(criterion);
     }
 
@@ -229,16 +238,25 @@ public class Demand extends Entity {
     }
 
     public void addProposalKey(Long proposalKey) {
+        if (proposalKeys == null) {
+            proposalKeys = new ArrayList<Long>();
+        }
         if (!proposalKeys.contains(proposalKey)) {
             proposalKeys.add(proposalKey);
         }
     }
 
     public void resetProposalKeys() {
+        if (proposalKeys == null) {
+            return;
+        }
         proposalKeys = new ArrayList<Long>();
     }
 
     public void removeProposalKey(Long proposalKey) {
+        if (proposalKeys == null) {
+            return;
+        }
         proposalKeys.remove(proposalKey);
     }
 

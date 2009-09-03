@@ -104,7 +104,7 @@ public class TestDemand {
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void testResetCriteria() {
+    public void testResetCriteriaI() {
         Demand object = new Demand();
 
         object.addCriterion("first");
@@ -125,8 +125,23 @@ public class TestDemand {
         object.setCriteria(null); // Failure!
     }
     
+    @Test
+    public void testResetCriteriaII() {
+        Retailer object = new Retailer();
+
+        object.resetLists(); // To force the criteria list creation
+        object.addCriterion("first");
+        assertEquals(1, object.getCriteria().size());
+
+        object.resetLists(); // To be sure there's no error
+        object.removeCriterion("first"); // Remove first
+
+        object.resetLists(); // To be sure there's no error
+        object.resetCriteria(); // Reset all
+    }
+    
     @Test(expected=IllegalArgumentException.class)
-    public void testResetProposalKeys() {
+    public void testResetProposalKeysI() {
         Demand object = new Demand();
 
         object.addProposalKey(12345L);
@@ -145,6 +160,21 @@ public class TestDemand {
         assertEquals(0, object.getProposalKeys().size());
         
         object.setProposalKeys(null); // Failure!
+    }
+    
+    @Test
+    public void testResetProposalKeysII() {
+        Demand object = new Demand();
+
+        object.resetLists(); // To force the criteria list creation
+        object.addProposalKey(12345L);
+        assertEquals(1, object.getProposalKeys().size());
+
+        object.resetLists(); // To be sure there's no error
+        object.removeProposalKey(23L); // Remove first
+
+        object.resetLists(); // To be sure there's no error
+        object.resetProposalKeys(); // Reset all
     }
     
     @Test(expected=IllegalArgumentException.class)
