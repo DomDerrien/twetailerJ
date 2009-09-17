@@ -9,34 +9,34 @@ import domderrien.jsontools.TransferObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Store extends Entity {
-    
+
     @Persistent
     private String address;
-    
+
     public final static String ADDRESS = "address";
-    
+
     @Persistent
     private String email;
-    
+
     public final static String EMAIL = "email";
 
     @Persistent
     private Long locationKey;
-    
+
     public final static String LOCATION_KEY = "locationKey";
-    
+
     @Persistent
     private String name;
-    
+
     public final static String NAME = "name";
-    
+
     public static final String STORE_KEY = "storeKey";
 
     @Persistent
     private String phoneNumber;
-    
+
     public final static String PHONE_NUMBER = "phoneNb";
-    
+
     /** Default constructor */
     public Store() {
         super();
@@ -44,7 +44,7 @@ public class Store extends Entity {
 
     /**
      * Creates a consumer
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Store(JsonObject in) {

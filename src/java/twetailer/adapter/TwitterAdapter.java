@@ -49,7 +49,7 @@ public class TwitterAdapter {
     static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
     static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
     static Map<Locale, Map<CommandSettings.Prefix, Pattern>> localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
-    
+
     protected static void loadLocalizedSettings(Locale locale) {
         JsonObject prefixes = localizedPrefixes.get(locale);
         if (prefixes == null) {
@@ -232,7 +232,7 @@ public class TwitterAdapter {
             }
         }
         catch(IllegalStateException ex) {}
-        
+
         if (!oneFieldOverriden) {
             throw new ClientException("No query field has been correctly extracted");
         }
@@ -417,7 +417,7 @@ public class TwitterAdapter {
         catch(TwitterException ex) {
             log.info("Cannot get the Direct Messages (DM) for the account " + TwitterUtils.getTwetailerScreenName());
         }
-        
+
         // Process each messages one-by-one
         int idx = messages == null ? 0 : messages.size(); // To start by the end of the message queue
         log.warning(idx + " direct messages to process (temporary limited to 1 DM per operation)"); // FIXME: remove the limitation of 1 DM processed at a time
@@ -425,7 +425,7 @@ public class TwitterAdapter {
             --idx;
             DirectMessage dm = messages.get(idx);
             long dmId = dm.getId();
-            
+
             // Get Twetailer account and verify the user is a follower
             twitter4j.User sender = dm.getSender();
             Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
@@ -434,7 +434,7 @@ public class TwitterAdapter {
                 TwitterUtils.sendPublicMessage(LabelExtractor.get("ta_messageToNonFollower", new Object[] { sender.getScreenName() }, senderLocale));
                 break;
             }
-            
+
             // Evaluate the new demand
             try {
                 // Load the definitions for the sender locale
@@ -452,7 +452,7 @@ public class TwitterAdapter {
                 ex.printStackTrace();
                 TwitterUtils.sendDirectMessage(sender.getScreenName(), "Error: " + ex.getMessage());
             }
-            
+
             if (lastId < dmId) {
                 lastId = dmId;
             }
@@ -461,15 +461,15 @@ public class TwitterAdapter {
 
         return Long.valueOf(lastId);
     }
-    
+
     /**
      * Dispatch the tweeted command according to the corresponding action
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param sender Twitter message originator
      * @param prefixes List of localized prefixes for the orginator's locale
      * @param arguments Sequence submitted in addition to the question mark (?) or to the help command
-     * 
+     *
      * @throws TwitterException If sending the help message to the originator fails
      * @throws DataSourceException If the communication with the back-end fails
      * @throws ClientException If information extracted from the tweet are incorrect
@@ -485,7 +485,7 @@ public class TwitterAdapter {
         String action = command.getString(Demand.ACTION);
         if (action == null) {
             if (command.containsKey(Demand.REFERENCE)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : CommandSettings.Action.demand.toString(); 
+                action = command.size() == 1 ? CommandSettings.Action.list.toString() : CommandSettings.Action.demand.toString();
             }
             else if (command.containsKey(Store.STORE_KEY)) {
                 action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
@@ -538,17 +538,17 @@ public class TwitterAdapter {
             TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("error_unsupported_action", locale));
         }
     }
-    
+
     /**
      * Use the keyword given as an argument to select an Help text among {prefixes, actions, registered keywords}.
      * If the extracted keyword does not match anything, the default Help text is tweeted.
-     * 
+     *
      * @param sender Twitter message originator
      * @param prefixes List of localized prefixes for the orginator's locale
      * @param actions List of location actions for the originator's locale
      * @param arguments Sequence submitted in addition to the question mark (?) or to the help command
      * @param locale Originator's locale
-     * 
+     *
      * @throws TwitterException If sending the help message to the originator fails
      */
     protected static void processHelpCommand(twitter4j.User sender, JsonObject prefixes, JsonObject actions, String arguments, Locale locale) throws TwitterException {
@@ -596,7 +596,7 @@ public class TwitterAdapter {
         // Tweet the default help message if the given keyword is not recognized
         TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
     }
-    
+
     protected static void processCancelCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws ClientException, DataSourceException, TwitterException {
         //
         // Used by resource owner to stop the process of his resource
@@ -626,7 +626,7 @@ public class TwitterAdapter {
             TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("error_cancel_without_resource_id", consumer.getLocale()));
         }
     }
-    
+
     protected static void processCloseCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by the resource owner to report that the expected product has been delivered
@@ -635,21 +635,21 @@ public class TwitterAdapter {
         // 2. Close the identified proposal
         throw new ClientException("Closing demands - Not yet implemented");
     }
-    
+
     protected static void processConfirmCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by the consumer to accept a proposal
         //
         throw new ClientException("Confirming proposals - Not yet implemented");
     }
-    
+
     protected static void processDeclineCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by a consumer to refuse a proposal
         //
         throw new ClientException("Declining proposals - Not yet implemented");
     }
-    
+
     protected static void processDemandCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException, TwitterException {
         //
         // Used by a consumer to:
@@ -786,25 +786,25 @@ public class TwitterAdapter {
             }
         }
     }
-    
+
     protected static void processProposeCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by a retailer to propose a product for a demand
         //
         throw new ClientException("Proposing proposals - Not yet implemented");
     }
-    
+
     protected static void processShopCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         throw new ClientException("Shopping - Not yet implemented");
     }
-    
+
     protected static void processSupplyCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by a retailer to add/remove tags to his supply list
         //
         throw new ClientException("Supplying tags - Not yet implemented");
     }
-    
+
     protected static void processWishCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by a consumer to:
@@ -814,12 +814,12 @@ public class TwitterAdapter {
         //
         throw new ClientException("Wishing - Not yet implemented");
     }
-    
+
     protected static void processWWWCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
         //
         // Used by the resource owner to get the tiny URL that will open the Twetailer Web console
         //
         throw new ClientException("Surfing on the web - Not yet implemented");
     }
-    
+
 }

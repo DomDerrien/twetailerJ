@@ -12,14 +12,14 @@ import domderrien.jsontools.TransferObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Location extends Entity {
-    
+
     public static final Double INVALID_COORDINATE = Double.valueOf(-1000.0D);
 
     @Persistent
     private String countryCode;
 
     public static final String COUNTRY_CODE = "countryCode";
-    
+
     @Persistent
     private Boolean hasStore = Boolean.FALSE;
 
@@ -29,7 +29,7 @@ public class Location extends Entity {
     private Double latitude = INVALID_COORDINATE;
 
     public static final String LATITUDE = "latitude";
-    
+
     @Persistent
     private Double longitude = INVALID_COORDINATE;
 
@@ -39,7 +39,7 @@ public class Location extends Entity {
     private String postalCode;
 
     public static final String POSTAL_CODE = "postalCode";
-    
+
     /** Default constructor */
     public Location() {
         super();
@@ -47,7 +47,7 @@ public class Location extends Entity {
 
     /**
      * Creates a demand
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Location(JsonObject in) {
@@ -132,13 +132,13 @@ public class Location extends Entity {
             setLatitude(INVALID_COORDINATE);
             setLongitude(INVALID_COORDINATE);
         }
-        
+
         if (in.containsKey(COUNTRY_CODE)) { setCountryCode(in.getString(COUNTRY_CODE)); }
         if (in.containsKey(HAS_STORE)) { setHasStore(in.getBoolean(HAS_STORE)); }
         if (in.containsKey(LATITUDE)) { setLatitude(in.getDouble(LATITUDE)); }
         if (in.containsKey(LONGITUDE)) { setLongitude(in.getDouble(LONGITUDE)); }
         if (in.containsKey(POSTAL_CODE)) { setPostalCode(in.getString(POSTAL_CODE)); }
-        
+
         return this;
     }
 

@@ -21,10 +21,10 @@ public class StoreOperations extends BaseOperations {
 
     /**
      * Create the Store instance with the given parameters
-     * 
+     *
      * @param store Resource to persist
      * @return Just created resource
-     * 
+     *
      * @see StoresServlet#createStore(PersistenceManager, Store)
      */
     public Store createStore(Store store) {
@@ -39,7 +39,7 @@ public class StoreOperations extends BaseOperations {
 
     /**
      * Create the Store instance with the given parameters
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param store Resource to persist
      * @return Just created resource
@@ -51,12 +51,12 @@ public class StoreOperations extends BaseOperations {
 
     /**
      * Use the given key to get the corresponding Store instance
-     * 
+     *
      * @param key Identifier of the store
      * @return First store matching the given criteria or <code>null</code>
-     * 
+     *
      * @throws DataSourceException If the retrieved store does not belong to the specified user
-     * 
+     *
      * @see StoreOperations#getStore(PersistenceManager, Long)
      */
     public Store getStore(Long key) throws DataSourceException {
@@ -71,11 +71,11 @@ public class StoreOperations extends BaseOperations {
 
     /**
      * Use the given key to get the corresponding Store instance
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the store
      * @return First store matching the given criteria or <code>null</code>
-     * 
+     *
      * @throws DataSourceException If the retrieved store does not belong to the specified user
      */
     public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
@@ -91,17 +91,17 @@ public class StoreOperations extends BaseOperations {
             throw new DataSourceException("Error while retrieving store for identifier: " + key + " -- ex: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Store instances
-     * 
+     *
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of stores matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
-     * 
+     *
      * @see StoresServlet#getStores(PersistenceManager, String, Object)
      */
     public List<Store> getStores(String attribute, Object value, int limit) throws DataSourceException {
@@ -113,16 +113,16 @@ public class StoreOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Store instances while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of stores matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     @SuppressWarnings("unchecked")
@@ -136,16 +136,16 @@ public class StoreOperations extends BaseOperations {
         stores.size(); // FIXME: remove workaround for a bug in DataNucleus
         return stores;
     }
-    
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Store instances
-     * 
+     *
      * @param locations list of locations where expected stores should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of stores matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
-     * 
+     *
      * @see StoresServlet#getStores(PersistenceManager, String, Object)
      */
     public List<Store> getStores(List<Location> locations, int limit) throws DataSourceException {
@@ -157,15 +157,15 @@ public class StoreOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Store instances while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param locations list of locations where expected stores should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of stores matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
@@ -184,13 +184,13 @@ public class StoreOperations extends BaseOperations {
         }
         return selection;
     }
-    
+
     /**
      * Persist the given (probably updated) resource
-     * 
+     *
      * @param store Resource to update
      * @return Updated resource
-     * 
+     *
      * @see StoreOperations#updateStore(PersistenceManager, Store)
      */
     public Store updateStore(Store store) {
@@ -203,10 +203,10 @@ public class StoreOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Persist the given (probably updated) resource while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param store Resource to update
      * @return Updated resource

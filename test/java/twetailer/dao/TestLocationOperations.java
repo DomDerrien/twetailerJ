@@ -25,19 +25,19 @@ import domderrien.jsontools.JsonObject;
 public class TestLocationOperations {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
+
+    @Before
+    public void setUp() throws Exception {
         mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testGetLogger() throws IOException {
@@ -61,7 +61,7 @@ public class TestLocationOperations {
         input.setCountryCode("CA");
         input.setPostalCode("H0H0H0");
         assertNull(input.getKey());
-        
+
         input = ops.createLocation(input);
         assertNotNull(input.getKey());
         assertTrue(pm.isClosed());
@@ -80,7 +80,7 @@ public class TestLocationOperations {
         input.setLatitude(45.0D);
         input.setLongitude(-27.5D);
         assertNull(input.getKey());
-        
+
         input = ops.createLocation(input);
         assertNotNull(input.getKey());
         assertTrue(pm.isClosed());
@@ -97,7 +97,7 @@ public class TestLocationOperations {
         };
         Location input = new Location();
         assertNull(input.getKey());
-        
+
         input = ops.createLocation(input);
     }
 
@@ -106,7 +106,7 @@ public class TestLocationOperations {
         JsonObject input = new GenericJsonObject();
         input.put(Location.POSTAL_CODE, "H0H0H0");
         input.put(Location.COUNTRY_CODE, "CA");
-        
+
         Location object = new LocationOperations().createLocation(input);
         assertNotNull(object.getKey());
     }
@@ -116,7 +116,7 @@ public class TestLocationOperations {
         JsonObject input = new GenericJsonObject();
         input.put(Location.LATITUDE, 45.0D);
         input.put(Location.LONGITUDE, -27.5D);
-        
+
         Location object = new LocationOperations().createLocation(input);
         assertNotNull(object.getKey());
     }
@@ -125,7 +125,7 @@ public class TestLocationOperations {
     public void testCreateVI() throws ClientException {
         JsonObject input = new GenericJsonObject();
         input.put(Location.LATITUDE, 45.0D);
-        
+
         new LocationOperations().createLocation(input);
     }
 
@@ -134,7 +134,7 @@ public class TestLocationOperations {
         JsonObject input = new GenericJsonObject();
         input.put(Location.COUNTRY_CODE, "CA");
         input.put(Location.LONGITUDE, -27.5D);
-        
+
         new LocationOperations().createLocation(input);
     }
 
@@ -143,13 +143,13 @@ public class TestLocationOperations {
         JsonObject input = new GenericJsonObject();
         input.put(Location.POSTAL_CODE, "H0H0H0");
         input.put(Location.COUNTRY_CODE, "CA");
-        
+
         Location first = new LocationOperations().createLocation(input);
         assertNotNull(first.getKey());
-        
+
         Location second = new LocationOperations().createLocation(input);
         assertNotNull(second.getKey());
-        
+
         // Object not created twice
         assertEquals(first.getKey(), second.getKey());
     }
@@ -167,7 +167,7 @@ public class TestLocationOperations {
         object.setPostalCode("H0H0H0");
         object.setCountryCode("CA");
         object = ops.createLocation(pm, object); // Gives the PersistenceManager so it won't be closed
-        
+
         Location selected = ops.getLocation(object.getKey());
         assertNotNull(selected.getKey());
         assertEquals(object.getKey(), selected.getKey());
@@ -205,7 +205,7 @@ public class TestLocationOperations {
         object.setPostalCode("H0H0H0");
         object.setCountryCode("CA");
         object = ops.createLocation(pm, object); // Gives the PersistenceManager so it won't be closed
-        
+
         List<Location> selection = ops.getLocations(Location.COUNTRY_CODE, "CA", 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -235,19 +235,19 @@ public class TestLocationOperations {
         object = ops.createLocation(pm, object); // Gives the PersistenceManager so it won't be closed
 
         object.setLatitude(-27.5D);
-        
+
         Location updated = ops.updateLocation(object);
         assertNotNull(updated);
         assertEquals(object.getKey(), updated.getKey());
         assertEquals(Double.valueOf(-27.5D), updated.getLatitude());
         assertTrue(pm.isClosed());
     }
-    
+
     @Test
     public void testGetsExtendedI() throws DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
-        
+
         Location source = new Location();
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
@@ -258,19 +258,19 @@ public class TestLocationOperations {
         target.setLongitude(-27.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
-        
+
         List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.KILOMETER_UNIT, 0);
         pm.close();
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(target.getKey(), selection.get(0).getKey());
     }
-    
+
     @Test
     public void testGetsExtendedII() throws DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
-        
+
         Location source = new Location();
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
@@ -281,19 +281,19 @@ public class TestLocationOperations {
         target.setLongitude(-27.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
-        
+
         List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(target.getKey(), selection.get(0).getKey());
     }
-    
+
     @Test
     public void testGetsExtendedIII() throws DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
-        
+
         Location source = new Location();
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
@@ -304,18 +304,18 @@ public class TestLocationOperations {
         target.setLongitude(-27.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
-        
+
         List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(0, selection.size());
     }
-    
+
     @Test
     public void testGetsExtendedIV() throws DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
-        
+
         Location source = new Location();
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
@@ -326,18 +326,18 @@ public class TestLocationOperations {
         target.setLongitude(-55.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
-        
+
         List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(0, selection.size());
     }
-    
+
     @Test
     public void testGetsExtendedV() throws DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
-        
+
         Location source = new Location();
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
@@ -348,7 +348,7 @@ public class TestLocationOperations {
         target.setLongitude(10.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
-        
+
         List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);

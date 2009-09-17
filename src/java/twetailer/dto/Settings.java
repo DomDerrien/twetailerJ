@@ -26,29 +26,29 @@ public class Settings implements Serializable {
 
     @Persistent
     private String name;
-    
+
     public static final String NAME = "name";
-    
+
     @Persistent
     private Long lastProcessDirectMessageId = 1L;
-    
+
     public static final String LAST_PROCESSED_DIRECT_MESSAGE_ID = "lastProcessDirectMessageId";
-    
+
     @Persistent
     private Long lastRobotDirectMessageId = 1L;
-    
+
     public static final String LAST_ROBOT_DIRECT_MESSAGE_ID = "lastRobotDirectMessageId";
-    
+
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
 
     /** Default constructor */
     public Settings() {
         setName(APPLICATION_SETTINGS_ID);
     }
-    
+
     /**
      * Creates a retailer
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Settings(JsonObject in) {
@@ -63,7 +63,7 @@ public class Settings implements Serializable {
     public void setKey(Long key) {
         this.key = key;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -102,7 +102,7 @@ public class Settings implements Serializable {
         }
         this.lastRobotDirectMessageId = lastRobotProcessDirectMessageId;
     }
-    
+
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         if (getKey() != null) {

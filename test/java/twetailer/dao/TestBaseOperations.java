@@ -32,7 +32,7 @@ import domderrien.jsontools.JsonObject;
 
 public class TestBaseOperations {
 
-	static final User user = new User("test-email", "test-domain");
+    static final User user = new User("test-email", "test-domain");
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -49,18 +49,18 @@ public class TestBaseOperations {
     }
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testGetLogger() throws IOException {
@@ -95,7 +95,7 @@ public class TestBaseOperations {
         String parameter = "";
         final String parameterName = "key";
         final String parameterType = parameter.getClass().getSimpleName();
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -123,7 +123,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -133,7 +133,7 @@ public class TestBaseOperations {
         Long parameter = 0L;
         final String parameterName = "key";
         final String parameterType = parameter.getClass().getSimpleName();
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -161,7 +161,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -171,7 +171,7 @@ public class TestBaseOperations {
         Integer parameter = 0;
         final String parameterName = "key";
         final String parameterType = Long.class.getSimpleName(); // Integer falls back on Long!
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -199,7 +199,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -209,7 +209,7 @@ public class TestBaseOperations {
         Double parameter = 3.14159D;
         final String parameterName = "key";
         final String parameterType = parameter.getClass().getSimpleName();
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -237,7 +237,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -247,7 +247,7 @@ public class TestBaseOperations {
         Float parameter = 3.14159f;
         final String parameterName = "key";
         final String parameterType = Double.class.getSimpleName(); // Float falls back on Double!
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -275,7 +275,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -285,7 +285,7 @@ public class TestBaseOperations {
         Boolean parameter = Boolean.TRUE;
         final String parameterName = "key";
         final String parameterType = parameter.getClass().getSimpleName();
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -313,7 +313,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -323,7 +323,7 @@ public class TestBaseOperations {
         Date parameter = domderrien.i18n.DateUtils.getNowDate();
         final String parameterName = "key";
         final String parameterType = parameter.getClass().getSimpleName();
-        
+
         MockQuery query = new MockQuery() {
             String variableName;
             @Override
@@ -351,7 +351,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 0);
     }
 
@@ -360,7 +360,7 @@ public class TestBaseOperations {
     public void testPrepareQueryWithRangeSet() throws DataSourceException {
         String parameter = "";
         final String parameterName = "key";
-        
+
         MockQuery query = new MockQuery() {
             @Override
             public void setRange(long start, long size) {
@@ -368,7 +368,7 @@ public class TestBaseOperations {
                 assertEquals(12345, size);
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameterName, parameter, 12345);
     }
 
@@ -376,7 +376,7 @@ public class TestBaseOperations {
     public void testPrepareQueryWithNullValue() throws DataSourceException {
         JsonObject parameter = null;
         final String parameterName = "key";
-        
+
         BaseOperations.prepareQuery(new MockQuery(), parameterName, parameter, 0);
     }
 
@@ -384,7 +384,7 @@ public class TestBaseOperations {
     public void testPrepareQueryWithUnsupportedParameter() throws DataSourceException {
         JsonObject parameter = new GenericJsonObject();
         final String parameterName = "key";
-        
+
         BaseOperations.prepareQuery(new MockQuery(), parameterName, parameter, 0);
     }
 
@@ -396,7 +396,7 @@ public class TestBaseOperations {
         parameters.put("name", "test");
         parameters.put("check", Boolean.FALSE);
         parameters.put("date", new Date());
-        
+
         MockQuery query = new MockQuery() {
             @Override
             public void setFilter(String arg) {
@@ -427,7 +427,7 @@ public class TestBaseOperations {
                 fail("Range should stay unset to get the maximum values");
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameters, 0);
     }
 
@@ -437,7 +437,7 @@ public class TestBaseOperations {
         final Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("key", 111L);
         parameters.put("name", "test");
-        
+
         MockQuery query = new MockQuery() {
             @Override
             public void setRange(long start, long size) {
@@ -445,7 +445,7 @@ public class TestBaseOperations {
                 assertEquals(12345, size);
             }
         };
-        
+
         BaseOperations.prepareQuery(query, parameters, 12345);
     }
 

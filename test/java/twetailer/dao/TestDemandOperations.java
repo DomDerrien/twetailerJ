@@ -28,19 +28,19 @@ import domderrien.jsontools.JsonObject;
 public class TestDemandOperations {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
+
+    @Before
+    public void setUp() throws Exception {
         mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testGetLogger() throws IOException {
@@ -62,7 +62,7 @@ public class TestDemandOperations {
         };
         Demand item = new Demand();
         assertNull(item.getKey());
-        
+
         item = ops.createDemand(item);
         assertNotNull(item.getKey());
         assertTrue(pm.isClosed());
@@ -72,7 +72,7 @@ public class TestDemandOperations {
     public void testCreateII() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Demand.CONSUMER_KEY, 111L);
-        
+
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
     }
@@ -81,7 +81,7 @@ public class TestDemandOperations {
     public void testCreateIII() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Demand.CONSUMER_KEY, 222L);
-        
+
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
     }
@@ -90,7 +90,7 @@ public class TestDemandOperations {
     public void testCreateIV() throws ClientException {
         JsonObject item = new GenericJsonObject();
         // Not setting the "CONSUMER_KEY" attribute will let it as null
-        
+
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
     }
@@ -99,7 +99,7 @@ public class TestDemandOperations {
     public void testCreateV() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Demand.CONSUMER_KEY, 0L);
-        
+
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
     }
@@ -116,7 +116,7 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
-        
+
         Demand selected = ops.getDemand(object.getKey(), 111L);
         assertNotNull(selected.getKey());
         assertEquals(object.getKey(), selected.getKey());
@@ -129,7 +129,7 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(object);
-        
+
         ops.getDemand(object.getKey(), 222L);
     }
 
@@ -163,7 +163,7 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
-        
+
         List<Demand> selection = ops.getDemands(Demand.CONSUMER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -191,7 +191,7 @@ public class TestDemandOperations {
         object.setConsumerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
         object.setConsumerKey(222L);
-        
+
         Demand updated = ops.updateDemand(object);
         assertNotNull(updated);
         assertEquals(object.getKey(), updated.getKey());
@@ -210,11 +210,11 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
-        
+
         JsonObject item = new GenericJsonObject();
         item.put(Entity.KEY, object.getKey());
         item.put(Demand.CONSUMER_KEY, 111L);
-        
+
         Demand updated = ops.updateDemand(item, 111L);
         assertNotNull(updated);
         assertEquals(object.getKey(), updated.getKey());
@@ -233,7 +233,7 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
-        
+
         ops.deleteDemand(object.getKey(), 111L);
         assertTrue(pm.isClosed());
     }
@@ -241,14 +241,14 @@ public class TestDemandOperations {
     @Test
     public void testGetsExtendedI() throws DataSourceException {
         DemandOperations ops = new DemandOperations();
-        
+
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(object);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put(Demand.CONSUMER_KEY, 111L);
-        
+
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -258,7 +258,7 @@ public class TestDemandOperations {
     @Test
     public void testGetsExtendedII() throws DataSourceException {
         DemandOperations ops = new DemandOperations();
-        
+
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object.setRange(25.5D);
@@ -267,7 +267,7 @@ public class TestDemandOperations {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put(Demand.CONSUMER_KEY, object.getConsumerKey());
         parameters.put(Demand.RANGE, object.getRange());
-        
+
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -277,7 +277,7 @@ public class TestDemandOperations {
     @Test
     public void testGetsExtendedIII() throws DataSourceException {
         DemandOperations ops = new DemandOperations();
-        
+
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object.setRange(25.5D);
@@ -288,7 +288,7 @@ public class TestDemandOperations {
         parameters.put(Demand.CONSUMER_KEY, object.getConsumerKey());
         parameters.put(Demand.RANGE, object.getRange());
         parameters.put(Demand.STATE, object.getState().toString());
-        
+
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -298,7 +298,7 @@ public class TestDemandOperations {
     @Test
     public void testGetsExtendedIV() throws DataSourceException {
         DemandOperations ops = new DemandOperations();
-        
+
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object.setRange(25.5D);
@@ -311,7 +311,7 @@ public class TestDemandOperations {
         parameters.put(Demand.RANGE, object.getRange());
         parameters.put(Demand.STATE, object.getState().toString());
         parameters.put(Demand.LOCATION_KEY, object.getLocationKey());
-        
+
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());

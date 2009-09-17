@@ -11,7 +11,7 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class CommandSettings {
-    
+
     public enum Prefix {
         action,
         expiration,
@@ -23,12 +23,12 @@ public class CommandSettings {
         state,
         tags
     }
-    
+
     private static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
 
     /**
      * Loads the labels for the attribute prefixes for the specified locale
-     * 
+     *
      * @param locale Used to access the localized resource bundle
      * @return A JsonObject with the localized labels, one JsonArray of values per defined prefix
      */
@@ -84,7 +84,7 @@ public class CommandSettings {
         }
         return localizedActions.get(locale);
     }
-    
+
 
     public enum State {
         open,
@@ -116,16 +116,16 @@ public class CommandSettings {
         }
         return localizedStates.get(locale);
     }
-    
+
     public final static String HELP_INTRODUCTION_MESSAGE_ID = "help_introduction";
     protected final static String HELP_KEYWORD_LIST_ID = "help_keyword_list";
     protected final static String HELP_KEYWORD_EQUIVALENTS_PREFIX = "help_keyword_equivalents_";
     public final static String HELP_DEFINITION_PREFIX_PREFIX = "help_definition_prefix_";
     public final static String HELP_DEFINITION_ACTION_PREFIX = "help_definition_action_";
     public final static String HELP_DEFINITION_KEYWORD_PREFIX = "help_definition_keyword_";
-    
+
     private static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-    
+
     /**
      * Loads the list of registered labels and the list of keyword list themselves for the specified locale
      * @param locale Used to access the localized resource bundle
@@ -147,7 +147,7 @@ public class CommandSettings {
 
    /**
     * Verify if the given value is an equivalent of the expected value
-    * 
+    *
     * @param equivalentList list of localized keywords with their equivalents
     * @param expectedValue command action to consider for the match
     * @param actualValue value submitted for a command action

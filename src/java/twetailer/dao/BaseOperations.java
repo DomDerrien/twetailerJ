@@ -18,7 +18,7 @@ public class BaseOperations {
 
     /**
      * Get the logging handler
-     * 
+     *
      * @return Reference on the local Logger instance
      */
     protected Logger getLogger() {
@@ -31,10 +31,10 @@ public class BaseOperations {
     public static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
         pmfInstance = pmf;
     }
-    
+
     /**
      * Singleton accessor
-     * 
+     *
      * @return Initial instance of the <code>PersistenceManagerFactory</code> class
      */
     public static PersistenceManagerFactory getPersistenceManagerFactory() {
@@ -46,7 +46,7 @@ public class BaseOperations {
 
     /**
      * Accessor isolated to facilitate tests by IOP
-     * 
+     *
      * @return Persistence manager instance
      */
     public PersistenceManager getPersistenceManager() {
@@ -55,14 +55,14 @@ public class BaseOperations {
         pm.setCopyOnAttach(false);
         return pm;
     }
-    
+
     /**
      * Prepare the declaration for the SQL query according to the value's class
-     * 
+     *
      * @param name parameter name
      * @param value parameter value
      * @return Array with the typed declaration and the updated value (updated when a conversion is required)
-     * 
+     *
      * @throws DataSourceException If the parameter class is not supported
      */
     private static Object[] prepareParameter(String name, Object value) throws DataSourceException {
@@ -98,16 +98,16 @@ public class BaseOperations {
         }
         return new Object[] { declaration, value };
     }
-    
+
     /**
      * Prepare the query for one attribute matching one value
-     * 
+     *
      * @param query Object to prepare
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Updated query
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     public static Object prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
@@ -117,18 +117,18 @@ public class BaseOperations {
             query.setRange(0, limit);
         }
         Object[] preparation = prepareParameter("value", value);
-        query.declareParameters((String) preparation[0]); 
+        query.declareParameters((String) preparation[0]);
         return preparation[1];
     }
-    
+
     /**
      * Prepare the query for many attributes matching many values
-     * 
+     *
      * @param query Object to prepare
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Updated query
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     public static Object[] prepareQuery(Query query, Map<String, Object> parameters, int limit) throws DataSourceException {

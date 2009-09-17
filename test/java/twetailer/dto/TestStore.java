@@ -16,18 +16,18 @@ import domderrien.jsontools.JsonParser;
 public class TestStore {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
@@ -42,7 +42,7 @@ public class TestStore {
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
-    
+
     String address = "North Pole, H0H 0H0, Canada";
     String email = "d.d@d.dom";
     Long locationKey = 12345L;
@@ -65,19 +65,19 @@ public class TestStore {
         assertEquals(name, object.getName());
         assertEquals(phoneNumber, object.getPhoneNumber());
     }
-    
+
     @Test
     public void testJsonCommandsI() {
         Store object = new Store();
-        
+
         object.setAddress(address);
         object.setEmail(email);
         object.setLocationKey(locationKey);
         object.setName(name);
         object.setPhoneNumber(phoneNumber);
-        
+
         Store clone = new Store(object.toJson());
-        
+
         assertEquals(address, clone.getAddress());
         assertEquals(email, clone.getEmail());
         assertEquals(locationKey, clone.getLocationKey());
@@ -90,7 +90,7 @@ public class TestStore {
         Store object = new Store();
 
         assertNull(object.getLocationKey());
-        
+
         Store clone = new Store(object.toJson());
 
         assertNull(clone.getLocationKey());

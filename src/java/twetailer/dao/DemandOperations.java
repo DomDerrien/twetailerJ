@@ -20,16 +20,16 @@ public class DemandOperations extends BaseOperations {
     protected Logger getLogger() {
         return log;
     }
-    
+
     /**
      * Create the Demand instance with the given parameters
-     * 
+     *
      * @param parameters HTTP demand parameters
      * @param consumerKey Identifier of the demand owner
      * @return Just created resource
-     * 
+     *
      * @throws ClientException If the data given by the client are incorrect
-     * 
+     *
      * @see DemandOperations#createDemand(Demand)
      */
     public Demand createDemand(JsonObject parameters, Long consumerKey) throws ClientException {
@@ -41,17 +41,17 @@ public class DemandOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Create the Demand instance with the given parameters
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters HTTP demand parameters
      * @param consumerKey Identifier of the demand owner
      * @return Just created resource
-     * 
+     *
      * @throws ClientException If the data given by the client are incorrect
-     * 
+     *
      * @see DemandOperations#createDemand(PersistenceManager, Demand)
      */
     public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) throws ClientException {
@@ -72,7 +72,7 @@ public class DemandOperations extends BaseOperations {
 
     /**
      * Create the Demand instance with the given parameters
-     * 
+     *
      * @param demand Resource to persist
      * @return Just created resource
      */
@@ -88,7 +88,7 @@ public class DemandOperations extends BaseOperations {
 
     /**
      * Create the Demand instance with the given parameters
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demand Resource to persist
      * @return Just created resource
@@ -97,16 +97,16 @@ public class DemandOperations extends BaseOperations {
         pm.makePersistent(demand);
         return demand;
     }
-    
+
     /**
      * Use the given reference to get the corresponding Demand instance for the identified consumer
-     * 
+     *
      * @param key Identifier of the demand
      * @param consumerKey Identifier of the demand owner
      * @return First demand matching the given criteria or <code>null</code>
-     * 
+     *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
-     * 
+     *
      * @see DemandOperations#getDemand(PersistenceManager, Long, Long)
      */
     public Demand getDemand(Long key, Long consumerKey) throws DataSourceException {
@@ -118,15 +118,15 @@ public class DemandOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Use the given reference to get the corresponding Demand instance for the identified consumer while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the demand
      * @param consumerKey Identifier of the demand owner
      * @return First demand matching the given criteria or <code>null</code>
-     * 
+     *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
      */
     public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
@@ -146,17 +146,17 @@ public class DemandOperations extends BaseOperations {
             throw new DataSourceException("Error while retrieving demand for identifier: " + key + " -- ex: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Demand instances
-     * 
+     *
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of demands matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
-     * 
+     *
      * @see DemandOperations#getDemands(PersistenceManager, String, Object)
      */
     public List<Demand> getDemands(String attribute, Object value, int limit) throws DataSourceException {
@@ -171,13 +171,13 @@ public class DemandOperations extends BaseOperations {
 
     /**
      * Use the given pair {attribute; value} to get the corresponding Demand instances while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of demands matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     @SuppressWarnings("unchecked")
@@ -191,15 +191,15 @@ public class DemandOperations extends BaseOperations {
         demands.size(); // FIXME: remove workaround for a bug in DataNucleus
         return demands;
     }
-    
+
     /**
      * Use the given pairs {attribute; value} to get the corresponding Demand instances while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of demands matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     @SuppressWarnings("unchecked")
@@ -213,16 +213,16 @@ public class DemandOperations extends BaseOperations {
         demands.size(); // FIXME: remove workaround for a bug in DataNucleus
         return demands;
     }
-    
+
     /**
      * Load the demand matching the given parameters and persist the result of the merge
-     * 
+     *
      * @param parameters List of updated attributes, plus the resource identifier (cannot be changed)
      * @param consumerKey Identifier of the consumer issuing the operation
      * @return Updated resource
-     * 
+     *
      * @throws DataSourceException If the identified resource does not belong to the issuing consumer
-     * 
+     *
      * @see DemandOperations#updateDemand(PersistenceManager, Demand)
      */
     public Demand updateDemand(JsonObject parameters, Long consumerKey) throws DataSourceException {
@@ -237,13 +237,13 @@ public class DemandOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Persist the given (probably updated) resource
-     * 
+     *
      * @param demand Resource to update
      * @return Updated resource
-     * 
+     *
      * @see DemandOperations#updateDemand(PersistenceManager, Demand)
      */
     public Demand updateDemand(Demand demand) {
@@ -256,10 +256,10 @@ public class DemandOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Persist the given (probably updated) resource while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demand Resource to update
      * @return Updated resource
@@ -269,15 +269,15 @@ public class DemandOperations extends BaseOperations {
         pm.makePersistent(demand);
         return demand;
     }
-    
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
-     * 
+     *
      * @param key Identifier of the demand
      * @param consumerKey Identifier of the demand owner
-     * 
+     *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
-     * 
+     *
      * @see DemandOperations#getDemands(PersistenceManager, Long, Long)
      * @see DemandOperations#deleteDemand(PersistenceManager, Demand)
      */
@@ -291,10 +291,10 @@ public class DemandOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Delete the given demand while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the demand
      * @param consumerKey Identifier of the demand owner

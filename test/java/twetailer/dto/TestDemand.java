@@ -24,18 +24,18 @@ import domderrien.jsontools.JsonParser;
 public class TestDemand {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
@@ -50,12 +50,12 @@ public class TestDemand {
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
-    
+
     CommandSettings.Action action = CommandSettings.Action.cancel;
     Long consumerKey = 12345L;
     CommandSettings.State state = CommandSettings.State.closed;
     Long tweetId = 67890L;
-    
+
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Date expirationDate = new Date(new Date().getTime() + 65536L);
     Long locationKey = 67890L;
@@ -63,11 +63,11 @@ public class TestDemand {
     Long quantity = 15L;
     Double range = 25.52D;
     String rangeUnit = LocaleValidator.MILE_UNIT;
-    
+
     @Test
     public void testAccessors() {
         Demand object = new Demand();
-        
+
         // Command
         object.setAction(action);
         object.setAction(action.toString());
@@ -84,7 +84,7 @@ public class TestDemand {
         object.setQuantity(quantity);
         object.setRange(range);
         object.setRangeUnit(rangeUnit);
-        
+
         // Command
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
@@ -92,7 +92,7 @@ public class TestDemand {
         assertEquals(state, object.getState());
         assertEquals(state, object.getState());
         assertEquals(tweetId, object.getTweetId());
-        
+
         // Demand
         assertEquals(criteria, object.getCriteria());
         assertEquals(expirationDate, object.getExpirationDate());
@@ -102,7 +102,7 @@ public class TestDemand {
         assertEquals(range, object.getRange());
         assertEquals(rangeUnit, object.getRangeUnit());
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testResetCriteriaI() {
         Demand object = new Demand();
@@ -121,10 +121,10 @@ public class TestDemand {
 
         object.resetCriteria(); // Reset all
         assertEquals(0, object.getCriteria().size());
-        
+
         object.setCriteria(null); // Failure!
     }
-    
+
     @Test
     public void testResetCriteriaII() {
         Demand object = new Demand();
@@ -139,7 +139,7 @@ public class TestDemand {
         object.resetLists(); // To be sure there's no error
         object.resetCriteria(); // Reset all
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testResetProposalKeysI() {
         Demand object = new Demand();
@@ -158,10 +158,10 @@ public class TestDemand {
 
         object.resetProposalKeys(); // Reset all
         assertEquals(0, object.getProposalKeys().size());
-        
+
         object.setProposalKeys(null); // Failure!
     }
-    
+
     @Test
     public void testResetProposalKeysII() {
         Demand object = new Demand();
@@ -176,28 +176,28 @@ public class TestDemand {
         object.resetLists(); // To be sure there's no error
         object.resetProposalKeys(); // Reset all
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetAction() {
         Demand object = new Demand();
 
         object.setAction((CommandSettings.Action) null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testResetExpirationDate() {
         Demand object = new Demand();
 
         object.setExpirationDate(null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetExpirationDateInPast() {
         Demand object = new Demand();
 
         object.setExpirationDate(new Date(12345L));
     }
-    
+
     @Test
     public void testSetRangeUnit() {
         Demand object = new Demand();
@@ -214,14 +214,14 @@ public class TestDemand {
         object.setRangeUnit(null);
         assertEquals(LocaleValidator.KILOMETER_UNIT, object.getRangeUnit());
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetState() {
         Demand object = new Demand();
 
         object.setState((CommandSettings.State) null);
     }
-    
+
     @Test
     public void testJsonDemandsI() {
         Demand object = new Demand();
@@ -240,15 +240,15 @@ public class TestDemand {
         object.setQuantity(quantity);
         object.setRange(range);
         object.setRangeUnit(rangeUnit);
-        
+
         Demand clone = new Demand(object.toJson());
-        
+
         // Command
         assertEquals(action, clone.getAction());
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(state, clone.getState());
         assertEquals(tweetId, clone.getTweetId());
-        
+
         // Demand
         assertEquals(criteria, clone.getCriteria());
         assertEquals(DateUtils.dateToISO(expirationDate), DateUtils.dateToISO(clone.getExpirationDate()));
@@ -266,18 +266,18 @@ public class TestDemand {
         // Command
         assertNull(object.getConsumerKey());
         assertNull(object.getTweetId());
-        
+
         // Demand
         assertNull(object.getLocationKey());
         assertEquals(0, object.getCriteria().size());
         assertEquals(0, object.getProposalKeys().size());
-        
+
         Demand clone = new Demand(object.toJson());
 
         // Command
         assertNull(clone.getConsumerKey());
         assertNull(clone.getTweetId());
-        
+
         // Demand
         assertNull(clone.getLocationKey());
         assertEquals(0, clone.getCriteria().size());
@@ -293,21 +293,21 @@ public class TestDemand {
         // Demand
         assertNull(object.getCriteria());
         assertNull(object.getProposalKeys());
-        
+
         Demand clone = new Demand(object.toJson());
 
         // Demand
         assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
         assertEquals(0, clone.getProposalKeys().size()); // Not null because the clone object creation creates empty List<Long>
     }
-    
+
     @Test
     public void testInvalidDateFormat() throws JsonException {
         Demand object = new Demand();
         Date date = object.getExpirationDate();
-        
+
         object.fromJson(new JsonParser("{'" + Demand.EXPIRATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
-        
+
         assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(object.getExpirationDate())); // Corrupted date did not alter the original date
     }
 }

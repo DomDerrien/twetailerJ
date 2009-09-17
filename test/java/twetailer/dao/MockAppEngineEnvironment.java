@@ -17,11 +17,11 @@ import com.google.apphosting.api.ApiProxy;
 
 /**
  * Mock for the App Engine Java environment used by the JDO wrapper.
- * 
+ *
  * These class has been build with information gathered on:
  * - App Engine documentation: http://code.google.com/appengine/docs/java/howtos/unittesting.html
  * - App Engine Fan blog: http://blog.appenginefan.com/2009/05/jdo-and-unit-tests.html
- * 
+ *
  * @author Dom Derrien
  */
 public class MockAppEngineEnvironment {
@@ -59,10 +59,10 @@ public class MockAppEngineEnvironment {
           return new HashMap<String, Object>();
         }
     };
-    
+
     private final ApiProxy.Environment env;
     private PersistenceManagerFactory pmf;
-    
+
     public MockAppEngineEnvironment() {
         env = new ApiProxyEnvironment();
     }
@@ -74,7 +74,7 @@ public class MockAppEngineEnvironment {
         // Setup the App Engine services
         ApiProxy.setEnvironmentForCurrentThread(env);
         ApiProxyLocalImpl proxy = new ApiProxyLocalImpl(new File(".")) {};
-        
+
         // Setup the App Engine data store
         proxy.setProperty(LocalDatastoreService.NO_STORAGE_PROPERTY, Boolean.TRUE.toString());
         ApiProxy.setDelegate(proxy);
@@ -101,7 +101,7 @@ public class MockAppEngineEnvironment {
         // Clean up the App Engine services
         ApiProxy.setDelegate(null);
         ApiProxy.clearEnvironmentForCurrentThread();
-        
+
         // Report the issue with the transaction still open
         if (transactionPending) {
             throw new IllegalStateException("Found a transaction nor commited neither rolled-back. Probably related to a missing PersistenceManager.close() call.");

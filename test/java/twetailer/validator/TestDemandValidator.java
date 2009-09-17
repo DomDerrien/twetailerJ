@@ -39,7 +39,7 @@ public class TestDemandValidator {
             return pm;
         }
     };
-    
+
     @SuppressWarnings("serial")
     private class MockTwitter extends Twitter {
         private Long twitterId;
@@ -58,7 +58,7 @@ public class TestDemandValidator {
             return null;
         }
     };
-    
+
     final Long consumerKey = 12345L;
     MockTwitter twitterAccount;
 
@@ -80,12 +80,12 @@ public class TestDemandValidator {
                 return consumer;
             }
         };
-        
+
         // Install the mocks
         DemandValidator._baseOperations = new MockBaseOperations();
         DemandValidator.consumerOperations = consumerOperations;
     }
-    
+
     @After
     public void tearDown() {
         // Remove the fake Twitter account
@@ -96,7 +96,7 @@ public class TestDemandValidator {
     public void testConstructor() {
         new DemandValidator();
     }
-    
+
     @Test
     public void testProcessNoDemand() throws DataSourceException {
         // DemandOperations mock
@@ -108,18 +108,18 @@ public class TestDemandValidator {
                 return new ArrayList<Demand>();
             }
         };
-        
+
         DemandValidator.process();
-        
+
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessI() throws DataSourceException {
         //
         // Invalid criteria
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -149,18 +149,18 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessII() throws DataSourceException {
         //
         // Invalid criteria
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -190,19 +190,19 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessIII() throws DataSourceException {
         //
         // Valid criteria
         // Invalid expiration date
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -233,19 +233,19 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessIV() throws DataSourceException {
         //
         // Valid criteria
         // Invalid expiration date
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -276,12 +276,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessV() throws DataSourceException {
         //
@@ -289,7 +289,7 @@ public class TestDemandValidator {
         // Valid expiration date
         // Invalid range
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -321,12 +321,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessVI() throws DataSourceException {
         //
@@ -334,7 +334,7 @@ public class TestDemandValidator {
         // Valid expiration date
         // Invalid range
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -366,12 +366,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessVII() throws DataSourceException {
         //
@@ -379,7 +379,7 @@ public class TestDemandValidator {
         // Valid expiration date
         // Invalid range
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -411,12 +411,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessVIII() throws DataSourceException {
         //
@@ -424,7 +424,7 @@ public class TestDemandValidator {
         // Valid expiration date
         // Invalid range
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -456,12 +456,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessIX() throws DataSourceException {
         //
@@ -470,7 +470,7 @@ public class TestDemandValidator {
         // Valid range
         // Invalid quantity
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -502,12 +502,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessX() throws DataSourceException {
         //
@@ -516,7 +516,7 @@ public class TestDemandValidator {
         // Valid range
         // Invalid quantity
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -548,12 +548,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXI() throws DataSourceException {
         //
@@ -563,7 +563,7 @@ public class TestDemandValidator {
         // Valid quantity
         // Invalid location key
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -599,12 +599,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXII() throws DataSourceException {
         //
@@ -614,7 +614,7 @@ public class TestDemandValidator {
         // Valid quantity
         // Invalid location key
         //
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -646,12 +646,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXIII() throws DataSourceException {
         //
@@ -662,7 +662,7 @@ public class TestDemandValidator {
         // Valid location key
         // Invalid location coordinates and invalid resolution
         //
-        
+
         // LocationOperations mock
         final Long locationKey = 54321L;
         DemandValidator.locationOperations = new LocationOperations() {
@@ -688,7 +688,7 @@ public class TestDemandValidator {
                 return location;
             }
         };
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -721,12 +721,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXIV() throws DataSourceException {
         //
@@ -737,7 +737,7 @@ public class TestDemandValidator {
         // Valid location key
         // Invalid location coordinates with valid resolution
         //
-        
+
         // LocationOperations mock
         final Long locationKey = 54321L;
         DemandValidator.locationOperations = new LocationOperations() {
@@ -752,7 +752,7 @@ public class TestDemandValidator {
                 return location;
             }
         };
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -785,11 +785,11 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNull(twitterAccount.getSentMessage());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXV() throws DataSourceException {
         //
@@ -800,7 +800,7 @@ public class TestDemandValidator {
         // Valid location key
         // Valid location coordinates
         //
-        
+
         // LocationOperations mock
         final Long locationKey = 54321L;
         DemandValidator.locationOperations = new LocationOperations() {
@@ -813,7 +813,7 @@ public class TestDemandValidator {
                 return location;
             }
         };
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -846,11 +846,11 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNull(twitterAccount.getSentMessage());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXVI() throws DataSourceException {
         //
@@ -861,7 +861,7 @@ public class TestDemandValidator {
         // Valid location key
         // Impossible to get the corresponding Location instance
         //
-        
+
         // LocationOperations mock
         final Long locationKey = 54321L;
         DemandValidator.locationOperations = new LocationOperations() {
@@ -870,7 +870,7 @@ public class TestDemandValidator {
                 throw new DataSourceException("done in purpose");
             }
         };
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -903,12 +903,12 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNotNull(twitterAccount.getSentMessage());
         assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testProcessXVII() throws DataSourceException {
         //
@@ -923,7 +923,7 @@ public class TestDemandValidator {
                 throw new DataSourceException("done in purpose");
             }
         };
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -942,11 +942,11 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNull(twitterAccount.getSentMessage());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessXVIII() throws DataSourceException {
@@ -961,7 +961,7 @@ public class TestDemandValidator {
                 throw new TwitterException("done in purpose");
             }
         });
-        
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -980,7 +980,7 @@ public class TestDemandValidator {
 
         // Process the test case
         DemandValidator.process();
-        
+
         assertNull(twitterAccount.getSentMessage());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }

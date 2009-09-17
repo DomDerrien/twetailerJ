@@ -33,12 +33,12 @@ import com.google.appengine.api.users.User;
 
 public class TestUtils {
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@After
-	public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     }
 
     @Test
@@ -52,65 +52,65 @@ public class TestUtils {
     public void testGetPersistenceManagerFactory() {
         PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
         BaseOperations.setPersistenceManagerFactory(pmf);
-		pmf = BaseOperations.getPersistenceManagerFactory();
-		assertNotNull(pmf);
-		assertEquals(pmf, BaseOperations.getPersistenceManagerFactory());
-	}
+        pmf = BaseOperations.getPersistenceManagerFactory();
+        assertNotNull(pmf);
+        assertEquals(pmf, BaseOperations.getPersistenceManagerFactory());
+    }
 
-	@Test
-	public void testGetPersistenceManager() {
+    @Test
+    public void testGetPersistenceManager() {
         PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
         EasyMock.expect(pmf.getPersistenceManager()).andReturn(EasyMock.createMock(PersistenceManager.class)).once();
         EasyMock.replay(pmf);
         BaseOperations.setPersistenceManagerFactory(pmf);
         PersistenceManager pm = BaseOperations.getPersistenceManagerFactory().getPersistenceManager();
-		assertNotNull(pm);
-	}
+        assertNotNull(pm);
+    }
 
-	@Test
-	public void testConfigureHttpParametersI() {
-		MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
-			@Override
-			public void setCharacterEncoding(String encoding) {
-				assertEquals("UTF-8", encoding);
-			}
-		};
-		MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-			@Override
-			public void setCharacterEncoding(String encoding) {
-				assertEquals("UTF-8", encoding);
-			}
-			@Override
-			public void setContentType(String type) {
-				assertNotNull(type);
-				assertTrue(type.contains("text/javascript"));
-			}
-		};
-		ServletUtils.configureHttpParameters(mockRequest, mockResponse);
-	}
+    @Test
+    public void testConfigureHttpParametersI() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public void setCharacterEncoding(String encoding) {
+                assertEquals("UTF-8", encoding);
+            }
+        };
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public void setCharacterEncoding(String encoding) {
+                assertEquals("UTF-8", encoding);
+            }
+            @Override
+            public void setContentType(String type) {
+                assertNotNull(type);
+                assertTrue(type.contains("text/javascript"));
+            }
+        };
+        ServletUtils.configureHttpParameters(mockRequest, mockResponse);
+    }
 
-	@Test
-	public void testConfigureHttpParametersII() {
-		MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
-			@Override
-			public void setCharacterEncoding(String encoding) throws UnsupportedEncodingException {
-				// Should be ignored, silently caught
-				throw new UnsupportedEncodingException("done in purpose");
-			}
-		};
-		ServletUtils.configureHttpParameters(mockRequest, new MockHttpServletResponse());
-	}
+    @Test
+    public void testConfigureHttpParametersII() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public void setCharacterEncoding(String encoding) throws UnsupportedEncodingException {
+                // Should be ignored, silently caught
+                throw new UnsupportedEncodingException("done in purpose");
+            }
+        };
+        ServletUtils.configureHttpParameters(mockRequest, new MockHttpServletResponse());
+    }
 
-	@Test
-	public void testGetUserService() {
-		assertNotNull(ServletUtils.getUserService());
-	}
+    @Test
+    public void testGetUserService() {
+        assertNotNull(ServletUtils.getUserService());
+    }
 
-	@Test(expected=RuntimeException.class)
-	public void testGetLoggedUserI() {
-	    ServletUtils.setUserService(new MockUserService());
-	    ServletUtils.getLoggedUser();
-	}
+    @Test(expected=RuntimeException.class)
+    public void testGetLoggedUserI() {
+        ServletUtils.setUserService(new MockUserService());
+        ServletUtils.getLoggedUser();
+    }
 
     @Test
     public void testGetLoggedUserII() {
@@ -124,11 +124,11 @@ public class TestUtils {
         ServletUtils.getLoggedUser();
     }
 
-	@Test
-	public void testListToJsonI() {
-	    final JsonObject converted = new GenericJsonObject();
-	    List<TransferObject> list = new ArrayList<TransferObject>();
-	    list.add(new TransferObject() {
+    @Test
+    public void testListToJsonI() {
+        final JsonObject converted = new GenericJsonObject();
+        List<TransferObject> list = new ArrayList<TransferObject>();
+        list.add(new TransferObject() {
             public TransferObject fromJson(JsonObject in) throws ParseException {
                 return null;
             }
@@ -136,18 +136,18 @@ public class TestUtils {
                 return converted;
             }
         });
-	    JsonArray array = JsonUtils.toJson(list);
-	    assertEquals(1, array.size());
-		assertEquals(converted, array.getJsonObject(0));
+        JsonArray array = JsonUtils.toJson(list);
+        assertEquals(1, array.size());
+        assertEquals(converted, array.getJsonObject(0));
     }
 
     @Test(expected=NullPointerException.class)
     public void testListToJsonII() {
         JsonUtils.toJson((List <?>) null);
-	}
+    }
 
-	@Test
-	public void testMapToJsonI() {
+    @Test
+    public void testMapToJsonI() {
         final JsonObject converted = new GenericJsonObject();
         Map<String, TransferObject> map = new HashMap<String, TransferObject>();
         map.put("test", new TransferObject() {
@@ -161,7 +161,7 @@ public class TestUtils {
         JsonObject object = JsonUtils.toJson(map);
         assertEquals(1, object.size());
         assertEquals(converted, object.getJsonObject("test"));
-	}
+    }
 
     @Test(expected=NullPointerException.class)
     public void testMapToJsonII() {

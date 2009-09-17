@@ -23,18 +23,18 @@ import domderrien.jsontools.JsonParser;
 public class TestWish {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
@@ -49,20 +49,20 @@ public class TestWish {
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
-    
+
     CommandSettings.Action action = CommandSettings.Action.cancel;
     Long consumerKey = 12345L;
     CommandSettings.State state = CommandSettings.State.closed;
     Long tweetId = 67890L;
-    
+
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Date expirationDate = new Date(new Date().getTime() + 65536L);
     Long quantity = 15L;
-    
+
     @Test
     public void testAccessors() {
         Wish object = new Wish();
-        
+
         // Command
         object.setAction(action);
         object.setAction(action.toString());
@@ -75,7 +75,7 @@ public class TestWish {
         object.setCriteria(criteria);
         object.setExpirationDate(expirationDate);
         object.setQuantity(quantity);
-        
+
         // Command
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
@@ -83,13 +83,13 @@ public class TestWish {
         assertEquals(state, object.getState());
         assertEquals(state, object.getState());
         assertEquals(tweetId, object.getTweetId());
-        
+
         // Wish
         assertEquals(criteria, object.getCriteria());
         assertEquals(expirationDate, object.getExpirationDate());
         assertEquals(quantity, object.getQuantity());
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testResetCriteriaI() {
         Wish object = new Wish();
@@ -108,10 +108,10 @@ public class TestWish {
 
         object.resetCriteria(); // Reset all
         assertEquals(0, object.getCriteria().size());
-        
+
         object.setCriteria(null); // Failure!
     }
-    
+
     @Test
     public void testResetCriteriaII() {
         Wish object = new Wish();
@@ -126,35 +126,35 @@ public class TestWish {
         object.resetLists(); // To be sure there's no error
         object.resetCriteria(); // Reset all
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetAction() {
         Wish object = new Wish();
 
         object.setAction((CommandSettings.Action) null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testResetExpirationDate() {
         Wish object = new Wish();
 
         object.setExpirationDate(null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetExpirationDateInPast() {
         Wish object = new Wish();
 
         object.setExpirationDate(new Date(12345L));
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetState() {
         Wish object = new Wish();
 
         object.setState((CommandSettings.State) null);
     }
-    
+
     @Test
     public void testJsonWishsI() {
         Wish object = new Wish();
@@ -169,15 +169,15 @@ public class TestWish {
         object.setCriteria(criteria);
         object.setExpirationDate(expirationDate);
         object.setQuantity(quantity);
-        
+
         Wish clone = new Wish(object.toJson());
-        
+
         // Command
         assertEquals(action, clone.getAction());
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(state, clone.getState());
         assertEquals(tweetId, clone.getTweetId());
-        
+
         // Wish
         assertEquals(criteria, clone.getCriteria());
         assertEquals(DateUtils.dateToISO(expirationDate), DateUtils.dateToISO(clone.getExpirationDate()));
@@ -191,16 +191,16 @@ public class TestWish {
         // Command
         assertNull(object.getConsumerKey());
         assertNull(object.getTweetId());
-        
+
         // Wish
         assertEquals(0, object.getCriteria().size());
-        
+
         Wish clone = new Wish(object.toJson());
 
         // Command
         assertNull(clone.getConsumerKey());
         assertNull(clone.getTweetId());
-        
+
         // Wish
         assertEquals(0, clone.getCriteria().size());
     }
@@ -213,20 +213,20 @@ public class TestWish {
 
         // Wish
         assertNull(object.getCriteria());
-        
+
         Wish clone = new Wish(object.toJson());
 
         // Wish
         assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
     }
-    
+
     @Test
     public void testInvalidDateFormat() throws JsonException {
         Wish object = new Wish();
         Date date = object.getExpirationDate();
-        
+
         object.fromJson(new JsonParser("{'" + Wish.EXPIRATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
-        
+
         assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(object.getExpirationDate())); // Corrupted date did not alter the original date
     }
 }

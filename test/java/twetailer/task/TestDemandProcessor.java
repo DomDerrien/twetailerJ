@@ -39,22 +39,22 @@ public class TestDemandProcessor {
             return pm;
         }
     };
-    
+
     @Before
     public void setUp() throws Exception {
         DemandProcessor._baseOperations = new MockBaseOperations();
     }
-    
+
     @After
     public void tearDown() {
-        
+
     }
 
     @Test
     public void testConstructor() {
         new DemandProcessor();
     }
-    
+
     @Test
     public void testProcessNoDemand() throws DataSourceException {
         // DemandOperations mock
@@ -68,18 +68,18 @@ public class TestDemandProcessor {
         };
 
         DemandProcessor.process();
-        
+
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
-    
+
     @Test
     public void testIdentifyRetailersNoLocationAround() throws DataSourceException {
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setRange(demandRange);
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -89,20 +89,20 @@ public class TestDemandProcessor {
                 return new ArrayList<Location>();
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(0, retailers.size());
     }
-    
+
     @Test
     public void testIdentifyRetailersNoStoreForLocationAround() throws DataSourceException {
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setRange(demandRange);
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -114,7 +114,7 @@ public class TestDemandProcessor {
                 return locations;
             }
         };
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -125,20 +125,20 @@ public class TestDemandProcessor {
                 return new ArrayList<Store>();
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(0, retailers.size());
     }
-    
+
     @Test
     public void testIdentifyRetailersForAStoreWithoutEmployees() throws DataSourceException {
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setRange(demandRange);
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -150,11 +150,11 @@ public class TestDemandProcessor {
                 return locations;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -167,7 +167,7 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -177,21 +177,21 @@ public class TestDemandProcessor {
                 return new ArrayList<Retailer>();
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(0, retailers.size());
     }
-    
+
     @Test
     public void testIdentifyRetailersWithEmployeeWithoutExpectedTagsI() throws DataSourceException {
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setRange(demandRange);
         consumerDemand.addCriterion("test");
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -203,11 +203,11 @@ public class TestDemandProcessor {
                 return locations;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -220,14 +220,14 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
-        
+
         final Retailer selectedRetailer = new Retailer() {
             @Override
             public List<String> getCriteria() {
                 return null;
             }
         };
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -239,21 +239,21 @@ public class TestDemandProcessor {
                 return retailers;
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(0, retailers.size());
     }
-    
+
     @Test
     public void testIdentifyRetailersWithEmployeeWithoutExpectedTagsII() throws DataSourceException {
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setRange(demandRange);
         consumerDemand.addCriterion("test");
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -265,11 +265,11 @@ public class TestDemandProcessor {
                 return locations;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -282,9 +282,9 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
-        
+
         final Retailer selectedRetailer = new Retailer();
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -296,21 +296,21 @@ public class TestDemandProcessor {
                 return retailers;
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(0, retailers.size());
     }
-    
+
     @Test
     public void testIdentifyRetailersWithEmployeeWithExpectedTagsI() throws DataSourceException {
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setRange(demandRange);
         consumerDemand.addCriterion("test");
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -322,11 +322,11 @@ public class TestDemandProcessor {
                 return locations;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -339,10 +339,10 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
-        
+
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.addCriterion("test");
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -354,13 +354,13 @@ public class TestDemandProcessor {
                 return retailers;
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(1, retailers.size());
         assertEquals(selectedRetailer, retailers.get(0));
     }
-    
+
     @Test
     public void testIdentifyRetailersWithEmployeeWithExpectedTagsII() throws DataSourceException {
         final Double demandRange = 25.75D;
@@ -369,9 +369,9 @@ public class TestDemandProcessor {
         consumerDemand.addCriterion("one");
         consumerDemand.addCriterion("test");
         consumerDemand.addCriterion("three");
-        
+
         final Location consumerLocation = new Location();
-        
+
         DemandProcessor.locationOperations = new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
@@ -383,11 +383,11 @@ public class TestDemandProcessor {
                 return locations;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -400,13 +400,13 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
-        
+
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.addCriterion("ich");
         selectedRetailer.addCriterion("ni");
         selectedRetailer.addCriterion("san");
         selectedRetailer.addCriterion("test");
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -418,20 +418,20 @@ public class TestDemandProcessor {
                 return retailers;
             }
         };
-        
+
         List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand, consumerLocation);
         assertNotNull(retailers);
         assertEquals(1, retailers.size());
         assertEquals(selectedRetailer, retailers.get(0));
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessOneDemand() throws DataSourceException {
         final Long locationKey = 67890L;
         Location targetedLocation = new Location();
         targetedLocation.setKey(locationKey);
-        
+
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setKey(6543543L);
@@ -459,11 +459,11 @@ public class TestDemandProcessor {
                 return null;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -472,12 +472,12 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
- 
+
         final Long retailerId = 54321L;
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.setTwitterId(retailerId);
         selectedRetailer.addCriterion("test");
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -486,7 +486,7 @@ public class TestDemandProcessor {
                 return retailers;
             }
         };
-        
+
         TwitterUtils.releaseTwetailerAccount(new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
@@ -498,17 +498,17 @@ public class TestDemandProcessor {
         });
 
         DemandProcessor.process();
-        
+
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     public void testProcessOneDemandWithTroubleAccessingDatabase() throws DataSourceException {
         final Long locationKey = 67890L;
         Location targetedLocation = new Location();
         targetedLocation.setKey(locationKey);
-        
+
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setKey(6543543L);
@@ -535,20 +535,20 @@ public class TestDemandProcessor {
                 return null;
             }
         };
-        
+
         DemandProcessor.process();
-        
+
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessOneDemandWithTwitterTrouble() throws DataSourceException {
         final Long locationKey = 67890L;
         Location targetedLocation = new Location();
         targetedLocation.setKey(locationKey);
-        
+
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
         consumerDemand.setKey(6543543L);
@@ -576,11 +576,11 @@ public class TestDemandProcessor {
                 return null;
             }
         };
-        
+
         final Long storeKey = 12345L;
         final Store targetedStore = new Store();
         targetedStore.setKey(storeKey);
-        
+
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
@@ -589,12 +589,12 @@ public class TestDemandProcessor {
                 return stores;
             }
         };
- 
+
         final Long retailerId = 54321L;
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.setTwitterId(retailerId);
         selectedRetailer.addCriterion("test");
-        
+
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
             public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
@@ -603,7 +603,7 @@ public class TestDemandProcessor {
                 return retailers;
             }
         };
-        
+
         TwitterUtils.releaseTwetailerAccount(new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
@@ -612,7 +612,7 @@ public class TestDemandProcessor {
         });
 
         DemandProcessor.process();
-        
+
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
         TwitterUtils.getTwetailerAccount();
     }

@@ -20,7 +20,7 @@ import twetailer.dao.StoreOperations;
 import domderrien.i18n.LabelExtractor;
 
 public class TwitterRobot {
-    
+
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static StoreOperations storesOperations = _baseOperations.getStoreOperations();
     protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();

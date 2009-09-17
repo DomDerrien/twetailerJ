@@ -24,19 +24,19 @@ import twetailer.dto.Retailer;
 public class TestRetailerOperations {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
+
+    @Before
+    public void setUp() throws Exception {
         mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testGetLogger() throws IOException {
@@ -63,7 +63,7 @@ public class TestRetailerOperations {
 
         RetailerOperations ops = new RetailerOperations();
         Retailer item = ops.createRetailer(consumer, 111L);
-        
+
         Retailer selected = ops.getRetailer(item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
@@ -91,7 +91,7 @@ public class TestRetailerOperations {
 
         RetailerOperations ops = new RetailerOperations();
         Retailer item = ops.createRetailer(consumer, 111L);
-        
+
         List<Retailer> selection = ops.getRetailers(Retailer.TWITTER_ID, 12345L, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -111,7 +111,7 @@ public class TestRetailerOperations {
             }
         };
         Retailer item = ops.createRetailer(pm, consumer, 111L); // Gives the PersistenceManager so it won't be closed
-        
+
         item.setEmail("test@test.com");
 
         Retailer updated = ops.updateRetailer(item);
@@ -129,7 +129,7 @@ public class TestRetailerOperations {
         Retailer item = ops.createRetailer(consumer, 111L);
 
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        
+
         Retailer selected = ops.getRetailer(pm, item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
@@ -145,9 +145,9 @@ public class TestRetailerOperations {
         assertNotSame(0, updated.getCriteria().size());
         assertEquals("first", updated.getCriteria().get(0));
         assertEquals("second", updated.getCriteria().get(1));
-        
+
         pm.close();
-        
+
         selected = ops.getRetailer(item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());

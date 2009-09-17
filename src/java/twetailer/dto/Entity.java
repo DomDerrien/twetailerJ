@@ -27,12 +27,12 @@ public class Entity implements TransferObject {
     private Date creationDate = DateUtils.getNowDate();
 
     public static final String CREATION_DATE = "creationDate";
-    
+
     @Persistent
     private Date modificationDate = DateUtils.getNowDate();
 
     public static final String MODIFICATION_DATE = "modificationDate";
-    
+
     /** Default constructor */
     public Entity() {
         setCreationDate(DateUtils.getNowDate());
@@ -41,7 +41,7 @@ public class Entity implements TransferObject {
 
     /**
      * Creates a consumer
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Entity(JsonObject in) {
@@ -81,12 +81,12 @@ public class Entity implements TransferObject {
         }
         this.creationDate = creationDate;
     }
-    
+
     public void resetCoreDates() {
         setCreationDate(DateUtils.getNowDate());
         setModificationDate(getCreationDate());
     }
-    
+
     public Date getModificationDate() {
         return modificationDate;
     }
@@ -101,7 +101,7 @@ public class Entity implements TransferObject {
         }
         this.modificationDate = modificationDate;
     }
-    
+
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         if (getKey() != null) {

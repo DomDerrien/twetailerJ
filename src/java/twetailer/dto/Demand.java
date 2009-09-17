@@ -92,7 +92,7 @@ public class Demand extends Entity {
 
     /**
      * Creates a demand
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Demand(JsonObject in) {

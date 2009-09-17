@@ -24,15 +24,15 @@ import twetailer.validator.CommandSettings;
 import domderrien.i18n.LabelExtractor;
 
 public class DemandProcessor {
-    
+
     private static final Logger log = Logger.getLogger(DemandProcessor.class.getName());
-    
+
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
-    
+
     public static void process() throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
@@ -44,7 +44,7 @@ public class DemandProcessor {
                     // TODO: use the retailer score to ping the ones with highest score first.
                     for(Retailer retailer: retailers) {
                         try {
-                            StringBuilder tags = new StringBuilder(); 
+                            StringBuilder tags = new StringBuilder();
                             for(String tag: demand.getCriteria()) {
                                 tags.append(tag).append(" ");
                             }

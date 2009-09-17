@@ -20,38 +20,38 @@ import twetailer.validator.CommandSettings;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Wish extends Entity {
-	
+
     /*** Command ***/
-    
+
     @Persistent
     private CommandSettings.Action action;
-    
+
     public static final String ACTION = "action";
-    
+
     @Persistent
     private Long consumerKey;
 
     public static final String CONSUMER_KEY = "consumerKey";
-    
+
     @Persistent
     private CommandSettings.State state = CommandSettings.State.open;
-    
+
     public static final String STATE = "state";
 
     @Persistent
     private Long tweetId;
-    
+
     public static final String TWEET_ID = "tweetId";
 
     /*** Wish ***/
-    
+
     @Persistent
     private List<String> criteria = new ArrayList<String>();
 
     public static final String CRITERIA = "criteria";
-    
-	@Persistent
-	private Date expirationDate;
+
+    @Persistent
+    private Date expirationDate;
 
     public static final String EXPIRATION_DATE = "expirationDate";
 
@@ -68,14 +68,14 @@ public class Wish extends Entity {
     }
 
     /**
-	 * Creates a demand
-	 * 
-	 * @param in HTTP request parameters
-	 */
-	public Wish(JsonObject parameters) {
-	    this();
+     * Creates a demand
+     *
+     * @param in HTTP request parameters
+     */
+    public Wish(JsonObject parameters) {
+        this();
         fromJson(parameters);
-	}
+    }
 
     /**
      * Provided to reproduce the JDO behavior with Unit tests
@@ -84,8 +84,8 @@ public class Wish extends Entity {
         criteria = null;
     }
 
-	/*** Command ***/
-	
+    /*** Command ***/
+
     public CommandSettings.Action getAction() {
         return action;
     }
@@ -100,7 +100,7 @@ public class Wish extends Entity {
     public void setAction(String action) {
         setAction(CommandSettings.Action.valueOf(action));
     }
-    
+
     public Long getConsumerKey() {
         return consumerKey;
     }
@@ -108,7 +108,7 @@ public class Wish extends Entity {
     public void setConsumerKey(Long consumerId) {
         this.consumerKey = consumerId;
     }
-    
+
     public CommandSettings.State getState() {
         return state;
     }
@@ -123,7 +123,7 @@ public class Wish extends Entity {
     public void setState(String state) {
         setState(CommandSettings.State.valueOf(state));
     }
-    
+
     public Long getTweetId() {
         return tweetId;
     }
@@ -133,27 +133,27 @@ public class Wish extends Entity {
     }
 
     /*** Demand ***/
-    
-	public List<String> getCriteria() {
-		return criteria;
-	}
 
-	public void setCriteria(List<String> criteria) {
+    public List<String> getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(List<String> criteria) {
         if (criteria == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
         }
-		this.criteria = criteria;
-	}
+        this.criteria = criteria;
+    }
 
-	public void addCriterion(String criterion) {
+    public void addCriterion(String criterion) {
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
         if (!criteria.contains(criterion)) {
             criteria.add(criterion);
         }
-	}
-    
+    }
+
     public void resetCriteria() {
         if (criteria == null) {
             return;
@@ -168,9 +168,9 @@ public class Wish extends Entity {
         criteria.remove(criterion);
     }
 
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
 
     public void setExpirationDate(Date expirationDate) {
         if (expirationDate == null) {
@@ -186,7 +186,7 @@ public class Wish extends Entity {
      * Delay for the default expiration of a demand
      */
     public final static int DEFAULT_EXPIRATION_DELAY = 183; // In six months
-    
+
     /**
      * Push the expiration to a defined default in the future
      */
@@ -194,11 +194,11 @@ public class Wish extends Entity {
         setExpirationDate(DEFAULT_EXPIRATION_DELAY);
     }
 
-	public void setExpirationDate(int delayInDays) {
-		Calendar limit = DateUtils.getNowCalendar();
-		limit.set(Calendar.DAY_OF_MONTH, limit.get(Calendar.DAY_OF_MONTH) + delayInDays);
-		this.expirationDate = limit.getTime();
-	}
+    public void setExpirationDate(int delayInDays) {
+        Calendar limit = DateUtils.getNowCalendar();
+        limit.set(Calendar.DAY_OF_MONTH, limit.get(Calendar.DAY_OF_MONTH) + delayInDays);
+        this.expirationDate = limit.getTime();
+    }
 
     public Long getQuantity() {
         return quantity;
@@ -208,8 +208,8 @@ public class Wish extends Entity {
         this.quantity = quantity;
     }
 
-	public JsonObject toJson() {
-		JsonObject out = super.toJson();
+    public JsonObject toJson() {
+        JsonObject out = super.toJson();
         /*** Command ***/
         out.put(ACTION, getAction().toString());
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
@@ -225,12 +225,12 @@ public class Wish extends Entity {
         }
         out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
         out.put(QUANTITY, getQuantity());
-		return out;
-	}
+        return out;
+    }
 
-	public TransferObject fromJson(JsonObject in) {
-	    super.fromJson(in);
-	    /*** Command ***/
+    public TransferObject fromJson(JsonObject in) {
+        super.fromJson(in);
+        /*** Command ***/
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
@@ -253,7 +253,7 @@ public class Wish extends Entity {
             }
         }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
-        
+
         return this;
-	}
+    }
 }

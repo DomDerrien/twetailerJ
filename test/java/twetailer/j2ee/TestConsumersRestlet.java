@@ -26,7 +26,7 @@ public class TestConsumersRestlet {
 
     static final User user = new User("test-email", "test-domain");
     ConsumersRestlet ops;
-    
+
     @Before
     public void setUp() throws Exception {
         ops = new ConsumersRestlet();

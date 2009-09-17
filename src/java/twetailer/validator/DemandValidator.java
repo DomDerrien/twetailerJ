@@ -23,7 +23,7 @@ import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class DemandValidator {
-    
+
     private static final Logger log = Logger.getLogger(DemandValidator.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();

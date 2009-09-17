@@ -22,7 +22,7 @@ public class TestCommandSettings {
     public void testConstructor() {
         new CommandSettings();
     }
-    
+
     @Test
     public void testGetPrefixes_EN() {
         JsonObject prefixes = CommandSettings.getPrefixes(Locale.ENGLISH);
@@ -112,7 +112,7 @@ public class TestCommandSettings {
             assertNotSame(0, states.getString(state.toString()).length());
         }
     }
-    
+
     @Test
     public void testGetHelpKeywords() {
         MockLabelExtractor.init(new Object[][]{
@@ -120,12 +120,12 @@ public class TestCommandSettings {
             {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "one", "one help message"},
             {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "two", "two help message"}
         });
-        
+
         JsonObject helpKeywords = CommandSettings.getHelpKeywords(null);
         assertNotNull(helpKeywords);
         assertNotSame(0, helpKeywords.size());
         assertEquals(helpKeywords, CommandSettings.getHelpKeywords(null));
-        
+
         MockLabelExtractor.close();
     }
 }

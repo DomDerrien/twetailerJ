@@ -20,10 +20,10 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Create the Consumer instance if it does not yet exist, or get the existing one
-     * 
+     *
      * @param loggedUser System entity to attach with the just created user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
-     * 
+     *
      * @see ConsumerOperations#createConsumer(PersistenceManager, User)
      */
     public Consumer createConsumer(User loggedUser) {
@@ -38,7 +38,7 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Create the Consumer instance if it does not yet exist, or get the existing one
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param loggedUser System entity to attach with the just created user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
@@ -63,12 +63,12 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Create the Consumer instance
-     * 
+     *
      * @param twitterId Twitter identifier to be used to identify the new consumer account
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
-     * 
+     *
      * @throws DataSourceException Forward error reported when trying to get a consumer record
-     * 
+     *
      * @see ConsumerOperations#createConsumer(PersistenceManager, twitter4j.User)
      */
     public Consumer createConsumer(twitter4j.User twitterUser) throws DataSourceException {
@@ -83,11 +83,11 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Create the Consumer instance
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param twitterId Twitter identifier to be used to identify the new consumer account
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
-     * 
+     *
      * @throws DataSourceException Forward error reported when trying to get a consumer record
      */
     public Consumer createConsumer(PersistenceManager pm, twitter4j.User twitterUser) throws DataSourceException {
@@ -111,12 +111,12 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Use the given key to get the corresponding Consumer instance
-     * 
+     *
      * @param key Identifier of the consumer
      * @return First consumer matching the given criteria or <code>null</code>
-     * 
+     *
      * @throws DataSourceException If the retrieved consumer does not belong to the specified user
-     * 
+     *
      * @see ConsumerOperations#getConsumer(PersistenceManager, Long)
      */
     public Consumer getConsumer(Long key) throws DataSourceException {
@@ -131,11 +131,11 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Use the given key to get the corresponding Consumer instance
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the consumer
      * @return First consumer matching the given criteria or <code>null</code>
-     * 
+     *
      * @throws DataSourceException If the retrieved consumer does not belong to the specified user
      */
     public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
@@ -154,14 +154,14 @@ public class ConsumerOperations extends BaseOperations {
 
     /**
      * Use the given pair {attribute; value} to get the corresponding Consumer instances
-     * 
+     *
      * @param attribute Name of the consumer attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of consumers matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
-     * 
+     *
      * @see ConsumerOperations#getConsumers(PersistenceManager, String, Object)
      */
     public List<Consumer> getConsumers(String attribute, Object value, int limit) throws DataSourceException {
@@ -173,16 +173,16 @@ public class ConsumerOperations extends BaseOperations {
             pm.close();
         }
     }
-        
+
     /**
      * Use the given pair {attribute; value} to get the corresponding Consumer instances
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param attribute Name of the consumer attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of consumers matching the given criteria
-     * 
+     *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     @SuppressWarnings("unchecked")
@@ -196,13 +196,13 @@ public class ConsumerOperations extends BaseOperations {
         consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
         return consumers;
     }
-    
+
     /**
      * Persist the given (probably updated) resource
-     * 
+     *
      * @param consumer Resource to update
      * @return Updated resource
-     * 
+     *
      * @see ConsumerOperations#updateConsumer(PersistenceManager, Consumer)
      */
     public Consumer updateConsumer(Consumer consumer) {
@@ -215,10 +215,10 @@ public class ConsumerOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Persist the given (probably updated) resource while leaving the given persistence manager open for future updates
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Resource to update
      * @return Updated resource

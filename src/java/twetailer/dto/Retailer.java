@@ -21,77 +21,77 @@ public class Retailer extends Entity {
     /*** Retailer ***/
     @Persistent
     private Long consumerKey;
-    
+
     public final static String CONSUMER_KEY = "consumerKey";
-    
+
     @Persistent
     private Long creatorKey;
-    
+
     public final static String CREATOR_KEY = "creatorKey";
 
     @Persistent
     private List<String> criteria = new ArrayList<String>();
-    
+
     public final static String  CRITERIA = "criteria";
-    
+
     @Persistent
     private String email;
-    
+
     public final static String EMAIL = "email";
-    
+
     @Persistent
     private String imId;
-    
+
     public final static String IM_ID = "imId";
 
     @Persistent
     private Boolean isStoreAdmin;
-    
+
     public final static String IS_STORE_ADMIN_KEY = "isStoreAdmin";
 
     @Persistent
     private String language = LocaleValidator.DEFAULT_LANGUAGE;
-    
+
     public final static String LANGUAGE = "language";
 
     @Persistent
     private Long locationKey;
-    
+
     public final static String LOCATION_KEY = "locationKey";
 
     @Persistent
     private String name;
-    
+
     public final static String NAME = "name";
 
     @Persistent
     private String phoneNumber;
-    
+
     public final static String PHONE_NUMBER = "phoneNb";
 
     @Persistent
     private Long storeKey;
-    
+
     public final static String STORE_KEY = "storeKey";
-    
+
     // Not persistent
     private Long score;
-    
+
     public final static String SCORE = "score";
-    
+
     @Persistent
     private Long twitterId;
-    
+
     public final static String TWITTER_ID = "twitterId";
-    
+
     /** Default constructor */
     public Retailer() {
         super();
     }
-    
+
     /**
      * Creates a retailer
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Retailer(JsonObject in) {
@@ -105,7 +105,7 @@ public class Retailer extends Entity {
     protected void resetLists() {
         criteria = null;
     }
-    
+
     public Long getConsumerKey() {
         return consumerKey;
     }
@@ -130,7 +130,7 @@ public class Retailer extends Entity {
             criteria.add(criterion);
         }
     }
-    
+
     public void resetCriteria() {
         if (criteria == null) {
             return;
@@ -179,7 +179,7 @@ public class Retailer extends Entity {
     public void setIsStoreAdmin(Boolean isStoreAdmin) {
         this.isStoreAdmin = isStoreAdmin;
     }
-    
+
     public boolean isStoreAdmin() {
         return Boolean.TRUE.equals(isStoreAdmin);
     }
@@ -199,7 +199,7 @@ public class Retailer extends Entity {
     public void setLocationKey(Long locationKey) {
         this.locationKey = locationKey;
     }
-    
+
     public Locale getLocale() {
         return LocaleValidator.getLocale(language);
     }
@@ -225,8 +225,8 @@ public class Retailer extends Entity {
     }
 
     public void setStoreKey(Long storeKey) {
-		this.storeKey = storeKey;
-	}
+        this.storeKey = storeKey;
+    }
 
     public Long getScore() {
         return score;
@@ -265,11 +265,11 @@ public class Retailer extends Entity {
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
         if (getScore() != null) { out.put(SCORE, getScore()); }
         if (getTwitterId() != null) { out.put(TWITTER_ID, getTwitterId()); }
-		return out;
-	}
+        return out;
+    }
 
-	public TransferObject fromJson(JsonObject in) {
-	    super.fromJson(in);
+    public TransferObject fromJson(JsonObject in) {
+        super.fromJson(in);
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(CREATOR_KEY)) { setCreatorKey(in.getLong(CREATOR_KEY)); }
         if (in.containsKey(CRITERIA)) {
@@ -289,6 +289,6 @@ public class Retailer extends Entity {
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
-		return this;
-	}
+        return this;
+    }
 }

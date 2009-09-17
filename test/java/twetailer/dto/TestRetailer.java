@@ -21,18 +21,18 @@ import domderrien.jsontools.JsonParser;
 public class TestRetailer {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
@@ -47,7 +47,7 @@ public class TestRetailer {
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
-    
+
     Long consumerKey = 67890L;
     Long creatorKey = 12345L;
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
@@ -93,7 +93,7 @@ public class TestRetailer {
         assertEquals(score, object.getScore());
         assertEquals(twitterId, object.getTwitterId());
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testResetCriteriaI() {
         Retailer object = new Retailer();
@@ -112,10 +112,10 @@ public class TestRetailer {
 
         object.resetCriteria(); // Reset all
         assertEquals(0, object.getCriteria().size());
-        
+
         object.setCriteria(null); // Failure!
     }
-    
+
     @Test
     public void testResetCriteriaII() {
         Retailer object = new Retailer();
@@ -130,7 +130,7 @@ public class TestRetailer {
         object.resetLists(); // To be sure there's no error
         object.resetCriteria(); // Reset all
     }
-    
+
     @Test
     public void testGetLocale() {
         Retailer object = new Retailer();
@@ -141,7 +141,7 @@ public class TestRetailer {
     @Test
     public void testJsonCommandsI() {
         Retailer object = new Retailer();
-        
+
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
         object.setCriteria(criteria);
@@ -155,9 +155,9 @@ public class TestRetailer {
         object.setStoreKey(storeKey);
         object.setScore(score);
         object.setTwitterId(twitterId);
-        
+
         Retailer clone = new Retailer(object.toJson());
-        
+
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(creatorKey, clone.getCreatorKey());
         assertEquals(criteria, clone.getCriteria());
@@ -185,7 +185,7 @@ public class TestRetailer {
         assertNull(object.getStoreKey());
         assertNull(object.getScore());
         assertNull(object.getTwitterId());
-        
+
         Retailer clone = new Retailer(object.toJson());
 
         assertNull(clone.getConsumerKey());

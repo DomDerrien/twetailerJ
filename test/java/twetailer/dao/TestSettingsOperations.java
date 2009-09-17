@@ -21,19 +21,19 @@ import twetailer.dto.Settings;
 public class TestSettingsOperations {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
+
+    @Before
+    public void setUp() throws Exception {
         mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testGetLogger() throws IOException {
@@ -43,7 +43,7 @@ public class TestSettingsOperations {
         assertNotNull(log2);
         assertEquals(log1, log2);
     }
-    
+
     @Test
     public void testGetSettingsII() throws DataSourceException {
         SettingsOperations ops = new SettingsOperations() {
@@ -55,14 +55,14 @@ public class TestSettingsOperations {
         Settings settings = ops.getSettings();
         assertEquals(Long.valueOf(1L), settings.getLastProcessDirectMessageId());
     }
-    
+
     @Test
     public void testGetSettingsFromCacheI() throws DataSourceException {
         SettingsOperations ops = new SettingsOperations();
         Settings settings = ops.getSettingsFromCache();
         assertNull(settings);
     }
-    
+
     @Test
     public void testGetSettingsFromCacheII() throws DataSourceException {
         SettingsOperations ops = new SettingsOperations() {
@@ -74,7 +74,7 @@ public class TestSettingsOperations {
         Settings settings = ops.getSettingsFromCache();
         assertNull(settings);
     }
-    
+
     @Test
     public void testUpdateSettings() throws DataSourceException {
         // Retrieve default settings and update one field
@@ -88,12 +88,12 @@ public class TestSettingsOperations {
         finally {
             pm.close();
         }
-        
+
         // Verify the default settings has persisted
         Settings updated = ops.getSettings(false);
         assertEquals(Long.valueOf(111L), updated.getLastProcessDirectMessageId());
     }
-    
+
     @Test
     public void testCreateManySettingsI() throws DataSourceException {
         // Retrieve default settings and update one field
@@ -115,12 +115,12 @@ public class TestSettingsOperations {
         finally {
             pm.close();
         }
-        
+
         // Verify the default settings has persisted
         Settings updated = ops.getSettings(false);
         assertEquals(Long.valueOf(111L), updated.getLastProcessDirectMessageId());
     }
-    
+
     @Test
     public void testCreateManySettingsII() throws DataSourceException {
         // Retrieve default settings and update one field
@@ -137,22 +137,22 @@ public class TestSettingsOperations {
         settings = new Settings();
         settings.setLastProcessDirectMessageId(333L);
         ops.updateSettings(settings); // The first one is reloaded, updated, and persisted
-        
+
         // Verify the default settings has persisted
         Settings updated = ops.getSettings(false);
         assertEquals(Long.valueOf(333L), updated.getLastProcessDirectMessageId());
     }
-    
+
     @Test
     public void testGetSettingFromCache() throws DataSourceException {
         SettingsOperations ops = new SettingsOperations();
-        
+
         ops.getSettings(); // No data in cache
-        
+
         Settings settings = new Settings();
         settings.setLastProcessDirectMessageId(111L);
         ops.updateSettings(settings);
-        
+
         ops.getSettings(); // Data loaded from the cache
     }
 }

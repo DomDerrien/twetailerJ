@@ -17,18 +17,18 @@ import domderrien.jsontools.JsonParser;
 public class TestCommand {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
@@ -43,16 +43,16 @@ public class TestCommand {
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
-    
+
     CommandSettings.Action action = CommandSettings.Action.cancel;
     Long consumerKey = 12345L;
     CommandSettings.State state = CommandSettings.State.closed;
     Long tweetId = 67890L;
-    
+
     @Test
     public void testAccessors() {
         Command object = new Command();
-        
+
         object.setAction(action);
         object.setAction(action.toString());
         object.setConsumerKey(consumerKey);
@@ -67,18 +67,18 @@ public class TestCommand {
         assertEquals(state, object.getState());
         assertEquals(tweetId, object.getTweetId());
     }
-    
+
     @Test
     public void testJsonCommandsI() {
         Command object = new Command();
-        
+
         object.setAction(action);
         object.setConsumerKey(consumerKey);
         object.setState(state);
         object.setTweetId(tweetId);
-        
+
         Command clone = new Command(object.toJson());
-        
+
         assertEquals(action, clone.getAction());
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(state, clone.getState());
@@ -91,7 +91,7 @@ public class TestCommand {
 
         assertNull(object.getConsumerKey());
         assertNull(object.getTweetId());
-        
+
         Command clone = new Command(object.toJson());
 
         assertNull(clone.getConsumerKey());

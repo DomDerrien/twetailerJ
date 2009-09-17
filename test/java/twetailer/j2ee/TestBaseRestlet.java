@@ -29,9 +29,9 @@ import twetailer.DataSourceException;
 
 public class TestBaseRestlet {
 
-	@SuppressWarnings("serial")
-	class MockBaseRestlet extends BaseRestlet {
-	    private Logger _logger;
+    @SuppressWarnings("serial")
+    class MockBaseRestlet extends BaseRestlet {
+        private Logger _logger;
         @Override
         protected Logger getLogger() {
             if(_logger == null) {
@@ -42,28 +42,28 @@ public class TestBaseRestlet {
         protected void setLogger(Logger logger) {
             _logger = logger;
         }
-		@Override
-		protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
-			return null;
-		}
-		@Override
-		protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
-		}
-		@Override
-		protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
-			return null;
-		}
-		@Override
-		protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
-			return null;
-		}
-		@Override
-		protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
-		    return null;
-		}
-	}
+        @Override
+        protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+            return null;
+        }
+        @Override
+        protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
+        }
+        @Override
+        protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+            return null;
+        }
+        @Override
+        protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+            return null;
+        }
+        @Override
+        protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+            return null;
+        }
+    }
 
-	static final User user = new User("test-email", "test-domain");
+    static final User user = new User("test-email", "test-domain");
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -79,18 +79,18 @@ public class TestBaseRestlet {
     public static void tearDownAfterClass() throws Exception {
     }
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	@Test
-	public void testInit() throws ServletException {
-		(new MockBaseRestlet()).init(null);
-	}
+    @Test
+    public void testInit() throws ServletException {
+        (new MockBaseRestlet()).init(null);
+    }
 
     @Test
     @SuppressWarnings("serial")
@@ -310,7 +310,7 @@ public class TestBaseRestlet {
                 return Level.INFO;
             }
         });
-        
+
         mockRestlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
     }
@@ -336,7 +336,7 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        
+
         mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
@@ -367,7 +367,7 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        
+
         mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
@@ -443,7 +443,7 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        
+
         mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
@@ -481,7 +481,7 @@ public class TestBaseRestlet {
                 return Level.INFO;
             }
         });
-        
+
         mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
     }
@@ -518,7 +518,7 @@ public class TestBaseRestlet {
                 return resource;
             }
         };
-        
+
         mockRestlet.doPut(mockRequest, mockResponse);
         System.err.println(stream.getStream());
         assertTrue(stream.contains("resource"));
@@ -562,7 +562,7 @@ public class TestBaseRestlet {
                 return resource;
             }
         };
-        
+
         mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("resource"));
         assertTrue(stream.contains("{"));
@@ -633,7 +633,7 @@ public class TestBaseRestlet {
                 return Level.INFO;
             }
         });
-        
+
         mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
     }
@@ -654,7 +654,7 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        
+
         mockRestlet.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
@@ -680,7 +680,7 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        
+
         mockRestlet.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
@@ -737,7 +737,7 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        
+
         mockRestlet.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
@@ -770,7 +770,7 @@ public class TestBaseRestlet {
                 return Level.INFO;
             }
         });
-        
+
         mockRestlet.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
     }

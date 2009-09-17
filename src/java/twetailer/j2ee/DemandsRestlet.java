@@ -19,16 +19,16 @@ import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
 public class DemandsRestlet extends BaseRestlet {
-	private static final Logger log = Logger.getLogger(DemandsRestlet.class.getName());
+    private static final Logger log = Logger.getLogger(DemandsRestlet.class.getName());
 
     private BaseOperations _baseOperations = new BaseOperations();
     private DemandOperations demandOperations = _baseOperations.getDemandOperations();
     private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-        
-	@Override
-	protected Logger getLogger() {
-		return log;
-	}
+
+    @Override
+    protected Logger getLogger() {
+        return log;
+    }
 
     /**
      * Setter for the unit tests
@@ -46,39 +46,39 @@ public class DemandsRestlet extends BaseRestlet {
         demandOperations = dOps;
     }
 
-	@Override
-	protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException, ClientException {
-	    PersistenceManager pm = demandOperations.getPersistenceManager();
-	    try {
-    	    List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, loggedUser.getEmail(), 1);
-    	    if (0 < consumers.size()) {
-    	        Demand demand = demandOperations.createDemand(pm, parameters, consumers.get(0).getKey());
-    	        return demand.toJson();
-    	    }
-    	    return null;
-	    }
-	    finally {
-	        pm.close();
-	    }
-	}
+    @Override
+    protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = demandOperations.getPersistenceManager();
+        try {
+            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, loggedUser.getEmail(), 1);
+            if (0 < consumers.size()) {
+                Demand demand = demandOperations.createDemand(pm, parameters, consumers.get(0).getKey());
+                return demand.toJson();
+            }
+            return null;
+        }
+        finally {
+            pm.close();
+        }
+    }
 
-	@Override
-	protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
-		throw new RuntimeException("Not yet implemented!");
-	}
+    @Override
+    protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
+        throw new RuntimeException("Not yet implemented!");
+    }
 
-	@Override
-	protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
-		throw new RuntimeException("Not yet implemented!");
-	}
+    @Override
+    protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+        throw new RuntimeException("Not yet implemented!");
+    }
 
-	@Override
-	protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
-		throw new RuntimeException("Not yet implemented!");
-	}
+    @Override
+    protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+        throw new RuntimeException("Not yet implemented!");
+    }
 
-	@Override
-	protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
-		throw new RuntimeException("Not yet implemented!");
-	}
+    @Override
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+        throw new RuntimeException("Not yet implemented!");
+    }
 }

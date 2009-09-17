@@ -6,10 +6,10 @@ import twitter4j.org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class MockTwitterUser extends User {
-    
+
     public static final int USER_ID = 256;
     public static final String TEST_STR = "test";
-    
+
     private static JSONObject fakeData = new JSONObject();
     static {
         try {
@@ -43,7 +43,7 @@ public class MockTwitterUser extends User {
             e.printStackTrace();
         }
     }
-    
+
     public MockTwitterUser() throws TwitterException {
         super(fakeData);
     }

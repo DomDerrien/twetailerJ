@@ -57,7 +57,7 @@ public class TestTwitterAdapter {
             return new MockPersistenceManager();
         }
     };
-    
+
     private class MockSettingsOperations extends SettingsOperations {
         @Override
         public Settings getSettings() {
@@ -76,7 +76,7 @@ public class TestTwitterAdapter {
             return settings;
         }
     };
-    
+
     @Before
     public void setUp() throws Exception {
         // Simplified list of prefixes
@@ -112,7 +112,7 @@ public class TestTwitterAdapter {
             states.put(state.toString(), state.toString());
         }
         TwitterAdapter.localizedStates.put(Locale.ENGLISH, states);
-        
+
         // Invoke the defined logic to build the list of RegEx patterns for the simplified list of prefixes
         TwitterAdapter.localizedPatterns.clear();
         TwitterAdapter.loadLocalizedSettings(Locale.ENGLISH);
@@ -121,12 +121,12 @@ public class TestTwitterAdapter {
     @After
     public void tearDown() throws Exception {
     }
-    
+
     @Test
     public void testConstructor() {
         new TwitterAdapter();
     }
-    
+
     @Test
     public void testLoadLocalizedSettings() {
         TwitterAdapter.localizedPrefixes.clear();
@@ -143,7 +143,7 @@ public class TestTwitterAdapter {
         assertNotSame(0, TwitterAdapter.localizedHelpKeywords.size());
         assertNotSame(0, TwitterAdapter.localizedPatterns.size());
     }
-    
+
     @Test(expected=java.lang.NullPointerException.class)
     public void testParseNull() throws ClientException, ParseException {
         // Cannot pass a null reference
@@ -295,7 +295,7 @@ public class TestTwitterAdapter {
         TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.range.toString()).add("rng");
         TwitterAdapter.localizedPatterns.clear();
         TwitterAdapter.loadLocalizedSettings(Locale.ENGLISH);
-        
+
         JsonObject data = TwitterAdapter.parseTweet(TwitterAdapter.localizedPatterns.get(Locale.ENGLISH), "ref:21 rng:1mi");
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("mi", data.getString(Demand.RANGE_UNIT));
@@ -374,18 +374,18 @@ public class TestTwitterAdapter {
         TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.quantity.toString()).add("qty");
         TwitterAdapter.localizedPatterns.clear();
         TwitterAdapter.loadLocalizedSettings(Locale.ENGLISH);
-        
+
         JsonObject data = TwitterAdapter.parseTweet(TwitterAdapter.localizedPatterns.get(Locale.ENGLISH), "ref:21 qty:21");
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
-    
+
     @Test
     public void testParseQuantityShortII() throws ClientException, ParseException {
         // Add an equivalent to "quantity" and rebuild the RegEx patterns
         TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.quantity.toString()).add("qty");
         TwitterAdapter.localizedPatterns.clear();
         TwitterAdapter.loadLocalizedSettings(Locale.ENGLISH);
-        
+
         JsonObject data = TwitterAdapter.parseTweet(TwitterAdapter.localizedPatterns.get(Locale.ENGLISH), "ref:  21    qty:  \t 50   ");
         assertEquals(21, data.getLong(Demand.REFERENCE));
         assertEquals(50, data.getLong(Demand.QUANTITY));
@@ -582,14 +582,14 @@ public class TestTwitterAdapter {
         assertNotNull(data.getString(Command.NEED_HELP));
         assertEquals("action:  exp:", data.getString(Command.NEED_HELP));
     }
-    
+
     @Test
     @SuppressWarnings("deprecation")
     public void testGenerateFullTweet() {
         List<String> criteria = new ArrayList<String>();
         criteria.add("first");
         criteria.add("second");
-        
+
         Demand demand = new Demand();
         demand.setKey(1L);
         demand.setCriteria(criteria);
@@ -598,18 +598,18 @@ public class TestTwitterAdapter {
         demand.setRange(4.0D);
         demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
         demand.setState(CommandSettings.State.published);
-        
+
         Location location = new Location();
         location.setPostalCode("zzz");
         location.setCountryCode(Locale.CANADA.getCountry());
-        
+
         Locale locale = Locale.ENGLISH;
         JsonObject prefixes = TwitterAdapter.localizedPrefixes.get(locale);
         JsonObject actions = TwitterAdapter.localizedActions.get(locale);
         JsonObject states = TwitterAdapter.localizedStates.get(locale);
-        
+
         String response = TwitterAdapter.generateTweet(demand, location, prefixes, actions, locale);
-        
+
         assertNotNull(response);
         assertNotSame(0, response.length());
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0) + ":1"));
@@ -620,7 +620,7 @@ public class TestTwitterAdapter {
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0) + ":ZZZ " + Locale.CANADA.getCountry()));
     }
-    
+
     @Test
     @SuppressWarnings("deprecation")
     public void testGeneratePartialTweetI() {
@@ -630,12 +630,12 @@ public class TestTwitterAdapter {
         demand.setRange(4.0D);
         demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
         demand.setState(CommandSettings.State.published);
-        
+
         Locale locale = Locale.ENGLISH;
         JsonObject prefixes = TwitterAdapter.localizedPrefixes.get(locale);
         JsonObject actions = TwitterAdapter.localizedActions.get(locale);
         JsonObject states = TwitterAdapter.localizedStates.get(locale);
-        
+
         String response = TwitterAdapter.generateTweet(demand, null, prefixes, actions, locale);
 
         assertNotNull(response);
@@ -648,36 +648,36 @@ public class TestTwitterAdapter {
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
         assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)));
     }
-    
+
     @Test
     public void testGeneratePartialTweetII() {
         Demand demand = new Demand();
-        
+
         Location location = new Location();
         location.setCountryCode(Locale.CANADA.getCountry());
-        
+
         Locale locale = Locale.ENGLISH;
         JsonObject prefixes = TwitterAdapter.localizedPrefixes.get(locale);
         JsonObject actions = TwitterAdapter.localizedActions.get(locale);
-        
+
         String response = TwitterAdapter.generateTweet(demand, location, prefixes, actions, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
         assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)));
     }
-    
+
     @Test
     public void testGeneratePartialTweetIII() {
         Demand demand = new Demand();
-        
+
         Location location = new Location();
         location.setPostalCode("zzz");
-        
+
         Locale locale = Locale.ENGLISH;
         JsonObject prefixes = TwitterAdapter.localizedPrefixes.get(locale);
         JsonObject actions = TwitterAdapter.localizedActions.get(locale);
-        
+
         String response = TwitterAdapter.generateTweet(demand, location, prefixes, actions, locale);
 
         assertNotNull(response);
@@ -696,9 +696,9 @@ public class TestTwitterAdapter {
         });
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.settingsOperations = new MockSettingsOperations();
-        
+
         TwitterAdapter.processDirectMessages();
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
@@ -714,9 +714,9 @@ public class TestTwitterAdapter {
         });
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.settingsOperations = new MockSettingsOperations();
-        
+
         TwitterAdapter.processDirectMessages();
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
@@ -730,7 +730,7 @@ public class TestTwitterAdapter {
         EasyMock.replay(user);
         return user;
     }
-    
+
     private DirectMessage createDM(int id, int senderId, String screenName, User sender, String message) {
         DirectMessage dm = EasyMock.createMock(DirectMessage.class);
         EasyMock.expect(dm.getSenderScreenName()).andReturn(screenName).once();
@@ -743,7 +743,7 @@ public class TestTwitterAdapter {
         EasyMock.replay(dm);
         return dm;
     }
-    
+
     @Test
     @SuppressWarnings({ "serial" })
     public void testProcessDirectMessageFromNewSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
@@ -751,7 +751,7 @@ public class TestTwitterAdapter {
         final int dmId = 2222;
         final long consumerKey = 3333L;
         final String senderScreenName = "Tom";
-        
+
         // Sender mock
         User sender = createUser(senderId, false, senderScreenName); // <-- The sender does not follow @twetailer
         // DirectMessage mock
@@ -790,18 +790,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
-        
+
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     static String referenceLabel = CommandSettings.getPrefixes(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0);
 
     @Test
@@ -813,7 +813,7 @@ public class TestTwitterAdapter {
         final long demandKey = 4444;
         final long locationKey = 55555;
         final String senderScreenName = "Tom";
-        
+
         // Sender mock
         User sender = createUser(senderId, true, senderScreenName);
         // DirectMessage mock
@@ -883,16 +883,16 @@ public class TestTwitterAdapter {
                 return location;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
         TwitterAdapter.demandOperations = demandOperations;
         TwitterAdapter.locationOperations = locationOperations;
-        
+
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages();
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
@@ -939,18 +939,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
-        
+
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessHelpCommandWithPrefixI() throws DataSourceException, TwitterException {
@@ -993,18 +993,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
 
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessHelpCommandWithPrefixII() throws DataSourceException, TwitterException {
@@ -1047,18 +1047,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
 
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessHelpCommandWithPrefixIII() throws DataSourceException, TwitterException {
@@ -1101,18 +1101,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
 
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessHelpCommandWithPrefixIV() throws DataSourceException, TwitterException {
@@ -1155,18 +1155,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
 
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessHelpCommandWithActionI() throws DataSourceException, TwitterException {
@@ -1209,18 +1209,18 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
 
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }
-    
+
     @Test
     @SuppressWarnings("serial")
     public void testProcessHelpCommandWithRegisteredHelpKeywordI() throws DataSourceException, TwitterException {
@@ -1239,7 +1239,7 @@ public class TestTwitterAdapter {
         helpKeywords.put(helpKeyword, equivalents);
         TwitterAdapter.localizedHelpKeywords.clear();
         TwitterAdapter.localizedHelpKeywords.put(Locale.ENGLISH, helpKeywords);
-        
+
         // Sender mock
         User sender = createUser(senderId, true, senderScreenName);
         // DirectMessage mock
@@ -1274,14 +1274,14 @@ public class TestTwitterAdapter {
                 return consumer;
             }
         };
-        // TwitterAdapter mock 
+        // TwitterAdapter mock
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.consumerOperations = consumerOperations;
 
         // Test itself
         Long newSinceId = TwitterAdapter.processDirectMessages(new MockPersistenceManager(), 1L);
         assertEquals(Long.valueOf(dmId), newSinceId);
-        
+
         // Remove the fake Twitter account
         TwitterUtils.getTwetailerAccount();
     }

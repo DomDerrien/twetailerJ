@@ -13,25 +13,25 @@ import twetailer.dao.MockAppEngineEnvironment;
 public class TestSettings {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
         Settings object = new Settings();
         assertNull(object.getKey());
     }
-    
+
     Long key = 12345L;
     String name = "settings";
     Long lastProcessDirectMessageId = 67890L;
@@ -51,53 +51,53 @@ public class TestSettings {
         assertEquals(lastProcessDirectMessageId, object.getLastProcessDirectMessageId());
         assertEquals(lastRobotDirectMessageId, object.getLastRobotDirectMessageId());
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetName() {
         new Settings().setName(null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetLastProcessDirectMessageIdI() {
         new Settings().setLastProcessDirectMessageId(null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetLastProcessDirectMessageIdII() {
         new Settings().setLastProcessDirectMessageId(0L);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetLastProcessDirectMessageIdIII() {
         new Settings().setLastProcessDirectMessageId(-32L);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetLastRobotDirectMessageIdI() {
         new Settings().setLastRobotDirectMessageId(null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetLastRobotDirectMessageIdII() {
         new Settings().setLastRobotDirectMessageId(0L);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testSetLastRobotDirectMessageIdIII() {
         new Settings().setLastRobotDirectMessageId(-3243L);
     }
-    
+
     @Test
     public void testJsonCommandsI() {
         Settings object = new Settings();
-        
+
         object.setKey(key);
         object.setName(name);
         object.setLastProcessDirectMessageId(lastProcessDirectMessageId);
         object.setLastRobotDirectMessageId(lastRobotDirectMessageId);
-        
+
         Settings clone = new Settings(object.toJson());
-        
+
         assertEquals(key, clone.getKey());
         assertEquals(name, clone.getName());
         assertEquals(lastProcessDirectMessageId, clone.getLastProcessDirectMessageId());
@@ -109,7 +109,7 @@ public class TestSettings {
         Settings object = new Settings();
 
         assertNull(object.getKey());
-        
+
         Settings clone = new Settings(object.toJson());
 
         assertNull(clone.getKey());

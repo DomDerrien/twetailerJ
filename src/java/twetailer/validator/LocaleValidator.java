@@ -18,7 +18,7 @@ public class LocaleValidator {
 
     public static final String KILOMETER_UNIT = "km";
     public static final String MILE_UNIT = "mi";
-    
+
     public static void getGeoCoordinates(JsonObject command) {
         String postalCode = command.getString(Location.POSTAL_CODE);
         String countryCode = command.getString(Location.COUNTRY_CODE);
@@ -26,14 +26,14 @@ public class LocaleValidator {
         command.put(Location.LATITUDE, coordinates[0]);
         command.put(Location.LONGITUDE, coordinates[1]);
     }
-    
+
     public static Location getGeoCoordinates(Location location) {
         Double[] coordinates = getGeoCoordinates(location.getPostalCode(), location.getCountryCode());
         location.setLatitude(coordinates[0]);
         location.setLongitude(coordinates[1]);
         return location;
     }
-    
+
     protected static Double[] getGeoCoordinates(String postalCode, String countryCode) {
         Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
         log.warning("Try to resolve: " + postalCode + " " + countryCode);
@@ -53,7 +53,7 @@ public class LocaleValidator {
                     coordinates[1] = Double.valueOf(parts[1].trim());
                 }
                 reader.close();
-    
+
             }
             catch (IOException e) { }
         }
@@ -75,7 +75,7 @@ public class LocaleValidator {
                     line = reader.readLine();
                 }
                 reader.close();
-    
+
             }
             catch (IOException e) { }
         }
@@ -85,13 +85,13 @@ public class LocaleValidator {
         }
         return coordinates;
     }
-    
+
     private static InputStream testValidatorStream;
-    
+
     protected static void setValidatorStream(InputStream stream) {
         testValidatorStream = stream;
     }
-    
+
     protected static InputStream getValidatorStream(String postalCode, String countryCode) throws IOException {
         if (testValidatorStream != null) {
             return testValidatorStream;

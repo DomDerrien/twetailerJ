@@ -25,18 +25,18 @@ import domderrien.jsontools.JsonObject;
 public abstract class BaseRestlet extends HttpServlet {
     /**
      * Get the logging handler
-     * 
+     *
      * @return Reference on the local Logger instance
      */
     abstract protected Logger getLogger();
 
     /**
      * Create the resource with the given attributes
-     * 
+     *
      * @param parameters HTTP request parameters
      * @param loggedUser System identity of the logged user
      * @return Newly created resource
-     * 
+     *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
@@ -44,10 +44,10 @@ public abstract class BaseRestlet extends HttpServlet {
 
     /**
      * Delete the identified resource
-     * 
+     *
      * @param resourceId Identifier of the concerned resource
      * @param loggedUser System identity of the logged user
-     * 
+     *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
@@ -55,12 +55,12 @@ public abstract class BaseRestlet extends HttpServlet {
 
     /**
      * Get the detailed information on the identified resource
-     * 
+     *
      * @param parameters HTTP request parameters
      * @param resourceId Identifier of the concerned resource
      * @param loggedUser System identity of the logged user
      * @return ready to be serialized object
-     * 
+     *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
@@ -69,10 +69,10 @@ public abstract class BaseRestlet extends HttpServlet {
 
     /**
      * Select the resources with the given search criteria passed as request parameters
-     * 
+     *
      * @param parameters HTTP request parameters
      * @return ready to be serialized list of object list
-     * 
+     *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
@@ -80,12 +80,12 @@ public abstract class BaseRestlet extends HttpServlet {
 
     /**
      * Update the identified resource with the given attributes
-     * 
+     *
      * @param parameters HTTP request parameters
      * @param resourceId Identifier of the concerned resource
      * @param loggedUser System identity of the logged user
      * @return Updated resource
-     * 
+     *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */

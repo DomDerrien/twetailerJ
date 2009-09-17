@@ -34,7 +34,7 @@ public class TestDemandsRestlet {
 
     static final User user = new User("test-email", "test-domain");
     DemandsRestlet ops;
-    
+
     @Before
     public void setUp() throws Exception {
         ops = new DemandsRestlet();

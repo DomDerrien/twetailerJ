@@ -18,18 +18,18 @@ import domderrien.jsontools.JsonParser;
 public class TestConsumer {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
-    
-	@Before
-	public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
-	}
 
-	@After
-	public void tearDown() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+
+        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
-	}
+    }
 
     @Test
     public void testConstructorI() {
@@ -44,7 +44,7 @@ public class TestConsumer {
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
-    
+
     String address = "North Pole, H0H 0H0, Canada";
     String email = "d.d@d.dom";
     String imId = "ddd";
@@ -76,7 +76,7 @@ public class TestConsumer {
         assertEquals(phoneNumber, object.getPhoneNumber());
         assertEquals(twitterId, object.getTwitterId());
     }
-    
+
     @Test
     public void testGetLocale() {
         Consumer object = new Consumer();
@@ -87,7 +87,7 @@ public class TestConsumer {
     @Test
     public void testJsonCommandsI() {
         Consumer object = new Consumer();
-        
+
         object.setAddress(address);
         object.setEmail(email);
         object.setImId(imId);
@@ -96,9 +96,9 @@ public class TestConsumer {
         object.setName(name);
         object.setPhoneNumber(phoneNumber);
         object.setTwitterId(twitterId);
-        
+
         Consumer clone = new Consumer(object.toJson());
-        
+
         assertEquals(address, clone.getAddress());
         assertEquals(email, clone.getEmail());
         assertEquals(imId, clone.getImId());
@@ -115,7 +115,7 @@ public class TestConsumer {
 
         assertNull(object.getLocationKey());
         assertNull(object.getTwitterId());
-        
+
         Consumer clone = new Consumer(object.toJson());
 
         assertNull(clone.getLocationKey());

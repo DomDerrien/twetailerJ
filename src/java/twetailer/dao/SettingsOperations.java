@@ -24,10 +24,10 @@ public class SettingsOperations extends BaseOperations {
 
     /**
      * Retrieve the application saved settings
-     * 
+     *
      * @return Application settings loaded from the back-end or the default values <code>null</code>
      * @throws ClientException If the retrieved demand does not belong to the specified user
-     * 
+     *
      * @see SettingsOperations#getSettings(PersistenceManager)
      */
     public Settings getSettings() throws DataSourceException {
@@ -36,12 +36,12 @@ public class SettingsOperations extends BaseOperations {
 
     /**
      * Retrieve the application saved settings
-     * 
+     *
      * @param useCache can be used to bypass the cache
      * @return Application settings loaded from the back-end or the default values <code>null</code>
-     * 
+     *
      * @throws ClientException If the retrieved demand does not belong to the specified user
-     * 
+     *
      * @see SettingsOperations#getSettings(PersistenceManager)
      */
     public Settings getSettings(boolean checkCache) throws DataSourceException {
@@ -59,21 +59,21 @@ public class SettingsOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Accessor for the unit tests
-     * 
+     *
      * @return A working cache instance
-     * 
+     *
      * @throws CacheException If the cache instance creation fails
      */
     protected Cache getCache() throws CacheException {
         return CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
     }
-    
+
     /**
      * Return the settings object that have been saved into the cache
-     * 
+     *
      * @return Cached settings if any
      */
     public Settings getSettingsFromCache() {
@@ -86,10 +86,10 @@ public class SettingsOperations extends BaseOperations {
 
     /**
      * Use the given key to get the corresponding Settings instance
-     * 
+     *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @return Application settings loaded from the back-end or the default values <code>null</code>
-     * 
+     *
      * @throws ClientException If the retrieved demand does not belong to the specified user
      */
     @SuppressWarnings("unchecked")
@@ -108,14 +108,14 @@ public class SettingsOperations extends BaseOperations {
         }
         return settingsList.get(0);
     }
-    
+
     /**
      * Save the updated application settings
-     * 
+     *
      * @param update Resource with the updated values
      * @return The just update resource instance
      * @throws ClientException If the retrieved demand does not belong to the specified user
-     * 
+     *
      * @see SettingsOperations#updateSettings(PersistenceManager, Settings)
      */
     public Settings updateSettings(Settings update) throws DataSourceException {
@@ -129,7 +129,7 @@ public class SettingsOperations extends BaseOperations {
             pm.close();
         }
     }
-    
+
     /**
      * Update transparently the cache with the new settings
      */
@@ -144,10 +144,10 @@ public class SettingsOperations extends BaseOperations {
 
     /**
      * Save the updated application settings
-     * 
+     *
      * @param update Resource with the updated values
      * @return The just update resource instance
-     * 
+     *
      * @throws ClientException If the retrieved demand does not belong to the specified user
      */
     public Settings updateSettings(PersistenceManager pm, Settings update) throws DataSourceException {

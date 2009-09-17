@@ -14,26 +14,26 @@ public class Command extends Entity {
 
     @Persistent
     private CommandSettings.Action action;
-    
+
     public static final String ACTION = "action";
-    
+
     @Persistent
     private Long consumerKey;
 
     public static final String CONSUMER_KEY = "consumerKey";
-    
+
     public static final String NEED_HELP = "needHelp";
-    
+
     @Persistent
     private CommandSettings.State state = CommandSettings.State.open;
-    
+
     public static final String STATE = "state";
 
     @Persistent
     private Long tweetId;
-    
+
     public static final String TWEET_ID = "tweetId";
-    
+
     /** Default constructor */
     public Command() {
         super();
@@ -41,7 +41,7 @@ public class Command extends Entity {
 
     /**
      * Creates a consumer
-     * 
+     *
      * @param in HTTP request parameters
      */
     public Command(JsonObject in) {
@@ -60,7 +60,7 @@ public class Command extends Entity {
     public void setAction(String action) {
         this.action = CommandSettings.Action.valueOf(action);
     }
-    
+
     public Long getConsumerKey() {
         return consumerKey;
     }
@@ -68,7 +68,7 @@ public class Command extends Entity {
     public void setConsumerKey(Long consumerId) {
         this.consumerKey = consumerId;
     }
-    
+
     public CommandSettings.State getState() {
         return state;
     }
@@ -80,7 +80,7 @@ public class Command extends Entity {
     public void setState(String state) {
         this.state = CommandSettings.State.valueOf(state);
     }
-    
+
     public Long getTweetId() {
         return tweetId;
     }
