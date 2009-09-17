@@ -2,15 +2,15 @@ package twetailer.validator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import domderrien.jsontools.JsonObject;
-
 import twetailer.dto.Location;
+import domderrien.jsontools.JsonObject;
 
 public class LocaleValidator {
 
@@ -20,8 +20,8 @@ public class LocaleValidator {
     public static final String MILE_UNIT = "mi";
     
     public static void getGeoCoordinates(JsonObject command) {
-        String countryCode = command.getString(Location.POSTAL_CODE);
-        String postalCode = command.getString(Location.COUNTRY_CODE);
+        String postalCode = command.getString(Location.POSTAL_CODE);
+        String countryCode = command.getString(Location.COUNTRY_CODE);
         Double[] coordinates = getGeoCoordinates(postalCode, countryCode);
         command.put(Location.LATITUDE, coordinates[0]);
         command.put(Location.LONGITUDE, coordinates[1]);
@@ -41,57 +41,71 @@ public class LocaleValidator {
         if ("H0H0H0".equals(postalCode)) {
             coordinates[0] = 90.0D;
             coordinates[1] = 0.0D;
-            return coordinates;
         }
         // Postal code in USA
-        if (Locale.US.getCountry().equals(countryCode)) {
-            // http://geocoder.us/service/csv/geocode?zip=95472
+        else if (Locale.US.getCountry().equals(countryCode)) {
             try {
-                URL url = new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 String line = reader.readLine(); // Only one line expected
-                if (line != null && 0 < line.length()) {
+                if (line != null) {
                     String[] parts = line.split(",\\s*");
-                    coordinates[0] = Double.valueOf(parts[0]);
-                    coordinates[1] = Double.valueOf(parts[1]);
+                    coordinates[0] = Double.valueOf(parts[0].trim());
+                    coordinates[1] = Double.valueOf(parts[1].trim());
                 }
                 reader.close();
     
             }
-            catch (MalformedURLException e) { }
             catch (IOException e) { }
-            return coordinates;
         }
         // Postal code in Canada
-        if (Locale.CANADA.getCountry().equals(countryCode)) {
-            // http://geocoder.ca/?geoit=xml&postal=h8p3r8
+        else if (Locale.CANADA.getCountry().equals(countryCode)) {
             try {
-                URL url = new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-                String line; // Only one line expected
-                while ((line = reader.readLine()) != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
+                String line = reader.readLine();
+                while (line != null) {
+                    if (line.indexOf("<error>") != -1) {
+                        break;
+                    }
                     if (line.indexOf("<latt>") != -1) {
                         coordinates[0] = Double.valueOf(line.substring(line.indexOf("<latt>") + "<latt>".length(), line.indexOf("</latt>")));
                     }
-                    if (line.indexOf("<longt>") != -1) {
+                    else if (line.indexOf("<longt>") != -1) {
                         coordinates[1] = Double.valueOf(line.substring(line.indexOf("<longt>") + "<longt>".length(), line.indexOf("</longt>")));
                     }
-                }
-                if (90.0d < coordinates[1]) {
-                    // Reset
-                    coordinates[0] = coordinates[1] = Location.INVALID_COORDINATE;
+                    line = reader.readLine();
                 }
                 reader.close();
     
             }
-            catch (MalformedURLException e) { }
             catch (IOException e) { }
-            return coordinates;
+        }
+        if (coordinates[0] < -90.0d || 90.0d < coordinates[0] || coordinates[1] < -180.0d || 180.0d < coordinates[1]) {
+            // Reset
+            coordinates[0] = coordinates[1] = Location.INVALID_COORDINATE;
         }
         return coordinates;
     }
+    
+    private static InputStream testValidatorStream;
+    
+    protected static void setValidatorStream(InputStream stream) {
+        testValidatorStream = stream;
+    }
+    
+    protected static InputStream getValidatorStream(String postalCode, String countryCode) throws IOException {
+        if (testValidatorStream != null) {
+            return testValidatorStream;
+        }
+        if (Locale.CANADA.getCountry().equals(countryCode)) {
+            return new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode).openStream();
+        }
+        if (Locale.US.getCountry().equals(countryCode)) {
+            return new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode).openStream();
+        }
+        throw new MalformedURLException("Unsupported coutry code: " + countryCode);
+    }
 
-    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
 
     private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();

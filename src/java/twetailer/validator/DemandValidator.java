@@ -26,15 +26,15 @@ public class DemandValidator {
     
     private static final Logger log = Logger.getLogger(DemandValidator.class.getName());
 
-    private static BaseOperations _baseOperations = new BaseOperations();
-    private static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    private static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    private static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
     public static void process() throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         Date nowDate = DateUtils.getNowDate();
-        Long nowTime = nowDate.getTime();
+        Long nowTime = nowDate.getTime() - 60*1000; // Minus 1 minute
         try {
             List<Demand> demands = demandOperations.getDemands(pm, Demand.STATE, CommandSettings.State.open.toString(), 0);
             for(Demand demand: demands) {
@@ -49,25 +49,25 @@ public class DemandValidator {
                         message = LabelExtractor.get("dv_demandExpirationShouldBeInFuture", new Object[] { demand.getKey() }, locale);
                     }
                     else if (LocaleValidator.KILOMETER_UNIT.equals(demand.getRangeUnit()) && (demand.getRange() == null || demand.getRange().doubleValue() < 5.0D)) {
-                        message = LabelExtractor.get("dv_demandRangeInKMTooSmall", new Object[] { demand.getKey(), demand.getRange() }, locale);
+                        message = LabelExtractor.get("dv_demandRangeInKMTooSmall", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange() }, locale);
                     }
-                    else if (LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && (demand.getRange() == null || demand.getRange().doubleValue() < 3.0D)) {
-                        message = LabelExtractor.get("dv_demandRangeInMilesTooSmall", new Object[] { demand.getKey(), demand.getRange() }, locale);
+                    else if (/* LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && */ (demand.getRange() == null || demand.getRange().doubleValue() < 3.0D)) {
+                        message = LabelExtractor.get("dv_demandRangeInMilesTooSmall", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange() }, locale);
                     }
                     else if (demand.getQuantity() == null || demand.getQuantity() == 0L) {
                         message = LabelExtractor.get("dv_demandShouldConcernAtLeastOneItem", new Object[] { demand.getKey() }, locale);
                     }
                     else {
                         Long locationKey = demand.getLocationKey();
-                        if (locationKey == null || locationKey == 0) {
+                        if (locationKey == null || locationKey == 0L) {
                             message = LabelExtractor.get("dv_demandShouldHaveALocale", new Object[] { demand.getKey() }, locale);
                         }
                         else {
                             try {
                                 Location location = locationOperations.getLocation(pm, locationKey);
-                                if (Location.INVALID_COORDINATE.equals(location.getLatitude()) || Location.INVALID_COORDINATE.equals(location.getLongitude())) {
+                                if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                     location = LocaleValidator.getGeoCoordinates(location);
-                                    if (Location.INVALID_COORDINATE.equals(location.getLatitude()) || Location.INVALID_COORDINATE.equals(location.getLongitude())) {
+                                    if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                         message = LabelExtractor.get("dv_demandShouldHaveAValidLocale", new Object[] { demand.getKey(), location.getPostalCode(), location.getCountryCode() }, locale);
                                     }
                                     else {

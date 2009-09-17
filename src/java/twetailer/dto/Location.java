@@ -13,7 +13,7 @@ import domderrien.jsontools.TransferObject;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Location extends Entity {
     
-    public static final Double INVALID_COORDINATE = Double.valueOf(-1.0D);
+    public static final Double INVALID_COORDINATE = Double.valueOf(-1000.0D);
 
     @Persistent
     private String countryCode;
@@ -50,9 +50,9 @@ public class Location extends Entity {
      * 
      * @param in HTTP request parameters
      */
-    public Location(JsonObject parameters) {
+    public Location(JsonObject in) {
         this();
-        fromJson(parameters);
+        fromJson(in);
     }
 
     public String getCountryCode() {

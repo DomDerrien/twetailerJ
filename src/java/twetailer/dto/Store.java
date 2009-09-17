@@ -1,13 +1,9 @@
 package twetailer.dto;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -41,8 +37,19 @@ public class Store extends Entity {
     
     public final static String PHONE_NUMBER = "phoneNb";
     
+    /** Default constructor */
     public Store() {
         super();
+    }
+
+    /**
+     * Creates a consumer
+     * 
+     * @param in HTTP request parameters
+     */
+    public Store(JsonObject in) {
+        super();
+        fromJson(in);
     }
 
     public String getAddress() {
@@ -51,14 +58,6 @@ public class Store extends Entity {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    protected Calendar getNowCalendar() {
-        return DateUtils.getNowCalendar();
-    }
-
-    protected Date getNowDate() {
-        return getNowCalendar().getTime();
     }
 
     public String getEmail() {
@@ -97,7 +96,9 @@ public class Store extends Entity {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
         out.put(EMAIL, getEmail());
-        out.put(LOCATION_KEY, getLocationKey());
+        if (getLocationKey() != null) {
+            out.put(LOCATION_KEY, getLocationKey());
+        }
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(STORE_KEY, getKey());

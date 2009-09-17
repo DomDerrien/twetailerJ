@@ -852,7 +852,7 @@ public class TestTwitterAdapter {
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals("consumerKey", key);                     // <-- Sender is already known
+                assertEquals(Demand.CONSUMER_KEY, key);                     // <-- Sender is already known
                 assertEquals(Long.valueOf(consumerKey), (Long) value);
                 return new ArrayList<Demand>();
             }

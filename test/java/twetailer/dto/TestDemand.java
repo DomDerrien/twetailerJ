@@ -127,7 +127,7 @@ public class TestDemand {
     
     @Test
     public void testResetCriteriaII() {
-        Retailer object = new Retailer();
+        Demand object = new Demand();
 
         object.resetLists(); // To force the criteria list creation
         object.addCriterion("first");
@@ -178,6 +178,13 @@ public class TestDemand {
     }
     
     @Test(expected=IllegalArgumentException.class)
+    public void testSetAction() {
+        Demand object = new Demand();
+
+        object.setAction((CommandSettings.Action) null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
     public void testResetExpirationDate() {
         Demand object = new Demand();
 
@@ -206,6 +213,13 @@ public class TestDemand {
 
         object.setRangeUnit(null);
         assertEquals(LocaleValidator.KILOMETER_UNIT, object.getRangeUnit());
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetState() {
+        Demand object = new Demand();
+
+        object.setState((CommandSettings.State) null);
     }
     
     @Test

@@ -27,43 +27,48 @@ public class DemandProcessor {
     
     private static final Logger log = Logger.getLogger(DemandProcessor.class.getName());
     
-    private static BaseOperations _baseOperations = new BaseOperations();
-    private static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    private static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    private static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
-    private static StoreOperations storeOperations = _baseOperations.getStoreOperations();
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
     
     public static void process() throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
-        List<Demand> demands = demandOperations.getDemands(pm, Demand.STATE, CommandSettings.State.published.toString(), 0);
-        for(Demand demand: demands) {
-            try {
-                Location location = locationOperations.getLocation(pm, demand.getLocationKey());
-                List<Retailer> retailers = identifyRetailers(pm, demand, location);
-                // TODO: use the retailer score to ping the ones with highest score first.
-                for(Retailer retailer: retailers) {
-                    try {
-                        StringBuilder tags = new StringBuilder(); 
-                        for(String tag: demand.getCriteria()) {
-                            tags.append(tag).append(" ");
+        try {
+            List<Demand> demands = demandOperations.getDemands(pm, Demand.STATE, CommandSettings.State.published.toString(), 0);
+            for(Demand demand: demands) {
+                try {
+                    Location location = locationOperations.getLocation(pm, demand.getLocationKey());
+                    List<Retailer> retailers = identifyRetailers(pm, demand, location);
+                    // TODO: use the retailer score to ping the ones with highest score first.
+                    for(Retailer retailer: retailers) {
+                        try {
+                            StringBuilder tags = new StringBuilder(); 
+                            for(String tag: demand.getCriteria()) {
+                                tags.append(tag).append(" ");
+                            }
+                            TwitterUtils.sendDirectMessage(
+                                    retailer.getTwitterId().toString(),
+                                    LabelExtractor.get(
+                                            "dp_informNewDemand",
+                                            new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
+                                            retailer.getLocale()
+                                    )
+                            );
                         }
-                        TwitterUtils.sendDirectMessage(
-                                retailer.getTwitterId().toString(),
-                                LabelExtractor.get(
-                                        "dp_informNewDemand",
-                                        new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
-                                        retailer.getLocale()
-                                )
-                        );
-                    }
-                    catch (TwitterException ex) {
-                        log.warning("Cannot tweet error message to consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
+                        catch (TwitterException ex) {
+                            log.warning("Cannot tweet error message to consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
+                        }
                     }
                 }
+                catch (DataSourceException ex) {
+                    log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
+                }
             }
-            catch (DataSourceException ex) {
-                log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
-            }
+        }
+        finally {
+            pm.close();
         }
     }
 

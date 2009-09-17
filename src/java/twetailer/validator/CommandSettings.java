@@ -118,8 +118,8 @@ public class CommandSettings {
     }
     
     public final static String HELP_INTRODUCTION_MESSAGE_ID = "help_introduction";
-    private final static String HELP_KEYWORD_LIST_ID = "help_keyword_list";
-    private final static String HELP_KEYWORD_EQUIVALENTS_PREFIX = "help_keyword_equivalents_";
+    protected final static String HELP_KEYWORD_LIST_ID = "help_keyword_list";
+    protected final static String HELP_KEYWORD_EQUIVALENTS_PREFIX = "help_keyword_equivalents_";
     public final static String HELP_DEFINITION_PREFIX_PREFIX = "help_definition_prefix_";
     public final static String HELP_DEFINITION_ACTION_PREFIX = "help_definition_action_";
     public final static String HELP_DEFINITION_KEYWORD_PREFIX = "help_definition_keyword_";

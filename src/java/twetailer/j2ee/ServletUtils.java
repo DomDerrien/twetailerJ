@@ -48,6 +48,7 @@ public class ServletUtils {
     public static void setUserService(UserService userService) {
     	userServiceForTest = userService;
     }
+    
     protected static UserService getUserService() {
     	if (userServiceForTest != null) {
     		return userServiceForTest;

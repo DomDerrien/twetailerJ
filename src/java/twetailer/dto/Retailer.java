@@ -94,9 +94,9 @@ public class Retailer extends Entity {
      * 
      * @param in HTTP request parameters
      */
-    public Retailer(JsonObject parameters) {
+    public Retailer(JsonObject in) {
         this();
-        fromJson(parameters);
+        fromJson(in);
     }
 
     /**

@@ -33,14 +33,20 @@ public class Entity implements TransferObject {
 
     public static final String MODIFICATION_DATE = "modificationDate";
     
+    /** Default constructor */
     public Entity() {
         setCreationDate(DateUtils.getNowDate());
         setModificationDate(DateUtils.getNowDate());
     }
 
-    public Entity(JsonObject parameters) {
+    /**
+     * Creates a consumer
+     * 
+     * @param in HTTP request parameters
+     */
+    public Entity(JsonObject in) {
         this();
-        fromJson(parameters);
+        fromJson(in);
     }
 
     public Long getKey() {
@@ -98,7 +104,9 @@ public class Entity implements TransferObject {
     
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
-        out.put(KEY, getKey());
+        if (getKey() != null) {
+            out.put(KEY, getKey());
+        }
         out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate()));
         out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate()));
         return out;

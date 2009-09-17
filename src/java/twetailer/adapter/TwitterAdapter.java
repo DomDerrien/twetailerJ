@@ -355,8 +355,7 @@ public class TwitterAdapter {
         }
         JsonObject states = localizedStates.get(locale);
         tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0)).append(":").append(states.getString(demand.getState().toString())).append(space);
-        // FIXME: update DateUtils with a good formatter ;)
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToISO(demand.getExpirationDate()).substring(0, 10)).append(space);
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToYMD(demand.getExpirationDate())).append(space);
         if (location != null && location.getPostalCode() != null && location.getCountryCode() != null) {
             tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
         }

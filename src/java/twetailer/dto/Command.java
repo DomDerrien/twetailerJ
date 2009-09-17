@@ -34,13 +34,19 @@ public class Command extends Entity {
     
     public static final String TWEET_ID = "tweetId";
     
+    /** Default constructor */
     public Command() {
         super();
     }
 
-    public Command(JsonObject parameters) {
+    /**
+     * Creates a consumer
+     * 
+     * @param in HTTP request parameters
+     */
+    public Command(JsonObject in) {
         this();
-        fromJson(parameters);
+        fromJson(in);
     }
 
     public CommandSettings.Action getAction() {

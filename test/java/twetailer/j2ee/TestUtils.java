@@ -3,6 +3,7 @@ package twetailer.j2ee;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -111,16 +112,17 @@ public class TestUtils {
 	    ServletUtils.getLoggedUser();
 	}
 
-	@Test
-	public void testGetLoggedUserII() {
-		final User user = new User("test-email", "test-domain");
-		ServletUtils.setUserService(new MockUserService(){
-			@Override
-			public User getCurrentUser() {
-				return user;
-			}
-		});
-	}
+    @Test
+    public void testGetLoggedUserII() {
+        final User user = new User("test-email", "test-domain");
+        ServletUtils.setUserService(new MockUserService(){
+            @Override
+            public User getCurrentUser() {
+                return user;
+            }
+        });
+        ServletUtils.getLoggedUser();
+    }
 
 	@Test
 	public void testListToJsonI() {

@@ -95,9 +95,9 @@ public class Demand extends Entity {
      * 
      * @param in HTTP request parameters
      */
-    public Demand(JsonObject parameters) {
+    public Demand(JsonObject in) {
         this();
-        fromJson(parameters);
+        fromJson(in);
     }
 
     /**
@@ -115,11 +115,14 @@ public class Demand extends Entity {
     }
 
     public void setAction(CommandSettings.Action action) {
+        if (action == null) {
+            throw new IllegalArgumentException("Cannot nullify the action attribute");
+        }
         this.action = action;
     }
 
     public void setAction(String action) {
-        this.action = CommandSettings.Action.valueOf(action);
+        setAction(CommandSettings.Action.valueOf(action));
     }
 
     public Long getConsumerKey() {
@@ -135,11 +138,14 @@ public class Demand extends Entity {
     }
 
     public void setState(CommandSettings.State state) {
+        if (state == null) {
+            throw new IllegalArgumentException("Cannot nullify the state attribute");
+        }
         this.state = state;
     }
 
     public void setState(String state) {
-        this.state = CommandSettings.State.valueOf(state);
+        setState(CommandSettings.State.valueOf(state));
     }
 
     public Long getTweetId() {
@@ -203,7 +209,7 @@ public class Demand extends Entity {
     /**
      * Delay for the default expiration of a demand
      */
-    public final static int DEFAULT_EXPIRATION_DELAY = 30;
+    public final static int DEFAULT_EXPIRATION_DELAY = 30; // In 1 month
 
     /**
      * Push the expiration to a defined default in the future
@@ -292,7 +298,7 @@ public class Demand extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         /*** Command ***/
-        if (getAction() != null) { out.put(ACTION, getAction().toString()); }
+        out.put(ACTION, getAction().toString());
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         out.put(STATE, getState().toString());
         if (getTweetId() != null) { out.put(TWEET_ID, getTweetId()); }
@@ -341,7 +347,7 @@ public class Demand extends Entity {
                 setExpirationDate(expirationDate);
             }
             catch (ParseException e) {
-                setExpirationDate(30); // Default to an expiration 30 days in the future
+                setExpirationDate(DEFAULT_EXPIRATION_DELAY); // Default to an expiration 30 days in the future
             }
         }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
