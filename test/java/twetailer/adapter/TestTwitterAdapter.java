@@ -1,16 +1,19 @@
 package twetailer.adapter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
@@ -19,29 +22,28 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import twitter4j.DirectMessage;
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dto.Command;
-import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
-import twetailer.dto.Location;
-import twetailer.dto.Settings;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.SettingsOperations;
+import twetailer.dto.Command;
+import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
+import twetailer.dto.Location;
+import twetailer.dto.Settings;
+import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
-
+import twitter4j.DirectMessage;
+import twitter4j.Paging;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -76,6 +78,29 @@ public class TestTwitterAdapter {
             return settings;
         }
     };
+
+    @SuppressWarnings("deprecation")
+    protected static User createUser(int id, boolean isFollowing, String screenName) {
+        User user = EasyMock.createMock(User.class);
+        EasyMock.expect(user.getId()).andReturn(id).atLeastOnce();
+        EasyMock.expect(user.isFollowing()).andReturn(isFollowing).once();
+        EasyMock.expect(user.getScreenName()).andReturn(screenName).once();
+        EasyMock.replay(user);
+        return user;
+    }
+
+    protected static DirectMessage createDM(int id, int senderId, String screenName, User sender, String message) {
+        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
+        EasyMock.expect(dm.getSenderScreenName()).andReturn(screenName).once();
+        EasyMock.expect(dm.getSenderId()).andReturn(senderId).once();
+        EasyMock.expect(dm.getSender()).andReturn(sender).once();
+        EasyMock.expect(dm.getId()).andReturn(id).once();
+        if (message != null) {
+            EasyMock.expect(dm.getText()).andReturn(message).once();
+        }
+        EasyMock.replay(dm);
+        return dm;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -122,6 +147,7 @@ public class TestTwitterAdapter {
     public void tearDown() throws Exception {
     }
 
+    /**********************/
     @Test
     public void testConstructor() {
         new TwitterAdapter();
@@ -689,63 +715,64 @@ public class TestTwitterAdapter {
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Inject a fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(new Twitter() {
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 return null;
             }
         });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.settingsOperations = new MockSettingsOperations();
 
         TwitterAdapter.processDirectMessages();
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Inject a fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(new Twitter() {
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 return new ArrayList<DirectMessage>();
             }
         });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         TwitterAdapter._baseOperations = new MockBaseOperations();
         TwitterAdapter.settingsOperations = new MockSettingsOperations();
 
         TwitterAdapter.processDirectMessages();
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
-    }
-
-    @SuppressWarnings("deprecation")
-    private User createUser(int id, boolean isFollowing, String screenName) {
-        User user = EasyMock.createMock(User.class);
-        EasyMock.expect(user.getId()).andReturn(id).atLeastOnce();
-        EasyMock.expect(user.isFollowing()).andReturn(isFollowing).once();
-        EasyMock.expect(user.getScreenName()).andReturn(screenName).once();
-        EasyMock.replay(user);
-        return user;
-    }
-
-    private DirectMessage createDM(int id, int senderId, String screenName, User sender, String message) {
-        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
-        EasyMock.expect(dm.getSenderScreenName()).andReturn(screenName).once();
-        EasyMock.expect(dm.getSenderId()).andReturn(senderId).once();
-        EasyMock.expect(dm.getSender()).andReturn(sender).once();
-        EasyMock.expect(dm.getId()).andReturn(id).once();
-        if (message != null) {
-            EasyMock.expect(dm.getText()).andReturn(message).once();
-        }
-        EasyMock.replay(dm);
-        return dm;
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
-    @SuppressWarnings({ "serial" })
+    @SuppressWarnings("serial")
+    public void testProcessDirectMessageWithNoMessageIII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public List<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
+                throw new TwitterException("done in purpose");
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.settingsOperations = new MockSettingsOperations();
+
+        TwitterAdapter.processDirectMessages();
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
     public void testProcessDirectMessageFromNewSenderNotFollowingTwetailer() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final int senderId = 1111;
         final int dmId = 2222;
@@ -757,7 +784,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, null);
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -777,7 +804,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -799,7 +826,71 @@ public class TestTwitterAdapter {
         assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessDirectMessageWithResourceLoadFailing() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final int senderId = 1111;
+        final int dmId = 2222;
+        final long consumerKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+        // DirectMessage mock
+        final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, null);
+        // Twitter mock
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public List<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
+                List<DirectMessage> messages = new ArrayList<DirectMessage>();
+                messages.add(dm);
+                return messages;
+            }
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertNotSame(0, text.length());
+                assertTrue(text.contains("Error"));
+                return dm;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
+                int twitterId = twitterAccount.getId();
+                assertEquals(senderId, twitterId);         // <-- Verify the correct creation submission
+                Consumer consumer = new Consumer();
+                consumer.setTwitterId(Long.valueOf(twitterId));
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.consumerOperations = consumerOperations;
+
+        Map<Locale, JsonObject> originalLocalizedPrefixes = TwitterAdapter.localizedPrefixes;
+        TwitterAdapter.localizedPrefixes = new HashMap<Locale, JsonObject>() {
+            @Override
+            public JsonObject get(Object locale) {
+                throw new RuntimeException("done in purpose");
+            }
+        };
+
+        try {
+            TwitterAdapter.processDirectMessages();
+        }
+        finally {
+            // Remove the fake Twitter account
+            MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+            TwitterAdapter.localizedPrefixes = originalLocalizedPrefixes;
+        }
     }
 
     static String referenceLabel = CommandSettings.getPrefixes(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0);
@@ -819,7 +910,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "action:demand tags:wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -835,7 +926,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -894,7 +985,100 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings({ "serial" })
+    public void testProcessDirectMessageWithOldTweetId() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final int senderId = 1111;
+        final int dmId = 0;
+        final long consumerKey = 333;
+        final long demandKey = 4444;
+        final long locationKey = 55555;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+        // DirectMessage mock
+        final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "action:demand tags:wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
+        // Twitter mock
+        final Twitter mockTwitterAccount = new Twitter() {
+            @Override
+            public List<DirectMessage> getDirectMessages(Paging paging) {
+                List<DirectMessage> messages = new ArrayList<DirectMessage>();
+                messages.add(dm);
+                return messages;
+            }
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertNotSame(0, text.length());
+                assertTrue(text.contains(referenceLabel + ":" + String.valueOf(demandKey)));
+                return dm;
+            }
+        };
+        // Inject the fake Twitter account
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
+                int twitterId = twitterAccount.getId();
+                assertEquals(senderId, twitterId);         // <-- Verify the correct creation submission
+                Consumer consumer = new Consumer();
+                consumer.setTwitterId(Long.valueOf(twitterId));
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Demand.CONSUMER_KEY, key);                     // <-- Sender is already known
+                assertEquals(Long.valueOf(consumerKey), (Long) value);
+                return new ArrayList<Demand>();
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) {
+                assertEquals(2, parameters.getJsonArray(Demand.CRITERIA).size());
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long givenLocationKey) {
+                assertEquals(locationKey, givenLocationKey.longValue());
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject parameters) {
+                assertEquals("H0H0H0", parameters.getString(Location.POSTAL_CODE));
+                Location location = new Location();
+                location.setPostalCode("H0H0H0");
+                location.setCountryCode("CA");
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.consumerOperations = consumerOperations;
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Test itself
+        Long newSinceId = TwitterAdapter.processDirectMessages();
+        assertEquals(Long.valueOf(1), newSinceId); // The tweet has previously an higher number, so the same higher number is returned
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -910,7 +1094,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "!grrrr ref:10 wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -926,7 +1110,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -948,7 +1132,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -964,7 +1148,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "help: " + CommandSettings.Prefix.action.toString());
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -980,7 +1164,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -1002,7 +1186,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -1018,7 +1202,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "!help " + CommandSettings.Prefix.action.toString());
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -1034,7 +1218,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -1056,7 +1240,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -1072,7 +1256,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "? " + CommandSettings.Prefix.expiration.toString());
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -1088,7 +1272,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -1110,7 +1294,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -1126,7 +1310,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, CommandSettings.Prefix.range.toString() + "?");
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -1142,7 +1326,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -1164,7 +1348,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -1180,7 +1364,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "help: " + CommandSettings.Action.demand.toString());
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -1196,7 +1380,7 @@ public class TestTwitterAdapter {
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -1218,7 +1402,7 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -1245,7 +1429,7 @@ public class TestTwitterAdapter {
         // DirectMessage mock
         final DirectMessage dm = createDM(dmId, senderId, String.valueOf(senderId), sender, "help: " + helpKeywordEquivalent);
         // Twitter mock
-        final Twitter twitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public List<DirectMessage> getDirectMessages(Paging paging) {
                 List<DirectMessage> messages = new ArrayList<DirectMessage>();
@@ -1256,12 +1440,12 @@ public class TestTwitterAdapter {
             public DirectMessage sendDirectMessage(String id, String text) {
                 assertEquals(senderScreenName, id);
                 assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+                assertTrue(text.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, Locale.ENGLISH)));
                 return dm;
             }
         };
         // Inject the fake Twitter account
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
         final ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -1283,6 +1467,1333 @@ public class TestTwitterAdapter {
         assertEquals(Long.valueOf(dmId), newSinceId);
 
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandHelpI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.NEED_HELP, ""); // No keyword, just the help system call
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandHelpII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.help.toString()); // No keyword, just the help system call
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandHelpIII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.NEED_HELP, "\t : zzz"); // No keyword, just the help system call
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandHelpIV() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.NEED_HELP, "zzz:"); // No keyword, just the help system call
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandHelpV() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.NEED_HELP, "zzz\t"); // No keyword, just the help system call
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandHelpVI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.NEED_HELP, "zzz "); // No keyword, just the help system call
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandCancelI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 5555L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                return demand;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandCancelII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 5555L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandCancelIII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get("error_cancel_without_resource_id", new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandClose() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final long demandKey = 5555;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandConfirm() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final long demandKey = 5555;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandDecline() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final long demandKey = 5555;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.decline.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandDemand() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final long consumerKey = 3333;
+        final long locationKey = 4444;
+        final long demandKey = 5555;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject parameters) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                List<Demand> demands = new ArrayList<Demand>();
+                return demands;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.demand.toString());
+        command.put(Location.POSTAL_CODE, "H0H0H0");
+        command.put(Location.COUNTRY_CODE, "CA");
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+        consumer.setLocationKey(locationKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, consumer, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandListI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                assertEquals(LabelExtractor.get("ta_responseToListCommandForNoResult", new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Demand>();
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandListII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            int messageIdx = 0;
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                if (messageIdx == 0) {
+                    assertEquals(LabelExtractor.get("ta_introductionToResponseToListCommandWithManyResults", new Object[] { 1 }, new Consumer().getLocale()), text);
+                    ++ messageIdx;
+                }
+                else {
+                    assertNotNull(text);
+                    assertTrue(text.contains(demandKey.toString()));
+                }
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandListIII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            int messageIdx = 0;
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(senderScreenName, id);
+                if (messageIdx == 0) {
+                    assertEquals(LabelExtractor.get("ta_introductionToResponseToListCommandWithManyResults", new Object[] { 1 }, new Consumer().getLocale()), text);
+                    ++ messageIdx;
+                }
+                else {
+                    assertNotNull(text);
+                    assertTrue(text.contains(demandKey.toString()));
+                }
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandListIV() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandListV() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessCommandListVI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertEquals(LabelExtractor.get("ta_responseToSpecificListCommandForNoResult", new Object[] { demandKey }, new Consumer().getLocale()), text);
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                return null;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandPropose() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.propose.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandSupply() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.supply.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandWish() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.wish.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testProcessCommandWWW() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.www.toString());
+
+        TwitterAdapter.processCommand(new MockPersistenceManager(), sender, new Consumer(), TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), command);
+    }
+
+    @Test
+    public void testGuessActionI() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        assertEquals(CommandSettings.Action.help.toString(), TwitterAdapter.guessAction(command));
+    }
+
+    @Test
+    public void testGuessActionII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.demand.toString());
+
+        assertEquals(CommandSettings.Action.demand.toString(), TwitterAdapter.guessAction(command));
+    }
+
+    @Test
+    public void testGuessActionIII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, "12345");
+
+        assertEquals(CommandSettings.Action.list.toString(), TwitterAdapter.guessAction(command));
+    }
+
+    @Test
+    public void testGuessActionIV() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, "12345");
+        command.put(Demand.RANGE, "55.5");
+
+        assertEquals(CommandSettings.Action.demand.toString(), TwitterAdapter.guessAction(command));
+    }
+
+    @Test
+    public void testGuessActionV() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Store.STORE_KEY, "12345");
+
+        assertEquals(CommandSettings.Action.list.toString(), TwitterAdapter.guessAction(command));
+    }
+
+    @Test
+    public void testGuessActionVI() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Store.STORE_KEY, "12345");
+        command.put(Store.ADDRESS, "address");
+
+        assertNull(TwitterAdapter.guessAction(command)); // Cannot update Store instance from Twitter
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessExisitingDemandI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessExisitingDemandII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                return null;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessExisitingDemandIII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                return null;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                return null;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, demandKey);
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessFirstNewDemandI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Demand>();
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessFirstNewDemandII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Demand>();
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                return null;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessAdditionalNewDemandI() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessAdditionalNewDemandII() throws TwitterException, DataSourceException, ClientException {
+        final int senderId = 1111;
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String senderScreenName = "Tom";
+
+        // Sender mock
+        User sender = createUser(senderId, true, senderScreenName);
+
+        // Inject a fake Twitter account
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) {
+                assertNotNull(text);
+                assertTrue(text.contains(demandKey.toString()));
+                return null;
+            }
+        });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(CommandSettings.State.open, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // TwitterAdapter mock
+        TwitterAdapter._baseOperations = new MockBaseOperations();
+        TwitterAdapter.demandOperations = demandOperations;
+        TwitterAdapter.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        TwitterAdapter.processDemandCommand(new MockPersistenceManager(), sender, new Consumer(), command, TwitterAdapter.localizedPrefixes.get(Locale.ENGLISH), TwitterAdapter.localizedActions.get(Locale.ENGLISH));
+
+        // Remove the fake Twitter account
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 }

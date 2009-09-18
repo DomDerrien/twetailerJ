@@ -15,7 +15,7 @@
 	
 	<property name="appengine.sdk.dir"
 		description="Location of the Google App Engine SDK"
-		location="${basedir}/bin/appengine-java-sdk-1.2.2"
+		location="${basedir}/bin/appengine-java-sdk-1.2.5"
 	/>
 	
 	<import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
@@ -55,7 +55,7 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
-		<copy file="deps/lib/domderrien/domderrien-0.8.jar" todir="src/war/WEB-INF/lib"/>
+		<copy file="deps/lib/domderrien/domderrien-0.8.1.jar" todir="src/war/WEB-INF/lib"/>
 		<copy file="deps/lib/twitter4j/twitter4j-2.0.8.jar" todir="src/war/WEB-INF/lib"/>
     </target>
 

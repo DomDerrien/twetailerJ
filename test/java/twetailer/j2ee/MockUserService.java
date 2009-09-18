@@ -25,4 +25,12 @@ public class MockUserService implements UserService {
         return false;
     }
 
+    public String createLoginURL(String arg0, String arg1) {
+        return null;
+    }
+
+    public String createLogoutURL(String arg0, String arg1) {
+        return null;
+    }
+
 }

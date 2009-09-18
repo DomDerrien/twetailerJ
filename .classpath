@@ -7,8 +7,8 @@
 	<classpathentry kind="lib" path="deps/lib/xml/xercesImpl-2.4.0.jar"/>
 	<classpathentry kind="lib" path="deps/lib/xml/xml-apis-1.3.02.jar"/>
 	<classpathentry kind="lib" path="deps/lib/geronimo/geronimo-servlet_2.5_spec-1.2.jar"/>
-	<classpathentry kind="lib" path="deps/lib/jdo/jdo2-api-2.3-ea.jar"/>
-	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-1.0-sdk-1.2.2.jar" sourcepath="bin/appengine-java-sdk-1.2.2/docs/javadoc"/>
+	<classpathentry kind="lib" path="deps/lib/jdo/jdo2-api-2.3-eb.jar"/>
+	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-1.0-sdk-1.2.5.jar" sourcepath="bin/appengine-java-sdk-1.2.2/docs/javadoc"/>
 	<classpathentry kind="lib" path="deps/lib/junit/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="deps/lib/twitter4j/twitter4j-2.0.8.jar" sourcepath="deps/lib/twitter4j/twitter4j-2.0.8-sources.jar">
 		<attributes>
@@ -33,8 +33,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar"/>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-local-runtime.jar"/>
-	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-jpa-1.1.4.jar"/>
-	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.2.final.jar"/>
-	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-core-1.1.4-gae.jar"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-jpa-1.1.5.jar"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.3.jar"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-core-1.1.5.jar"/>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
 </classpath>

@@ -298,8 +298,9 @@
 			<!--file name="tomcat/j2ee.jar" /-->
 			<!--file name="was/j2ee-6.0.jar.jar" /-->
 			<file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
-			<file name="appengine/appengine-api-1.0-sdk-1.2.2.jar" />
-			<file name="jdo/jdo2-api-2.3-ea.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.5.jar" />
+			<file name="appengine-api-labs-1.2.5.jar" />
+			<file name="jdo/jdo2-api-2.3-eb.jar" />
 			<file name="appengine/appengine-api-stubs.jar" />
 			<file name="appengine/appengine-local-runtime.jar" />
 		</filelist>
@@ -313,11 +314,13 @@
 			<file name="cobertura/asm-tree-2.2.1.jar" />
 			<file name="cobertura/jakarta-oro-2.0.8.jar" />
 			<file name="cobertura/log4j-1.2.9.jar" />
-			<file name="datanucleus/datanucleus-appengine-1.0.2.final.jar" />
-			<file name="datanucleus/datanucleus-core-1.1.4-gae.jar" />
-			<file name="datanucleus/datanucleus-jpa-1.1.4.jar" />
-			<file name="appengine/appengine-api-1.0-sdk-1.2.2.jar" />
-			<file name="jdo/jdo2-api-2.3-ea.jar" />
+			<file name="datanucleus/datanucleus-appengine-1.0.3.jar" />
+			<file name="datanucleus/datanucleus-core-1.1.5.jar" />
+			<file name="datanucleus-enhancer-1.1.4.jar" />
+			<file name="datanucleus/datanucleus-jpa-1.1.5.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.5.jar" />
+			<file name="appengine-api-labs-1.2.5.jar" />
+			<file name="jdo/jdo2-api-2.3-eb.jar" />
 			<file name="appengine/appengine-api-stubs.jar" />
 			<file name="appengine/appengine-local-runtime.jar" />
 		</filelist>
@@ -372,10 +375,33 @@
 		</tstamp>
 		<property name="rwa.stageId" value="${DSTAMP}.${TSTAMP}" />
 		<property name="rwa.taggedDir" value="${rwa.stageId}" />
+		<resourcecount property="java.source.line.count">
+			<tokens><linetokenizer includedelims="yes" /><fileset dir="src/java" includes="**/*.java" /></tokens>
+		</resourcecount>
+		<resourcecount property="java.test.line.count">
+			<tokens><linetokenizer includedelims="yes" /><fileset dir="test/java" includes="**/*.java" /></tokens>
+		</resourcecount>
+		<resourcecount property="html.source.line.count">
+			<tokens><linetokenizer includedelims="yes" /><fileset dir="src/war" includes="**/*.html,**/*.jsp" excludes="**/dojo/**,**/domderrien/**" /></tokens>
+		</resourcecount>
+		<resourcecount property="html.test.line.count">
+			<tokens><linetokenizer includedelims="yes" /><fileset dir="test/war" includes="**/*.html" excludes="**/dojo/**,**/domderrien/**" /></tokens>
+		</resourcecount>
+		<resourcecount property="javascript.source.line.count">
+			<tokens><linetokenizer includedelims="yes" /><fileset dir="src/war/js" includes="**/*.js" excludes="**/dojo/**,**/domderrien/**" /></tokens>
+		</resourcecount>
+		<resourcecount property="javascript.test.line.count">
+			<tokens><linetokenizer includedelims="yes" /><fileset dir="test/war" includes="**/*.js" excludes="**/dojo/**,**/domderrien/**" /></tokens>
+		</resourcecount>
 		<echo>
-			${ant.project.name}
-			${TODAY} (${rwa.stageId})
-			JVM version detected by Ant: ${ant.java.version}
+            ${ant.project.name}
+            ${TODAY} (${rwa.stageId})
+            JVM version detected by Ant: ${ant.java.version}
+            --
+            Statistics:
+               Java source/test files: ${java.source.line.count} lines / ${java.test.line.count} lines
+               HTML source/test files: ${html.source.line.count} lines / ${html.test.line.count} lines
+               Javacript source/test files: ${javascript.source.line.count} lines / ${javascript.test.line.count} lines
 		</echo>
 	</target>
 

@@ -11,28 +11,27 @@ import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
 
-import twitter4j.DirectMessage;
-import twitter4j.TwitterException;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.SettingsOperations;
 import twetailer.validator.CommandSettings;
-
+import twitter4j.DirectMessage;
+import twitter4j.TwitterException;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TwitterAdapter {
@@ -44,11 +43,11 @@ public class TwitterAdapter {
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
-    static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
-    static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
-    static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
-    static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-    static Map<Locale, Map<CommandSettings.Prefix, Pattern>> localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
+    protected static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
+    protected static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
+    protected static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
+    protected static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+    protected static Map<Locale, Map<CommandSettings.Prefix, Pattern>> localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
 
     protected static void loadLocalizedSettings(Locale locale) {
         JsonObject prefixes = localizedPrefixes.get(locale);
@@ -474,7 +473,7 @@ public class TwitterAdapter {
      * @throws DataSourceException If the communication with the back-end fails
      * @throws ClientException If information extracted from the tweet are incorrect
      */
-    protected static void processCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject prefixes, JsonObject command) throws TwitterException, DataSourceException, ClientException {
+    public static void processCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject prefixes, JsonObject command) throws TwitterException, DataSourceException, ClientException {
         Locale locale = consumer.getLocale();
         JsonObject actions = localizedActions.get(locale);
         // Clear case of help being requested at the prefix level
@@ -482,27 +481,10 @@ public class TwitterAdapter {
             processHelpCommand(sender, prefixes, actions, command.getString(Command.NEED_HELP), locale);
             return;
         }
-        String action = command.getString(Demand.ACTION);
-        if (action == null) {
-            if (command.containsKey(Demand.REFERENCE)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : CommandSettings.Action.demand.toString();
-            }
-            else if (command.containsKey(Store.STORE_KEY)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
-            }
-            /* TODO: implement other listing variations
-            else if (command.containsKey(Product.PRODUCT_KEY)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
-            }
-            */
-            else {
-                action = CommandSettings.Action.demand.toString();
-            }
-        }
+        String action = guessAction(command);
         // Alternate case of the help being asked as an action...
         if (CommandSettings.isEquivalentTo(prefixes, CommandSettings.Prefix.help.toString(), action)) {
             processHelpCommand(sender, prefixes, actions, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
-            return;
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), action)) {
             processCancelCommand(pm, sender, consumer, command, prefixes, actions);
@@ -537,6 +519,32 @@ public class TwitterAdapter {
         else {
             TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("error_unsupported_action", locale));
         }
+    }
+
+    /**
+     * Utility function extracting the action, even if the attribute is not present, by looking at all given parameters
+     * @param command Set of command attributes
+     * @return Specified or guessed action
+     */
+    protected static String guessAction(JsonObject command) {
+        String action = command.getString(Demand.ACTION);
+        if (action == null) {
+            if (command.containsKey(Demand.REFERENCE)) {
+                action = command.size() == 1 ? CommandSettings.Action.list.toString() : CommandSettings.Action.demand.toString();
+            }
+            else if (command.containsKey(Store.STORE_KEY)) {
+                action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
+            }
+            /* TODO: implement other listing variations
+            else if (command.containsKey(Product.PRODUCT_KEY)) {
+                action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
+            }
+            */
+            else {
+                action = CommandSettings.Action.help.toString();
+            }
+        }
+        return action;
     }
 
     /**
@@ -588,9 +596,12 @@ public class TwitterAdapter {
         // Check of the keyword is one registered
         JsonObject helpKeywords = localizedHelpKeywords.get(locale);
         for (String helpKeyword: helpKeywords.getMap().keySet()) {
-            if (helpKeyword.equals(keyword)) {
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, locale));
-                return;
+            JsonArray equivalents = helpKeywords.getJsonArray(helpKeyword);
+            for (int i = 0; i < equivalents.size(); i++) {
+                if (equivalents.getString(i).equals(keyword)) {
+                    TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, locale));
+                    return;
+                }
             }
         }
         // Tweet the default help message if the given keyword is not recognized
@@ -650,7 +661,7 @@ public class TwitterAdapter {
         throw new ClientException("Declining proposals - Not yet implemented");
     }
 
-    protected static void processDemandCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException, TwitterException {
+    public static void processDemandCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException, TwitterException {
         //
         // Used by a consumer to:
         //
@@ -658,7 +669,7 @@ public class TwitterAdapter {
         // 2. update the identified demand
         //
         Long reference = command.getLong(Demand.REFERENCE);
-        if (reference != 0) {
+        if (reference != 0L) {
             // Extracts the new location
             Location newLocation = locationOperations.createLocation(pm, command);
             if (newLocation != null) {
@@ -671,7 +682,7 @@ public class TwitterAdapter {
             demand.resetProposalKeys(); // All existing proposals are removed
             demandOperations.updateDemand(pm, demand);
             // Echo back the updated demand
-            Location location = demand.getLocationKey() == null || demand.getLocationKey() == 0L ? null : locationOperations.getLocation(pm, demand.getLocationKey());
+            Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
             TwitterUtils.sendDirectMessage(sender.getScreenName(), generateTweet(demand, location, prefixes, actions, consumer.getLocale()));
         }
         else {
@@ -700,7 +711,7 @@ public class TwitterAdapter {
             }
             // Update of the latest command (can be the default one) with the just extracted parameters
             command = latestDemand.fromJson(command).toJson();
-            if (newLocationKey != null && newLocationKey != 0L && newLocationKey != command.getLong(Demand.LOCATION_KEY)) {
+            if (newLocationKey != null && newLocationKey != command.getLong(Demand.LOCATION_KEY)) {
                 command.put(Demand.LOCATION_KEY, newLocationKey);
             }
             // Persist the new demand
@@ -714,7 +725,7 @@ public class TwitterAdapter {
                             consumer.getLocale()
                     )
             );
-            Location location = newDemand.getLocationKey() == null || newDemand.getLocationKey() == 0L ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
+            Location location = newDemand.getLocationKey() == null ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
             TwitterUtils.sendDirectMessage(screenName, generateTweet(newDemand, location, prefixes, actions, consumer.getLocale()));
         }
     }
@@ -792,10 +803,6 @@ public class TwitterAdapter {
         // Used by a retailer to propose a product for a demand
         //
         throw new ClientException("Proposing proposals - Not yet implemented");
-    }
-
-    protected static void processShopCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
-        throw new ClientException("Shopping - Not yet implemented");
     }
 
     protected static void processSupplyCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {

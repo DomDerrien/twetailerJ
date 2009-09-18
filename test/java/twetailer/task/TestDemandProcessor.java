@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.adapter.MockTwitterUtils;
 import twetailer.adapter.TwitterUtils;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
@@ -487,7 +488,7 @@ public class TestDemandProcessor {
             }
         };
 
-        TwitterUtils.releaseTwetailerAccount(new Twitter() {
+        final Twitter mockTwitterAccount = (new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
                 assertEquals(retailerId.toString(), id);
@@ -496,11 +497,13 @@ public class TestDemandProcessor {
                 return null;
             }
         });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
 
         DemandProcessor.process();
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
-        TwitterUtils.getTwetailerAccount();
+
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 
     @Test
@@ -604,16 +607,18 @@ public class TestDemandProcessor {
             }
         };
 
-        TwitterUtils.releaseTwetailerAccount(new Twitter() {
+        final Twitter mockTwitterAccount = (new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
                 throw new TwitterException("done in purpose");
             }
         });
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
 
         DemandProcessor.process();
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
-        TwitterUtils.getTwetailerAccount();
+
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 }

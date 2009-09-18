@@ -104,7 +104,6 @@ public class TestDemandsRestlet {
     public void testCreateResourceII() throws DataSourceException, ClientException {
         final PersistenceManager proposedPM = new MockPersistenceManager();
         final JsonObject proposedParameters = new GenericJsonObject();
-        final Long resourceId = 12345L;
         ops.setConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {

@@ -520,7 +520,6 @@ public class TestBaseRestlet {
         };
 
         mockRestlet.doPut(mockRequest, mockResponse);
-        System.err.println(stream.getStream());
         assertTrue(stream.contains("resource"));
         assertTrue(stream.contains("{"));
         assertTrue(stream.contains("id"));

@@ -103,7 +103,6 @@ public class TestConsumersRestlet {
 
     @Test(expected=DataSourceException.class)
     public void testGetResourceIV() throws DataSourceException {
-        final Long resourceId = 12345L;
         ops.setConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String attribute, Object value, int limit) {

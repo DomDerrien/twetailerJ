@@ -2,7 +2,6 @@ package twetailer.dto;
 
 import java.io.Serializable;
 
-import javax.activity.InvalidActivityException;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;

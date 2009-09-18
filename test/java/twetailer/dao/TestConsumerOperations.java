@@ -478,6 +478,7 @@ public class TestConsumerOperations {
         assertTrue(pm.isClosed());
     }
 
+    /* After the upgrade to the Java SDK 1.2.5, the limitation of having to use the same PM even for detached object has been removed
     @Test(expected=javax.jdo.JDOFatalUserException.class)
     public void testUpdateIII() throws DataSourceException {
 
@@ -496,4 +497,5 @@ public class TestConsumerOperations {
         // Persist the update
         consumer = ops.updateConsumer(consumer); // This is going to throw the JDOFatalUserExcepion because the update should be done with the same PersistenceManager instance
     }
+    */
 }

@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.adapter.MockTwitterUtils;
 import twetailer.adapter.TwitterUtils;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
@@ -66,7 +67,7 @@ public class TestDemandValidator {
     public void setUp() throws Exception {
         // Inject the fake Twitter account
         twitterAccount = new MockTwitter(consumerKey);
-        TwitterUtils.releaseTwetailerAccount(twitterAccount);
+        MockTwitterUtils.injectMockTwitterAccount(twitterAccount);
 
         // ConsumerOperations mock
         ConsumerOperations consumerOperations = new ConsumerOperations() {
@@ -89,7 +90,7 @@ public class TestDemandValidator {
     @After
     public void tearDown() {
         // Remove the fake Twitter account
-        TwitterUtils.getTwetailerAccount();
+        MockTwitterUtils.restoreTwitterUtils(twitterAccount);
     }
 
     @Test
@@ -954,13 +955,13 @@ public class TestDemandValidator {
         // Impossible to tweet the warnings
         //
 
-        TwitterUtils.getTwetailerAccount();
-        TwitterUtils.releaseTwetailerAccount(new Twitter() {
+        final Twitter mockTwitterAccount = new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
                 throw new TwitterException("done in purpose");
             }
-        });
+        };
+        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
 
         // DemandOperations mock
         final Long demandKey = 67890L;
@@ -983,5 +984,7 @@ public class TestDemandValidator {
 
         assertNull(twitterAccount.getSentMessage());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+
+        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
     }
 }
