@@ -216,6 +216,18 @@ public class BaseOperations {
         return _proposalOperations;
     }
 
+    private RawCommandOperations _rawCommandOperations;
+
+    /**
+     * Factory for the RawCommandOperations instance
+     * @return RawCommandOperations instance
+     */
+    public RawCommandOperations getRawCommandOperations() {
+        if (_rawCommandOperations == null) {
+            _rawCommandOperations = new RawCommandOperations();
+        }
+        return _rawCommandOperations;
+    }
     private RetailerOperations _retailerOperations;
 
     /**

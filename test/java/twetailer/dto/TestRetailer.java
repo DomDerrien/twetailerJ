@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import domderrien.jsontools.JsonException;
@@ -60,7 +61,7 @@ public class TestRetailer {
     String phoneNumber = "514-123-4567 #890";
     Long storeKey = 54321L;
     Long score = 5L;
-    Long twitterId = 98760L;
+    String twitterId = "Ryan";
 
     @Test
     public void testAccessors() {
@@ -70,7 +71,7 @@ public class TestRetailer {
         object.setCreatorKey(creatorKey);
         object.setCriteria(criteria);
         object.setEmail(email);
-        object.setImId(imId);
+        object.setJabberId(imId);
         object.setIsStoreAdmin(isStoreAdmin);
         object.setLanguage(language);
         object.setLocationKey(locationKey);
@@ -84,7 +85,7 @@ public class TestRetailer {
         assertEquals(creatorKey, object.getCreatorKey());
         assertEquals(criteria, object.getCriteria());
         assertEquals(email, object.getEmail());
-        assertEquals(imId, object.getImId());
+        assertEquals(imId, object.getJabberId());
         assertEquals(isStoreAdmin, object.getIsStoreAdmin());
         assertEquals(language, object.getLanguage());
         assertEquals(locationKey, object.getLocationKey());
@@ -146,7 +147,7 @@ public class TestRetailer {
         object.setCreatorKey(creatorKey);
         object.setCriteria(criteria);
         object.setEmail(email);
-        object.setImId(imId);
+        object.setJabberId(imId);
         object.setIsStoreAdmin(isStoreAdmin);
         object.setLanguage(language);
         object.setLocationKey(locationKey);
@@ -162,7 +163,7 @@ public class TestRetailer {
         assertEquals(creatorKey, clone.getCreatorKey());
         assertEquals(criteria, clone.getCriteria());
         assertEquals(email, clone.getEmail());
-        assertEquals(imId, clone.getImId());
+        assertEquals(imId, clone.getJabberId());
         assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
@@ -195,5 +196,12 @@ public class TestRetailer {
         assertNull(clone.getStoreKey());
         assertNull(clone.getScore());
         assertNull(clone.getTwitterId());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetPreferredConnection() {
+        Retailer object = new Retailer();
+
+        object.setPreferredConnection((Source) null);
     }
 }

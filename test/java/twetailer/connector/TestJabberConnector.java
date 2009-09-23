@@ -1,0 +1,101 @@
+package twetailer.connector;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+
+import javax.servlet.ServletInputStream;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import twetailer.dao.MockAppEngineEnvironment;
+
+import com.google.appengine.api.xmpp.Message;
+
+import domderrien.mocks.MockHttpServletRequest;
+import domderrien.mocks.MockServletInputStream;
+
+public class TestJabberConnector {
+
+    private MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @Before
+    public void setUp() throws Exception {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        mockAppEngineEnvironment.setUp();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
+    }
+
+    @Test
+    public void testConstructor() {
+        new JabberConnector();
+    }
+
+    public static void prepareStream(MockServletInputStream stream, String boundary, String jabberId, String message) {
+        stream.setData(
+            "--" + boundary + "\n" +
+            "Content-Disposition: form-data; name=\"from\"\n" +
+            "\n" +
+            jabberId + "\n" +
+            "--" + boundary + "\n" +
+            "Content-Disposition: form-data; name=\"to\"\n" +
+            "\n" +
+            "twetailer@appspot.com\n" +
+            "--" + boundary + "\n" +
+            "Content-Disposition: form-data; name=\"body\"\n" +
+            "\n" +
+            message + "\n" +
+            "--" + boundary + "\n" +
+            "Content-Disposition: form-data; name=\"stanza\"\n" +
+            "\n" +
+            "<message from=\"" + jabberId + "\" to=\"twetailer@appspot.com\">\n" +
+            "<body>" + message + "</body>\n" +
+            "</message>"
+        );
+    }
+
+    @Test
+    public void testGetInstantMessage() throws IOException {
+        final String jabberId = "test-emitter@appspot.com";
+        final String message = "wii console Mario Kart";
+        final String boundary = "B";
+        final MockServletInputStream stream = new MockServletInputStream();
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public String getContentType() {
+                return "multipart/form-data; boundary=" + boundary;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                prepareStream(stream, boundary, jabberId, message);
+                return stream;
+            }
+        };
+
+        Message instantMessage = JabberConnector.getInstantMessage(request);
+
+        System.err.println("body: " + instantMessage.getBody());
+        System.err.println("stanza: " + instantMessage.getStanza());
+        System.err.println("from: " + instantMessage.getFromJid().getId());
+        System.err.println("type: " + instantMessage.getMessageType());
+        System.err.println("to: " + instantMessage.getRecipientJids()[0].getId());
+        System.err.println("isXML: " + instantMessage.isXml());
+
+        assertNotNull(instantMessage);
+        assertEquals(jabberId, instantMessage.getFromJid().getId());
+        assertEquals(message, instantMessage.getBody());
+        assertEquals(0, stream.getNotProcessedContents().length());
+    }
+
+    @Test
+    public void testSendInstantMessage() {
+        JabberConnector.sendInstantMessage("test", "test");
+    }
+}

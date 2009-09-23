@@ -8,9 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonParser;
 
@@ -46,8 +49,9 @@ public class TestCommand {
 
     CommandSettings.Action action = CommandSettings.Action.cancel;
     Long consumerKey = 12345L;
+    Long rawCommandId = 67890L;
+    Source source = Source.simulated;
     CommandSettings.State state = CommandSettings.State.closed;
-    Long tweetId = 67890L;
 
     @Test
     public void testAccessors() {
@@ -56,16 +60,18 @@ public class TestCommand {
         object.setAction(action);
         object.setAction(action.toString());
         object.setConsumerKey(consumerKey);
+        object.setRawCommandId(rawCommandId);
+        object.setSource(source);
+        object.setSource(source.toString());
         object.setState(state);
         object.setState(state.toString());
-        object.setTweetId(tweetId);
 
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
         assertEquals(consumerKey, object.getConsumerKey());
+        assertEquals(rawCommandId, object.getRawCommandId());
+        assertEquals(source, object.getSource());
         assertEquals(state, object.getState());
-        assertEquals(state, object.getState());
-        assertEquals(tweetId, object.getTweetId());
     }
 
     @Test
@@ -74,27 +80,51 @@ public class TestCommand {
 
         object.setAction(action);
         object.setConsumerKey(consumerKey);
+        object.setRawCommandId(rawCommandId);
+        object.setSource(source);
         object.setState(state);
-        object.setTweetId(tweetId);
 
         Command clone = new Command(object.toJson());
 
         assertEquals(action, clone.getAction());
         assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(rawCommandId, clone.getRawCommandId());
+        assertEquals(source, clone.getSource());
         assertEquals(state, clone.getState());
-        assertEquals(tweetId, clone.getTweetId());
     }
 
     @Test
     public void testJsonCommandsII() {
         Command object = new Command();
+        object.setSource(source);
 
         assertNull(object.getConsumerKey());
-        assertNull(object.getTweetId());
+        assertNull(object.getRawCommandId());
 
         Command clone = new Command(object.toJson());
 
         assertNull(clone.getConsumerKey());
-        assertNull(clone.getTweetId());
+        assertNull(clone.getRawCommandId());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetAction() {
+        Command object = new Command();
+
+        object.setAction((Action) null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetSource() {
+        Command object = new Command();
+
+        object.setSource((Source) null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetState() {
+        Command object = new Command();
+
+        object.setState((State) null);
     }
 }

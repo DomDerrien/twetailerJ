@@ -25,9 +25,9 @@ public class Consumer extends Entity {
     public final static String EMAIL = "email";
 
     @Persistent
-    private String imId;
+    private String jabberId;
 
-    public final static String IM_ID = "imId";
+    public final static String JABBER_ID = "jabberId";
 
     @Persistent
     private String language = LocaleValidator.DEFAULT_LANGUAGE;
@@ -50,7 +50,7 @@ public class Consumer extends Entity {
     public final static String PHONE_NUMBER = "phoneNb";
 
     @Persistent
-    private Long twitterId;
+    private String twitterId;
 
     public final static String TWITTER_ID = "twitterId";
 
@@ -85,12 +85,12 @@ public class Consumer extends Entity {
         this.email = email;
     }
 
-    public String getImId() {
-        return imId;
+    public String getJabberId() {
+        return jabberId;
     }
 
-    public void setImId(String imId) {
-        this.imId = imId;
+    public void setJabberId(String jabberId) {
+        this.jabberId = jabberId;
     }
 
     public String getLanguage() {
@@ -129,11 +129,11 @@ public class Consumer extends Entity {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getTwitterId() {
+    public String getTwitterId() {
         return twitterId;
     }
 
-    public void setTwitterId(Long twitterId) {
+    public void setTwitterId(String twitterId) {
         this.twitterId = twitterId;
     }
 
@@ -141,12 +141,12 @@ public class Consumer extends Entity {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
         out.put(EMAIL, getEmail());
-        out.put(IM_ID, getImId());
+        out.put(JABBER_ID, getJabberId());
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(LANGUAGE, getLanguage());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
-        if (getTwitterId() != null) { out.put(TWITTER_ID, getTwitterId()); }
+        out.put(TWITTER_ID, getTwitterId());
         return out;
     }
 
@@ -154,12 +154,12 @@ public class Consumer extends Entity {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
+        if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
-        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
+        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
         return this;
     }
 }

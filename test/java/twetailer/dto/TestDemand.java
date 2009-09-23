@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.validator.CommandSettings;
@@ -53,8 +54,9 @@ public class TestDemand {
 
     CommandSettings.Action action = CommandSettings.Action.cancel;
     Long consumerKey = 12345L;
+    Long rawCommandId = 67890L;
+    Source source = Source.simulated;
     CommandSettings.State state = CommandSettings.State.closed;
-    Long tweetId = 67890L;
 
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Date expirationDate = new Date(new Date().getTime() + 65536L);
@@ -72,9 +74,11 @@ public class TestDemand {
         object.setAction(action);
         object.setAction(action.toString());
         object.setConsumerKey(consumerKey);
+        object.setRawCommandId(rawCommandId);
+        object.setSource(source);
+        object.setSource(source.toString());
         object.setState(state);
         object.setState(state.toString());
-        object.setTweetId(tweetId);
 
         // Demand
         object.setCriteria(criteria);
@@ -89,9 +93,9 @@ public class TestDemand {
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
         assertEquals(consumerKey, object.getConsumerKey());
+        assertEquals(rawCommandId, object.getRawCommandId());
+        assertEquals(source, object.getSource());
         assertEquals(state, object.getState());
-        assertEquals(state, object.getState());
-        assertEquals(tweetId, object.getTweetId());
 
         // Demand
         assertEquals(criteria, object.getCriteria());
@@ -229,8 +233,9 @@ public class TestDemand {
         // Command
         object.setAction(action);
         object.setConsumerKey(consumerKey);
+        object.setRawCommandId(rawCommandId);
+        object.setSource(source);
         object.setState(state);
-        object.setTweetId(tweetId);
 
         // Demand
         object.setCriteria(criteria);
@@ -246,8 +251,9 @@ public class TestDemand {
         // Command
         assertEquals(action, clone.getAction());
         assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(rawCommandId, clone.getRawCommandId());
+        assertEquals(source, clone.getSource());
         assertEquals(state, clone.getState());
-        assertEquals(tweetId, clone.getTweetId());
 
         // Demand
         assertEquals(criteria, clone.getCriteria());
@@ -262,10 +268,11 @@ public class TestDemand {
     @Test
     public void testJsonDemandsII() {
         Demand object = new Demand();
+        object.setSource(source);
 
         // Command
         assertNull(object.getConsumerKey());
-        assertNull(object.getTweetId());
+        assertNull(object.getRawCommandId());
 
         // Demand
         assertNull(object.getLocationKey());
@@ -276,7 +283,7 @@ public class TestDemand {
 
         // Command
         assertNull(clone.getConsumerKey());
-        assertNull(clone.getTweetId());
+        assertNull(clone.getRawCommandId());
 
         // Demand
         assertNull(clone.getLocationKey());
@@ -287,6 +294,7 @@ public class TestDemand {
     @Test
     public void testJsonDemandsIII() {
         Demand object = new Demand();
+        object.setSource(source);
 
         object.resetLists();
 
@@ -304,10 +312,18 @@ public class TestDemand {
     @Test
     public void testInvalidDateFormat() throws JsonException {
         Demand object = new Demand();
+        object.setSource(source);
         Date date = object.getExpirationDate();
 
         object.fromJson(new JsonParser("{'" + Demand.EXPIRATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
 
         assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(object.getExpirationDate())); // Corrupted date did not alter the original date
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetSource() {
+        Demand object = new Demand();
+
+        object.setSource((Source) null);
     }
 }

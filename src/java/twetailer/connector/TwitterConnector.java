@@ -1,4 +1,4 @@
-package twetailer.adapter;
+package twetailer.connector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class TwitterUtils {
-    private static final Logger log = Logger.getLogger(TwitterUtils.class.getName());
+public class TwitterConnector {
+    private static final Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
     private static String twetailerScreenName = "twtlr";
     private static String twetailerPassword = "twetailer@shortcut0";
@@ -21,34 +21,6 @@ public class TwitterUtils {
 
     public static String getTwetailerScreenName() {
         return twetailerScreenName;
-    }
-
-    protected static void setTwetailerScreenName(String screenName) {
-        twetailerScreenName = screenName;
-    }
-
-    public static String getTwetailerPassword() {
-        return twetailerPassword;
-    }
-
-    protected static void setTwetailerPassword(String password) {
-        twetailerPassword = password;
-    }
-
-    public static String getRobotScreenName() {
-        return robotScreenName;
-    }
-
-    public static void setRobotScreenName(String screenName) {
-        robotScreenName = screenName;
-    }
-
-    public static String getRobotPassword() {
-        return robotPassword;
-    }
-
-    public static void setRobotPassword(String password) {
-        robotPassword = password;
     }
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
@@ -62,7 +34,7 @@ public class TwitterUtils {
     public synchronized static Twitter getTwetailerAccount() {
         int size = _twetailerAccounts.size();
         if (size == 0) {
-            return new Twitter(TwitterUtils.getTwetailerScreenName(), TwitterUtils.getTwetailerPassword());
+            return new Twitter(twetailerScreenName, twetailerPassword);
         }
         return _twetailerAccounts.remove(size - 1);
     }
@@ -88,7 +60,7 @@ public class TwitterUtils {
     public synchronized static Twitter getRobotAccount() {
         int size = _robotAccounts.size();
         if (size == 0) {
-            return new Twitter(TwitterUtils.getRobotScreenName(), TwitterUtils.getRobotPassword());
+            return new Twitter(robotScreenName, robotPassword);
         }
         return _robotAccounts.remove(size - 1);
     }
@@ -175,7 +147,7 @@ public class TwitterUtils {
      *
      * @throws TwitterException If the message submission fails
      */
-    protected static DirectMessage sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
+    public static DirectMessage sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
         log.fine("Before sending a DM to " + recipientScreenName + ": " + message);
         return account.sendDirectMessage(recipientScreenName, message);
     }
@@ -211,6 +183,6 @@ public class TwitterUtils {
      */
     public static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
         log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
-        return account.getDirectMessages(new Paging(1, 2, sinceId)); // FIXME: remove the limitation of 1 DMs retrieved at a time
+        return account.getDirectMessages(new Paging(1, sinceId));
     }
 }

@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.appengine.api.users.User;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 
@@ -26,7 +25,7 @@ public class ConsumerOperations extends BaseOperations {
      *
      * @see ConsumerOperations#createConsumer(PersistenceManager, User)
      */
-    public Consumer createConsumer(User loggedUser) {
+    public Consumer createConsumer(com.google.appengine.api.users.User loggedUser) {
         PersistenceManager pm = getPersistenceManager();
         try {
             return createConsumer(pm, loggedUser);
@@ -43,7 +42,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param loggedUser System entity to attach with the just created user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      */
-    public Consumer createConsumer(PersistenceManager pm, User loggedUser) {
+    public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.users.User loggedUser) {
         try {
             // Try to retrieve the same location
             List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, loggedUser.getEmail(), 1);
@@ -93,7 +92,7 @@ public class ConsumerOperations extends BaseOperations {
     public Consumer createConsumer(PersistenceManager pm, twitter4j.User twitterUser) throws DataSourceException {
         try {
             // Try to retrieve the same location
-            List<Consumer> consumers = getConsumers(pm, Consumer.TWITTER_ID, twitterUser.getId(), 1);
+            List<Consumer> consumers = getConsumers(pm, Consumer.TWITTER_ID, twitterUser.getScreenName(), 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
             }
@@ -104,7 +103,7 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(twitterUser.getName());
         newConsumer.setAddress(twitterUser.getLocation());
-        newConsumer.setTwitterId(Long.valueOf(twitterUser.getId()));
+        newConsumer.setTwitterId(twitterUser.getScreenName());
         pm.makePersistent(newConsumer);
         return newConsumer;
     }

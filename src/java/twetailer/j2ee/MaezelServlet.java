@@ -10,23 +10,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
-import twetailer.adapter.TwitterAdapter;
-import twetailer.adapter.TwitterRobot;
-import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
-import twetailer.dto.Location;
-import twetailer.dto.Retailer;
-import twetailer.dto.Settings;
-import twetailer.dto.Store;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
+import twetailer.dto.Location;
+import twetailer.dto.Retailer;
+import twetailer.dto.Settings;
+import twetailer.dto.Store;
+import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
-import twetailer.validator.DemandValidator;
-
+import twetailer.task.DemandValidator;
+import twetailer.task.RobotResponder;
+import twetailer.task.TweetLoader;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
@@ -55,9 +55,13 @@ public class MaezelServlet extends HttpServlet {
 
             if (pathInfo == null || pathInfo.length() == 0) {
             }
-            else if ("/processDMs".equals(pathInfo)) {
-                Long newSinceId = TwitterAdapter.processDirectMessages();
+            else if ("/loadTweets".equals(pathInfo)) {
+                Long newSinceId = TweetLoader.loadDirectMessages();
                 out.put(Settings.LAST_PROCESSED_DIRECT_MESSAGE_ID, newSinceId);
+            }
+            else if ("/processCommands".equals(pathInfo)) {
+                Long commandId = Long.parseLong(request.getParameter("commandId"));
+                CommandProcessor.processRawCommands(commandId);
             }
             else if ("/validateOpenDemands".equals(pathInfo)) {
                 DemandValidator.process();
@@ -66,7 +70,7 @@ public class MaezelServlet extends HttpServlet {
                 DemandProcessor.process();
             }
             else if ("/processRobotMessages".equals(pathInfo)) {
-                TwitterRobot.processDirectMessages();
+                RobotResponder.processDirectMessages();
             }
             else if ("/processProposals".equals(pathInfo)) {
                 throw new IllegalArgumentException("Not yet implemented");

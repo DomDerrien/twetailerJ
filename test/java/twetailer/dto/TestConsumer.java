@@ -52,7 +52,7 @@ public class TestConsumer {
     Long locationKey = 12345L;
     String name = "dom";
     String phoneNumber = "514-123-4567 #890";
-    Long twitterId = 54321L;
+    String twitterId = "Katelyn";
 
     @Test
     public void testAccessors() {
@@ -60,7 +60,7 @@ public class TestConsumer {
 
         object.setAddress(address);
         object.setEmail(email);
-        object.setImId(imId);
+        object.setJabberId(imId);
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
@@ -69,7 +69,7 @@ public class TestConsumer {
 
         assertEquals(address, object.getAddress());
         assertEquals(email, object.getEmail());
-        assertEquals(imId, object.getImId());
+        assertEquals(imId, object.getJabberId());
         assertEquals(language, object.getLanguage());
         assertEquals(locationKey, object.getLocationKey());
         assertEquals(name, object.getName());
@@ -90,7 +90,7 @@ public class TestConsumer {
 
         object.setAddress(address);
         object.setEmail(email);
-        object.setImId(imId);
+        object.setJabberId(imId);
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
@@ -101,7 +101,7 @@ public class TestConsumer {
 
         assertEquals(address, clone.getAddress());
         assertEquals(email, clone.getEmail());
-        assertEquals(imId, clone.getImId());
+        assertEquals(imId, clone.getJabberId());
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(name, clone.getName());

@@ -1,4 +1,4 @@
-package twetailer.adapter;
+package twetailer.task;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -13,19 +13,21 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
-import twetailer.dto.Settings;
+import twetailer.dto.RawCommand;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
-import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
@@ -34,13 +36,15 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
-public class TwitterAdapter {
-    private static final Logger log = Logger.getLogger(TwitterAdapter.class.getName());
+
+public class CommandProcessor {
+    private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     protected static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
@@ -49,6 +53,11 @@ public class TwitterAdapter {
     protected static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
     protected static Map<Locale, Map<CommandSettings.Prefix, Pattern>> localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
 
+    /**
+     * Load the command processor parameters for the specified locale
+     *
+     * @param locale user's preferred locale
+     */
     protected static void loadLocalizedSettings(Locale locale) {
         JsonObject prefixes = localizedPrefixes.get(locale);
         if (prefixes == null) {
@@ -91,6 +100,12 @@ public class TwitterAdapter {
         }
     }
 
+    /**
+     * Builds a pattern for a regular expression which consider all characters after the third one as optional
+     *
+     * @param prefix character sequence to consider
+     * @return Pattern for a regular expression with optional characters at the end, in forn such as tes(?:t(?:e(?:r)?)?)? for the keyword tester
+     */
     private static String createPatternWithOptionalEndingCharacters(String prefix) {
         if (prefix.length() == 1) {
             if ("?".equals(prefix)) {
@@ -345,9 +360,11 @@ public class TwitterAdapter {
      * @param actions List of localized action labels
      * @return Serialized command
      */
-    public static String generateTweet(Demand demand, Location location, JsonObject prefixes, JsonObject actions, Locale locale) {
+    public static String generateTweet(Demand demand, Location location, Locale locale) {
         final String space = " ";
         StringBuilder tweet = new StringBuilder();
+        JsonObject prefixes = localizedPrefixes.get(locale);
+        JsonObject actions = localizedActions.get(locale);
         tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(demand.getAction().toString()).getString(0)).append(space);
         if (demand.getKey() != null) {
             tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)).append(":").append(demand.getKey()).append(space);
@@ -370,24 +387,16 @@ public class TwitterAdapter {
     }
 
     /**
-     * Extract commands from the pending Direct Messages and acts accordingly
+     * Extract commands from the tables of raw commands and acts accordingly
      *
-     * @return Updated direct message identifier if new DMs have been processed, or the given one if none has been processed
+     * @param rawCommandKey Identifier of the raw command to process
      *
-     * @throws TwitterException
      * @throws DataSourceException
      */
-    public static Long processDirectMessages() throws TwitterException, DataSourceException, ParseException, ClientException {
+    public static void processRawCommands(Long rawCommandKey) throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
-            Settings settings = settingsOperations.getSettings(pm);
-            Long sinceId = settings.getLastProcessDirectMessageId();
-            Long lastId = processDirectMessages(pm, sinceId);
-            if (!lastId.equals(sinceId)) {
-                settings.setLastProcessDirectMessageId(lastId);
-                settingsOperations.updateSettings(pm, settings);
-            }
-            return lastId;
+            processRawCommands(pm, rawCommandKey);
         }
         finally {
             pm.close();
@@ -395,129 +404,114 @@ public class TwitterAdapter {
     }
 
     /**
-     * Extract commands from the pending Direct Messages and acts accordingly
+     * Extract commands from the tables of raw commands and acts accordingly
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param sinceId identifier of the last process direct message
-     * @return Updated direct message identifier if new DMs have been processed, or the given one if none has been processed
+     * @param rawCommandKey Identifier of the raw command to process
      *
-     * @throws TwitterException
      * @throws DataSourceException
      */
-    @SuppressWarnings("deprecation")
-    protected static Long processDirectMessages(PersistenceManager pm, Long sinceId) throws DataSourceException, TwitterException {
-        long lastId = sinceId;
+    protected static void processRawCommands(PersistenceManager pm, Long rawCommandKey) throws DataSourceException {
+        // Get the identified raw command
+        RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, rawCommandKey);
 
-        // Get the list of direct messages
-        List<DirectMessage> messages = null;
+        // Get the record of the command emitter
+        Consumer consumer = retrieveConsumer(pm, rawCommand);
+        Locale senderLocale = consumer.getLocale();
+
+        // Load the definitions for the sender locale
+        loadLocalizedSettings(senderLocale);
+        Map<CommandSettings.Prefix, Pattern> patterns = localizedPatterns.get(senderLocale);
+
         try {
-            messages = TwitterUtils.getDirectMessages(sinceId);
+            // Extract information from the tweet and process the information
+            JsonObject command = parseTweet(patterns, rawCommand.getCommand());
+            command.put(Command.SOURCE, rawCommand.getSource().toString());
+            processCommand(pm, consumer, rawCommand, command);
         }
-        catch(TwitterException ex) {
-            log.info("Cannot get the Direct Messages (DM) for the account " + TwitterUtils.getTwetailerScreenName());
+        catch(Exception ex) {
+            // TODO: use localized message
+            ex.printStackTrace();
+            BaseConnector.communicateToEmitter(rawCommand, "Error: " + ex.getMessage());
         }
+    }
 
-        // Process each messages one-by-one
-        int idx = messages == null ? 0 : messages.size(); // To start by the end of the message queue
-        log.warning(idx + " direct messages to process (temporary limited to 1 DM per operation)"); // FIXME: remove the limitation of 1 DM processed at a time
-        while (0 < idx) {
-            --idx;
-            DirectMessage dm = messages.get(idx);
-            long dmId = dm.getId();
-
-            // Get Twetailer account and verify the user is a follower
-            twitter4j.User sender = dm.getSender();
-            Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
-            Locale senderLocale = consumer.getLocale();
-            if (!sender.isFollowing()) {
-                TwitterUtils.sendPublicMessage(LabelExtractor.get("ta_messageToNonFollower", new Object[] { sender.getScreenName() }, senderLocale));
-                break;
-            }
-
-            // Evaluate the new demand
-            try {
-                // Load the definitions for the sender locale
-                loadLocalizedSettings(senderLocale);
-                JsonObject prefixes = localizedPrefixes.get(senderLocale);
-                Map<CommandSettings.Prefix, Pattern> patterns = localizedPatterns.get(senderLocale);
-
-                // Extract information from the tweet and process the information
-                JsonObject command = parseTweet(patterns, dm.getText());
-                command.put(Demand.TWEET_ID, dmId);
-                processCommand(pm, sender, consumer, prefixes, command);
-            }
-            catch(Exception ex) {
-                // TODO: use localized message
-                ex.printStackTrace();
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), "Error: " + ex.getMessage());
-            }
-
-            if (lastId < dmId) {
-                lastId = dmId;
-            }
-            break; // FIXME: remove the limitation of 1 DM processed at a time
+    protected static Consumer retrieveConsumer(PersistenceManager pm, RawCommand rawCommand) throws DataSourceException {
+        if (Source.simulated.equals(rawCommand.getSource())) {
+            Consumer consumer = new Consumer();
+            consumer.setName(rawCommand.getEmitterId());
+            return consumer;
         }
-
-        return Long.valueOf(lastId);
+        if (Source.twitter.equals(rawCommand.getSource())) {
+            return consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, rawCommand.getEmitterId(), 1).get(0);
+        }
+        if (Source.jabber.equals(rawCommand.getSource())) {
+            return consumerOperations.getConsumers(pm, Consumer.JABBER_ID, rawCommand.getEmitterId(), 1).get(0);
+        }
+        if (Source.facebook.equals(rawCommand.getSource())) {
+            throw new RuntimeException("Not yet implemented");
+        }
+        throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
     }
 
     /**
      * Dispatch the tweeted command according to the corresponding action
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param sender Twitter message originator
-     * @param prefixes List of localized prefixes for the orginator's locale
-     * @param arguments Sequence submitted in addition to the question mark (?) or to the help command
+     * @param consumer originator of the raw command
+     * @param rawCommand raw command with emitter coordinates
+     * @param command parsed command
      *
      * @throws TwitterException If sending the help message to the originator fails
      * @throws DataSourceException If the communication with the back-end fails
      * @throws ClientException If information extracted from the tweet are incorrect
      */
-    public static void processCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject prefixes, JsonObject command) throws TwitterException, DataSourceException, ClientException {
+    public static void processCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws TwitterException, DataSourceException, ClientException {
         Locale locale = consumer.getLocale();
+        JsonObject prefixes = localizedPrefixes.get(locale);
         JsonObject actions = localizedActions.get(locale);
         // Clear case of help being requested at the prefix level
         if (command.containsKey(Command.NEED_HELP)) {
-            processHelpCommand(sender, prefixes, actions, command.getString(Command.NEED_HELP), locale);
+            processHelpCommand(rawCommand, command.getString(Command.NEED_HELP), locale);
             return;
         }
         String action = guessAction(command);
         // Alternate case of the help being asked as an action...
         if (CommandSettings.isEquivalentTo(prefixes, CommandSettings.Prefix.help.toString(), action)) {
-            processHelpCommand(sender, prefixes, actions, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
+            processHelpCommand(rawCommand, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), action)) {
-            processCancelCommand(pm, sender, consumer, command, prefixes, actions);
+            processCancelCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.close.toString(), action)) {
-            processCloseCommand(pm, sender, consumer, command);
+            processCloseCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.confirm.toString(), action)) {
-            processConfirmCommand(pm, sender, consumer, command);
+            processConfirmCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.decline.toString(), action)) {
-            processDeclineCommand(pm, sender, consumer, command);
+            processDeclineCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.demand.toString(), action)) {
-            processDemandCommand(pm, sender, consumer, command, prefixes, actions);
+            processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.list.toString(), action)) {
-            processListCommand(pm, sender, consumer, command, prefixes, actions);
+            processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.propose.toString(), action)) {
-            processProposeCommand(pm, sender, consumer, command);
+            processProposeCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.supply.toString(), action)) {
-            processSupplyCommand(pm, sender, consumer, command);
+            processSupplyCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.wish.toString(), action)) {
-            processWishCommand(pm, sender, consumer, command);
+            processWishCommand(pm, consumer, rawCommand, command);
         }
         else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.www.toString(), action)) {
-            processWWWCommand(pm, sender, consumer, command);
+            processWWWCommand(pm, consumer, rawCommand, command);
         }
         else {
-            TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("error_unsupported_action", locale));
+            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get("error_unsupported_action", locale));
         }
     }
 
@@ -551,15 +545,15 @@ public class TwitterAdapter {
      * Use the keyword given as an argument to select an Help text among {prefixes, actions, registered keywords}.
      * If the extracted keyword does not match anything, the default Help text is tweeted.
      *
-     * @param sender Twitter message originator
+     * @param rawCommand raw command with emitter coordinates
      * @param prefixes List of localized prefixes for the orginator's locale
      * @param actions List of location actions for the originator's locale
      * @param arguments Sequence submitted in addition to the question mark (?) or to the help command
      * @param locale Originator's locale
      *
-     * @throws TwitterException If sending the help message to the originator fails
+     * @throws DataSourceException If sending the help message to the originator fails
      */
-    protected static void processHelpCommand(twitter4j.User sender, JsonObject prefixes, JsonObject actions, String arguments, Locale locale) throws TwitterException {
+    protected static void processHelpCommand(RawCommand rawCommand, String arguments, Locale locale) throws DataSourceException {
         // Extract the first keyword
         int limit = arguments.length();
         String keyword = "";
@@ -576,20 +570,22 @@ public class TwitterAdapter {
         }
         // Tweet the default help message if there's no keyword
         if (keyword.length() == 0) {
-            TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
+            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
             return;
         }
         // Check if the keyword is a prefix
+        JsonObject prefixes = localizedPrefixes.get(locale);
         for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
             if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + prefix, locale));
+                BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + prefix, locale));
                 return;
             }
         }
         // Check if the keyword is an action
+        JsonObject actions = localizedActions.get(locale);
         for (CommandSettings.Action action: CommandSettings.Action.values()) {
             if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_ACTION_PREFIX + action, locale));
+                BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_DEFINITION_ACTION_PREFIX + action, locale));
                 return;
             }
         }
@@ -599,16 +595,16 @@ public class TwitterAdapter {
             JsonArray equivalents = helpKeywords.getJsonArray(helpKeyword);
             for (int i = 0; i < equivalents.size(); i++) {
                 if (equivalents.getString(i).equals(keyword)) {
-                    TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, locale));
+                    BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, locale));
                     return;
                 }
             }
         }
         // Tweet the default help message if the given keyword is not recognized
-        TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
+        BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
     }
 
-    protected static void processCancelCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws ClientException, DataSourceException, TwitterException {
+    protected static void processCancelCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException, TwitterException {
         //
         // Used by resource owner to stop the process of his resource
         //
@@ -623,7 +619,7 @@ public class TwitterAdapter {
             demandOperations.updateDemand(pm, demand);
             // Echo back the updated demand
             Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-            TwitterUtils.sendDirectMessage(sender.getScreenName(), generateTweet(demand, location, prefixes, actions, consumer.getLocale()));
+            BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
         }
         /* TODO: implement other variations
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
@@ -634,11 +630,11 @@ public class TwitterAdapter {
         }
         */
         else {
-            TwitterUtils.sendDirectMessage(sender.getScreenName(), LabelExtractor.get("error_cancel_without_resource_id", consumer.getLocale()));
+            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get("error_cancel_without_resource_id", consumer.getLocale()));
         }
     }
 
-    protected static void processCloseCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processCloseCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by the resource owner to report that the expected product has been delivered
         //
@@ -647,21 +643,21 @@ public class TwitterAdapter {
         throw new ClientException("Closing demands - Not yet implemented");
     }
 
-    protected static void processConfirmCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by the consumer to accept a proposal
         //
         throw new ClientException("Confirming proposals - Not yet implemented");
     }
 
-    protected static void processDeclineCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processDeclineCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by a consumer to refuse a proposal
         //
         throw new ClientException("Declining proposals - Not yet implemented");
     }
 
-    public static void processDemandCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException, TwitterException {
+    public static void processDemandCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException, TwitterException {
         //
         // Used by a consumer to:
         //
@@ -683,7 +679,7 @@ public class TwitterAdapter {
             demandOperations.updateDemand(pm, demand);
             // Echo back the updated demand
             Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-            TwitterUtils.sendDirectMessage(sender.getScreenName(), generateTweet(demand, location, prefixes, actions, consumer.getLocale()));
+            BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
         }
         else {
             // Extracts the new location
@@ -709,6 +705,7 @@ public class TwitterAdapter {
                 // Set fields with default values
                 latestDemand.setAction(CommandSettings.Action.demand);
             }
+            latestDemand.setSource(rawCommand.getSource());
             // Update of the latest command (can be the default one) with the just extracted parameters
             command = latestDemand.fromJson(command).toJson();
             if (newLocationKey != null && newLocationKey != command.getLong(Demand.LOCATION_KEY)) {
@@ -716,9 +713,8 @@ public class TwitterAdapter {
             }
             // Persist the new demand
             Demand newDemand = demandOperations.createDemand(pm, command, consumer.getKey());
-            String screenName = sender.getScreenName();
-            TwitterUtils.sendDirectMessage(
-                    screenName,
+            BaseConnector.communicateToEmitter(
+                    rawCommand,
                     LabelExtractor.get(
                             "ta_acknowledgeDemandCreated",
                             new Object[] { newDemand.getKey() },
@@ -726,11 +722,11 @@ public class TwitterAdapter {
                     )
             );
             Location location = newDemand.getLocationKey() == null ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
-            TwitterUtils.sendDirectMessage(screenName, generateTweet(newDemand, location, prefixes, actions, consumer.getLocale()));
+            BaseConnector.communicateToEmitter(rawCommand, generateTweet(newDemand, location, consumer.getLocale()));
         }
     }
 
-    protected static void processListCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, TwitterException {
+    protected static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, TwitterException {
         //
         // Used by actors to:
         //
@@ -745,11 +741,11 @@ public class TwitterAdapter {
             if (demand != null) {
                 // Echo back the specified demand
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                TwitterUtils.sendDirectMessage(sender.getScreenName(), generateTweet(demand, location, prefixes, actions, consumer.getLocale()));
+                BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
             }
             else {
-                TwitterUtils.sendDirectMessage(
-                        sender.getScreenName(),
+                BaseConnector.communicateToEmitter(
+                        rawCommand,
                         LabelExtractor.get(
                                 "ta_responseToSpecificListCommandForNoResult",
                                 new Object[] { reference },
@@ -772,8 +768,8 @@ public class TwitterAdapter {
         else {
             List<Demand> demands = demandOperations.getDemands(pm, Demand.CONSUMER_KEY, consumer.getKey(), 0);
             if (demands.size() == 0) {
-                TwitterUtils.sendDirectMessage(
-                        sender.getScreenName(),
+                BaseConnector.communicateToEmitter(
+                        rawCommand,
                         LabelExtractor.get(
                                 "ta_responseToListCommandForNoResult",
                                 consumer.getLocale()
@@ -781,9 +777,8 @@ public class TwitterAdapter {
                 );
             }
             else {
-                String screenName = sender.getScreenName();
-                TwitterUtils.sendDirectMessage(
-                        screenName,
+                BaseConnector.communicateToEmitter(
+                        rawCommand,
                         LabelExtractor.get(
                                 "ta_introductionToResponseToListCommandWithManyResults",
                                 new Object[] { demands.size() },
@@ -792,27 +787,27 @@ public class TwitterAdapter {
                 );
                 for (Demand demand: demands) {
                     Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                    TwitterUtils.sendDirectMessage(screenName, generateTweet(demand, location, prefixes, actions, consumer.getLocale()));
+                    BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
                 }
             }
         }
     }
 
-    protected static void processProposeCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processProposeCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by a retailer to propose a product for a demand
         //
         throw new ClientException("Proposing proposals - Not yet implemented");
     }
 
-    protected static void processSupplyCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processSupplyCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by a retailer to add/remove tags to his supply list
         //
         throw new ClientException("Supplying tags - Not yet implemented");
     }
 
-    protected static void processWishCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processWishCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by a consumer to:
         //
@@ -822,11 +817,10 @@ public class TwitterAdapter {
         throw new ClientException("Wishing - Not yet implemented");
     }
 
-    protected static void processWWWCommand(PersistenceManager pm, twitter4j.User sender, Consumer consumer, JsonObject command) throws ClientException {
+    protected static void processWWWCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
         // Used by the resource owner to get the tiny URL that will open the Twetailer Web console
         //
         throw new ClientException("Surfing on the web - Not yet implemented");
     }
-
 }

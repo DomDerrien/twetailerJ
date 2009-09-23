@@ -430,7 +430,7 @@ public class TestConsumerOperations {
 
     @Test
     public void testUpdateI() throws DataSourceException {
-        final Long twitterId = 2122312321L;
+        final String twitterId = "Katelyn";
         User user = new User("test", "test.com");
 
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -470,7 +470,7 @@ public class TestConsumerOperations {
         Consumer consumer = ops.createConsumer(pm, new User("test", "domain"));
 
         // Update it
-        consumer.setTwitterId(12345L);
+        consumer.setTwitterId("Katelyn");
 
         // Persist the update
         consumer = ops.updateConsumer(consumer); // This function will close the PersistenceManager instance

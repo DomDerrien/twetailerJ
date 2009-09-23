@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockPersistenceManager;
@@ -55,6 +56,7 @@ public class TestDemandsRestlet {
     public void testCreateResourceI() throws DataSourceException, ClientException {
         final PersistenceManager proposedPM = new MockPersistenceManager();
         final JsonObject proposedParameters = new GenericJsonObject();
+        final Source source = Source.simulated;
         final Long resourceId = 12345L;
         ops.setConsumerOperations(new ConsumerOperations() {
             @Override
@@ -87,6 +89,7 @@ public class TestDemandsRestlet {
                 Demand temp = new Demand();
                 temp.setConsumerKey(consumerKey);
                 temp.setKey(resourceId);
+                temp.setSource(source);
                 return temp;
             }
         });

@@ -87,12 +87,12 @@ public class TestRetailerOperations {
     @Test
     public void testGets() throws DataSourceException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
-        consumer.setTwitterId(12345L);
+        consumer.setTwitterId("Ryan");
 
         RetailerOperations ops = new RetailerOperations();
         Retailer item = ops.createRetailer(consumer, 111L);
 
-        List<Retailer> selection = ops.getRetailers(Retailer.TWITTER_ID, 12345L, 0);
+        List<Retailer> selection = ops.getRetailers(Retailer.TWITTER_ID, "Ryan", 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(item.getKey(), selection.get(0).getKey());
@@ -101,7 +101,7 @@ public class TestRetailerOperations {
     @Test
     public void testUpdate() throws DataSourceException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
-        consumer.setTwitterId(12345L);
+        consumer.setTwitterId("Ryan");
 
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         RetailerOperations ops = new RetailerOperations() {

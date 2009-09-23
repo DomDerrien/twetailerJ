@@ -1,4 +1,4 @@
-package twetailer.validator;
+package twetailer.task;
 
 import java.util.Date;
 import java.util.List;
@@ -7,18 +7,18 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
-import twitter4j.TwitterException;
-
 import twetailer.DataSourceException;
-import twetailer.adapter.TwitterUtils;
-import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
-import twetailer.dto.Location;
+import twetailer.connector.BaseConnector;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-
+import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
+import twetailer.dto.Location;
+import twetailer.validator.CommandSettings;
+import twetailer.validator.LocaleValidator;
+import twitter4j.TwitterException;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
@@ -82,7 +82,7 @@ public class DemandValidator {
                     }
                     if (message != null) {
                         log.warning("Invalid state for the demand: " + demand.getKey());
-                        TwitterUtils.sendDirectMessage(consumer.getTwitterId().toString(), message);
+                        BaseConnector.communicateToConsumer(demand.getSource(), consumer, message);
                         demand.setState(CommandSettings.State.invalid);
                     }
                     else {
@@ -92,9 +92,6 @@ public class DemandValidator {
                 }
                 catch (DataSourceException ex) {
                     log.warning("Cannot get information for consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
-                }
-                catch (TwitterException ex) {
-                    log.warning("Cannot tweet error message to consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
                 }
             }
         }

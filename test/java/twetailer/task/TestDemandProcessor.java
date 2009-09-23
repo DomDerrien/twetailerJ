@@ -14,8 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
-import twetailer.adapter.MockTwitterUtils;
-import twetailer.adapter.TwitterUtils;
+import twetailer.connector.MockTwitterConnector;
+import twetailer.connector.TwitterConnector;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
@@ -474,7 +474,7 @@ public class TestDemandProcessor {
             }
         };
 
-        final Long retailerId = 54321L;
+        final String retailerId = "Ryan";
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.setTwitterId(retailerId);
         selectedRetailer.addCriterion("test");
@@ -497,13 +497,13 @@ public class TestDemandProcessor {
                 return null;
             }
         });
-        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         DemandProcessor.process();
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
@@ -542,7 +542,7 @@ public class TestDemandProcessor {
         DemandProcessor.process();
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
-        TwitterUtils.getTwetailerAccount();
+        TwitterConnector.getTwetailerAccount();
     }
 
     @Test
@@ -593,7 +593,7 @@ public class TestDemandProcessor {
             }
         };
 
-        final Long retailerId = 54321L;
+        final String retailerId = "Ryan";
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.setTwitterId(retailerId);
         selectedRetailer.addCriterion("test");
@@ -613,12 +613,12 @@ public class TestDemandProcessor {
                 throw new TwitterException("done in purpose");
             }
         });
-        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         DemandProcessor.process();
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 }

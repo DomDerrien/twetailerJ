@@ -92,7 +92,7 @@ public class Wish extends Entity {
 
     public void setAction(CommandSettings.Action action) {
         if (action == null) {
-            throw new IllegalArgumentException("Cannot nullify the action attribute");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'action'");
         }
         this.action = action;
     }
@@ -115,7 +115,7 @@ public class Wish extends Entity {
 
     public void setState(CommandSettings.State state) {
         if (state == null) {
-            throw new IllegalArgumentException("Cannot nullify the state attribute");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
         }
         this.state = state;
     }

@@ -1,7 +1,7 @@
 package twetailer.j2ee;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -16,25 +16,29 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import twetailer.adapter.MockTwitterAdapter;
-import twetailer.adapter.MockTwitterRobot;
-import twetailer.adapter.MockTwitterUtils;
+import twetailer.DataSourceException;
+import twetailer.connector.MockTwitterConnector;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockPersistenceManager;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
+import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
-import twetailer.validator.MockDemandValidator;
+import twetailer.task.MockDemandValidator;
+import twetailer.task.MockRobotResponder;
+import twetailer.task.MockTweetLoader;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Twitter;
@@ -65,12 +69,12 @@ public class TestMaezelServlet {
         }
     };
 
-    MaezelServlet ops;
+    MaezelServlet servlet;
 
     @Before
     public void setUp() throws Exception {
-        ops = new MaezelServlet();
-        ops._baseOperations = new MockBaseOperations();
+        servlet = new MaezelServlet();
+        servlet._baseOperations = new MockBaseOperations();
     }
 
     @After
@@ -97,7 +101,7 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
     }
@@ -117,7 +121,7 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
     }
@@ -137,18 +141,32 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
     }
 
     @Test
     @SuppressWarnings("serial")
-    public void testDoGetProcessDMs() throws IOException {
+    public void testDoGetLoadTweets() throws IOException {
+        // Inject a mock Twitter account
+        final Twitter mockTwitterAccount = new Twitter() {
+            @Override
+            public List<DirectMessage> getDirectMessages(Paging paging) {
+                return null;
+            }
+        };
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+
+        // Inject mock operators
+        MockTweetLoader.injectMocks(servlet._baseOperations);
+        MockTweetLoader.injectMocks(servlet._baseOperations.getSettingsOperations());
+
+        // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
-                return "/processDMs";
+                return "/loadTweets";
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -158,33 +176,74 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        final Twitter mockTwitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
-            }
-        };
 
-        // Inject the mock BaseOperations instance
-        MockTwitterAdapter.injectMockBaseOperations(ops._baseOperations);
-        MockTwitterAdapter.injectMockSettingsOperations(ops._baseOperations.getSettingsOperations());
-        // Inject a mock Twitter account
-        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
-
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains(Settings.LAST_PROCESSED_DIRECT_MESSAGE_ID));
         assertTrue(stream.contains("1"));
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
 
         // Clean-up
-        MockTwitterAdapter.restoreTwitterAdapter();
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        MockCommandProcessor.restoreOperations();
+        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
-    @SuppressWarnings("serial")
+    public void testDoGetProcessCommands() throws IOException {
+        // Inject RawCommandOperations mock
+        final Long commandKey = 12345L;
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(commandKey, key);
+                throw new DataSourceException("Done in purpose");
+            }
+        };
+        MockCommandProcessor.injectMocks(servlet._baseOperations);
+        MockCommandProcessor.injectMocks(servlet._baseOperations.getSettingsOperations());
+        MockCommandProcessor.injectMocks(rawCommandOperations);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processCommands";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals("commandId", name);
+                return commandKey.toString();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("true"));
+
+        // Clean-up
+        MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
     public void testDoGetValidateOpenDemands() throws IOException {
+        // Inject DemandOperations mock
+        final DemandOperations mockDemandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Demand>();
+            }
+        };
+        MockDemandValidator.injectMocks(servlet._baseOperations);
+        MockDemandValidator.injectMocks(mockDemandOperations);
+
+        // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -198,37 +257,28 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        final Twitter mockTwitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
-            }
-        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("true"));
+
+        // Clean-up
+        MockDemandValidator.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetValidatePublishedDemands() throws IOException {
+        // Inject DemandOperations mock
         final DemandOperations mockDemandOperations = new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
                 return new ArrayList<Demand>();
             }
         };
+        MockDemandProcessor.injectMocks(servlet._baseOperations);
+        MockDemandProcessor.injectMocks(mockDemandOperations);
 
-        // Inject the mock BaseOperations instance
-        MockDemandValidator.injectMockBaseOperations(ops._baseOperations);
-        MockDemandValidator.injectMockDemandOperations(mockDemandOperations);
-        // Inject a mock Twitter account
-        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
-
-        ops.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
-
-        // Clean-up
-        MockDemandValidator.restoreDemandValidator();
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
-    }
-
-    @Test
-    @SuppressWarnings("serial")
-    public void testDoGetValidatePublishedDemands() throws IOException {
+        // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -242,37 +292,32 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        final Twitter mockTwitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
-            }
-        };
-        final DemandOperations mockDemandOperations = new DemandOperations() {
-            @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<Demand>();
-            }
-        };
 
-        // Inject the mock BaseOperations instance
-        MockDemandProcessor.injectMockBaseOperations(ops._baseOperations);
-        MockDemandProcessor.injectMockDemandOperations(mockDemandOperations);
-        // Inject a mock Twitter account
-        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
-
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
 
         // Clean-up
-        MockDemandProcessor.restoreDemandProcessor();
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        MockDemandProcessor.restoreOperation();
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testDoGetProcessRobotDMs() throws IOException {
+        // Inject a mock Twitter account
+        final Twitter mockRobotAccount = new Twitter() {
+            @Override
+            public List<DirectMessage> getDirectMessages(Paging paging) {
+                return null;
+            }
+        };
+        MockTwitterConnector.injectMockRobotAccount(mockRobotAccount);
+
+        // Inject the mock BaseOperations instance
+        MockRobotResponder.injectMocks(servlet._baseOperations);
+        MockRobotResponder.injectMocks(servlet._baseOperations.getSettingsOperations());
+
+        // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -286,31 +331,33 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        final Twitter mockTwitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
-            }
-        };
 
-        // Inject the mock BaseOperations instance
-        MockTwitterRobot.injectMockBaseOperations(ops._baseOperations);
-        MockTwitterRobot.injectMockSettingsOperations(ops._baseOperations.getSettingsOperations());
-        // Inject a mock Twitter account
-        MockTwitterUtils.injectMockRobotTwitterAccount(mockTwitterAccount);
-
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
 
         // Clean-up
-        MockTwitterRobot.restoreTwitterRobot();
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        MockRobotResponder.restoreOperations();
+        MockTwitterConnector.restoreTwitterConnector(null, mockRobotAccount);
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testDoGetProcessProposals() throws IOException {
+        /* FIXME: Wait for logic implementation
+        // Inject ProposalOperations mock
+        final ProposalOperations mockProposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Proposal>();
+            }
+        };
+
+        // Inject the mock BaseOperations instance
+        MockProposalProcessor.injectMocks(servlet._baseOperations);
+        MockProposalProcessor.injectMocks(mockProposalOperations);
+        */
+
+        // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -324,36 +371,15 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
-        final Twitter mockTwitterAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
-            }
-        };
-        /* Wait for logic implementation
-        final ProposalOperations mockProposalOperations = new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<Proposal>();
-            }
-        };
 
-        // Inject the mock BaseOperations instance
-        MockProposalProcessor.injectMockBaseOperations(ops._baseOperations);
-        MockProposalProcessor.injectMockProposalOperations(mockProposalOperations);
-        */
-        // Inject a mock Twitter account
-        MockTwitterUtils.injectMockRobotTwitterAccount(mockTwitterAccount);
-
-        ops.doGet(mockRequest, mockResponse);
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("false"));
 
         // Clean-up
-        /* Wait for logic implementation
-        MockProposalProcessor.restoreProposalProcessor();
-        */
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        /* FIXME: Wait for logic implementation
+        MockProposalProcessor.restoreOperations();
+         */
     }
 
     @Test
@@ -395,8 +421,8 @@ public class TestMaezelServlet {
             }
         };
 
-        ops.locationOperations = mockLocationOperations;
-        ops.doGet(mockRequest, mockResponse);
+        servlet.locationOperations = mockLocationOperations;
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
     }
@@ -440,8 +466,8 @@ public class TestMaezelServlet {
             }
         };
 
-        ops.locationOperations = mockLocationOperations;
-        ops.doGet(mockRequest, mockResponse);
+        servlet.locationOperations = mockLocationOperations;
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
     }
@@ -488,12 +514,12 @@ public class TestMaezelServlet {
             }
         };
 
-        ops.locationOperations = mockLocationOperations;
-        ops.storeOperations = mockStoreOperations;
-        ops.doGet(mockRequest, mockResponse);
+        servlet.locationOperations = mockLocationOperations;
+        servlet.storeOperations = mockStoreOperations;
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
-        assertTrue(ops._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test
@@ -550,12 +576,12 @@ public class TestMaezelServlet {
             }
         };
 
-        ops.consumerOperations = mockConsumerOperations;
-        ops.retailerOperations = mockRetailerOperations;
-        ops.doGet(mockRequest, mockResponse);
+        servlet.consumerOperations = mockConsumerOperations;
+        servlet.retailerOperations = mockRetailerOperations;
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
-        assertTrue(ops._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test
@@ -603,11 +629,11 @@ public class TestMaezelServlet {
             }
         };
 
-        ops.locationOperations = mockLocationOperations;
-        ops.demandOperations = mockDemandOperations;
-        ops.doGet(mockRequest, mockResponse);
+        servlet.locationOperations = mockLocationOperations;
+        servlet.demandOperations = mockDemandOperations;
+        servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
-        assertTrue(ops._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 }

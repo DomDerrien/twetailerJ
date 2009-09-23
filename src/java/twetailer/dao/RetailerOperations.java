@@ -55,7 +55,7 @@ public class RetailerOperations extends BaseOperations {
         retailer.setConsumerKey(consumer.getKey());
 
         // Copy the user's attribute
-        retailer.setImId(consumer.getImId());
+        retailer.setJabberId(consumer.getJabberId());
         retailer.setEmail(consumer.getEmail());
         retailer.setTwitterId(consumer.getTwitterId());
         retailer.setLanguage(consumer.getLanguage());

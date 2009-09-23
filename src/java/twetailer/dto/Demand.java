@@ -16,7 +16,9 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
-import twetailer.validator.CommandSettings;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import twetailer.validator.LocaleValidator;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
@@ -25,7 +27,7 @@ public class Demand extends Entity {
     /*** Command ***/
 
     @Persistent
-    private CommandSettings.Action action;
+    private Action action;
 
     public static final String ACTION = "action";
 
@@ -35,14 +37,19 @@ public class Demand extends Entity {
     public static final String CONSUMER_KEY = "consumerKey";
 
     @Persistent
-    private CommandSettings.State state = CommandSettings.State.open;
+    private Long rawCommandId;
 
-    public static final String STATE = "state";
+    public static final String RAW_COMMAND_ID = "rawCommandId";
 
     @Persistent
-    private Long tweetId;
+    private Source source;
 
-    public static final String TWEET_ID = "tweetId";
+    public static final String SOURCE = "source";
+
+    @Persistent
+    private State state = State.open;
+
+    public static final String STATE = "state";
 
     /*** Demand ***/
 
@@ -86,7 +93,7 @@ public class Demand extends Entity {
     /** Default constructor */
     public Demand() {
         super();
-        setAction(CommandSettings.Action.demand);
+        setAction(Action.demand);
         setDefaultExpirationDate();
     }
 
@@ -110,19 +117,19 @@ public class Demand extends Entity {
 
     /*** Command ***/
 
-    public CommandSettings.Action getAction() {
+    public Action getAction() {
         return action;
     }
 
-    public void setAction(CommandSettings.Action action) {
+    public void setAction(Action action) {
         if (action == null) {
-            throw new IllegalArgumentException("Cannot nullify the action attribute");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'action'");
         }
         this.action = action;
     }
 
     public void setAction(String action) {
-        setAction(CommandSettings.Action.valueOf(action));
+        setAction(Action.valueOf(action));
     }
 
     public Long getConsumerKey() {
@@ -133,27 +140,42 @@ public class Demand extends Entity {
         this.consumerKey = consumerId;
     }
 
-    public CommandSettings.State getState() {
+    public Long getRawCommandId() {
+        return rawCommandId;
+    }
+
+    public void setRawCommandId(Long rawCommandId) {
+        this.rawCommandId = rawCommandId;
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        if (source == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'source'");
+        }
+        this.source = source;
+    }
+
+    public void setSource(String source) {
+        setSource(Source.valueOf(source));
+    }
+
+    public State getState() {
         return state;
     }
 
-    public void setState(CommandSettings.State state) {
+    public void setState(State state) {
         if (state == null) {
-            throw new IllegalArgumentException("Cannot nullify the state attribute");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
         }
         this.state = state;
     }
 
     public void setState(String state) {
-        setState(CommandSettings.State.valueOf(state));
-    }
-
-    public Long getTweetId() {
-        return tweetId;
-    }
-
-    public void setTweetId(Long tweetId) {
-        this.tweetId = tweetId;
+        setState(State.valueOf(state));
     }
 
     /*** Demand ***/
@@ -300,8 +322,9 @@ public class Demand extends Entity {
         /*** Command ***/
         out.put(ACTION, getAction().toString());
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
+        if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
+        out.put(SOURCE, getSource().toString());
         out.put(STATE, getState().toString());
-        if (getTweetId() != null) { out.put(TWEET_ID, getTweetId()); }
         /*** Demand ***/
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -331,8 +354,9 @@ public class Demand extends Entity {
         /*** Command ***/
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
+        if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
-        if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
         /*** Demand ***/
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);

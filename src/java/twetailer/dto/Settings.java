@@ -69,7 +69,7 @@ public class Settings implements Serializable {
 
     public void setName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Cannot nullify the name");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'name'");
         }
         this.name = name;
     }

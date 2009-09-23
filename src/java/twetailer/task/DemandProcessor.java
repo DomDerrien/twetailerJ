@@ -6,21 +6,19 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
-import twitter4j.TwitterException;
-
 import twetailer.DataSourceException;
-import twetailer.adapter.TwitterUtils;
-import twetailer.dto.Demand;
-import twetailer.dto.Location;
-import twetailer.dto.Retailer;
-import twetailer.dto.Store;
+import twetailer.connector.BaseConnector;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Demand;
+import twetailer.dto.Location;
+import twetailer.dto.Retailer;
+import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
-
+import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
 
 public class DemandProcessor {
@@ -43,23 +41,19 @@ public class DemandProcessor {
                     List<Retailer> retailers = identifyRetailers(pm, demand, location);
                     // TODO: use the retailer score to ping the ones with highest score first.
                     for(Retailer retailer: retailers) {
-                        try {
-                            StringBuilder tags = new StringBuilder();
-                            for(String tag: demand.getCriteria()) {
-                                tags.append(tag).append(" ");
-                            }
-                            TwitterUtils.sendDirectMessage(
-                                    retailer.getTwitterId().toString(),
-                                    LabelExtractor.get(
-                                            "dp_informNewDemand",
-                                            new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
-                                            retailer.getLocale()
-                                    )
-                            );
+                        StringBuilder tags = new StringBuilder();
+                        for(String tag: demand.getCriteria()) {
+                            tags.append(tag).append(" ");
                         }
-                        catch (TwitterException ex) {
-                            log.warning("Cannot tweet error message to consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
-                        }
+                        BaseConnector.communicateToRetailer(
+                                retailer.getPreferredConnection(),
+                                retailer,
+                                LabelExtractor.get(
+                                        "dp_informNewDemand",
+                                        new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
+                                        retailer.getLocale()
+                                )
+                        );
                     }
                 }
                 catch (DataSourceException ex) {

@@ -8,6 +8,7 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.LocaleValidator;
 
 import domderrien.jsontools.GenericJsonArray;
@@ -40,9 +41,9 @@ public class Retailer extends Entity {
     public final static String EMAIL = "email";
 
     @Persistent
-    private String imId;
+    private String jabberId;
 
-    public final static String IM_ID = "imId";
+    public final static String JABBER_ID = "jabberId";
 
     @Persistent
     private Boolean isStoreAdmin;
@@ -70,6 +71,11 @@ public class Retailer extends Entity {
     public final static String PHONE_NUMBER = "phoneNb";
 
     @Persistent
+    private Source preferredConnection = Source.twitter;
+
+    public final static String PREFERRED_CONNECTION = "preferredConnection";
+
+    @Persistent
     private Long storeKey;
 
     public final static String STORE_KEY = "storeKey";
@@ -80,7 +86,7 @@ public class Retailer extends Entity {
     public final static String SCORE = "score";
 
     @Persistent
-    private Long twitterId;
+    private String twitterId;
 
     public final static String TWITTER_ID = "twitterId";
 
@@ -164,12 +170,12 @@ public class Retailer extends Entity {
         this.email = email;
     }
 
-    public String getImId() {
-        return imId;
+    public String getJabberId() {
+        return jabberId;
     }
 
-    public void setImId(String imId) {
-        this.imId = imId;
+    public void setJabberId(String imId) {
+        this.jabberId = imId;
     }
 
     public Boolean getIsStoreAdmin() {
@@ -220,6 +226,21 @@ public class Retailer extends Entity {
         this.phoneNumber = phoneNumber;
     }
 
+    public Source getPreferredConnection() {
+        return preferredConnection;
+    }
+
+    public void setPreferredConnection(Source preferredConnection) {
+        if (preferredConnection == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'preferredConnection'");
+        }
+        this.preferredConnection = preferredConnection;
+    }
+
+    public void setPreferredConnection(String preferredConnection) {
+        setPreferredConnection(Source.valueOf(preferredConnection));
+    }
+
     public Long getStoreKey() {
         return storeKey;
     }
@@ -236,11 +257,11 @@ public class Retailer extends Entity {
         this.score = score;
     }
 
-    public Long getTwitterId() {
+    public String getTwitterId() {
         return twitterId;
     }
 
-    public void setTwitterId(Long twitterId) {
+    public void setTwitterId(String twitterId) {
         this.twitterId = twitterId;
     }
 
@@ -256,15 +277,16 @@ public class Retailer extends Entity {
             out.put(CRITERIA, jsonArray);
         }
         out.put(EMAIL, getEmail());
-        out.put(IM_ID, getImId());
+        out.put(JABBER_ID, getJabberId());
         out.put(IS_STORE_ADMIN_KEY, isStoreAdmin());
         out.put(LANGUAGE, getLanguage());
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
+        out.put(PREFERRED_CONNECTION, getPreferredConnection().toString());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
         if (getScore() != null) { out.put(SCORE, getScore()); }
-        if (getTwitterId() != null) { out.put(TWITTER_ID, getTwitterId()); }
+        out.put(TWITTER_ID, getTwitterId());
         return out;
     }
 
@@ -280,15 +302,16 @@ public class Retailer extends Entity {
             }
         }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(IM_ID)) { setImId(in.getString(IM_ID)); }
+        if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(IS_STORE_ADMIN_KEY)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN_KEY)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
-        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getLong(TWITTER_ID)); }
+        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
         return this;
     }
 }

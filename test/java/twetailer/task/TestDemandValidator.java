@@ -1,4 +1,4 @@
-package twetailer.validator;
+package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,8 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
-import twetailer.adapter.MockTwitterUtils;
-import twetailer.adapter.TwitterUtils;
+import twetailer.connector.MockTwitterConnector;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -27,6 +27,8 @@ import twetailer.dao.MockPersistenceManager;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.validator.CommandSettings;
+import twetailer.validator.LocaleValidator;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -43,8 +45,8 @@ public class TestDemandValidator {
 
     @SuppressWarnings("serial")
     private class MockTwitter extends Twitter {
-        private Long twitterId;
-        public MockTwitter(Long twitterId) {
+        private String twitterId;
+        public MockTwitter(String twitterId) {
             this.twitterId = twitterId;
         }
         private String sentMessage;
@@ -53,7 +55,7 @@ public class TestDemandValidator {
         }
         @Override
         public DirectMessage sendDirectMessage(String id, String text) {
-            assertEquals(twitterId.toString(), id);
+            assertEquals(twitterId, id);
             assertNotSame(0, text.length());
             sentMessage = text;
             return null;
@@ -61,13 +63,15 @@ public class TestDemandValidator {
     };
 
     final Long consumerKey = 12345L;
+    final String consumerTwitterId = "Katelyn";
+    final Source source = Source.twitter;
     MockTwitter twitterAccount;
 
     @Before
     public void setUp() throws Exception {
         // Inject the fake Twitter account
-        twitterAccount = new MockTwitter(consumerKey);
-        MockTwitterUtils.injectMockTwitterAccount(twitterAccount);
+        twitterAccount = new MockTwitter(consumerTwitterId);
+        MockTwitterConnector.injectMockTwitterAccount(twitterAccount);
 
         // ConsumerOperations mock
         ConsumerOperations consumerOperations = new ConsumerOperations() {
@@ -76,7 +80,7 @@ public class TestDemandValidator {
                 assertEquals(consumerKey, key);
                 Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
-                consumer.setTwitterId(consumerKey);
+                consumer.setTwitterId(consumerTwitterId);
                 consumer.setLanguage(LocaleValidator.DEFAULT_LANGUAGE);
                 return consumer;
             }
@@ -90,7 +94,7 @@ public class TestDemandValidator {
     @After
     public void tearDown() {
         // Remove the fake Twitter account
-        MockTwitterUtils.restoreTwitterUtils(twitterAccount);
+        MockTwitterConnector.restoreTwitterConnector(twitterAccount, null);
     }
 
     @Test
@@ -136,6 +140,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
                 return demands;
@@ -177,6 +182,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
                 return demands;
@@ -219,6 +225,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
@@ -262,6 +269,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
@@ -306,6 +314,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -351,6 +360,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -396,6 +406,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -441,6 +452,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -487,6 +499,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -533,6 +546,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -584,6 +598,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -631,6 +646,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -705,6 +721,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -769,6 +786,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -830,6 +848,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -887,6 +906,7 @@ public class TestDemandValidator {
                 };
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -935,6 +955,7 @@ public class TestDemandValidator {
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
                 return demands;
@@ -961,7 +982,7 @@ public class TestDemandValidator {
                 throw new TwitterException("done in purpose");
             }
         };
-        MockTwitterUtils.injectMockTwitterAccount(mockTwitterAccount);
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         // DemandOperations mock
         final Long demandKey = 67890L;
@@ -973,6 +994,7 @@ public class TestDemandValidator {
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
+                demand.setSource(source);
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
                 return demands;
@@ -985,6 +1007,6 @@ public class TestDemandValidator {
         assertNull(twitterAccount.getSentMessage());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
 
-        MockTwitterUtils.restoreTwitterUtils(mockTwitterAccount);
+        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 }
