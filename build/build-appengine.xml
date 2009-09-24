@@ -63,6 +63,7 @@
 	
     <target name="webserver-start" description="start the configured webserver" depends="webserver-stop">
 		<echo>Target: webserver-start</echo>
+    	<antcall target="step-datanucleus-enhance" />
     	<antcall target="step-appengine-start" />
     </target>
     
@@ -146,11 +147,11 @@
 
 	<!-- Jetty start/stop: http://ptrthomas.wordpress.com/2009/01/24/how-to-start-and-stop-jetty-revisited/ -->
 
-	<target name="step-appengine-start" depends="step-datanucleus-enhance">
+	<target name="step-appengine-start">
 		<dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war" />
 	</target>
 
-	<target name="step-appengine-start-debug" depends="step-datanucleus-enhance">
+	<target name="step-appengine-start-debug">
 		<dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war">
 			<options>
 				<arg value="--jvm_flag=-Xdebug"/>

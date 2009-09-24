@@ -97,7 +97,9 @@ public class LocationOperations extends BaseOperations {
                 locations = getLocations(pm, location.getLatitude(), location.getLongitude());
             }
             else {
-                throw new IllegalArgumentException("Location object should have a valid pair of {postal; country} or {latitude; longitude}.");
+                // Just refuse to create the location because it's incomplete
+                // throw new IllegalArgumentException("Location object should have a valid pair of {postal; country} or {latitude; longitude}.");
+                return null;
             }
             if (0 < locations.size()) {
                 return locations.get(0);

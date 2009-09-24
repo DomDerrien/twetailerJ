@@ -18,6 +18,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SettingsOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
@@ -127,7 +128,7 @@ public class TweetLoader {
             rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
 
             Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(url("/tasks/Maezel/processCommand").param("key", rawCommand.getKey().toString()).method(Method.GET));
+            queue.add(url("/API/maezel/processCommand").param(Command.KEY, rawCommand.getKey().toString()).method(Method.GET));
         }
 
         return Long.valueOf(lastId);

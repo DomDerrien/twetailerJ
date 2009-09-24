@@ -207,7 +207,7 @@ public class TestMaezelServlet {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
-                return "/processCommands";
+                return "/processCommand";
             }
             @Override
             public String getParameter(String name) {

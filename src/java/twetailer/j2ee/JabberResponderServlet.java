@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dto.Command;
 import twetailer.dto.RawCommand;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -24,12 +26,16 @@ public class JabberResponderServlet extends HttpServlet {
 
   protected BaseOperations _baseOperations = new BaseOperations();
   protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+  protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Extract the incoming message
     Message instantMessage = JabberConnector.getInstantMessage(request);
+
+    // Creation only occurs if the corresponding Consumer instance is not retrieved
+    consumerOperations.createConsumer(instantMessage.getFromJid());
 
     // Prepare the message to persist
     RawCommand rawCommand = new RawCommand();
@@ -42,6 +48,6 @@ public class JabberResponderServlet extends HttpServlet {
 
     // Create a task for that command
     Queue queue = QueueFactory.getDefaultQueue();
-    queue.add(url("/tasks/Maezel/processCommand").param("key", rawCommand.getKey().toString()).method(Method.GET));
+    queue.add(url("/API/maezel/processCommand").param(Command.KEY, rawCommand.getKey().toString()).method(Method.GET));
   }
 }

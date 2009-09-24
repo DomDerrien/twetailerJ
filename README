@@ -22,7 +22,7 @@ Initial development environment setup
 	3.5 Move to the twetailerJ sub-directory: $cd twetailerJ
 	3.6 Create the bin directory: $mkdir bin
 	3.7 Unzip the ant program: $<7Zip.dir>\7z.exe x -obin deps\tools\system\apache-ant-1.7.1-bin.zip
-	3.8 Unzip the App Engine SDK: $<7Zip.dir>\7z.exe x -obin deps\tools\containers\appengine-java-sdk-1.2.2.zip
+	3.8 Unzip the App Engine SDK: $<7Zip.dir>\7z.exe x -obin deps\tools\containers\appengine-java-sdk-1.2.5.zip
 	3.9 Run the Ant command: $bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml init
 	
 ========================================
@@ -61,4 +61,4 @@ Update the application
 
 1. Copy the files to go on production in a folder like <workspace_dir>/twetailerJ-stage
 2. Test the ready-to-deploy code with: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml step-appengine-start
-3. Deploy the code with: bin\appengine-java-sdk-1.2.2\bin\appcfg.cmd --email=twetailer@gmail.com update src\war
+3. Deploy the code with: bin\appengine-java-sdk-1.2.5\bin\appcfg.cmd --email=twetailer@gmail.com update src\war

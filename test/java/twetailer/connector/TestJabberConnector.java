@@ -81,13 +81,6 @@ public class TestJabberConnector {
 
         Message instantMessage = JabberConnector.getInstantMessage(request);
 
-        System.err.println("body: " + instantMessage.getBody());
-        System.err.println("stanza: " + instantMessage.getStanza());
-        System.err.println("from: " + instantMessage.getFromJid().getId());
-        System.err.println("type: " + instantMessage.getMessageType());
-        System.err.println("to: " + instantMessage.getRecipientJids()[0].getId());
-        System.err.println("isXML: " + instantMessage.isXml());
-
         assertNotNull(instantMessage);
         assertEquals(jabberId, instantMessage.getFromJid().getId());
         assertEquals(message, instantMessage.getBody());

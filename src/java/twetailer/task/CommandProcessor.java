@@ -535,7 +535,7 @@ public class CommandProcessor {
             }
             */
             else {
-                action = CommandSettings.Action.help.toString();
+                action = CommandSettings.Action.demand.toString();
             }
         }
         return action;

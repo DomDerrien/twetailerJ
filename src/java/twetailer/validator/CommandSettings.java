@@ -138,7 +138,7 @@ public class CommandSettings {
             String keywordList = LabelExtractor.get(HELP_KEYWORD_LIST_ID , locale);
             String[] keywords = keywordList.split(",");
             for(String keyword: keywords) {
-                helpKeywords.put(keyword, LabelExtractor.get(HELP_KEYWORD_EQUIVALENTS_PREFIX + keyword, locale));
+                helpKeywords.put(keyword, new GenericJsonArray(LabelExtractor.get(HELP_KEYWORD_EQUIVALENTS_PREFIX + keyword, locale).split(",")));
             }
             localizedHelpKeywords.put(locale, helpKeywords);
         }

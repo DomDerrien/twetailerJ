@@ -16,6 +16,7 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
@@ -30,6 +31,7 @@ import twetailer.task.TweetLoader;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonParser;
 
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
@@ -59,8 +61,8 @@ public class MaezelServlet extends HttpServlet {
                 Long newSinceId = TweetLoader.loadDirectMessages();
                 out.put(Settings.LAST_PROCESSED_DIRECT_MESSAGE_ID, newSinceId);
             }
-            else if ("/processCommands".equals(pathInfo)) {
-                Long commandId = Long.parseLong(request.getParameter("commandId"));
+            else if ("/processCommand".equals(pathInfo)) {
+                Long commandId = Long.parseLong(request.getParameter(Command.KEY));
                 CommandProcessor.processRawCommands(commandId);
             }
             else if ("/validateOpenDemands".equals(pathInfo)) {
@@ -155,6 +157,32 @@ public class MaezelServlet extends HttpServlet {
                     }
 
                     demandOperations.createDemand(pm, demand);
+                }
+                finally {
+                    pm.close();
+                }
+            }
+            else if ("/updateConsumer".equals(pathInfo)) {
+                // Supported formats:
+                //   http:<host:port>/API/maezel/updateConsumer?key=###&jabberId=[name@domain]&twitterId=[screen-name]&locationKey=###
+
+                PersistenceManager pm = _baseOperations.getPersistenceManager();
+                try {
+                    List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, request.getParameter(Consumer.TWITTER_ID), 0);
+                    if (0 < consumers.size()) {
+                        Consumer consumer = consumers.get(0);
+
+                        if (request.getParameter(Consumer.ADDRESS) != null) { consumer.setAddress(request.getParameter(Consumer.ADDRESS)); }
+                        if (request.getParameter(Consumer.EMAIL) != null) { consumer.setEmail(request.getParameter(Consumer.EMAIL)); }
+                        if (request.getParameter(Consumer.JABBER_ID) != null) { consumer.setJabberId(request.getParameter(Consumer.JABBER_ID)); }
+                        if (request.getParameter(Consumer.LOCATION_KEY) != null) { consumer.setLocationKey(Long.valueOf(request.getParameter(Consumer.LOCATION_KEY))); }
+                        if (request.getParameter(Consumer.LANGUAGE) != null) { consumer.setLanguage(request.getParameter(Consumer.LANGUAGE)); }
+                        if (request.getParameter(Consumer.NAME) != null) { consumer.setName(request.getParameter(Consumer.NAME)); }
+                        if (request.getParameter(Consumer.PHONE_NUMBER) != null) { consumer.setPhoneNumber(request.getParameter(Consumer.PHONE_NUMBER)); }
+                        // if (request.getParameter(Consumer.TWITTER_ID) != null) { consumer.setTwitterId(request.getParameter(Consumer.TWITTER_ID)); }
+
+                        consumerOperations.updateConsumer(pm, consumer);
+                    }
                 }
                 finally {
                     pm.close();

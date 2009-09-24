@@ -61,6 +61,49 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param loggedUser System entity to attach with the just created user
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, User)
+     */
+    public Consumer createConsumer(com.google.appengine.api.xmpp.JID jabberId) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createConsumer(pm, jabberId);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param jabberId Identifier of a XMPP user
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     */
+    public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.xmpp.JID jabberId) {
+        try {
+            // Try to retrieve the same location
+            List<Consumer> consumers = getConsumers(pm, Consumer.JABBER_ID, jabberId.getId(), 1);
+            if (0 < consumers.size()) {
+                return consumers.get(0);
+            }
+        }
+        catch (DataSourceException ex) {}
+
+        // Creates new consumer record and persist it
+        Consumer newConsumer = new Consumer();
+        newConsumer.setName(jabberId.getId());
+        newConsumer.setJabberId(jabberId.getId());
+        pm.makePersistent(newConsumer);
+        return newConsumer;
+    }
+
+    /**
      * Create the Consumer instance
      *
      * @param twitterId Twitter identifier to be used to identify the new consumer account

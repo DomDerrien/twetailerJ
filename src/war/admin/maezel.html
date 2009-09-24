@@ -116,14 +116,18 @@
                 region="top"
                 style="text-align: center;"
             >
-                <button dojoType="dijit.form.Button" id="pDMs" onclick="twetailer.Maezel.delegateProcess('pDMs', 'processDMs');">Process Direct Messages</button>
+                <button dojoType="dijit.form.Button" id="lTs" onclick="twetailer.Maezel.delegateProcess('lTs', 'loadTweets');">Load Tweets</button>
+                <button dojoType="dijit.form.Button" id="pRCs" disabled="true">Process Command</button>
                 <button dojoType="dijit.form.Button" id="vODs" onclick="twetailer.Maezel.delegateProcess('vODs', 'validateOpenDemands');">Validate Open Demands</button>
                 <button dojoType="dijit.form.Button" id="pPDs" onclick="twetailer.Maezel.delegateProcess('pPDs', 'processPubDemands');">Process Published Demands</button>
                 <button dojoType="dijit.form.Button" id="pRMs" disabled="true" onclick="twetailer.Maezel.delegateProcess('pRMs', 'processRobotMessages');">Process Robot Messages</button>
                 <button dojoType="dijit.form.Button" id="pPs" disabled="true" onclick="twetailer.Maezel.delegateProcess('pPs', 'processProposals');">Process Proposals</button>
                 <br/>
+                <input dojoType="dijit.form.TextBox" id="cCP" style="width: 600px;" value="twitterId=[screen-name]&jabberId=[name@domain]&locationKey=###">
+                <button dojoType="dijit.form.Button" id="cC" onclick="twetailer.Maezel.delegateProcess('cC', 'updateConsumer?' + dijit.byId('cCP').attr('value'));">Update Consumer</button>
+                <br/>
                 <input dojoType="dijit.form.TextBox" id="cSP" style="width: 600px;" value="name=[store-name]&locationKey=###&address=[full-postal-address]">
-                <button dojoType="dijit.form.Button" id="cS" onclick="twetailer.Maezel.delegateProcess('cR', 'createStore?' + dijit.byId('cSP').attr('value'));">Create Store</button>
+                <button dojoType="dijit.form.Button" id="cS" onclick="twetailer.Maezel.delegateProcess('cS', 'createStore?' + dijit.byId('cSP').attr('value'));">Create Store</button>
                 <br/>
                 <input dojoType="dijit.form.TextBox" id="cRP" style="width: 600px;" value="consumerKey=###&storeKey=###&&supplies=[tag-list]">
                 <button dojoType="dijit.form.Button" id="cR" onclick="twetailer.Maezel.delegateProcess('cR', 'createRetailer?' + dijit.byId('cRP').attr('value'));">Create Retailer</button>
