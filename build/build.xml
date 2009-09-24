@@ -284,7 +284,7 @@
 		<include name="easymock/easymock-2.5.1.jar" />
 		<include name="easymock/easymockclassextension.jar" />
 		<include name="easymock/cglib-nodep-2.2.jar" />
-		<include name="twitter4j/twitter4j-2.0.8.jar" />
+		<include name="twitter4j/twitter4j-2.0.10.jar" />
 		<include name="src/resources/" />
 	</fileset>
 
