@@ -23,7 +23,7 @@ public class Store extends Entity {
     @Persistent
     private Long locationKey;
 
-    public final static String LOCATION_KEY = "locationKey";
+    public final static String LOCATION_KEY = Location.LOCATION_KEY;
 
     @Persistent
     private String name;
@@ -112,7 +112,10 @@ public class Store extends Entity {
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+
+        // Shortcut
         if (in.containsKey(STORE_KEY)) {setKey(in.getLong(STORE_KEY)); }
+
         return this;
     }
 }

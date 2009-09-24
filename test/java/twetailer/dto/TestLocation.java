@@ -15,7 +15,9 @@ import org.junit.Test;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.validator.LocaleValidator;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 public class TestLocation {
@@ -281,5 +283,53 @@ public class TestLocation {
         assertEquals(Double.valueOf(1.23456789D), object.getLatitude());
         assertEquals(Double.valueOf(1.23456789D), object.getLongitude());
         assertEquals("ZZZ", object.getPostalCode());
+    }
+
+    @Test
+    public void testHasAttributeForNewLocationI() {
+        JsonObject parameters = new GenericJsonObject();
+
+        assertFalse(new Location().hasNewAttributes(parameters));
+    }
+
+    @Test
+    public void testHasAttributeForNewLocationII() {
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Location.COUNTRY_CODE, "zzz");
+
+        assertTrue(new Location().hasNewAttributes(parameters));
+    }
+
+    @Test
+    public void testHasAttributeForNewLocationIII() {
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Location.POSTAL_CODE, "zzz");
+
+        assertTrue(new Location().hasNewAttributes(parameters));
+    }
+
+    @Test
+    public void testHasAttributeForNewLocationIV() {
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Location.LATITUDE, 123.45D);
+
+        assertTrue(new Location().hasNewAttributes(parameters));
+    }
+
+    @Test
+    public void testHasAttributeForNewLocationV() {
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Location.LONGITUDE, 123.45D);
+
+        assertTrue(new Location().hasNewAttributes(parameters));
+    }
+
+    @Test
+    public void testShortcut() {
+        Long key = 12345L;
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Location.LOCATION_KEY, key);
+
+        assertEquals(key, new Location(parameters).getKey());
     }
 }

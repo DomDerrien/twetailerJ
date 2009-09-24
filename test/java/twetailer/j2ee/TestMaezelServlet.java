@@ -27,6 +27,7 @@ import twetailer.dao.RawCommandOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
@@ -211,7 +212,7 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String name) {
-                assertEquals("commandId", name);
+                assertEquals(Command.KEY, name);
                 return commandKey.toString();
             }
         };
@@ -391,18 +392,10 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String key) {
-                if (Location.COUNTRY_CODE.equals(key)) {
-                    return "CA";
-                }
-                if (Location.POSTAL_CODE.equals(key)) {
-                    return "H0H0H0";
-                }
-                if (Location.LATITUDE.equals(key)) {
-                    return null;
-                }
-                if (Location.LONGITUDE.equals(key)) {
-                    return null;
-                }
+                if (Location.COUNTRY_CODE.equals(key)) { return "CA"; }
+                if (Location.POSTAL_CODE.equals(key)) { return "H0H0H0"; }
+                if (Location.LATITUDE.equals(key)) { return null; }
+                if (Location.LONGITUDE.equals(key)) { return null; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
             }
@@ -436,18 +429,10 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String key) {
-                if (Location.COUNTRY_CODE.equals(key)) {
-                    return "CA";
-                }
-                if (Location.POSTAL_CODE.equals(key)) {
-                    return "H0H0H0";
-                }
-                if (Location.LATITUDE.equals(key)) {
-                    return "0.0";
-                }
-                if (Location.LONGITUDE.equals(key)) {
-                    return "0.0";
-                }
+                if (Location.COUNTRY_CODE.equals(key)) { return "CA"; }
+                if (Location.POSTAL_CODE.equals(key)) { return "H0H0H0"; }
+                if (Location.LATITUDE.equals(key)) { return "0.0"; }
+                if (Location.LONGITUDE.equals(key)) { return "0.0"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
             }
@@ -481,15 +466,9 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String key) {
-                if (Store.LOCATION_KEY.equals(key)) {
-                    return "12345";
-                }
-                if (Store.ADDRESS.equals(key)) {
-                    return "address";
-                }
-                if (Store.NAME.equals(key)) {
-                    return "name";
-                }
+                if (Store.LOCATION_KEY.equals(key)) { return "12345"; }
+                if (Store.ADDRESS.equals(key)) { return "address"; }
+                if (Store.NAME.equals(key)) { return "name"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
             }
@@ -531,15 +510,9 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String key) {
-                if (Retailer.CONSUMER_KEY.equals(key)) {
-                    return "12345";
-                }
-                if (Retailer.STORE_KEY.equals(key)) {
-                    return "67890";
-                }
-                if ("supplies".equals(key)) {
-                    return "one two three";
-                }
+                if (Retailer.CONSUMER_KEY.equals(key)) { return "12345"; }
+                if (Retailer.STORE_KEY.equals(key)) { return "67890"; }
+                if ("supplies".equals(key)) { return "one two three"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
             }
@@ -593,15 +566,9 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String key) {
-                if (Location.POSTAL_CODE.equals(key)) {
-                    return "H0H0H0";
-                }
-                if (Demand.CONSUMER_KEY.equals(key)) {
-                    return "12345";
-                }
-                if ("tags".equals(key)) {
-                    return "one two three";
-                }
+                if (Location.POSTAL_CODE.equals(key)) { return "H0H0H0"; }
+                if (Demand.CONSUMER_KEY.equals(key)) { return "12345"; }
+                if ("tags".equals(key)) { return "one two three"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
             }
@@ -634,6 +601,171 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetUpdateConsumerI() throws IOException {
+        final String address = "addr";
+        final String email = "e-mail";
+        final String jabberId = "jId";
+        final Long locationKey = 12345L;
+        final String language = "fr";
+        final String name = "bozo";
+        final String phoneNumber = "514";
+        final String twitterId = "tID";
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/updateConsumer";
+            }
+            @Override
+            public String getParameter(String key) {
+                if (Consumer.ADDRESS.equals(key)) { return address; }
+                if (Consumer.EMAIL.equals(key)) { return email; }
+                if (Consumer.JABBER_ID.equals(key)) { return jabberId; }
+                if (Consumer.LOCATION_KEY.equals(key)) { return locationKey.toString(); }
+                if (Consumer.LANGUAGE.equals(key)) { return language; }
+                if (Consumer.NAME.equals(key)) { return name; }
+                if (Consumer.PHONE_NUMBER.equals(key)) { return phoneNumber; }
+                if (Consumer.TWITTER_ID.equals(key)) { return twitterId; }
+                fail("Unexpected parameter gathering for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        final ConsumerOperations mockConsumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Consumer.TWITTER_ID, key);
+                assertEquals(twitterId, (String) value);
+                Consumer consumer = new Consumer();
+                consumer.setTwitterId(twitterId);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                consumers.add(consumer);
+                return consumers;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(address, consumer.getAddress());
+                assertEquals(email, consumer.getEmail());
+                assertEquals(jabberId, consumer.getJabberId());
+                assertEquals(language, consumer.getLanguage());
+                assertEquals(locationKey, consumer.getLocationKey());
+                assertEquals(name, consumer.getName());
+                assertEquals(phoneNumber, consumer.getPhoneNumber());
+                assertEquals(twitterId, consumer.getTwitterId());
+                return consumer;
+            }
+        };
+
+        servlet.consumerOperations = mockConsumerOperations;
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("true"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetUpdateConsumerII() throws IOException {
+        final String twitterId = "tID";
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/updateConsumer";
+            }
+            @Override
+            public String getParameter(String key) {
+                if (Consumer.ADDRESS.equals(key)) { return null; }
+                if (Consumer.EMAIL.equals(key)) { return null; }
+                if (Consumer.JABBER_ID.equals(key)) { return null; }
+                if (Consumer.LOCATION_KEY.equals(key)) { return null; }
+                if (Consumer.LANGUAGE.equals(key)) { return null; }
+                if (Consumer.NAME.equals(key)) { return null; }
+                if (Consumer.PHONE_NUMBER.equals(key)) { return null; }
+                if (Consumer.TWITTER_ID.equals(key)) { return twitterId; }
+                fail("Unexpected parameter gathering for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        final ConsumerOperations mockConsumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Consumer.TWITTER_ID, key);
+                assertEquals(twitterId, (String) value);
+                Consumer consumer = new Consumer();
+                consumer.setTwitterId(twitterId);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                consumers.add(consumer);
+                return consumers;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                fail("Not update expected");
+                return consumer;
+            }
+        };
+
+        servlet.consumerOperations = mockConsumerOperations;
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetUpdateConsumerIII() throws IOException {
+        final String twitterId = "tID";
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/updateConsumer";
+            }
+            @Override
+            public String getParameter(String key) {
+                if (Consumer.TWITTER_ID.equals(key)) { return twitterId; }
+                fail("Unexpected parameter gathering for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        final ConsumerOperations mockConsumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Consumer.TWITTER_ID, key);
+                assertEquals(twitterId, (String) value);
+                return new ArrayList<Consumer>();
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                fail("Not update expected");
+                return consumer;
+            }
+        };
+
+        servlet.consumerOperations = mockConsumerOperations;
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 }

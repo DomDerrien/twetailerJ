@@ -19,6 +19,9 @@ public class Consumer extends Entity {
 
     public final static String ADDRESS = "address";
 
+    // Shortcut
+    public final static String CONSUMER_KEY = "consumerKey";
+
     @Persistent
     private String email;
 
@@ -37,7 +40,7 @@ public class Consumer extends Entity {
     @Persistent
     private Long locationKey;
 
-    public final static String LOCATION_KEY = "locationKey";
+    public final static String LOCATION_KEY = Location.LOCATION_KEY;
 
     @Persistent
     private String name;
@@ -142,8 +145,8 @@ public class Consumer extends Entity {
         out.put(ADDRESS, getAddress());
         out.put(EMAIL, getEmail());
         out.put(JABBER_ID, getJabberId());
-        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(LANGUAGE, getLanguage());
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(TWITTER_ID, getTwitterId());
@@ -155,11 +158,15 @@ public class Consumer extends Entity {
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
+
+        // Shortcut
+        if (in.containsKey(CONSUMER_KEY)) { setKey(in.getLong(CONSUMER_KEY)); }
+
         return this;
     }
 }

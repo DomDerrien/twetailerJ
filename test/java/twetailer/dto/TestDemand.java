@@ -19,7 +19,9 @@ import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.DateUtils;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 public class TestDemand {
@@ -325,5 +327,14 @@ public class TestDemand {
         Demand object = new Demand();
 
         object.setSource((Source) null);
+    }
+
+    @Test
+    public void testShortcut() {
+        Long key = 12345L;
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Demand.REFERENCE, key);
+
+        assertEquals(key, new Demand(parameters).getKey());
     }
 }

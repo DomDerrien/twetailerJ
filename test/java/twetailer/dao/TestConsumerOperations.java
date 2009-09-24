@@ -21,7 +21,6 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.users.User;
 
 public class TestConsumerOperations {
 
@@ -323,7 +322,7 @@ public class TestConsumerOperations {
                 return pm;
             }
         };
-        Consumer createdConsumer = ops.createConsumer(new User("email", "domain"));
+        Consumer createdConsumer = ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
         assertNotNull(createdConsumer);
         assertEquals(createdConsumer, ((MockPersistenceManager) ops.getPersistenceManager()).getPersistedObject());
         assertEquals("email", createdConsumer.getEmail());
@@ -354,7 +353,7 @@ public class TestConsumerOperations {
                 return pm;
             }
         };
-        Consumer createdConsumer = ops.createConsumer(new User("email", "domain"));
+        Consumer createdConsumer = ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
         assertNotNull(createdConsumer);
         assertNull(((MockPersistenceManager) ops.getPersistenceManager()).getPersistedObject());
         assertEquals(existingConsumer, createdConsumer);
@@ -363,7 +362,7 @@ public class TestConsumerOperations {
 
     @Test
     public void testCreateIII() throws DataSourceException {
-        User user = new User("test", "test.com");
+        com.google.appengine.api.users.User user = new com.google.appengine.api.users.User("test", "test.com");
 
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -429,15 +428,43 @@ public class TestConsumerOperations {
     }
 
     @Test
+    public void testCreateV() throws DataSourceException {
+        com.google.appengine.api.xmpp.JID user = new com.google.appengine.api.xmpp.JID("test");
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Tries to recreate it
+        ops.createConsumer(user);
+
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
     public void testUpdateI() throws DataSourceException {
         final String twitterId = "Katelyn";
-        User user = new User("test", "test.com");
-
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         ConsumerOperations ops = new ConsumerOperations();
 
         // Create the user once
-        Consumer consumer = ops.createConsumer(pm, user);
+        Consumer consumer = ops.createConsumer(pm, new com.google.appengine.api.users.User("test", "domain"));
 
         // Update it
         consumer.setTwitterId(twitterId);
@@ -467,7 +494,7 @@ public class TestConsumerOperations {
             }
         };
         // Create the user once
-        Consumer consumer = ops.createConsumer(pm, new User("test", "domain"));
+        Consumer consumer = ops.createConsumer(pm, new com.google.appengine.api.users.User("test", "domain"));
 
         // Update it
         consumer.setTwitterId("Katelyn");

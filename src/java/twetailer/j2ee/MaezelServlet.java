@@ -172,16 +172,25 @@ public class MaezelServlet extends HttpServlet {
                     if (0 < consumers.size()) {
                         Consumer consumer = consumers.get(0);
 
-                        if (request.getParameter(Consumer.ADDRESS) != null) { consumer.setAddress(request.getParameter(Consumer.ADDRESS)); }
-                        if (request.getParameter(Consumer.EMAIL) != null) { consumer.setEmail(request.getParameter(Consumer.EMAIL)); }
-                        if (request.getParameter(Consumer.JABBER_ID) != null) { consumer.setJabberId(request.getParameter(Consumer.JABBER_ID)); }
-                        if (request.getParameter(Consumer.LOCATION_KEY) != null) { consumer.setLocationKey(Long.valueOf(request.getParameter(Consumer.LOCATION_KEY))); }
-                        if (request.getParameter(Consumer.LANGUAGE) != null) { consumer.setLanguage(request.getParameter(Consumer.LANGUAGE)); }
-                        if (request.getParameter(Consumer.NAME) != null) { consumer.setName(request.getParameter(Consumer.NAME)); }
-                        if (request.getParameter(Consumer.PHONE_NUMBER) != null) { consumer.setPhoneNumber(request.getParameter(Consumer.PHONE_NUMBER)); }
-                        // if (request.getParameter(Consumer.TWITTER_ID) != null) { consumer.setTwitterId(request.getParameter(Consumer.TWITTER_ID)); }
+                        boolean oneUpdate = false;
+                        if (request.getParameter(Consumer.ADDRESS) != null) { oneUpdate = true; consumer.setAddress(request.getParameter(Consumer.ADDRESS)); }
+                        if (request.getParameter(Consumer.EMAIL) != null) { oneUpdate = true; consumer.setEmail(request.getParameter(Consumer.EMAIL)); }
+                        if (request.getParameter(Consumer.JABBER_ID) != null) { oneUpdate = true; consumer.setJabberId(request.getParameter(Consumer.JABBER_ID)); }
+                        if (request.getParameter(Consumer.LOCATION_KEY) != null) { oneUpdate = true; consumer.setLocationKey(Long.valueOf(request.getParameter(Consumer.LOCATION_KEY))); }
+                        if (request.getParameter(Consumer.LANGUAGE) != null) { oneUpdate = true; consumer.setLanguage(request.getParameter(Consumer.LANGUAGE)); }
+                        if (request.getParameter(Consumer.NAME) != null) { oneUpdate = true; consumer.setName(request.getParameter(Consumer.NAME)); }
+                        if (request.getParameter(Consumer.PHONE_NUMBER) != null) { oneUpdate = true; consumer.setPhoneNumber(request.getParameter(Consumer.PHONE_NUMBER)); }
+                        // if (request.getParameter(Consumer.TWITTER_ID) != null) { oneUpdate = true; consumer.setTwitterId(request.getParameter(Consumer.TWITTER_ID)); }
 
-                        consumerOperations.updateConsumer(pm, consumer);
+                        if (oneUpdate) {
+                            consumerOperations.updateConsumer(pm, consumer);
+                        }
+                        else {
+                            throw new ClientException("No attribute recognized for the consumer with " + Consumer.TWITTER_ID + " attribute == " + request.getParameter(Consumer.TWITTER_ID));
+                        }
+                    }
+                    else {
+                        throw new ClientException("No consumer found for the " + Consumer.TWITTER_ID + " attribute == " + request.getParameter(Consumer.TWITTER_ID));
                     }
                 }
                 finally {

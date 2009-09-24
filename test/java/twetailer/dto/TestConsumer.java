@@ -12,7 +12,9 @@ import org.junit.Test;
 
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 public class TestConsumer {
@@ -120,5 +122,14 @@ public class TestConsumer {
 
         assertNull(clone.getLocationKey());
         assertNull(clone.getTwitterId());
+    }
+
+    @Test
+    public void testShortcut() {
+        Long key = 12345L;
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Consumer.CONSUMER_KEY, key);
+
+        assertEquals(key, new Consumer(parameters).getKey());
     }
 }

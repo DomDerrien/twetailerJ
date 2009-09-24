@@ -30,6 +30,9 @@ public class Location extends Entity {
 
     public static final String LATITUDE = "latitude";
 
+    // Shortcut
+    public final static String LOCATION_KEY = "locationKey";
+
     @Persistent
     private Double longitude = INVALID_COORDINATE;
 
@@ -121,12 +124,7 @@ public class Location extends Entity {
     public TransferObject fromJson(JsonObject in) {
         // super.fromJson(in);
 
-        boolean resetCurrentLocation = false;
-        resetCurrentLocation = in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(POSTAL_CODE) && !in.getString(POSTAL_CODE).equals(getPostalCode());
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(LATITUDE) && !getLatitude().equals(in.getDouble(LATITUDE));
-        resetCurrentLocation = resetCurrentLocation || in.containsKey(LONGITUDE) && !getLongitude().equals(in.getDouble(LONGITUDE));
-        if (resetCurrentLocation) {
+        if (hasNewAttributes(in)) {
             setCountryCode(null);
             setPostalCode(null);
             setLatitude(INVALID_COORDINATE);
@@ -139,7 +137,24 @@ public class Location extends Entity {
         if (in.containsKey(LONGITUDE)) { setLongitude(in.getDouble(LONGITUDE)); }
         if (in.containsKey(POSTAL_CODE)) { setPostalCode(in.getString(POSTAL_CODE)); }
 
+        // Shortcut
+        if (in.containsKey(LOCATION_KEY)) {setKey(in.getLong(LOCATION_KEY)); }
+
         return this;
     }
 
+    public boolean hasNewAttributes(JsonObject in) {
+        boolean hasNewAttribute = false;
+        hasNewAttribute = in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
+        hasNewAttribute = hasNewAttribute || in.containsKey(POSTAL_CODE) && !in.getString(POSTAL_CODE).equals(getPostalCode());
+        hasNewAttribute = hasNewAttribute || in.containsKey(LATITUDE) && !getLatitude().equals(in.getDouble(LATITUDE));
+        hasNewAttribute = hasNewAttribute || in.containsKey(LONGITUDE) && !getLongitude().equals(in.getDouble(LONGITUDE));
+        return hasNewAttribute;
+    }
+
+    private static Location cleanBase = new Location();
+
+    public static boolean hasAttributeForANewLocation(JsonObject in) {
+        return cleanBase.hasNewAttributes(in);
+    }
 }

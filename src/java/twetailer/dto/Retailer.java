@@ -23,7 +23,7 @@ public class Retailer extends Entity {
     @Persistent
     private Long consumerKey;
 
-    public final static String CONSUMER_KEY = "consumerKey";
+    public final static String CONSUMER_KEY = Consumer.CONSUMER_KEY;
 
     @Persistent
     private Long creatorKey;
@@ -48,7 +48,7 @@ public class Retailer extends Entity {
     @Persistent
     private Boolean isStoreAdmin;
 
-    public final static String IS_STORE_ADMIN_KEY = "isStoreAdmin";
+    public final static String IS_STORE_ADMIN = "isStoreAdmin";
 
     @Persistent
     private String language = LocaleValidator.DEFAULT_LANGUAGE;
@@ -58,7 +58,7 @@ public class Retailer extends Entity {
     @Persistent
     private Long locationKey;
 
-    public final static String LOCATION_KEY = "locationKey";
+    public final static String LOCATION_KEY = Location.LOCATION_KEY;
 
     @Persistent
     private String name;
@@ -75,10 +75,13 @@ public class Retailer extends Entity {
 
     public final static String PREFERRED_CONNECTION = "preferredConnection";
 
+    // Shortcut
+    public final static String RETAILER_KEY = "retailerKey";
+
     @Persistent
     private Long storeKey;
 
-    public final static String STORE_KEY = "storeKey";
+    public final static String STORE_KEY = Store.STORE_KEY;
 
     // Not persistent
     private Long score;
@@ -278,7 +281,7 @@ public class Retailer extends Entity {
         }
         out.put(EMAIL, getEmail());
         out.put(JABBER_ID, getJabberId());
-        out.put(IS_STORE_ADMIN_KEY, isStoreAdmin());
+        out.put(IS_STORE_ADMIN, isStoreAdmin());
         out.put(LANGUAGE, getLanguage());
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
@@ -303,7 +306,7 @@ public class Retailer extends Entity {
         }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
-        if (in.containsKey(IS_STORE_ADMIN_KEY)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN_KEY)); }
+        if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
@@ -312,6 +315,10 @@ public class Retailer extends Entity {
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
+
+        // Shortcut
+        if (in.containsKey(RETAILER_KEY)) { setKey(in.getLong(RETAILER_KEY)); }
+
         return this;
     }
 }

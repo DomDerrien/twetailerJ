@@ -515,6 +515,19 @@ public class TestBaseOperations {
     }
 
     @Test
+    public void testGetRawCommandOperations() {
+        BaseOperations base = new BaseOperations();
+        BaseOperations ops1 = base.getRawCommandOperations();
+        assertNotNull(ops1);
+        BaseOperations ops2 = base.getRawCommandOperations();
+        assertNotNull(ops2);
+        assertEquals(ops1, ops2);
+        BaseOperations ops3 = new BaseOperations().getRawCommandOperations();
+        assertNotNull(ops3);
+        assertNotSame(ops1, ops3);
+    }
+
+    @Test
     public void testGetRetailerOperations() {
         BaseOperations base = new BaseOperations();
         BaseOperations ops1 = base.getRetailerOperations();

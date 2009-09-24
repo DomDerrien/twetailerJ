@@ -21,7 +21,7 @@ public class Command extends Entity {
     @Persistent
     private Long consumerKey;
 
-    public static final String CONSUMER_KEY = "consumerKey";
+    public static final String CONSUMER_KEY = Consumer.CONSUMER_KEY;
 
     public static final String NEED_HELP = "needHelp";
 

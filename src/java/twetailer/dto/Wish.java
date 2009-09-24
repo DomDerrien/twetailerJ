@@ -31,7 +31,7 @@ public class Wish extends Entity {
     @Persistent
     private Long consumerKey;
 
-    public static final String CONSUMER_KEY = "consumerKey";
+    public static final String CONSUMER_KEY = Consumer.CONSUMER_KEY;
 
     @Persistent
     private CommandSettings.State state = CommandSettings.State.open;

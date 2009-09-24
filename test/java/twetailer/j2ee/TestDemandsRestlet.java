@@ -127,7 +127,7 @@ public class TestDemandsRestlet {
             @Override
             public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) throws ClientException {
                 fail("Should not be called!");
-                return null;
+                throw new ClientException("Done in purpose");
             }
         });
 

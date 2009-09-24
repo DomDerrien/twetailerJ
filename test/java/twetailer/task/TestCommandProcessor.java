@@ -715,12 +715,11 @@ public class TestCommandProcessor {
         final String emitterId = "emitter";
         final Consumer consumer = new Consumer();
 
-        /* TODO: implement this service provider
         // Mock RawCommandOperations
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Consumer.FACEBOOK_ID, key);
+                // assertEquals(Consumer.FACEBOOK_ID, key);
                 assertEquals(emitterId, (String) value);
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 consumers.add(consumer);
@@ -728,7 +727,6 @@ public class TestCommandProcessor {
             }
         };
         CommandProcessor.consumerOperations = consumerOperations;
-        */
 
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.facebook);
@@ -1553,7 +1551,7 @@ public class TestCommandProcessor {
         // Command mock
         JsonObject command = new GenericJsonObject();
 
-        assertEquals(CommandSettings.Action.help.toString(), CommandProcessor.guessAction(command));
+        assertEquals(CommandSettings.Action.demand.toString(), CommandProcessor.guessAction(command));
     }
 
     @Test
@@ -1641,6 +1639,7 @@ public class TestCommandProcessor {
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Demand.REFERENCE, demandKey);
+        command.put(Location.POSTAL_CODE, "zzz");
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -1652,7 +1651,6 @@ public class TestCommandProcessor {
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
     }
-
 
     @Test
     public void testProcessExisitingDemandII() throws TwitterException, DataSourceException, ClientException {
@@ -1679,7 +1677,7 @@ public class TestCommandProcessor {
         final LocationOperations locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
-                return null;
+                throw new IllegalArgumentException("Done in purpose");
             }
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
@@ -1732,7 +1730,7 @@ public class TestCommandProcessor {
         final LocationOperations locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
-                return null;
+                throw new IllegalArgumentException("Done in purpose");
             }
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
@@ -1805,6 +1803,7 @@ public class TestCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
+        command.put(Location.POSTAL_CODE, "zzz");
 
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
 
@@ -1843,7 +1842,7 @@ public class TestCommandProcessor {
         final LocationOperations locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
-                return null;
+                throw new IllegalArgumentException("Done in purpose");
             }
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
@@ -1963,7 +1962,7 @@ public class TestCommandProcessor {
         final LocationOperations locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
-                return null;
+                throw new IllegalArgumentException("Done in purpose");
             }
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
@@ -2028,7 +2027,7 @@ public class TestCommandProcessor {
         final LocationOperations locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
-                return null;
+                throw new IllegalArgumentException("Done in purpose");
             }
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
@@ -2050,6 +2049,75 @@ public class TestCommandProcessor {
         rawCommand.setSource(Source.simulated);
 
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessAdditionalNewDemandIII() throws TwitterException, DataSourceException, ClientException {
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                demand.setSource(Source.twitter); // Setup to verify it will be reset with the Source.simulated of the rawCommand
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
+                assertEquals(CommandSettings.State.open, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setLocationKey(locationKey);
+
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);

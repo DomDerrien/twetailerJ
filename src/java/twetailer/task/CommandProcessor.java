@@ -664,10 +664,10 @@ public class CommandProcessor {
         // 1. create a new demand
         // 2. update the identified demand
         //
+        Location newLocation = Location.hasAttributeForANewLocation(command) ? locationOperations.createLocation(pm, command) : null;
         Long reference = command.getLong(Demand.REFERENCE);
         if (reference != 0L) {
             // Extracts the new location
-            Location newLocation = locationOperations.createLocation(pm, command);
             if (newLocation != null) {
                 command.put(Demand.LOCATION_KEY, newLocation.getKey());
             }
@@ -683,8 +683,10 @@ public class CommandProcessor {
         }
         else {
             // Extracts the new location
-            Location newLocation = locationOperations.createLocation(pm, command);
-            Long newLocationKey = newLocation == null ? consumer.getLocationKey() : newLocation.getKey();
+            Long newLocationKey = consumer.getLocationKey();
+            if (newLocation != null) {
+                newLocationKey = newLocation.getKey();
+            }
             // Get the latest demand or the default one
             List<Demand> demands = demandOperations.getDemands(pm, Demand.CONSUMER_KEY, consumer.getKey(), 1);
             Demand latestDemand = null;
@@ -708,7 +710,7 @@ public class CommandProcessor {
             latestDemand.setSource(rawCommand.getSource());
             // Update of the latest command (can be the default one) with the just extracted parameters
             command = latestDemand.fromJson(command).toJson();
-            if (newLocationKey != null && newLocationKey != command.getLong(Demand.LOCATION_KEY)) {
+            if (newLocationKey != null && !newLocationKey.equals(command.getLong(Demand.LOCATION_KEY))) {
                 command.put(Demand.LOCATION_KEY, newLocationKey);
             }
             // Persist the new demand

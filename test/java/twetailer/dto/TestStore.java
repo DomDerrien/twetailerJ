@@ -10,7 +10,9 @@ import org.junit.Test;
 
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 public class TestStore {
@@ -94,5 +96,14 @@ public class TestStore {
         Store clone = new Store(object.toJson());
 
         assertNull(clone.getLocationKey());
+    }
+
+    @Test
+    public void testShortcut() {
+        Long key = 12345L;
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Store.STORE_KEY, key);
+
+        assertEquals(key, new Store(parameters).getKey());
     }
 }
