@@ -11,8 +11,6 @@ import org.junit.Test;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
-import domderrien.jsontools.JsonException;
-import domderrien.jsontools.JsonParser;
 
 public class TestRawCommand {
 

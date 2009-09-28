@@ -11,6 +11,7 @@ import java.util.Locale;
 import org.junit.Test;
 
 import domderrien.i18n.MockLabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -115,7 +116,7 @@ public class TestCommandSettings {
 
     @Test
     public void testGetHelpKeywords() {
-        MockLabelExtractor.init(new Object[][]{
+        MockLabelExtractor.init(ResourceFileId.master, new Object[][]{
             {CommandSettings.HELP_KEYWORD_LIST_ID, "one,two"},
             {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "one", "one help message"},
             {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "two", "two help message"}
@@ -126,6 +127,6 @@ public class TestCommandSettings {
         assertNotSame(0, helpKeywords.size());
         assertEquals(helpKeywords, CommandSettings.getHelpKeywords(null));
 
-        MockLabelExtractor.close();
+        MockLabelExtractor.close(ResourceFileId.master);
     }
 }

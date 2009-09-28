@@ -1,3 +1,21 @@
-# localized resource location
-languageListFilename=@rwa.languageListFilename@
-localizedLabelFilename=@rwa.localizedLabelBaseFilename@
+# Settings related to the localized resource bundles
+
+# Name of the Java Properties file containing the list of supported languages
+# - This file contains one entry per supported language
+# - The keys are ISO language codes (like 'en', 'fr_CA', etc.)
+# - The values are the localized language names (like 'English', 'Français canadien', etc.)
+#
+language-list-filename=@dd2tu.languageListFilename@
+
+# Name of the default resource filename base
+# - Can be 'ui-catalog' used to access 'ui-catalog_fr_CA.properties' and 'fr-ca/ui-catalog.js'
+# - This base is used to generically to access translated resource accross different programming languages
+# - Used specifically by the LabelExtractor classes (Java, JavaScript, and Python) as the default name for the localized resources
+#
+master-tmx-filename=@dd2tu.masterLocalizedLabelBaseFilename@
+
+2nd-tmx-filename=@dd2tu.secondLocalizedLabelBaseFilename@
+
+3rd-tmx-filename=@dd2tu.masterLocalizedLabelBaseFilename@
+
+4th-tmx-filename=@dd2tu.masterLocalizedLabelBaseFilename@

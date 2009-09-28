@@ -55,17 +55,13 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
-		<copy file="deps/lib/domderrien/domderrien-0.8.2.jar" todir="src/war/WEB-INF/lib"/>
+		<copy file="deps/lib/domderrien/domderrien-0.8.5.jar" todir="src/war/WEB-INF/lib"/>
 		<copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib"/>
     </target>
 
 	<target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
 	
-    <target name="webserver-start" description="start the configured webserver" depends="webserver-stop">
-		<echo>Target: webserver-start</echo>
-    	<antcall target="step-datanucleus-enhance" />
-    	<antcall target="step-appengine-start" />
-    </target>
+    <target name="webserver-start" description="start the configured webserver" depends="webserver-stop, step-datanucleus-enhance, step-appengine-start" />
     
     <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-info-get">
 		<echo>Target: webserver-start-debug</echo>

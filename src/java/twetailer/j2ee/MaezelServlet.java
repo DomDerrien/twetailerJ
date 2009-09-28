@@ -31,7 +31,6 @@ import twetailer.task.TweetLoader;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
-import domderrien.jsontools.JsonParser;
 
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {

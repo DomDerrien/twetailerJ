@@ -39,6 +39,7 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -834,7 +835,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
     }
 
     @Test
@@ -855,7 +856,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
     }
 
     @Test
@@ -876,7 +877,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
     }
 
     @Test
@@ -897,7 +898,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
     }
 
     @Test
@@ -918,7 +919,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_ACTION_PREFIX + CommandSettings.Action.demand.toString(), Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Action.demand.toString(), Locale.ENGLISH)));
     }
 
     @Test
@@ -951,7 +952,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, helpKeyword, Locale.ENGLISH)));
     }
 
     @Test

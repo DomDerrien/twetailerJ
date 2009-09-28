@@ -13,7 +13,7 @@
 			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.2.5/docs/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="deps/lib/junit/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="deps/lib/junit/junit-4.7.jar" sourcepath="deps/lib/junit/junit-4.7-src.jar"/>
 	<classpathentry kind="lib" path="deps/lib/twitter4j/twitter4j-2.0.10.jar" sourcepath="deps/lib/twitter4j/twitter4j-2.0.10-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/twitter4j/twitter4j-2.0.10-javadoc.jar!/"/>
@@ -30,9 +30,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/easymock/cglib-nodep-2.2.jar"/>
-	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-0.8.2.jar" sourcepath="deps/lib/domderrien/domderrien-0.8.2-src.jar">
+	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-0.8.5.jar" sourcepath="deps/lib/domderrien/domderrien-0.8.5-src.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-0.8.2-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-0.8.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar">

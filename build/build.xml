@@ -36,8 +36,12 @@
 		value="languages"
 	/>
 
-	<property name="rwa.localizedLabelBaseFilename"
+	<property name="rwa.masterLocalizedLabelBaseFilename"
 		value="labels"
+	/>
+
+	<property name="rwa.secondLocalizedLabelBaseFilename"
+		value="helpSystem"
 	/>
 
 	<property name="rwa.sessionTimeout"
@@ -156,7 +160,8 @@
 				<include name="src/war/js/${rwa.productShortName}/nls/**/*" />
 				<include name="src/war/WEB-INF/classes/com/**/*" />
 				<include name="src/war/WEB-INF/classes/org/**/*" />
-				<include name="src/war/WEB-INF/classes/${rwa.localizedLabelBaseFilename}*.properties" />
+				<include name="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}*.properties" />
+				<include name="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}*.properties" />
 				<include name="src/war/WEB-INF/classes/${rwa.languageListFilename}*.properties" />
 				<exclude name="test" />
 			</fileset>
@@ -172,7 +177,7 @@
 		<available property="dojo.already.expanded" file="src/war/js/dojo/dojo/dojo.js" />
 		<antcall target="step-dojo-unzip" />
 		<!-- Setup Java test environment -->
-		<available property="cobertura.already.expanded" file="deps/lib/cobertura/asm-2.2.1.jar" />
+		<available property="cobertura.already.expanded" file="deps/lib/cobertura/asm-3.0.jar" />
 		<antcall target="step-cobertura-unzip" />
 		<!-- Setup JavaScript test environment -->
 		<available property="jsunit.already.expanded" type="dir" file="bin/jsunit/java/bin" />
@@ -267,7 +272,7 @@
 		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
 		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${rwa.languageListFilename}.properties file -->
 		<filelist dir="deps/lib">
-			<file name="domderrien/domderrien-0.8.2.jar" />
+			<file name="domderrien/domderrien-0.8.5.jar" />
 			<file name="xml/xalan-2.7.0.jar" />
 			<file name="xml/xercesImpl-2.4.0.jar" />
 			<file name="xml/xml-apis-1.3.02.jar" />
@@ -280,7 +285,7 @@
 	<fileset id="runtime.deps" dir="deps/lib">
 		<include name="apache/commons-lang-2.2.jar" />
 		<include name="apache/commons-logging-1.0.4.jar" />
-		<include name="domderrien/domderrien-0.8.2.jar" />
+		<include name="domderrien/domderrien-0.8.5.jar" />
 		<include name="easymock/easymock-2.5.1.jar" />
 		<include name="easymock/easymockclassextension.jar" />
 		<include name="easymock/cglib-nodep-2.2.jar" />
@@ -294,7 +299,8 @@
 			<file name="xml/xalan-2.7.0.jar" />
 			<file name="xml/xercesImpl-2.4.0.jar" />
 			<file name="xml/xml-apis-1.3.02.jar" />
-			<file name="junit/junit-4.6.jar" />
+			<file name="junit/junit-4.7.jar" />
+			<file name="junit/junit-dep-4.7.jar" />
 			<!--file name="tomcat/j2ee.jar" /-->
 			<!--file name="was/j2ee-6.0.jar.jar" /-->
 			<file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
@@ -310,8 +316,8 @@
 		<path refid="java.compile.classpath" />
 		<filelist dir="deps/lib">
 			<file name="cobertura/cobertura.jar" />
-			<file name="cobertura/asm-2.2.1.jar" />
-			<file name="cobertura/asm-tree-2.2.1.jar" />
+			<file name="cobertura/asm-3.0.jar" />
+			<file name="cobertura/asm-tree-3.0.jar" />
 			<file name="cobertura/jakarta-oro-2.0.8.jar" />
 			<file name="cobertura/log4j-1.2.9.jar" />
 			<file name="datanucleus/datanucleus-appengine-1.0.3.jar" />
@@ -351,8 +357,9 @@
 			<token key="rwa.productName" value="${rwa.productName}" />
 			<token key="rwa.productShortName" value="${rwa.productShortName}" />
 			<token key="rwa.contextRoot" value="${rwa.contextRoot}" />
-			<token key="rwa.languageListFilename" value="${rwa.languageListFilename}" />
-			<token key="rwa.localizedLabelBaseFilename" value="${rwa.localizedLabelBaseFilename}" />
+			<token key="dd2tu.languageListFilename" value="${rwa.languageListFilename}" />
+			<token key="dd2tu.masterLocalizedLabelBaseFilename" value="${rwa.masterLocalizedLabelBaseFilename}" />
+			<token key="dd2tu.secondLocalizedLabelBaseFilename" value="${rwa.secondLocalizedLabelBaseFilename}" />
 			<token key="rwa.dbDriver" value="${rwa.dbDriver}" />
 			<token key="rwa.dbName" value="${rwa.dbName}" />
 			<token key="rwa.dbURL" value="${rwa.dbURL}" />
@@ -474,8 +481,8 @@
 			</patternset>
 		</unzip>
 		<move file="${temp.dir}/cobertura-1.9.1/cobertura.jar" todir="deps/lib/cobertura" overwrite="no" />
-		<move file="${temp.dir}/cobertura-1.9.1/lib/asm-2.2.1.jar" todir="deps/lib/cobertura" overwrite="no" />
-		<move file="${temp.dir}/cobertura-1.9.1/lib/asm-tree-2.2.1.jar" todir="deps/lib/cobertura" overwrite="no" />
+		<move file="${temp.dir}/cobertura-1.9.1/lib/asm-3.0.jar" todir="deps/lib/cobertura" overwrite="no" />
+		<move file="${temp.dir}/cobertura-1.9.1/lib/asm-tree-3.0.jar" todir="deps/lib/cobertura" overwrite="no" />
 		<move file="${temp.dir}/cobertura-1.9.1/lib/jakarta-oro-2.0.8.jar" todir="deps/lib/cobertura" overwrite="no" />
 		<move file="${temp.dir}/cobertura-1.9.1/lib/log4j-1.2.9.jar" todir="deps/lib/cobertura" overwrite="no" />
 	</target>
@@ -571,12 +578,12 @@
 		<mkdir dir="src/war/js/${rwa.productShortName}/nls" />
 		<java
 			classname="domderrien.build.TMXConverter"
-			fork="false"
+			fork="true"
 		>
 			<classpath refid="tmxconverter.classpath" />
 			<jvmarg value="-Dfile.encoding=UTF-8" />
 			<arg value="-tmxFilenameBase" />
-			<arg value="${rwa.localizedLabelBaseFilename}" />
+			<arg value="${rwa.masterLocalizedLabelBaseFilename}" />
 			<arg value="-sourcePath" />
 			<arg value="${basedir}${file.separator}src${file.separator}resources" />
 			<arg value="-jsDestPath" />
@@ -595,15 +602,49 @@
 			includes="*.properties-utf8" ext=".properties"
 		/>
 		<copy
-			file="src/war/WEB-INF/classes/${rwa.localizedLabelBaseFilename}.properties"
-			tofile="src/war/WEB-INF/classes/${rwa.localizedLabelBaseFilename}_en.properties"
+			file="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}.properties"
+			tofile="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}_en.properties"
 		/>
 		<mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
 		<copy
-			file="src/war/js/${rwa.productShortName}/nls/${rwa.localizedLabelBaseFilename}.js"
+			file="src/war/js/${rwa.productShortName}/nls/${rwa.masterLocalizedLabelBaseFilename}.js"
 			todir="src/war/js/${rwa.productShortName}/nls/en"
 		/>
-		</target>
+		<java
+			classname="domderrien.build.TMXConverter"
+			fork="true"
+		>
+			<classpath refid="tmxconverter.classpath" />
+			<jvmarg value="-Dfile.encoding=UTF-8" />
+			<arg value="-tmxFilenameBase" />
+			<arg value="${rwa.secondLocalizedLabelBaseFilename}" />
+			<arg value="-sourcePath" />
+			<arg value="${basedir}${file.separator}src${file.separator}resources" />
+			<arg value="-jsDestPath" />
+			<arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+			<arg value="-javaDestPath" />
+			<arg value="${temp.dir}" />
+			<arg value="-languageFilenameBase" />
+			<arg value="${rwa.languageListFilename}" />
+			<arg value="-buildStamp" />
+			<arg value="${rwa.stageId}" />
+		</java>
+		<native2ascii
+			src="${temp.dir}"
+			dest="src/war/WEB-INF/classes"
+			encoding="UTF8"
+			includes="*.properties-utf8" ext=".properties"
+		/>
+		<copy
+			file="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}.properties"
+			tofile="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}_en.properties"
+		/>
+		<mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+		<copy
+			file="src/war/js/${rwa.productShortName}/nls/${rwa.secondLocalizedLabelBaseFilename}.js"
+			todir="src/war/js/${rwa.productShortName}/nls/en"
+		/>
+	</target>
 
 	<target name="step-dojo-build">
 		<exec executable="build.bat" dir="src/war/js/dojo/util/buildscripts" spawn="true">

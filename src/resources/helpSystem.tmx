@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+	<header creationtool="developers" creationtoolversion="1.0"
+		datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+		o-tmf="Twetailer">
+	</header>
+	<body>
+	
+		<!-- =================== -->
+		<!-- Default definitions -->
+		<!-- =================== -->
+
+		<tu tuid="bundle_language" datatype="Text">
+			<prop type="x-tier">dojotk</prop>
+			<prop type="x-tier">javarb</prop>
+			<note>
+				IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
+				IMPORTANT: "English" should not be just translated!
+				IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
+				           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
+			</note>
+			<tuv xml:lang="en">
+				<seg>English</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="unit_test_sample" datatype="Text">
+			<prop type="x-tier">dojotk</prop>
+			<prop type="x-tier">javarb</prop>
+			<note>test</note>
+			<tuv xml:lang="en">
+				<seg>N/A</seg>
+			</tuv>
+		</tu>
+
+		<!-- ========================= -->
+		<!-- Help messages for Twitter -->
+		<!-- ========================= -->
+
+		<tu tuid="_introduction_" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'action'</note>
+			<tuv xml:lang="en">
+				<seg>Welcome to Twetailer. Whenever you look for something, post your demand to Twetailer.\
+					 If you're a consumer, tweet 'help consumer'. If you're a retailer then tweet 'help retailer'.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="action" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'action'</note>
+			<tuv xml:lang="en">
+				<seg>This prefix introduces a command, like 'demand' or 'list' followed by other attributes.|\
+					A useful shortcut is the exclamation mark (!). The command 'action:list' can be submitted as '!list'.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="expiration" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'expiration'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- expiration -- here it is!!!</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="help" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'help'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- help</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="locale" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'locale'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- locale</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="quantity" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'quantity'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- quantity</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="reference" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'reference'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- reference</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="range" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'range'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- range</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="state" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'state'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- state</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="tags" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the prefix 'tags'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- tags</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cancel" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'cancel'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- cancel</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="close" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'close'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- close</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="confirm" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'confirm'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- confirm</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="decline" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'decline'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- decline</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="demand" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'demand'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- demand</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="help" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'help'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- help</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="list" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'list'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- list</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="propose" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'propose'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- propose</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="supply" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'supply'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- supply</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="wish" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'wish'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- wish</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="www" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the action 'www'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- www</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="open" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'open'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- open</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="published" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'published'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- published</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="invalid" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'invalid'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- invalid</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="confirmed" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'confirmed'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- confirmed</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="settled" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'settled'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- settled</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="closed" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'closed'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- closed</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="canceled" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the state 'canceled'</note>
+			<tuv xml:lang="en">
+				<seg>Steven -- canceled</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="founders" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the keyword 'founders'</note>
+			<tuv xml:lang="en">
+				<seg>Twetailer is Steven's original idea, with Dom at the realization stage ;)</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="consumer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Help text associated to the keyword 'consumer'</note>
+			<tuv xml:lang="en">
+				<seg>Whenever you look for something, post your demand to Twetailer.|\
+					 Tweet something like 'wii console'. The first time, please give your postal code and the country code with 'loc: 95423 US'.|\
+					 Twetailer will broadcast your demand to the retailers in your area.|\
+					 If any retailer propose something, Twetailer will forward the proposal to you immediately.|\
+					 If you accept a proposal, the retailer should keep it and you can pick it up at his store later.|\
+					 The ability to reserve a product is offered as a free service by Twetailer.|\
+					 In a near future, you will be able to purchase the product online to secure your reservation. Stay tuned.|\
+					 All feedback can be posted on http://www.twetailer.com/feedback.</seg>
+			</tuv>
+		</tu>
+
+	</body>
+</tmx>

@@ -31,6 +31,7 @@ import twetailer.validator.CommandSettings;
 import twitter4j.TwitterException;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -94,6 +95,7 @@ public class CommandProcessor {
             preparePattern(prefixes, patterns, CommandSettings.Prefix.quantity, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.reference, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
+            preparePattern(prefixes, patterns, CommandSettings.Prefix.state, "\\s*\\w+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\+\\s*|\\-\\s*|\\w\\s*)+");
 
             localizedPatterns.put(locale, patterns);
@@ -104,14 +106,11 @@ public class CommandProcessor {
      * Builds a pattern for a regular expression which consider all characters after the third one as optional
      *
      * @param prefix character sequence to consider
-     * @return Pattern for a regular expression with optional characters at the end, in forn such as tes(?:t(?:e(?:r)?)?)? for the keyword tester
+     * @return Pattern for a regular expression with optional characters at the end, in form such as tes(?:t(?:e(?:r)?)?)? for the keyword tester
      */
     private static String createPatternWithOptionalEndingCharacters(String prefix) {
         if (prefix.length() == 1) {
-            if ("?".equals(prefix)) {
-                return "\\?";
-            }
-            return prefix;
+            return "\\" + prefix; // To be sure to escape potential RegExp commands
         }
         String pattern = "";
         int prefixEnd = prefix.length();
@@ -570,38 +569,54 @@ public class CommandProcessor {
         }
         // Tweet the default help message if there's no keyword
         if (keyword.length() == 0) {
-            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
+            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
             return;
         }
+        String message = null;
+        // TODO: lookup into the cache to see if the given keyword has already been resolved
+        // if (getCache().containsKey(keyword + locale.toString()) {
+        //     message = (String) getCache().get(keyword + locale.toString());
+        // }
         // Check if the keyword is a prefix
-        JsonObject prefixes = localizedPrefixes.get(locale);
-        for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
-            if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
-                BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_DEFINITION_PREFIX_PREFIX + prefix, locale));
-                return;
+        if (message == null) {
+            JsonObject prefixes = localizedPrefixes.get(locale);
+            for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
+                if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
+                    message = LabelExtractor.get(ResourceFileId.second, prefix.toString(), locale);
+                    break;
+                }
             }
         }
         // Check if the keyword is an action
-        JsonObject actions = localizedActions.get(locale);
-        for (CommandSettings.Action action: CommandSettings.Action.values()) {
-            if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
-                BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_DEFINITION_ACTION_PREFIX + action, locale));
-                return;
+        if (message == null) {
+            JsonObject actions = localizedActions.get(locale);
+            for (CommandSettings.Action action: CommandSettings.Action.values()) {
+                if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
+                    message = LabelExtractor.get(ResourceFileId.second, action.toString(), locale);
+                    break;
+                }
             }
         }
         // Check of the keyword is one registered
-        JsonObject helpKeywords = localizedHelpKeywords.get(locale);
-        for (String helpKeyword: helpKeywords.getMap().keySet()) {
-            JsonArray equivalents = helpKeywords.getJsonArray(helpKeyword);
-            for (int i = 0; i < equivalents.size(); i++) {
-                if (equivalents.getString(i).equals(keyword)) {
-                    BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_DEFINITION_KEYWORD_PREFIX + helpKeyword, locale));
-                    return;
+        if (message == null) {
+            JsonObject helpKeywords = localizedHelpKeywords.get(locale);
+            for (String helpKeyword: helpKeywords.getMap().keySet()) {
+                JsonArray equivalents = helpKeywords.getJsonArray(helpKeyword);
+                for (int i = 0; i < equivalents.size(); i++) {
+                    if (equivalents.getString(i).equals(keyword)) {
+                        message = LabelExtractor.get(ResourceFileId.second, helpKeyword, locale);
+                        break;
+                    }
                 }
             }
         }
         // Tweet the default help message if the given keyword is not recognized
-        BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
+        if (message == null) {
+            message = LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale);
+        }
+        // TODO: save the match into the cache for future queries
+        // getCache().put(keyword + locale.toString(), message);
+        BaseConnector.communicateToEmitter(rawCommand, message);
     }
 
     protected static void processCancelCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException, TwitterException {

@@ -18,7 +18,6 @@ import twetailer.dto.Location;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
-import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
 
 public class DemandProcessor {

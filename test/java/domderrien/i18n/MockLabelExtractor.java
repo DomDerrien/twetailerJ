@@ -18,11 +18,11 @@ public class MockLabelExtractor extends LabelExtractor {
 
     private static ResourceBundle originalRB;
 
-    public static void init(Object [][] bundleContent) {
-        originalRB = LabelExtractor.setResourceBundle(new MockResourceBundle(bundleContent), null);
+    public static void init(ResourceFileId fileId, Object [][] bundleContent) {
+        originalRB = LabelExtractor.setResourceBundle(fileId, new MockResourceBundle(bundleContent), null);
     }
 
-    public static void close() {
-        LabelExtractor.setResourceBundle(originalRB, null);
+    public static void close(ResourceFileId fileId) {
+        LabelExtractor.setResourceBundle(LabelExtractor.ResourceFileId.master, originalRB, null);
     }
 }

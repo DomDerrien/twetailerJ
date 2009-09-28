@@ -18,7 +18,6 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
-import twitter4j.TwitterException;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 

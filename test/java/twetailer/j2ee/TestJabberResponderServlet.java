@@ -13,9 +13,6 @@ import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.RawCommand;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-
 import domderrien.mocks.MockHttpServletRequest;
 import domderrien.mocks.MockServletInputStream;
 
