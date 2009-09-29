@@ -11,9 +11,10 @@ import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
 
+import static twetailer.connector.BaseConnector.communicateToEmitter;
+
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
@@ -36,7 +37,6 @@ import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
-
 
 public class CommandProcessor {
     private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());
@@ -150,7 +150,7 @@ public class CommandProcessor {
      * @throws ClientException If the query is malformed
      * @throws ParseException if a date format is invalid
      */
-    public static JsonObject parseTweet (Map<CommandSettings.Prefix, Pattern> patterns, String message) throws ClientException, ParseException {
+    public static JsonObject parseCommand (Map<CommandSettings.Prefix, Pattern> patterns, String message) throws ClientException, ParseException {
         Matcher matcher;
         boolean oneFieldOverriden = false;
         log.warning("Message to parse: " + message);
@@ -424,14 +424,17 @@ public class CommandProcessor {
 
         try {
             // Extract information from the tweet and process the information
-            JsonObject command = parseTweet(patterns, rawCommand.getCommand());
+            JsonObject command = parseCommand(patterns, rawCommand.getCommand());
             command.put(Command.SOURCE, rawCommand.getSource().toString());
             processCommand(pm, consumer, rawCommand, command);
         }
         catch(Exception ex) {
             // TODO: use localized message
             ex.printStackTrace();
-            BaseConnector.communicateToEmitter(rawCommand, "Error: " + ex.getMessage());
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey() }, Locale.ENGLISH)
+            );
         }
     }
 
@@ -510,7 +513,10 @@ public class CommandProcessor {
             processWWWCommand(pm, consumer, rawCommand, command);
         }
         else {
-            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get("error_unsupported_action", locale));
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, locale)
+            );
         }
     }
 
@@ -569,7 +575,10 @@ public class CommandProcessor {
         }
         // Tweet the default help message if there's no keyword
         if (keyword.length() == 0) {
-            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale));
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale)
+            );
             return;
         }
         String message = null;
@@ -616,7 +625,7 @@ public class CommandProcessor {
         }
         // TODO: save the match into the cache for future queries
         // getCache().put(keyword + locale.toString(), message);
-        BaseConnector.communicateToEmitter(rawCommand, message);
+        communicateToEmitter(rawCommand, message);
     }
 
     protected static void processCancelCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException, TwitterException {
@@ -629,12 +638,23 @@ public class CommandProcessor {
         //
         if (command.containsKey(Demand.REFERENCE)) {
             // Update demand state
-            Demand demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
-            demand.setState(CommandSettings.State.canceled);
-            demandOperations.updateDemand(pm, demand);
-            // Echo back the updated demand
-            Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-            BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+            Demand demand = null;
+            try {
+                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_cancel_invalid_demand_id", consumer.getLocale())
+                );
+            }
+            if (demand != null) {
+                demand.setState(CommandSettings.State.canceled);
+                demandOperations.updateDemand(pm, demand);
+                // Echo back the updated demand
+                Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
+                communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+            }
         }
         /* TODO: implement other variations
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
@@ -645,7 +665,10 @@ public class CommandProcessor {
         }
         */
         else {
-            BaseConnector.communicateToEmitter(rawCommand, LabelExtractor.get("error_cancel_without_resource_id", consumer.getLocale()));
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_cancel_missing_demand_id", consumer.getLocale())
+            );
         }
     }
 
@@ -680,21 +703,31 @@ public class CommandProcessor {
         // 2. update the identified demand
         //
         Location newLocation = Location.hasAttributeForANewLocation(command) ? locationOperations.createLocation(pm, command) : null;
-        Long reference = command.getLong(Demand.REFERENCE);
-        if (reference != 0L) {
+        if (command.containsKey(Demand.REFERENCE)) {
             // Extracts the new location
             if (newLocation != null) {
                 command.put(Demand.LOCATION_KEY, newLocation.getKey());
             }
             // Update the demand attributes
-            Demand demand = demandOperations.getDemand(pm, reference, consumer.getKey());
-            demand.fromJson(command);
-            demand.setState(CommandSettings.State.open); // Will force the re-validation of the entire demand
-            demand.resetProposalKeys(); // All existing proposals are removed
-            demandOperations.updateDemand(pm, demand);
-            // Echo back the updated demand
-            Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-            BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+            Demand demand = null;
+            try {
+                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_demand_invalid_demand_id", consumer.getLocale())
+                );
+            }
+            if (demand != null) {
+                demand.fromJson(command);
+                demand.setState(CommandSettings.State.open); // Will force the re-validation of the entire demand
+                demand.resetProposalKeys(); // All existing proposals are removed
+                demandOperations.updateDemand(pm, demand);
+                // Echo back the updated demand
+                Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
+                communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+            }
         }
         else {
             // Extracts the new location
@@ -730,16 +763,16 @@ public class CommandProcessor {
             }
             // Persist the new demand
             Demand newDemand = demandOperations.createDemand(pm, command, consumer.getKey());
-            BaseConnector.communicateToEmitter(
+            communicateToEmitter(
                     rawCommand,
                     LabelExtractor.get(
-                            "ta_acknowledgeDemandCreated",
+                            "cp_command_demand_acknowledge_creation",
                             new Object[] { newDemand.getKey() },
                             consumer.getLocale()
                     )
             );
             Location location = newDemand.getLocationKey() == null ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
-            BaseConnector.communicateToEmitter(rawCommand, generateTweet(newDemand, location, consumer.getLocale()));
+            communicateToEmitter(rawCommand, generateTweet(newDemand, location, consumer.getLocale()));
         }
     }
 
@@ -753,22 +786,20 @@ public class CommandProcessor {
         // 4. Get the details about the identified store
         //
         if (command.containsKey(Demand.REFERENCE)) {
-            Long reference = command.getLong(Demand.REFERENCE);
-            Demand demand = demandOperations.getDemand(pm, reference, consumer.getKey());
+            Demand demand = null;
+            try {
+                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_list_invalid_demand_id", consumer.getLocale())
+                );
+            }
             if (demand != null) {
                 // Echo back the specified demand
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
-            }
-            else {
-                BaseConnector.communicateToEmitter(
-                        rawCommand,
-                        LabelExtractor.get(
-                                "ta_responseToSpecificListCommandForNoResult",
-                                new Object[] { reference },
-                                consumer.getLocale()
-                        )
-                );
+                communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
             }
         }
         /* TODO: implement other listing variations
@@ -783,28 +814,29 @@ public class CommandProcessor {
         }
         */
         else {
+            // FIXME: select only {invalid, open, published, proposed} demands -- {canceled, closed} demands can be only listed with the Web console
             List<Demand> demands = demandOperations.getDemands(pm, Demand.CONSUMER_KEY, consumer.getKey(), 0);
             if (demands.size() == 0) {
-                BaseConnector.communicateToEmitter(
+                communicateToEmitter(
                         rawCommand,
                         LabelExtractor.get(
-                                "ta_responseToListCommandForNoResult",
+                                "cp_command_list_no_active_demand",
                                 consumer.getLocale()
                         )
                 );
             }
             else {
-                BaseConnector.communicateToEmitter(
+                communicateToEmitter(
                         rawCommand,
                         LabelExtractor.get(
-                                "ta_introductionToResponseToListCommandWithManyResults",
+                                "cp_command_list_series_introduction",
                                 new Object[] { demands.size() },
                                 consumer.getLocale()
                         )
                 );
                 for (Demand demand: demands) {
                     Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                    BaseConnector.communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+                    communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
                 }
             }
         }

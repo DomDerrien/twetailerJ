@@ -6,8 +6,9 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
+import static twetailer.connector.BaseConnector.communicateToRetailer;
+
 import twetailer.DataSourceException;
-import twetailer.connector.BaseConnector;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
@@ -44,7 +45,7 @@ public class DemandProcessor {
                         for(String tag: demand.getCriteria()) {
                             tags.append(tag).append(" ");
                         }
-                        BaseConnector.communicateToRetailer(
+                        communicateToRetailer(
                                 retailer.getPreferredConnection(),
                                 retailer,
                                 LabelExtractor.get(

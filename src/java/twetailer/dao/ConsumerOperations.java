@@ -86,9 +86,14 @@ public class ConsumerOperations extends BaseOperations {
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      */
     public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.xmpp.JID jabberId) {
+        String simplifiedJabberId = jabberId.getId();
+        int clientInformationSeparator = simplifiedJabberId.indexOf('/');
+        if (clientInformationSeparator != -1) {
+            simplifiedJabberId = simplifiedJabberId.substring(0, clientInformationSeparator);
+        }
         try {
             // Try to retrieve the same location
-            List<Consumer> consumers = getConsumers(pm, Consumer.JABBER_ID, jabberId.getId(), 1);
+            List<Consumer> consumers = getConsumers(pm, Consumer.JABBER_ID, simplifiedJabberId, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
             }
@@ -97,8 +102,8 @@ public class ConsumerOperations extends BaseOperations {
 
         // Creates new consumer record and persist it
         Consumer newConsumer = new Consumer();
-        newConsumer.setName(jabberId.getId());
-        newConsumer.setJabberId(jabberId.getId());
+        newConsumer.setName(simplifiedJabberId);
+        newConsumer.setJabberId(simplifiedJabberId);
         pm.makePersistent(newConsumer);
         return newConsumer;
     }

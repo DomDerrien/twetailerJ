@@ -343,11 +343,11 @@
 			</tuv>
 		</tu>
 
-		<!-- =========================== -->
-		<!-- Twitter adapter definitions -->
-		<!-- =========================== -->
+		<!-- ======================== -->
+		<!-- Tweet loader definitions -->
+		<!-- ======================== -->
 
-		<tu tuid="ta_messageToNonFollower" datatype="Text">
+		<tu tuid="tl_messageToNonFollower" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the Twitter adapter, message sent to non followers. {0} is the sender screen name.</note>
 			<tuv xml:lang="en">
@@ -355,10 +355,53 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="ta_acknowledgeDemandCreated" datatype="Text">
+		<!-- ============================= -->
+		<!-- Command processor definitions -->
+		<!-- ============================= -->
+
+		<tu tuid="cp_unexpected_error" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				For the Twitter adapter, confirmation of a demand creation, ready for publication.
+				Report an unexpected error while processing the raw command with the key {0} 
+			</note>
+			<tuv xml:lang="en">
+				<seg>\
+					The System encountered an unexpected error!|\
+					If your issue cannot be fixed with another message, please report the error with the incident identifier: 323-{0}.\
+				</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_parser_unsupported_action" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Error message generated when the given action {0} is not recognized
+			</note>
+			<tuv xml:lang="en">
+				<seg>The Action {0} is not recognized by the System. Send '!help action' for the list of available actions.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_cancel_missing_demand_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>The Cancel command requires a Demand Reference. Send '!help cancel' for more information.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_cancel_invalid_demand_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>The Demand identifier specified with the Cancel Command is invalid.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_demand_acknowledge_creation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Message confirming a successful demand creation.
 				{0}: dynamically generated demand reference
 			</note>
 			<tuv xml:lang="en">
@@ -366,35 +409,40 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="ta_responseToListCommandForNoResult" datatype="Text">
+		<tu tuid="cp_command_demand_invalid_demand_id" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				For the Twitter adapter, inform that no result can be displayed for the !list command.
-			</note>
+			<note/>
 			<tuv xml:lang="en">
-				<seg>You have no active Demands</seg>
+				<seg>The identifier specified with the Demand Command is invalid. Your proposed update did not happen.</seg>
 			</tuv>
 		</tu>
 
-		<tu tuid="ta_responseToSpecificListCommandForNoResult" datatype="Text">
+		<tu tuid="cp_command_list_invalid_demand_id" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				For the Twitter adapter, inform that no result can be displayed for the !list command with the given reference.
-				{0}: repetition of the reference passed as an argument to the !list command
-			</note>
+			<note/>
 			<tuv xml:lang="en">
-				<seg>Demand reference:{0} cannot be found</seg>
+				<seg>You have no Demand matching the specified identifier.</seg>
 			</tuv>
 		</tu>
 
-		<tu tuid="ta_introductionToResponseToListCommandWithManyResults" datatype="Text">
+		<tu tuid="cp_command_list_no_active_demand" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				For the Twitter adapter, introduce the series of tweets to be sent in response to a !list command.
+				Message informing that no result can be displayed for the !list command.
+			</note>
+			<tuv xml:lang="en">
+				<seg>No Active Demand can be listed.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_list_series_introduction" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Message introducing the series of messages to be sent in response to a !list command.
 				{0}: number of messages to be sent
 			</note>
 			<tuv xml:lang="en">
-				<seg>This message is followed by {0} tweet(s) - one per active demand...</seg>
+				<seg>This message is followed by {0} other(s) - one per Active Demand...</seg>
 			</tuv>
 		</tu>
 
@@ -469,7 +517,6 @@
 		<!-- ====================================== -->
 		<!-- Published demand processor definitions -->
 		<!-- ====================================== -->
-
 
 		<tu tuid="dp_informNewDemand" datatype="Text">
 			<prop type="x-tier">javarb</prop>

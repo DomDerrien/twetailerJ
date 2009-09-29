@@ -139,7 +139,7 @@ public class DemandOperations extends BaseOperations {
             if (!consumerKey.equals(demand.getConsumerKey())) {
                 throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
             }
-            demand.getCriteria().size();
+            demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return demand;
         }
         catch(Exception ex) {

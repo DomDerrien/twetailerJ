@@ -105,7 +105,7 @@ public class TweetLoader {
                 Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
                 Locale senderLocale = consumer.getLocale();
                 if (!sender.isFollowing()) {
-                    TwitterConnector.sendPublicMessage(LabelExtractor.get("ta_messageToNonFollower", new Object[] { senderScreenName }, senderLocale));
+                    TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_messageToNonFollower", new Object[] { senderScreenName }, senderLocale));
                     nonFollowerIds.put(senderScreenName, Boolean.TRUE);
                 }
                 else {

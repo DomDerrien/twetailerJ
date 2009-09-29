@@ -578,6 +578,7 @@
 		<mkdir dir="src/war/js/${rwa.productShortName}/nls" />
 		<java
 			classname="domderrien.build.TMXConverter"
+			failonerror="true"
 			fork="true"
 		>
 			<classpath refid="tmxconverter.classpath" />
