@@ -458,7 +458,7 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetCreateStore() throws IOException {
+    public void testDoGetCreateStoreI() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -502,7 +502,32 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetCreateRetailer() throws IOException {
+    public void testDoGetCreateStoreII() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/createStore";
+            }
+            @Override
+            public String getParameter(String key) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetCreateRetailerI() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -558,7 +583,32 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetCreateDemand() throws IOException {
+    public void testDoGetCreateRetailerII() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/createRetailer";
+            }
+            @Override
+            public String getParameter(String key) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetCreateDemandI() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -601,6 +651,31 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("true"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetCreateDemandII() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/createDemand";
+            }
+            @Override
+            public String getParameter(String key) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 

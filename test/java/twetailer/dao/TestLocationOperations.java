@@ -154,6 +154,50 @@ public class TestLocationOperations {
         assertEquals(first.getKey(), second.getKey());
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testCreateIX() throws ClientException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        Location input = new Location();
+        input.setCountryCode("CA");
+        input.setPostalCode("H0H0H0");
+        assertNull(input.getKey());
+
+        input = ops.createLocation(input);
+    }
+
+    @Test
+    public void testCreateX() throws ClientException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                throw new DataSourceException("Done in purpose");
+            }
+        };
+        Location input = new Location();
+        input.setCountryCode("CA");
+        input.setPostalCode("H0H0H0");
+        assertNull(input.getKey());
+
+        input = ops.createLocation(input);
+        assertNotNull(input.getKey());
+        assertTrue(pm.isClosed());
+    }
+
     @Test
     public void testGetI() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -220,6 +264,35 @@ public class TestLocationOperations {
         assertEquals(0, selection.size());
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testGetsIII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String key, Object value, int limit) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.getLocations(Location.COUNTRY_CODE, "CA", 0);
+    }
+
+    /*
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                throw new DataSourceException("Done in purpose");
+            }
+        };
+     */
     @Test
     public void testUpdateI() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -241,6 +314,23 @@ public class TestLocationOperations {
         assertEquals(object.getKey(), updated.getKey());
         assertEquals(Double.valueOf(-27.5D), updated.getLatitude());
         assertTrue(pm.isClosed());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateII() throws ClientException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Location updateLocation(PersistenceManager pm, Location location) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.updateLocation(new Location());
     }
 
     @Test

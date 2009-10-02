@@ -54,7 +54,7 @@ public class TestLocaleValidator {
     }
 
     @Test
-    public void testGetGeoCoordinatesII() throws IOException {
+    public void testGetGeoCoordinatesIIa() throws IOException {
         LocaleValidator.setValidatorStream(new MockInputStream("22.5, -120.5, Somewhere, US, 95432"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("95432", "US");
@@ -63,7 +63,7 @@ public class TestLocaleValidator {
     }
 
     @Test
-    public void testGetGeoCoordinatesIII() throws IOException {
+    public void testGetGeoCoordinatesIIb() throws IOException {
         LocaleValidator.setValidatorStream(new MockInputStream(""));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("95432", "US");
@@ -72,7 +72,21 @@ public class TestLocaleValidator {
     }
 
     @Test
-    public void testGetGeoCoordinatesIV() throws IOException {
+    public void testGetGeoCoordinatesIIc() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                throw new IOException("Done in purpose");
+            }
+        });
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("95432", "US");
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
+    }
+
+    @Test
+    public void testGetGeoCoordinatesIVa() throws IOException {
         LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.45</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", "CA");
@@ -81,7 +95,7 @@ public class TestLocaleValidator {
     }
 
     @Test
-    public void testGetGeoCoordinatesV() throws IOException {
+    public void testGetGeoCoordinatesIVb() throws IOException {
         LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<error>\n\t\t<code>105</code>\n\t\t<message>Bad format</code>\n\t</code><latt></latt>\n\t<longt>-</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", "CA");
@@ -90,8 +104,22 @@ public class TestLocaleValidator {
     }
 
     @Test
-    public void testGetGeoCoordinatesVI() throws IOException {
+    public void testGetGeoCoordinatesIVc() throws IOException {
         LocaleValidator.setValidatorStream(new MockInputStream(""));
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", "CA");
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
+    }
+
+    @Test
+    public void testGetGeoCoordinatesIVd() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                throw new IOException("Done in purpose");
+            }
+        });
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", "CA");
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude

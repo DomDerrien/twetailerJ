@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
@@ -45,9 +46,26 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testCreate() {
+    public void testCreateI() {
         Store item = new StoreOperations().createStore(new Store());
         assertNotNull(item.getKey());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Store createStore(PersistenceManager pm, Store store) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.createStore(new Store());
     }
 
     @Test
@@ -76,7 +94,7 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testGets() throws DataSourceException {
+    public void testGetsI() throws DataSourceException {
         Store item = new Store();
         item.setLocationKey(12345L);
 
@@ -89,8 +107,25 @@ public class TestStoreOperations {
         assertEquals(item.getKey(), selection.get(0).getKey());
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testGetsII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.getStores("test", null, 0);
+    }
+
     @Test
-    public void testUpdate() throws DataSourceException {
+    public void testUpdateI() throws DataSourceException {
         Store item = new Store();
         item.setLocationKey(12345L);
 
@@ -109,6 +144,23 @@ public class TestStoreOperations {
         assertNotNull(updated);
         assertEquals(item.getKey(), updated.getKey());
         assertEquals(item.getEmail(), updated.getEmail());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Store updateStore(PersistenceManager pm, Store store) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.updateStore(new Store());
     }
 
     @Test
@@ -213,5 +265,22 @@ public class TestStoreOperations {
         assertEquals(sFirst.getKey(), selection.get(0).getKey());
         assertEquals(sSecond.getKey(), selection.get(1).getKey());
         // sThird is not in the returned set
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testGetsExtendedIV() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.getStores(new ArrayList<Location>(), 0);
     }
 }

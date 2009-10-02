@@ -137,6 +137,19 @@ public class TestDemandsRestlet {
     }
 
     @Test(expected=RuntimeException.class)
+    public void testCreateResourceIII() throws DataSourceException, ClientException {
+        final JsonObject proposedParameters = new GenericJsonObject();
+        ops.setConsumerOperations(new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                throw new RuntimeException("done in purpose");
+            }
+        });
+
+        ops.createResource(proposedParameters, user);
+    }
+
+    @Test(expected=RuntimeException.class)
     public void testDeleteResource() throws DataSourceException {
         ops.deleteResource("12345", user);
     }

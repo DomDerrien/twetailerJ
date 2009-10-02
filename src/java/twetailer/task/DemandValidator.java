@@ -9,6 +9,7 @@ import javax.jdo.PersistenceManager;
 
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
@@ -81,7 +82,7 @@ public class DemandValidator {
                        }
                     }
                     if (message != null) {
-                        log.warning("Invalid state for the demand: " + demand.getKey());
+                        log.warning("Invalid state for the demand: " + demand.getKey() + " -- message: " + message);
                         communicateToConsumer(demand.getSource(), consumer, message);
                         demand.setState(CommandSettings.State.invalid);
                     }
@@ -92,6 +93,9 @@ public class DemandValidator {
                 }
                 catch (DataSourceException ex) {
                     log.warning("Cannot get information for consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
+                }
+                catch (ClientException ex) {
+                    log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());
                 }
             }
         }

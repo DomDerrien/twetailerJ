@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Settings;
 
@@ -45,7 +46,7 @@ public class TestSettingsOperations {
     }
 
     @Test
-    public void testGetSettingsII() throws DataSourceException {
+    public void testGetSettingsI() throws DataSourceException {
         SettingsOperations ops = new SettingsOperations() {
             @Override
             public Settings getSettingsFromCache() {
@@ -54,6 +55,23 @@ public class TestSettingsOperations {
         };
         Settings settings = ops.getSettings();
         assertEquals(Long.valueOf(1L), settings.getLastProcessDirectMessageId());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testGetSettingsII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.getSettings(false);
     }
 
     @Test
@@ -76,7 +94,7 @@ public class TestSettingsOperations {
     }
 
     @Test
-    public void testUpdateSettings() throws DataSourceException {
+    public void testUpdateSettingsI() throws DataSourceException {
         // Retrieve default settings and update one field
         SettingsOperations ops = new SettingsOperations();
         PersistenceManager pm = ops.getPersistenceManager();
@@ -92,6 +110,44 @@ public class TestSettingsOperations {
         // Verify the default settings has persisted
         Settings updated = ops.getSettings(false);
         assertEquals(Long.valueOf(111L), updated.getLastProcessDirectMessageId());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateSettingsII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Settings updateSettings(PersistenceManager pm, Settings settings) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.updateSettings(new Settings());
+    }
+
+    @Test
+    public void testUpdateSettingsInCacheI() throws DataSourceException {
+        Settings settings = new Settings();
+        SettingsOperations ops = new SettingsOperations();
+        Settings settingsAfterUpdate = ops.updateSettingsInCache(settings);
+        assertEquals(settings, settingsAfterUpdate);
+    }
+
+    @Test
+    public void testUpdateSettingsInCacheII() throws DataSourceException {
+        Settings settings = new Settings();
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            protected Cache getCache() throws CacheException {
+                throw new CacheException("done in purpose");
+            }
+        };
+        Settings settingsAfterUpdate = ops.updateSettingsInCache(settings);
+        assertEquals(settings, settingsAfterUpdate);
     }
 
     @Test

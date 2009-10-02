@@ -525,4 +525,20 @@ public class TestConsumerOperations {
         consumer = ops.updateConsumer(consumer); // This is going to throw the JDOFatalUserExcepion because the update should be done with the same PersistenceManager instance
     }
     */
+
+    @Test
+    public void testGetSimplifiedJabberIdI() {
+        String base = "d.d@d.dom";
+        String extension = "";
+        String jabberId = base + extension;
+        assertEquals(base, ConsumerOperations.getSimplifiedJabberId(jabberId));
+    }
+
+    @Test
+    public void testGetSimplifiedJabberIdII() {
+        String base = "d.d@d.dom";
+        String extension = "/pidgin3343243";
+        String jabberId = base + extension;
+        assertEquals(base, ConsumerOperations.getSimplifiedJabberId(jabberId));
+    }
 }

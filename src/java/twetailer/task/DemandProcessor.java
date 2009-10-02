@@ -8,6 +8,7 @@ import javax.jdo.PersistenceManager;
 
 import static twetailer.connector.BaseConnector.communicateToRetailer;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
@@ -58,6 +59,9 @@ public class DemandProcessor {
                 }
                 catch (DataSourceException ex) {
                     log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
+                }
+                catch (ClientException ex) {
+                    log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
                 }
             }
         }

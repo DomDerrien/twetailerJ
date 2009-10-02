@@ -321,4 +321,20 @@ public class TestRobotResponder {
 
         MockTwitterConnector.releaseRobotAccount(robotAccount);
     }
+
+    @Test(expected=RuntimeException.class)
+    public void testProcessDirectMessages() throws TwitterException, DataSourceException {
+        // SettingsOperations mock
+        SettingsOperations settingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        // TwitterAdapter mock
+        RobotResponder._baseOperations = new MockBaseOperations();
+        RobotResponder.settingsOperations = settingsOperations;
+
+        RobotResponder.processDirectMessages();
+    }
 }

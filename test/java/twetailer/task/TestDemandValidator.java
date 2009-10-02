@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
@@ -64,15 +65,10 @@ public class TestDemandValidator {
 
     final Long consumerKey = 12345L;
     final String consumerTwitterId = "Katelyn";
-    final Source source = Source.twitter;
-    MockTwitter twitterAccount;
+    final Source source = Source.simulated;
 
     @Before
     public void setUp() throws Exception {
-        // Inject the fake Twitter account
-        twitterAccount = new MockTwitter(consumerTwitterId);
-        MockTwitterConnector.injectMockTwitterAccount(twitterAccount);
-
         // ConsumerOperations mock
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -89,12 +85,13 @@ public class TestDemandValidator {
         // Install the mocks
         DemandValidator._baseOperations = new MockBaseOperations();
         DemandValidator.consumerOperations = consumerOperations;
+
+        // Be sure to start with a clean message stack
+        BaseConnector.resetLastCommunicationInSimulatedMode();
     }
 
     @After
     public void tearDown() {
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(twitterAccount, null);
     }
 
     @Test
@@ -156,8 +153,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -198,8 +195,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -242,8 +239,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -286,8 +283,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -332,8 +329,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -378,8 +375,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -424,8 +421,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -470,8 +467,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -517,8 +514,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -564,8 +561,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -616,8 +613,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -664,8 +661,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -740,8 +737,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -805,7 +802,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNull(twitterAccount.getSentMessage());
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -867,7 +864,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNull(twitterAccount.getSentMessage());
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -925,8 +922,8 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNotNull(twitterAccount.getSentMessage());
-        assertTrue(twitterAccount.getSentMessage().contains(demandKey.toString()));
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -965,7 +962,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNull(twitterAccount.getSentMessage());
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -994,7 +991,7 @@ public class TestDemandValidator {
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
-                demand.setSource(source);
+                demand.setSource(Source.twitter);
                 List<Demand> demands = new ArrayList<Demand>();
                 demands.add(demand);
                 return demands;
@@ -1004,7 +1001,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process();
 
-        assertNull(twitterAccount.getSentMessage());
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);

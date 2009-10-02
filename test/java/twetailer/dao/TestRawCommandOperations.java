@@ -6,10 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManager;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.RawCommand;
 
@@ -40,9 +43,26 @@ public class TestRawCommandOperations {
     }
 
     @Test
-    public void testCreate() {
+    public void testCreateI() {
         RawCommand item = new RawCommandOperations().createRawCommand(new RawCommand());
         assertNotNull(item.getKey());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        RawCommandOperations ops = new RawCommandOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.createRawCommand(new RawCommand());
     }
 
     @Test

@@ -15,11 +15,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.appengine.api.users.User;
-
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.Retailer;
+
+import com.google.appengine.api.users.User;
 
 public class TestRetailerOperations {
 
@@ -48,13 +49,30 @@ public class TestRetailerOperations {
     }
 
     @Test
-    public void testCreate() {
+    public void testCreateI() {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
 
         Retailer item = new RetailerOperations().createRetailer(consumer, 111L);
         assertNotNull(item.getKey());
         assertEquals(consumer.getKey(), item.getConsumerKey());
         assertEquals(Long.valueOf(111L), item.getStoreKey());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        RetailerOperations ops = new RetailerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Retailer createRetailer(PersistenceManager pm, Retailer retailer) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.createRetailer(new Consumer(), 0L);
     }
 
     @Test
@@ -85,7 +103,7 @@ public class TestRetailerOperations {
     }
 
     @Test
-    public void testGets() throws DataSourceException {
+    public void testGetsI() throws DataSourceException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
         consumer.setTwitterId("Ryan");
 
@@ -98,8 +116,25 @@ public class TestRetailerOperations {
         assertEquals(item.getKey(), selection.get(0).getKey());
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testGetsII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        RetailerOperations ops = new RetailerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.getRetailers("test", null, 0);
+    }
+
     @Test
-    public void testUpdate() throws DataSourceException {
+    public void testUpdateI() throws DataSourceException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
         consumer.setTwitterId("Ryan");
 
@@ -120,6 +155,22 @@ public class TestRetailerOperations {
         assertEquals(item.getEmail(), updated.getEmail());
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testUpdateII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        RetailerOperations ops = new RetailerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public Retailer updateRetailer(PersistenceManager pm, Retailer retailer) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+
+        ops.updateRetailer(new Retailer());
+    }
 
     @Test
     public void testGetExtendedI() throws DataSourceException {

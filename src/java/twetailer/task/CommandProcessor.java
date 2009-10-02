@@ -390,9 +390,10 @@ public class CommandProcessor {
      *
      * @param rawCommandKey Identifier of the raw command to process
      *
-     * @throws DataSourceException
+     * @throws DataSourceException If the data manipulation fails
+     * @throws ClientException If the communication back with the user fails
      */
-    public static void processRawCommands(Long rawCommandKey) throws DataSourceException {
+    public static void processRawCommands(Long rawCommandKey) throws DataSourceException, ClientException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
             processRawCommands(pm, rawCommandKey);
@@ -408,9 +409,10 @@ public class CommandProcessor {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param rawCommandKey Identifier of the raw command to process
      *
-     * @throws DataSourceException
+     * @throws DataSourceException If the data manipulation fails
+     * @throws ClientException If the communication back with the user fails
      */
-    protected static void processRawCommands(PersistenceManager pm, Long rawCommandKey) throws DataSourceException {
+    protected static void processRawCommands(PersistenceManager pm, Long rawCommandKey) throws DataSourceException, ClientException {
         // Get the identified raw command
         RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, rawCommandKey);
 
@@ -557,8 +559,9 @@ public class CommandProcessor {
      * @param locale Originator's locale
      *
      * @throws DataSourceException If sending the help message to the originator fails
+     * @throws ClientException If the communication back with the user fails
      */
-    protected static void processHelpCommand(RawCommand rawCommand, String arguments, Locale locale) throws DataSourceException {
+    protected static void processHelpCommand(RawCommand rawCommand, String arguments, Locale locale) throws DataSourceException, ClientException {
         // Extract the first keyword
         int limit = arguments.length();
         String keyword = "";
@@ -587,7 +590,7 @@ public class CommandProcessor {
         //     message = (String) getCache().get(keyword + locale.toString());
         // }
         // Check if the keyword is a prefix
-        if (message == null) {
+        if (true) { // if (message == null) {
             JsonObject prefixes = localizedPrefixes.get(locale);
             for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
                 if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
@@ -602,6 +605,16 @@ public class CommandProcessor {
             for (CommandSettings.Action action: CommandSettings.Action.values()) {
                 if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
                     message = LabelExtractor.get(ResourceFileId.second, action.toString(), locale);
+                    break;
+                }
+            }
+        }
+        // Check if the keyword is a state
+        if (message == null) {
+            JsonObject states = localizedStates.get(locale);
+            for (CommandSettings.State state: CommandSettings.State.values()) {
+                if (states.getString(state.toString()).equals(keyword)) {
+                    message = LabelExtractor.get(ResourceFileId.second, state.toString(), locale);
                     break;
                 }
             }
@@ -776,7 +789,7 @@ public class CommandProcessor {
         }
     }
 
-    protected static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, TwitterException {
+    protected static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
         //
         // Used by actors to:
         //

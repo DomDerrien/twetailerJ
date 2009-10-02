@@ -757,11 +757,13 @@ public class TestCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithIncompleteMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final Long commandKey = 12345L;
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(commandKey);
                 rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
@@ -774,7 +776,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains("Error"));
+        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -798,13 +800,14 @@ public class TestCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithUnsupportedAction() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final String action = "grrrrr";
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand("!grrrr ref:10 wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
+                rawCommand.setCommand("!" + action + " ref:10 wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
                 return rawCommand;
             }
         };
@@ -814,7 +817,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get("error_unsupported_action", Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -920,6 +923,27 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Action.demand.toString(), Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testProcessRawCommandWithActionII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // Mock RawCommandOperations
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                rawCommand.setCommand(CommandSettings.State.invalid.toString() + "?");
+                return rawCommand;
+            }
+        };
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
+
+        CommandProcessor.processRawCommands(0L);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.State.invalid.toString(), Locale.ENGLISH)));
     }
 
     @Test
@@ -1148,6 +1172,38 @@ public class TestCommandProcessor {
 
     @Test
     public void testProcessCommandCancelIII() throws TwitterException, DataSourceException, ClientException {
+        final Long demandKey = 5555L;
+        final Long locationKey = 3333L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandCancelIV() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
@@ -1160,7 +1216,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("error_cancel_without_resource_id", new Consumer().getLocale()), sentText);
+        assertEquals(LabelExtractor.get("cp_command_cancel_missing_demand_id", Locale.ENGLISH), sentText);
     }
 
     @Test(expected=ClientException.class)
@@ -1212,7 +1268,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessCommandDemand() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessCommandDemandI() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 3333L;
         final Long locationKey = 4444L;
         final Long demandKey = 5555L;
@@ -1268,6 +1324,56 @@ public class TestCommandProcessor {
     }
 
     @Test
+    public void testProcessCommandDemandII() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 3333L;
+        final Long locationKey = 4444L;
+        final Long demandKey = 5555L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject parameters) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long demandKey, Long consumerKey) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.demand.toString());
+        command.put(Demand.REFERENCE, demandKey);
+        command.put(Location.POSTAL_CODE, "H0H0H0");
+        command.put(Location.COUNTRY_CODE, "CA");
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+        consumer.setLocationKey(locationKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_demand_invalid_demand_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
     public void testProcessCommandListI() throws TwitterException, DataSourceException, ClientException {
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -1292,7 +1398,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("ta_responseToListCommandForNoResult", new Consumer().getLocale()), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_no_active_demand", Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1326,7 +1432,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("ta_introductionToResponseToListCommandWithManyResults", new Object[] { 1 }, new Consumer().getLocale()), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
         sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
@@ -1376,7 +1482,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("ta_introductionToResponseToListCommandWithManyResults", new Object[] { 1 }, new Consumer().getLocale()), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
         sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
@@ -1470,9 +1576,9 @@ public class TestCommandProcessor {
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
                 assertEquals(demandKey, key);
-                return null;
+                throw new DataSourceException("Done in purpose");
             }
         };
         // CommandProcessor mock
@@ -1492,7 +1598,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("ta_responseToSpecificListCommandForNoResult", new Object[] { demandKey }, new Consumer().getLocale()), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_invalid_demand_id", new Object[] { demandKey }, Locale.ENGLISH), sentText);
     }
 
     @Test(expected=ClientException.class)
@@ -1734,8 +1840,8 @@ public class TestCommandProcessor {
                 throw new IllegalArgumentException("Done in purpose");
             }
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) {
-                return null;
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                throw new DataSourceException("Done in purpose");
             }
         };
         // CommandProcessor mock
