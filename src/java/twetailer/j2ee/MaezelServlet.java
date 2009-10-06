@@ -64,16 +64,19 @@ public class MaezelServlet extends HttpServlet {
                 Long commandId = Long.parseLong(request.getParameter(Command.KEY));
                 CommandProcessor.processRawCommands(commandId);
             }
-            else if ("/validateOpenDemands".equals(pathInfo)) {
-                DemandValidator.process();
+            else if ("/validateOpenDemand".equals(pathInfo)) {
+                Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
+                DemandValidator.process(demandId);
             }
-            else if ("/processPubDemands".equals(pathInfo)) {
-                DemandProcessor.process();
+            else if ("/processPublishedDemand".equals(pathInfo)) {
+                Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
+                DemandProcessor.process(demandId);
             }
             else if ("/processRobotMessages".equals(pathInfo)) {
                 RobotResponder.processDirectMessages();
             }
             else if ("/processProposals".equals(pathInfo)) {
+                /// Long proposalId = Long.parseLong(request.getParameter(Proposal.KEY));
                 throw new IllegalArgumentException("Not yet implemented");
             }
             else if ("/createLocation".equals(pathInfo)) {
@@ -204,7 +207,7 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             log.warning("doGet().exception: " + ex);
-            ex.printStackTrace();
+            // ex.printStackTrace();
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 

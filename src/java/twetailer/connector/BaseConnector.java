@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import twetailer.ClientException;
-import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;

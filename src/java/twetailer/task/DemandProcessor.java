@@ -32,46 +32,73 @@ public class DemandProcessor {
     protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
-    public static void process() throws DataSourceException {
+    /**
+     * Forward the identified demand to listening retailers
+     *
+     * @param demandKey Identifier of the demand to process
+     *
+     * @throws DataSourceException If the data manipulation fails
+     */
+    public static void process(Long demandKey) throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
-            List<Demand> demands = demandOperations.getDemands(pm, Demand.STATE, CommandSettings.State.published.toString(), 0);
-            for(Demand demand: demands) {
-                try {
-                    Location location = locationOperations.getLocation(pm, demand.getLocationKey());
-                    List<Retailer> retailers = identifyRetailers(pm, demand, location);
-                    // TODO: use the retailer score to ping the ones with highest score first.
-                    for(Retailer retailer: retailers) {
-                        StringBuilder tags = new StringBuilder();
-                        for(String tag: demand.getCriteria()) {
-                            tags.append(tag).append(" ");
-                        }
-                        communicateToRetailer(
-                                retailer.getPreferredConnection(),
-                                retailer,
-                                LabelExtractor.get(
-                                        "dp_informNewDemand",
-                                        new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
-                                        retailer.getLocale()
-                                )
-                        );
-                    }
-                }
-                catch (DataSourceException ex) {
-                    log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
-                }
-                catch (ClientException ex) {
-                    log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
-                }
-            }
+            process(pm, demandKey);
         }
         finally {
             pm.close();
         }
     }
 
-    protected static List<Retailer> identifyRetailers(PersistenceManager pm, Demand demand, Location location) throws DataSourceException {
+    /**
+     * Forward the identified demand to listening retailers
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param demandKey Identifier of the demand to process
+     *
+     * @throws DataSourceException If the data manipulation fails
+     */
+    public static void process(PersistenceManager pm, Long demandKey) throws DataSourceException {
+        Demand demand = demandOperations.getDemand(pm, demandKey, null);
+        if (CommandSettings.State.published.equals(demand.getState())) {
+            try {
+                List<Retailer> retailers = identifyRetailers(pm, demand);
+                for(Retailer retailer: retailers) {
+                    StringBuilder tags = new StringBuilder();
+                    for(String tag: demand.getCriteria()) {
+                        tags.append(tag).append(" ");
+                    }
+                    communicateToRetailer(
+                            retailer.getPreferredConnection(),
+                            retailer,
+                            LabelExtractor.get(
+                                    "dp_informNewDemand",
+                                    new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
+                                    retailer.getLocale()
+                            )
+                    );
+                }
+            }
+            catch (DataSourceException ex) {
+                log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
+            }
+            catch (ClientException ex) {
+                log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * For the given location, get stores around and return the employees listening for at least one of the demand tags
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param demand Consumer demand to consider
+     * @return List of retailer listening for the demand tags, within the area specified by the consumer
+     *
+     * @throws DataSourceException If the data manipulation fails
+     */
+    protected static List<Retailer> identifyRetailers(PersistenceManager pm, Demand demand) throws DataSourceException {
         // Get the stores around the demanded location
+        Location location = locationOperations.getLocation(pm, demand.getLocationKey());
         List<Location> locations = locationOperations.getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), 0);
         List<Store> stores = storeOperations.getStores(pm, locations, 0);
         // Extracts all retailers

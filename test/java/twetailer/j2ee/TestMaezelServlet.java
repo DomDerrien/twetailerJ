@@ -40,6 +40,7 @@ import twetailer.task.MockDemandProcessor;
 import twetailer.task.MockDemandValidator;
 import twetailer.task.MockRobotResponder;
 import twetailer.task.MockTweetLoader;
+import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Twitter;
@@ -103,8 +104,7 @@ public class TestMaezelServlet {
             }
         };
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
     }
 
     @Test
@@ -123,8 +123,7 @@ public class TestMaezelServlet {
             }
         };
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
     }
 
     @Test
@@ -143,8 +142,7 @@ public class TestMaezelServlet {
             }
         };
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':false"));
     }
 
     @Test
@@ -181,8 +179,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains(Settings.LAST_PROCESSED_DIRECT_MESSAGE_ID));
         assertTrue(stream.contains("1"));
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
 
         // Clean-up
         MockCommandProcessor.restoreOperations();
@@ -225,8 +222,7 @@ public class TestMaezelServlet {
         };
 
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':false"));
 
         // Clean-up
         MockCommandProcessor.restoreOperations();
@@ -234,11 +230,16 @@ public class TestMaezelServlet {
 
     @Test
     public void testDoGetValidateOpenDemands() throws IOException {
+        final Long demandKey= 12345L;
         // Inject DemandOperations mock
         final DemandOperations mockDemandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<Demand>();
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.invalid);
+                return demand;
             }
         };
         MockDemandValidator.injectMocks(servlet._baseOperations);
@@ -248,7 +249,12 @@ public class TestMaezelServlet {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
-                return "/validateOpenDemands";
+                return "/validateOpenDemand";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals(Demand.KEY, name);
+                return demandKey.toString();
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -260,8 +266,7 @@ public class TestMaezelServlet {
         };
 
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
 
         // Clean-up
         MockDemandValidator.restoreOperations();
@@ -269,11 +274,16 @@ public class TestMaezelServlet {
 
     @Test
     public void testDoGetValidatePublishedDemands() throws IOException {
+        final Long demandKey= 12345L;
         // Inject DemandOperations mock
         final DemandOperations mockDemandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<Demand>();
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.invalid);
+                return demand;
             }
         };
         MockDemandProcessor.injectMocks(servlet._baseOperations);
@@ -283,7 +293,12 @@ public class TestMaezelServlet {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
-                return "/processPubDemands";
+                return "/processPublishedDemand";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals(Demand.KEY, name);
+                return demandKey.toString();
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -295,8 +310,7 @@ public class TestMaezelServlet {
         };
 
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
 
         // Clean-up
         MockDemandProcessor.restoreOperation();
@@ -334,8 +348,7 @@ public class TestMaezelServlet {
         };
 
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
 
         // Clean-up
         MockRobotResponder.restoreOperations();
@@ -374,8 +387,7 @@ public class TestMaezelServlet {
         };
 
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("false"));
+        assertTrue(stream.contains("'success':false"));
 
         // Clean-up
         /* FIXME: Wait for logic implementation
@@ -416,8 +428,7 @@ public class TestMaezelServlet {
 
         servlet.locationOperations = mockLocationOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
     }
 
     @Test
@@ -453,8 +464,7 @@ public class TestMaezelServlet {
 
         servlet.locationOperations = mockLocationOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
     }
 
     @Test
@@ -496,8 +506,7 @@ public class TestMaezelServlet {
         servlet.locationOperations = mockLocationOperations;
         servlet.storeOperations = mockStoreOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -521,8 +530,7 @@ public class TestMaezelServlet {
             }
         };
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("false"));
+        assertTrue(stream.contains("'success':false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -577,8 +585,7 @@ public class TestMaezelServlet {
         servlet.consumerOperations = mockConsumerOperations;
         servlet.retailerOperations = mockRetailerOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -602,8 +609,7 @@ public class TestMaezelServlet {
             }
         };
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("false"));
+        assertTrue(stream.contains("'success':false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -649,8 +655,7 @@ public class TestMaezelServlet {
         servlet.locationOperations = mockLocationOperations;
         servlet.demandOperations = mockDemandOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -674,8 +679,7 @@ public class TestMaezelServlet {
             }
         };
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("false"));
+        assertTrue(stream.contains("'success':false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -742,8 +746,7 @@ public class TestMaezelServlet {
 
         servlet.consumerOperations = mockConsumerOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("'success':true"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -796,8 +799,7 @@ public class TestMaezelServlet {
 
         servlet.consumerOperations = mockConsumerOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("false"));
+        assertTrue(stream.contains("'success':false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -839,8 +841,7 @@ public class TestMaezelServlet {
 
         servlet.consumerOperations = mockConsumerOperations;
         servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("success"));
-        assertTrue(stream.contains("false"));
+        assertTrue(stream.contains("'success':false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 }

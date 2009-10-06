@@ -2,7 +2,6 @@ package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,12 +23,14 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
+import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -44,28 +45,10 @@ public class TestDemandValidator {
         }
     };
 
-    @SuppressWarnings("serial")
-    private class MockTwitter extends Twitter {
-        private String twitterId;
-        public MockTwitter(String twitterId) {
-            this.twitterId = twitterId;
-        }
-        private String sentMessage;
-        public String getSentMessage() {
-            return sentMessage;
-        }
-        @Override
-        public DirectMessage sendDirectMessage(String id, String text) {
-            assertEquals(twitterId, id);
-            assertNotSame(0, text.length());
-            sentMessage = text;
-            return null;
-        }
-    };
-
-    final Long consumerKey = 12345L;
+    final Long consumerKey = 54321L;
     final String consumerTwitterId = "Katelyn";
     final Source source = Source.simulated;
+    MockAppEngineEnvironment appEnv;
 
     @Before
     public void setUp() throws Exception {
@@ -88,10 +71,15 @@ public class TestDemandValidator {
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
+
+        // App Engine Environment mock
+        appEnv = new MockAppEngineEnvironment();
+        appEnv.setUp();
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        appEnv.tearDown();
     }
 
     @Test
@@ -99,20 +87,50 @@ public class TestDemandValidator {
         new DemandValidator();
     }
 
-    @Test
+    @Test(expected=DataSourceException.class)
     public void testProcessNoDemand() throws DataSourceException {
+        final Long demandKey = 12345L;
+
         // DemandOperations mock
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
-                return new ArrayList<Demand>();
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                throw new DataSourceException("Done in purpose");
             }
         };
 
-        DemandValidator.process();
+        // Process the test case
+        DemandValidator.process(demandKey);
 
+        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessOneDemandInIncorrectState() throws DataSourceException {
+        final Long demandKey = 67890L;
+        final Long locationKey = 12345L;
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.addCriterion("test");
+        consumerDemand.setKey(demandKey);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setState(State.invalid); // Not published
+
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(consumerKey);
+                return consumerDemand;
+            }
+        };
+
+        DemandValidator.process(demandKey);
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
     }
 
@@ -126,9 +144,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public List<String> getCriteria() {
@@ -138,9 +156,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
                 demand.setSource(source);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -151,7 +167,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -168,9 +184,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public List<String> getCriteria() {
@@ -180,9 +196,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
                 demand.setSource(source);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -193,7 +207,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -211,9 +225,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Date getExpirationDate() {
@@ -224,9 +238,7 @@ public class TestDemandValidator {
                 demand.setConsumerKey(consumerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -237,7 +249,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -255,9 +267,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Date getExpirationDate() {
@@ -268,9 +280,7 @@ public class TestDemandValidator {
                 demand.setConsumerKey(consumerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -281,7 +291,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -300,9 +310,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Double getRange() {
@@ -314,9 +324,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -327,7 +335,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -346,9 +354,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Double getRange() {
@@ -360,9 +368,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -373,7 +379,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -392,9 +398,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Double getRange() {
@@ -406,9 +412,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -419,7 +423,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -438,9 +442,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Double getRange() {
@@ -452,9 +456,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -465,7 +467,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -485,9 +487,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getQuantity() {
@@ -499,9 +501,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -512,7 +512,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -532,9 +532,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getQuantity() {
@@ -546,9 +546,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -559,7 +557,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -580,9 +578,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getQuantity() {
@@ -598,9 +596,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -611,7 +607,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -632,9 +628,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getLocationKey() {
@@ -646,9 +642,7 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -659,7 +653,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -707,9 +701,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getLocationKey() {
@@ -722,9 +716,7 @@ public class TestDemandValidator {
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -735,7 +727,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -772,9 +764,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getLocationKey() {
@@ -787,9 +779,7 @@ public class TestDemandValidator {
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -800,7 +790,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
@@ -834,9 +824,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getLocationKey() {
@@ -849,9 +839,7 @@ public class TestDemandValidator {
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -862,7 +850,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
@@ -892,9 +880,9 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand() {
                     @Override
                     public Long getLocationKey() {
@@ -907,9 +895,7 @@ public class TestDemandValidator {
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
@@ -920,7 +906,7 @@ public class TestDemandValidator {
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
@@ -946,21 +932,19 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
                 demand.setSource(source);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
@@ -985,21 +969,19 @@ public class TestDemandValidator {
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
-                assertEquals(Demand.STATE, key);
-                assertEquals(CommandSettings.State.open.toString(), (String) value);
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setConsumerKey(consumerKey);
                 demand.setSource(Source.twitter);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
         };
 
         // Process the test case
-        DemandValidator.process();
+        DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());

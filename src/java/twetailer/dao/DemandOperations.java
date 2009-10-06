@@ -136,7 +136,7 @@ public class DemandOperations extends BaseOperations {
         getLogger().warning("Get Demand instance with id: " + key);
         try {
             Demand demand = pm.getObjectById(Demand.class, key);
-            if (!consumerKey.equals(demand.getConsumerKey())) {
+            if (consumerKey != null && !consumerKey.equals(demand.getConsumerKey())) {
                 throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
             }
             demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus

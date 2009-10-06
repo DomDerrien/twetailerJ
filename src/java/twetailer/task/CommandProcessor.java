@@ -11,6 +11,11 @@ import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToEmitter;
 
 import twetailer.ClientException;
@@ -715,6 +720,7 @@ public class CommandProcessor {
         // 1. create a new demand
         // 2. update the identified demand
         //
+        Long demandKey = 0L;
         Location newLocation = Location.hasAttributeForANewLocation(command) ? locationOperations.createLocation(pm, command) : null;
         if (command.containsKey(Demand.REFERENCE)) {
             // Extracts the new location
@@ -740,6 +746,8 @@ public class CommandProcessor {
                 // Echo back the updated demand
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
                 communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+                // Get the demandKey for the task scheduling
+                demandKey = demand.getKey();
             }
         }
         else {
@@ -786,7 +794,13 @@ public class CommandProcessor {
             );
             Location location = newDemand.getLocationKey() == null ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
             communicateToEmitter(rawCommand, generateTweet(newDemand, location, consumer.getLocale()));
+            // Get the demandKey for the task scheduling
+            demandKey = newDemand.getKey();
         }
+
+        // Create a task for that demand
+        Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(url("/API/maezel/validateOpenDemand").param(Demand.KEY, demandKey.toString()).method(Method.GET));
     }
 
     protected static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {

@@ -26,6 +26,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.RawCommandOperations;
@@ -993,7 +994,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
     }
 
     @Test
@@ -1010,7 +1011,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
     }
 
     @Test
@@ -1027,7 +1028,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
     }
 
     @Test
@@ -1044,7 +1045,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
     }
 
     @Test
@@ -1061,7 +1062,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
     }
 
     @Test
@@ -1078,7 +1079,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
+        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, Locale.ENGLISH)));
     }
 
     @Test
@@ -1173,7 +1174,6 @@ public class TestCommandProcessor {
     @Test
     public void testProcessCommandCancelIII() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
-        final Long locationKey = 3333L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -1268,7 +1268,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessCommandDemandI() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessCommandDemandI() throws Exception {
         final Long consumerKey = 3333L;
         final Long locationKey = 4444L;
         final Long demandKey = 5555L;
@@ -1316,7 +1316,12 @@ public class TestCommandProcessor {
         consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1324,7 +1329,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessCommandDemandII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessCommandDemandII() throws Exception {
         final Long consumerKey = 3333L;
         final Long locationKey = 4444L;
         final Long demandKey = 5555L;
@@ -1366,7 +1371,12 @@ public class TestCommandProcessor {
         consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1709,7 +1719,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessExisitingDemandI() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessExisitingDemandI() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -1752,7 +1762,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1760,7 +1775,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessExisitingDemandII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessExisitingDemandII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -1806,7 +1821,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1814,7 +1834,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessExisitingDemandIII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessExisitingDemandIII() throws Exception {
         final Long demandKey = 2222L;
 
         // DemandOperations mock
@@ -1857,7 +1877,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1865,7 +1890,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessFirstNewDemandI() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessFirstNewDemandI() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -1912,7 +1937,12 @@ public class TestCommandProcessor {
         rawCommand.setSource(Source.simulated);
         command.put(Location.POSTAL_CODE, "zzz");
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1920,7 +1950,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessFirstNewDemandII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessFirstNewDemandII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -1970,7 +2000,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1978,7 +2013,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessFirstNewDemandIII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessFirstNewDemandIII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -2026,7 +2061,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -2034,7 +2074,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessAdditionalNewDemandI() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessAdditionalNewDemandI() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -2090,7 +2130,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -2098,7 +2143,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessAdditionalNewDemandII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessAdditionalNewDemandII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -2155,7 +2200,12 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -2163,7 +2213,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessAdditionalNewDemandIII() throws TwitterException, DataSourceException, ClientException {
+    public void testProcessAdditionalNewDemandIII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -2224,7 +2274,12 @@ public class TestCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setLocationKey(locationKey);
 
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
         CommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
