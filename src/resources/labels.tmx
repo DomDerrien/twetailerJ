@@ -173,6 +173,22 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="cmdLine_prefix_price" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the price attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>price,cost</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_proposal" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the proposal attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>proposalkey,pk</seg>
+			</tuv>
+		</tu>
+
 		<tu tuid="cmdLine_prefix_quantity" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
@@ -185,7 +201,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>reference,id,identifier</seg>
+				<seg>reference,identifier,id,demandkey,dk</seg>
 			</tuv>
 		</tu>
 
@@ -205,6 +221,14 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="cmdLine_prefix_store" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the store attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>storekey,sk</seg>
+			</tuv>
+		</tu>
+
 		<tu tuid="cmdLine_prefix_tags" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
@@ -214,6 +238,14 @@
 			</note>
 			<tuv xml:lang="en">
 				<seg>tags,keywords,keys,tag,keyword,key</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cmdLine_prefix_total" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>For the command line arguments, accepted labels for the total attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+			<tuv xml:lang="en">
+				<seg>totalcost,tc</seg>
 			</tuv>
 		</tu>
 
@@ -446,6 +478,25 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="cp_command_proposal_invalid_proposal_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>The identifier specified with the Proposal Command is invalid. Your proposed update did not happen.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_proposal_acknowledge_creation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Message confirming a successful proposal creation.
+				{0}: dynamically generated proposal reference
+			</note>
+			<tuv xml:lang="en">
+				<seg>Listing your proposition for proposal:{0}... You can send "!help" for more options afterwards.</seg>
+			</tuv>
+		</tu>
+
 		<!-- ============================ -->
 		<!-- Demand validator definitions -->
 		<!-- ============================ -->
@@ -531,21 +582,69 @@
 			</tuv>
 		</tu>
 
-		<!-- ========================= -->
-		<!-- Robot message definitions -->
-		<!-- ========================= -->
+		<!-- ============================== -->
+		<!-- Proposal validator definitions -->
+		<!-- ============================== -->
 
+		<tu tuid="dv_proposalShouldHaveAtLeastOneTag" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the retailer the proposal should have at least one tag. {0} is the proposal reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your proposition proposal:{0} should have at least one tag.</seg>
+			</tuv>
+		</tu>
 
-		<tu tuid="robot_submitProposal" datatype="Text">
+		<tu tuid="dv_proposalShouldConcernAtLeastOneItem" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the retailer the quantity cannot be 0. {0} is the proposal reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your proposition proposal:{0} should concern at least one item.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_proposalShouldHaveAUnitPriceOrTotalPrice" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the retailer a unit price or the total price is required. {0} is the proposal reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your proposition proposal:{0} should have a unit price or the total order price.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_proposalShouldHaveADemandReference" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Inform the retailer the demand reference is missing. {0} is the proposal reference.</note>
+			<tuv xml:lang="en">
+				<seg>Your proposition proposal:{0} should reference a demand (with reference:[id]).</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="dv_proposalHaveInvalidDemandReference" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Inform twetailer there's a proposition.
-				{0} is the reference of the demand.
-				{1} is the demand tags.
-				{2} is the store key
+				Inform the retailer that the given reference is invalid.
+				{0} is the proposal reference.
+				{1} is the demand reference
 			</note>
 			<tuv xml:lang="en">
-				<seg>!propose ref:{0} tags:{1} price:free store:{2}</seg>
+				<seg>The demand reference:{1} linked to your proposition proposal:{0} is invalid.</seg>
+			</tuv>
+		</tu>
+
+		<!-- ======================================== -->
+		<!-- Published proposal processor definitions -->
+		<!-- ======================================== -->
+
+		<tu tuid="dp_informNewProposal" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Inform a consumer about a new proposal.
+				{0} is the reference of the proposal.
+				{1} is the reference of the demand.
+				{2} is the proposal tags separated by a comma.
+				{3} is the reference of the store where the retailer works.
+			</note>
+			<tuv xml:lang="en">
+				<seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3}.</seg>
 			</tuv>
 		</tu>
 

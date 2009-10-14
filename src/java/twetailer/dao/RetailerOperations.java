@@ -121,7 +121,7 @@ public class RetailerOperations extends BaseOperations {
             return retailer;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving retailer for identifier: " + key + " -- ex: " + ex.getMessage());
+            throw new DataSourceException("Error while retrieving retailer for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 

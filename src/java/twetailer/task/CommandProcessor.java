@@ -1,5 +1,8 @@
 package twetailer.task;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToEmitter;
+
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToEmitter;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
@@ -25,16 +21,25 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.RetailerOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twitter4j.TwitterException;
+
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -50,7 +55,9 @@ public class CommandProcessor {
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
     protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     protected static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
@@ -97,11 +104,13 @@ public class CommandProcessor {
             preparePattern(prefixes, patterns, CommandSettings.Prefix.expiration, "\\s*[\\d\\-]+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.help, ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, CommandSettings.Prefix.locale, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
+            preparePattern(prefixes, patterns, CommandSettings.Prefix.price, "\\s*\\d+.\\d\\d");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.quantity, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.reference, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.state, "\\s*\\w+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\+\\s*|\\-\\s*|\\w\\s*)+");
+            preparePattern(prefixes, patterns, CommandSettings.Prefix.total, "\\s*\\d+.\\d\\d");
 
             localizedPatterns.put(locale, patterns);
         }
@@ -148,7 +157,7 @@ public class CommandProcessor {
     /**
      * Parse the given tweet with the set of given localized prefixes
      *
-     * @param message message are returned by the Twitter page
+     * @param message message are returned by the communication provider
      * @param patterns list of registered RegEx patterns preset for the user's locale
      * @return JsonObject with all message attributes correctly extracted from the given message
      *
@@ -205,6 +214,17 @@ public class CommandProcessor {
             }
         }
         catch(IllegalStateException ex) {}
+        // Price
+        try {
+            matcher = patterns.get(CommandSettings.Prefix.price).matcher(message);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Proposal.PRICE, getPrice(currentGroup));
+                message = matcher.replaceFirst("");
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
         // Quantity
         try {
             matcher = patterns.get(CommandSettings.Prefix.quantity).matcher(message);
@@ -234,6 +254,17 @@ public class CommandProcessor {
                 String currentGroup = matcher.group(1).trim();
                 command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase());
                 command.put(Demand.RANGE, getRange(currentGroup, command.getString(Demand.RANGE_UNIT)));
+                message = matcher.replaceFirst("");
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // Total
+        try {
+            matcher = patterns.get(CommandSettings.Prefix.total).matcher(message);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Proposal.TOTAL, getPrice(currentGroup));
                 message = matcher.replaceFirst("");
                 oneFieldOverriden = true;
             }
@@ -335,6 +366,15 @@ public class CommandProcessor {
     }
 
     /**
+     * Helper extracting prices
+     * @param pattern Parameters extracted by a regular expression
+     * @return valid price
+     */
+    private static double getPrice(String pattern) {
+        return Double.parseDouble(pattern.substring(pattern.indexOf(":") + 1).trim());
+    }
+
+    /**
      * Helper extracting quantities
      * @param pattern Parameters extracted by a regular expression
      * @return valid quantity
@@ -357,7 +397,8 @@ public class CommandProcessor {
     }
 
     /**
-     * Prepare a message to be submit Twitter
+     * Prepare a message to be submit a user
+     *
      * @param command Command to convert
      * @param location Place where the command starts
      * @param prefixes List of localized prefix labels
@@ -387,6 +428,46 @@ public class CommandProcessor {
                 tweet.append(tag).append(space);
             }
         }
+        return tweet.toString();
+    }
+
+    /**
+     * Prepare a message to be submit a user
+     *
+     * @param command Command to convert
+     * @param location Place where the command starts
+     * @param prefixes List of localized prefix labels
+     * @param actions List of localized action labels
+     * @return Serialized command
+     */
+    public static String generateTweet(Proposal proposal, Locale locale) {
+        //
+        // TODO: use the storeKey to send the store information?
+        // TODO: with the demand containing a list of proposal keys, use of the proposal key index in that table as a proposal key equivalent
+        //
+        final String space = " ";
+        StringBuilder tweet = new StringBuilder();
+        JsonObject prefixes = localizedPrefixes.get(locale);
+        JsonObject actions = localizedActions.get(locale);
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(proposal.getAction().toString()).getString(0)).append(space);
+        if (proposal.getKey() != null) {
+            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.proposal.toString()).getString(0)).append(":").append(proposal.getKey()).append(space);
+        }
+        if (proposal.getDemandKey() != null) {
+            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)).append(":").append(proposal.getDemandKey()).append(space);
+        }
+        JsonObject states = localizedStates.get(locale);
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0)).append(":").append(states.getString(proposal.getState().toString())).append(space);
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.store.toString()).getString(0)).append(":").append(proposal.getStoreKey()).append(space);
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0)).append(":").append(proposal.getQuantity()).append(space);
+        if (0 < proposal.getCriteria().size()) {
+            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0)).append(":");
+            for (String tag: proposal.getCriteria()) {
+                tweet.append(tag).append(space);
+            }
+        }
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.price.toString()).getString(0)).append(":").append(proposal.getPrice()).append(space);
+        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.total.toString()).getString(0)).append(":").append(proposal.getTotal()).append(space);
         return tweet.toString();
     }
 
@@ -436,7 +517,6 @@ public class CommandProcessor {
             processCommand(pm, consumer, rawCommand, command);
         }
         catch(Exception ex) {
-            // TODO: use localized message
             ex.printStackTrace();
             communicateToEmitter(
                     rawCommand,
@@ -461,6 +541,10 @@ public class CommandProcessor {
             throw new RuntimeException("Not yet implemented");
         }
         throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
+    }
+
+    protected static Retailer retrieveRetailer(PersistenceManager pm, Consumer consumer) throws DataSourceException {
+        return retailerOperations.getRetailers(pm, Retailer.CONSUMER_KEY, consumer.getKey(), 1).get(0);
     }
 
     /**
@@ -869,11 +953,59 @@ public class CommandProcessor {
         }
     }
 
-    protected static void processProposeCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
+    protected static void processProposeCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
-        // Used by a retailer to propose a product for a demand
+        // Used by a retailer to:
         //
-        throw new ClientException("Proposing proposals - Not yet implemented");
+        // 1. create a new proposal
+        // 2. update the identified proposal
+        //
+        Long proposalKey = 0L;
+        Retailer retailer = retrieveRetailer(pm, consumer);
+        if (command.containsKey(Proposal.PROPOSAL_KEY)) {
+            // Extracts the new location
+            // Update the proposal attributes
+            Proposal proposal = null;
+            try {
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, retailer.getStoreKey());
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_proposal_invalid_proposal_id", consumer.getLocale())
+                );
+            }
+            if (proposal != null) {
+                proposal.fromJson(command);
+                proposal.setState(CommandSettings.State.open); // Will force the re-validation of the entire proposal
+                proposalOperations.updateProposal(pm, proposal);
+                // Echo back the updated proposal
+                communicateToEmitter(rawCommand, generateTweet(proposal, consumer.getLocale()));
+                // Get the proposalKey for the task scheduling
+                proposalKey = proposal.getKey();
+            }
+        }
+        else {
+            // Get the proposal attributes
+            command.put(Command.SOURCE, rawCommand.getSource().toString());
+            // Persist the new proposal
+            Proposal newProposal = proposalOperations.createProposal(pm, command, retailer);
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get(
+                            "cp_command_proposal_acknowledge_creation",
+                            new Object[] { newProposal.getKey() },
+                            consumer.getLocale()
+                    )
+            );
+            communicateToEmitter(rawCommand, generateTweet(newProposal, consumer.getLocale()));
+            // Get the proposalKey for the task scheduling
+            proposalKey = newProposal.getKey();
+        }
+
+        // Create a task for that proposal
+        Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(url("/API/maezel/validateOpenProposal").param(Proposal.KEY, proposalKey.toString()).method(Method.GET));
     }
 
     protected static void processSupplyCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {

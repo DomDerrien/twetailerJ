@@ -150,7 +150,7 @@ public class LocationOperations extends BaseOperations {
             return location;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage());
+            throw new DataSourceException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 

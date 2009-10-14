@@ -1,25 +1,38 @@
 package twetailer.task;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToRetailer;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-
-import static twetailer.connector.BaseConnector.communicateToRetailer;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.State;
+
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class DemandProcessor {
@@ -29,8 +42,44 @@ public class DemandProcessor {
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
+
+    /**
+     * Load the published demand that has not been updated during the last 8 hours and reinsert them into the task queue
+     *
+     * @throws DataSourceException If the data manipulation fails
+     */
+    public static void batchProcess() throws DataSourceException {
+        //
+        // Warning: Keep the frequency specified in the cron.xml.tmpl file with the delay used in the function body
+        //
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            // Get the date 4 hours in the past
+            Calendar now = DateUtils.getNowCalendar();
+            Calendar past = now;
+            past.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY) - 8);
+            // Prepare the query with: state == published && modificationDate > past
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("=" + Demand.STATE, State.published.toString());
+            // FIXME: enable the additional filtering when the issue 25 is solved and delivered
+            // parameters.put("<" + Entity.MODIFICATION_DATE, past.getTime());
+            List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
+            // Add the corresponding task in the queue
+            if (0 < demands.size()) {
+                Queue queue = QueueFactory.getDefaultQueue();
+                for (Demand demand: demands) {
+                    // Create a task for that demand
+                    queue.add(url("/API/maezel/processPublishedDemand").param(Demand.KEY, demand.getKey().toString()).method(Method.GET));
+                }
+            }
+        }
+        finally {
+            pm.close();
+        }
+    }
 
     /**
      * Forward the identified demand to listening retailers
@@ -61,21 +110,31 @@ public class DemandProcessor {
         Demand demand = demandOperations.getDemand(pm, demandKey, null);
         if (CommandSettings.State.published.equals(demand.getState())) {
             try {
+                List<Proposal> proposals = proposalOperations.getProposals(pm, Proposal.DEMAND_KEY, demand.getKey(), 0);
                 List<Retailer> retailers = identifyRetailers(pm, demand);
                 for(Retailer retailer: retailers) {
-                    StringBuilder tags = new StringBuilder();
-                    for(String tag: demand.getCriteria()) {
-                        tags.append(tag).append(" ");
+                    boolean contactRetailerJustOnce = true;
+                    for (Proposal proposal: proposals) {
+                        if (proposal.getConsumerKey().equals(retailer.getKey())) {
+                            contactRetailerJustOnce = false;
+                            break;
+                        }
                     }
-                    communicateToRetailer(
-                            retailer.getPreferredConnection(),
-                            retailer,
-                            LabelExtractor.get(
-                                    "dp_informNewDemand",
-                                    new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
-                                    retailer.getLocale()
-                            )
-                    );
+                    if (contactRetailerJustOnce) {
+                        StringBuilder tags = new StringBuilder();
+                        for(String tag: demand.getCriteria()) {
+                            tags.append(tag).append(" ");
+                        }
+                        communicateToRetailer(
+                                retailer.getPreferredConnection(),
+                                retailer,
+                                LabelExtractor.get(
+                                        "dp_informNewDemand",
+                                        new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
+                                        retailer.getLocale()
+                                )
+                        );
+                    }
                 }
             }
             catch (DataSourceException ex) {

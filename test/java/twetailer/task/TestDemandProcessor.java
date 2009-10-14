@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
@@ -21,11 +22,14 @@ import twetailer.connector.TwitterConnector;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
@@ -50,7 +54,12 @@ public class TestDemandProcessor {
 
     @After
     public void tearDown() {
-
+        DemandProcessor._baseOperations = new BaseOperations();
+        DemandProcessor.demandOperations = DemandProcessor._baseOperations.getDemandOperations();
+        DemandProcessor.locationOperations = DemandProcessor._baseOperations.getLocationOperations();
+        DemandProcessor.proposalOperations = DemandProcessor._baseOperations.getProposalOperations();
+        DemandProcessor.retailerOperations = DemandProcessor._baseOperations.getRetailerOperations();
+        DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
     }
 
     @Test
@@ -551,6 +560,111 @@ public class TestDemandProcessor {
             }
         };
 
+        DemandProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
+                return new ArrayList<Proposal>();
+            }
+        };
+
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
+                assertEquals(retailerId.toString(), id);
+                assertTrue(text.contains(consumerDemand.getKey().toString()));
+                assertTrue(text.contains("test"));
+                return null;
+            }
+        });
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+
+        DemandProcessor.process(demandKey);
+
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+
+        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessOneDemandAlreadyProposed() throws DataSourceException {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Long demandKey = 67890L;
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.addCriterion("test");
+        consumerDemand.setKey(demandKey);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setState(State.published);
+
+        DemandProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(consumerKey);
+                return consumerDemand;
+            }
+        };
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                return null;
+            }
+        };
+
+        final Long storeKey = 12345L;
+        final Store targetedStore = new Store();
+        targetedStore.setKey(storeKey);
+
+        DemandProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(targetedStore);
+                return stores;
+            }
+        };
+
+        final String retailerId = "Ryan";
+        final Long retailerKey = 56478L;
+        final Retailer selectedRetailer = new Retailer();
+        selectedRetailer.setKey(retailerKey);
+        selectedRetailer.setTwitterId(retailerId);
+        selectedRetailer.addCriterion("test");
+
+        DemandProcessor.retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(selectedRetailer);
+                return retailers;
+            }
+        };
+
+        DemandProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
+                Proposal badProposal = new Proposal();
+                badProposal.setConsumerKey(retailerKey + 12325L);
+                Proposal goodProposal = new Proposal();
+                goodProposal.setConsumerKey(retailerKey);
+                List<Proposal> proposals = new ArrayList<Proposal>();
+                proposals.add(badProposal);
+                proposals.add(goodProposal);
+                return proposals;
+            }
+        };
+
         final Twitter mockTwitterAccount = (new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
@@ -601,6 +715,13 @@ public class TestDemandProcessor {
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
                 return null;
+            }
+        };
+
+        DemandProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
+                return new ArrayList<Proposal>();
             }
         };
 
@@ -674,6 +795,13 @@ public class TestDemandProcessor {
             }
         };
 
+        DemandProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
+                return new ArrayList<Proposal>();
+            }
+        };
+
         final Twitter mockTwitterAccount = (new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
@@ -713,6 +841,43 @@ public class TestDemandProcessor {
         DemandProcessor.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessBatchI() throws DataSourceException {
+        DemandProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                return new ArrayList<Demand>();
+            }
+        };
+
+        DemandProcessor.batchProcess();
+
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessBatchII() throws Exception {
+        DemandProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                Demand demand = new Demand();
+                demand.setKey(12345L);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        DemandProcessor.batchProcess();
+        appEnv.tearDown();
+
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
 }

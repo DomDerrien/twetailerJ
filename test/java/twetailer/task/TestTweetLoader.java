@@ -19,6 +19,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockBaseOperations;
@@ -71,6 +72,11 @@ public class TestTweetLoader {
     @After
     public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
+
+        TweetLoader._baseOperations = new BaseOperations();
+        TweetLoader.consumerOperations = TweetLoader._baseOperations.getConsumerOperations();
+        TweetLoader.rawCommandOperations = TweetLoader._baseOperations.getRawCommandOperations();
+        TweetLoader.settingsOperations = TweetLoader._baseOperations.getSettingsOperations();
     }
 
     @Test
@@ -310,6 +316,7 @@ public class TestTweetLoader {
         TweetLoader._baseOperations = new MockBaseOperations();
         TweetLoader.consumerOperations = consumerOperations;
         TweetLoader.rawCommandOperations = rawCommandOperations;
+        TweetLoader.settingsOperations = new MockSettingsOperations();
 
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages();
@@ -367,6 +374,7 @@ public class TestTweetLoader {
         TweetLoader._baseOperations = new MockBaseOperations();
         TweetLoader.consumerOperations = consumerOperations;
         TweetLoader.rawCommandOperations = rawCommandOperations;
+        TweetLoader.settingsOperations = new MockSettingsOperations();
 
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages();

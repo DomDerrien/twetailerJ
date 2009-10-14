@@ -124,13 +124,23 @@ public class TestDemandOperations {
     }
 
     @Test(expected=DataSourceException.class)
-    public void testGetII() throws ClientException, DataSourceException {
+    public void testGetIIa() throws ClientException, DataSourceException {
         DemandOperations ops = new DemandOperations();
         Demand object = new Demand();
         object.setConsumerKey(111L);
         object = ops.createDemand(object);
 
         ops.getDemand(object.getKey(), 222L);
+    }
+
+    @Test
+    public void testGetIIb() throws ClientException, DataSourceException {
+        DemandOperations ops = new DemandOperations();
+        Demand object = new Demand();
+        object.setConsumerKey(111L);
+        object = ops.createDemand(object);
+
+        ops.getDemand(object.getKey(), null);
     }
 
     @Test(expected=IllegalArgumentException.class)

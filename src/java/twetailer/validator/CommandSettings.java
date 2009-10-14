@@ -17,11 +17,15 @@ public class CommandSettings {
         expiration,
         help,
         locale,
+        price,
+        proposal,
         quantity,
         reference,
         range,
         state,
-        tags
+        store,
+        tags,
+        total
     }
 
     private static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();

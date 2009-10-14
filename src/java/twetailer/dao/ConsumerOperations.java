@@ -200,7 +200,7 @@ public class ConsumerOperations extends BaseOperations {
             return consumer;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage());
+            throw new DataSourceException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 

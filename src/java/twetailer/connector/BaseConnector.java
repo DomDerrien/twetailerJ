@@ -92,7 +92,7 @@ public class BaseConnector {
                 }
             }
             catch (TwitterException ex) {
-                throw new ClientException("Cannot communicate with Twitter to the consumer: " + userId);
+                throw new ClientException("Cannot communicate with Twitter to the consumer: " + userId, ex);
             }
         }
         else if (Source.jabber.equals(source)) {

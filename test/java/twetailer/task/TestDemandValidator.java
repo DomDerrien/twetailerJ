@@ -79,6 +79,11 @@ public class TestDemandValidator {
 
     @After
     public void tearDown() throws Exception {
+        DemandValidator._baseOperations = new BaseOperations();
+        DemandValidator.consumerOperations = DemandValidator._baseOperations.getConsumerOperations();
+        DemandValidator.demandOperations = DemandValidator._baseOperations.getDemandOperations();
+        DemandValidator.locationOperations = DemandValidator._baseOperations.getLocationOperations();
+
         appEnv.tearDown();
     }
 

@@ -88,7 +88,7 @@ public class StoreOperations extends BaseOperations {
             return store;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving store for identifier: " + key + " -- ex: " + ex.getMessage());
+            throw new DataSourceException("Error while retrieving store for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 

@@ -7,11 +7,15 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.annotation.IncompleteAnnotationException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
 
@@ -23,18 +27,23 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.MockPersistenceManager;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.RetailerOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
@@ -93,6 +102,22 @@ public class TestCommandProcessor {
     @After
     public void tearDown() throws Exception {
         BaseConnector.resetLastCommunicationInSimulatedMode();
+
+        CommandProcessor._baseOperations = new BaseOperations();
+        CommandProcessor.consumerOperations = CommandProcessor._baseOperations.getConsumerOperations();
+        CommandProcessor.demandOperations = CommandProcessor._baseOperations.getDemandOperations();
+        CommandProcessor.locationOperations = CommandProcessor._baseOperations.getLocationOperations();
+        CommandProcessor.proposalOperations = CommandProcessor._baseOperations.getProposalOperations();
+        CommandProcessor.rawCommandOperations = CommandProcessor._baseOperations.getRawCommandOperations();
+        CommandProcessor.retailerOperations = CommandProcessor._baseOperations.getRetailerOperations();
+        CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
+        // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
+
+        CommandProcessor.localizedPrefixes = new HashMap<Locale, JsonObject>();
+        CommandProcessor.localizedActions = new HashMap<Locale, JsonObject>();
+        CommandProcessor.localizedStates = new HashMap<Locale, JsonObject>();
+        CommandProcessor.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+        CommandProcessor.localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
     }
 
     @Test
@@ -324,6 +349,24 @@ public class TestCommandProcessor {
     }
 
     @Test
+    public void testParsePriceI() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:25.99");
+        assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
+    }
+
+    @Test
+    public void testParsePriceII() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99");
+        assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
+    }
+
+    @Test
+    public void testParsePriceShort() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pri: 25.99");
+        assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
+    }
+
+    @Test
     public void testParseQuantityI() throws ClientException, ParseException {
         JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity:21");
         assertEquals(21, data.getLong(Demand.QUANTITY));
@@ -362,6 +405,24 @@ public class TestCommandProcessor {
         JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:  21    qty:  \t 50   ");
         assertEquals(21, data.getLong(Demand.REFERENCE));
         assertEquals(50, data.getLong(Demand.QUANTITY));
+    }
+
+    @Test
+    public void testParseTotalI() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 total:25.99");
+        assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
+    }
+
+    @Test
+    public void testParseTotalII() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL:  25.99");
+        assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
+    }
+
+    @Test
+    public void testParseTotalShort() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tot: 25.99");
+        assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
     }
 
     @Test
@@ -558,7 +619,7 @@ public class TestCommandProcessor {
 
     @Test
     @SuppressWarnings("deprecation")
-    public void testGenerateFullTweet() {
+    public void testGenerateFullTweetI() {
         List<String> criteria = new ArrayList<String>();
         criteria.add("first");
         criteria.add("second");
@@ -591,6 +652,40 @@ public class TestCommandProcessor {
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
         assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0) + ":ZZZ " + Locale.CANADA.getCountry()));
+    }
+
+    @Test
+    public void testGenerateFullTweetII() {
+        List<String> criteria = new ArrayList<String>();
+        criteria.add("first");
+        criteria.add("second");
+
+        Proposal proposal = new Proposal();
+        proposal.setKey(1L);
+        proposal.setCriteria(criteria);
+        proposal.setDemandKey(12345L);
+        proposal.setPrice(25.99D);
+        proposal.setQuantity(3L);
+        proposal.setStoreKey(67890L);
+        proposal.setState(CommandSettings.State.published);
+        proposal.setTotal(35.33D);
+
+        Locale locale = Locale.ENGLISH;
+
+        String response = CommandProcessor.generateTweet(proposal, locale);
+
+        assertNotNull(response);
+        assertNotSame(0, response.length());
+        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
+        JsonObject states = CommandProcessor.localizedStates.get(locale);
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.proposal.toString()).getString(0) + ":1"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0) + ":first second"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0) + ":12345"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.price.toString()).getString(0) + ":25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.store.toString()).getString(0) + ":67890"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.total.toString()).getString(0) + ":35.33"));
     }
 
     @Test
@@ -652,6 +747,34 @@ public class TestCommandProcessor {
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)));
+    }
+
+    @Test
+    public void testGeneratePartialTweetIV() {
+
+        Proposal proposal = new Proposal();
+        proposal.setPrice(25.99D);
+        proposal.setQuantity(3L);
+        proposal.setState(CommandSettings.State.published);
+        proposal.setStoreKey(67890L);
+        proposal.setTotal(35.33D);
+
+        Locale locale = Locale.ENGLISH;
+
+        String response = CommandProcessor.generateTweet(proposal, locale);
+
+        assertNotNull(response);
+        assertNotSame(0, response.length());
+        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
+        JsonObject states = CommandProcessor.localizedStates.get(locale);
+        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.proposal.toString()).getString(0)));
+        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0)));
+        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.price.toString()).getString(0) + ":25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.store.toString()).getString(0) + ":67890"));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
+        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.total.toString()).getString(0) + ":35.33"));
     }
 
     @Test
@@ -1611,8 +1734,44 @@ public class TestCommandProcessor {
         assertEquals(LabelExtractor.get("cp_command_list_invalid_demand_id", new Object[] { demandKey }, Locale.ENGLISH), sentText);
     }
 
-    @Test(expected=ClientException.class)
-    public void testProcessCommandPropose() throws TwitterException, DataSourceException, ClientException {
+    @Test
+    public void testProcessCommandProposeI() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long retailerKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, Retailer retailer) {
+                assertEquals(consumerKey, retailer.getConsumerKey());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setConsumerKey(retailerKey);
+                return proposal;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, CommandSettings.Action.propose.toString());
@@ -1621,7 +1780,151 @@ public class TestCommandProcessor {
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandProposeII() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long retailerKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(storeKey, sKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setConsumerKey(retailerKey);
+                proposal.setState(CommandSettings.State.published); // To be able to verify the reset to "open"
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(CommandSettings.State.open, proposal.getState());
+                proposal.setKey(proposalKey);
+                return proposal;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.propose.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandProposeIII() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long retailerKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.propose.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_proposal_invalid_proposal_id", Locale.ENGLISH), sentText);
     }
 
     @Test(expected=ClientException.class)

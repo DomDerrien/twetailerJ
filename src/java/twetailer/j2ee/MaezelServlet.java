@@ -20,12 +20,15 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
 import twetailer.task.DemandValidator;
+import twetailer.task.ProposalProcessor;
+import twetailer.task.ProposalValidator;
 import twetailer.task.RobotResponder;
 import twetailer.task.TweetLoader;
 import domderrien.jsontools.GenericJsonObject;
@@ -68,16 +71,23 @@ public class MaezelServlet extends HttpServlet {
                 Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
                 DemandValidator.process(demandId);
             }
+            else if ("/validateOpenProposal".equals(pathInfo)) {
+                Long proposalId = Long.parseLong(request.getParameter(Proposal.KEY));
+                ProposalValidator.process(proposalId);
+            }
             else if ("/processPublishedDemand".equals(pathInfo)) {
                 Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
                 DemandProcessor.process(demandId);
             }
+            else if ("/processPublishedDemands".equals(pathInfo)) {
+                DemandProcessor.batchProcess();
+            }
+            else if ("/processPublishedProposal".equals(pathInfo)) {
+                Long proposalId = Long.parseLong(request.getParameter(Proposal.KEY));
+                ProposalProcessor.process(proposalId);
+            }
             else if ("/processRobotMessages".equals(pathInfo)) {
                 RobotResponder.processDirectMessages();
-            }
-            else if ("/processProposals".equals(pathInfo)) {
-                /// Long proposalId = Long.parseLong(request.getParameter(Proposal.KEY));
-                throw new IllegalArgumentException("Not yet implemented");
             }
             else if ("/createLocation".equals(pathInfo)) {
                 // Supported formats:
@@ -207,7 +217,7 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             log.warning("doGet().exception: " + ex);
-            // ex.printStackTrace();
+            ex.printStackTrace();
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 

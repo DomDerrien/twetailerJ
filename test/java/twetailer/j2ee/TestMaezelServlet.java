@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletOutputStream;
@@ -23,6 +24,7 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockPersistenceManager;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.SettingsOperations;
@@ -31,6 +33,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Settings;
@@ -38,6 +41,8 @@ import twetailer.dto.Store;
 import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
 import twetailer.task.MockDemandValidator;
+import twetailer.task.MockProposalProcessor;
+import twetailer.task.MockProposalValidator;
 import twetailer.task.MockRobotResponder;
 import twetailer.task.MockTweetLoader;
 import twetailer.validator.CommandSettings.State;
@@ -187,7 +192,7 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetProcessCommands() throws IOException {
+    public void testDoGetProcessCommand() throws IOException {
         // Inject RawCommandOperations mock
         final Long commandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
@@ -229,7 +234,7 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetValidateOpenDemands() throws IOException {
+    public void testDoGetValidateOpenDemand() throws IOException {
         final Long demandKey= 12345L;
         // Inject DemandOperations mock
         final DemandOperations mockDemandOperations = new DemandOperations() {
@@ -273,7 +278,51 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetValidatePublishedDemands() throws IOException {
+    public void testDoGetValidateOpenProposal() throws IOException {
+        final Long proposalKey= 12345L;
+        // Inject ProposalOperations mock
+        final ProposalOperations mockProposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setState(State.invalid);
+                return proposal;
+            }
+        };
+        MockProposalValidator.injectMocks(servlet._baseOperations);
+        MockProposalValidator.injectMocks(mockProposalOperations);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/validateOpenProposal";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals(Proposal.KEY, name);
+                return proposalKey.toString();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockProposalValidator.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetValidatePublishedDemand() throws IOException {
         final Long demandKey= 12345L;
         // Inject DemandOperations mock
         final DemandOperations mockDemandOperations = new DemandOperations() {
@@ -317,6 +366,90 @@ public class TestMaezelServlet {
     }
 
     @Test
+    public void testDoGetValidatePublishedDemands() throws IOException {
+        final Long demandKey= 12345L;
+        // Inject DemandOperations mock
+        final DemandOperations mockDemandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                return new ArrayList<Demand>();
+            }
+        };
+        MockDemandProcessor.injectMocks(servlet._baseOperations);
+        MockDemandProcessor.injectMocks(mockDemandOperations);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processPublishedDemands";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals(Demand.KEY, name);
+                return demandKey.toString();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockDemandProcessor.restoreOperation();
+    }
+
+    @Test
+    public void testDoGetValidatePublishedProposal() throws IOException {
+        final Long proposalKey= 12345L;
+        // Inject ProposalOperations mock
+        final ProposalOperations mockProposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setState(State.invalid);
+                return proposal;
+            }
+        };
+        MockProposalProcessor.injectMocks(servlet._baseOperations);
+        MockProposalProcessor.injectMocks(mockProposalOperations);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processPublishedProposal";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals(Proposal.KEY, name);
+                return proposalKey.toString();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockProposalProcessor.restoreOperation();
+    }
+
+    @Test
     @SuppressWarnings("serial")
     public void testDoGetProcessRobotDMs() throws IOException {
         // Inject a mock Twitter account
@@ -353,46 +486,6 @@ public class TestMaezelServlet {
         // Clean-up
         MockRobotResponder.restoreOperations();
         MockTwitterConnector.restoreTwitterConnector(null, mockRobotAccount);
-    }
-
-    @Test
-    public void testDoGetProcessProposals() throws IOException {
-        /* FIXME: Wait for logic implementation
-        // Inject ProposalOperations mock
-        final ProposalOperations mockProposalOperations = new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<Proposal>();
-            }
-        };
-
-        // Inject the mock BaseOperations instance
-        MockProposalProcessor.injectMocks(servlet._baseOperations);
-        MockProposalProcessor.injectMocks(mockProposalOperations);
-        */
-
-        // Prepare mock servlet parameters
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getPathInfo() {
-                return "/processProposals";
-            }
-        };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-
-        servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'success':false"));
-
-        // Clean-up
-        /* FIXME: Wait for logic implementation
-        MockProposalProcessor.restoreOperations();
-         */
     }
 
     @Test

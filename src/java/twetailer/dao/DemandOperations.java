@@ -139,11 +139,13 @@ public class DemandOperations extends BaseOperations {
             if (consumerKey != null && !consumerKey.equals(demand.getConsumerKey())) {
                 throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
             }
-            demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
+            if (demand.getCriteria() != null) {
+                demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
+            }
             return demand;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving demand for identifier: " + key + " -- ex: " + ex.getMessage());
+            throw new DataSourceException("Error while retrieving demand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 

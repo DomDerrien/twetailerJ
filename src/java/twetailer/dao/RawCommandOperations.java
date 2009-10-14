@@ -84,7 +84,7 @@ public class RawCommandOperations extends BaseOperations {
             return rawCommand;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage());
+            throw new DataSourceException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 }

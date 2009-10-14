@@ -55,7 +55,7 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
-		<copy file="deps/lib/domderrien/domderrien-0.8.5.jar" todir="src/war/WEB-INF/lib"/>
+		<copy file="deps/lib/domderrien/domderrien-0.8.6.jar" todir="src/war/WEB-INF/lib"/>
 		<copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib"/>
     </target>
 
@@ -109,9 +109,16 @@
 	</target>
 
 	<target name="step-configuration-push" depends="base_build_control.step-configuration-push">
-		<copy 
+		<copy
 			file="src/resources/appengine-web.xml.tmpl"
 			tofile="src/war/WEB-INF/appengine-web.xml"
+			overwrite="true"
+		>
+			<filterchain refid="genericFilterChain" />
+		</copy>
+		<copy
+			file="src/resources/cron.xml.tmpl"
+			tofile="src/war/WEB-INF/cron.xml"
 			overwrite="true"
 		>
 			<filterchain refid="genericFilterChain" />

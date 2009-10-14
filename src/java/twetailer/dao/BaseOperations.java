@@ -88,7 +88,7 @@ public class BaseOperations {
             value = Double.valueOf((Float) value);
         }
         else if (value instanceof Date) {
-            declaration = "Date " + name;
+            declaration = "java.util.Date " + name;
         }
         else if (value instanceof Boolean) {
             declaration = "Boolean " + name;
@@ -136,13 +136,34 @@ public class BaseOperations {
         StringBuilder filterDefinition = new StringBuilder();
         StringBuilder parameterDefinitions = new StringBuilder();
         List<Object> values = new ArrayList<Object>(parameters.size());
+        String additionalOrder = null; // Just "creationDate desc" initially
         for(String parameterName: parameters.keySet()) {
-            Object[] preparation = prepareParameter(parameterName + "Value", parameters.get(parameterName));
-            filterDefinition.append(" && " + parameterName + " == " + parameterName + "Value");
+            Object parameterValue = parameters.get(parameterName);
+            char prefix = parameterName.charAt(0);
+            if (prefix == '=' || prefix == '!') {
+                parameterName = parameterName.substring(1);
+            }
+            else if (prefix == '<' || prefix == '>') {
+                parameterName = parameterName.substring(1);
+                if (additionalOrder != null && !additionalOrder.equals(parameterName)) {
+                    throw new DataSourceException("App Engine only support queries with maximum comparisons on one field.");
+                }
+                additionalOrder = parameterName;
+            }
+            else {
+                prefix = '=';
+            }
+            Object[] preparation = prepareParameter(parameterName + "Value", parameterValue);
+            filterDefinition.append(
+                    " && " +
+                    parameterName +
+                    (prefix == '=' ? " == " : prefix == '<' ? " < " : prefix == '>' ? " > " : " != ") +
+                    parameterName + "Value"
+            );
             parameterDefinitions.append(", ").append((String) preparation[0]);
             values.add(preparation[1]);
         }
-        query.setOrdering("creationDate desc");
+        query.setOrdering(additionalOrder != null ? additionalOrder + " desc, creationDate desc" : "creationDate desc");
         query.setFilter(filterDefinition.substring(" && ".length()));
         query.declareParameters(parameterDefinitions.substring(", ".length()));
         if (0 < limit) {

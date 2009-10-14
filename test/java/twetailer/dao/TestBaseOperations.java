@@ -450,6 +450,102 @@ public class TestBaseOperations {
     }
 
     @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterEqualsValue() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("=name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name == nameValue"));
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterNotEqualsValue() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("!name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name != nameValue"));
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterLessThanValue() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("<name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name < nameValue"));
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterGreaterThanValue() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put(">name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name > nameValue"));
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    public void testPrepareQueryWithSafeDoubleComparison() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put(">first", "test");
+        parameters.put("<first", "test");
+
+        BaseOperations.prepareQuery(new MockQuery(), parameters, 12345);
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testPrepareQueryWithUnafeDoubleComparison() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put(">first", "test");
+        parameters.put("<second", "test");
+
+        BaseOperations.prepareQuery(new MockQuery(), parameters, 12345);
+    }
+
+    @Test
     public void testGetConsumerOperations() {
         BaseOperations base = new BaseOperations();
         BaseOperations ops1 = base.getConsumerOperations();
