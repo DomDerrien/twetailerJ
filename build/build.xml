@@ -214,6 +214,7 @@
 		<!-- Produce documentations -->
 		<antcall target="step-javadoc-produce" />
 		<antcall target="step-jsdoc-produce" />
+		<antcall target="step-html-lexicon-produce" />
 		<!-- Produce the JARs -->
 		<antcall target="step-package-jar" />
 		<!-- Generate timestamp or use static one -->
@@ -1110,6 +1111,16 @@
 			<!-- List all files deeper than depth 2 -->
 				<!--arg value="${basedir}/src/war/js/${rwa.productShortName}/util/sample/sample.js" /-->
 		</java>
+	</target>
+
+	<target name="step-html-lexicon-produce">
+		<xslt
+			basedir="src/resources"
+			destdir="docs/generated-doc"
+			extension=".html"
+			includes="${rwa.secondLocalizedLabelBaseFilename}.tmx"
+			style="src/resources/tmx2html.xsl">
+		</xslt>
 	</target>
 
 </project>

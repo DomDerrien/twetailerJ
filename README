@@ -25,6 +25,17 @@ Initial development environment setup
 	3.8 Unzip the App Engine SDK: $<7Zip.dir>\7z.exe x -obin deps\tools\containers\appengine-java-sdk-1.2.5.zip
 	3.9 Run the Ant command: $bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml init
 	
+==================================================
+Refresh from git hub before day-to-day development
+==================================================
+
+1. Pull & merge latest source code from git hub by running gitbash & then enter command "git pull".  (See http://www.kernel.org/pub/software/scm/git/docs/everyday.html)
+2. From command prompt window, change directory to <twetailerJ>
+2.1 Run build: "bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml init"
+2.2 Run tests: "bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml test"
+2.3 Start App Engine server: "bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml webserver-start"
+2.4 Open http://localhost:9999/admin/maezel.html
+
 ========================================
 Day-to-day development
 ========================================
