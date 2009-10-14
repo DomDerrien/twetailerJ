@@ -37,11 +37,11 @@
 	/>
 
 	<property name="rwa.masterLocalizedLabelBaseFilename"
-		value="labels"
+		value="master"
 	/>
 
 	<property name="rwa.secondLocalizedLabelBaseFilename"
-		value="helpSystem"
+		value="lexicon"
 	/>
 
 	<property name="rwa.sessionTimeout"

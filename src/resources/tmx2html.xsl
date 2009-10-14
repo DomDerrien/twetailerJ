@@ -30,12 +30,8 @@
 			    <style type="text/css">
 			        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/resources/dojo.css";
 			        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";
+			        @import "http://www.twetailer.com/styles/lexicon.css";
 			    </style>
-				<style type="text/css" rel="stylesheet">
-					dt {
-						font-weight: bold;
-					}
-				</style>
 				<script language="JavaScript" type="text/javascript">
 					function processSeeAlsoLinks() {
 						var entries = document.getElementsByTagName("dl");
