@@ -63,7 +63,7 @@ public class ProposalValidator {
         Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
         if (CommandSettings.State.open.equals(proposal.getState())) {
             try {
-                Retailer retailer = retailerOperations.getRetailer(pm, proposal.getConsumerKey());
+                Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
                 Locale locale = retailer.getLocale();
                 String message = null;
 
@@ -105,10 +105,10 @@ public class ProposalValidator {
                 proposalOperations.updateProposal(pm, proposal);
             }
             catch (DataSourceException ex) {
-                log.warning("Cannot get information for retailer: " + proposal.getConsumerKey() + " -- ex: " + ex.getMessage());
+                log.warning("Cannot get information for retailer: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
-                log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());
+                log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
             }
         }
     }

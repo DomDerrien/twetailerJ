@@ -25,17 +25,17 @@ public class DemandOperations extends BaseOperations {
      * Create the Demand instance with the given parameters
      *
      * @param parameters HTTP demand parameters
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      * @return Just created resource
      *
      * @throws ClientException If the data given by the client are incorrect
      *
      * @see DemandOperations#createDemand(Demand)
      */
-    public Demand createDemand(JsonObject parameters, Long consumerKey) throws ClientException {
+    public Demand createDemand(JsonObject parameters, Long ownerKey) throws ClientException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return createDemand(pm, parameters, consumerKey);
+            return createDemand(pm, parameters, ownerKey);
         }
         finally {
             pm.close();
@@ -47,24 +47,24 @@ public class DemandOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters HTTP demand parameters
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      * @return Just created resource
      *
      * @throws ClientException If the data given by the client are incorrect
      *
      * @see DemandOperations#createDemand(PersistenceManager, Demand)
      */
-    public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) throws ClientException {
-        getLogger().warning("Create demand for consumer id: " + consumerKey + " with: " + parameters.toString());
+    public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws ClientException {
+        getLogger().warning("Create demand for owner id: " + ownerKey + " with: " + parameters.toString());
         // Creates new demand record and persist it
         Demand newDemand = new Demand(parameters);
-        // Updates the identifier of the creator consumer
-        Long consumerId = newDemand.getConsumerKey();
-        if (consumerId == null || consumerId == 0L) {
-            newDemand.setConsumerKey(consumerKey);
+        // Updates the identifier of the creator owner
+        Long ownerId = newDemand.getOwnerKey();
+        if (ownerId == null || ownerId == 0L) {
+            newDemand.setOwnerKey(ownerKey);
         }
-        else if (!consumerKey.equals(consumerId)) {
-            throw new ClientException("Mismatch of consumer identifiers [" + consumerId + "/" + consumerKey + "]");
+        else if (!ownerKey.equals(ownerId)) {
+            throw new ClientException("Mismatch of owner identifiers [" + ownerId + "/" + ownerKey + "]");
         }
         // Persist it
         return createDemand(pm, newDemand);
@@ -102,17 +102,17 @@ public class DemandOperations extends BaseOperations {
      * Use the given reference to get the corresponding Demand instance for the identified consumer
      *
      * @param key Identifier of the demand
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      * @return First demand matching the given criteria or <code>null</code>
      *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
      *
      * @see DemandOperations#getDemand(PersistenceManager, Long, Long)
      */
-    public Demand getDemand(Long key, Long consumerKey) throws DataSourceException {
+    public Demand getDemand(Long key, Long ownerKey) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return getDemand(pm, key, consumerKey);
+            return getDemand(pm, key, ownerKey);
         }
         finally {
             pm.close();
@@ -124,20 +124,20 @@ public class DemandOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the demand
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      * @return First demand matching the given criteria or <code>null</code>
      *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
      */
-    public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+    public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
         if (key == null || key == 0L) {
             throw new IllegalArgumentException("Invalid key; cannot retrieve the Demand instance");
         }
         getLogger().warning("Get Demand instance with id: " + key);
         try {
             Demand demand = pm.getObjectById(Demand.class, key);
-            if (consumerKey != null && !consumerKey.equals(demand.getConsumerKey())) {
-                throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + demand.getConsumerKey() + "]");
+            if (ownerKey != null && !ownerKey.equals(demand.getOwnerKey())) {
+                throw new DataSourceException("Mismatch of owner identifiers [" + ownerKey + "/" + demand.getOwnerKey() + "]");
             }
             if (demand.getCriteria() != null) {
                 demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -220,17 +220,17 @@ public class DemandOperations extends BaseOperations {
      * Load the demand matching the given parameters and persist the result of the merge
      *
      * @param parameters List of updated attributes, plus the resource identifier (cannot be changed)
-     * @param consumerKey Identifier of the consumer issuing the operation
+     * @param ownerKey Identifier of the owner issuing the operation
      * @return Updated resource
      *
-     * @throws DataSourceException If the identified resource does not belong to the issuing consumer
+     * @throws DataSourceException If the identified resource does not belong to the issuing owner
      *
      * @see DemandOperations#updateDemand(PersistenceManager, Demand)
      */
-    public Demand updateDemand(JsonObject parameters, Long consumerKey) throws DataSourceException {
+    public Demand updateDemand(JsonObject parameters, Long ownerKey) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), consumerKey);
+            Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), ownerKey);
             updatedDemand.fromJson(parameters);
             // Persist updated demand
             return updateDemand(pm, updatedDemand);
@@ -276,17 +276,17 @@ public class DemandOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
      *
      * @param key Identifier of the demand
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
      *
      * @see DemandOperations#getDemands(PersistenceManager, Long, Long)
      * @see DemandOperations#deleteDemand(PersistenceManager, Demand)
      */
-    public void deleteDemand(Long key, Long consumerKey) throws DataSourceException {
+    public void deleteDemand(Long key, Long ownerKey) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            Demand demand = getDemand(pm, key, consumerKey);
+            Demand demand = getDemand(pm, key, ownerKey);
             deleteDemand(pm, demand);
         }
         finally {
@@ -299,7 +299,6 @@ public class DemandOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the demand
-     * @param consumerKey Identifier of the demand owner
      */
     public void deleteDemand(PersistenceManager pm, Demand demand) {
         getLogger().warning("Delete demand with id: " + demand.getKey());

@@ -89,19 +89,6 @@ public class MaezelServlet extends HttpServlet {
             else if ("/processRobotMessages".equals(pathInfo)) {
                 RobotResponder.processDirectMessages();
             }
-            else if ("/createLocation".equals(pathInfo)) {
-                // Supported formats:
-                //   http:<host:port>/API/maezel/createLocation?postalCode=H0H0H0&countryCode=CA
-                //   http:<host:port>/API/maezel/createLocation?postalCode=H0H0H0&countryCode=CA&latitude=45.0&longitude=30.0
-
-                Location somewhere = new Location();
-                somewhere.setCountryCode(request.getParameter("countryCode"));
-                somewhere.setPostalCode(request.getParameter("postalCode"));
-                if (request.getParameter("latitude") !=  null) somewhere.setLatitude(Double.valueOf(request.getParameter("latitude")));
-                if (request.getParameter("longitude") != null) somewhere.setLongitude(Double.valueOf(request.getParameter("longitude")));
-
-                locationOperations.createLocation(somewhere);
-            }
             else if ("/createStore".equals(pathInfo)) {
                 // Supported formats:
                 //   http:<host:port>/API/maezel/createStore?postalCode=H0H0H0&address=number, street, city, postal code, country&name=store name
@@ -151,28 +138,6 @@ public class MaezelServlet extends HttpServlet {
                     pm.close();
                 }
 
-            }
-            else if ("/createDemand".equals(pathInfo)) {
-                // Supported formats:
-                //   http:<host:port>/API/maezel/createDemand?consumerKey=11&tags=wii console&postalCode=H0H0H0
-
-                PersistenceManager pm = _baseOperations.getPersistenceManager();
-                try {
-                    List<Location> locations = locationOperations.getLocations(pm, Location.POSTAL_CODE, request.getParameter(Location.POSTAL_CODE), 0);
-
-                    Demand demand = new Demand();
-                    demand.setLocationKey(locations.get(0).getKey());
-                    demand.setConsumerKey(Long.valueOf(request.getParameter(Demand.CONSUMER_KEY)));
-                    String[] tags = request.getParameter("tags").split(" ");
-                    for (int i = 0; i < tags.length; i++) {
-                        demand.addCriterion(tags[i]);
-                    }
-
-                    demandOperations.createDemand(pm, demand);
-                }
-                finally {
-                    pm.close();
-                }
             }
             else if ("/updateConsumer".equals(pathInfo)) {
                 // Supported formats:

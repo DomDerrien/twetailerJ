@@ -10,13 +10,14 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import twetailer.connector.BaseConnector.Source;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
-
-import twetailer.validator.CommandSettings;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Wish extends Entity {
@@ -24,24 +25,16 @@ public class Wish extends Entity {
     /*** Command ***/
 
     @Persistent
-    private CommandSettings.Action action;
-
-    public static final String ACTION = "action";
+    private Action action;
 
     @Persistent
-    private Long consumerKey;
-
-    public static final String CONSUMER_KEY = Consumer.CONSUMER_KEY;
+    private Long ownerKey;
 
     @Persistent
-    private CommandSettings.State state = CommandSettings.State.open;
-
-    public static final String STATE = "state";
+    private Source source;
 
     @Persistent
-    private Long tweetId;
-
-    public static final String TWEET_ID = "tweetId";
+    private State state = State.open;
 
     /*** Wish ***/
 
@@ -63,7 +56,7 @@ public class Wish extends Entity {
     /** Default constructor */
     public Wish() {
         super();
-        setAction(CommandSettings.Action.wish);
+        setAction(Action.wish);
         setDefaultExpirationDate();
     }
 
@@ -86,11 +79,11 @@ public class Wish extends Entity {
 
     /*** Command ***/
 
-    public CommandSettings.Action getAction() {
+    public Action getAction() {
         return action;
     }
 
-    public void setAction(CommandSettings.Action action) {
+    public void setAction(Action action) {
         if (action == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'action'");
         }
@@ -98,22 +91,37 @@ public class Wish extends Entity {
     }
 
     public void setAction(String action) {
-        setAction(CommandSettings.Action.valueOf(action));
+        setAction(Action.valueOf(action));
     }
 
-    public Long getConsumerKey() {
-        return consumerKey;
+    public Long getOwnerKey() {
+        return ownerKey;
     }
 
-    public void setConsumerKey(Long consumerId) {
-        this.consumerKey = consumerId;
+    public void setOwnerKey(Long ownerKey) {
+        this.ownerKey = ownerKey;
     }
 
-    public CommandSettings.State getState() {
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        if (source == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'source'");
+        }
+        this.source = source;
+    }
+
+    public void setSource(String source) {
+        setSource(Source.valueOf(source));
+    }
+
+    public State getState() {
         return state;
     }
 
-    public void setState(CommandSettings.State state) {
+    public void setState(State state) {
         if (state == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
         }
@@ -121,15 +129,7 @@ public class Wish extends Entity {
     }
 
     public void setState(String state) {
-        setState(CommandSettings.State.valueOf(state));
-    }
-
-    public Long getTweetId() {
-        return tweetId;
-    }
-
-    public void setTweetId(Long tweetId) {
-        this.tweetId = tweetId;
+        setState(State.valueOf(state));
     }
 
     /*** Demand ***/
@@ -211,10 +211,10 @@ public class Wish extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         /*** Command ***/
-        out.put(ACTION, getAction().toString());
-        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
-        out.put(STATE, getState().toString());
-        if (getTweetId() != null) { out.put(TWEET_ID, getTweetId()); }
+        out.put(Command.ACTION, getAction().toString());
+        if (getOwnerKey() != null) { out.put(Command.OWNER_KEY, getOwnerKey()); }
+        out.put(Command.SOURCE, getSource().toString());
+        out.put(Command.STATE, getState().toString());
         /*** Demand ***/
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -231,10 +231,10 @@ public class Wish extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         /*** Command ***/
-        if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
-        if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
-        if (in.containsKey(TWEET_ID)) { setTweetId(in.getLong(TWEET_ID)); }
+        if (in.containsKey(Command.ACTION)) { setAction(in.getString(Command.ACTION)); }
+        if (in.containsKey(Command.OWNER_KEY)) { setOwnerKey(in.getLong(Command.OWNER_KEY)); }
+        if (in.containsKey(Command.SOURCE)) { setSource(in.getString(Command.SOURCE)); }
+        if (in.containsKey(Command.STATE)) { setState(in.getString(Command.STATE)); }
         /*** Wish ***/
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);

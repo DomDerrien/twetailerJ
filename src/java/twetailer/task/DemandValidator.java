@@ -67,7 +67,7 @@ public class DemandValidator {
             Date nowDate = DateUtils.getNowDate();
             Long nowTime = nowDate.getTime() - 60*1000; // Minus 1 minute
             try {
-                Consumer consumer = consumerOperations.getConsumer(pm, demand.getConsumerKey());
+                Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
                 Locale locale = consumer.getLocale();
                 String message = null;
                 if(demand.getCriteria() == null || demand.getCriteria().size() == 0) {
@@ -123,7 +123,7 @@ public class DemandValidator {
                 demandOperations.updateDemand(pm, demand);
             }
             catch (DataSourceException ex) {
-                log.warning("Cannot get information for consumer: " + demand.getConsumerKey() + " -- ex: " + ex.getMessage());
+                log.warning("Cannot get information for consumer: " + demand.getOwnerKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
                 log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());

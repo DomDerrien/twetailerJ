@@ -59,13 +59,13 @@ public class ProposalOperations extends BaseOperations {
         getLogger().warning("Create proposal for retailer id: " + retailerKey + " with: " + parameters.toString());
         // Creates new proposal record and persist it
         Proposal newProposal = new Proposal(parameters);
-        // Updates the identifier of the creator consumer
-        Long consumerId = newProposal.getConsumerKey();
-        if (consumerId == null || consumerId == 0L) {
-            newProposal.setConsumerKey(retailerKey);
+        // Updates the identifier of the creator owner
+        Long ownerId = newProposal.getOwnerKey();
+        if (ownerId == null || ownerId == 0L) {
+            newProposal.setOwnerKey(retailerKey);
         }
-        else if (!retailerKey.equals(consumerId)) {
-            throw new ClientException("Mismatch of consumer identifiers [" + consumerId + "/" + retailerKey + "]");
+        else if (!retailerKey.equals(ownerId)) {
+            throw new ClientException("Mismatch of owner identifiers [" + ownerId + "/" + retailerKey + "]");
         }
         // Save the store identifier
         newProposal.setStoreKey(retailer.getStoreKey());
@@ -101,10 +101,10 @@ public class ProposalOperations extends BaseOperations {
         return proposal;
     }
     /**
-     * Use the given reference to get the corresponding Proposal instance for the identified consumer
+     * Use the given reference to get the corresponding Proposal instance for the identified retailer
      *
      * @param key Identifier of the proposal
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      * @param storeKey Identifier of the proposal owner's store
      * @return First proposal matching the given criteria or <code>null</code>
      *
@@ -112,10 +112,10 @@ public class ProposalOperations extends BaseOperations {
      *
      * @see ProposalOperations#getProposal(PersistenceManager, Long, Long)
      */
-    public Proposal getProposal(Long key, Long consumerKey, Long storeKey) throws DataSourceException {
+    public Proposal getProposal(Long key, Long ownerKey, Long storeKey) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return getProposal(pm, key, consumerKey, storeKey);
+            return getProposal(pm, key, ownerKey, storeKey);
         }
         finally {
             pm.close();
@@ -123,27 +123,27 @@ public class ProposalOperations extends BaseOperations {
     }
 
     /**
-     * Use the given reference to get the corresponding Proposal instance for the identified consumer while leaving the given persistence manager open for future updates
+     * Use the given reference to get the corresponding Proposal instance for the identified retailer while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the proposal
-     * @param consumerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the demand owner
      * @param storeKey Identifier of the proposal owner's store
      * @return First proposal matching the given criteria or <code>null</code>
      *
      * @throws DataSourceException If the retrieved proposal does not belong to the specified user
      */
-    public Proposal getProposal(PersistenceManager pm, Long key, Long consumerKey, Long storeKey) throws DataSourceException {
+    public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
         if (key == null || key == 0L) {
             throw new IllegalArgumentException("Invalid key; cannot retrieve the Proposal instance");
         }
         getLogger().warning("Get Proposal instance with id: " + key);
         try {
             Proposal proposal = pm.getObjectById(Proposal.class, key);
-            if (consumerKey != null && consumerKey != 0L && !consumerKey.equals(proposal.getConsumerKey()) && (storeKey == null || storeKey == 0L)) {
-                throw new DataSourceException("Mismatch of consumer identifiers [" + consumerKey + "/" + proposal.getConsumerKey() + "]");
+            if (ownerKey != null && ownerKey != 0L && !ownerKey.equals(proposal.getOwnerKey()) && (storeKey == null || storeKey == 0L)) {
+                throw new DataSourceException("Mismatch of owner identifiers [" + ownerKey + "/" + proposal.getOwnerKey() + "]");
             }
-            if (storeKey != null && storeKey != 0L && !storeKey.equals(proposal.getStoreKey()) && (consumerKey == null || consumerKey == 0L)) {
+            if (storeKey != null && storeKey != 0L && !storeKey.equals(proposal.getStoreKey()) && (ownerKey == null || ownerKey == 0L)) {
                 throw new DataSourceException("Mismatch of store identifiers [" + storeKey + "/" + proposal.getStoreKey() + "]");
             }
             if (proposal.getCriteria() != null) {

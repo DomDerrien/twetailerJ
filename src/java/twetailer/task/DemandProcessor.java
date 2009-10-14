@@ -20,6 +20,7 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
@@ -63,7 +64,7 @@ public class DemandProcessor {
             past.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY) - 8);
             // Prepare the query with: state == published && modificationDate > past
             Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("=" + Demand.STATE, State.published.toString());
+            parameters.put("=" + Command.STATE, State.published.toString());
             // FIXME: enable the additional filtering when the issue 25 is solved and delivered
             // parameters.put("<" + Entity.MODIFICATION_DATE, past.getTime());
             List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
@@ -115,7 +116,7 @@ public class DemandProcessor {
                 for(Retailer retailer: retailers) {
                     boolean contactRetailerJustOnce = true;
                     for (Proposal proposal: proposals) {
-                        if (proposal.getConsumerKey().equals(retailer.getKey())) {
+                        if (proposal.getOwnerKey().equals(retailer.getKey())) {
                             contactRetailerJustOnce = false;
                             break;
                         }

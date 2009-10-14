@@ -22,6 +22,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockPersistenceManager;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
@@ -81,13 +82,13 @@ public class TestDemandsRestlet {
                 return proposedPM;
             }
             @Override
-            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) throws ClientException {
+            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long OwnerKey) throws ClientException {
                 assertEquals(proposedPM, pm);
                 assertFalse(pm.isClosed());
                 assertEquals(proposedParameters, parameters);
-                assertEquals(resourceId, consumerKey);
+                assertEquals(resourceId, OwnerKey);
                 Demand temp = new Demand();
-                temp.setConsumerKey(consumerKey);
+                temp.setOwnerKey(OwnerKey);
                 temp.setKey(resourceId);
                 temp.setSource(source);
                 return temp;
@@ -99,8 +100,8 @@ public class TestDemandsRestlet {
         assertNotNull(returnedDemand);
         assertTrue(returnedDemand.containsKey(Entity.KEY));
         assertEquals(resourceId.longValue(), returnedDemand.getLong(Entity.KEY));
-        assertTrue(returnedDemand.containsKey(Demand.CONSUMER_KEY));
-        assertEquals(resourceId.longValue(), returnedDemand.getLong(Demand.CONSUMER_KEY));
+        assertTrue(returnedDemand.containsKey(Command.OWNER_KEY));
+        assertEquals(resourceId.longValue(), returnedDemand.getLong(Command.OWNER_KEY));
     }
 
     @Test
@@ -125,7 +126,7 @@ public class TestDemandsRestlet {
                 return proposedPM;
             }
             @Override
-            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long consumerKey) throws ClientException {
+            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws ClientException {
                 fail("Should not be called!");
                 throw new ClientException("Done in purpose");
             }

@@ -24,27 +24,17 @@ public class Proposal extends Entity {
     @Persistent
     private Action action;
 
-    public static final String ACTION = "action";
-
     @Persistent
-    private Long consumerKey;
-
-    public static final String CONSUMER_KEY = Consumer.CONSUMER_KEY;
+    private Long ownerKey;
 
     @Persistent
     private Long rawCommandId;
 
-    public static final String RAW_COMMAND_ID = "rawCommandId";
-
     @Persistent
     private Source source;
 
-    public static final String SOURCE = "source";
-
     @Persistent
     private State state = State.open;
-
-    public static final String STATE = "state";
 
     /*** Demand ***/
 
@@ -121,12 +111,12 @@ public class Proposal extends Entity {
         setAction(Action.valueOf(action));
     }
 
-    public Long getConsumerKey() {
-        return consumerKey;
+    public Long getOwnerKey() {
+        return ownerKey;
     }
 
-    public void setConsumerKey(Long consumerId) {
-        this.consumerKey = consumerId;
+    public void setOwnerKey(Long ownerKey) {
+        this.ownerKey = ownerKey;
     }
 
     public Long getRawCommandId() {
@@ -246,11 +236,11 @@ public class Proposal extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         /*** Command ***/
-        out.put(ACTION, getAction().toString());
-        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
-        if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
-        out.put(SOURCE, getSource().toString());
-        out.put(STATE, getState().toString());
+        out.put(Command.ACTION, getAction().toString());
+        if (getOwnerKey() != null) { out.put(Command.OWNER_KEY, getOwnerKey()); }
+        if (getRawCommandId() != null) { out.put(Command.RAW_COMMAND_ID, getRawCommandId()); }
+        out.put(Command.SOURCE, getSource().toString());
+        out.put(Command.STATE, getState().toString());
         /*** Demand ***/
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -270,11 +260,11 @@ public class Proposal extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         /*** Command ***/
-        if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
-        if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
-        if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
-        if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
+        if (in.containsKey(Command.ACTION)) { setAction(in.getString(Command.ACTION)); }
+        if (in.containsKey(Command.OWNER_KEY)) { setOwnerKey(in.getLong(Command.OWNER_KEY)); }
+        if (in.containsKey(Command.RAW_COMMAND_ID)) { setRawCommandId(in.getLong(Command.RAW_COMMAND_ID)); }
+        if (in.containsKey(Command.SOURCE)) { setSource(in.getString(Command.SOURCE)); }
+        if (in.containsKey(Command.STATE)) { setState(in.getString(Command.STATE)); }
         /*** Demand ***/
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);

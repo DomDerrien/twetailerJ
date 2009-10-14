@@ -166,7 +166,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.setState(state);
                 return proposal;
@@ -211,7 +211,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.setState(state);
                 return proposal;
@@ -257,7 +257,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -303,7 +303,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -352,7 +352,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -401,7 +401,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -450,7 +450,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -499,7 +499,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -545,7 +545,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -591,7 +591,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -641,7 +641,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -692,7 +692,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -716,7 +716,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalHaveInvalidDemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("dv_proposalHaveInvalidDemandReference", new Object[] { proposalKey, demandKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -749,7 +749,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -791,7 +791,7 @@ public class TestProposalValidator {
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 return proposal;
             }
         };
@@ -824,7 +824,7 @@ public class TestProposalValidator {
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setSource(Source.twitter);
                 return proposal;
             }

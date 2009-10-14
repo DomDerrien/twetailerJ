@@ -89,7 +89,7 @@ public class TestProposalProcessor {
         final Long demandKey = 12345L;
         final Double price = 25.75D;
         final Long quantity = 32L;
-        final Long storeKey = 65758L;
+        final Long storeKey = 5555L;
         final Double total = 29.99D;
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
@@ -111,10 +111,10 @@ public class TestProposalProcessor {
             }
         };
 
-        final Long consumerKey = 12590L;
+        final Long ownerKey = 6666L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
-        demand.setConsumerKey(consumerKey);
+        demand.setOwnerKey(ownerKey);
         demand.setSource(Source.simulated);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
@@ -131,7 +131,7 @@ public class TestProposalProcessor {
         };
 
         final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
+        consumer.setKey(ownerKey);
         ProposalProcessor.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
@@ -143,7 +143,7 @@ public class TestProposalProcessor {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dp_informNewProposal", new Object[] { proposal.getKey() }, Locale.ENGLISH),
+                LabelExtractor.get("dp_informNewProposal", new Object[] { proposalKey, demandKey, "test ", storeKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
@@ -256,7 +256,7 @@ public class TestProposalProcessor {
         final Long consumerKey = 12590L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
-        demand.setConsumerKey(consumerKey);
+        demand.setOwnerKey(consumerKey);
         demand.setSource(Source.twitter); // To be able to simulate the failure
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override

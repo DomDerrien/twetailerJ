@@ -45,7 +45,7 @@ public class TestDemandValidator {
         }
     };
 
-    final Long consumerKey = 54321L;
+    final Long OwnerKey = 54321L;
     final String consumerTwitterId = "Katelyn";
     final Source source = Source.simulated;
     MockAppEngineEnvironment appEnv;
@@ -56,9 +56,9 @@ public class TestDemandValidator {
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
-                assertEquals(consumerKey, key);
+                assertEquals(OwnerKey, key);
                 Consumer consumer = new Consumer();
-                consumer.setKey(consumerKey);
+                consumer.setKey(OwnerKey);
                 consumer.setTwitterId(consumerTwitterId);
                 consumer.setLanguage(LocaleValidator.DEFAULT_LANGUAGE);
                 return consumer;
@@ -126,9 +126,9 @@ public class TestDemandValidator {
 
         DemandValidator.demandOperations = new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long OwnerKey) throws DataSourceException {
                 assertEquals(demandKey, key);
-                assertNull(consumerKey);
+                assertNull(OwnerKey);
                 return consumerDemand;
             }
         };
@@ -159,7 +159,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 return demand;
             }
@@ -199,7 +199,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 return demand;
             }
@@ -240,7 +240,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 return demand;
@@ -282,7 +282,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 return demand;
@@ -325,7 +325,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -369,7 +369,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -413,7 +413,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
@@ -457,7 +457,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
@@ -502,7 +502,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -547,7 +547,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -597,7 +597,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -643,7 +643,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -716,7 +716,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -779,7 +779,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -839,7 +839,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -895,7 +895,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
@@ -928,7 +928,7 @@ public class TestDemandValidator {
         DemandValidator.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
-                assertEquals(consumerKey, key);
+                assertEquals(OwnerKey, key);
                 throw new DataSourceException("done in purpose");
             }
         };
@@ -942,7 +942,7 @@ public class TestDemandValidator {
                 assertNull(cKey);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
                 return demand;
             }
@@ -979,7 +979,7 @@ public class TestDemandValidator {
                 assertNull(cKey);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setConsumerKey(consumerKey);
+                demand.setOwnerKey(OwnerKey);
                 demand.setSource(Source.twitter);
                 return demand;
             }

@@ -13,9 +13,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonParser;
@@ -50,10 +52,10 @@ public class TestWish {
         assertNotNull(object.getCreationDate());
     }
 
-    CommandSettings.Action action = CommandSettings.Action.cancel;
-    Long consumerKey = 12345L;
-    CommandSettings.State state = CommandSettings.State.closed;
-    Long tweetId = 67890L;
+    Action action = Action.cancel;
+    Long ownerKey = 12345L;
+    State state = State.closed;
+    Source source = Source.simulated;
 
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Date expirationDate = new Date(new Date().getTime() + 65536L);
@@ -66,10 +68,11 @@ public class TestWish {
         // Command
         object.setAction(action);
         object.setAction(action.toString());
-        object.setConsumerKey(consumerKey);
+        object.setOwnerKey(ownerKey);
         object.setState(state);
         object.setState(state.toString());
-        object.setTweetId(tweetId);
+        object.setSource(source);
+        object.setSource(source.toString());
 
         // Wish
         object.setCriteria(criteria);
@@ -79,10 +82,9 @@ public class TestWish {
         // Command
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
-        assertEquals(consumerKey, object.getConsumerKey());
+        assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(state, object.getState());
-        assertEquals(state, object.getState());
-        assertEquals(tweetId, object.getTweetId());
+        assertEquals(source, object.getSource());
 
         // Wish
         assertEquals(criteria, object.getCriteria());
@@ -131,7 +133,7 @@ public class TestWish {
     public void testSetAction() {
         Wish object = new Wish();
 
-        object.setAction((CommandSettings.Action) null);
+        object.setAction((Action) null);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -149,10 +151,17 @@ public class TestWish {
     }
 
     @Test(expected=IllegalArgumentException.class)
+    public void testSetSource() {
+        Wish object = new Wish();
+
+        object.setSource((Source) null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
     public void testSetState() {
         Wish object = new Wish();
 
-        object.setState((CommandSettings.State) null);
+        object.setState((State) null);
     }
 
     @Test
@@ -161,9 +170,9 @@ public class TestWish {
 
         // Command
         object.setAction(action);
-        object.setConsumerKey(consumerKey);
+        object.setOwnerKey(ownerKey);
         object.setState(state);
-        object.setTweetId(tweetId);
+        object.setSource(source);
 
         // Wish
         object.setCriteria(criteria);
@@ -174,9 +183,9 @@ public class TestWish {
 
         // Command
         assertEquals(action, clone.getAction());
-        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(state, clone.getState());
-        assertEquals(tweetId, clone.getTweetId());
+        assertEquals(source, clone.getSource());
 
         // Wish
         assertEquals(criteria, clone.getCriteria());
@@ -187,10 +196,10 @@ public class TestWish {
     @Test
     public void testJsonWishsII() {
         Wish object = new Wish();
+        object.setSource(source);
 
         // Command
-        assertNull(object.getConsumerKey());
-        assertNull(object.getTweetId());
+        assertNull(object.getOwnerKey());
 
         // Wish
         assertEquals(0, object.getCriteria().size());
@@ -198,8 +207,7 @@ public class TestWish {
         Wish clone = new Wish(object.toJson());
 
         // Command
-        assertNull(clone.getConsumerKey());
-        assertNull(clone.getTweetId());
+        assertNull(clone.getOwnerKey());
 
         // Wish
         assertEquals(0, clone.getCriteria().size());
@@ -208,6 +216,7 @@ public class TestWish {
     @Test
     public void testJsonWishsIII() {
         Wish object = new Wish();
+        object.setSource(source);
 
         object.resetLists();
 

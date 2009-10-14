@@ -63,9 +63,9 @@ public class ProposalProcessor {
         if (CommandSettings.State.published.equals(proposal.getState())) {
             try {
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), null);
-                Consumer consumer = consumerOperations.getConsumer(pm, demand.getConsumerKey());
+                Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
                 StringBuilder tags = new StringBuilder();
-                for(String tag: demand.getCriteria()) {
+                for(String tag: proposal.getCriteria()) {
                     tags.append(tag).append(" ");
                 }
                 communicateToConsumer(

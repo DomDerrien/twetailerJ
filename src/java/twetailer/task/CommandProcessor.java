@@ -185,7 +185,7 @@ public class CommandProcessor {
             matcher = patterns.get(CommandSettings.Prefix.action).matcher(message);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.ACTION, getAction(currentGroup.toLowerCase()));
+                command.put(Command.ACTION, getAction(currentGroup.toLowerCase()));
                 message = matcher.replaceFirst("");
                 oneFieldOverriden = true;
             }
@@ -617,7 +617,7 @@ public class CommandProcessor {
      * @return Specified or guessed action
      */
     protected static String guessAction(JsonObject command) {
-        String action = command.getString(Demand.ACTION);
+        String action = command.getString(Command.ACTION);
         if (action == null) {
             if (command.containsKey(Demand.REFERENCE)) {
                 action = command.size() == 1 ? CommandSettings.Action.list.toString() : CommandSettings.Action.demand.toString();
@@ -841,7 +841,7 @@ public class CommandProcessor {
                 newLocationKey = newLocation.getKey();
             }
             // Get the latest demand or the default one
-            List<Demand> demands = demandOperations.getDemands(pm, Demand.CONSUMER_KEY, consumer.getKey(), 1);
+            List<Demand> demands = demandOperations.getDemands(pm, Command.OWNER_KEY, consumer.getKey(), 1);
             Demand latestDemand = null;
             if (0 < demands.size()) {
                 latestDemand = demands.get(0);
@@ -926,7 +926,7 @@ public class CommandProcessor {
         */
         else {
             // FIXME: select only {invalid, open, published, proposed} demands -- {canceled, closed} demands can be only listed with the Web console
-            List<Demand> demands = demandOperations.getDemands(pm, Demand.CONSUMER_KEY, consumer.getKey(), 0);
+            List<Demand> demands = demandOperations.getDemands(pm, Command.OWNER_KEY, consumer.getKey(), 0);
             if (demands.size() == 0) {
                 communicateToEmitter(
                         rawCommand,

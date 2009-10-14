@@ -19,9 +19,9 @@ public class Command extends Entity {
     public static final String ACTION = "action";
 
     @Persistent
-    private Long consumerKey;
+    private Long ownerKey;
 
-    public static final String CONSUMER_KEY = Consumer.CONSUMER_KEY;
+    public static final String OWNER_KEY = "ownerKey";
 
     public static final String NEED_HELP = "needHelp";
 
@@ -70,12 +70,12 @@ public class Command extends Entity {
         setAction(Action.valueOf(action));
     }
 
-    public Long getConsumerKey() {
-        return consumerKey;
+    public Long getOwnerKey() {
+        return ownerKey;
     }
 
-    public void setConsumerKey(Long consumerId) {
-        this.consumerKey = consumerId;
+    public void setOwnerKey(Long ownerKey) {
+        this.ownerKey = ownerKey;
     }
 
     public Long getRawCommandId() {
@@ -119,7 +119,7 @@ public class Command extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
-        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
+        if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
         out.put(SOURCE, getSource().toString());
         out.put(STATE, getState().toString());
@@ -129,7 +129,7 @@ public class Command extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
         if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }

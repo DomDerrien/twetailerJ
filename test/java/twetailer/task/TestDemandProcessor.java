@@ -655,9 +655,9 @@ public class TestDemandProcessor {
             @Override
             public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
                 Proposal badProposal = new Proposal();
-                badProposal.setConsumerKey(retailerKey + 12325L);
+                badProposal.setOwnerKey(retailerKey + 12325L);
                 Proposal goodProposal = new Proposal();
-                goodProposal.setConsumerKey(retailerKey);
+                goodProposal.setOwnerKey(retailerKey);
                 List<Proposal> proposals = new ArrayList<Proposal>();
                 proposals.add(badProposal);
                 proposals.add(goodProposal);

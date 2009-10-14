@@ -48,7 +48,7 @@ public class TestCommand {
     }
 
     CommandSettings.Action action = CommandSettings.Action.cancel;
-    Long consumerKey = 12345L;
+    Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
     CommandSettings.State state = CommandSettings.State.closed;
@@ -59,7 +59,7 @@ public class TestCommand {
 
         object.setAction(action);
         object.setAction(action.toString());
-        object.setConsumerKey(consumerKey);
+        object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setSource(source.toString());
@@ -68,7 +68,7 @@ public class TestCommand {
 
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
-        assertEquals(consumerKey, object.getConsumerKey());
+        assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
         assertEquals(state, object.getState());
@@ -79,7 +79,7 @@ public class TestCommand {
         Command object = new Command();
 
         object.setAction(action);
-        object.setConsumerKey(consumerKey);
+        object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setState(state);
@@ -87,7 +87,7 @@ public class TestCommand {
         Command clone = new Command(object.toJson());
 
         assertEquals(action, clone.getAction());
-        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
         assertEquals(state, clone.getState());
@@ -98,12 +98,12 @@ public class TestCommand {
         Command object = new Command();
         object.setSource(source);
 
-        assertNull(object.getConsumerKey());
+        assertNull(object.getOwnerKey());
         assertNull(object.getRawCommandId());
 
         Command clone = new Command(object.toJson());
 
-        assertNull(clone.getConsumerKey());
+        assertNull(clone.getOwnerKey());
         assertNull(clone.getRawCommandId());
     }
 

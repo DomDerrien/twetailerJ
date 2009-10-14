@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.validator.CommandSettings;
@@ -71,7 +72,7 @@ public class TestDemandOperations {
     @Test
     public void testCreateII() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        item.put(Demand.CONSUMER_KEY, 111L);
+        item.put(Command.OWNER_KEY, 111L);
 
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
@@ -80,7 +81,7 @@ public class TestDemandOperations {
     @Test(expected=ClientException.class)
     public void testCreateIII() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        item.put(Demand.CONSUMER_KEY, 222L);
+        item.put(Command.OWNER_KEY, 222L);
 
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
@@ -89,7 +90,7 @@ public class TestDemandOperations {
     @Test
     public void testCreateIV() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        // Not setting the "CONSUMER_KEY" attribute will let it as null
+        // Not setting the "OWNER_KEY" attribute will let it as null
 
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
@@ -98,7 +99,7 @@ public class TestDemandOperations {
     @Test
     public void testCreateV() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        item.put(Demand.CONSUMER_KEY, 0L);
+        item.put(Command.OWNER_KEY, 0L);
 
         Demand object = new DemandOperations().createDemand(item, 111L);
         assertNotNull(object.getKey());
@@ -114,7 +115,7 @@ public class TestDemandOperations {
             }
         };
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
 
         Demand selected = ops.getDemand(object.getKey(), 111L);
@@ -127,7 +128,7 @@ public class TestDemandOperations {
     public void testGetIIa() throws ClientException, DataSourceException {
         DemandOperations ops = new DemandOperations();
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(object);
 
         ops.getDemand(object.getKey(), 222L);
@@ -137,7 +138,7 @@ public class TestDemandOperations {
     public void testGetIIb() throws ClientException, DataSourceException {
         DemandOperations ops = new DemandOperations();
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(object);
 
         ops.getDemand(object.getKey(), null);
@@ -171,10 +172,10 @@ public class TestDemandOperations {
             }
         };
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
 
-        List<Demand> selection = ops.getDemands(Demand.CONSUMER_KEY, 111L, 0);
+        List<Demand> selection = ops.getDemands(Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(object.getKey(), selection.get(0).getKey());
@@ -183,7 +184,7 @@ public class TestDemandOperations {
 
     @Test
     public void testGetsII() throws ClientException, DataSourceException {
-        List<Demand> selection = new DemandOperations().getDemands(Demand.CONSUMER_KEY, 111L, 0);
+        List<Demand> selection = new DemandOperations().getDemands(Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());
     }
@@ -198,9 +199,9 @@ public class TestDemandOperations {
             }
         };
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
-        object.setConsumerKey(222L);
+        object.setOwnerKey(222L);
 
         Demand updated = ops.updateDemand(object);
         assertNotNull(updated);
@@ -218,12 +219,12 @@ public class TestDemandOperations {
             }
         };
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
 
         JsonObject item = new GenericJsonObject();
         item.put(Entity.KEY, object.getKey());
-        item.put(Demand.CONSUMER_KEY, 111L);
+        item.put(Command.OWNER_KEY, 111L);
 
         Demand updated = ops.updateDemand(item, 111L);
         assertNotNull(updated);
@@ -241,7 +242,7 @@ public class TestDemandOperations {
             }
         };
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
 
         ops.deleteDemand(object.getKey(), 111L);
@@ -253,11 +254,11 @@ public class TestDemandOperations {
         DemandOperations ops = new DemandOperations();
 
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createDemand(object);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put(Demand.CONSUMER_KEY, 111L);
+        parameters.put(Command.OWNER_KEY, 111L);
 
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
         assertNotNull(selection);
@@ -270,12 +271,12 @@ public class TestDemandOperations {
         DemandOperations ops = new DemandOperations();
 
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setRange(25.5D);
         object = ops.createDemand(object);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put(Demand.CONSUMER_KEY, object.getConsumerKey());
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
         parameters.put(Demand.RANGE, object.getRange());
 
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
@@ -289,15 +290,15 @@ public class TestDemandOperations {
         DemandOperations ops = new DemandOperations();
 
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setRange(25.5D);
         object.setState(CommandSettings.State.open);
         object = ops.createDemand(object);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put(Demand.CONSUMER_KEY, object.getConsumerKey());
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
         parameters.put(Demand.RANGE, object.getRange());
-        parameters.put(Demand.STATE, object.getState().toString());
+        parameters.put(Command.STATE, object.getState().toString());
 
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);
         assertNotNull(selection);
@@ -310,16 +311,16 @@ public class TestDemandOperations {
         DemandOperations ops = new DemandOperations();
 
         Demand object = new Demand();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setRange(25.5D);
         object.setState(CommandSettings.State.open);
         object.setLocationKey(222L);
         object = ops.createDemand(object);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put(Demand.CONSUMER_KEY, object.getConsumerKey());
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
         parameters.put(Demand.RANGE, object.getRange());
-        parameters.put(Demand.STATE, object.getState().toString());
+        parameters.put(Command.STATE, object.getState().toString());
         parameters.put(Demand.LOCATION_KEY, object.getLocationKey());
 
         List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters, 0);

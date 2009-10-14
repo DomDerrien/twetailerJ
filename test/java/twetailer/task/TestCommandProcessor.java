@@ -539,7 +539,7 @@ public class TestCommandProcessor {
     public void testParseActionI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:demand ref:1234 " + keywords);
-        assertEquals("demand", data.getString(Demand.ACTION));
+        assertEquals("demand", data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -557,7 +557,7 @@ public class TestCommandProcessor {
     @Test
     public void testParseActionIII() throws ClientException, ParseException {
         JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:list ref:1234");
-        assertEquals("list", data.getString(Demand.ACTION));
+        assertEquals("list", data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
     }
 
@@ -1748,7 +1748,7 @@ public class TestCommandProcessor {
                 assertEquals(consumerKey, retailer.getConsumerKey());
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 return proposal;
             }
         };
@@ -1811,7 +1811,7 @@ public class TestCommandProcessor {
                 assertEquals(storeKey, sKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setConsumerKey(retailerKey);
+                proposal.setOwnerKey(retailerKey);
                 proposal.setState(CommandSettings.State.published); // To be able to verify the reset to "open"
                 proposal.setStoreKey(storeKey);
                 return proposal;

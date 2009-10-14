@@ -18,8 +18,7 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dto.Demand;
-import twetailer.dto.Entity;
+import twetailer.dto.Command;
 import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
 import domderrien.jsontools.GenericJsonObject;
@@ -71,7 +70,7 @@ public class TestProposalOperations {
     @Test
     public void testCreateIIa() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        // item.put(Proposal.CONSUMER_KEY, null);
+        // item.put(Proposal.OWNER_KEY, null);
 
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
@@ -85,7 +84,7 @@ public class TestProposalOperations {
     @Test
     public void testCreateIIb() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        item.put(Proposal.CONSUMER_KEY, 0L);
+        item.put(Command.OWNER_KEY, 0L);
 
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
@@ -99,7 +98,7 @@ public class TestProposalOperations {
     @Test
     public void testCreateIII() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        item.put(Proposal.CONSUMER_KEY, 111L);
+        item.put(Command.OWNER_KEY, 111L);
 
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
@@ -113,7 +112,7 @@ public class TestProposalOperations {
     @Test(expected=ClientException.class)
     public void testCreateIV() throws ClientException {
         JsonObject item = new GenericJsonObject();
-        item.put(Proposal.CONSUMER_KEY, 333L);
+        item.put(Command.OWNER_KEY, 333L);
 
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
@@ -132,7 +131,7 @@ public class TestProposalOperations {
             }
         };
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(pm, object); // Gives the PersistenceManager so it won't be closed
 
@@ -146,7 +145,7 @@ public class TestProposalOperations {
     public void testGetIIa() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -157,7 +156,7 @@ public class TestProposalOperations {
     public void testGetIIb() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -168,7 +167,7 @@ public class TestProposalOperations {
     public void testGetIIIa() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -179,7 +178,7 @@ public class TestProposalOperations {
     public void testGetIIIb() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -190,7 +189,7 @@ public class TestProposalOperations {
     public void testGetIVa() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -201,7 +200,7 @@ public class TestProposalOperations {
     public void testGetIVb() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -212,7 +211,7 @@ public class TestProposalOperations {
     public void testGetVa() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -223,7 +222,7 @@ public class TestProposalOperations {
     public void testGetVb() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -234,7 +233,7 @@ public class TestProposalOperations {
     public void testGetVI() throws ClientException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object.setStoreKey(222L);
         object = ops.createProposal(object);
 
@@ -251,10 +250,10 @@ public class TestProposalOperations {
             }
         };
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createProposal(pm, object); // Gives the PersistenceManager so it won't be closed
 
-        List<Proposal> selection = ops.getProposals(Proposal.CONSUMER_KEY, 111L, 0);
+        List<Proposal> selection = ops.getProposals(Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(object.getKey(), selection.get(0).getKey());
@@ -263,7 +262,7 @@ public class TestProposalOperations {
 
     @Test
     public void testGetsII() throws ClientException, DataSourceException {
-        List<Proposal> selection = new ProposalOperations().getProposals(Proposal.CONSUMER_KEY, 111L, 0);
+        List<Proposal> selection = new ProposalOperations().getProposals(Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());
     }
@@ -278,9 +277,9 @@ public class TestProposalOperations {
             }
         };
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createProposal(pm, object); // Gives the PersistenceManager so it won't be closed
-        object.setConsumerKey(222L);
+        object.setOwnerKey(222L);
 
         Proposal updated = ops.updateProposal(object);
         assertNotNull(updated);
@@ -299,7 +298,7 @@ public class TestProposalOperations {
             }
         };
         Proposal object = new Proposal();
-        object.setConsumerKey(111L);
+        object.setOwnerKey(111L);
         object = ops.createProposal(pm, object); // Gives the PersistenceManager so it won't be closed
 
         // ops.deleteProposal(object.getKey());

@@ -55,7 +55,7 @@ public class TestDemand {
     }
 
     CommandSettings.Action action = CommandSettings.Action.cancel;
-    Long consumerKey = 12345L;
+    Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
     CommandSettings.State state = CommandSettings.State.closed;
@@ -75,7 +75,7 @@ public class TestDemand {
         // Command
         object.setAction(action);
         object.setAction(action.toString());
-        object.setConsumerKey(consumerKey);
+        object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setSource(source.toString());
@@ -94,7 +94,7 @@ public class TestDemand {
         // Command
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
-        assertEquals(consumerKey, object.getConsumerKey());
+        assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
         assertEquals(state, object.getState());
@@ -234,7 +234,7 @@ public class TestDemand {
 
         // Command
         object.setAction(action);
-        object.setConsumerKey(consumerKey);
+        object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setState(state);
@@ -252,7 +252,7 @@ public class TestDemand {
 
         // Command
         assertEquals(action, clone.getAction());
-        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
         assertEquals(state, clone.getState());
@@ -273,7 +273,7 @@ public class TestDemand {
         object.setSource(source);
 
         // Command
-        assertNull(object.getConsumerKey());
+        assertNull(object.getOwnerKey());
         assertNull(object.getRawCommandId());
 
         // Demand
@@ -284,7 +284,7 @@ public class TestDemand {
         Demand clone = new Demand(object.toJson());
 
         // Command
-        assertNull(clone.getConsumerKey());
+        assertNull(clone.getOwnerKey());
         assertNull(clone.getRawCommandId());
 
         // Demand
