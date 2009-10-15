@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import twetailer.dto.Location;
+import twetailer.task.RobotResponder;
 import domderrien.jsontools.JsonObject;
 
 public class LocaleValidator {
@@ -38,7 +39,7 @@ public class LocaleValidator {
         Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
         log.warning("Try to resolve: " + postalCode + " " + countryCode);
         // Test case
-        if ("H0H0H0".equals(postalCode)) {
+        if (RobotResponder.ROBOT_POSTAL_CODE.equals(postalCode)) {
             coordinates[0] = 90.0D;
             coordinates[1] = 0.0D;
         }

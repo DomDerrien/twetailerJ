@@ -126,15 +126,22 @@ public class DemandProcessor {
                         for(String tag: demand.getCriteria()) {
                             tags.append(tag).append(" ");
                         }
-                        communicateToRetailer(
-                                retailer.getPreferredConnection(),
-                                retailer,
-                                LabelExtractor.get(
-                                        "dp_informNewDemand",
-                                        new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
-                                        retailer.getLocale()
-                                )
-                        );
+                        if (RobotResponder.ROBOT_NAME.equals(retailer.getName())) {
+                            // Schedule a task to transmit the proposal to the demand owner
+                            Queue queue = QueueFactory.getDefaultQueue();
+                            queue.add(url("/API/maezel/processDemandForRobot").param(Demand.KEY, demand.getKey().toString()).method(Method.GET));
+                        }
+                        else {
+                            communicateToRetailer(
+                                    retailer.getPreferredConnection(),
+                                    retailer,
+                                    LabelExtractor.get(
+                                            "dp_informNewDemand",
+                                            new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
+                                            retailer.getLocale()
+                                    )
+                            );
+                        }
                     }
                 }
             }

@@ -18,6 +18,7 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
+import twetailer.task.RobotResponder;
 import twetailer.validator.LocaleValidator;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
@@ -58,8 +59,8 @@ public class TestLocationOperations {
             }
         };
         Location input = new Location();
-        input.setCountryCode("CA");
-        input.setPostalCode("H0H0H0");
+        input.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        input.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
         assertNull(input.getKey());
 
         input = ops.createLocation(input);
@@ -104,8 +105,8 @@ public class TestLocationOperations {
     @Test
     public void testCreateIV() throws ClientException {
         JsonObject input = new GenericJsonObject();
-        input.put(Location.POSTAL_CODE, "H0H0H0");
-        input.put(Location.COUNTRY_CODE, "CA");
+        input.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        input.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
 
         Location object = new LocationOperations().createLocation(input);
         assertNotNull(object.getKey());
@@ -132,7 +133,7 @@ public class TestLocationOperations {
     @Test(expected=IllegalArgumentException.class)
     public void testCreateVII() throws ClientException {
         JsonObject input = new GenericJsonObject();
-        input.put(Location.COUNTRY_CODE, "CA");
+        input.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
         input.put(Location.LONGITUDE, -27.5D);
 
         new LocationOperations().createLocation(input);
@@ -141,8 +142,8 @@ public class TestLocationOperations {
     @Test
     public void testCreateVIII() throws ClientException {
         JsonObject input = new GenericJsonObject();
-        input.put(Location.POSTAL_CODE, "H0H0H0");
-        input.put(Location.COUNTRY_CODE, "CA");
+        input.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        input.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
 
         Location first = new LocationOperations().createLocation(input);
         assertNotNull(first.getKey());
@@ -168,8 +169,8 @@ public class TestLocationOperations {
             }
         };
         Location input = new Location();
-        input.setCountryCode("CA");
-        input.setPostalCode("H0H0H0");
+        input.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        input.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
         assertNull(input.getKey());
 
         input = ops.createLocation(input);
@@ -189,8 +190,8 @@ public class TestLocationOperations {
             }
         };
         Location input = new Location();
-        input.setCountryCode("CA");
-        input.setPostalCode("H0H0H0");
+        input.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        input.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
         assertNull(input.getKey());
 
         input = ops.createLocation(input);
@@ -208,8 +209,8 @@ public class TestLocationOperations {
             }
         };
         Location object = new Location();
-        object.setPostalCode("H0H0H0");
-        object.setCountryCode("CA");
+        object.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        object.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         object = ops.createLocation(pm, object); // Gives the PersistenceManager so it won't be closed
 
         Location selected = ops.getLocation(object.getKey());
@@ -246,11 +247,11 @@ public class TestLocationOperations {
             }
         };
         Location object = new Location();
-        object.setPostalCode("H0H0H0");
-        object.setCountryCode("CA");
+        object.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        object.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         object = ops.createLocation(pm, object); // Gives the PersistenceManager so it won't be closed
 
-        List<Location> selection = ops.getLocations(Location.COUNTRY_CODE, "CA", 0);
+        List<Location> selection = ops.getLocations(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE, 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(object.getKey(), selection.get(0).getKey());
@@ -278,7 +279,7 @@ public class TestLocationOperations {
             }
         };
 
-        ops.getLocations(Location.COUNTRY_CODE, "CA", 0);
+        ops.getLocations(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE, 0);
     }
 
     /*

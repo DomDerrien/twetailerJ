@@ -46,7 +46,9 @@ public class Proposal extends Entity {
     @Persistent
     private Long demandKey;
 
-    public static final String DEMAND_KEY = Demand.REFERENCE;
+    public static final String DEMAND_KEY = "demandKey";
+
+    public static final String DEMAND_REFERENCE = Demand.REFERENCE;
 
     // Shortcut
     public static final String PROPOSAL_KEY = "proposal";
@@ -281,6 +283,7 @@ public class Proposal extends Entity {
 
         // Shortcut
         if (in.containsKey(PROPOSAL_KEY)) { setKey(in.getLong(PROPOSAL_KEY)); }
+        if (in.containsKey(DEMAND_REFERENCE)) { setDemandKey(in.getLong(DEMAND_REFERENCE)); }
 
         return this;
     }

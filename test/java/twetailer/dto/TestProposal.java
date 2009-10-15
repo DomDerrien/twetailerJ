@@ -247,7 +247,10 @@ public class TestProposal {
         Long key = 12345L;
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Proposal.PROPOSAL_KEY, key);
+        parameters.put(Proposal.DEMAND_REFERENCE, key);
 
-        assertEquals(key, new Proposal(parameters).getKey());
+        Proposal proposal = new Proposal(parameters);
+        assertEquals(key, proposal.getKey());
+        assertEquals(key, proposal.getDemandKey());
     }
 }

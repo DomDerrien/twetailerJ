@@ -15,10 +15,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
@@ -583,6 +586,88 @@ public class TestDemandProcessor {
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessOneDemandForTheRobot() throws Exception {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Long demandKey = 67890L;
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.addCriterion("test");
+        consumerDemand.setKey(demandKey);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setState(State.published);
+
+        DemandProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(consumerKey);
+                return consumerDemand;
+            }
+        };
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                return null;
+            }
+        };
+
+        final Long storeKey = 12345L;
+        final Store targetedStore = new Store();
+        targetedStore.setKey(storeKey);
+
+        DemandProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(targetedStore);
+                return stores;
+            }
+        };
+
+        final Retailer selectedRetailer = new Retailer();
+        selectedRetailer.setName(RobotResponder.ROBOT_NAME);
+        selectedRetailer.setPreferredConnection(Source.simulated);
+        selectedRetailer.addCriterion("test");
+
+        DemandProcessor.retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(selectedRetailer);
+                return retailers;
+            }
+        };
+
+        DemandProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
+                return new ArrayList<Proposal>();
+            }
+        };
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+        appEnv.setUp();
+
+        DemandProcessor.process(demandKey);
+
+        appEnv.tearDown();
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test

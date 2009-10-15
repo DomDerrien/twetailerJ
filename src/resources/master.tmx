@@ -648,6 +648,18 @@
 			</tuv>
 		</tu>
 
+		<!-- ========================= -->
+		<!-- Robot message definitions -->
+		<!-- ========================= -->
+
+		<tu tuid="rr_automated_response" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Message generated automatically to demand located with postal code "H0H0H0"</note>
+			<tuv xml:lang="en">
+				<seg>Thanks for shopping with Twetailer (this is an automated response ;)</seg>
+			</tuv>
+		</tu>
+		
 		<!-- =================== -->
 		<!-- Console definitions -->
 		<!-- =================== -->

@@ -1,10 +1,10 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
+import twetailer.task.RobotResponder;
 import twetailer.validator.LocaleValidator;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
@@ -50,11 +51,11 @@ public class TestLocation {
         assertNotNull(object.getCreationDate());
     }
 
-    String countryCode = "CA";
+    String countryCode = RobotResponder.ROBOT_COUNTRY_CODE;
     Boolean hasStore = Boolean.TRUE;
     Double latitude = 45.0D;
     Double longitude = -27.5D;
-    String postalCode = "H0H0H0";
+    String postalCode = RobotResponder.ROBOT_POSTAL_CODE;
     String name = "dom";
     String phoneNumber = "514-123-4567 #890";
     Long twitterId = 54321L;
@@ -137,7 +138,7 @@ public class TestLocation {
 
         assertNull(object.getPostalCode());
 
-        String test = "H0H0H0";
+        String test = RobotResponder.ROBOT_POSTAL_CODE;
         object.setPostalCode(test);
         assertEquals(test, object.getPostalCode());
 

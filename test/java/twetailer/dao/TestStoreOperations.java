@@ -18,6 +18,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
+import twetailer.task.RobotResponder;
 
 public class TestStoreOperations {
 
@@ -166,8 +167,8 @@ public class TestStoreOperations {
     @Test
     public void testGetsExtendedI() throws DataSourceException {
         Location where = new Location();
-        where.setPostalCode("H0H0H0");
-        where.setCountryCode("CA");
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         where = new LocationOperations().createLocation(where);
 
         StoreOperations ops = new StoreOperations();
@@ -196,8 +197,8 @@ public class TestStoreOperations {
     @Test
     public void testGetsExtendedII() throws DataSourceException {
         Location where = new Location();
-        where.setPostalCode("H0H0H0");
-        where.setCountryCode("CA");
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         where = new LocationOperations().createLocation(where);
 
         StoreOperations ops = new StoreOperations();
@@ -230,8 +231,8 @@ public class TestStoreOperations {
         StoreOperations sOps = new StoreOperations();
 
         Location lFirst = new Location();
-        lFirst.setPostalCode("H0H0H0");
-        lFirst.setCountryCode("CA");
+        lFirst.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        lFirst.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         lFirst = lOps.createLocation(lFirst);
 
         Store sFirst = new Store();
@@ -240,7 +241,7 @@ public class TestStoreOperations {
 
         Location lSecond = new Location();
         lSecond.setPostalCode("H1H1H1");
-        lSecond.setCountryCode("CA");
+        lSecond.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         lSecond = lOps.createLocation(lSecond);
 
         Store sSecond = new Store();

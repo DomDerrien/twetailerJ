@@ -759,8 +759,8 @@ public class TestDemandValidator {
                 Location location = new Location();
                 location.setLatitude(0.0D);
                 location.setLongitude(Location.INVALID_COORDINATE);
-                location.setPostalCode("H0H0H0");
-                location.setCountryCode("CA");
+                location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+                location.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
                 return location;
             }
         };

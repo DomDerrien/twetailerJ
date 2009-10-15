@@ -23,6 +23,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
@@ -43,7 +44,6 @@ import twetailer.task.MockDemandProcessor;
 import twetailer.task.MockDemandValidator;
 import twetailer.task.MockProposalProcessor;
 import twetailer.task.MockProposalValidator;
-import twetailer.task.MockRobotResponder;
 import twetailer.task.MockTweetLoader;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
@@ -450,45 +450,6 @@ public class TestMaezelServlet {
     }
 
     @Test
-    @SuppressWarnings("serial")
-    public void testDoGetProcessRobotDMs() throws IOException {
-        // Inject a mock Twitter account
-        final Twitter mockRobotAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
-            }
-        };
-        MockTwitterConnector.injectMockRobotAccount(mockRobotAccount);
-
-        // Inject the mock BaseOperations instance
-        MockRobotResponder.injectMocks(servlet._baseOperations);
-        MockRobotResponder.injectMocks(servlet._baseOperations.getSettingsOperations());
-
-        // Prepare mock servlet parameters
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getPathInfo() {
-                return "/processRobotMessages";
-            }
-        };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-
-        servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'success':true"));
-
-        // Clean-up
-        MockRobotResponder.restoreOperations();
-        MockTwitterConnector.restoreTwitterConnector(null, mockRobotAccount);
-    }
-
-    @Test
     public void testDoGetCreateStoreI() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -794,5 +755,36 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessDemandForRobot() throws Exception {
+        final Long demandKey = 111L;;
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processDemandForRobot";
+            }
+            @Override
+            public String getParameter(String key) {
+                if (Demand.KEY.equals(key)) { return demandKey.toString(); }
+                fail("Unexpected parameter gathering for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+        appEnv.setUp(); // In that configuration, no Robot retailer account will be found, so the request will do nothing
+        servlet.doGet(mockRequest, mockResponse);
+        appEnv.tearDown();
+
+        assertTrue(stream.contains("'success':true"));
     }
 }

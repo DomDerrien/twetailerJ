@@ -86,8 +86,9 @@ public class MaezelServlet extends HttpServlet {
                 Long proposalId = Long.parseLong(request.getParameter(Proposal.KEY));
                 ProposalProcessor.process(proposalId);
             }
-            else if ("/processRobotMessages".equals(pathInfo)) {
-                RobotResponder.processDirectMessages();
+            else if ("/processDemandForRobot".equals(pathInfo)) {
+                Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
+                RobotResponder.processDemand(demandId);
             }
             else if ("/createStore".equals(pathInfo)) {
                 // Supported formats:
@@ -121,18 +122,44 @@ public class MaezelServlet extends HttpServlet {
                     Consumer consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter(Retailer.CONSUMER_KEY)));
                     Long storeKey = Long.valueOf(request.getParameter("storeKey"));
 
-                    Retailer retailer = retailerOperations.createRetailer(pm, consumer, storeKey);
+                    if (true) { // Manual object creation
+                        Retailer retailer = new Retailer();
 
-                    pm.close();
-                    pm = _baseOperations.getPersistenceManager();
+                        retailer.setName(RobotResponder.ROBOT_NAME);
+                        retailer.setConsumerKey(consumer.getKey());
 
-                    Retailer reload = retailerOperations.getRetailer(pm, retailer.getKey());
+                        // Copy the user's attribute
+                        retailer.setJabberId(consumer.getJabberId());
+                        retailer.setEmail(consumer.getEmail());
+                        retailer.setTwitterId(consumer.getTwitterId());
+                        retailer.setLanguage(consumer.getLanguage());
 
-                    String[] supplies = request.getParameter("supplies").split(" ");
-                    for (int i = 0; i < supplies.length; i++) {
-                        retailer.addCriterion(supplies[i]);
+                        // Attach to the store
+                        retailer.setStoreKey(storeKey);
+
+                        // Set the supplied keywords
+                        String[] supplies = request.getParameter("supplies").split(" ");
+                        for (int i = 0; i < supplies.length; i++) {
+                            retailer.addCriterion(supplies[i]);
+                        }
+
+                        // Persist the account
+                        retailerOperations.createRetailer(pm, retailer);
                     }
-                    retailerOperations.updateRetailer(pm, reload);
+                    else { // Automatic creation and attempt to add the criteria a second time
+                        Retailer retailer1 = retailerOperations.createRetailer(pm, consumer, storeKey);
+
+                        pm.close();
+                        pm = _baseOperations.getPersistenceManager();
+
+                        Retailer retailer2 = retailerOperations.getRetailer(pm, retailer1.getKey());
+
+                        String[] supplies = request.getParameter("supplies").split(" ");
+                        for (int i = 0; i < supplies.length; i++) {
+                            retailer2.addCriterion(supplies[i]);
+                        }
+                        retailerOperations.updateRetailer(pm, retailer2);
+                    }
                 }
                 finally {
                     pm.close();

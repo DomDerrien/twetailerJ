@@ -1,340 +1,247 @@
 package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.jdo.PersistenceManager;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
-import twetailer.connector.MockTwitterConnector;
+import twetailer.connector.BaseConnector;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
+import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
-import twetailer.dao.SettingsOperations;
+import twetailer.dao.ProposalOperations;
+import twetailer.dao.RetailerOperations;
 import twetailer.dao.StoreOperations;
-import twetailer.dto.Settings;
+import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
+import twetailer.dto.Location;
+import twetailer.dto.Proposal;
+import twetailer.dto.Retailer;
 import twetailer.dto.Store;
-import twitter4j.DirectMessage;
-import twitter4j.Paging;
-import twitter4j.Twitter;
+import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
-import twitter4j.User;
 import domderrien.i18n.LabelExtractor;
 
 public class TestRobotResponder {
 
     private class MockBaseOperations extends BaseOperations {
+        PersistenceManager pm = new MockPersistenceManager();
         @Override
         public PersistenceManager getPersistenceManager() {
-            return new MockPersistenceManager();
+            return pm;
         }
     };
+
+    @Before
+    public void setUp() throws Exception {
+        // Install the mocks
+        RobotResponder._baseOperations = new MockBaseOperations();
+
+        // Be sure to start with a clean message stack
+        BaseConnector.resetLastCommunicationInSimulatedMode();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        RobotResponder._baseOperations = new BaseOperations();
+        RobotResponder.demandOperations = RobotResponder._baseOperations.getDemandOperations();
+        RobotResponder.consumerOperations = RobotResponder._baseOperations.getConsumerOperations();
+        RobotResponder.locationOperations = RobotResponder._baseOperations.getLocationOperations();
+        RobotResponder.retailerOperations = RobotResponder._baseOperations.getRetailerOperations();
+        RobotResponder.proposalOperations = RobotResponder._baseOperations.getProposalOperations();
+        RobotResponder.storeOperations = RobotResponder._baseOperations.getStoreOperations();
+    }
 
     @Test
     public void testContructor() {
         new RobotResponder();
     }
 
+    final Long demandKey = 111L;
+    final Long retailerKey = 222L;
+    final Long locationKey = 333L;
+    final Long storeKey = 444L;
+    final Long consumerKey = 555L;
+    final Long proposalKey = 666L;
+
     @Test
-    @SuppressWarnings("serial")
-    public void testProcessDirectMessagesI() throws TwitterException, DataSourceException {
-        // Twitter mock
-        final Twitter robotAccount = new Twitter() {
+    public void testProcessDemandI() throws TwitterException, DataSourceException {
+        RobotResponder.retailerOperations = new RetailerOperations() {
             @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                return null;
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                return retailers;
             }
         };
-        MockTwitterConnector.injectMockRobotAccount(robotAccount);
 
-        RobotResponder.processDirectMessages(new MockPersistenceManager(), 1L);
+        RobotResponder.processDemand(demandKey);
 
-        MockTwitterConnector.releaseRobotAccount(robotAccount);
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test
-    @SuppressWarnings("serial")
-    public void testProcessDirectMessagesII() throws TwitterException, DataSourceException {
-        // Twitter mock
-        final Twitter robotAccount = new Twitter() {
+    public void testProcessDemandII() throws TwitterException, DataSourceException {
+        RobotResponder.retailerOperations = new RetailerOperations() {
             @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                return messages;
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
             }
         };
-        MockTwitterConnector.injectMockRobotAccount(robotAccount);
-
-        RobotResponder.processDirectMessages(new MockPersistenceManager(), 1L);
-
-        MockTwitterConnector.releaseRobotAccount(robotAccount);
-    }
-
-    @Test
-    @SuppressWarnings("serial")
-    public void testProcessDirectMessagesIII() throws TwitterException, DataSourceException {
-        final int senderId = 1111;
-        final int dmId = 2222;
-        final Long demandKey = 3333L;
-        final Long storeKey = 4444L;
-        final String senderScreenName = "Katelyn";
-        final String tags = "one two three";
-        final String message = LabelExtractor.get( // Same message as generated by DemandProcessor.process()
-                "dp_informNewDemand",
-                new Object[] { demandKey, tags, new Date() },
-                Locale.ENGLISH
-        );
-
-        // Sender mock
-        User sender = TestTweetLoader.createUser(senderId, false, senderScreenName);
-        // DirectMessage mock
-        final DirectMessage dm = TestTweetLoader.createDM(dmId, senderId, String.valueOf(senderId), sender, message);
-        // Twitter mock
-        final Twitter robotAccount = new Twitter() {
+        RobotResponder.locationOperations = new LocationOperations() {
             @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                messages.add(dm);
-                return messages;
-            }
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) {
-                assertEquals(String.valueOf(senderId), id);
-                assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("robot_sendDefaultProposal", new Object[] { demandKey, tags, storeKey}, Locale.ENGLISH)));
-                return dm;
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+                location.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
             }
         };
-        MockTwitterConnector.injectMockRobotAccount(robotAccount);
-
-        // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
+        RobotResponder.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Store.LOCATION_KEY, key);
+                assertEquals(locationKey, (Long) value);
                 Store store = new Store();
                 store.setKey(storeKey);
+                store.setLocationKey(locationKey);
                 List<Store> stores = new ArrayList<Store>();
                 stores.add(store);
                 return stores;
             }
         };
-        // TwitterAdapter mock
-        RobotResponder._baseOperations = new MockBaseOperations();
-        RobotResponder.storeOperations = storeOperations;
+        RobotResponder.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand();
+                demand.setOwnerKey(consumerKey);
+                demand.setSource(Source.simulated);
+                demand.setState(State.invalid);
+                return demand;
+            }
+        };
+        RobotResponder.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                return consumer;
+            }
+        };
 
-        RobotResponder.processDirectMessages(new MockPersistenceManager(), 1L);
+        RobotResponder.processDemand(demandKey);
 
-        MockTwitterConnector.releaseRobotAccount(robotAccount);
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test
-    @SuppressWarnings("serial")
-    public void testProcessDirectMessagesIV() throws TwitterException, DataSourceException {
-        final int senderId = 1111;
-        final int dmId = 2222;
-        final Long demandKey = 3333L;
-        final Long storeKey = 0L; // Default store key
-        final String senderScreenName = "Katelyn";
-        final String tags = "one two three";
-        final String message = LabelExtractor.get( // Same message as generated by DemandProcessor.process()
-                "dp_informNewDemand",
-                new Object[] { demandKey, tags, new Date() },
-                Locale.ENGLISH
-        );
-
-        // Sender mock
-        User sender = TestTweetLoader.createUser(senderId, false, senderScreenName);
-        // DirectMessage mock
-        final DirectMessage dm = TestTweetLoader.createDM(dmId, senderId, String.valueOf(senderId), sender, message);
-        // Twitter mock
-        final Twitter robotAccount = new Twitter() {
+    public void testProcessDemandIII() throws Exception {
+        RobotResponder.retailerOperations = new RetailerOperations() {
             @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                messages.add(dm);
-                return messages;
-            }
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) {
-                assertEquals(String.valueOf(senderId), id);
-                assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("robot_sendDefaultProposal", new Object[] { demandKey, tags, storeKey}, Locale.ENGLISH)));
-                return dm;
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
             }
         };
-        MockTwitterConnector.injectMockRobotAccount(robotAccount);
-
-        // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
+        RobotResponder.locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+                location.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+        };
+        RobotResponder.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                return stores;
-            }
-        };
-        // TwitterAdapter mock
-        RobotResponder._baseOperations = new MockBaseOperations();
-        RobotResponder.storeOperations = storeOperations;
-
-        RobotResponder.processDirectMessages(new MockPersistenceManager(), 1L);
-
-        MockTwitterConnector.releaseRobotAccount(robotAccount);
-    }
-
-    @Test
-    @SuppressWarnings("serial")
-    public void testProcessDirectMessagesV() throws TwitterException, DataSourceException {
-        final int senderId = 1111;
-        final int dmId = 2222;
-        final Long demandKey = 3333L;
-        final Long storeKey = 4444L;
-        final String senderScreenName = "Katelyn";
-        final String tags = "one two three";
-        final String message = LabelExtractor.get( // Same message as generated by DemandProcessor.process()
-                "dp_informNewDemand",
-                new Object[] { demandKey, tags, new Date() },
-                Locale.ENGLISH
-        );
-
-        // Sender mock
-        User sender = TestTweetLoader.createUser(senderId, false, senderScreenName);
-        // DirectMessage mock
-        final DirectMessage dm = TestTweetLoader.createDM(dmId, senderId, String.valueOf(senderId), sender, message);
-        // Twitter mock
-        final Twitter robotAccount = new Twitter() {
-            @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                messages.add(dm);
-                return messages;
-            }
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) {
-                assertEquals(String.valueOf(senderId), id);
-                assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("robot_sendDefaultProposal", new Object[] { demandKey, tags, storeKey}, Locale.ENGLISH)));
-                return dm;
-            }
-        };
-        MockTwitterConnector.injectMockRobotAccount(robotAccount);
-
-        // SettingsOperations mock
-        SettingsOperations settingsOperations = new SettingsOperations() {
-            @Override
-            public Settings getSettings(PersistenceManager pm) {
-                return new Settings();
-            }
-            @Override
-            public Settings updateSettings(PersistenceManager pm, Settings settings) {
-                return settings;
-            }
-        };
-        // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Store.LOCATION_KEY, key);
+                assertEquals(locationKey, (Long) value);
                 Store store = new Store();
                 store.setKey(storeKey);
+                store.setLocationKey(locationKey);
                 List<Store> stores = new ArrayList<Store>();
                 stores.add(store);
                 return stores;
             }
         };
-        // TwitterAdapter mock
-        RobotResponder._baseOperations = new MockBaseOperations();
-        RobotResponder.settingsOperations = settingsOperations;
-        RobotResponder.storeOperations = storeOperations;
-
-        RobotResponder.processDirectMessages();
-
-        MockTwitterConnector.releaseRobotAccount(robotAccount);
-    }
-
-    @Test
-    @SuppressWarnings("serial")
-    public void testProcessDirectMessagesVI() throws TwitterException, DataSourceException {
-        final int senderId = 1111;
-        final int dmId = 0; // To force the setting being not updated
-        final Long demandKey = 3333L;
-        final Long storeKey = 4444L;
-        final String senderScreenName = "Katelyn";
-        final String tags = "one two three";
-        final String message = LabelExtractor.get( // Same message as generated by DemandProcessor.process()
-                "dp_informNewDemand",
-                new Object[] { demandKey, tags, new Date() },
-                Locale.ENGLISH
-        );
-
-        // Sender mock
-        User sender = TestTweetLoader.createUser(senderId, false, senderScreenName);
-        // DirectMessage mock
-        final DirectMessage dm = TestTweetLoader.createDM(dmId, senderId, String.valueOf(senderId), sender, message);
-        // Twitter mock
-        final Twitter robotAccount = new Twitter() {
+        RobotResponder.demandOperations = new DemandOperations() {
             @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
-                List<DirectMessage> messages = new ArrayList<DirectMessage>();
-                messages.add(dm);
-                return messages;
-            }
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) {
-                assertEquals(String.valueOf(senderId), id);
-                assertNotSame(0, text.length());
-                assertTrue(text.contains(LabelExtractor.get("robot_sendDefaultProposal", new Object[] { demandKey, tags, storeKey}, Locale.ENGLISH)));
-                return dm;
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand();
+                demand.setOwnerKey(consumerKey);
+                demand.setSource(Source.simulated);
+                demand.setState(State.published);
+                return demand;
             }
         };
-        MockTwitterConnector.injectMockRobotAccount(robotAccount);
-
-        // SettingsOperations mock
-        SettingsOperations settingsOperations = new SettingsOperations() {
+        RobotResponder.consumerOperations = new ConsumerOperations() {
             @Override
-            public Settings getSettings(PersistenceManager pm) {
-                return new Settings();
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                return consumer;
             }
         };
-        // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
+        RobotResponder.proposalOperations = new ProposalOperations() {
             @Override
-            public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
-                Store store = new Store();
-                store.setKey(storeKey);
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(store);
-                return stores;
+            public Proposal createProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(demandKey, proposal.getDemandKey());
+                assertEquals(storeKey, proposal.getStoreKey());
+                StringBuilder message = new StringBuilder();
+                for (String tag : proposal.getCriteria()) {
+                    message.append(tag).append(" ");
+                }
+                assertEquals(LabelExtractor.get("rr_automated_response", Locale.ENGLISH).trim(), message.toString().trim());
+                proposal.setKey(proposalKey);
+                return proposal;
             }
         };
-        // TwitterAdapter mock
-        RobotResponder._baseOperations = new MockBaseOperations();
-        RobotResponder.settingsOperations = settingsOperations;
-        RobotResponder.storeOperations = storeOperations;
 
-        RobotResponder.processDirectMessages();
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+        appEnv.setUp();
+        RobotResponder.processDemand(demandKey);
+        appEnv.tearDown();
 
-        MockTwitterConnector.releaseRobotAccount(robotAccount);
-    }
-
-    @Test(expected=RuntimeException.class)
-    public void testProcessDirectMessages() throws TwitterException, DataSourceException {
-        // SettingsOperations mock
-        SettingsOperations settingsOperations = new SettingsOperations() {
-            @Override
-            public Settings getSettings(PersistenceManager pm) {
-                throw new RuntimeException("Done in purpose");
-            }
-        };
-        // TwitterAdapter mock
-        RobotResponder._baseOperations = new MockBaseOperations();
-        RobotResponder.settingsOperations = settingsOperations;
-
-        RobotResponder.processDirectMessages();
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
     }
 }
