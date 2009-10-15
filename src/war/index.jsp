@@ -6,8 +6,8 @@
     import="java.util.Enumeration"
     import="java.util.Locale"
     import="java.util.ResourceBundle"
-    import="org.domderrien.i18n.LabelExtractor"
-    import="org.domderrien.i18n.LocaleController"
+    import="domderrien.i18n.LabelExtractor"
+    import="domderrien.i18n.LocaleController"
 %><%
     // Application settings
     ResourceBundle appSettings = ResourceBundle.getBundle("applicationSettings", Locale.ROOT);
