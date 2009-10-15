@@ -68,25 +68,25 @@ public class ProposalValidator {
                 String message = null;
 
                 if(proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
-                    message = LabelExtractor.get("dv_proposalShouldHaveAtLeastOneTag", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_proposalShouldHaveAtLeastOneTag", new Object[] { proposal.getKey() }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {
-                    message = LabelExtractor.get("dv_proposalShouldConcernAtLeastOneItem", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_proposalShouldConcernAtLeastOneItem", new Object[] { proposal.getKey() }, locale);
                 }
                 else if ((proposal.getPrice() == null || Double.valueOf(0.0D).equals(proposal.getPrice())) && (proposal.getTotal() == null || Double.valueOf(0.0D).equals(proposal.getTotal()))) {
-                    message = LabelExtractor.get("dv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposal.getKey() }, locale);
                 }
                 else {
                     Long demandKey = proposal.getDemandKey();
                     if (demandKey == null || demandKey == 0L) {
-                        message = LabelExtractor.get("dv_proposalShouldHaveADemandReference", new Object[] { proposal.getKey() }, locale);
+                        message = LabelExtractor.get("pv_proposalShouldHaveADemandReference", new Object[] { proposal.getKey() }, locale);
                     }
                     else {
                         try {
                             demandOperations.getDemand(pm, demandKey, null);
                         }
                         catch (DataSourceException ex) {
-                            message = LabelExtractor.get("dv_proposalHaveInvalidDemandReference", new Object[] { proposal.getKey(), demandKey }, locale);
+                            message = LabelExtractor.get("pv_proposalHaveInvalidDemandReference", new Object[] { proposal.getKey(), demandKey }, locale);
                         }
                    }
                 }

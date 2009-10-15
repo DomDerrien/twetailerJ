@@ -184,7 +184,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveAtLeastOneTag", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveAtLeastOneTag", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -229,7 +229,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveAtLeastOneTag", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveAtLeastOneTag", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -275,7 +275,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldConcernAtLeastOneItem", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldConcernAtLeastOneItem", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -321,7 +321,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldConcernAtLeastOneItem", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldConcernAtLeastOneItem", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -370,7 +370,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -419,7 +419,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -468,7 +468,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -517,7 +517,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -563,7 +563,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveADemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveADemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -609,7 +609,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveADemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveADemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -659,7 +659,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalShouldHaveADemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalShouldHaveADemandReference", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
@@ -716,7 +716,7 @@ public class TestProposalValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dv_proposalHaveInvalidDemandReference", new Object[] { proposalKey, demandKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_proposalHaveInvalidDemandReference", new Object[] { proposalKey, demandKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());

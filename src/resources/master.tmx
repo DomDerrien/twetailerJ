@@ -600,7 +600,7 @@
 		<!-- Proposal validator definitions -->
 		<!-- ============================== -->
 
-		<tu tuid="dv_proposalShouldHaveAtLeastOneTag" datatype="Text">
+		<tu tuid="pv_proposalShouldHaveAtLeastOneTag" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>Inform the retailer the proposal should have at least one tag. {0} is the proposal reference.</note>
 			<tuv xml:lang="en">
@@ -608,7 +608,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_proposalShouldConcernAtLeastOneItem" datatype="Text">
+		<tu tuid="pv_proposalShouldConcernAtLeastOneItem" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>Inform the retailer the quantity cannot be 0. {0} is the proposal reference.</note>
 			<tuv xml:lang="en">
@@ -616,7 +616,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_proposalShouldHaveAUnitPriceOrTotalPrice" datatype="Text">
+		<tu tuid="pv_proposalShouldHaveAUnitPriceOrTotalPrice" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>Inform the retailer a unit price or the total price is required. {0} is the proposal reference.</note>
 			<tuv xml:lang="en">
@@ -624,7 +624,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_proposalShouldHaveADemandReference" datatype="Text">
+		<tu tuid="pv_proposalShouldHaveADemandReference" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>Inform the retailer the demand reference is missing. {0} is the proposal reference.</note>
 			<tuv xml:lang="en">
@@ -632,7 +632,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="dv_proposalHaveInvalidDemandReference" datatype="Text">
+		<tu tuid="pv_proposalHaveInvalidDemandReference" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
 				Inform the retailer that the given reference is invalid.
@@ -648,17 +648,30 @@
 		<!-- Published proposal processor definitions -->
 		<!-- ======================================== -->
 
-		<tu tuid="dp_informNewProposal" datatype="Text">
+		<tu tuid="pp_informNewProposal" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
 				Inform a consumer about a new proposal.
 				{0} is the reference of the proposal.
 				{1} is the reference of the demand.
-				{2} is the proposal tags separated by a comma.
+				{2} is the proposal tags.
 				{3} is the reference of the store where the retailer works.
 			</note>
 			<tuv xml:lang="en">
 				<seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3}.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="pp_informDemandNotPublished" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				Inform the retailer his proposal cannot be submitted to the demand.
+				{0} is the reference of the proposal.
+				{1} is the reference of the demand.
+				{2} is the localized demand state.
+			</note>
+			<tuv xml:lang="en">
+				<seg>Your proposal:{0} cannot be attached to the demand reference:{1} because it is not in the correct state! (actual demand state: {2}).</seg>
 			</tuv>
 		</tu>
 
@@ -670,7 +683,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>Message generated automatically to demand located with postal code "H0H0H0"</note>
 			<tuv xml:lang="en">
-				<seg>Thanks for shopping with Twetailer (this is an automated response ;)</seg>
+				<seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
 			</tuv>
 		</tu>
 		

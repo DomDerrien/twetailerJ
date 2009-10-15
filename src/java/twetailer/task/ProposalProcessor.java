@@ -1,6 +1,7 @@
 package twetailer.task;
 
 import static twetailer.connector.BaseConnector.communicateToConsumer;
+import static twetailer.connector.BaseConnector.communicateToRetailer;
 
 import java.util.logging.Logger;
 
@@ -18,7 +19,9 @@ import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.Retailer;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
 
 public class ProposalProcessor {
@@ -63,27 +66,46 @@ public class ProposalProcessor {
         if (CommandSettings.State.published.equals(proposal.getState())) {
             try {
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), null);
-                Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
-                StringBuilder tags = new StringBuilder();
-                for(String tag: proposal.getCriteria()) {
-                    tags.append(tag).append(" ");
+                if (State.published.equals(demand.getState())) {
+                    Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
+                    StringBuilder tags = new StringBuilder();
+                    for(String tag: proposal.getCriteria()) {
+                        tags.append(tag).append(" ");
+                    }
+                    communicateToConsumer(
+                            demand.getSource(),
+                            consumer,
+                            LabelExtractor.get(
+                                    "pp_informNewProposal",
+                                    new Object[] {
+                                            proposal.getKey(),
+                                            demand.getKey(),
+                                            tags,
+                                            proposal.getStoreKey()
+                                    },
+                                    consumer.getLocale()
+                            )
+                    );
+                    demand.addProposalKey(proposalKey);
+                    demandOperations.updateDemand(pm, demand);
                 }
-                communicateToConsumer(
-                        demand.getSource(),
-                        consumer,
-                        LabelExtractor.get(
-                                "dp_informNewProposal",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        tags,
-                                        proposal.getStoreKey()
-                                },
-                                consumer.getLocale()
-                        )
-                );
-                demand.addProposalKey(proposalKey);
-                demandOperations.updateDemand(pm, demand);
+                else {
+                    Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
+                    communicateToRetailer(
+                            retailer.getPreferredConnection(),
+                            retailer,
+                            LabelExtractor.get(
+                                    "pp_informDemandNotPublished",
+                                    new Object[] {
+                                            proposal.getKey(),
+                                            demand.getKey(),
+                                            CommandSettings.getStates(retailer.getLocale()).getString(demand.getState().toString()),
+                                            proposal.getStoreKey()
+                                    },
+                                    retailer.getLocale()
+                            )
+                    );
+                }
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information retaled to proposal: " + proposal.getKey() + " -- ex: " + ex.getMessage());

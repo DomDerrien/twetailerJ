@@ -13,8 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import domderrien.i18n.LabelExtractor;
-
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
@@ -24,13 +22,16 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RetailerOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.Retailer;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import domderrien.i18n.LabelExtractor;
 
 public class TestProposalProcessor {
 
@@ -115,6 +116,7 @@ public class TestProposalProcessor {
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(ownerKey);
+        demand.setState(State.published);
         demand.setSource(Source.simulated);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
@@ -143,7 +145,7 @@ public class TestProposalProcessor {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("dp_informNewProposal", new Object[] { proposalKey, demandKey, "test ", storeKey }, Locale.ENGLISH),
+                LabelExtractor.get("pp_informNewProposal", new Object[] { proposalKey, demandKey, "test ", storeKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
@@ -257,6 +259,7 @@ public class TestProposalProcessor {
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(consumerKey);
+        demand.setState(State.published);
         demand.setSource(Source.twitter); // To be able to simulate the failure
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
@@ -289,5 +292,69 @@ public class TestProposalProcessor {
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
+    }
+
+    @Test
+    public void testProcessOneValidProposalForAnInvalidDemand() throws DataSourceException {
+        final Long proposalKey = 67890L;
+        final Long demandKey = 12345L;
+        final Double price = 25.75D;
+        final Long quantity = 32L;
+        final Long storeKey = 65758L;
+        final Double total = 29.99D;
+        final Proposal proposal = new Proposal();
+        proposal.addCriterion("test");
+        proposal.setKey(proposalKey);
+        proposal.setDemandKey(demandKey);
+        proposal.setPrice(price);
+        proposal.setQuantity(quantity);
+        proposal.setState(State.published);
+        proposal.setStoreKey(storeKey);
+        proposal.setTotal(total);
+
+        ProposalProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertNull(cKey);
+                assertNull(sKey);
+                return proposal;
+            }
+        };
+
+        final Long consumerKey = 12590L;
+        final Demand demand = new Demand();
+        demand.setKey(demandKey);
+        demand.setOwnerKey(consumerKey);
+        demand.setState(State.invalid);
+        demand.setSource(Source.twitter); // To be able to simulate the failure
+        ProposalProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                return demand;
+            }
+        };
+
+        final Long retailerKey = 444L;
+        final Retailer retailer = new Retailer();
+        retailer.setKey(retailerKey);
+        retailer.setPreferredConnection(Source.simulated);
+        ProposalProcessor.retailerOperations = new RetailerOperations() {
+            @Override
+            public Retailer getRetailer(PersistenceManager pm, Long key) {
+                return retailer;
+            }
+        };
+
+        ProposalProcessor.process(proposalKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertEquals(
+                LabelExtractor.get("pp_informDemandNotPublished", new Object[] { proposalKey, demandKey, State.invalid.toString() }, Locale.ENGLISH),
+                BaseConnector.getLastCommunicationInSimulatedMode()
+        );
+        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
     }
 }
