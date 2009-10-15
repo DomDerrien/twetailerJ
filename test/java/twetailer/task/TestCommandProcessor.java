@@ -46,6 +46,9 @@ import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.Prefix;
+import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -56,6 +59,10 @@ import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 
 public class TestCommandProcessor {
+
+    private String firstLetterToUpper (String key) {
+        return key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1).toLowerCase(Locale.ENGLISH);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -961,7 +968,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get(ResourceFileId.second, firstLetterToUpper(Prefix.action.toString()), Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -982,7 +989,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get(ResourceFileId.second, firstLetterToUpper(Prefix.action.toString()), Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1003,7 +1010,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get(ResourceFileId.second, firstLetterToUpper(Prefix.action.toString()), Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1024,7 +1031,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Prefix.action.toString(), Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get(ResourceFileId.second, firstLetterToUpper(Prefix.action.toString()), Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1045,11 +1052,11 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.Action.demand.toString(), Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get(ResourceFileId.second, firstLetterToUpper(Action.demand.toString()), Locale.ENGLISH), sentText);
     }
 
     @Test
-    public void testProcessRawCommandWithActionII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+    public void testProcessRawCommandWithStateI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1061,12 +1068,14 @@ public class TestCommandProcessor {
             }
         };
         CommandProcessor.rawCommandOperations = rawCommandOperations;
+        CommandProcessor.localizedStates.clear();
+        CommandProcessor.localizedStates = new HashMap<Locale, JsonObject>();
 
         CommandProcessor.processRawCommands(0L);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertTrue(sentText.contains(LabelExtractor.get(ResourceFileId.second, CommandSettings.State.invalid.toString(), Locale.ENGLISH)));
+        assertEquals(LabelExtractor.get(ResourceFileId.second, firstLetterToUpper(State.invalid.toString()), Locale.ENGLISH), sentText);
     }
 
     @Test
