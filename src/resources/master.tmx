@@ -347,32 +347,46 @@
 				This is the master list of help keywords.
 				Each value are separated by a comma from other.
 				Each value identifies an additional TMX unit, with the prefix 'help_keyword_equivalents_'
+				IMPORTANT: note the case of the keyword MUST be the same as the value of the tuid attribute into the lexicon TMX file.
 			</note>
 			<tuv xml:lang="en">
-				<seg>founders,consumer</seg>
+				<seg>140,24906,AKA,Amazon,Attribute,Consumer,Founders</seg>
 			</tuv>
 		</tu>
 
-		<tu tuid="help_keyword_equivalents_founders" datatype="Text">
+		<tu tuid="help_keyword_equivalents_140" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				This is the list of accepted equivalents for the same keyword.
-				A corresponding TMX unit gives the definition associated to the keyword, with the prefix 'help_definition_keyword_'
-			</note>
-			<tuv xml:lang="en">
-				<seg>founders,founder</seg>
-			</tuv>
+			<tuv xml:lang="en"><seg>140</seg></tuv>
 		</tu>
 
-		<tu tuid="help_keyword_equivalents_consumer" datatype="Text">
+		<tu tuid="help_keyword_equivalents_24906" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				This is the list of accepted equivalents for the same keyword.
-				A corresponding TMX unit gives the definition associated to the keyword, with the prefix 'help_definition_keyword_'
-			</note>
-			<tuv xml:lang="en">
-				<seg>consumer</seg>
-			</tuv>
+			<tuv xml:lang="en"><seg>24906,40075</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_AKA" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>aka,also known as</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Amazon" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>amazon,fps,flexible payment system</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Attribute" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>attribute</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Consumer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>consumer</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Founders" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>founders,founder</seg></tuv>
 		</tu>
 
 		<!-- ======================== -->

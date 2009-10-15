@@ -683,7 +683,9 @@ public class CommandProcessor {
             JsonObject prefixes = localizedPrefixes.get(locale);
             for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
                 if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
-                    message = LabelExtractor.get(ResourceFileId.second, prefix.toString(), locale);
+                    String key = prefix.toString();
+                    key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
+                    message = LabelExtractor.get(ResourceFileId.second, key, locale);
                     break;
                 }
             }
@@ -693,7 +695,9 @@ public class CommandProcessor {
             JsonObject actions = localizedActions.get(locale);
             for (CommandSettings.Action action: CommandSettings.Action.values()) {
                 if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
-                    message = LabelExtractor.get(ResourceFileId.second, action.toString(), locale);
+                    String key = action.toString();
+                    key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
+                    message = LabelExtractor.get(ResourceFileId.second, key, locale);
                     break;
                 }
             }
@@ -703,7 +707,9 @@ public class CommandProcessor {
             JsonObject states = localizedStates.get(locale);
             for (CommandSettings.State state: CommandSettings.State.values()) {
                 if (states.getString(state.toString()).equals(keyword)) {
-                    message = LabelExtractor.get(ResourceFileId.second, state.toString(), locale);
+                    String key = state.toString();
+                    key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
+                    message = LabelExtractor.get(ResourceFileId.second, key, locale);
                     break;
                 }
             }
@@ -718,6 +724,9 @@ public class CommandProcessor {
                         message = LabelExtractor.get(ResourceFileId.second, helpKeyword, locale);
                         break;
                     }
+                }
+                if (message != null) {
+                    break;
                 }
             }
         }
