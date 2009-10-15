@@ -15,8 +15,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;

@@ -305,8 +305,8 @@
 			<!--file name="tomcat/j2ee.jar" /-->
 			<!--file name="was/j2ee-6.0.jar.jar" /-->
 			<file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
-			<file name="appengine/appengine-api-1.0-sdk-1.2.5.jar" />
-			<file name="appengine/appengine-api-labs-1.2.5.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.6.jar" />
+			<file name="appengine/appengine-api-labs-1.2.6.jar" />
 			<file name="jdo/jdo2-api-2.3-eb.jar" />
 			<file name="appengine/appengine-api-stubs.jar" />
 			<file name="appengine/appengine-local-runtime.jar" />
@@ -323,10 +323,9 @@
 			<file name="cobertura/log4j-1.2.9.jar" />
 			<file name="datanucleus/datanucleus-appengine-1.0.3.jar" />
 			<file name="datanucleus/datanucleus-core-1.1.5.jar" />
-			<file name="datanucleus-enhancer-1.1.4.jar" />
 			<file name="datanucleus/datanucleus-jpa-1.1.5.jar" />
-			<file name="appengine/appengine-api-1.0-sdk-1.2.5.jar" />
-			<file name="appengine/appengine-api-labs-1.2.5.jar" />
+			<file name="appengine/appengine-api-1.0-sdk-1.2.6.jar" />
+			<file name="appengine/appengine-api-labs-1.2.6.jar" />
 			<file name="jdo/jdo2-api-2.3-eb.jar" />
 			<file name="appengine/appengine-api-stubs.jar" />
 			<file name="appengine/appengine-local-runtime.jar" />

@@ -15,14 +15,14 @@
 	
 	<property name="appengine.sdk.dir"
 		description="Location of the Google App Engine SDK"
-		location="${basedir}/bin/appengine-java-sdk-1.2.5"
+		location="${basedir}/bin/appengine-java-sdk-1.2.6"
 	/>
 	
 	<import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
 
-	<!-- ················ -->
+	<!-- ================ -->
 	<!-- Public variables -->
-	<!-- ················ -->
+	<!-- ================ -->
 	
 	<property environment="env"/>
 
@@ -36,9 +36,9 @@
 		value="9999"
 	/>
 
-	<!-- ·············· -->
+	<!-- ============== -->
 	<!-- Public targets -->
-	<!-- ·············· -->
+	<!-- ============== -->
 
     <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean, step-configuration-clean">
 		<delete file="src/war/WEB-INF/lib/appengine*.jar" />
@@ -95,13 +95,13 @@
 	</target>
 	-->
 	
-	<!-- ················· -->
+	<!-- ================= -->
 	<!-- Private variables -->
-	<!-- ················· -->
+	<!-- ================= -->
 	
-	<!-- ··············· -->
+	<!-- =============== -->
 	<!-- Private targets -->
-	<!-- ··············· -->
+	<!-- =============== -->
 
 	<target name="step-configuration-clean">
 		<delete file="src/war/WEB-INF/appengine-web.xml" />
@@ -145,7 +145,7 @@
 	
 	<target name="step-datanucleus-enhance-for-tests" depends="compile, step-configuration-push">
 		<delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
-		<enhance_war war="${basedir}/src/war" />
+		<enhance_war war="${basedir}/src/war" includes="twetailer/dto/*.class" />
 	</target>
 
 	<!-- Jetty start/stop: http://ptrthomas.wordpress.com/2009/01/24/how-to-start-and-stop-jetty-revisited/ -->
