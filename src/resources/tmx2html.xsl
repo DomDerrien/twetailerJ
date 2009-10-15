@@ -30,7 +30,12 @@
 			    <style type="text/css">
 			        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/resources/dojo.css";
 			        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";
-			        @import "http://www.twetailer.com/styles/lexicon.css";
+			        body { margin: 10px; }
+			        dl { margin-bottom: 10px; }
+			        dl#bundle_language, dl#_introduction_ { display: none; }
+			        dl dt { margin-bottom: 5px; font-weight: bold; }
+			        dl dd { margin-left: 30px; }
+			        
 			    </style>
 				<script language="JavaScript" type="text/javascript">
 					function processSeeAlsoLinks() {
