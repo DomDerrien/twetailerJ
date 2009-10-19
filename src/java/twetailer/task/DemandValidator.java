@@ -63,7 +63,7 @@ public class DemandValidator {
      */
     public static void process(PersistenceManager pm, Long demandKey) throws DataSourceException {
         Demand demand = demandOperations.getDemand(pm, demandKey, null);
-        if (CommandSettings.State.open.equals(demand.getState())) {
+        if (CommandSettings.State.opened.equals(demand.getState())) {
             Date nowDate = DateUtils.getNowDate();
             Long nowTime = nowDate.getTime() - 60*1000; // Minus 1 minute
             try {

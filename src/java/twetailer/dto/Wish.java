@@ -34,7 +34,7 @@ public class Wish extends Entity {
     private Source source;
 
     @Persistent
-    private State state = State.open;
+    private State state = State.opened;
 
     /*** Wish ***/
 

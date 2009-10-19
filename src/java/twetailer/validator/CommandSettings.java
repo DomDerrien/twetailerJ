@@ -91,13 +91,12 @@ public class CommandSettings {
 
 
     public enum State {
-        open,
+        opened,
         invalid,
         published,
         confirmed,
-        settled,
         closed,
-        canceled
+        cancelled
     }
 
     private static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();

@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>Command List</title>
+<style type="text/css">
+.done {
+	color: blue;
+}
+
+.notdone {
+	color: orange;
+}
+</style>
+</head>
+<body>
+<h1>Actions</h1>
+
+<dl>
+	<dt>help</dt>
+	<dd class="done">[]: send generic message</dd>
+	<dd class="done">[keyword]: send message associated with the
+	keyword</dd>
+</dl>
+
+<dl>
+	<dt>cancel</dt>
+	<dd class="done">[demandKey]: cancel demand (restriction: owner),
+	<span class="notdone">with notification of the cancellation to
+	associated proposal owners</span></dd>
+	<dd class="notdone">[proposalKey]: cancel proposal (restriction:
+	owner)</dd>
+</dl>
+
+<dl>
+	<dt>close</dt>
+	<dd class="notdone">[demandKey]: confirm the delivery of the
+	product (restriction: owner)</dd>
+	<dd class="notdone">[proposalKey]: confirm the delivery of the
+	product (restriction: owner)</dd>
+</dl>
+
+<dl>
+	<dt>confirm</dt>
+	<dd class="notdone">[proposalKey]: select one proposal
+	(restriction: demand.owner), with the notification to the proposal
+	owner with consumer information</dd>
+</dl>
+
+<dl>
+	<dt>decline</dt>
+	<dd class="notdone">proposalKey]: refuse one proposal
+	(restriction: demand.owner), with the notification to the proposal
+	owner</dd>
+</dl>
+
+<dl>
+	<dt>demand</dt>
+	<dd class="done">[tags, ...]: create a demand</dd>
+	<dd class="done">[demandKey, tags, ...]: update a demand
+	(restriction: owner)</dd>
+</dl>
+
+<dl>
+	<dt>list</dt>
+	<dd class="done">[]: list all demands (restriction: limited to
+	owner's demand, <span class="notdone">in the state {invalid,
+	published, confirmed}</span>)</dd>
+	<dd class="done">[demandKey]: list one demand (restriction: owner
+	<span class="notdone">or one associated proposal owner</span>)</dd>
+	<dd class="notdone">[proposalKey]: list one proposal (restriction:
+	owner <span class="notdone">or the associated demand owner</span>)</dd>
+	<dd class="notdone">[storeKey]: list one store information</dd>
+</dl>
+
+<dl>
+	<dt>propose</dt>
+	<dd class="done">[tags, ...]: create a proposal (restriction: only
+	retailers can propose <span class="notdone">for demands that has
+	been sent to them or their store</span>)</dd>
+	<dd class="done">[proposalKey, tags, ...]: update one proposal
+	(restriction: owner <span class="notdone">or another retailer
+	from the same store</span>)</dd>
+</dl>
+
+<dl>
+	<dt>supply</dt>
+	<dd class="notdone">tags]: add supplied tags to the retailer
+	account</dd>
+</dl>
+
+<dl>
+	<dt>wish</dt>
+	<dd class="notdone">[tags, ...]: create a wish</dd>
+	<dd class="notdone">[wishKey, tags, ...]: update one wish
+	(restriction: owner)</dd>
+</dl>
+
+<dl>
+	<dt>www</dt>
+	<dd class="notdone">?</dd>
+</dl>
+
+</body>
+</html>

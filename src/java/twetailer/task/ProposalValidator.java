@@ -61,7 +61,7 @@ public class ProposalValidator {
      */
     public static void process(PersistenceManager pm, Long proposalKey) throws DataSourceException {
         Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
-        if (CommandSettings.State.open.equals(proposal.getState())) {
+        if (CommandSettings.State.opened.equals(proposal.getState())) {
             try {
                 Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
                 Locale locale = retailer.getLocale();

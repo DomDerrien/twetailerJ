@@ -39,7 +39,7 @@ public class Demand extends Entity {
     private Source source;
 
     @Persistent
-    private State state = State.open;
+    private State state = State.opened;
 
     /*** Demand ***/
 

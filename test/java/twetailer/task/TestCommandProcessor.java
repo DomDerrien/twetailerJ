@@ -1826,7 +1826,7 @@ public class TestCommandProcessor {
             }
             @Override
             public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
-                assertEquals(CommandSettings.State.open, proposal.getState());
+                assertEquals(CommandSettings.State.opened, proposal.getState());
                 proposal.setKey(proposalKey);
                 return proposal;
             }
@@ -2046,7 +2046,7 @@ public class TestCommandProcessor {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 return demand;
             }
         };
@@ -2102,7 +2102,7 @@ public class TestCommandProcessor {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 return demand;
             }
         };
@@ -2160,7 +2160,7 @@ public class TestCommandProcessor {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 return demand;
             }
         };
@@ -2221,7 +2221,7 @@ public class TestCommandProcessor {
             @Override
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -2281,7 +2281,7 @@ public class TestCommandProcessor {
             @Override
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -2345,7 +2345,7 @@ public class TestCommandProcessor {
             @Override
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -2411,7 +2411,7 @@ public class TestCommandProcessor {
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
                 assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -2481,7 +2481,7 @@ public class TestCommandProcessor {
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
                 assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -2551,7 +2551,7 @@ public class TestCommandProcessor {
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
                 assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(CommandSettings.State.open, demand.getState());
+                assertEquals(CommandSettings.State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }

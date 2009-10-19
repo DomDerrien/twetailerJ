@@ -760,7 +760,7 @@ public class CommandProcessor {
                 );
             }
             if (demand != null) {
-                demand.setState(CommandSettings.State.canceled);
+                demand.setState(CommandSettings.State.cancelled);
                 demandOperations.updateDemand(pm, demand);
                 // Echo back the updated demand
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
@@ -833,7 +833,7 @@ public class CommandProcessor {
             }
             if (demand != null) {
                 demand.fromJson(command);
-                demand.setState(CommandSettings.State.open); // Will force the re-validation of the entire demand
+                demand.setState(CommandSettings.State.opened); // Will force the re-validation of the entire demand
                 demand.resetProposalKeys(); // All existing proposals are removed
                 demandOperations.updateDemand(pm, demand);
                 // Echo back the updated demand
@@ -862,7 +862,7 @@ public class CommandProcessor {
                 latestDemand.setAction(CommandSettings.Action.demand);
                 latestDemand.resetCriteria();
                 latestDemand.setDefaultExpirationDate();
-                latestDemand.setState(CommandSettings.State.open);
+                latestDemand.setState(CommandSettings.State.opened);
             }
             else {
                 latestDemand = new Demand();
@@ -986,7 +986,7 @@ public class CommandProcessor {
             }
             if (proposal != null) {
                 proposal.fromJson(command);
-                proposal.setState(CommandSettings.State.open); // Will force the re-validation of the entire proposal
+                proposal.setState(CommandSettings.State.opened); // Will force the re-validation of the entire proposal
                 proposalOperations.updateProposal(pm, proposal);
                 // Echo back the updated proposal
                 communicateToEmitter(rawCommand, generateTweet(proposal, consumer.getLocale()));

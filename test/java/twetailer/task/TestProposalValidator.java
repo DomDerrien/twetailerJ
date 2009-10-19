@@ -47,7 +47,7 @@ public class TestProposalValidator {
 
     final Long retailerKey = 54321L;
     final Source source = Source.simulated;
-    final State state = State.open;
+    final State state = State.opened;
     MockAppEngineEnvironment appEnv;
 
     @Before

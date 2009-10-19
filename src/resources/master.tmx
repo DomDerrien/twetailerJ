@@ -81,11 +81,11 @@
 		<!-- Core engine definitions -->
 		<!-- ======================= -->
 
-		<tu tuid="command_state_open" datatype="Text">
+		<tu tuid="command_state_opened" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
 			<tuv xml:lang="en">
-				<seg>open</seg>
+				<seg>opened</seg>
 			</tuv>
 		</tu>
 
@@ -113,14 +113,6 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_settled" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>One of the possible states a command can have</note>
-			<tuv xml:lang="en">
-				<seg>settled</seg>
-			</tuv>
-		</tu>
-
 		<tu tuid="command_state_closed" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
@@ -129,11 +121,11 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_canceled" datatype="Text">
+		<tu tuid="command_state_cancelled" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>One of the possible states a command can have</note>
+			<note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
 			<tuv xml:lang="en">
-				<seg>canceled</seg>
+				<seg>cancelled</seg>
 			</tuv>
 		</tu>
 
@@ -169,7 +161,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>locale,location</seg>
+				<seg>locale,location,postalcode,postal,zip,zipcode</seg>
 			</tuv>
 		</tu>
 
@@ -237,7 +229,7 @@
 				IMPORTANT: the trailing comma is required to let tags being presented without prefix
 			</note>
 			<tuv xml:lang="en">
-				<seg>tags,keywords,keys,tag,keyword,key</seg>
+				<seg>tags,keywords,keys</seg>
 			</tuv>
 		</tu>
 
@@ -333,7 +325,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>www,web</seg>
+				<seg>www,web,url</seg>
 			</tuv>
 		</tu>
 
@@ -350,7 +342,7 @@
 				IMPORTANT: note the case of the keyword MUST be the same as the value of the tuid attribute into the lexicon TMX file.
 			</note>
 			<tuv xml:lang="en">
-				<seg>140,24906,AKA,Amazon,Attribute,Consumer,Founders</seg>
+				<seg>140,24906,AKA,Amazon,Attribute,Command-line,Consumer,CRUD,Demand-crud,Fee,Flag,Flagged,Founders,Free,Friend,Fulfil,IM,MI,Note,Object,Proposed,Rate,Register,Reserve,Reserved,Retailer,Sentiment,Settle,Settled,State-flow,Tags-consumer,Tags-retailer,Twitter</seg>
 			</tuv>
 		</tu>
 
@@ -371,7 +363,7 @@
 
 		<tu tuid="help_keyword_equivalents_Amazon" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<tuv xml:lang="en"><seg>amazon,fps,flexible payment system</seg></tuv>
+			<tuv xml:lang="en"><seg>amazon</seg></tuv>
 		</tu>
 
 		<tu tuid="help_keyword_equivalents_Attribute" datatype="Text">
@@ -379,14 +371,139 @@
 			<tuv xml:lang="en"><seg>attribute</seg></tuv>
 		</tu>
 
+		<tu tuid="help_keyword_equivalents_Command-line" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>command-line</seg></tuv>
+		</tu>
+
 		<tu tuid="help_keyword_equivalents_Consumer" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<tuv xml:lang="en"><seg>consumer</seg></tuv>
 		</tu>
 
+		<tu tuid="help_keyword_equivalents_CRUD" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>crud</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Demand-crud" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>demand-crud</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Fee" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>fee</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Flag" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>flag,problem</seg></tuv>
+		</tu>
+
 		<tu tuid="help_keyword_equivalents_Founders" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<tuv xml:lang="en"><seg>founders,founder</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Free" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>free</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Friend" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>friend</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Fulfil" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>fulfil,fulfill</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_IM" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>im</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_MI" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>MI</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Note" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>note</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Object" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>object</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Proposed" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>proposed</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Rate" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>rate</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Register" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>register</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Reserve" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>reserve</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Reserved" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>reserved</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Retailer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>retailer</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Sentiment" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>sentiment,emo</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Settle" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>settle</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Settled" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>settled</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_State-flow" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>state-flow</seg></tuv>
+		</tu>
+
+\		<tu tuid="help_keyword_equivalents_Tags-consumer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>tags-consumer</seg></tuv>
+		</tu>
+
+		<tu tuid="help_keyword_equivalents_Tags-retailer" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>tags-retailer</seg></tuv>
+		</tu>
+
+\		<tu tuid="help_keyword_equivalents_Twitter" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<tuv xml:lang="en"><seg>twitter</seg></tuv>
 		</tu>
 
 		<!-- ======================== -->

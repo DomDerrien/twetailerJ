@@ -36,7 +36,7 @@ public class Command extends Entity {
     public static final String SOURCE = "source";
 
     @Persistent
-    private State state = State.open;
+    private State state = State.opened;
 
     public static final String STATE = "state";
 

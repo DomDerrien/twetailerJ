@@ -292,7 +292,7 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setOwnerKey(111L);
         object.setRange(25.5D);
-        object.setState(CommandSettings.State.open);
+        object.setState(CommandSettings.State.opened);
         object = ops.createDemand(object);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -313,7 +313,7 @@ public class TestDemandOperations {
         Demand object = new Demand();
         object.setOwnerKey(111L);
         object.setRange(25.5D);
-        object.setState(CommandSettings.State.open);
+        object.setState(CommandSettings.State.opened);
         object.setLocationKey(222L);
         object = ops.createDemand(object);
 
