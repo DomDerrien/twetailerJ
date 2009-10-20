@@ -45,12 +45,6 @@
         <property name="latitude" direction="asc"/>
     </datastore-index>
 
-    <!-- Used 2 times in query history -->
-    <datastore-index kind="Store" ancestor="false" source="auto">
-        <property name="locationKey" direction="asc"/>
-        <property name="creationDate" direction="desc"/>
-    </datastore-index>
-
     <!-- Used 1 time in query history -->
     <datastore-index kind="Proposal" ancestor="false" source="auto">
         <property name="demandKey" direction="asc"/>
@@ -66,6 +60,12 @@
     <!-- Used 1 time in query history -->
     <datastore-index kind="Retailer" ancestor="false" source="auto">
         <property name="name" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="Retailer" ancestor="false" source="auto">
+        <property name="consumerKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -115,7 +116,7 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/createRetailer".equals(pathInfo)) {
                 // Supported formats:
-                //   http:<host:port>/API/maezel/createDemand?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
+                //   http:<host:port>/API/maezel/createRetailer?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
@@ -125,7 +126,7 @@ public class MaezelServlet extends HttpServlet {
                     if (true) { // Manual object creation
                         Retailer retailer = new Retailer();
 
-                        retailer.setName(RobotResponder.ROBOT_NAME);
+                        retailer.setName(consumer.getName());
                         retailer.setConsumerKey(consumer.getKey());
 
                         // Copy the user's attribute
@@ -133,6 +134,7 @@ public class MaezelServlet extends HttpServlet {
                         retailer.setEmail(consumer.getEmail());
                         retailer.setTwitterId(consumer.getTwitterId());
                         retailer.setLanguage(consumer.getLanguage());
+                        retailer.setPreferredConnection(Source.jabber);
 
                         // Attach to the store
                         retailer.setStoreKey(storeKey);

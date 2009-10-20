@@ -72,6 +72,7 @@ public class ProposalProcessor {
                     for(String tag: proposal.getCriteria()) {
                         tags.append(tag).append(" ");
                     }
+                    tags.setLength(tags.length() - 1); // To remove the trailing space
                     communicateToConsumer(
                             demand.getSource(),
                             consumer,

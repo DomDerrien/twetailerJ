@@ -161,7 +161,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>locale,location,postalcode,postal,zip,zipcode</seg>
+				<seg>locale,location,postalCode,postal,zip,zipcode</seg>
 			</tuv>
 		</tu>
 
@@ -177,7 +177,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the proposal attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>proposalkey,pk</seg>
+				<seg>proposalKey,pk</seg>
 			</tuv>
 		</tu>
 
@@ -193,7 +193,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>reference,identifier,id,demandkey,dk</seg>
+				<seg>reference,identifier,id,demandKey,dk</seg>
 			</tuv>
 		</tu>
 
@@ -217,7 +217,7 @@
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the store attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
-				<seg>storekey,sk</seg>
+				<seg>storeKey,sk</seg>
 			</tuv>
 		</tu>
 
@@ -491,7 +491,7 @@
 			<tuv xml:lang="en"><seg>state-flow</seg></tuv>
 		</tu>
 
-\		<tu tuid="help_keyword_equivalents_Tags-consumer" datatype="Text">
+		<tu tuid="help_keyword_equivalents_Tags-consumer" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<tuv xml:lang="en"><seg>tags-consumer</seg></tuv>
 		</tu>
@@ -501,7 +501,7 @@
 			<tuv xml:lang="en"><seg>tags-retailer</seg></tuv>
 		</tu>
 
-\		<tu tuid="help_keyword_equivalents_Twitter" datatype="Text">
+		<tu tuid="help_keyword_equivalents_Twitter" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<tuv xml:lang="en"><seg>twitter</seg></tuv>
 		</tu>
@@ -526,11 +526,12 @@
 			<prop type="x-tier">javarb</prop>
 			<note>
 				Report an unexpected error while processing the raw command with the key {0} 
+				{1} is an optional information, in English only. 
 			</note>
 			<tuv xml:lang="en">
-				<seg>\
-					The System encountered an unexpected error!|\
-					If your issue cannot be fixed with another message, please report the error with the incident identifier: 323-{0}.\
+				<seg>
+					The System encountered an unexpected error! {1}|
+					If your issue cannot be fixed with another message, please report the error with the incident identifier: 323-{0}.
 				</seg>
 			</tuv>
 		</tu>
@@ -561,6 +562,56 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>The Proposal identifier specified with the Confirm Command is invalid.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_confirm_invalid_state_demand" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				0: proposal key
+				1: demand key
+				2: demand state
+			</note>
+			<tuv xml:lang="en">
+				<seg>The Demand reference:{1} is not in a state ({2}) that allows the proposal:{0} confirmation.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_confirm_acknowledge_confirmation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				0: proposal key
+				1: demand key
+				2: demand tags
+				3: store key
+			</note>
+			<tuv xml:lang="en">
+				<seg>Your demand reference:{1} for the tags:{2} is now in the state:confirmed.|
+				The store:{3} is going to be informed of your confirmation to put your product aside.|
+				Don't forget to close your demand once you have picked it up. Thanks for using Twetailer.
+				</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_confirm_inform_about_confirmation" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				0: proposal key
+				1: proposal tags
+				2: consumer name
+			</note>
+			<tuv xml:lang="en">
+				<seg>Your proposal:{0} has been accepted for the tags:{1}.|
+				Please prepare the product to deliver it to {2}.|
+				Don't forget to close the proposal once the product has been picked up. Thanks for using Twetailer.</seg>
+			</tuv>
+		</tu>
+
 		<tu tuid="cp_command_demand_acknowledge_creation" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
@@ -585,6 +636,14 @@
 			<note/>
 			<tuv xml:lang="en">
 				<seg>You have no Demand matching the specified identifier.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_list_invalid_proposal_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>You have no Proposal matching the specified identifier.</seg>
 			</tuv>
 		</tu>
 

@@ -122,16 +122,17 @@ public class DemandProcessor {
                         }
                     }
                     if (contactRetailerJustOnce) {
-                        StringBuilder tags = new StringBuilder();
-                        for(String tag: demand.getCriteria()) {
-                            tags.append(tag).append(" ");
-                        }
                         if (RobotResponder.ROBOT_NAME.equals(retailer.getName())) {
                             // Schedule a task to transmit the proposal to the demand owner
                             Queue queue = QueueFactory.getDefaultQueue();
                             queue.add(url("/API/maezel/processDemandForRobot").param(Demand.KEY, demand.getKey().toString()).method(Method.GET));
                         }
                         else {
+                            StringBuilder tags = new StringBuilder();
+                            for(String tag: demand.getCriteria()) {
+                                tags.append(tag).append(" ");
+                            }
+                            tags.setLength(tags.length() - 1); // To remove the trailing space
                             communicateToRetailer(
                                     retailer.getPreferredConnection(),
                                     retailer,

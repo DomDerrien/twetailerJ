@@ -2,6 +2,7 @@ package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToEmitter;
+import static twetailer.connector.BaseConnector.communicateToRetailer;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
-import twitter4j.TwitterException;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
@@ -105,11 +105,14 @@ public class CommandProcessor {
             preparePattern(prefixes, patterns, CommandSettings.Prefix.help, ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, CommandSettings.Prefix.locale, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.price, "\\s*\\d+.\\d\\d");
+            preparePattern(prefixes, patterns, CommandSettings.Prefix.proposal, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.quantity, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.reference, "\\s*\\d+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.state, "\\s*\\w+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\+\\s*|\\-\\s*|\\w\\s*)+");
+            //preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\+\\s*|\\-\\s*|\\w\\s*)+");
+            //preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\s*\\w)+");
+            preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\s*\\S)+");
             preparePattern(prefixes, patterns, CommandSettings.Prefix.total, "\\s*\\d+.\\d\\d");
 
             localizedPatterns.put(locale, patterns);
@@ -209,6 +212,17 @@ public class CommandProcessor {
                 String currentGroup = matcher.group(1).trim();
                 command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase());
                 command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase());
+                message = matcher.replaceFirst("");
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // Proposal
+        try {
+            matcher = patterns.get(CommandSettings.Prefix.proposal).matcher(message);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Proposal.PROPOSAL_KEY, getQuantity(currentGroup));
                 message = matcher.replaceFirst("");
                 oneFieldOverriden = true;
             }
@@ -520,7 +534,7 @@ public class CommandProcessor {
             ex.printStackTrace();
             communicateToEmitter(
                     rawCommand,
-                    LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey() }, Locale.ENGLISH)
+                    LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey(), ex.getClass().getName() + " / " + ex.getMessage() }, Locale.ENGLISH)
             );
         }
     }
@@ -555,11 +569,10 @@ public class CommandProcessor {
      * @param rawCommand raw command with emitter coordinates
      * @param command parsed command
      *
-     * @throws TwitterException If sending the help message to the originator fails
      * @throws DataSourceException If the communication with the back-end fails
      * @throws ClientException If information extracted from the tweet are incorrect
      */
-    public static void processCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws TwitterException, DataSourceException, ClientException {
+    public static void processCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws DataSourceException, ClientException {
         Locale locale = consumer.getLocale();
         JsonObject prefixes = localizedPrefixes.get(locale);
         JsonObject actions = localizedActions.get(locale);
@@ -739,7 +752,7 @@ public class CommandProcessor {
         communicateToEmitter(rawCommand, message);
     }
 
-    protected static void processCancelCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException, TwitterException {
+    protected static void processCancelCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
         // Used by resource owner to stop the process of his resource
         //
@@ -792,11 +805,58 @@ public class CommandProcessor {
         throw new ClientException("Closing demands - Not yet implemented");
     }
 
-    protected static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
+    protected static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
         // Used by the consumer to accept a proposal
+        // Note that the proposal should refer to a demand owned by the consumer
         //
-        throw new ClientException("Confirming proposals - Not yet implemented");
+        // The consumer receives a notification with the store location
+        // The retailer receives a notification with the confirmation and the suggestion to put the product aside for the consumer
+        //
+        Proposal proposal = null;
+        Demand demand = null;
+        try {
+            // If there's no PROPOSAL_KEY attribute, it's going to generate an exception as the desired side-effect
+            proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
+            // If the proposal is not for a demand the consumer owns, it's going to generate an exception as the desired side-effect
+            demand = demandOperations.getDemand(pm, proposal.getDemandKey(), consumer.getKey());
+        }
+        catch(Exception ex) {
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale())
+            );
+        }
+        if (demand != null) {
+            if (!CommandSettings.State.published.equals(demand.getState())) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposal.getKey(), demand.getKey(), demand.getState().toString() }, consumer.getLocale())
+                );
+            }
+            else {
+                // Inform the consumer of the successful confirmation
+                StringBuilder tags = new StringBuilder();
+                for(String tag: demand.getCriteria()) {
+                    tags.append(tag).append(" ");
+                }
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_confirm_acknowledge_confirmation", new Object[] { proposal.getKey(), demand.getKey(), tags.toString(), proposal.getStoreKey() }, consumer.getLocale())
+                );
+                // Inform the retailer of the successful confirmation
+                Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
+                tags = new StringBuilder();
+                for(String tag: proposal.getCriteria()) {
+                    tags.append(tag).append(" ");
+                }
+                communicateToRetailer(
+                        retailer.getPreferredConnection(),
+                        retailer,
+                        LabelExtractor.get("cp_command_confirm_inform_about_confirmation", new Object[] { proposal.getKey(), tags.toString(), consumer.getName() }, consumer.getLocale())
+                );
+            }
+        }
     }
 
     protected static void processDeclineCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
@@ -806,7 +866,7 @@ public class CommandProcessor {
         throw new ClientException("Declining proposals - Not yet implemented");
     }
 
-    public static void processDemandCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException, TwitterException {
+    public static void processDemandCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
         //
         // Used by a consumer to:
         //
@@ -922,10 +982,24 @@ public class CommandProcessor {
                 communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
             }
         }
-        /* TODO: implement other listing variations
-        else if (command.getString(Proposal.PROPOSAL_KEY) != null) {
-            throw new ClientException("Listing proposals - Not yet implemented");
+        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
+            Proposal proposal = null;
+            Retailer retailer = retrieveRetailer(pm, consumer);
+            try {
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_list_invalid_proposal_id", consumer.getLocale())
+                );
+            }
+            if (proposal != null) {
+                // Echo back the specified proposal
+                communicateToEmitter(rawCommand, generateTweet(proposal, retailer.getLocale()));
+            }
         }
+        /* TODO: implement other listing variations
         else if (command.getString(Product.PRODUCT_KEY) != null) {
             throw new ClientException("Listing Stores - Not yet implemented");
         }
@@ -972,7 +1046,6 @@ public class CommandProcessor {
         Long proposalKey = 0L;
         Retailer retailer = retrieveRetailer(pm, consumer);
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            // Extracts the new location
             // Update the proposal attributes
             Proposal proposal = null;
             try {
