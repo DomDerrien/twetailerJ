@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-	<application>@rwa.productShortName@</application>
-	<version>maezel-6</version>
+    <application>@rwa.productShortName@</application>
+    <version>maezel-6</version>
 
-	<!-- Configure java.util.logging -->
-	<system-properties>
-		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
-		<property name="myapp.notify-every-n-signups" value="1000" />
-		<property name="myapp.notify-url" value="http://www.example.com/signupnotify" />
-	</system-properties>
+    <!-- Configure java.util.logging -->
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+        <property name="myapp.notify-every-n-signups" value="1000" />
+        <property name="myapp.notify-url" value="http://www.example.com/signupnotify" />
+    </system-properties>
 
     <env-variables>
     </env-variables>
 
     <sessions-enabled>true</sessions-enabled>
 
-	<ssl-enabled>false</ssl-enabled>
+    <ssl-enabled>false</ssl-enabled>
 
-	<inbound-services>
-		<service>xmpp_message</service>
-	</inbound-services>
+    <inbound-services>
+        <service>xmpp_message</service>
+    </inbound-services>
 
 </appengine-web-app>

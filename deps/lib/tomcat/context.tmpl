@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Context
-	docBase="${catalina.home}/webapps/@rwa.contextRoot@"
-	reloadable="true"
+    docBase="${catalina.home}/webapps/@rwa.contextRoot@"
+    reloadable="true"
     antiResourceLocking="false"
     antiJARLocking="false"
 >
-	<Resource
-		auth="Container"
-		driverClassName="@rwa.dbDriver@"
-		maxActive="10"
-		maxIdle="3"
-		maxWait="3000"
-		name="jdbc/RPMDATASOURCE"
-		password="@rwa.dbPassword@"
-		type="javax.sql.DataSource"
-		url="@rwa.dbURL@"
-		username="@rwa.dbUsername@"
-		validationQuery="values(1)"
-	/>
+    <Resource
+        auth="Container"
+        driverClassName="@rwa.dbDriver@"
+        maxActive="10"
+        maxIdle="3"
+        maxWait="3000"
+        name="jdbc/RPMDATASOURCE"
+        password="@rwa.dbPassword@"
+        type="javax.sql.DataSource"
+        url="@rwa.dbURL@"
+        username="@rwa.dbUsername@"
+        validationQuery="values(1)"
+    />
 
-	<Environment name="testNa,e" type="java.lang.String" value="testValue" /> 
+    <Environment name="testNa,e" type="java.lang.String" value="testValue" /> 
 
 </Context>

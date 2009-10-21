@@ -5,46 +5,46 @@
 
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
 
-	<servlet>
-		<servlet-name>maezelcontrol</servlet-name>
-		<servlet-class>twetailer.j2ee.MaezelServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>maezelcontrol</servlet-name>
-		<url-pattern>/API/maezel/*</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>maezelcontrol</servlet-name>
+        <servlet-class>twetailer.j2ee.MaezelServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>maezelcontrol</servlet-name>
+        <url-pattern>/API/maezel/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet>
-		<servlet-name>jabberresponder</servlet-name>
-		<servlet-class>twetailer.j2ee.JabberResponderServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>jabberresponder</servlet-name>
-		<url-pattern>/_ah/xmpp/message/chat/</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>jabberresponder</servlet-name>
+        <servlet-class>twetailer.j2ee.JabberResponderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jabberresponder</servlet-name>
+        <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
+    </servlet-mapping>
 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Administrative tools</web-resource-name>
-			<url-pattern>/admin/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>admin</role-name>
-		</auth-constraint>
-	</security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Administrative tools</web-resource-name>
+            <url-pattern>/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Administrative tools</web-resource-name>
-			<url-pattern>/API/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>admin</role-name>
-		</auth-constraint>
-	</security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Administrative tools</web-resource-name>
+            <url-pattern>/API/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 
 </web-app>

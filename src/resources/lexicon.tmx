@@ -1,856 +1,856 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
-	<header creationtool="developers" creationtoolversion="1.0"
-		datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
-		o-tmf="Twetailer">
-	</header>
-	<body>
-	
-		<!-- =================== -->
-		<!-- Default definitions -->
-		<!-- =================== -->
+    <header creationtool="developers" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="Twetailer">
+    </header>
+    <body>
 
-		<tu tuid="bundle_language" datatype="Text">
-			<prop type="x-tier">dojotk</prop>
-			<prop type="x-tier">javarb</prop>
-			<note>
-				IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
-				IMPORTANT: "English" should not be just translated!
-				IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
-				           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
-			</note>
-			<tuv xml:lang="en">
-				<seg>English</seg>
-			</tuv>
-		</tu>
+        <!-- =================== -->
+        <!-- Default definitions -->
+        <!-- =================== -->
 
-		<!-- ========================= -->
-		<!-- Help messages for Twitter -->
-		<!-- ISSUE: used to denote inconsistencies with source -->
-		<!-- AKA: ? -->
-		<!-- ========================= -->
+        <tu tuid="bundle_language" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
+                IMPORTANT: "English" should not be just translated!
+                IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
+                           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
+            </note>
+            <tuv xml:lang="en">
+                <seg>English</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="_introduction_" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'action'</note>
-			<tuv xml:lang="en">
-				<seg>Twetailer (glossary): brokers Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. For help using my Help system, Send "?help". Afterwards, if you're a Consumer, SEND "?consumer". Retailers can SEND "?retailer". |
-				Twetailer (see also): 140, www, free, fee, twitter, im |
-				Twetailer (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- Numerics			 -->
-		<!-- =================== -->
-				
-		<tu tuid="140" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary '140'</note>
-			<tuv xml:lang="en">
-				<seg>140 (glossary): Retailers supply goods/services via tags. Consumers demand tags within their locale. Twetailer matches demand &amp; supply for free/fee |
-				140 (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="24906" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary '24906'</note>
-			<tuv xml:lang="en">
-				<seg>24906 (glossary): My search - for now, is limited to 24906 miles, or, 40075 kilometers - which is the distance around the world |
-					24906 (see also): range, locale, consumer-tags, tags, demand, consumer |
-					24906 (AKA): 40075 |
-					24906 (since): v0.0</seg>
-			</tuv>
-		</tu>		
-	
-		<!-- =================== -->
-		<!-- 		-A-			 -->
-		<!-- =================== -->
-				
-		<tu tuid="Action" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'action'</note>
-			<tuv xml:lang="en">
-				<seg>Action (story): As a user of Twetailer, I want to be able to interact with the system via brief Command-line actions, so I can create, read, update, delete (CRUD) and process transactions |
-				Action (usage): Send "![action]". Example: Send "!list" | 
-				Action (see also): cancel, close, confirm, decline, demand, flag, help, list, propose, rate, register, reserve, settle, supply, wish, www |
-				Action (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="AKA" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'aka'</note>
-			<tuv xml:lang="en">
-				<seg>AKA (glossary): acronym for "also known as" |
-					AKA (since): v0.0</seg>
-			</tuv>
-		</tu>		
-				
-		<tu tuid="Amazon" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'amazon'</note>
-			<tuv xml:lang="en">
-				<seg>Amazon (glossary): Twetailer implements the <a href="http://aws.amazon.com/fps/">Amazon Flexible Payments Service (Amazon FPS)</a> - the first payments service designed from the ground up for developers. It is built on top of Amazon's reliable and scalable payments infrastructure and provides developers with a convenient way to charge Amazon's tens of millions of customers (with their permission, of course!). Amazon customers can pay using the same login credentials, shipping address and payment information they already have on file with Amazon. |
-					Amazon (see also): fee |
-					Amazon (since): v0.0</seg>
-			</tuv>
-		</tu>		
-						
-		<tu tuid="Attribute" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'attribute'</note>
-			<tuv xml:lang="en">
-				<seg>Attribute (glossary): Search criteria |
-					Attribute (see also): demand |
-					Attribute (since): v0.0</seg>
-			</tuv>
-		</tu>		
-	
-		<!-- =================== -->
-		<!-- 		-B-			 -->
-		<!-- =================== -->
-	
-		<!-- =================== -->
-		<!-- 		-C-			 -->
-		<!-- =================== -->
-										
-		<tu tuid="Cancel" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'cancel'</note>
-			<tuv xml:lang="en">
-				<seg>Cancel (story): As a Consumer, or, Retailer, I want to Cancel a respective Demand, or, Proposal, so I can cease further transaction processing on it |
-				Cancel (usage - Consumers): Send "!cancel ref:[my-Demand's-reference-number]". Example: Send "!cancel ref:123456". ... |
-				Cancel (usage - Retailers): Send "!cancel proposal:[Demand's-reference-number-Proposal-number]". Example: Send "!cancel ref:123456-2" |
-				Cancel (rules): Only non-closed transactions can be cancelled |
-				Cancel (see also): cancelled, state, state-flow, action |
-				Cancel (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <!-- ========================= -->
+        <!-- Help messages for Twitter -->
+        <!-- ISSUE: used to denote inconsistencies with source -->
+        <!-- AKA: ? -->
+        <!-- ========================= -->
 
-		<tu tuid="Cancelled" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'cancelled'</note>
-			<tuv xml:lang="en">
-				<seg>Cancelled (glossary: transaction State triggered by a Consumer, or, Retailer to cease further transaction processing |
-				Cancelled (see also): cancel, state-flow, state |
-				Cancelled (AKA): canceled |
-				Cancelled (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Close" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'close'</note>
-			<tuv xml:lang="en">
-				<seg>Close (story): As a Consumer, or, Retailer, I want to signify the successful completion of my respective Demand, or, Proposal, so I can improve my Rating |
-				Close (usage): Send "!close ref:[reference-number] note:[any-text] sentiment:[+/-]". Example: Send "!close ref:123456", or, Send "!close ref:123456" note:awesome sent:+  |
-				Close (rules): Consumers can only close open Demands created by them. Retailers can only close open Demands the have confirmed proposal for. Note and Sentiment are optional |
-				Close (see also): closed, state, state-flow, action |
-				Close (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="_introduction_" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'action'</note>
+            <tuv xml:lang="en">
+                <seg>Twetailer (glossary): brokers Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. For help using my Help system, Send "?help". Afterwards, if you're a Consumer, SEND "?consumer". Retailers can SEND "?retailer". |
+                Twetailer (see also): 140, www, free, fee, twitter, im |
+                Twetailer (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Closed" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'closed'</note>
-			<tuv xml:lang="en">
-				<seg>Closed: transaction State triggered by a Consumer, or, Retailer to signify successful completion of the transaction processing |
-				Closed (see also): close, state-flow, state |
-				Closed (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Command-line" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'command-line'</note>
-			<tuv xml:lang="en">
-				<seg>Command-line (glossary):  the ability to interact with a system via simple text messages - like, Twitter, or, text messaging. (Look Ma, no web site!). |
-					Command-line (see also): action |
-					Command-line (since): v0.0</seg>
-			</tuv>
-		</tu>					
-				
-		<tu tuid="Confirm" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'confirm'</note>
-			<tuv xml:lang="en">
-				<seg>Confirm (story): As a Consumer, I want to Confirm a successful match between my Demand and a Retailer's respective Proposal, so I can proceed to close the sale |
-				Confirm (usage): Send "!confirm proposal:[proposal-number]". Example: Send "!confirm proposal:123456-2" |
-				Confirm (rules): Consumers can only confirm open Proposals for their Demands. Consumers are only allowed to have one confirmed Proposal for each Demand. Confirmed Proposals can be cancelled |
-				Confirm (see also): confirmed, state, state-flow, action |
-				Confirm (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <!-- =================== -->
+        <!-- Numerics            -->
+        <!-- =================== -->
 
-		<tu tuid="Confirmed" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'confirmed'</note>
-			<tuv xml:lang="en">
-				<seg>Confirmed: transaction State triggered by the Consumer after a Retailer has Proposed a good/service and Price they Confirm satisfies their Demand |
-				Confirmed (see also): state-flow, proposal, state |
-				Confirmed (since): v0.0</seg>
-			</tuv>
-		</tu>
-				
-		<tu tuid="Consumer" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'consumer'</note>
-			<tuv xml:lang="en">
-				<seg>Consumer (glossary): a person who buys goods or uses services. Send "?demand", or, "?tags" for additional help. |
-					Consumer (see also): retailer, help |
-					Consumer (since): v0.0</seg>
-			</tuv>
-		</tu>					
-				
-		<tu tuid="CRUD" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'crud'</note>
-			<tuv xml:lang="en">
-				<seg>CRUD (glossary): CRUD: acronym for the ability to create, read, update and delete Actions. |
-					CRUD (see also): demand, supply |
-					CRUD (since): v0.0</seg>
-			</tuv>
-		</tu>					
-	
-		<!-- =================== -->
-		<!-- 		-D-			 -->
-		<!-- =================== -->
-										
-		<tu tuid="Decline" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'decline'</note>
-			<tuv xml:lang="en">
-				<seg>Decline (story): As a Consumer, I want to Decline a Retailer's Proposal for a Demand of mine, so I have less open Proposals to consider |
-				Decline (usage): Send "!decline proposal:[proposal-number]". Example: Send "!decline proposal:123456-2" |
-				Decline (rules): Optional. Consumers can only decline open Proposals for their Demands. Declined Proposals cannot be undone |
-				Decline (see also): declined, state, state-flow, action |
-				Decline (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="140" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary '140'</note>
+            <tuv xml:lang="en">
+                <seg>140 (glossary): Retailers supply goods/services via tags. Consumers demand tags within their locale. Twetailer matches demand &amp; supply for free/fee |
+                140 (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Demand" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'demand'</note>
-			<tuv xml:lang="en">
-				<seg>Demand (story): As a Consumer, I want to create Demand for a desired good, or, service within the Locale and Range of my choice, so I may be notified upon its availability |
-				Demand (usage): Send "[tags-describing-good-or-service] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] expires:[yyyy-mm-dd]". Example: Send "wii console locale:12345 us range:25 mi expires:2009-12-23" |
-				Demand (rules): Consumer must accept Twetailer terms and conditions on initial Demand. locale:, range: and expires: attributes are only required on initial Demand and subsequently default to their previous values. Example: Send "[tags-describing-good-or-service] |
-				Demand (see also): demand-crud, opened, state, state-flow, action |
-				Demand (since): v0.0</seg>
-			</tuv>
-		</tu>
-				
-		<tu tuid="Demand-crud" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'demand-crud'</note>
-			<tuv xml:lang="en">
-				<seg>Demand-crud (create story): As a Consumer, I want to create a Demand transaction, so I may be notified upon its availability in my Locale. |
-					Demand-crud (read story): As a Consumer, I want to read the attributes of a Demand by reference number, so I can my search criteria. |
-					Demand-crud (update story): As a Consumer, I want to update attributes of my Demand by sending its reference number and their replacement values, so I can modify my search criteria Retailers in my Locale. |
-					Demand-crud (delete story): As a Consumer, I want to delete a Demand. |
-					Demand-crud (create usage): Send "wii console locale:12345 US range:25 mi expires:2009-12-23" |
-					Demand-crud (read usage): Send "!list ref:12345" |
-					Demand-crud (update usage): Send "ref:12345 range:50 mi" |
-					Demand-crud (delete usage): Send "!cancel ref:12345" |
-					Demand-crud (see also): ref, consumer, retailer, demand, demand-tags, locale, range, expires, cancel, list |
-					Demand-crud (since): v0.0</seg>
-			</tuv>
-		</tu>					
-	
-		<!-- =================== -->
-		<!-- 		-E-			 -->
-		<!-- =================== -->
-				
-		<tu tuid="Expires" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'expiration'</note>
-			<tuv xml:lang="en">
-				<seg>Expires (story): As a Consumer, I want to associate an Expiration date Attribute with my Demand - which defaults to one month from creation, so I can express my limited interest in making a purchase |
-				Expires (usage): "expires:[yyyy-mm-dd]". Example: "expires:2009-12-23" | 
-				Expires (rules): Valid formats are: [yyyy-mm-dd], [mm-dd-yyyy], [dd-mm-yyyy], with/without dashes "-". Date must be greater than, or, equal to current (today's) date |
-				Expires (see also): demand-crud, retailer |
-				Expires (AKA): expiration, exp |
-				Expires (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-F-			 -->
-		<!-- =================== -->
-								
-		<tu tuid="Fee" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'fee'</note>
-			<tuv xml:lang="en">
-				<seg>Fee (glossary): Optional follow-on to Free service, where Twetailer enables Consumer to purchase item directly from Retailer via Amazon for the equivalent of Amazon service fees. |
-					Fee (see also): free |
-					Fee (since): Future release</seg>
-			</tuv>
-		</tu>					
-				
-		<tu tuid="Flag" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'flag'</note>
-			<tuv xml:lang="en">
-				<seg>Flag (story): As a Consumer, or, Retailer, I want to flag Twetailer of an issue when I attempted to Close a respective Demand, or, Proposal, so I can help improve the service. |
-				Flag (usage): Send "!problem ref:[demand-reference-number] note:[any-text] ". Example: "!problem ref:123456" note:product held was not the one proposed and confirmed |
-				Flag (rules): Consumers can only report problems on open Demands created by them. Retailers can only report problems on Demands the have confirmed proposal for. Note is optional. "Sentiment:-" is implied |
-				Flag (see also): flagged, state, state-flow, action |
-				Flag (AKA): problem |
-				Flag (since): Future release</seg>
-			</tuv>
-		</tu>
+        <tu tuid="24906" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary '24906'</note>
+            <tuv xml:lang="en">
+                <seg>24906 (glossary): My search - for now, is limited to 24906 miles, or, 40075 kilometers - which is the distance around the world |
+                    24906 (see also): range, locale, consumer-tags, tags, demand, consumer |
+                    24906 (AKA): 40075 |
+                    24906 (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Flagged" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'flagged'</note>
-			<tuv xml:lang="en">
-			<seg>Flagged: transaction State triggered by a Consumer, or, Retailer to Flag a problem when attempting to Close transaction. |
-				Flagged (see also): state-flow, state |
-				Flagged (since): Future release</seg>
-			</tuv>
-		</tu>	
-								
-		<tu tuid="Founders" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'founders'</note>
-			<tuv xml:lang="en">
-				<seg>Founders (glossary): Twetailer is Steven's original idea, with Dom at the realization stage ;-) |
-					Founders (see also): founder |
-					Founders (since): v0.0</seg>
-			</tuv>
-		</tu>					
-						
-		<tu tuid="Free" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'free'</note>
-			<tuv xml:lang="en">
-				<seg>Free (glossary): Twetailer matches tags between Consumer's Demands &amp; Retailer's Supply, confirms availability and provides retailer's store location for free.  However, the Retailer is only asked to hold the item &amp; therefore its availability is not guaranteed. |
-					Free (see also): fee |
-					Free (since): v0.0</seg>
-			</tuv>
-		</tu>					
+        <!-- =================== -->
+        <!--        -A-          -->
+        <!-- =================== -->
 
-		<tu tuid="Friend" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'friend'</note>
-			<tuv xml:lang="en">
-			<seg>Friend (story): As a Consumer, or, Retailer, I want to provide my Friend code, so they may be properly attributed for my membership. |
-				Friend (rules): Friend value is numeric and is not visibile by any user other than its owner. |
-				Friend (see also): register |
-				Friend (since): Future release</seg>
-			</tuv>
-		</tu>	
-								
-		<tu tuid="Fulfil" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'fulfil'</note>
-			<tuv xml:lang="en">
-				<seg>Fulfil (story): As a Retailer, I want to fulfil / prepare / set aside / package the good, or, service reserved by the Consumer, so I can settle the account and get paid by Amazon. |
-					Fulfil (rules): Manual process only performed with Twetailer Fee service |
-					Fulfil (see also): fee, state-flow |
-					Fulfil (since): v0.0</seg>
-			</tuv>
-		</tu>					
-	
-		<!-- =================== -->
-		<!-- 		-G-			 -->
-		<!-- =================== -->
-			
-		<!-- =================== -->
-		<!-- 		-H-			 -->
-		<!-- =================== -->
-								
-		<tu tuid="Help" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'help'</note>
-			<tuv xml:lang="en">
-				<seg>Help (story): As a user of Twetailer, I want to request Help by sending a one-word term in various formats, so I can better understand how Twetailer works |
-				Help (usage): SEND "help:[query-term]", or, "!help", or, "?". For example: "consumer?", or, "?consumer". Hint: You can query for Help on any capitalized help text keyword |
-				Help (rules): Help System currently supports only one word queries and will ignore everything after the first word. Query for words in singular form, regardless of case. Therefore "?consumer" = "?Consumer" = "?CONSUMER" |
-				Help (see also): ?, index, action |
-				Help (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-I-			 -->
-		<!-- =================== -->
-								
-		<tu tuid="IM" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'im'</note>
-			<tuv xml:lang="en">
-				<seg>IM (glossary): Acronym for "instant messaging" |
-					IM (rules): Manual process only performed with Twetailer Fee service |
-					IM (see also): jabber, gtalk |
-					IM (since): v0.0</seg>
-			</tuv>
-		</tu>					
+        <tu tuid="Action" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'action'</note>
+            <tuv xml:lang="en">
+                <seg>Action (story): As a user of Twetailer, I want to be able to interact with the system via brief Command-line actions, so I can create, read, update, delete (CRUD) and process transactions |
+                Action (usage): Send "![action]". Example: Send "!list" |
+                Action (see also): cancel, close, confirm, decline, demand, flag, help, list, propose, rate, register, reserve, settle, supply, wish, www |
+                Action (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Invalid" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'invalid'</note>
-			<tuv xml:lang="en">
-				<seg>Invalid: transaction State triggered by Twetailer after a Demand has been created but is missing mandatory fields, like Locale |
-				Invalid (see also): state-flow, state |
-				Invalid (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-J-			 -->
-		<!-- =================== -->
-			
-		<!-- =================== -->
-		<!-- 		-K-			 -->
-		<!-- =================== -->
-			
-		<!-- =================== -->
-		<!-- 		-L-			 -->
-		<!-- =================== -->
-				
-		<tu tuid="List" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'list'</note>
-			<tuv xml:lang="en">
-				<seg>List (story): As a Consumer, or, Retailer, I want to List Objects, or, query Twetailer, so I can gain better insight into availability |
-				List (usage): Send "!list [object]" for all, or, "!list [object]:[object-id]". Example: Send "!list store", or, "!list store:12345" |
-				List (rules): Default behaviour is to list a Consumer's Demand objects. Example: Send "!list", or, Send "!list ref:123456" |
-				List (see also): demand, ref, store, action |
-				List (since): v0.0</seg>
-			</tuv>
-		</tu>
-								
-		<tu tuid="Locale" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'locale'</note>
-			<tuv xml:lang="en">
-				<seg>Locale (story): As a Consumer, I want to instruct Twetailer to limit its search for my Demand, to Retailers within an area of my choice, so I can control how far I'm willing to travel to make the purchase | 
-				Locale (usage): "locale:[postal/zip-code 2-letter-country-code]". Example: "locale:12345 us" |
-				Locale (rules): Required on initial Demand. Optional on subsequent Demands defaulting previous value. Valid 2-letter-country codes are: "us", or, "ca" |
-				Locale (see also): range, demand-crud, attribute |
-				Locale: (AKA): location, postalcode, zipcode |
-				Locale (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-M-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="MI" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'mi'</note>
-			<tuv xml:lang="en">
-				<seg>MI (glossary): A range unit of measure meaning Miles. Another valid value is "km" meaning kilometers. |
-					MI (rules): range, locale, demand |
-					MI (see also): ki |
-					MI (since): v0.0</seg>
-			</tuv>
-		</tu>					
-				
-		<!-- =================== -->
-		<!-- 		-N-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="Note" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'note'</note>
-			<tuv xml:lang="en">
-				<seg>Note (story):  |
-				Note (usage):  |
-				Note (rules):  |
-				Note (see also): close, flag, attribute |
-				Note (AKA):  |
-				Note (since): Future release</seg>
-			</tuv>
-		</tu>
-			
-		<!-- =================== -->
-		<!-- 		-O-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="Object" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'object'</note>
-			<tuv xml:lang="en">
-				<seg>Object(story): As Twetailer, I want to perform actions, or, manipulate objects and their attributes so I can deliver a valuable f(r)ee service. |
-					Object (rules): Valid objects are: Consumer, Retailer, Store, Demand, Supply |
-					Object (see also): list, state-flow, fee, free |
-					Object (since): v0.0</seg>
-			</tuv>
-		</tu>								
+        <tu tuid="AKA" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'aka'</note>
+            <tuv xml:lang="en">
+                <seg>AKA (glossary): acronym for "also known as" |
+                    AKA (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Opened" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'opened'. ISSUE: source uses "open"</note>
-			<tuv xml:lang="en">
-				<seg>Opened: transaction State triggered by a Consumer after initial Demand creation |
-				Opened (see also): state-flow, state |
-				Opened (since): v0.0</seg>
-			</tuv>
-		</tu>
-			
-		<!-- =================== -->
-		<!-- 		-P-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="Price" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'price'</note>
-			<tuv xml:lang="en">
-				<seg>Price (story):  |
-				Price (usage):  |
-				Price (rules):  |
-				Price (see also): attribute |
-				Price (AKA):  |
-				Price (since): v0.0</seg>
-			</tuv>
-		</tu>
-				
-		<tu tuid="Proposal" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'proposal'</note>
-			<tuv xml:lang="en">
-				<seg>Proposal: the full description and price of the good/service a Retailer has in stock, and wants to Propose in response to a Consumer's Demand | 
-					Proposal (see also): tags, supply, demand |
-					Proposal (since): v0.0</seg>
-			</tuv>
-		</tu>								
-		
-		<tu tuid="Propose" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'propose'</note>
-			<tuv xml:lang="en">
-				<seg>Propose (story): As a Retailer, I want to Propose an available good, or, service and its Price that I feel is a suitable match for a Published Demand, so I can always be closing sales |
-				Propose (usage - free): Send "!propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store]". Example: "!propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98". |
-				Propose (usage - fee): Send "!propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store] total:[total-to-go-on-credit-card]". Example: "!propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98 total:430.14" |
-				Propose (rules): Retailers can only Propose for Demands published to them. Twetailer will respond with Proposal number in format proposal:[demand-reference-number-incremental-proposal-number]. Example: proposal:12346-2 |
-				Propose (see also): proposal, proposed, state, state-flow, action. |
-				Propose (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Proposed" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'proposed'</note>
-			<tuv xml:lang="en">
-				<seg>Proposed: transaction State triggered by Retailer after proposing a suitable and available good, or, service for a Published Demand |
-				Proposed (see also): proposal, proposed, state, state-flow, action. |
-				Proposed (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Amazon" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'amazon'</note>
+            <tuv xml:lang="en">
+                <seg>Amazon (glossary): Twetailer implements the <a href="http://aws.amazon.com/fps/">Amazon Flexible Payments Service (Amazon FPS)</a> - the first payments service designed from the ground up for developers. It is built on top of Amazon's reliable and scalable payments infrastructure and provides developers with a convenient way to charge Amazon's tens of millions of customers (with their permission, of course!). Amazon customers can pay using the same login credentials, shipping address and payment information they already have on file with Amazon. |
+                    Amazon (see also): fee |
+                    Amazon (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Published" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'published'</note>
-			<tuv xml:lang="en">
-				<seg>Published: transaction State triggered by Twetailer after a Demand has been Published to Retailers, within the Demand's Locale and matching their Supply Tags |
-				Published (see also): state-flow, state |
-				Published (since): v0.0</seg>
-			</tuv>
-		</tu>
-			
-		<!-- =================== -->
-		<!-- 		-Q-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="Quantity" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'quantity'</note>
-			<tuv xml:lang="en">
-				<seg>Quantity (story): As a Consumer, I want to instruct Twetailer to find one, or, more available units of my Demand, so I can buy everything from the same Retailer |
-				Quantity (usage): "qty:[numeric-quantity]". Example: "qty:2" |
-				Quantity (rules): Optional.  Defaults to one (1).  Must be greater than zero |
-				Quantity (see also): demand-crud, attribute |
-				Quantity (AKA): qty |
-				Quantity (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-R-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="Range" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'range'</note>
-			<tuv xml:lang="en">
-				<seg>Range (story): As a Consumer, I want to control the area Twetailer searches for my Demand, so I can determine just how far I'm willing to travel to make my purchase |
-				Range (usage): "range:[distance 2-letter-distance-unit-of-measure]". Example: "range:50 mi" |
-				Range (rules): Distance must be a number greater than zero and less than 24906 mi, or, 40075 km. Distance-unit-of-measure is either "miles", or, " kilometers" and defaults to 25 mi, or, km |
-				Range (see also): 24906, 40075, mi, demand-crud, attribute |
-				Range (AKA): rng, distance |
-				Range (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Attribute" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'attribute'</note>
+            <tuv xml:lang="en">
+                <seg>Attribute (glossary): Search criteria |
+                    Attribute (see also): demand |
+                    Attribute (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Rate" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'rate'</note>
-			<tuv xml:lang="en">
-				<seg>Rate (story): As a Consumer, or, Retailer, I want to retrieve the Rating of others involved in my transaction so I can better judge with whom I want to deal with |
-				Rate (usage - Consumers): Send "!rate proposal:[proposal-number]" to see Retailer Rating. Example: Send "!rate proposal:[123456-2]". ... |
-				Rate (usage - Retailers): Send "!rate ref:[reference-number]" to see Consumer Rating. Example: Send "!rate ref:[123456]" |
-				Rate (rules): Twetailer will respond with a "Rating ref/proposal:[number] Closes 95%". Twetailer will not disclose any of the other party's information |
-				Rate (since): Future release</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Reference" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'reference'</note>
-			<tuv xml:lang="en">
-				<seg>Reference (story): As a Consumer, or, Retailer, I want an easy way to refer to a Demand, so I don't have to repeat all the Tags |
-				Reference (usage): "ref:[Demand-reference-number]". Example: "ref:123456" |
-				Reference (rules): System generated value when Demand created |
-				Reference (see also): demand-crud, attribute |
-				Reference (AKA): ref, id, identifier |
-				Reference (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Register" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'register'</note>
-			<tuv xml:lang="en">
-				<seg>Register (story): As a Retailer, I want to Register my Store with Twetailer, so I can Supply Tags and be notified of local Consumer Demand |
-				Register (usage): Send "!register name:[store-name] email:[retailer's-email-address] tel:[store's-business-telelphone-number]". Example: Send "!register name:Paw's Electronics email:[ryan@pawselectronics.com] tel:[514-555-1212]" |
-				Register (rules): Twetailer will validate Retailer as being a listed retail place of businesst. Retailer must accept Twetailer terms and conditions |
-				Register (since): v0.0 |</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Reserve" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'reserve'</note>
-			<tuv xml:lang="en">
-				<seg>Reserve (story): As a Consumer, I want to Reserve - via Amazon, the good, or, service Proposed by the Retailer, so I can complete the purchase as soon as possible, avoiding any delay, or risk in obtaining it |
-				Reserve (usage): Send "!reserve proposal:123456-2 total:430.14" |
-				Reserve (rules): Twetailer Fee Service. Consumers accept terms and conditions. Twetailer will respond with the Amazon web site address.  Consumer will have to open that address in a browser and complete transaction |
-				Reserve (see also): proposed, state, state-flow, <a href="http://docs.amazonwebservices.com/AmazonFPS/2008-09-17/FPSMarketplaceGuide/index.html?ReservingaPayment.html">Amazon's Reserve Payment</a>, action |
-				Reserve (since): Future release</seg>
-			</tuv>
-		</tu>
+        <!-- =================== -->
+        <!--        -B-          -->
+        <!-- =================== -->
 
-		<tu tuid="Reserved" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'reserved'</note>
-			<tuv xml:lang="en">
-				<seg>Reserved: transaction State triggered by the Consumer where they Reserve - via Amazon, the good/service Proposed by a Retailer |
-				Reserved (see also): reserve, state-flow, state |
-				Reserved (since): Future release</seg>
-			</tuv>
-		</tu>
-				
-		<tu tuid="Retailer" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'retailer'</note>
-			<tuv xml:lang="en">
-				<seg>Retailer (glossary): a person whose occupation is the wholesale purchase and retail sale of goods for profit. Send "?supply", or, "?tags" for additional help. |
-				Retailer (see also): consumer, help |
-				Retailer (since): v0.0</seg>
-			</tuv>
-		</tu>
-						
-		<!-- =================== -->
-		<!-- 		-S-			 -->
-		<!-- =================== -->
-					
-		<tu tuid="Sentiment" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'sentiment'</note>
-			<tuv xml:lang="en">
-				<seg>Sentiment (story):  |
-				Sentiment (usage):  |
-				Sentiment (rules): Valid values are "+", "-" |
-				Sentiment (see also): attribute |
-				Sentiment (AKA): emo |
-				Sentiment (since): Future release</seg>
-			</tuv>
-		</tu>
-				
-		<tu tuid="Settle" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'settle</note>
-			<tuv xml:lang="en">
-				<seg>Settle (story): As a Retailer, I want to notify Twetailer of my fulfilling of the Consumer's Reserved Proposal, so I can receive payment |
-				Settle (usage): Send "!settle proposal:[proposal-number]". Example: Send "!settle proposal:123456-2" |
-				Settle (rules): Twetailer Fee Service. Retailers can only Settle for Reserved Proposals they created |
-				Settle (see also): settled, fulfil, state, state-flow, action |
-				Settle (since): Future release</seg>
-			</tuv>
-		</tu>
-						
-		<tu tuid="Settled" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the state 'settled'</note>
-			<tuv xml:lang="en">
-				<seg>Settled: transaction State triggered by Twetailer after the Retailer has fulfilled and been paid for the Reserved good, or, service |
-				Settled (see also): settle, reserve, fulfil, state |
-				Settled (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <!-- =================== -->
+        <!--        -C-          -->
+        <!-- =================== -->
 
-		<tu tuid="State" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'state'</note>
-			<tuv xml:lang="en">
-				<seg>State (story): As Twetailer, I want to change the state, or, condition, of a transaction within its process, or, flow |
-				State (see also): state-flow, attribute |
-				State (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Cancel" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'cancel'</note>
+            <tuv xml:lang="en">
+                <seg>Cancel (story): As a Consumer, or, Retailer, I want to Cancel a respective Demand, or, Proposal, so I can cease further transaction processing on it |
+                Cancel (usage - Consumers): Send "!cancel ref:[my-Demand's-reference-number]". Example: Send "!cancel ref:123456". ... |
+                Cancel (usage - Retailers): Send "!cancel proposal:[Demand's-reference-number-Proposal-number]". Example: Send "!cancel ref:123456-2" |
+                Cancel (rules): Only non-closed transactions can be cancelled |
+                Cancel (see also): cancelled, state, state-flow, action |
+                Cancel (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="State-flow" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'state-flow'</note>
-			<tuv xml:lang="en">
-				<seg>State-flow (glossary): State-Flow: Opened / Invalid -&gt; Published -&gt; Proposed -&gt; Confirmed -&gt; Reserved (fee) -&gt; Fulfilled (Fee) -&gt; Settled (Fee) -&gt; Closed / Flagged. See also: opened, invalid, published, proposed, confirmed, reserved, fee, free, fulfilled, settled, closed, flagged. |
-				State-flow (see also): state, attribute |
-				State-flow (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Cancelled" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'cancelled'</note>
+            <tuv xml:lang="en">
+                <seg>Cancelled (glossary: transaction State triggered by a Consumer, or, Retailer to cease further transaction processing |
+                Cancelled (see also): cancel, state-flow, state |
+                Cancelled (AKA): canceled |
+                Cancelled (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Store" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'store'</note>
-			<tuv xml:lang="en">
-				<seg>Store (glossary): A place where merchandise is offered for sale. |
-				Store (see also): retailer |
-				Store (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Close" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'close'</note>
+            <tuv xml:lang="en">
+                <seg>Close (story): As a Consumer, or, Retailer, I want to signify the successful completion of my respective Demand, or, Proposal, so I can improve my Rating |
+                Close (usage): Send "!close ref:[reference-number] note:[any-text] sentiment:[+/-]". Example: Send "!close ref:123456", or, Send "!close ref:123456" note:awesome sent:+  |
+                Close (rules): Consumers can only close open Demands created by them. Retailers can only close open Demands the have confirmed proposal for. Note and Sentiment are optional |
+                Close (see also): closed, state, state-flow, action |
+                Close (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Supply" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'supply'</note>
-			<tuv xml:lang="en">
-				<seg>Supply (story): As a Retailer, I want to Supply Tags describing the goods, or, services I offer, so I may be notified upon Consumer's immediate interests |
-				Supply (usage): Send "!supply tags:[my-goods-services]". Example: Send "!supply tags:nintendo wii sony playstation psp, psp2, psp3 super mario fit" |
-				Supply (rules): Retailers must be registered before they can Supply tags |
-				Supply (see also): tags-retailer, register, action |
-				Supply (since): v0.0</seg>
-			</tuv>
-		</tu>
-			
-		<!-- =================== -->
-		<!-- 		-T-			 -->
-		<!-- =================== -->
-				
-		<tu tuid="Tags" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'tags'</note>
-			<tuv xml:lang="en">
-				<seg>Tags (see also): Consumer: tags-consumer, Retailer: tags-retailer, attribute | 
-				Tags (AKA): tag, keywords, keys, tag, keyword, key |
-				Tags (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Closed" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'closed'</note>
+            <tuv xml:lang="en">
+                <seg>Closed: transaction State triggered by a Consumer, or, Retailer to signify successful completion of the transaction processing |
+                Closed (see also): close, state-flow, state |
+                Closed (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Tags-consumer" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'tags-consumer'</note>
-			<tuv xml:lang="en">
-				<seg>Tags-Consumer (story): As a Consumer, I want to describe the good, or, service I'm seeking to purchase with common keywords, or exact quoted phrases, so a Retailer within range of my locale can be notified of my immediate interest. |
-					Tags-Consumer (usage - Create): Send "[space-separated-tags-describing-good-or-service] locale:[postal/zip-code 2-letter-country-code] expires:[yyyy-mm-dd]". Example: Send "wii console locale:12345 us expires:2009-12-23". ... |
-					Tags-Consumer (usage - Replace): Send "ref:[my-Demand's-reference-number] tags:[my-replacement-tags]". Example: ref:123456 tags:playstation 2. ... |
-					Tags-Consumer (usage - Add): Send "ref:[my-Demand's-reference-number] +tags:[my-tags-to-add]". Example: ref:123456 +tags:3. ... |
-					Tags-Consumer (usage - Remove): Send "ref:[my-Demand's-reference-number] -tags:[my-tags-remove]". Example: ref:123456 -tags:2. ... |
-					Tags-Consumer (rules): The action keyword "tags:" is optional for Demands. Example: Send "wii console" is equivalent to Send "tags:wii console"  |
-					Tags-Consumer (see also): demand, ref, tags |
-					Tags-Consumer (since): v0.0</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Command-line" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'command-line'</note>
+            <tuv xml:lang="en">
+                <seg>Command-line (glossary):  the ability to interact with a system via simple text messages - like, Twitter, or, text messaging. (Look Ma, no web site!). |
+                    Command-line (see also): action |
+                    Command-line (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="Tags-retailer" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'tags-retailer'</note>
-			<tuv xml:lang="en">
-				<seg>Tags-Retailer (story): As a Retailer, I want to describe the good, or, service I supply with common keywords, or, exact quoted phrases, so I can be notified when a Consumer within range of my locale is interested in making a purchase |
-					Tags-Retailer (usage - Create): Send "!supply tags:[space-separated-tags-describing-good-or-service]". Example: Send "!supply tags:game "nintendo wii" "sony playstation" psp". ... |
-					Tags-Retailer (usage - Replace):  Send "!supply tags:[replacement-tags]". Example: Send "!supply tags:camera nikon "nikon d5000" canon". ... |
-					Tags-Retailer (usage - Add): Send "!supply +tags:[my-tags-to-add]". Example:  Send "!supply +tags:dvd rent twilight". ... |
-					Tags-Retailer (usage - Remove): Send "!supply -tags:[my-tags-to-add]". Example:  Send "!supply -tags:twilight" |
-					Tags-Retailer (see also): supply, tags |
-					Tags-Retailer (since): v0.0</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Total" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the prefix 'total'</note>
-			<tuv xml:lang="en">
-				<seg>Total (story):  |
-				Total (usage):  |
-				Total (rules):  |
-				Total (see also): attribute |
-				Total (AKA):  |
-				Total (since): Future release</seg>
-			</tuv>
-		</tu>
-		
-		<tu tuid="Twitter" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the glossary 'twitter'</note>
-			<tuv xml:lang="en">
-				<seg>Twitter (glossary): "Share and discover what's happening right now, anywhere in the world." |
-				Twitter (see also): http://twitter.com |
-				Twitter (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-U-			 -->
-		<!-- =================== -->
-	
-		<!-- =================== -->
-		<!-- 		-V-			 -->
-		<!-- =================== -->
-							
-		<!-- =================== -->
-		<!-- 		-W-			 -->
-		<!-- =================== -->
-		
-		<tu tuid="Wish" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'wish'</note>
-			<tuv xml:lang="en">
-				<seg>Wish (story): As a potential Consumer, I want to maintain a wish-list of Tags, so I, or, someone I share it with, might Demand one day |
-				Wish (usage): Send "!wish tags:[my-list-of-wish-tags]". Example: Send "!wish tags:"wii console"" |
-				Wish (rules): Potential Consumer must accept Twetailer terms and conditions |
-				Wish (since): Future release</seg>
-			</tuv>
-		</tu>
+        <tu tuid="Confirm" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'confirm'</note>
+            <tuv xml:lang="en">
+                <seg>Confirm (story): As a Consumer, I want to Confirm a successful match between my Demand and a Retailer's respective Proposal, so I can proceed to close the sale |
+                Confirm (usage): Send "!confirm proposal:[proposal-number]". Example: Send "!confirm proposal:123456-2" |
+                Confirm (rules): Consumers can only confirm open Proposals for their Demands. Consumers are only allowed to have one confirmed Proposal for each Demand. Confirmed Proposals can be cancelled |
+                Confirm (see also): confirmed, state, state-flow, action |
+                Confirm (since): v0.0</seg>
+            </tuv>
+        </tu>
 
-		<tu tuid="WWW" datatype="Text">
-			<prop type="x-tier">javarb</prop>
-			<note>Help text associated to the action 'www'</note>
-			<tuv xml:lang="en">
-				<seg>WWW (story):  |
-				WWW (usage): http://twetailer.com |
-				WWW (rules):  |
-				WWW (see also): action |
-				WWW (AKA): url |
-				WWW (since): v0.0</seg>
-			</tuv>
-		</tu>
-	
-		<!-- =================== -->
-		<!-- 		-X-			 -->
-		<!-- =================== -->
-			
-		<!-- =================== -->
-		<!-- 		-Y-			 -->
-		<!-- =================== -->
-			
-		<!-- =================== -->
-		<!-- 		-Z-			 -->
-		<!-- =================== -->
-		
-	</body>
+        <tu tuid="Confirmed" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'confirmed'</note>
+            <tuv xml:lang="en">
+                <seg>Confirmed: transaction State triggered by the Consumer after a Retailer has Proposed a good/service and Price they Confirm satisfies their Demand |
+                Confirmed (see also): state-flow, proposal, state |
+                Confirmed (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Consumer" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'consumer'</note>
+            <tuv xml:lang="en">
+                <seg>Consumer (glossary): a person who buys goods or uses services. Send "?demand", or, "?tags" for additional help. |
+                    Consumer (see also): retailer, help |
+                    Consumer (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="CRUD" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'crud'</note>
+            <tuv xml:lang="en">
+                <seg>CRUD (glossary): CRUD: acronym for the ability to create, read, update and delete Actions. |
+                    CRUD (see also): demand, supply |
+                    CRUD (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -D-          -->
+        <!-- =================== -->
+
+        <tu tuid="Decline" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'decline'</note>
+            <tuv xml:lang="en">
+                <seg>Decline (story): As a Consumer, I want to Decline a Retailer's Proposal for a Demand of mine, so I have less open Proposals to consider |
+                Decline (usage): Send "!decline proposal:[proposal-number]". Example: Send "!decline proposal:123456-2" |
+                Decline (rules): Optional. Consumers can only decline open Proposals for their Demands. Declined Proposals cannot be undone |
+                Decline (see also): declined, state, state-flow, action |
+                Decline (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Demand" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'demand'</note>
+            <tuv xml:lang="en">
+                <seg>Demand (story): As a Consumer, I want to create Demand for a desired good, or, service within the Locale and Range of my choice, so I may be notified upon its availability |
+                Demand (usage): Send "[tags-describing-good-or-service] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] expires:[yyyy-mm-dd]". Example: Send "wii console locale:12345 us range:25 mi expires:2009-12-23" |
+                Demand (rules): Consumer must accept Twetailer terms and conditions on initial Demand. locale:, range: and expires: attributes are only required on initial Demand and subsequently default to their previous values. Example: Send "[tags-describing-good-or-service] |
+                Demand (see also): demand-crud, opened, state, state-flow, action |
+                Demand (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Demand-crud" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'demand-crud'</note>
+            <tuv xml:lang="en">
+                <seg>Demand-crud (create story): As a Consumer, I want to create a Demand transaction, so I may be notified upon its availability in my Locale. |
+                    Demand-crud (read story): As a Consumer, I want to read the attributes of a Demand by reference number, so I can my search criteria. |
+                    Demand-crud (update story): As a Consumer, I want to update attributes of my Demand by sending its reference number and their replacement values, so I can modify my search criteria Retailers in my Locale. |
+                    Demand-crud (delete story): As a Consumer, I want to delete a Demand. |
+                    Demand-crud (create usage): Send "wii console locale:12345 US range:25 mi expires:2009-12-23" |
+                    Demand-crud (read usage): Send "!list ref:12345" |
+                    Demand-crud (update usage): Send "ref:12345 range:50 mi" |
+                    Demand-crud (delete usage): Send "!cancel ref:12345" |
+                    Demand-crud (see also): ref, consumer, retailer, demand, demand-tags, locale, range, expires, cancel, list |
+                    Demand-crud (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -E-          -->
+        <!-- =================== -->
+
+        <tu tuid="Expires" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'expiration'</note>
+            <tuv xml:lang="en">
+                <seg>Expires (story): As a Consumer, I want to associate an Expiration date Attribute with my Demand - which defaults to one month from creation, so I can express my limited interest in making a purchase |
+                Expires (usage): "expires:[yyyy-mm-dd]". Example: "expires:2009-12-23" |
+                Expires (rules): Valid formats are: [yyyy-mm-dd], [mm-dd-yyyy], [dd-mm-yyyy], with/without dashes "-". Date must be greater than, or, equal to current (today's) date |
+                Expires (see also): demand-crud, retailer |
+                Expires (AKA): expiration, exp |
+                Expires (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -F-          -->
+        <!-- =================== -->
+
+        <tu tuid="Fee" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'fee'</note>
+            <tuv xml:lang="en">
+                <seg>Fee (glossary): Optional follow-on to Free service, where Twetailer enables Consumer to purchase item directly from Retailer via Amazon for the equivalent of Amazon service fees. |
+                    Fee (see also): free |
+                    Fee (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Flag" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'flag'</note>
+            <tuv xml:lang="en">
+                <seg>Flag (story): As a Consumer, or, Retailer, I want to flag Twetailer of an issue when I attempted to Close a respective Demand, or, Proposal, so I can help improve the service. |
+                Flag (usage): Send "!problem ref:[demand-reference-number] note:[any-text] ". Example: "!problem ref:123456" note:product held was not the one proposed and confirmed |
+                Flag (rules): Consumers can only report problems on open Demands created by them. Retailers can only report problems on Demands the have confirmed proposal for. Note is optional. "Sentiment:-" is implied |
+                Flag (see also): flagged, state, state-flow, action |
+                Flag (AKA): problem |
+                Flag (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Flagged" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'flagged'</note>
+            <tuv xml:lang="en">
+            <seg>Flagged: transaction State triggered by a Consumer, or, Retailer to Flag a problem when attempting to Close transaction. |
+                Flagged (see also): state-flow, state |
+                Flagged (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Founders" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'founders'</note>
+            <tuv xml:lang="en">
+                <seg>Founders (glossary): Twetailer is Steven's original idea, with Dom at the realization stage ;-) |
+                    Founders (see also): founder |
+                    Founders (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Free" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'free'</note>
+            <tuv xml:lang="en">
+                <seg>Free (glossary): Twetailer matches tags between Consumer's Demands &amp; Retailer's Supply, confirms availability and provides retailer's store location for free.  However, the Retailer is only asked to hold the item &amp; therefore its availability is not guaranteed. |
+                    Free (see also): fee |
+                    Free (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Friend" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'friend'</note>
+            <tuv xml:lang="en">
+            <seg>Friend (story): As a Consumer, or, Retailer, I want to provide my Friend code, so they may be properly attributed for my membership. |
+                Friend (rules): Friend value is numeric and is not visibile by any user other than its owner. |
+                Friend (see also): register |
+                Friend (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Fulfil" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'fulfil'</note>
+            <tuv xml:lang="en">
+                <seg>Fulfil (story): As a Retailer, I want to fulfil / prepare / set aside / package the good, or, service reserved by the Consumer, so I can settle the account and get paid by Amazon. |
+                    Fulfil (rules): Manual process only performed with Twetailer Fee service |
+                    Fulfil (see also): fee, state-flow |
+                    Fulfil (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -G-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -H-          -->
+        <!-- =================== -->
+
+        <tu tuid="Help" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'help'</note>
+            <tuv xml:lang="en">
+                <seg>Help (story): As a user of Twetailer, I want to request Help by sending a one-word term in various formats, so I can better understand how Twetailer works |
+                Help (usage): SEND "help:[query-term]", or, "!help", or, "?". For example: "consumer?", or, "?consumer". Hint: You can query for Help on any capitalized help text keyword |
+                Help (rules): Help System currently supports only one word queries and will ignore everything after the first word. Query for words in singular form, regardless of case. Therefore "?consumer" = "?Consumer" = "?CONSUMER" |
+                Help (see also): ?, index, action |
+                Help (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -I-          -->
+        <!-- =================== -->
+
+        <tu tuid="IM" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'im'</note>
+            <tuv xml:lang="en">
+                <seg>IM (glossary): Acronym for "instant messaging" |
+                    IM (rules): Manual process only performed with Twetailer Fee service |
+                    IM (see also): jabber, gtalk |
+                    IM (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Invalid" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'invalid'</note>
+            <tuv xml:lang="en">
+                <seg>Invalid: transaction State triggered by Twetailer after a Demand has been created but is missing mandatory fields, like Locale |
+                Invalid (see also): state-flow, state |
+                Invalid (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -J-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -K-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -L-          -->
+        <!-- =================== -->
+
+        <tu tuid="List" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'list'</note>
+            <tuv xml:lang="en">
+                <seg>List (story): As a Consumer, or, Retailer, I want to List Objects, or, query Twetailer, so I can gain better insight into availability |
+                List (usage): Send "!list [object]" for all, or, "!list [object]:[object-id]". Example: Send "!list store", or, "!list store:12345" |
+                List (rules): Default behaviour is to list a Consumer's Demand objects. Example: Send "!list", or, Send "!list ref:123456" |
+                List (see also): demand, ref, store, action |
+                List (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Locale" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'locale'</note>
+            <tuv xml:lang="en">
+                <seg>Locale (story): As a Consumer, I want to instruct Twetailer to limit its search for my Demand, to Retailers within an area of my choice, so I can control how far I'm willing to travel to make the purchase |
+                Locale (usage): "locale:[postal/zip-code 2-letter-country-code]". Example: "locale:12345 us" |
+                Locale (rules): Required on initial Demand. Optional on subsequent Demands defaulting previous value. Valid 2-letter-country codes are: "us", or, "ca" |
+                Locale (see also): range, demand-crud, attribute |
+                Locale: (AKA): location, postalcode, zipcode |
+                Locale (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -M-          -->
+        <!-- =================== -->
+
+        <tu tuid="MI" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'mi'</note>
+            <tuv xml:lang="en">
+                <seg>MI (glossary): A range unit of measure meaning Miles. Another valid value is "km" meaning kilometers. |
+                    MI (rules): range, locale, demand |
+                    MI (see also): ki |
+                    MI (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -N-          -->
+        <!-- =================== -->
+
+        <tu tuid="Note" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'note'</note>
+            <tuv xml:lang="en">
+                <seg>Note (story):  |
+                Note (usage):  |
+                Note (rules):  |
+                Note (see also): close, flag, attribute |
+                Note (AKA):  |
+                Note (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -O-          -->
+        <!-- =================== -->
+
+        <tu tuid="Object" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'object'</note>
+            <tuv xml:lang="en">
+                <seg>Object(story): As Twetailer, I want to perform actions, or, manipulate objects and their attributes so I can deliver a valuable f(r)ee service. |
+                    Object (rules): Valid objects are: Consumer, Retailer, Store, Demand, Supply |
+                    Object (see also): list, state-flow, fee, free |
+                    Object (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Opened" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'opened'. ISSUE: source uses "open"</note>
+            <tuv xml:lang="en">
+                <seg>Opened: transaction State triggered by a Consumer after initial Demand creation |
+                Opened (see also): state-flow, state |
+                Opened (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -P-          -->
+        <!-- =================== -->
+
+        <tu tuid="Price" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'price'</note>
+            <tuv xml:lang="en">
+                <seg>Price (story):  |
+                Price (usage):  |
+                Price (rules):  |
+                Price (see also): attribute |
+                Price (AKA):  |
+                Price (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Proposal" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'proposal'</note>
+            <tuv xml:lang="en">
+                <seg>Proposal: the full description and price of the good/service a Retailer has in stock, and wants to Propose in response to a Consumer's Demand |
+                    Proposal (see also): tags, supply, demand |
+                    Proposal (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Propose" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'propose'</note>
+            <tuv xml:lang="en">
+                <seg>Propose (story): As a Retailer, I want to Propose an available good, or, service and its Price that I feel is a suitable match for a Published Demand, so I can always be closing sales |
+                Propose (usage - free): Send "!propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store]". Example: "!propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98". |
+                Propose (usage - fee): Send "!propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store] total:[total-to-go-on-credit-card]". Example: "!propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98 total:430.14" |
+                Propose (rules): Retailers can only Propose for Demands published to them. Twetailer will respond with Proposal number in format proposal:[demand-reference-number-incremental-proposal-number]. Example: proposal:12346-2 |
+                Propose (see also): proposal, proposed, state, state-flow, action. |
+                Propose (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Proposed" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'proposed'</note>
+            <tuv xml:lang="en">
+                <seg>Proposed: transaction State triggered by Retailer after proposing a suitable and available good, or, service for a Published Demand |
+                Proposed (see also): proposal, proposed, state, state-flow, action. |
+                Proposed (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Published" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'published'</note>
+            <tuv xml:lang="en">
+                <seg>Published: transaction State triggered by Twetailer after a Demand has been Published to Retailers, within the Demand's Locale and matching their Supply Tags |
+                Published (see also): state-flow, state |
+                Published (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -Q-          -->
+        <!-- =================== -->
+
+        <tu tuid="Quantity" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'quantity'</note>
+            <tuv xml:lang="en">
+                <seg>Quantity (story): As a Consumer, I want to instruct Twetailer to find one, or, more available units of my Demand, so I can buy everything from the same Retailer |
+                Quantity (usage): "qty:[numeric-quantity]". Example: "qty:2" |
+                Quantity (rules): Optional.  Defaults to one (1).  Must be greater than zero |
+                Quantity (see also): demand-crud, attribute |
+                Quantity (AKA): qty |
+                Quantity (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -R-          -->
+        <!-- =================== -->
+
+        <tu tuid="Range" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'range'</note>
+            <tuv xml:lang="en">
+                <seg>Range (story): As a Consumer, I want to control the area Twetailer searches for my Demand, so I can determine just how far I'm willing to travel to make my purchase |
+                Range (usage): "range:[distance 2-letter-distance-unit-of-measure]". Example: "range:50 mi" |
+                Range (rules): Distance must be a number greater than zero and less than 24906 mi, or, 40075 km. Distance-unit-of-measure is either "miles", or, " kilometers" and defaults to 25 mi, or, km |
+                Range (see also): 24906, 40075, mi, demand-crud, attribute |
+                Range (AKA): rng, distance |
+                Range (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Rate" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'rate'</note>
+            <tuv xml:lang="en">
+                <seg>Rate (story): As a Consumer, or, Retailer, I want to retrieve the Rating of others involved in my transaction so I can better judge with whom I want to deal with |
+                Rate (usage - Consumers): Send "!rate proposal:[proposal-number]" to see Retailer Rating. Example: Send "!rate proposal:[123456-2]". ... |
+                Rate (usage - Retailers): Send "!rate ref:[reference-number]" to see Consumer Rating. Example: Send "!rate ref:[123456]" |
+                Rate (rules): Twetailer will respond with a "Rating ref/proposal:[number] Closes 95%". Twetailer will not disclose any of the other party's information |
+                Rate (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Reference" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'reference'</note>
+            <tuv xml:lang="en">
+                <seg>Reference (story): As a Consumer, or, Retailer, I want an easy way to refer to a Demand, so I don't have to repeat all the Tags |
+                Reference (usage): "ref:[Demand-reference-number]". Example: "ref:123456" |
+                Reference (rules): System generated value when Demand created |
+                Reference (see also): demand-crud, attribute |
+                Reference (AKA): ref, id, identifier |
+                Reference (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Register" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'register'</note>
+            <tuv xml:lang="en">
+                <seg>Register (story): As a Retailer, I want to Register my Store with Twetailer, so I can Supply Tags and be notified of local Consumer Demand |
+                Register (usage): Send "!register name:[store-name] email:[retailer's-email-address] tel:[store's-business-telelphone-number]". Example: Send "!register name:Paw's Electronics email:[ryan@pawselectronics.com] tel:[514-555-1212]" |
+                Register (rules): Twetailer will validate Retailer as being a listed retail place of businesst. Retailer must accept Twetailer terms and conditions |
+                Register (since): v0.0 |</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Reserve" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'reserve'</note>
+            <tuv xml:lang="en">
+                <seg>Reserve (story): As a Consumer, I want to Reserve - via Amazon, the good, or, service Proposed by the Retailer, so I can complete the purchase as soon as possible, avoiding any delay, or risk in obtaining it |
+                Reserve (usage): Send "!reserve proposal:123456-2 total:430.14" |
+                Reserve (rules): Twetailer Fee Service. Consumers accept terms and conditions. Twetailer will respond with the Amazon web site address.  Consumer will have to open that address in a browser and complete transaction |
+                Reserve (see also): proposed, state, state-flow, <a href="http://docs.amazonwebservices.com/AmazonFPS/2008-09-17/FPSMarketplaceGuide/index.html?ReservingaPayment.html">Amazon's Reserve Payment</a>, action |
+                Reserve (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Reserved" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'reserved'</note>
+            <tuv xml:lang="en">
+                <seg>Reserved: transaction State triggered by the Consumer where they Reserve - via Amazon, the good/service Proposed by a Retailer |
+                Reserved (see also): reserve, state-flow, state |
+                Reserved (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Retailer" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'retailer'</note>
+            <tuv xml:lang="en">
+                <seg>Retailer (glossary): a person whose occupation is the wholesale purchase and retail sale of goods for profit. Send "?supply", or, "?tags" for additional help. |
+                Retailer (see also): consumer, help |
+                Retailer (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -S-          -->
+        <!-- =================== -->
+
+        <tu tuid="Sentiment" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'sentiment'</note>
+            <tuv xml:lang="en">
+                <seg>Sentiment (story):  |
+                Sentiment (usage):  |
+                Sentiment (rules): Valid values are "+", "-" |
+                Sentiment (see also): attribute |
+                Sentiment (AKA): emo |
+                Sentiment (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Settle" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'settle</note>
+            <tuv xml:lang="en">
+                <seg>Settle (story): As a Retailer, I want to notify Twetailer of my fulfilling of the Consumer's Reserved Proposal, so I can receive payment |
+                Settle (usage): Send "!settle proposal:[proposal-number]". Example: Send "!settle proposal:123456-2" |
+                Settle (rules): Twetailer Fee Service. Retailers can only Settle for Reserved Proposals they created |
+                Settle (see also): settled, fulfil, state, state-flow, action |
+                Settle (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Settled" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'settled'</note>
+            <tuv xml:lang="en">
+                <seg>Settled: transaction State triggered by Twetailer after the Retailer has fulfilled and been paid for the Reserved good, or, service |
+                Settled (see also): settle, reserve, fulfil, state |
+                Settled (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="State" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'state'</note>
+            <tuv xml:lang="en">
+                <seg>State (story): As Twetailer, I want to change the state, or, condition, of a transaction within its process, or, flow |
+                State (see also): state-flow, attribute |
+                State (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="State-flow" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'state-flow'</note>
+            <tuv xml:lang="en">
+                <seg>State-flow (glossary): State-Flow: Opened / Invalid -&gt; Published -&gt; Proposed -&gt; Confirmed -&gt; Reserved (fee) -&gt; Fulfilled (Fee) -&gt; Settled (Fee) -&gt; Closed / Flagged. See also: opened, invalid, published, proposed, confirmed, reserved, fee, free, fulfilled, settled, closed, flagged. |
+                State-flow (see also): state, attribute |
+                State-flow (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Store" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'store'</note>
+            <tuv xml:lang="en">
+                <seg>Store (glossary): A place where merchandise is offered for sale. |
+                Store (see also): retailer |
+                Store (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Supply" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'supply'</note>
+            <tuv xml:lang="en">
+                <seg>Supply (story): As a Retailer, I want to Supply Tags describing the goods, or, services I offer, so I may be notified upon Consumer's immediate interests |
+                Supply (usage): Send "!supply tags:[my-goods-services]". Example: Send "!supply tags:nintendo wii sony playstation psp, psp2, psp3 super mario fit" |
+                Supply (rules): Retailers must be registered before they can Supply tags |
+                Supply (see also): tags-retailer, register, action |
+                Supply (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -T-          -->
+        <!-- =================== -->
+
+        <tu tuid="Tags" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'tags'</note>
+            <tuv xml:lang="en">
+                <seg>Tags (see also): Consumer: tags-consumer, Retailer: tags-retailer, attribute |
+                Tags (AKA): tag, keywords, keys, tag, keyword, key |
+                Tags (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Tags-consumer" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'tags-consumer'</note>
+            <tuv xml:lang="en">
+                <seg>Tags-Consumer (story): As a Consumer, I want to describe the good, or, service I'm seeking to purchase with common keywords, or exact quoted phrases, so a Retailer within range of my locale can be notified of my immediate interest. |
+                    Tags-Consumer (usage - Create): Send "[space-separated-tags-describing-good-or-service] locale:[postal/zip-code 2-letter-country-code] expires:[yyyy-mm-dd]". Example: Send "wii console locale:12345 us expires:2009-12-23". ... |
+                    Tags-Consumer (usage - Replace): Send "ref:[my-Demand's-reference-number] tags:[my-replacement-tags]". Example: ref:123456 tags:playstation 2. ... |
+                    Tags-Consumer (usage - Add): Send "ref:[my-Demand's-reference-number] +tags:[my-tags-to-add]". Example: ref:123456 +tags:3. ... |
+                    Tags-Consumer (usage - Remove): Send "ref:[my-Demand's-reference-number] -tags:[my-tags-remove]". Example: ref:123456 -tags:2. ... |
+                    Tags-Consumer (rules): The action keyword "tags:" is optional for Demands. Example: Send "wii console" is equivalent to Send "tags:wii console"  |
+                    Tags-Consumer (see also): demand, ref, tags |
+                    Tags-Consumer (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Tags-retailer" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'tags-retailer'</note>
+            <tuv xml:lang="en">
+                <seg>Tags-Retailer (story): As a Retailer, I want to describe the good, or, service I supply with common keywords, or, exact quoted phrases, so I can be notified when a Consumer within range of my locale is interested in making a purchase |
+                    Tags-Retailer (usage - Create): Send "!supply tags:[space-separated-tags-describing-good-or-service]". Example: Send "!supply tags:game "nintendo wii" "sony playstation" psp". ... |
+                    Tags-Retailer (usage - Replace):  Send "!supply tags:[replacement-tags]". Example: Send "!supply tags:camera nikon "nikon d5000" canon". ... |
+                    Tags-Retailer (usage - Add): Send "!supply +tags:[my-tags-to-add]". Example:  Send "!supply +tags:dvd rent twilight". ... |
+                    Tags-Retailer (usage - Remove): Send "!supply -tags:[my-tags-to-add]". Example:  Send "!supply -tags:twilight" |
+                    Tags-Retailer (see also): supply, tags |
+                    Tags-Retailer (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Total" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the prefix 'total'</note>
+            <tuv xml:lang="en">
+                <seg>Total (story):  |
+                Total (usage):  |
+                Total (rules):  |
+                Total (see also): attribute |
+                Total (AKA):  |
+                Total (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Twitter" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'twitter'</note>
+            <tuv xml:lang="en">
+                <seg>Twitter (glossary): "Share and discover what's happening right now, anywhere in the world." |
+                Twitter (see also): http://twitter.com |
+                Twitter (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -U-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -V-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -W-          -->
+        <!-- =================== -->
+
+        <tu tuid="Wish" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'wish'</note>
+            <tuv xml:lang="en">
+                <seg>Wish (story): As a potential Consumer, I want to maintain a wish-list of Tags, so I, or, someone I share it with, might Demand one day |
+                Wish (usage): Send "!wish tags:[my-list-of-wish-tags]". Example: Send "!wish tags:"wii console"" |
+                Wish (rules): Potential Consumer must accept Twetailer terms and conditions |
+                Wish (since): Future release</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="WWW" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'www'</note>
+            <tuv xml:lang="en">
+                <seg>WWW (story):  |
+                WWW (usage): http://twetailer.com |
+                WWW (rules):  |
+                WWW (see also): action |
+                WWW (AKA): url |
+                WWW (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!--        -X-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -Y-          -->
+        <!-- =================== -->
+
+        <!-- =================== -->
+        <!--        -Z-          -->
+        <!-- =================== -->
+
+    </body>
 </tmx>
