@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
 	<header creationtool="developers" creationtoolversion="1.0"
 		datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
@@ -58,8 +58,8 @@
 			<prop type="x-tier">dojotk</prop>
 			<prop type="x-tier">javarb</prop>
 			<note>
-				IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
-				IMPORTANT: "English" should not be just translated!
+				IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).|
+				IMPORTANT: "English" should not be just translated!|
 				IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
 				           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
 			</note>
@@ -71,7 +71,12 @@
 		<tu tuid="unit_test_sample" datatype="Text">
 			<prop type="x-tier">dojotk</prop>
 			<prop type="x-tier">javarb</prop>
-			<note>test</note>
+			<note>
+				Just an entry made available for the unit tests.|
+				To enhance the reading of this document converted to HTML, insert
+				a trailing pipe sign at the end of a paragraph to force a return-to-line to be inserted.|
+				Otherwise, the text is rendered one one line (the browser will wrapped the text).
+			</note>
 			<tuv xml:lang="en">
 				<seg>N/A</seg>
 			</tuv>
@@ -81,7 +86,7 @@
 		<!-- Core engine definitions -->
 		<!-- ======================= -->
 
-		<tu tuid="command_state_opened" datatype="Text">
+		<tu tuid="cl_state_opened" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
 			<tuv xml:lang="en">
@@ -89,7 +94,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_invalid" datatype="Text">
+		<tu tuid="cl_state_invalid" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
 			<tuv xml:lang="en">
@@ -97,7 +102,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_published" datatype="Text">
+		<tu tuid="cl_state_published" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
 			<tuv xml:lang="en">
@@ -105,7 +110,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_confirmed" datatype="Text">
+		<tu tuid="cl_state_confirmed" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
 			<tuv xml:lang="en">
@@ -113,7 +118,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_closed" datatype="Text">
+		<tu tuid="cl_state_closed" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have</note>
 			<tuv xml:lang="en">
@@ -121,7 +126,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="command_state_cancelled" datatype="Text">
+		<tu tuid="cl_state_cancelled" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
 			<tuv xml:lang="en">
@@ -133,7 +138,7 @@
 		<!-- Command line related definitions -->
 		<!-- ================================ -->
 
-		<tu tuid="cmdLine_prefix_action" datatype="Text">
+		<tu tuid="cl_prefix_action" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -141,7 +146,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_expiration" datatype="Text">
+		<tu tuid="cl_prefix_expiration" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -149,7 +154,7 @@
 			</tuv>
 		</tu>
 		
-		<tu tuid="cmdLine_prefix_help" datatype="Text">
+		<tu tuid="cl_prefix_help" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -157,7 +162,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_locale" datatype="Text">
+		<tu tuid="cl_prefix_locale" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -165,7 +170,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_price" datatype="Text">
+		<tu tuid="cl_prefix_price" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the price attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -173,7 +178,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_proposal" datatype="Text">
+		<tu tuid="cl_prefix_proposal" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the proposal attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -181,7 +186,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_quantity" datatype="Text">
+		<tu tuid="cl_prefix_quantity" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -189,7 +194,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_reference" datatype="Text">
+		<tu tuid="cl_prefix_reference" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -197,7 +202,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_range" datatype="Text">
+		<tu tuid="cl_prefix_range" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the range attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -205,7 +210,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_state" datatype="Text">
+		<tu tuid="cl_prefix_state" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the state attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -213,7 +218,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_store" datatype="Text">
+		<tu tuid="cl_prefix_store" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the store attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -221,11 +226,11 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_tags" datatype="Text">
+		<tu tuid="cl_prefix_tags" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				For the command line arguments, accepted labels for the tags attribute.
-				Important: keywords MUST be comma-separated, without extra-spaces!
+				For the command line arguments, accepted labels for the tags attribute.|
+				Important: keywords MUST be comma-separated, without extra-spaces!|
 				IMPORTANT: the trailing comma is required to let tags being presented without prefix
 			</note>
 			<tuv xml:lang="en">
@@ -233,7 +238,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_prefix_total" datatype="Text">
+		<tu tuid="cl_prefix_total" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the total attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -241,7 +246,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_cancel" datatype="Text">
+		<tu tuid="cl_action_cancel" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -249,7 +254,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_close" datatype="Text">
+		<tu tuid="cl_action_close" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -257,7 +262,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_confirm" datatype="Text">
+		<tu tuid="cl_action_confirm" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -265,7 +270,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_decline" datatype="Text">
+		<tu tuid="cl_action_decline" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -273,7 +278,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_demand" datatype="Text">
+		<tu tuid="cl_action_demand" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -281,7 +286,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_help" datatype="Text">
+		<tu tuid="cl_action_help" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -289,7 +294,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_list" datatype="Text">
+		<tu tuid="cl_action_list" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -297,7 +302,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_propose" datatype="Text">
+		<tu tuid="cl_action_propose" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -305,7 +310,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_supply" datatype="Text">
+		<tu tuid="cl_action_supply" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -313,7 +318,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_wish" datatype="Text">
+		<tu tuid="cl_action_wish" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -321,7 +326,7 @@
 			</tuv>
 		</tu>
 
-		<tu tuid="cmdLine_action_www" datatype="Text">
+		<tu tuid="cl_action_www" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
 			<tuv xml:lang="en">
@@ -336,9 +341,9 @@
 		<tu tuid="help_keyword_list" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				This is the master list of help keywords.
-				Each value are separated by a comma from other.
-				Each value identifies an additional TMX unit, with the prefix 'help_keyword_equivalents_'
+				This is the master list of help keywords.|
+				Each value are separated by a comma from other.|
+				Each value identifies an additional TMX unit, with the prefix 'help_keyword_equivalents_'|
 				IMPORTANT: note the case of the keyword MUST be the same as the value of the tuid attribute into the lexicon TMX file.
 			</note>
 			<tuv xml:lang="en">
@@ -524,10 +529,9 @@
 
 		<tu tuid="cp_unexpected_error" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				Report an unexpected error while processing the raw command with the key {0} 
+				Report an unexpected error while processing the raw command with the key {0}|
 				{1} is an optional information, in English only. 
-			</note>
+			<note/>
 			<tuv xml:lang="en">
 				<seg>
 					The System encountered an unexpected error! {1}|
@@ -538,11 +542,17 @@
 
 		<tu tuid="cp_command_parser_unsupported_action" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				Error message generated when the given action {0} is not recognized
-			</note>
+			<note>Error message generated when the given action {0} is not recognized</note>
 			<tuv xml:lang="en">
 				<seg>The Action {0} is not recognized by the System. Send '!help action' for the list of available actions.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_parser_reserved_action" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>Error message generated when the given action {0} is not allowed by the user's profile</note>
+			<tuv xml:lang="en">
+				<seg>The Action {0} is not allowed by your profile. Send '!help {0}' for the list of available actions.</seg>
 			</tuv>
 		</tu>
 
@@ -562,6 +572,72 @@
 			</tuv>
 		</tu>
 
+		<tu tuid="cp_command_close_invalid_demand_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>The Demand identifier specified with the Close Command is invalid.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_close_acknowledge_demand_closing" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>0: is the demand reference</note>
+			<tuv xml:lang="en">
+				<seg>
+					The Demand {0} has been successfully closed.|
+					The system will now consolidate data and establish scores. Thanks for using Twetailer.
+				</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_close_demand_closed_proposal_to_close" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				0: is the demand reference|
+				1: is the proposal reference
+			</note>
+			<tuv xml:lang="en">
+				<seg>
+					The Demand {0} has been closed by the consumer. You should close the corresponding Proposal {1} too.|
+					Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
+				</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_close_invalid_proposal_id" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note/>
+			<tuv xml:lang="en">
+				<seg>The Proposal identifier specified with the Close Command is invalid.</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_close_acknowledge_proposal_closing" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>0: is the proposal reference</note>
+			<tuv xml:lang="en">
+				<seg>
+					The Proposal {0} has been successfully closed.|
+					The system will now consolidate data and establish scores. Thanks for using Twetailer.
+				</seg>
+			</tuv>
+		</tu>
+
+		<tu tuid="cp_command_close_proposal_closed_demand_to_close" datatype="Text">
+			<prop type="x-tier">javarb</prop>
+			<note>
+				0: is the proposal reference|
+				1: is the demand reference
+			</note>
+			<tuv xml:lang="en">
+				<seg>
+					The Proposal {0} has been closed by the retailer. You should close the corresponding Demand {1} too.|
+					Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
+				</seg>
+			</tuv>
+		</tu>
+
 		<tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note/>
@@ -573,8 +649,8 @@
 		<tu tuid="cp_command_confirm_invalid_state_demand" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				0: proposal key
-				1: demand key
+				0: proposal key|
+				1: demand key|
 				2: demand state
 			</note>
 			<tuv xml:lang="en">
@@ -585,15 +661,17 @@
 		<tu tuid="cp_command_confirm_acknowledge_confirmation" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				0: proposal key
-				1: demand key
-				2: demand tags
+				0: proposal key|
+				1: demand key|
+				2: demand tags|
 				3: store key
 			</note>
 			<tuv xml:lang="en">
-				<seg>Your demand reference:{1} for the tags:{2} is now in the state:confirmed.|
-				The store:{3} is going to be informed of your confirmation to put your product aside.|
-				Don't forget to close your demand once you have picked it up. Thanks for using Twetailer.
+				<seg>
+					Your confirmation for the proposal {0} is successfully.|
+					The demand reference:{1} for the tags:{2} is now in the state:confirmed.|
+					The store:{3} is going to be informed of your confirmation to put your product aside.|
+					Don't forget to close your demand once you have picked it up. Thanks for using Twetailer.
 				</seg>
 			</tuv>
 		</tu>
@@ -601,21 +679,23 @@
 		<tu tuid="cp_command_confirm_inform_about_confirmation" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				0: proposal key
-				1: proposal tags
-				2: consumer name
+				0: proposal key|
+				1: proposal tags|
+				2: demand key
 			</note>
 			<tuv xml:lang="en">
-				<seg>Your proposal:{0} has been accepted for the tags:{1}.|
-				Please prepare the product to deliver it to {2}.|
-				Don't forget to close the proposal once the product has been picked up. Thanks for using Twetailer.</seg>
+				<seg>
+					Your proposal:{0} has been accepted for the tags:{1}.|
+					Please prepare the product to deliver it for the Demand reference: {2}.|
+					Don't forget to close the proposal once the product has been picked up. Thanks for using Twetailer.
+				</seg>
 			</tuv>
 		</tu>
 
 		<tu tuid="cp_command_demand_acknowledge_creation" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Message confirming a successful demand creation.
+				Message confirming a successful demand creation.|
 				{0}: dynamically generated demand reference
 			</note>
 			<tuv xml:lang="en">
@@ -649,9 +729,7 @@
 
 		<tu tuid="cp_command_list_no_active_demand" datatype="Text">
 			<prop type="x-tier">javarb</prop>
-			<note>
-				Message informing that no result can be displayed for the !list command.
-			</note>
+			<note>Message informing that no result can be displayed for the !list command.</note>
 			<tuv xml:lang="en">
 				<seg>No Active Demand can be listed.</seg>
 			</tuv>
@@ -660,7 +738,7 @@
 		<tu tuid="cp_command_list_series_introduction" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Message introducing the series of messages to be sent in response to a !list command.
+				Message introducing the series of messages to be sent in response to a !list command.|
 				{0}: number of messages to be sent
 			</note>
 			<tuv xml:lang="en">
@@ -679,7 +757,7 @@
 		<tu tuid="cp_command_proposal_acknowledge_creation" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Message confirming a successful proposal creation.
+				Message confirming a successful proposal creation.|
 				{0}: dynamically generated proposal reference
 			</note>
 			<tuv xml:lang="en">
@@ -762,9 +840,9 @@
 		<tu tuid="dp_informNewDemand" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Inform a retailer about a new demand.
-				{0} is the reference of the demand.
-				{1} is the demand tags separated by a comma.
+				Inform a retailer about a new demand.|
+				{0} is the reference of the demand.|
+				{1} is the demand tags separated by a comma.|
 				{2} is the expiration date in ISO format.
 			</note>
 			<tuv xml:lang="en">
@@ -811,8 +889,8 @@
 		<tu tuid="pv_proposalHaveInvalidDemandReference" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Inform the retailer that the given reference is invalid.
-				{0} is the proposal reference.
+				Inform the retailer that the given reference is invalid.|
+				{0} is the proposal reference.|
 				{1} is the demand reference
 			</note>
 			<tuv xml:lang="en">
@@ -827,10 +905,10 @@
 		<tu tuid="pp_informNewProposal" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Inform a consumer about a new proposal.
-				{0} is the reference of the proposal.
-				{1} is the reference of the demand.
-				{2} is the proposal tags.
+				Inform a consumer about a new proposal.|
+				{0} is the reference of the proposal.|
+				{1} is the reference of the demand.|
+				{2} is the proposal tags.|
 				{3} is the reference of the store where the retailer works.
 			</note>
 			<tuv xml:lang="en">
@@ -841,9 +919,9 @@
 		<tu tuid="pp_informDemandNotPublished" datatype="Text">
 			<prop type="x-tier">javarb</prop>
 			<note>
-				Inform the retailer his proposal cannot be submitted to the demand.
-				{0} is the reference of the proposal.
-				{1} is the reference of the demand.
+				Inform the retailer his proposal cannot be submitted to the demand.|
+				{0} is the reference of the proposal.|
+				{1} is the reference of the demand.|
 				{2} is the localized demand state.
 			</note>
 			<tuv xml:lang="en">

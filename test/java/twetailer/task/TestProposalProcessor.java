@@ -145,7 +145,7 @@ public class TestProposalProcessor {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("pp_informNewProposal", new Object[] { proposalKey, demandKey, "test ", storeKey }, Locale.ENGLISH),
+                LabelExtractor.get("pp_informNewProposal", new Object[] { proposalKey, demandKey, "test", storeKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());

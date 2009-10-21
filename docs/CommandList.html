@@ -1,129 +1,228 @@
 <html>
 <head>
-<title>Command List</title>
-<style type="text/css">
-.done {
-	color: blue;
-}
-
-.notdone {
-	color: orange;
-}
-</style>
+	<title>Command List</title>
+	<style type="text/css">
+		dl dt { font-family: courier; }
+		.done { color: green; }
+		.notdone { color: orange; }
+	</style>
 </head>
 <body>
-<h1>Actions</h1>
+<h1>Introduction</h1>
+
+<p>This page contains information about:</p>
+<ul>
+  <li>Features <span class="done" style="font-family: courier;font-style: italic;">already</span> implemented.</li>
+  <li>Feature to be implemented <span class="notdone" style="font-family: courier;font-style: italic;">soon</span> (in the coming milestones).</li>
+</ul>
+
+<p>The various sections cover:</p>
+<ul>
+    <li><a href="classes">Object types</a>.</li>
+    <li><a href="states">Object's states</a>.</li>
+    <li><a href="prefixes">Attribute prefixes</a>.</li>
+    <li><a href="actions">Possible actions</a>.</li>
+</ul>
+
+<h1><a name="classes"></a>Object types</h1>
 
 <dl>
-	<dt>help</dt>
-	<dd class="done">[]: send generic message</dd>
-	<dd class="done">[keyword]: send message associated with the
-	keyword</dd>
+	<dt>Entity</dt>    <dd class="done">Base class.</dd>
+
+	<dt>RawCommand</dt>    <dd class="done">Message as received by the system with the originator's information.</dd>
+
+	<dt>Command</dt>    <dd class="done">Abstract class for the parsed commands.</dd>
+
+	<dt>Demand</dt>    <dd class="done">Description of a product or a service a consumer is looking for and that can be pushed to listening retailers.</dd>
+
+	<dt>Wish</dt>    <dd class="notdone">Description of a product or a service a consumer is looking for and that can be shared with friends, who at one point can transformed them in demands.</dd>
+
+	<dt>Proposal</dt>    <dd class="done">Description of a product or service a retailer proposes in response to a demand.</dd>
+
+	<dt>Consumer</dt>    <dd class="done">Profile of any user submitting demands or wishes to the system.</dd>
+
+	<dt>Retailer</dt>    <dd class="done">Profile of an authorized user that can listen to demand tags into around his/her store location and that can post proposals in response to demands.</dd>
+
+	<dt>Store</dt>    <dd class="done">Description of real store (address, opening hours, etc.) where consumers can pick up the demanded products.</dd>
+
+	<dt>Location</dt>    <dd class="done">Spot on earth, ultimately represented by its geo-coordinates</dd>
+
+	<dt>Product</dt>    <dd class="notdone">Description of a real product consumers can be proposed and they can confirm.</dd>
+
+	<dt>Comment</dt>    <dd class="notdone">Message end-users can attached to stores and products.</dd>
+
+	<dt>Evaluation</dt>    <dd class="notdone">Statistical information produced by the system for consumers, retailers, and stores.</dd>
+
+	<dt>3PVerifier</dt>    <dd class="notdone">Third party provider authenticating stores and/or retailers.</dd>
+
+	<dt>3PRating</dt>    <dd class="notdone">Third party provider rating stores and/or retailers.</dd>
 </dl>
+
+<center>
+	<img src="class-diagram.png" />
+</center>
+
+<h1><a name="states"></a>States</h1>
+
+<dl>
+	<dt>opened</dt>
+	<dd class="done">An object (like a demand or a proposal) has just been created or updated, not yet validated.</dd>
+
+	<dt>published</dt>
+	<dd class="done">An object has just been validated and is ready to be pushed to other actors.</dd>
+
+	<dt>confirmed</dt>
+	<dd class="done">A proposal has just been accepted by the demand owner. It changes the state of the demand too.</dd>
+
+	<dt>closed</dt>
+	<dd class="done">The product or service offered by a proposal in response to a demand has just been served.</dd>
+
+	<dt>canceled</dt>
+	<dd class="done">An object has been canceled by its owner.</dd>
+
+	<dt>marked-for-deletion</dt>
+	<dd class="notdone">A canceled object has been been marked for deletion by its owner.</dd>
+
+	<dt>verification-pending</dt>
+	<dd class="notdone">A self-registered retailer has just been created, not yet validated.</dd>
+	<dd>Note that a retailer account created or updated by another validated retailer goes into the state <code>confirmed</code>.</dd>
+</dl>
+
+<h1><a name="prefixes"></a>Prefixes</h1>
+
+<p>
+	Lusanga/Twetailer offers a command-line interaction model: end-users have to compose small messages to interact with the
+	system. These messages are technology agnostic: can be sent by e-mail, text messages, and even voice messages. The syntax
+	is very basic: without indication, all given pieces of text are considered as tags. To transmit other information, users
+	have to prefix them, as in <code>range: 25km</code> when they want to specify that the search should be done 25km around
+	their default or specification location.
+</p>
+
+<dl>
+	<dt>action, !</dt>
+	<dd class="done">The main attribute used to identify the type of action the user wants to achieve.</dd>
+	<dd class="done">Default: <code>action:demand</code>.</dd>
+
+	<dt>expiration</dt>
+	<dd class="done">Introduces a date in the future.</dd>
+	<dd class="done">Can be: <code>YYYY-MM-DD</code> or <code>YY-MM-DD</code> or <code>MM-DD</code> (with or without dashes) and the time is considered being <code>00:00</code>.</dd>
+	<dd class="notdone">Can be: <code>month DD, YYYY</code> or <code>month DD</code> with the <code>month</code> in the user's preferred language.</dd>
+	<dd class="notdone">Can be: HH:MM (seconds are ignored) and the considered day is today or tomorrow.</dd>
+	<dd class="notdone">Can be: <code>h(am/pm)</code> or <code>h:mm(ap/pm)</code> (seconds are ignored) and the considered day is today or tomorrow.</dd>
+	<dd class="notdone">Can be any variation of date and time</dd>
+
+	<dt>help, ?</dt>
+	<dd class="done">Delivers the help message attached to the first specified keyword.</dd>
+
+	<dt>locale, postalCode</dt>
+	<dd class="done">Introduces postal and country codes.</dd>
+	<dd class="done">Can be: <code>##### US</code>.</dd>
+	<dd class="done">Can be: <code>###### CA</code>.</dd>
+	<dd class="done">At one point in the process, the given postal code is checked against a public database available for the country.</dd>
+	<dd class="done">If the given postal code is valid, the corresponding geo-coordinates are attached to <code>Location</code> record.</dd>
+	<dd class="notdone">Can be: <code>(lat)x(long)</code></dd>
+	<dd class="done">Default: locale of the last submitted demand.</dd>
+
+	<dt>price, unitPrice, cost</dt>
+	<dd class="done">Introduces a unit price, without tax in the currency of the store country.</dd>
+	<dd class="notdone">The money sign should be ignored, like in <code>$5</code>.</dd>
+
+	<dt>proposal</dt>
+	<dd class="done">Introduces the identifier of a <code>Proposal</code>.</dd>
+
+	<dt>quantity, qty</dt>
+	<dd class="done">Introduces the quantity of demanded products or the quantity of offered products.</dd>
+	<dd class="done">Default: <code>1</code>.</dd>
+
+	<dt>reference</dt>
+	<dd class="done">Introduces the identifier of a <code>Demand</code>.</dd>
+
+	<dt>range, rng, distance</dt>
+	<dd class="done">Introduces a distance used to define a region around the <code>Location</code> attached to a <code>Demand</code>.</dd>
+	<dd class="done">Can be: <code>###### km</code>.</dd>
+	<dd class="done">Can be: <code>###### (MI/miles)</code>.</dd>
+	<dd class="done">Default: <code>50km</code>.</dd>
+
+	<dt>state</dt>
+	<dd class="done">Introduces the current <a href="#states">state</a> of an <a href="#classes">object</a>.</dd>
+
+	<dt>tags, tag, keyword, keywords, []</dt>
+	<dd class="done">Introduces the description of the action.</dd>
+	<dd class="done">The prefix, like <code>tags:</code>, is optional.</dd>
+	<dd class="done">If the prefix is omitted, all elements submitted that have not been associated to another prefix are considered being part of the tags.</dd>
+	<dd class="done">If the prefix is present, all elements submitted <u>following the tag</u> and that have not been associated to another prefix are considered being part of the tags.</dd>
+
+	<dt>total</dt>
+	<dd class="done">Introduces the total transaction price, <u>all taxes included</u>, in the currency of the store country.</dd>
+	<dd class="notdone">The money sign should be ignored, like in <code>$5</code>.</dd>
+</dl>
+
+<h1><a name="states"></a>Actions</h1>
 
 <dl>
 	<dt>cancel</dt>
-	<dd class="done">[demandKey]: cancel demand (restriction: owner),
-	<span class="notdone">with notification of the cancellation to
-	associated proposal owners</span></dd>
-	<dd class="notdone">[proposalKey]: cancel proposal (restriction:
-	owner)</dd>
-</dl>
+	<dd class="done">[demandKey]: cancel demand (restriction: owner), <span class="notdone">with notification of the cancellation to associated proposal owners</span></dd>
+	<dd class="notdone">[proposalKey]: cancel proposal (restriction: owner).</dd>
 
-<dl>
 	<dt>close</dt>
-	<dd class="notdone">[demandKey]: confirm the delivery of the
-	product (restriction: owner)</dd>
-	<dd class="notdone">[proposalKey]: confirm the delivery of the
-	product (restriction: owner)</dd>
-</dl>
+	<dd class="notdone">[demandKey]: confirm the delivery of the product (restriction: owner).</dd>
+	<dd class="notdone">[proposalKey]: confirm the delivery of the product (restriction: owner).</dd>
 
-<dl>
 	<dt>confirm</dt>
-	<dd class="notdone">[proposalKey]: select one proposal
-	(restriction: demand.owner), with the notification to the proposal
-	owner with consumer information</dd>
-</dl>
+	<dd class="notdone">[proposalKey]: select one proposal (restriction: demand.owner), with the notification to the proposal owner with consumer information.</dd>
 
-<dl>
 	<dt>decline</dt>
-	<dd class="notdone">proposalKey]: refuse one proposal
-	(restriction: demand.owner), with the notification to the proposal
-	owner</dd>
-</dl>
+	<dd class="notdone">proposalKey]: refuse one proposal (restriction: demand.owner), with the notification to the proposal owner.</dd>
 
-<dl>
 	<dt>demand</dt>
-	<dd class="done">[tags, ...]: create a demand</dd>
-	<dd class="done">[demandKey, tags, ...]: update a demand
-	(restriction: owner)</dd>
-</dl>
+	<dd class="done">[tags, ...]: create a demand.</dd>
+	<dd class="done">[demandKey, tags, ...]: update a demand (restriction: owner).</dd>
 
-<dl>
+	<dt>help</dt>
+	<dd class="done">[]: send generic message.</dd>
+	<dd class="done">[keyword]: send message associated with the keyword.</dd>
+
 	<dt>list</dt>
-	<dd class="done">[]: list all demands (restriction: limited to
-	owner's demand, <span class="notdone">in the state {invalid,
-	published, confirmed}</span>)</dd>
-	<dd class="done">[demandKey]: list one demand (restriction: owner
-	<span class="notdone">or one associated proposal owner</span>)</dd>
-	<dd class="notdone">[proposalKey]: list one proposal (restriction:
-	owner <span class="notdone">or the associated demand owner</span>)</dd>
-	<dd class="notdone">[storeKey]: list one store information</dd>
-</dl>
+	<dd><a href="#action:list">See sub-section below</a>.</dd>
 
-<dl>
 	<dt>propose</dt>
-	<dd class="done">[tags, ...]: create a proposal (restriction: only
-	retailers can propose <span class="notdone">for demands that has
-	been sent to them or their store</span>)</dd>
-	<dd class="done">[proposalKey, tags, ...]: update one proposal
-	(restriction: owner <span class="notdone">or another retailer
-	from the same store</span>)</dd>
-</dl>
+	<dd class="done">[tags, ...]: create a proposal (restriction: only retailers can propose <span class="notdone">for demands that has been sent to them or their store</span>).</dd>
+	<dd class="done">[proposalKey, tags, ...]: update one proposal (restriction: owner <span class="notdone">or another retailer from the same store</span>).</dd>
 
-<dl>
 	<dt>supply</dt>
-	<dd class="notdone">tags]: add supplied tags to the retailer
-	account</dd>
-</dl>
+	<dd class="notdone">[tags]: add supplied tags to the retailer account.</dd>
 
-<dl>
 	<dt>wish</dt>
-	<dd class="notdone">[tags, ...]: create a wish</dd>
-	<dd class="notdone">[wishKey, tags, ...]: update one wish
-	(restriction: owner)</dd>
-</dl>
+	<dd class="notdone">[tags, ...]: create a wish.</dd>
+	<dd class="notdone">[wishKey, tags, ...]: update one wish (restriction: owner).</dd>
 
-<dl>
 	<dt>www</dt>
 	<dd class="notdone">?</dd>
 </dl>
 
-<h1>Action: list</h1>
+<h2><a name="action:list"></a>Action: list</h2>
 
 <dl>
 	<dt>[]</dt>
-	<dd class="done">All consumer demand, <span class="notdone">in the state {invalid,
-	published, confirmed}</span></dd>
-</dl>
+	<dd class="done">All consumer demands, <span class="notdone">in the state {<code>invalid</code>, <code>published</code>, <code>confirmed</code>}</span></dd>
 
-<dl>
 	<dt>[demandKey]</dt>
-	<dd class="done">Identified demand, <span class="notdone"> with the list of proposals</span></dd>
-</dl>
+	<dd class="done">Identified demand, <span class="notdone"> with the list of proposals</span>.</dd>
+	<dd class="done">Restriction: owner <span class="notdone">or one associated proposal owner</span>.</dd>
+	<dd class="notdone">Meta-character <code>*</code> for all consumer demands, equivalent to submitting <code>!list</code> without arguments.</dd>
 
-<dl>
 	<dt>[proposalKey]</dt>
-	<dd class="done">Identified proposal, <span class="notdone"> with the store information</span></dd>
-</dl>
+	<dd class="done">Identified proposal, <span class="notdone"> with the store information</span>.</dd>
+	<dd class="done">Restriction: owner <span class="notdone">or associated demand owner</span>.</dd>
+	<dd class="notdone">Meta-character <code>*</code> for all retailer proposals.</dd>
 
-<dl>
 	<dt>[storeKey]</dt>
 	<dd class="notdone">Identified store with:<ul>
 		<li>the store address, phone number, Web site, and opening hours</li>
 		<li>statistics for the store: total number of proposals, total number of closed demands, number of pending proposals, number of employees</li>
 		<li>statistics from third parties like Praize/Yelp/etc.</li>
 	</ul></dd>
+	<dd class="notdone">Meta-character <code>*</code> for all stores in the default or the specified area.</dd>
 </dl>
 
 </body>

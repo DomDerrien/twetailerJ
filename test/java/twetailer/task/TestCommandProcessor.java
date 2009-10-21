@@ -20,8 +20,8 @@ import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -371,6 +371,24 @@ public class TestCommandProcessor {
     public void testParsePriceShort() throws ClientException, ParseException {
         JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pri: 25.99");
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
+    }
+
+    @Test
+    public void testParseProposalI() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal:1234567890");
+        assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
+    }
+
+    @Test
+    public void testParseProposalII() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal: \t 1234567890");
+        assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
+    }
+
+    @Test
+    public void testParseProposalShort() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pro: 1234567890");
+        assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
     }
 
     @Test
@@ -878,6 +896,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(0L, key.longValue());
                 throw new DataSourceException("Done in purpose");
             }
         };
@@ -887,14 +906,24 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessRawCommandWithIncompleteMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+    public void testProcessRawCommandWithIncompleteMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setKey(commandKey);
+                rawCommand.setSource(Source.simulated);
+                // No command
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+                assertEquals(commandKey, rawCommand.getKey());
+                assertNotNull(rawCommand.getErrorMessage());
+                assertNotSame("", rawCommand.getErrorMessage());
                 rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
@@ -907,7 +936,93 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessRawCommandWithIncompleteMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final Long commandKey = 12345L;
+        // Mock RawCommandOperations
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(commandKey);
+                rawCommand.setCommand("!list test blah-blah-bla");
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+                assertEquals(commandKey, rawCommand.getKey());
+                assertNotNull(rawCommand.getErrorMessage());
+                assertNotSame("", rawCommand.getErrorMessage());
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        // Mock DemandOperations
+        final IllegalArgumentException exception = new IllegalArgumentException("Done in purpose");
+        DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) {
+                throw exception;
+            }
+        };
+        CommandProcessor.demandOperations = demandOperations;
+
+        BaseConnector.resetLastCommunicationInSimulatedMode();
+
+        CommandProcessor.processRawCommands(0L);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessRawCommandWithIncompleteMessageIII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final Long commandKey = 12345L;
+        // Mock RawCommandOperations
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(commandKey);
+                rawCommand.setCommand("!list test blah-blah-bla " + CommandProcessor.DEBUG_INFO_SWITCH);
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+                assertEquals(commandKey, rawCommand.getKey());
+                assertNotNull(rawCommand.getErrorMessage());
+                assertNotSame("", rawCommand.getErrorMessage());
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        // Mock DemandOperations
+        final IllegalArgumentException exception = new IllegalArgumentException("Done in purpose");
+        DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) {
+                throw exception;
+            }
+        };
+        CommandProcessor.demandOperations = demandOperations;
+
+        BaseConnector.resetLastCommunicationInSimulatedMode();
+
+        CommandProcessor.processRawCommands(0L);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey, CommandProcessor.getDebugInfo(exception) }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -916,6 +1031,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand("? demand");
@@ -936,6 +1052,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand("!" + action + " ref:10 wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
@@ -952,11 +1069,43 @@ public class TestCommandProcessor {
     }
 
     @Test
+    public void testProcessRawCommandWithUnallowedAction() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final String action = Action.propose.toString();
+        // Mock RawCommandOperations
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                rawCommand.setCommand("!" + action + " wii console");
+                return rawCommand;
+            }
+        };
+        // Mock RetailerOperations
+        RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Retailer>();
+            }
+        };
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        CommandProcessor.processRawCommands(0L);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
     public void testProcessRawCommandWithPrefixI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand("help: " + CommandSettings.Prefix.action.toString());
@@ -978,6 +1127,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand("!help " + CommandSettings.Prefix.action.toString());
@@ -999,6 +1149,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand("? " + CommandSettings.Prefix.action.toString());
@@ -1020,6 +1171,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand(CommandSettings.Prefix.action.toString() + "?");
@@ -1041,6 +1193,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand(CommandSettings.Action.demand.toString() + "?");
@@ -1062,6 +1215,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand(CommandSettings.State.invalid.toString() + "?");
@@ -1088,6 +1242,7 @@ public class TestCommandProcessor {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
                 rawCommand.setCommand("help: " + helpKeywordEquivalent);
@@ -1229,6 +1384,7 @@ public class TestCommandProcessor {
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
         };
@@ -1269,6 +1425,7 @@ public class TestCommandProcessor {
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
         };
@@ -1351,9 +1508,28 @@ public class TestCommandProcessor {
         assertEquals(LabelExtractor.get("cp_command_cancel_missing_demand_id", Locale.ENGLISH), sentText);
     }
 
-    @Test(expected=ClientException.class)
-    public void testProcessCommandClose() throws TwitterException, DataSourceException, ClientException {
+    @Test
+    public void testProcessCommandCloseI() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(State.closed, demand.getState());
+                return demand;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1365,16 +1541,52 @@ public class TestCommandProcessor {
         rawCommand.setSource(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
     }
 
-    @Ignore
-    @Test(expected=ClientException.class)
-    public void testProcessCommandConfirm() throws TwitterException, DataSourceException, ClientException {
+    @Test
+    public void testProcessCommandCloseII() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
+        final State demandState = State.confirmed;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(demandState);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(State.closed, demand.getState());
+                return demand;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                assertTrue(parameters.containsKey(Proposal.DEMAND_KEY));
+                assertEquals(demandKey, (Long) parameters.get(Proposal.DEMAND_KEY));
+                assertTrue(parameters.containsKey(Command.STATE));
+                assertEquals(demandState.toString(), (String) parameters.get(Command.STATE));
+                return new ArrayList<Proposal>();
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1382,6 +1594,641 @@ public class TestCommandProcessor {
         rawCommand.setSource(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandCloseIII() throws TwitterException, DataSourceException, ClientException {
+        final Long demandKey = 5555L;
+        final State demandState = State.confirmed;
+        final Long proposalKey = 6666L;
+        final Long retailerKey = 7777L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(demandState);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(State.closed, demand.getState());
+                return demand;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                assertTrue(parameters.containsKey(Proposal.DEMAND_KEY));
+                assertEquals(demandKey, (Long) parameters.get(Proposal.DEMAND_KEY));
+                assertTrue(parameters.containsKey(Command.STATE));
+                assertEquals(demandState.toString(), (String) parameters.get(Command.STATE));
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setSource(Source.simulated);
+                List<Proposal> proposals = new ArrayList<Proposal>();
+                proposals.add(proposal);
+                return proposals;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public Retailer getRetailer(PersistenceManager pm, Long key) {
+                assertEquals(retailerKey, key);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                return retailer;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandCloseIV() throws TwitterException, DataSourceException, ClientException {
+        final Long demandKey = 5555L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_close_invalid_demand_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandCloseV() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 5555L;
+        final Long consumerKey = 6666L;
+        final Long retailerKey = 7777L;
+        final State proposalState = State.confirmed;
+
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Retailer.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(retailerKey, rKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setSource(Source.simulated);
+                proposal.setState(proposalState);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(State.closed, proposal.getState());
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                assertTrue(parameters.containsKey(Demand.PROPOSAL_KEYS));
+                assertEquals(proposalKey, (Long) parameters.get(Demand.PROPOSAL_KEYS));
+                assertTrue(parameters.containsKey(Command.STATE));
+                assertEquals(proposalState.toString(), (String) parameters.get(Command.STATE));
+                return new ArrayList<Demand>();
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandCloseVI() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 5555L;
+        final Long consumerKey = 6666L;
+        final Long retailerKey = 7777L;
+        final Long demandKey = 888888L;
+        final State proposalState = State.confirmed;
+
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Retailer.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(retailerKey, rKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setSource(Source.simulated);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(State.closed, proposal.getState());
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                assertTrue(parameters.containsKey(Demand.PROPOSAL_KEYS));
+                assertEquals(proposalKey, (Long) parameters.get(Demand.PROPOSAL_KEYS));
+                assertTrue(parameters.containsKey(Command.STATE));
+                assertEquals(proposalState.toString(), (String) parameters.get(Command.STATE));
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(proposalState);
+                demand.setOwnerKey(consumerKey);
+                demand.setSource(Source.simulated);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(proposalKey);
+                return consumer;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.consumerOperations = consumerOperations;
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandCloseVII() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 5555L;
+        final Long consumerKey = 6666L;
+        final Long retailerKey = 7777L;
+        final State proposalState = State.confirmed;
+
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Retailer.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(retailerKey, rKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setSource(Source.simulated);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(State.closed, proposal.getState());
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                assertTrue(parameters.containsKey(Demand.PROPOSAL_KEYS));
+                assertEquals(proposalKey, (Long) parameters.get(Demand.PROPOSAL_KEYS));
+                assertTrue(parameters.containsKey(Command.STATE));
+                assertEquals(proposalState.toString(), (String) parameters.get(Command.STATE));
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandCloseVIII() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 5555L;
+        final Long consumerKey = 6666L;
+
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Retailer.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_close_invalid_proposal_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandCloseIX() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_close_invalid_parameters", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandConfirmI() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 4444L;
+        final Long demandKey = 5555L;
+        final Long retailerKey = 6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setState(State.published);
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(State.confirmed, proposal.getState());
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.addCriterion("test");
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.published);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(State.confirmed, demand.getState());
+                return demand;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public Retailer getRetailer(PersistenceManager pm, Long key) {
+                assertEquals(retailerKey, key);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setPreferredConnection(Source.simulated);
+                return retailer;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText); // Informs the consumer
+        assertTrue(sentText.contains(proposalKey.toString()));
+        assertTrue(sentText.contains(demandKey.toString()));
+        assertTrue(sentText.contains(storeKey.toString()));
+        assertTrue(sentText.contains("test"));
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText); // Informs the retailer
+        assertTrue(sentText.contains(proposalKey.toString()));
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandConfirmII() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 4444L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_confirm_invalid_proposal_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandConfirmIII() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 4444L;
+        final Long demandKey = 5555L;
+        final Long retailerKey = 6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setState(State.published);
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_confirm_invalid_proposal_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandConfirmIV() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 4444L;
+        final Long demandKey = 5555L;
+        final Long retailerKey = 6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setState(State.published);
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.addCriterion("test");
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.invalid); // Blocks the confirmation
+                return demand;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText); // Informs the consumer
+        assertTrue(sentText.contains(proposalKey.toString()));
+        assertTrue(sentText.contains(demandKey.toString()));
+        assertTrue(sentText.contains(State.invalid.toString()));
     }
 
     @Test(expected=ClientException.class)
@@ -1742,6 +2589,117 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_list_invalid_demand_id", new Object[] { demandKey }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandListVII() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 2222L;
+        final Long consumerKey = 3333L;
+        final Long retailerKey = 4444L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertEquals(retailerKey, rKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                return proposal;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandListVIII() throws TwitterException, DataSourceException, ClientException {
+        final Long proposalKey = 2222L;
+        final Long consumerKey = 3333L;
+        final Long retailerKey = 4444L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertEquals(retailerKey, rKey);
+                throw new DataSourceException("Done in purpose");
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_invalid_proposal_id", new Object[] { proposalKey }, Locale.ENGLISH), sentText);
     }
 
     @Test

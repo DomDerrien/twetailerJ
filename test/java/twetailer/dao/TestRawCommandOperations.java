@@ -2,6 +2,8 @@ package twetailer.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -90,4 +92,26 @@ public class TestRawCommandOperations {
         new RawCommandOperations().getRawCommand(888L);
     }
 
+    @Test
+    public void testUpdate() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        RawCommandOperations ops = new RawCommandOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+        };
+        RawCommand object = new RawCommand();
+        object.setEmitterId("emitter");
+        object = ops.createRawCommand(pm, object); // Gives the PersistenceManager so it won't be closed
+        object.setEmitterId(null);
+        object.setErrorMessage("error");
+
+        RawCommand updated = ops.updateRawCommand(object);
+        assertNotNull(updated);
+        assertEquals(object.getKey(), updated.getKey());
+        assertNull(object.getEmitterId());
+        assertEquals("error", object.getErrorMessage());
+        assertTrue(pm.isClosed());
+    }
 }

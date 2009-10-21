@@ -16,6 +16,9 @@ public class RawCommand extends Entity {
     private String emitterId;
 
     @Persistent
+    private String errorMessage;
+
+    @Persistent
     private Long messageId;
 
     @Persistent
@@ -40,6 +43,14 @@ public class RawCommand extends Entity {
 
     public void setEmitterId(String sId) {
         emitterId = sId;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public Long getMessageId() {

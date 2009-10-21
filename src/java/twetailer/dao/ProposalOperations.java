@@ -1,6 +1,7 @@
 package twetailer.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -104,7 +105,7 @@ public class ProposalOperations extends BaseOperations {
      * Use the given reference to get the corresponding Proposal instance for the identified retailer
      *
      * @param key Identifier of the proposal
-     * @param ownerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the proposal owner
      * @param storeKey Identifier of the proposal owner's store
      * @return First proposal matching the given criteria or <code>null</code>
      *
@@ -127,7 +128,7 @@ public class ProposalOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the proposal
-     * @param ownerKey Identifier of the demand owner
+     * @param ownerKey Identifier of the proposal owner
      * @param storeKey Identifier of the proposal owner's store
      * @return First proposal matching the given criteria or <code>null</code>
      *
@@ -197,6 +198,28 @@ public class ProposalOperations extends BaseOperations {
         getLogger().warning("Select proposal(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Proposal> proposals = (List<Proposal>) queryObj.execute(value);
+        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return proposals;
+    }
+
+    /**
+     * Use the given pairs {attribute; value} to get the corresponding Proposal instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of proposals matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query query = pm.newQuery(Proposal.class);
+        Object[] values = prepareQuery(query, parameters, limit);
+        getLogger().warning("Select proposal(s) with: " + query.toString());
+        // Select the corresponding resources
+        List<Proposal> proposals = (List<Proposal>) query.executeWithArray(values);
         proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
         return proposals;
     }

@@ -214,7 +214,7 @@
 		<!-- Produce documentations -->
 		<antcall target="step-javadoc-produce" />
 		<antcall target="step-jsdoc-produce" />
-		<antcall target="step-html-lexicon-produce" />
+		<antcall target="step-tmxdoc-produce" />
 		<!-- Produce the JARs -->
 		<antcall target="step-package-jar" />
 		<!-- Generate timestamp or use static one -->
@@ -268,6 +268,13 @@
 	<!-- Property set later by "step-info-get" because <property /> are immutable
 	<property name="rwa.taggedDir" value="tagged" />
 	-->
+
+	<xmlcatalog id="tmx.dtd">
+		<dtd
+			location="deps/tools/i18n/tmx14.dtd"
+			publicId="-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN"
+		/>
+	</xmlcatalog>
 
 	<path id="tmxconverter.classpath">
 		<pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
@@ -1112,13 +1119,15 @@
 		</java>
 	</target>
 
-	<target name="step-html-lexicon-produce">
+	<target name="step-tmxdoc-produce">
 		<xslt
 			basedir="src/resources"
 			destdir="docs/generated-doc"
 			extension=".html"
-			includes="${rwa.secondLocalizedLabelBaseFilename}.tmx"
-			style="src/resources/tmx2html.xsl">
+			includes="*.tmx"
+			style="src/resources/tmx2html.xsl"
+		>
+			<xmlcatalog refid="tmx.dtd" />
 		</xslt>
 	</target>
 

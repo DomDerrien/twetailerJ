@@ -6,7 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -21,6 +23,7 @@ import twetailer.DataSourceException;
 import twetailer.dto.Command;
 import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
+import twetailer.validator.CommandSettings;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
@@ -303,5 +306,116 @@ public class TestProposalOperations {
 
         // ops.deleteProposal(object.getKey());
         assertTrue(pm.isClosed());
+    }
+
+    @Test
+    public void testGetsExtendedI() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object = ops.createProposal(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Command.OWNER_KEY, 111L);
+
+        List<Proposal> selection = ops.getProposals(ops.getPersistenceManager(), parameters, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetsExtendedII() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object.setDemandKey(2222L);
+        object = ops.createProposal(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
+        parameters.put(Proposal.DEMAND_KEY, object.getDemandKey());
+
+        List<Proposal> selection = ops.getProposals(ops.getPersistenceManager(), parameters, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetsExtendedIII() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object.setDemandKey(2222L);
+        object.setState(CommandSettings.State.opened);
+        object = ops.createProposal(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
+        parameters.put(Proposal.DEMAND_KEY, object.getDemandKey());
+        parameters.put(Command.STATE, object.getState().toString());
+
+        List<Proposal> selection = ops.getProposals(ops.getPersistenceManager(), parameters, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetsExtendedIV() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object.setDemandKey(2222L);
+        object.setState(CommandSettings.State.opened);
+        object.setPrice(25.97D);
+        object = ops.createProposal(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
+        parameters.put(Proposal.DEMAND_KEY, object.getDemandKey());
+        parameters.put(Command.STATE, object.getState().toString());
+        parameters.put(Proposal.PRICE, object.getPrice());
+
+        List<Proposal> selection = ops.getProposals(ops.getPersistenceManager(), parameters, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetsExtendedV() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object.setDemandKey(2222L);
+        object.setState(CommandSettings.State.opened);
+        object.setPrice(22.97D);
+        object = ops.createProposal(object);
+
+        object = new Proposal();
+        object.setOwnerKey(111L);
+        object.setDemandKey(2222L);
+        object.setState(CommandSettings.State.opened);
+        object.setPrice(25.97D);
+        object = ops.createProposal(object);
+        Long selectedKey = object.getKey();
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Command.OWNER_KEY, object.getOwnerKey());
+        parameters.put(Proposal.DEMAND_KEY, object.getDemandKey());
+        parameters.put(Command.STATE, object.getState().toString());
+        parameters.put(">" + Proposal.PRICE, Double.valueOf(24.0D));
+
+        List<Proposal> selection = ops.getProposals(ops.getPersistenceManager(), parameters, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(selectedKey, selection.get(0).getKey());
     }
 }

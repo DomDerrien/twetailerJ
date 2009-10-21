@@ -1,6 +1,7 @@
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToEmitter;
 import static twetailer.connector.BaseConnector.communicateToRetailer;
 
@@ -17,6 +18,7 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
@@ -35,6 +37,8 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
@@ -217,23 +221,23 @@ public class CommandProcessor {
             }
         }
         catch(IllegalStateException ex) {}
-        // Proposal
-        try {
-            matcher = patterns.get(CommandSettings.Prefix.proposal).matcher(message);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.PROPOSAL_KEY, getQuantity(currentGroup));
-                message = matcher.replaceFirst("");
-                oneFieldOverriden = true;
-            }
-        }
-        catch(IllegalStateException ex) {}
         // Price
         try {
             matcher = patterns.get(CommandSettings.Prefix.price).matcher(message);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
                 command.put(Proposal.PRICE, getPrice(currentGroup));
+                message = matcher.replaceFirst("");
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // Proposal
+        try {
+            matcher = patterns.get(CommandSettings.Prefix.proposal).matcher(message);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Proposal.PROPOSAL_KEY, getQuantity(currentGroup));
                 message = matcher.replaceFirst("");
                 oneFieldOverriden = true;
             }
@@ -503,6 +507,8 @@ public class CommandProcessor {
         }
     }
 
+    public final static String DEBUG_INFO_SWITCH = "-lusanga-debug-info";
+
     /**
      * Extract commands from the tables of raw commands and acts accordingly
      *
@@ -525,18 +531,28 @@ public class CommandProcessor {
         Map<CommandSettings.Prefix, Pattern> patterns = localizedPatterns.get(senderLocale);
 
         try {
-            // Extract information from the tweet and process the information
+            // Extract information from the short message and process the information
             JsonObject command = parseCommand(patterns, rawCommand.getCommand());
             command.put(Command.SOURCE, rawCommand.getSource().toString());
             processCommand(pm, consumer, rawCommand, command);
         }
         catch(Exception ex) {
             ex.printStackTrace();
+            String additionalInfo = getDebugInfo(ex);
+            boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
+            // Report the error to the raw command emitter
             communicateToEmitter(
                     rawCommand,
-                    LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey(), ex.getClass().getName() + " / " + ex.getMessage() }, Locale.ENGLISH)
+                    LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH)
             );
+            // Save the error information for further debugging
+            rawCommand.setErrorMessage(additionalInfo);
+            rawCommandOperations.updateRawCommand(pm, rawCommand);
         }
+    }
+
+    protected static String getDebugInfo(Exception ex) {
+        return ex.getClass().getName() + " / " + ex.getMessage();
     }
 
     protected static Consumer retrieveConsumer(PersistenceManager pm, RawCommand rawCommand) throws DataSourceException {
@@ -557,8 +573,12 @@ public class CommandProcessor {
         throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
     }
 
-    protected static Retailer retrieveRetailer(PersistenceManager pm, Consumer consumer) throws DataSourceException {
-        return retailerOperations.getRetailers(pm, Retailer.CONSUMER_KEY, consumer.getKey(), 1).get(0);
+    protected static Retailer retrieveRetailer(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
+        List<Retailer> retailers = retailerOperations.getRetailers(pm, Retailer.CONSUMER_KEY, consumer.getKey(), 1);
+        if (retailers.size() == 0) {
+            throw new ReservedOperationException(action);
+        }
+        return retailers.get(0);
     }
 
     /**
@@ -582,44 +602,52 @@ public class CommandProcessor {
             return;
         }
         String action = guessAction(command);
-        // Alternate case of the help being asked as an action...
-        if (CommandSettings.isEquivalentTo(prefixes, CommandSettings.Prefix.help.toString(), action)) {
-            processHelpCommand(rawCommand, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
+        try {
+            // Alternate case of the help being asked as an action...
+            if (CommandSettings.isEquivalentTo(prefixes, CommandSettings.Prefix.help.toString(), action)) {
+                processHelpCommand(rawCommand, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), action)) {
+                processCancelCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.close.toString(), action)) {
+                processCloseCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.confirm.toString(), action)) {
+                processConfirmCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.decline.toString(), action)) {
+                processDeclineCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.demand.toString(), action)) {
+                processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.list.toString(), action)) {
+                processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.propose.toString(), action)) {
+                processProposeCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.supply.toString(), action)) {
+                processSupplyCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.wish.toString(), action)) {
+                processWishCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.www.toString(), action)) {
+                processWWWCommand(pm, consumer, rawCommand, command);
+            }
+            else {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, locale)
+                );
+            }
         }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), action)) {
-            processCancelCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.close.toString(), action)) {
-            processCloseCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.confirm.toString(), action)) {
-            processConfirmCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.decline.toString(), action)) {
-            processDeclineCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.demand.toString(), action)) {
-            processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.list.toString(), action)) {
-            processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.propose.toString(), action)) {
-            processProposeCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.supply.toString(), action)) {
-            processSupplyCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.wish.toString(), action)) {
-            processWishCommand(pm, consumer, rawCommand, command);
-        }
-        else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.www.toString(), action)) {
-            processWWWCommand(pm, consumer, rawCommand, command);
-        }
-        else {
+        catch(ReservedOperationException ex) {
             communicateToEmitter(
                     rawCommand,
-                    LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, locale)
+                    LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, locale)
             );
         }
     }
@@ -802,7 +830,91 @@ public class CommandProcessor {
         //
         // 1. Close the identified demand
         // 2. Close the identified proposal
-        throw new ClientException("Closing demands - Not yet implemented");
+        if (command.containsKey(Demand.REFERENCE)) {
+            Demand demand = null;
+            try {
+                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
+                demand.setState(State.closed);
+                demandOperations.updateDemand(pm, demand);
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demand.getKey() }, consumer.getLocale())
+                );
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_close_invalid_demand_id", consumer.getLocale())
+                );
+            }
+            if (demand !=  null) {
+                Map<String, Object> parameters = new HashMap<String, Object>();
+                parameters.put(Proposal.DEMAND_KEY, demand.getKey());
+                parameters.put(Command.STATE, State.confirmed.toString());
+                try {
+                    List<Proposal> proposals = proposalOperations.getProposals(pm, parameters, 1);
+                    if (0 < proposals.size()) {
+                        Proposal proposal = proposals.get(0);
+                        Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
+                        communicateToRetailer(
+                                proposal.getSource(),
+                                retailer,
+                                LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale())
+                        );
+                    }
+                }
+                catch(Exception ex) {
+                    // Too bad, the proposal owner can be informed about the demand closing...
+                    // He/she can still do it without notification
+                }
+            }
+        }
+        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
+            Proposal proposal = null;
+            try {
+                Retailer retailer = retrieveRetailer(pm, consumer, Action.close);
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
+                proposal.setState(State.closed);
+                proposalOperations.updateProposal(pm, proposal);
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
+                );
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_close_invalid_proposal_id", consumer.getLocale())
+                );
+            }
+            if (proposal != null) {
+                Map<String, Object> parameters = new HashMap<String, Object>();
+                parameters.put(Demand.PROPOSAL_KEYS, proposal.getKey());
+                parameters.put(Command.STATE, State.confirmed.toString());
+                try {
+                    List<Demand> demands = demandOperations.getDemands(pm, parameters, 1);
+                    if (0 < demands.size()) {
+                        Demand demand = demands.get(0);
+                        Consumer demandOwner = consumerOperations.getConsumer(pm, demand.getOwnerKey());
+                        communicateToConsumer(
+                                demand.getSource(),
+                                demandOwner,
+                                LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale())
+                        );
+                    }
+                }
+                catch(Exception ex) {
+                    // Too bad, the demand owner can be informed about the proposal closing...
+                    // He/she can still do it without notification
+                }
+            }
+        }
+        else {
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_close_invalid_parameters", consumer.getLocale())
+            );
+        }
     }
 
     protected static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
@@ -836,25 +948,39 @@ public class CommandProcessor {
             }
             else {
                 // Inform the consumer of the successful confirmation
-                StringBuilder tags = new StringBuilder();
-                for(String tag: demand.getCriteria()) {
-                    tags.append(tag).append(" ");
-                }
                 communicateToEmitter(
                         rawCommand,
-                        LabelExtractor.get("cp_command_confirm_acknowledge_confirmation", new Object[] { proposal.getKey(), demand.getKey(), tags.toString(), proposal.getStoreKey() }, consumer.getLocale())
+                        LabelExtractor.get(
+                                "cp_command_confirm_acknowledge_confirmation",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        demand.getKey(),
+                                        demand.getSerializedCriteria(),
+                                        proposal.getStoreKey()
+                                },
+                                consumer.getLocale()
+                        )
                 );
                 // Inform the retailer of the successful confirmation
                 Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                tags = new StringBuilder();
-                for(String tag: proposal.getCriteria()) {
-                    tags.append(tag).append(" ");
-                }
                 communicateToRetailer(
                         retailer.getPreferredConnection(),
                         retailer,
-                        LabelExtractor.get("cp_command_confirm_inform_about_confirmation", new Object[] { proposal.getKey(), tags.toString(), consumer.getName() }, consumer.getLocale())
+                        LabelExtractor.get(
+                                "cp_command_confirm_inform_about_confirmation",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        proposal.getSerializedCriteria(),
+                                        demand.getKey()
+                                },
+                                consumer.getLocale()
+                        )
                 );
+                // Update the proposal and the demand states
+                proposal.setState(State.confirmed);
+                proposalOperations.updateProposal(pm, proposal);
+                demand.setState(State.confirmed);
+                demandOperations.updateDemand(pm, demand);
             }
         }
     }
@@ -984,7 +1110,7 @@ public class CommandProcessor {
         }
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             Proposal proposal = null;
-            Retailer retailer = retrieveRetailer(pm, consumer);
+            Retailer retailer = retrieveRetailer(pm, consumer, Action.list);
             try {
                 proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
             }
@@ -1044,7 +1170,7 @@ public class CommandProcessor {
         // 2. update the identified proposal
         //
         Long proposalKey = 0L;
-        Retailer retailer = retrieveRetailer(pm, consumer);
+        Retailer retailer = retrieveRetailer(pm, consumer, Action.propose);
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             // Update the proposal attributes
             Proposal proposal = null;

@@ -68,11 +68,6 @@ public class ProposalProcessor {
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), null);
                 if (State.published.equals(demand.getState())) {
                     Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
-                    StringBuilder tags = new StringBuilder();
-                    for(String tag: proposal.getCriteria()) {
-                        tags.append(tag).append(" ");
-                    }
-                    tags.setLength(tags.length() - 1); // To remove the trailing space
                     communicateToConsumer(
                             demand.getSource(),
                             consumer,
@@ -81,7 +76,7 @@ public class ProposalProcessor {
                                     new Object[] {
                                             proposal.getKey(),
                                             demand.getKey(),
-                                            tags,
+                                            proposal.getSerializedCriteria(),
                                             proposal.getStoreKey()
                                     },
                                     consumer.getLocale()

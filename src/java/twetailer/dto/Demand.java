@@ -171,6 +171,24 @@ public class Demand extends Entity {
 
     /*** Demand ***/
 
+    public final static String EMPTY_STRING = "";
+
+    public String getSerializedCriteria() {
+        return getSerializedCriteria(criteria);
+    }
+
+    public static String getSerializedCriteria(List<String> criteria) {
+        if (criteria.size() == 0) {
+            return EMPTY_STRING;
+        }
+        StringBuilder out = new StringBuilder();
+        for(String criterion: criteria) {
+            out.append(criterion).append(" ");
+        }
+        out.setLength(out.length() - 1); // To remove the trailing space
+        return out.toString();
+    }
+
     public List<String> getCriteria() {
         return criteria;
     }

@@ -43,7 +43,7 @@ public class CommandSettings {
                 prefixes.put(
                         prefix.toString(),
                         new GenericJsonArray(
-                                LabelExtractor.get("cmdLine_prefix_" + prefix.toString(), locale).split(",")
+                                LabelExtractor.get("cl_prefix_" + prefix.toString(), locale).split(",")
                         )
                 );
             }
@@ -80,7 +80,7 @@ public class CommandSettings {
                 actions.put(
                         action.toString(),
                         new GenericJsonArray(
-                                LabelExtractor.get("cmdLine_action_" + action.toString(), locale).split(",")
+                                LabelExtractor.get("cl_action_" + action.toString(), locale).split(",")
                         )
                 );
             }
@@ -112,7 +112,7 @@ public class CommandSettings {
             for(State state: State.values()) {
                 states.put(
                         state.toString(),
-                        LabelExtractor.get("command_state_" + state.toString(), locale)
+                        LabelExtractor.get("cl_state_" + state.toString(), locale)
                 );
             }
             localizedStates.put(locale, states);

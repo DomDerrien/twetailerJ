@@ -87,4 +87,36 @@ public class RawCommandOperations extends BaseOperations {
             throw new DataSourceException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
+
+    /**
+     * Persist the given (probably updated) resource
+     *
+     * @param rawCommand Resource to update
+     * @return Updated resource
+     *
+     * @see RawCommandOperations#updateRawCommand(PersistenceManager, RawCommand)
+     */
+    public RawCommand updateRawCommand(RawCommand rawCommand) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            // Persist updated rawCommand
+            return updateRawCommand(pm, rawCommand);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Persist the given (probably updated) resource while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param rawCommand Resource to update
+     * @return Updated resource
+     */
+    public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+        getLogger().warning("Updating rawCommand with id: " + rawCommand.getKey());
+        pm.makePersistent(rawCommand);
+        return rawCommand;
+    }
 }

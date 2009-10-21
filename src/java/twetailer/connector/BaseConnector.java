@@ -116,10 +116,7 @@ public class BaseConnector {
 
     /** Provided only for test purpose, when communication are done with <code>Source.simulated</code> */
     public static String getLastCommunicationInSimulatedMode() {
-        if (lastCommunications.isEmpty()) {
-            return null;
-        }
-        return lastCommunications.get(lastCommunications.size() - 1);
+        return getCommunicationForRetroIndexInSimulatedMode(0);
     }
 
     /** Provided only for test purpose, when communication are done with <code>Source.simulated</code> */

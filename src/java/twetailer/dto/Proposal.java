@@ -36,7 +36,7 @@ public class Proposal extends Entity {
     @Persistent
     private State state = State.opened;
 
-    /*** Demand ***/
+    /*** Proposal ***/
 
     @Persistent
     private List<String> criteria = new ArrayList<String>();
@@ -80,7 +80,7 @@ public class Proposal extends Entity {
     }
 
     /**
-     * Creates a demand
+     * Creates a proposal
      *
      * @param in HTTP request parameters
      */
@@ -159,7 +159,11 @@ public class Proposal extends Entity {
         setState(State.valueOf(state));
     }
 
-    /*** Demand ***/
+    /*** Proposal ***/
+
+    public String getSerializedCriteria() {
+        return Demand.getSerializedCriteria(criteria);
+    }
 
     public List<String> getCriteria() {
         return criteria;
@@ -243,7 +247,7 @@ public class Proposal extends Entity {
         if (getRawCommandId() != null) { out.put(Command.RAW_COMMAND_ID, getRawCommandId()); }
         out.put(Command.SOURCE, getSource().toString());
         out.put(Command.STATE, getState().toString());
-        /*** Demand ***/
+        /*** Proposal ***/
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
@@ -267,7 +271,7 @@ public class Proposal extends Entity {
         if (in.containsKey(Command.RAW_COMMAND_ID)) { setRawCommandId(in.getLong(Command.RAW_COMMAND_ID)); }
         if (in.containsKey(Command.SOURCE)) { setSource(in.getString(Command.SOURCE)); }
         if (in.containsKey(Command.STATE)) { setState(in.getString(Command.STATE)); }
-        /*** Demand ***/
+        /*** Proposal ***/
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
             resetCriteria();
