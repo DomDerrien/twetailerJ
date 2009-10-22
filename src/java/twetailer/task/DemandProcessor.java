@@ -122,6 +122,9 @@ public class DemandProcessor {
                         }
                     }
                     if (contactRetailerJustOnce) {
+                        //
+                        // Special treatment for demand posted to "locale:H0H H0H CA"
+                        //
                         if (RobotResponder.ROBOT_NAME.equals(retailer.getName())) {
                             // Schedule a task to transmit the proposal to the demand owner
                             Queue queue = QueueFactory.getDefaultQueue();

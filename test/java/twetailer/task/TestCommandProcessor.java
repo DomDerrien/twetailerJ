@@ -1,7 +1,6 @@
 package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -9,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +18,6 @@ import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -46,7 +43,6 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
@@ -70,13 +66,13 @@ public class TestCommandProcessor {
         // Simplified list of prefixes
         CommandProcessor.localizedPrefixes.clear();
         JsonObject prefixes = new GenericJsonObject();
-        for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
+        for (Prefix prefix: Prefix.values()) {
             JsonArray equivalents = new GenericJsonArray();
             equivalents.add(prefix.toString());
-            if (CommandSettings.Prefix.action.equals(prefix)) {
+            if (Prefix.action.equals(prefix)) {
                 equivalents.add("!");
             }
-            else if (CommandSettings.Prefix.help.equals(prefix)) {
+            else if (Prefix.help.equals(prefix)) {
                 equivalents.add("?");
             }
             prefixes.put(prefix.toString(), equivalents);
@@ -86,7 +82,7 @@ public class TestCommandProcessor {
         // Simplified list of actions
         CommandProcessor.localizedActions.clear();
         JsonObject actions = new GenericJsonObject();
-        for (CommandSettings.Action action: CommandSettings.Action.values()) {
+        for (Action action: Action.values()) {
             JsonArray equivalents = new GenericJsonArray();
             equivalents.add(action.toString());
             actions.put(action.toString(), equivalents);
@@ -96,7 +92,7 @@ public class TestCommandProcessor {
         // Simplified list of states
         CommandProcessor.localizedStates.clear();
         JsonObject states = new GenericJsonObject();
-        for (CommandSettings.State state: CommandSettings.State.values()) {
+        for (State state: State.values()) {
             states.put(state.toString(), state.toString());
         }
         CommandProcessor.localizedStates.put(Locale.ENGLISH, states);
@@ -124,682 +120,12 @@ public class TestCommandProcessor {
         CommandProcessor.localizedActions = new HashMap<Locale, JsonObject>();
         CommandProcessor.localizedStates = new HashMap<Locale, JsonObject>();
         CommandProcessor.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
+        CommandProcessor.localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
     }
 
     @Test
     public void testConstructor() {
         new CommandProcessor();
-    }
-
-    @Test
-    public void testLoadLocalizedSettings() {
-        CommandProcessor.localizedPrefixes.clear();
-        CommandProcessor.localizedActions.clear();
-        CommandProcessor.localizedStates.clear();
-        CommandProcessor.localizedHelpKeywords.clear();
-        CommandProcessor.localizedPatterns.clear();
-
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        assertNotSame(0, CommandProcessor.localizedPrefixes.size());
-        assertNotSame(0, CommandProcessor.localizedActions.size());
-        assertNotSame(0, CommandProcessor.localizedStates.size());
-        assertNotSame(0, CommandProcessor.localizedHelpKeywords.size());
-        assertNotSame(0, CommandProcessor.localizedPatterns.size());
-    }
-
-    @Test(expected=java.lang.NullPointerException.class)
-    public void testParseNull() throws ClientException, ParseException {
-        // Cannot pass a null reference
-        CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), null);
-    }
-
-    @Test(expected=twetailer.ClientException.class)
-    public void testParseEmpty() throws ClientException, ParseException {
-        // At least the twitter identifier of the sender is required
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "");
-        assertEquals(0, data.size());
-    }
-
-    @Test(expected=twetailer.ClientException.class)
-    public void testParseWithOnlySeparators() throws ClientException, ParseException {
-        // At least the twitter identifier of the sender is required
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), " \t \r\n ");
-        assertEquals(0, data.size());
-    }
-
-    @Test
-    public void testParseReferenceI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "reference:21");
-        assertEquals(21, data.getLong(Demand.REFERENCE));
-    }
-
-    @Test
-    public void testParseReferenceII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "reference: 21");
-        assertEquals(21, data.getLong(Demand.REFERENCE));
-    }
-
-    @Test
-    public void testParseReferenceShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21");
-        assertEquals(21, data.getLong(Demand.REFERENCE));
-    }
-
-    @Test
-    public void testParseOneWordTag() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 product");
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
-    }
-
-    @Test
-    public void testParseOneWordTagPrefixed() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:product");
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
-    }
-
-    @Test
-    public void testParseMultipleWordsTag() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 brand product part");
-        assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
-    }
-
-    @Test
-    public void testParseMultipleWordsTagPrefixed() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:brand product part");
-        assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
-    }
-
-    @Test
-    public void testParseExpirationI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:2050-01-01");
-        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseExpirationII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 2050-01-01");
-        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseExpirationIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 20500101");
-        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseExpirationIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:50-01-01");
-        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseExpirationShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 exp:2050-01-01");
-        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseRangeI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1mi");
-        assertEquals(1, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range: 1mi");
-        assertEquals(1, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range: 1 mi");
-        assertEquals(1, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1234567mi");
-        assertEquals(1234567, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1km");
-        assertEquals(1, data.getLong(Demand.RANGE));
-        assertEquals("km", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeVI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:100 km");
-        assertEquals(100, data.getLong(Demand.RANGE));
-        assertEquals("km", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeShortI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 ran:1mi");
-        assertEquals(1, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseRangeShortII() throws ClientException, ParseException {
-        // Add an equivalent to "range" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.range.toString()).add("rng");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 rng:1mi");
-        assertEquals(1, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseLocaleI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6 ca");
-        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseLocaleII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca");
-        assertEquals("H3C 2N6", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseLocaleIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6-ca");
-        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseLocaleIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323 us");
-        assertEquals("97323", data.getString(Location.POSTAL_CODE));
-        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseLocaleV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345 us");
-        assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
-        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseLocaleVI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345-us");
-        assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
-        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseLocaleShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343-us");
-        assertEquals("97343", data.getString(Location.POSTAL_CODE));
-        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParsePriceI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:25.99");
-        assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
-    }
-
-    @Test
-    public void testParsePriceII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99");
-        assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
-    }
-
-    @Test
-    public void testParsePriceShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pri: 25.99");
-        assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
-    }
-
-    @Test
-    public void testParseProposalI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal:1234567890");
-        assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
-    }
-
-    @Test
-    public void testParseProposalII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal: \t 1234567890");
-        assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
-    }
-
-    @Test
-    public void testParseProposalShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pro: 1234567890");
-        assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
-    }
-
-    @Test
-    public void testParseQuantityI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity:21");
-        assertEquals(21, data.getLong(Demand.QUANTITY));
-    }
-
-    @Test
-    public void testParseQuantityII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity: 21");
-        assertEquals(21, data.getLong(Demand.QUANTITY));
-    }
-
-    @Test
-    public void testParseQuantityIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity: 21");
-        assertEquals(21, data.getLong(Demand.QUANTITY));
-    }
-
-    @Test
-    public void testParseQuantityShortI() throws ClientException, ParseException {
-        // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.quantity.toString()).add("qty");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 qty:21");
-        assertEquals(21, data.getLong(Demand.QUANTITY));
-    }
-
-    @Test
-    public void testParseQuantityShortII() throws ClientException, ParseException {
-        // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.quantity.toString()).add("qty");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:  21    qty:  \t 50   ");
-        assertEquals(21, data.getLong(Demand.REFERENCE));
-        assertEquals(50, data.getLong(Demand.QUANTITY));
-    }
-
-    @Test
-    public void testParseTotalI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 total:25.99");
-        assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
-    }
-
-    @Test
-    public void testParseTotalII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL:  25.99");
-        assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
-    }
-
-    @Test
-    public void testParseTotalShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tot: 25.99");
-        assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
-    }
-
-    @Test
-    public void testParseMixedCase() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 RaNge: 25 kM");
-        assertEquals(25, data.getLong(Demand.RANGE));
-        assertEquals("km", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseCompositeI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 exp:2050-12-31");
-        assertEquals(1234, data.getLong(Demand.REFERENCE));
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseCompositeII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 range: 10 mi exp:2050-12-31");
-        assertEquals(1234, data.getLong(Demand.REFERENCE));
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testParseCompositeIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
-        assertEquals(1234, data.getLong(Demand.REFERENCE));
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-    }
-
-    @Test
-    public void testParseCompositeIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 quantity:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
-        assertEquals(1234, data.getLong(Demand.REFERENCE));
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-        assertEquals(12, data.getLong(Demand.QUANTITY));
-    }
-
-    @Test
-    public void testParseCompositeV() throws ClientException, ParseException {
-        String keywords = "Wii  console\tremote \t control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca " + keywords);
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-        assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
-        }
-    }
-
-    @Test
-    public void testParseCompositeVI() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi exp:2050-12-31 " + keywords + " locale: h0h 0h0 ca");
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-        assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
-        }
-    }
-
-    @Test
-    public void testParseCompositeVII() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca");
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-        assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
-        }
-    }
-
-    @Test
-    public void testParseCompositeVIII() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "" + keywords + " quant:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca");
-        assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-        assertEquals(10, data.getLong(Demand.RANGE));
-        assertEquals("mi", data.getString(Demand.RANGE_UNIT));
-        assertEquals("H0H 0H0", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
-        assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
-        }
-    }
-
-    @Test
-    public void testParseActionI() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:demand ref:1234 " + keywords);
-        assertEquals("demand", data.getString(Command.ACTION));
-        assertEquals(1234, data.getLong(Demand.REFERENCE));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
-        }
-    }
-
-    @Test
-    public void testParseIncompleteMessage() throws ClientException, ParseException {
-        String keywords = "Wii console remote control";
-        CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:demand " + keywords);
-        // Now, the function consuming the incomplete tweet does the checking
-    }
-
-    @Test
-    public void testParseActionIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:list ref:1234");
-        assertEquals("list", data.getString(Command.ACTION));
-        assertEquals(1234, data.getLong(Demand.REFERENCE));
-    }
-
-    @Test
-    public void testParseHelpI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "help:");
-        assertEquals(1, data.size());
-        assertNotNull(data.getString(Command.NEED_HELP));
-        assertEquals(0, data.getString(Command.NEED_HELP).length());
-    }
-
-    @Test
-    public void testParseHelpII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "help:action:");
-        assertEquals(1, data.size());
-        assertNotNull(data.getString(Command.NEED_HELP));
-        assertEquals("action:", data.getString(Command.NEED_HELP));
-    }
-
-    @Test
-    public void testParseHelpShortI() throws ClientException, ParseException {
-        // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.help.toString()).add("?");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "?");
-        assertEquals(1, data.size());
-        assertTrue(data.containsKey(Command.NEED_HELP));
-        assertNotNull(data.getString(Command.NEED_HELP));
-    }
-    @Test
-    public void testParseHelpShortII() throws ClientException, ParseException {
-        // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.help.toString()).add("?");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), " action ? ");
-        assertEquals(1, data.size());
-        assertTrue(data.containsKey(Command.NEED_HELP));
-        assertNotNull(data.getString(Command.NEED_HELP));
-        assertEquals("action", data.getString(Command.NEED_HELP));
-    }
-
-    @Test
-    public void testParseHelpShortIII() throws ClientException, ParseException {
-        // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(CommandSettings.Prefix.help.toString()).add("?");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
-
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), " action: ? exp:");
-        assertEquals(1, data.size());
-        assertTrue(data.containsKey(Command.NEED_HELP));
-        assertNotNull(data.getString(Command.NEED_HELP));
-        assertEquals("action:  exp:", data.getString(Command.NEED_HELP));
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    public void testGenerateFullTweetI() {
-        List<String> criteria = new ArrayList<String>();
-        criteria.add("first");
-        criteria.add("second");
-
-        Demand demand = new Demand();
-        demand.setKey(1L);
-        demand.setCriteria(criteria);
-        demand.setExpirationDate(new Date(2025-1900, 0, 1, 0, 0, 0));
-        demand.setQuantity(3L);
-        demand.setRange(4.0D);
-        demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-        demand.setState(CommandSettings.State.published);
-
-        Location location = new Location();
-        location.setPostalCode("zzz");
-        location.setCountryCode(Locale.CANADA.getCountry());
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(demand, location, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0) + ":1"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0) + ":first second"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.expiration.toString()).getString(0) + ":2025-01-01"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0) + ":ZZZ " + Locale.CANADA.getCountry()));
-    }
-
-    @Test
-    public void testGenerateFullTweetII() {
-        List<String> criteria = new ArrayList<String>();
-        criteria.add("first");
-        criteria.add("second");
-
-        Proposal proposal = new Proposal();
-        proposal.setKey(1L);
-        proposal.setCriteria(criteria);
-        proposal.setDemandKey(12345L);
-        proposal.setPrice(25.99D);
-        proposal.setQuantity(3L);
-        proposal.setStoreKey(67890L);
-        proposal.setState(CommandSettings.State.published);
-        proposal.setTotal(35.33D);
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(proposal, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.proposal.toString()).getString(0) + ":1"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0) + ":first second"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0) + ":12345"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.price.toString()).getString(0) + ":25.99"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.store.toString()).getString(0) + ":67890"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.total.toString()).getString(0) + ":35.33"));
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    public void testGeneratePartialTweetI() {
-        Demand demand = new Demand();
-        demand.setExpirationDate(new Date(2025-1900, 0, 1, 0, 0, 0));
-        demand.setQuantity(3L);
-        demand.setRange(4.0D);
-        demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
-        demand.setState(CommandSettings.State.published);
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(demand, null, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)));
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.expiration.toString()).getString(0) + ":2025-01-01"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)));
-    }
-
-    @Test
-    public void testGeneratePartialTweetII() {
-        Demand demand = new Demand();
-
-        Location location = new Location();
-        location.setCountryCode(Locale.CANADA.getCountry());
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(demand, location, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)));
-    }
-
-    @Test
-    public void testGeneratePartialTweetIII() {
-        Demand demand = new Demand();
-
-        Location location = new Location();
-        location.setPostalCode("zzz");
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(demand, location, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)));
-    }
-
-    @Test
-    public void testGeneratePartialTweetIV() {
-
-        Proposal proposal = new Proposal();
-        proposal.setPrice(25.99D);
-        proposal.setQuantity(3L);
-        proposal.setState(CommandSettings.State.published);
-        proposal.setStoreKey(67890L);
-        proposal.setTotal(35.33D);
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(proposal, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.proposal.toString()).getString(0)));
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0)));
-        assertFalse(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.price.toString()).getString(0) + ":25.99"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.store.toString()).getString(0) + ":67890"));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0) + ":" + states.getString(CommandSettings.State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(CommandSettings.Prefix.total.toString()).getString(0) + ":35.33"));
     }
 
     @Test
@@ -860,7 +186,7 @@ public class TestCommandProcessor {
         assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected=DataSourceException.class)
     public void testRetrieveConsumerIV() throws DataSourceException {
         final String emitterId = "emitter";
         final Consumer consumer = new Consumer();
@@ -879,10 +205,31 @@ public class TestCommandProcessor {
         CommandProcessor.consumerOperations = consumerOperations;
 
         RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.facebook);
+        rawCommand.setSource(Source.facebook); // Unsupported source
         rawCommand.setEmitterId(emitterId);
 
-        assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
+        CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand);
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testRetrieveConsumerVI() throws DataSourceException {
+        final String emitterId = "emitter";
+        final Consumer consumer = new Consumer();
+
+        // Mock RawCommandOperations
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Consumer>();
+            }
+        };
+        CommandProcessor.consumerOperations = consumerOperations;
+
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.twitter);
+        rawCommand.setEmitterId(emitterId);
+
+        CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand); // No user...
     }
 
     @Test(expected=DataSourceException.class)
@@ -1108,7 +455,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand("help: " + CommandSettings.Prefix.action.toString());
+                rawCommand.setCommand("help: " + Prefix.action.toString());
                 return rawCommand;
             }
         };
@@ -1130,7 +477,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand("!help " + CommandSettings.Prefix.action.toString());
+                rawCommand.setCommand("!help " + Prefix.action.toString());
                 return rawCommand;
             }
         };
@@ -1152,7 +499,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand("? " + CommandSettings.Prefix.action.toString());
+                rawCommand.setCommand("? " + Prefix.action.toString());
                 return rawCommand;
             }
         };
@@ -1174,7 +521,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand(CommandSettings.Prefix.action.toString() + "?");
+                rawCommand.setCommand(Prefix.action.toString() + "?");
                 return rawCommand;
             }
         };
@@ -1196,7 +543,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand(CommandSettings.Action.demand.toString() + "?");
+                rawCommand.setCommand(Action.demand.toString() + "?");
                 return rawCommand;
             }
         };
@@ -1218,7 +565,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setSource(Source.simulated);
-                rawCommand.setCommand(CommandSettings.State.invalid.toString() + "?");
+                rawCommand.setCommand(State.invalid.toString() + "?");
                 return rawCommand;
             }
         };
@@ -1288,7 +635,7 @@ public class TestCommandProcessor {
     public void testProcessCommandHelpII() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.help.toString()); // No keyword, just the help system call
+        command.put(Command.ACTION, Action.help.toString()); // No keyword, just the help system call
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -1394,7 +741,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Command.ACTION, Action.cancel.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1446,7 +793,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Command.ACTION, Action.cancel.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1477,7 +824,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Command.ACTION, Action.cancel.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1495,7 +842,7 @@ public class TestCommandProcessor {
     public void testProcessCommandCancelIV() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.cancel.toString());
+        command.put(Command.ACTION, Action.cancel.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -1533,7 +880,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1586,7 +933,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1658,7 +1005,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1692,7 +1039,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -1764,7 +1111,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -1858,7 +1205,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -1936,7 +1283,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -1974,7 +1321,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -1996,7 +1343,7 @@ public class TestCommandProcessor {
     public void testProcessCommandCloseIX() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.close.toString());
+        command.put(Command.ACTION, Action.close.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2072,7 +1419,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Command.ACTION, Action.confirm.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2111,7 +1458,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Command.ACTION, Action.confirm.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2160,7 +1507,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Command.ACTION, Action.confirm.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2215,7 +1562,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.confirm.toString());
+        command.put(Command.ACTION, Action.confirm.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2237,7 +1584,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.decline.toString());
+        command.put(Command.ACTION, Action.decline.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -2283,7 +1630,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.demand.toString());
+        command.put(Command.ACTION, Action.demand.toString());
         command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
         command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
 
@@ -2337,7 +1684,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.demand.toString());
+        command.put(Command.ACTION, Action.demand.toString());
         command.put(Demand.REFERENCE, demandKey);
         command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
         command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
@@ -2378,7 +1725,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2412,7 +1759,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2462,7 +1809,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2498,7 +1845,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -2545,7 +1892,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -2577,7 +1924,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
@@ -2630,7 +1977,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2684,7 +2031,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.list.toString());
+        command.put(Command.ACTION, Action.list.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2742,7 +2089,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.propose.toString());
+        command.put(Command.ACTION, Action.propose.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2780,13 +2127,13 @@ public class TestCommandProcessor {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(retailerKey);
-                proposal.setState(CommandSettings.State.published); // To be able to verify the reset to "open"
+                proposal.setState(State.published); // To be able to verify the reset to "open"
                 proposal.setStoreKey(storeKey);
                 return proposal;
             }
             @Override
             public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
-                assertEquals(CommandSettings.State.opened, proposal.getState());
+                assertEquals(State.opened, proposal.getState());
                 proposal.setKey(proposalKey);
                 return proposal;
             }
@@ -2813,7 +2160,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.propose.toString());
+        command.put(Command.ACTION, Action.propose.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2872,7 +2219,7 @@ public class TestCommandProcessor {
 
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.propose.toString());
+        command.put(Command.ACTION, Action.propose.toString());
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
@@ -2899,7 +2246,7 @@ public class TestCommandProcessor {
     public void testProcessCommandSupply() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.supply.toString());
+        command.put(Command.ACTION, Action.supply.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2912,7 +2259,7 @@ public class TestCommandProcessor {
     public void testProcessCommandWish() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.wish.toString());
+        command.put(Command.ACTION, Action.wish.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2925,7 +2272,7 @@ public class TestCommandProcessor {
     public void testProcessCommandWWW() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.www.toString());
+        command.put(Command.ACTION, Action.www.toString());
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
@@ -2939,16 +2286,16 @@ public class TestCommandProcessor {
         // Command mock
         JsonObject command = new GenericJsonObject();
 
-        assertEquals(CommandSettings.Action.demand.toString(), CommandProcessor.guessAction(command));
+        assertEquals(Action.demand.toString(), CommandProcessor.guessAction(command));
     }
 
     @Test
     public void testGuessActionII() {
         // Command mock
         JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, CommandSettings.Action.demand.toString());
+        command.put(Command.ACTION, Action.demand.toString());
 
-        assertEquals(CommandSettings.Action.demand.toString(), CommandProcessor.guessAction(command));
+        assertEquals(Action.demand.toString(), CommandProcessor.guessAction(command));
     }
 
     @Test
@@ -2957,7 +2304,7 @@ public class TestCommandProcessor {
         JsonObject command = new GenericJsonObject();
         command.put(Demand.REFERENCE, "12345");
 
-        assertEquals(CommandSettings.Action.list.toString(), CommandProcessor.guessAction(command));
+        assertEquals(Action.list.toString(), CommandProcessor.guessAction(command));
     }
 
     @Test
@@ -2967,7 +2314,7 @@ public class TestCommandProcessor {
         command.put(Demand.REFERENCE, "12345");
         command.put(Demand.RANGE, "55.5");
 
-        assertEquals(CommandSettings.Action.demand.toString(), CommandProcessor.guessAction(command));
+        assertEquals(Action.demand.toString(), CommandProcessor.guessAction(command));
     }
 
     @Test
@@ -2976,7 +2323,7 @@ public class TestCommandProcessor {
         JsonObject command = new GenericJsonObject();
         command.put(Store.STORE_KEY, "12345");
 
-        assertEquals(CommandSettings.Action.list.toString(), CommandProcessor.guessAction(command));
+        assertEquals(Action.list.toString(), CommandProcessor.guessAction(command));
     }
 
     @Test
@@ -3006,7 +2353,7 @@ public class TestCommandProcessor {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 return demand;
             }
         };
@@ -3062,7 +2409,7 @@ public class TestCommandProcessor {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 return demand;
             }
         };
@@ -3120,7 +2467,7 @@ public class TestCommandProcessor {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 return demand;
             }
         };
@@ -3181,7 +2528,7 @@ public class TestCommandProcessor {
             @Override
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -3241,7 +2588,7 @@ public class TestCommandProcessor {
             @Override
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -3305,7 +2652,7 @@ public class TestCommandProcessor {
             @Override
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -3371,7 +2718,7 @@ public class TestCommandProcessor {
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
                 assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -3441,7 +2788,7 @@ public class TestCommandProcessor {
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
                 assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -3511,7 +2858,7 @@ public class TestCommandProcessor {
             public Demand createDemand(PersistenceManager pm, Demand demand) {
                 assertNull(demand.getKey());
                 assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(CommandSettings.State.opened, demand.getState());
+                assertEquals(State.opened, demand.getState());
                 demand.setKey(demandKey);
                 return demand;
             }

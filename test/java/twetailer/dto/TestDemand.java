@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,8 +17,9 @@ import org.junit.Test;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
@@ -54,11 +56,11 @@ public class TestDemand {
         assertNotNull(object.getCreationDate());
     }
 
-    CommandSettings.Action action = CommandSettings.Action.cancel;
+    Action action = Action.cancel;
     Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
-    CommandSettings.State state = CommandSettings.State.closed;
+    State state = State.closed;
 
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Date expirationDate = new Date(new Date().getTime() + 65536L);
@@ -187,7 +189,7 @@ public class TestDemand {
     public void testSetAction() {
         Demand object = new Demand();
 
-        object.setAction((CommandSettings.Action) null);
+        object.setAction((Action) null);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -208,10 +210,10 @@ public class TestDemand {
     public void testSetRangeUnit() {
         Demand object = new Demand();
 
-        object.setRangeUnit(LocaleValidator.MILE_UNIT.toLowerCase());
+        object.setRangeUnit(LocaleValidator.MILE_UNIT.toLowerCase(Locale.ENGLISH));
         assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
 
-        object.setRangeUnit(LocaleValidator.MILE_UNIT.toUpperCase());
+        object.setRangeUnit(LocaleValidator.MILE_UNIT.toUpperCase(Locale.ENGLISH));
         assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
 
         object.setRangeUnit("zzz");
@@ -225,7 +227,7 @@ public class TestDemand {
     public void testSetState() {
         Demand object = new Demand();
 
-        object.setState((CommandSettings.State) null);
+        object.setState((State) null);
     }
 
     @Test

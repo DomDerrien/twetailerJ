@@ -63,7 +63,7 @@ public class ProposalProcessor {
      */
     public static void process(PersistenceManager pm, Long proposalKey) throws DataSourceException {
         Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
-        if (CommandSettings.State.published.equals(proposal.getState())) {
+        if (State.published.equals(proposal.getState())) {
             try {
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), null);
                 if (State.published.equals(demand.getState())) {

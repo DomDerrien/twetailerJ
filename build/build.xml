@@ -116,13 +116,20 @@
         description="Location of the executable. Use local.build.properties to set it."
         value="${user.home}\Local Settings\Application Data\Google\Chrome\Application\chrome.exe"
     />
+    <property name="default.browser.executable"
+        value="${chrome.browser.executable}"
+    />
+    <!--property name="no.firefox.start"
+        description="Prevents the automatic start of the firefox browser."
+        value="The value is not important, the presence of the property is only used..."
+    /-->
     <!--property name="no.firefox.stop"
         description="Prevents the automatic shutdown of the firefox running instances."
         value="The value is not important, the presence of the property is only used..."
     /-->
     <property name="jsunit.browser.filenames"
         description="List of browsers in which to run tests when StandaloneTest is invoked on this machine."
-        value="${chrome.browser.executable}"
+        value="${default.browser.executable}"
     />
     <property name="jsunit.server.port"
         description="JSUnit webserver port"
@@ -1059,7 +1066,7 @@
         <copy file="deps/tools/testing/jsunit-results2html.xsl" tofile="docs/test-reports/jsunit-html/xml2html.xsl" />
     </target>
     
-    <target name="step-firefox-start">
+    <target name="step-firefox-start" unless="no.firefox.start">
         <condition property="firefox.browser.running">
             <or>
                 <available file="${firefox.browser.user.profile.dir}\parent.lock" />
@@ -1138,10 +1145,10 @@
             </fileset>
         </copy>
         <!-- Launch firefox to produce the coverage numbers -->
-        <exec executable="${chrome.browser.executable}" dir="${temp.dir}/ff">
+        <exec executable="${default.browser.executable}" dir="${temp.dir}/ff">
             <arg value="file:///${basedir}/docs/test-reports/jscoverage-html/js/jscoverage.html?url=JSCoverageSuite.html" />
         </exec>
-        <!--exec executable="${chrome.browser.executable}" dir="${temp.dir}/ff">
+        <!--exec executable="${default.browser.executable}" dir="${temp.dir}/ff">
             <arg value="file:///${basedir}/docs/test-reports/jscoverage-html/JSCoverageSuite.html" />
         </exec-->
     </target>

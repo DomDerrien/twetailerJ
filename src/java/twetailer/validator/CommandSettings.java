@@ -1,5 +1,6 @@
 package twetailer.validator;
 
+import java.text.Collator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -151,14 +152,16 @@ public class CommandSettings {
     * @param equivalentList list of localized keywords with their equivalents
     * @param expectedValue command action to consider for the match
     * @param actualValue value submitted for a command action
+    * @param collator for locale-dependent comparisons
     * @return <code>true</code> if both values match, <code>false</code> otherwise.
     */
-   public static boolean isEquivalentTo(JsonObject equivalentList, String expectedValue, String actualValue) {
+   public static boolean isEquivalentTo(JsonObject equivalentList, String expectedValue, String actualValue, Collator collator) {
        JsonArray acceptedValues = equivalentList.getJsonArray(expectedValue);
        int acceptedValueNb = acceptedValues.size();
        int acceptedValueIdx = 0;
        while (acceptedValueIdx < acceptedValueNb) {
-           if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
+           if (collator.compare(acceptedValues.getString(acceptedValueIdx), actualValue) == 0) {
+           // if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
                return true;
            }
            acceptedValueIdx++;

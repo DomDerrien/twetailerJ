@@ -15,7 +15,8 @@ import org.junit.Test;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
@@ -51,11 +52,11 @@ public class TestProposal {
         assertNotNull(object.getCreationDate());
     }
 
-    CommandSettings.Action action = CommandSettings.Action.cancel;
+    Action action = Action.cancel;
     Long OwnerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
-    CommandSettings.State state = CommandSettings.State.closed;
+    State state = State.closed;
 
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Long demandKey = 54321L;
@@ -144,14 +145,14 @@ public class TestProposal {
     public void testSetAction() {
         Proposal object = new Proposal();
 
-        object.setAction((CommandSettings.Action) null);
+        object.setAction((Action) null);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testSetState() {
         Proposal object = new Proposal();
 
-        object.setState((CommandSettings.State) null);
+        object.setState((State) null);
     }
 
     @Test

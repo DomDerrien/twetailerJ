@@ -47,7 +47,7 @@ public class TestCommand {
         assertNotNull(object.getCreationDate());
     }
 
-    CommandSettings.Action action = CommandSettings.Action.cancel;
+    Action action = Action.cancel;
     Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;

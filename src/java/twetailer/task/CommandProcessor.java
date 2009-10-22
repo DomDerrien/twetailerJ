@@ -5,6 +5,9 @@ import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToEmitter;
 import static twetailer.connector.BaseConnector.communicateToRetailer;
 
+import java.text.Collator;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +40,9 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -68,7 +73,7 @@ public class CommandProcessor {
     protected static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
     protected static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
     protected static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-    protected static Map<Locale, Map<CommandSettings.Prefix, Pattern>> localizedPatterns = new HashMap<Locale, Map<CommandSettings.Prefix, Pattern>>();
+    protected static Map<Locale, Map<String, Pattern>> localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
 
     /**
      * Load the command processor parameters for the specified locale
@@ -100,24 +105,33 @@ public class CommandProcessor {
             localizedHelpKeywords.put(locale, helpKeywords);
         }
 
-        Map<CommandSettings.Prefix, Pattern> patterns = localizedPatterns.get(locale);
+        Map<String, Pattern> patterns = localizedPatterns.get(locale);
         if (patterns == null) {
-            patterns = new HashMap<CommandSettings.Prefix, Pattern>();
+            patterns = new HashMap<String, Pattern>();
 
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.action, "\\s*\\w+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.expiration, "\\s*[\\d\\-]+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.help, ""); // Given keywords considered as tags
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.locale, "\\s*(?:\\w+(?:\\s|-|\\.)+)+(?:ca|us)");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.price, "\\s*\\d+.\\d\\d");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.proposal, "\\s*\\d+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.quantity, "\\s*\\d+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.reference, "\\s*\\d+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.range, "\\s*\\d+\\s*(?:mi|km)");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.state, "\\s*\\w+");
-            //preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\+\\s*|\\-\\s*|\\w\\s*)+");
-            //preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\s*\\w)+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.tags, "?(?:\\s*\\S)+");
-            preparePattern(prefixes, patterns, CommandSettings.Prefix.total, "\\s*\\d+.\\d\\d");
+            final String separatorFromOtherPrefix = "(?:\\s+(?:\\-?\\+?\\w+:)|$)";
+            final String separatorFromNonDigit = "(?:\\D|$)";
+            final String separatorFromNonAlpha = "(?:\\W|$)";
+
+            preparePattern(prefixes, patterns, Prefix.action, "\\s*\\w+", separatorFromNonAlpha);
+            preparePattern(prefixes, patterns, Prefix.expiration, "[\\d- ]+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
+            preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
+            // FIXME: use DecimalFormatSymbols.getInstance(locale).getCurrencySymbol() in the following expression
+            preparePattern(prefixes, patterns, Prefix.price, "[ $€£¥\\d\\.,]+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.proposal, "\\s*\\d+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.quantity, "[\\s\\d\\.,]+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.reference, "\\s*\\d+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.range, "[\\s\\d\\.,]+(?:miles|mile|mi|km)", ".*" + separatorFromOtherPrefix);
+            preparePattern(prefixes, patterns, Prefix.state, "\\s*\\w+", separatorFromNonAlpha);
+            preparePattern(prefixes, patterns, Prefix.tags, "?.+", "");
+            preparePattern(prefixes, patterns, Prefix.total, "[\\s$€£\\d\\.,]+", separatorFromNonDigit);
+
+            String modifiedPrefix = "\\+" + prefixes.getJsonArray(Prefix.tags.toString()).getString(0);
+            patterns.put(modifiedPrefix, Pattern.compile("((?:" + modifiedPrefix + ":)[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
+
+            modifiedPrefix = "\\-" + prefixes.getJsonArray(Prefix.tags.toString()).getString(0);
+            patterns.put(modifiedPrefix, Pattern.compile("((?:" + modifiedPrefix + ":)[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
 
             localizedPatterns.put(locale, patterns);
         }
@@ -150,35 +164,37 @@ public class CommandProcessor {
      * @param patterns list of registered RegEx patterns preset for the user's locale
      * @param keyword identifier of the prefix to process
      * @param expression part of the regular expression that extracts the parameters for the identified prefix
+     * @param separator part of the regular expression separating the entity from the rest of the phrase
      */
-    private static void preparePattern(JsonObject keywords, Map<CommandSettings.Prefix, Pattern> patterns, CommandSettings.Prefix keyword, String expression) {
+    private static void preparePattern(JsonObject keywords, Map<String, Pattern> patterns, Prefix keyword, String expression, String separator) {
         String prefix = keywords.getJsonArray(keyword.toString()).getString(0);
         String pattern = createPatternWithOptionalEndingCharacters(prefix);
         for(int i = 1; i < keywords.getJsonArray(keyword.toString()).size(); i++) {
             prefix = keywords.getJsonArray(keyword.toString()).getString(i);
             pattern += "|" + createPatternWithOptionalEndingCharacters(prefix);
         }
-        patterns.put(keyword, Pattern.compile("((?:" + pattern + ")" + expression + ")", Pattern.CASE_INSENSITIVE));
+        patterns.put(keyword.toString(), Pattern.compile("((?:" + pattern + ")" + expression + ")" + separator, Pattern.CASE_INSENSITIVE));
     }
 
     /**
      * Parse the given tweet with the set of given localized prefixes
-     *
-     * @param message message are returned by the communication provider
      * @param patterns list of registered RegEx patterns preset for the user's locale
+     * @param message message are returned by the communication provider
+     * @param locale emitter preferred language
+     *
      * @return JsonObject with all message attributes correctly extracted from the given message
      *
      * @throws ClientException If the query is malformed
      * @throws ParseException if a date format is invalid
      */
-    public static JsonObject parseCommand (Map<CommandSettings.Prefix, Pattern> patterns, String message) throws ClientException, ParseException {
+    public static JsonObject parseCommand (Map<String, Pattern> patterns, String message, Locale locale) throws ClientException, ParseException {
         Matcher matcher;
         boolean oneFieldOverriden = false;
         log.warning("Message to parse: " + message);
         JsonObject command = new GenericJsonObject();
         // Help
         try {
-            matcher = patterns.get(CommandSettings.Prefix.help).matcher(message);
+            matcher = patterns.get(Prefix.help.toString()).matcher(message);
             if (matcher.find()) { // Runs the matcher once
                 message = matcher.replaceFirst("");
                 // No need to continue parsing: grab the rest of the tweet that will be used for lookups in the TMX
@@ -187,115 +203,140 @@ public class CommandProcessor {
             }
         }
         catch(IllegalStateException ex) {}
+        StringBuilder messageCopy = new StringBuilder(message);
         // Action
         try {
-            matcher = patterns.get(CommandSettings.Prefix.action).matcher(message);
+            matcher = patterns.get(Prefix.action.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Command.ACTION, getAction(currentGroup.toLowerCase()));
-                message = matcher.replaceFirst("");
+                command.put(Command.ACTION, getAction(currentGroup.toLowerCase(locale)));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Expiration
         try {
-            matcher = patterns.get(CommandSettings.Prefix.expiration).matcher(message);
+            matcher = patterns.get(Prefix.expiration.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
                 command.put(Demand.EXPIRATION_DATE, getDate(currentGroup));
-                message = matcher.replaceFirst("");
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Locale
         try {
-            matcher = patterns.get(CommandSettings.Prefix.locale).matcher(message);
+            matcher = patterns.get(Prefix.locale.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase());
-                command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase());
-                message = matcher.replaceFirst("");
+                command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase(locale));
+                command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase(locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Price
         try {
-            matcher = patterns.get(CommandSettings.Prefix.price).matcher(message);
+            matcher = patterns.get(Prefix.price.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.PRICE, getPrice(currentGroup));
-                message = matcher.replaceFirst("");
+                command.put(Proposal.PRICE, getDoubleValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Proposal
         try {
-            matcher = patterns.get(CommandSettings.Prefix.proposal).matcher(message);
+            matcher = patterns.get(Prefix.proposal.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.PROPOSAL_KEY, getQuantity(currentGroup));
-                message = matcher.replaceFirst("");
+                command.put(Proposal.PROPOSAL_KEY, getLongValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Quantity
         try {
-            matcher = patterns.get(CommandSettings.Prefix.quantity).matcher(message);
+            matcher = patterns.get(Prefix.quantity.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.QUANTITY, getQuantity(currentGroup));
-                message = matcher.replaceFirst("");
+                command.put(Demand.QUANTITY, getLongValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Reference
         try {
-            matcher = patterns.get(CommandSettings.Prefix.reference).matcher(message);
+            matcher = patterns.get(Prefix.reference.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.REFERENCE, getQuantity(currentGroup));
-                message = matcher.replaceFirst("");
+                command.put(Demand.REFERENCE, getLongValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Range
         try {
-            matcher = patterns.get(CommandSettings.Prefix.range).matcher(message);
+            matcher = patterns.get(Prefix.range.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase());
-                command.put(Demand.RANGE, getRange(currentGroup, command.getString(Demand.RANGE_UNIT)));
-                message = matcher.replaceFirst("");
+                command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase(locale));
+                command.put(Demand.RANGE, getDoubleValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Total
         try {
-            matcher = patterns.get(CommandSettings.Prefix.total).matcher(message);
+            matcher = patterns.get(Prefix.total.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.TOTAL, getPrice(currentGroup));
-                message = matcher.replaceFirst("");
+                command.put(Proposal.TOTAL, getDoubleValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // \+Tags
+        try {
+            matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put("\\+" + Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // \-Tags
+        try {
+            matcher = patterns.get("\\-" + Prefix.tags.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put("\\-" + Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
+                messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
         catch(IllegalStateException ex) {}
         // Tags
         try {
-            matcher = patterns.get(CommandSettings.Prefix.tags).matcher(message);
+            matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
-                message = matcher.replaceFirst("");
-                oneFieldOverriden = true;
+                if (0 < currentGroup.length()) {
+                    command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
+                    messageCopy = extractPart(messageCopy, currentGroup);
+                    oneFieldOverriden = true;
+                }
             }
         }
         catch(IllegalStateException ex) {}
@@ -304,6 +345,19 @@ public class CommandProcessor {
             throw new ClientException("No query field has been correctly extracted");
         }
         return command;
+    }
+
+    /**
+     * Helper extracting the specified part from the input stream
+     *
+     * @param master input stream to process
+     * @param excerpt part to extract
+     * @return cleaned-up stream
+     */
+    private static StringBuilder extractPart(StringBuilder master, String excerpt) {
+        int start = master.indexOf(excerpt);
+        int end = start + excerpt.length();
+        return master.replace(start, end, "");
     }
 
     /**
@@ -325,8 +379,10 @@ public class CommandProcessor {
 
     /**
      * Helper extracting an expiration date
+
      * @param pattern Parameters extracted by a regular expression
      * @return valid expiration date
+     *
      * @throws ParseException if the date format is invalid
      */
     private static String getDate(String pattern) throws ParseException {
@@ -345,71 +401,116 @@ public class CommandProcessor {
     }
 
     /**
-     * Helper extracting a distance
-     * @param pattern Parameters extracted by a regular expression
-     * @return valid distance
-     */
-    private static Double getRange(String pattern, String rangeUnit) {
-        // Extract the number after the prefix, taking care of excluding the part with the range unit
-        return Double.parseDouble(pattern.substring(pattern.indexOf(":") + 1, pattern.length() - rangeUnit.length()).trim());
-    }
-
-    /**
      * Helper extracting distance unit
+     *
      * @param pattern Parameters extracted by a regular expression
      * @return valid distance unit
      */
     private static String getRangeUnit(String pattern) {
-        // Range unit can be {km; mi}, just 2-character wide
-        return pattern.substring(pattern.length() - 2);
+        int indexSpace = pattern.lastIndexOf(' ');
+        if (indexSpace != -1 && !Character.isDigit(pattern.charAt(indexSpace + 1))) {
+            return pattern.substring(indexSpace + 1);
+        }
+        int idx = pattern.length();
+        while(true) { // while(0 < idx) { // No need to check because the pattern matches the regexp \\d+\\s*(miles|mi|km)
+            --idx;
+            if (!Character.isLetter(pattern.charAt(idx))) {
+                break;
+            }
+        }
+        return pattern.substring(idx + 1);
     }
 
     /**
      * Helper extracting country codes
+     *
      * @param pattern Parameters extracted by a regular expression
      * @return valid country cod
      */
     private static String getCountryCode(String pattern) {
-        // Range unit can be {us; ca}, just 2-character wide
-        return pattern.substring(pattern.length() - 2);
+        int indexSpace = pattern.lastIndexOf(' ');
+        if (indexSpace != -1) {
+            return pattern.substring(indexSpace + 1);
+        }
+        int indexDash = pattern.lastIndexOf('-');
+        if (indexDash != -1) {
+            return pattern.substring(indexDash + 1);
+        }
+        return LocaleValidator.DEFAULT_COUNTRY_CODE;
     }
 
     /**
      * Helper extracting postal code
+     *
      * @param pattern Parameters extracted by a regular expression
      * @return valid postal code
      */
     private static String getPostalCode(String pattern, String countryCode) {
-        return pattern.substring(pattern.indexOf(":") + 1, pattern.length() - countryCode.length() - 1).trim();
+        String postalCode = pattern.substring(pattern.indexOf(":") + 1, pattern.length() - countryCode.length()).replaceAll("\\s", "");
+        if (postalCode.charAt(postalCode.length() - 1) == '-') {
+            return postalCode.substring(0, postalCode.length() - 1);
+        }
+        return postalCode;
     }
 
     /**
-     * Helper extracting prices
+     * Helper returning only number related characters
+     *
      * @param pattern Parameters extracted by a regular expression
-     * @return valid price
+     * @return valid number representation, ready to be transformed
      */
-    private static double getPrice(String pattern) {
-        return Double.parseDouble(pattern.substring(pattern.indexOf(":") + 1).trim());
+    private static String getCleanNumber(String pattern) {
+        StringBuilder value = new StringBuilder(pattern.substring(pattern.indexOf(":") + 1).trim());
+        int idx = value.length();
+        while (0 < idx) {
+            -- idx;
+            char scannedChar = value.charAt(idx);
+            // Look for excluding the currency symbols
+            if (!Character.isDigit(scannedChar) && scannedChar != '.' && scannedChar != ',') {
+                value = value.replace(idx, idx + 1, "");
+            }
+        }
+        return value.toString();
     }
 
     /**
-     * Helper extracting quantities
+     * Helper extracting Double values
+     *
      * @param pattern Parameters extracted by a regular expression
-     * @return valid quantity
+     * @param locale Locale used to detect the decimal separator
+     * @return valid Double value
+     *
+     * @throws ParseException if the parsing fails
      */
-    private static long getQuantity(String pattern) {
-        return Long.parseLong(pattern.substring(pattern.indexOf(":") + 1).trim());
+    private static double getDoubleValue(String pattern, Locale locale) throws ParseException {
+        NumberFormat extractor = DecimalFormat.getInstance(locale);
+        return extractor.parse(getCleanNumber(pattern)).doubleValue();
+    }
+
+    /**
+     * Helper extracting Long values
+     *
+     * @param pattern Parameters extracted by a regular expression
+     * @param locale Locale used to detect the decimal separator
+     * @return valid Long value
+     *
+     * @throws ParseException if the parsing fails
+     */
+    private static long getLongValue(String pattern, Locale locale) throws ParseException {
+        NumberFormat extractor = DecimalFormat.getInstance(locale);
+        return extractor.parse(getCleanNumber(pattern)).longValue();
     }
 
     /**
      * Helper extracting tags
+     *
      * @param pattern Parameters extracted by a regular expression
      * @return tags
      */
     private static String[] getTags(String pattern) {
         String keywords = pattern;
-        if (pattern.startsWith("tags:")) {
-            keywords = pattern.substring("tags:".length());
+        if (pattern.indexOf(":") != -1) {
+            keywords = pattern.substring(pattern.indexOf(":") + 1).trim();
         }
         return keywords.split("\\s+");
     }
@@ -428,20 +529,20 @@ public class CommandProcessor {
         StringBuilder tweet = new StringBuilder();
         JsonObject prefixes = localizedPrefixes.get(locale);
         JsonObject actions = localizedActions.get(locale);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(demand.getAction().toString()).getString(0)).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(demand.getAction().toString()).getString(0)).append(space);
         if (demand.getKey() != null) {
-            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)).append(":").append(demand.getKey()).append(space);
+            tweet.append(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)).append(":").append(demand.getKey()).append(space);
         }
         JsonObject states = localizedStates.get(locale);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0)).append(":").append(states.getString(demand.getState().toString())).append(space);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToYMD(demand.getExpirationDate())).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.state.toString()).getString(0)).append(":").append(states.getString(demand.getState().toString())).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToYMD(demand.getExpirationDate())).append(space);
         if (location != null && location.getPostalCode() != null && location.getCountryCode() != null) {
-            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
+            tweet.append(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
         }
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.range.toString()).getString(0)).append(":").append(demand.getRange()).append(demand.getRangeUnit()).append(space);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0)).append(":").append(demand.getQuantity()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.range.toString()).getString(0)).append(":").append(demand.getRange()).append(demand.getRangeUnit()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0)).append(":").append(demand.getQuantity()).append(space);
         if (0 < demand.getCriteria().size()) {
-            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0)).append(":");
+            tweet.append(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)).append(":");
             for (String tag: demand.getCriteria()) {
                 tweet.append(tag).append(space);
             }
@@ -467,25 +568,25 @@ public class CommandProcessor {
         StringBuilder tweet = new StringBuilder();
         JsonObject prefixes = localizedPrefixes.get(locale);
         JsonObject actions = localizedActions.get(locale);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(proposal.getAction().toString()).getString(0)).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(proposal.getAction().toString()).getString(0)).append(space);
         if (proposal.getKey() != null) {
-            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.proposal.toString()).getString(0)).append(":").append(proposal.getKey()).append(space);
+            tweet.append(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)).append(":").append(proposal.getKey()).append(space);
         }
         if (proposal.getDemandKey() != null) {
-            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.reference.toString()).getString(0)).append(":").append(proposal.getDemandKey()).append(space);
+            tweet.append(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)).append(":").append(proposal.getDemandKey()).append(space);
         }
         JsonObject states = localizedStates.get(locale);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.state.toString()).getString(0)).append(":").append(states.getString(proposal.getState().toString())).append(space);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.store.toString()).getString(0)).append(":").append(proposal.getStoreKey()).append(space);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.quantity.toString()).getString(0)).append(":").append(proposal.getQuantity()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.state.toString()).getString(0)).append(":").append(states.getString(proposal.getState().toString())).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.store.toString()).getString(0)).append(":").append(proposal.getStoreKey()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0)).append(":").append(proposal.getQuantity()).append(space);
         if (0 < proposal.getCriteria().size()) {
-            tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.tags.toString()).getString(0)).append(":");
+            tweet.append(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)).append(":");
             for (String tag: proposal.getCriteria()) {
                 tweet.append(tag).append(space);
             }
         }
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.price.toString()).getString(0)).append(":").append(proposal.getPrice()).append(space);
-        tweet.append(prefixes.getJsonArray(CommandSettings.Prefix.total.toString()).getString(0)).append(":").append(proposal.getTotal()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.price.toString()).getString(0)).append(":").append(proposal.getPrice()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.total.toString()).getString(0)).append(":").append(proposal.getTotal()).append(space);
         return tweet.toString();
     }
 
@@ -528,11 +629,11 @@ public class CommandProcessor {
 
         // Load the definitions for the sender locale
         loadLocalizedSettings(senderLocale);
-        Map<CommandSettings.Prefix, Pattern> patterns = localizedPatterns.get(senderLocale);
+        Map<String, Pattern> patterns = localizedPatterns.get(senderLocale);
 
         try {
             // Extract information from the short message and process the information
-            JsonObject command = parseCommand(patterns, rawCommand.getCommand());
+            JsonObject command = parseCommand(patterns, rawCommand.getCommand(), consumer.getLocale());
             command.put(Command.SOURCE, rawCommand.getSource().toString());
             processCommand(pm, consumer, rawCommand, command);
         }
@@ -555,24 +656,50 @@ public class CommandProcessor {
         return ex.getClass().getName() + " / " + ex.getMessage();
     }
 
+    /**
+     * Helper querying the data store to retrieve the Consumer who matches the command emitter's information.
+     * Because the raw command exists, it's assumed the emitter's record exists.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param rawCommand command as received by the system
+     * @return The emitter Consumer record
+
+     * @throws DataSourceException If no Consumer record match the raw command emitter
+     */
     protected static Consumer retrieveConsumer(PersistenceManager pm, RawCommand rawCommand) throws DataSourceException {
         if (Source.simulated.equals(rawCommand.getSource())) {
             Consumer consumer = new Consumer();
             consumer.setName(rawCommand.getEmitterId());
             return consumer;
         }
+        List<Consumer> consumers = null;
         if (Source.twitter.equals(rawCommand.getSource())) {
-            return consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, rawCommand.getEmitterId(), 1).get(0);
+            consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, rawCommand.getEmitterId(), 1);
         }
-        if (Source.jabber.equals(rawCommand.getSource())) {
-            return consumerOperations.getConsumers(pm, Consumer.JABBER_ID, rawCommand.getEmitterId(), 1).get(0);
+        else if (Source.jabber.equals(rawCommand.getSource())) {
+            consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, rawCommand.getEmitterId(), 1);
         }
-        if (Source.facebook.equals(rawCommand.getSource())) {
-            throw new RuntimeException("Not yet implemented");
+        else {
+            throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
         }
-        throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
+        if (consumers.size() == 0) {
+            throw new DataSourceException("Record for " + rawCommand.getSource().toString() + ": '" + rawCommand.getEmitterId() + "' not found!");
+        }
+        return consumers.get(0);
     }
 
+    /**
+     * Helper querying the data store to retrieve the Retailer account attached to the given Consumer one.
+     * If no Retailer account is found, the error is reported that the corresponding action which required a Retailer account failed.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumer Consumer account to consider
+     * @param action Action involved for that lookup
+     * @return The Retailer account
+     *
+     * @throws DataSourceException If the data retrieval fails
+     * @throws ReservedOperationException If no account is returned
+     */
     protected static Retailer retrieveRetailer(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
         List<Retailer> retailers = retailerOperations.getRetailers(pm, Retailer.CONSUMER_KEY, consumer.getKey(), 1);
         if (retailers.size() == 0) {
@@ -596,45 +723,58 @@ public class CommandProcessor {
         Locale locale = consumer.getLocale();
         JsonObject prefixes = localizedPrefixes.get(locale);
         JsonObject actions = localizedActions.get(locale);
+        // Prepare for locale dependent comparisons
+        Collator collator = Collator.getInstance(locale);
+        collator.setStrength(Collator.PRIMARY);
         // Clear case of help being requested at the prefix level
         if (command.containsKey(Command.NEED_HELP)) {
-            processHelpCommand(rawCommand, command.getString(Command.NEED_HELP), locale);
+            processHelpCommand(
+                    rawCommand,
+                    command.getString(Command.NEED_HELP),
+                    locale,
+                    collator
+            );
             return;
         }
         String action = guessAction(command);
         try {
             // Alternate case of the help being asked as an action...
-            if (CommandSettings.isEquivalentTo(prefixes, CommandSettings.Prefix.help.toString(), action)) {
-                processHelpCommand(rawCommand, command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "", locale);
+            if (CommandSettings.isEquivalentTo(prefixes, Prefix.help.toString(), action, collator)) {
+                processHelpCommand(
+                        rawCommand,
+                        command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "",
+                        locale,
+                        collator
+                );
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.cancel.toString(), action, collator)) {
                 processCancelCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.close.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.close.toString(), action, collator)) {
                 processCloseCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.confirm.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.confirm.toString(), action, collator)) {
                 processConfirmCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.decline.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.decline.toString(), action, collator)) {
                 processDeclineCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.demand.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.demand.toString(), action, collator)) {
                 processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.list.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.list.toString(), action, collator)) {
                 processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.propose.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.propose.toString(), action, collator)) {
                 processProposeCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.supply.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.supply.toString(), action, collator)) {
                 processSupplyCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.wish.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.wish.toString(), action, collator)) {
                 processWishCommand(pm, consumer, rawCommand, command);
             }
-            else if (CommandSettings.isEquivalentTo(actions, CommandSettings.Action.www.toString(), action)) {
+            else if (CommandSettings.isEquivalentTo(actions, Action.www.toString(), action, collator)) {
                 processWWWCommand(pm, consumer, rawCommand, command);
             }
             else {
@@ -661,18 +801,18 @@ public class CommandProcessor {
         String action = command.getString(Command.ACTION);
         if (action == null) {
             if (command.containsKey(Demand.REFERENCE)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : CommandSettings.Action.demand.toString();
+                action = command.size() == 1 ? Action.list.toString() : Action.demand.toString();
             }
             else if (command.containsKey(Store.STORE_KEY)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
+                action = command.size() == 1 ? Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
             }
             /* TODO: implement other listing variations
             else if (command.containsKey(Product.PRODUCT_KEY)) {
-                action = command.size() == 1 ? CommandSettings.Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
+                action = command.size() == 1 ? Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
             }
             */
             else {
-                action = CommandSettings.Action.demand.toString();
+                action = Action.demand.toString();
             }
         }
         return action;
@@ -687,11 +827,12 @@ public class CommandProcessor {
      * @param actions List of location actions for the originator's locale
      * @param arguments Sequence submitted in addition to the question mark (?) or to the help command
      * @param locale Originator's locale
+     * @param collator for locale-dependent comparison
      *
      * @throws DataSourceException If sending the help message to the originator fails
      * @throws ClientException If the communication back with the user fails
      */
-    protected static void processHelpCommand(RawCommand rawCommand, String arguments, Locale locale) throws DataSourceException, ClientException {
+    protected static void processHelpCommand(RawCommand rawCommand, String arguments, Locale locale, Collator collator) throws DataSourceException, ClientException {
         // Extract the first keyword
         int limit = arguments.length();
         String keyword = "";
@@ -722,8 +863,8 @@ public class CommandProcessor {
         // Check if the keyword is a prefix
         if (true) { // if (message == null) {
             JsonObject prefixes = localizedPrefixes.get(locale);
-            for (CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
-                if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword)) {
+            for (Prefix prefix: Prefix.values()) {
+                if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword, collator)) {
                     String key = prefix.toString();
                     key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
                     message = LabelExtractor.get(ResourceFileId.second, key, locale);
@@ -734,8 +875,8 @@ public class CommandProcessor {
         // Check if the keyword is an action
         if (message == null) {
             JsonObject actions = localizedActions.get(locale);
-            for (CommandSettings.Action action: CommandSettings.Action.values()) {
-                if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword)) {
+            for (Action action: Action.values()) {
+                if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword, collator)) {
                     String key = action.toString();
                     key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
                     message = LabelExtractor.get(ResourceFileId.second, key, locale);
@@ -746,8 +887,9 @@ public class CommandProcessor {
         // Check if the keyword is a state
         if (message == null) {
             JsonObject states = localizedStates.get(locale);
-            for (CommandSettings.State state: CommandSettings.State.values()) {
-                if (states.getString(state.toString()).equals(keyword)) {
+            for (State state: State.values()) {
+                if (collator.compare(states.getString(state.toString()), keyword) == 0) {
+                // if (states.getString(state.toString()).equals(keyword)) {
                     String key = state.toString();
                     key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
                     message = LabelExtractor.get(ResourceFileId.second, key, locale);
@@ -761,7 +903,8 @@ public class CommandProcessor {
             for (String helpKeyword: helpKeywords.getMap().keySet()) {
                 JsonArray equivalents = helpKeywords.getJsonArray(helpKeyword);
                 for (int i = 0; i < equivalents.size(); i++) {
-                    if (equivalents.getString(i).equals(keyword)) {
+                    if (collator.compare(equivalents.getString(i), keyword) == 0) {
+                    // if (equivalents.getString(i).equals(keyword)) {
                         message = LabelExtractor.get(ResourceFileId.second, helpKeyword, locale);
                         break;
                     }
@@ -801,7 +944,7 @@ public class CommandProcessor {
                 );
             }
             if (demand != null) {
-                demand.setState(CommandSettings.State.cancelled);
+                demand.setState(State.cancelled);
                 demandOperations.updateDemand(pm, demand);
                 // Echo back the updated demand
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
@@ -940,7 +1083,7 @@ public class CommandProcessor {
             );
         }
         if (demand != null) {
-            if (!CommandSettings.State.published.equals(demand.getState())) {
+            if (!State.published.equals(demand.getState())) {
                 communicateToEmitter(
                         rawCommand,
                         LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposal.getKey(), demand.getKey(), demand.getState().toString() }, consumer.getLocale())
@@ -1019,7 +1162,7 @@ public class CommandProcessor {
             }
             if (demand != null) {
                 demand.fromJson(command);
-                demand.setState(CommandSettings.State.opened); // Will force the re-validation of the entire demand
+                demand.setState(State.opened); // Will force the re-validation of the entire demand
                 demand.resetProposalKeys(); // All existing proposals are removed
                 demandOperations.updateDemand(pm, demand);
                 // Echo back the updated demand
@@ -1045,15 +1188,15 @@ public class CommandProcessor {
                 // Reset sensitive fields
                 latestDemand.resetKey();
                 latestDemand.resetCoreDates();
-                latestDemand.setAction(CommandSettings.Action.demand);
+                latestDemand.setAction(Action.demand);
                 latestDemand.resetCriteria();
                 latestDemand.setDefaultExpirationDate();
-                latestDemand.setState(CommandSettings.State.opened);
+                latestDemand.setState(State.opened);
             }
             else {
                 latestDemand = new Demand();
                 // Set fields with default values
-                latestDemand.setAction(CommandSettings.Action.demand);
+                latestDemand.setAction(Action.demand);
             }
             latestDemand.setSource(rawCommand.getSource());
             // Update of the latest command (can be the default one) with the just extracted parameters
@@ -1185,7 +1328,7 @@ public class CommandProcessor {
             }
             if (proposal != null) {
                 proposal.fromJson(command);
-                proposal.setState(CommandSettings.State.opened); // Will force the re-validation of the entire proposal
+                proposal.setState(State.opened); // Will force the re-validation of the entire proposal
                 proposalOperations.updateProposal(pm, proposal);
                 // Echo back the updated proposal
                 communicateToEmitter(rawCommand, generateTweet(proposal, consumer.getLocale()));

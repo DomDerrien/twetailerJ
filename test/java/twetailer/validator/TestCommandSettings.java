@@ -6,9 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.text.Collator;
 import java.util.Locale;
 
 import org.junit.Test;
+
+import twetailer.validator.CommandSettings.Prefix;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 
 import domderrien.i18n.MockLabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -27,7 +32,7 @@ public class TestCommandSettings {
     @Test
     public void testGetPrefixes_EN() {
         JsonObject prefixes = CommandSettings.getPrefixes(Locale.ENGLISH);
-        for(CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
+        for(Prefix prefix: Prefix.values()) {
             assertTrue("The prefix definition for '" + prefix + "' is not in the resource bundle", prefixes.containsKey(prefix.toString()));
             assertNotNull(prefixes.getJsonArray(prefix.toString()));
             assertNotSame(0, prefixes.getJsonArray(prefix.toString()).size());
@@ -38,7 +43,7 @@ public class TestCommandSettings {
     @Test
     public void testGetPrefixes_FR() {
         JsonObject prefixes = CommandSettings.getPrefixes(Locale.FRENCH);
-        for(CommandSettings.Prefix prefix: CommandSettings.Prefix.values()) {
+        for(Prefix prefix: Prefix.values()) {
             assertTrue("The prefix definition for '" + prefix + "' is not in the resource bundle", prefixes.containsKey(prefix.toString()));
             assertNotNull(prefixes.getJsonArray(prefix.toString()));
             assertNotSame(0, prefixes.getJsonArray(prefix.toString()).size());
@@ -48,7 +53,7 @@ public class TestCommandSettings {
     @Test
     public void testGetActions_EN() {
         JsonObject actions = CommandSettings.getActions(Locale.ENGLISH);
-        for(CommandSettings.Action action: CommandSettings.Action.values()) {
+        for(Action action: Action.values()) {
             assertTrue("The action value for '" + action + "' is not in the resource bundle", actions.containsKey(action.toString()));
             assertNotNull(actions.getJsonArray(action.toString()));
             assertNotSame(0, actions.getJsonArray(action.toString()).size());
@@ -59,7 +64,7 @@ public class TestCommandSettings {
     @Test
     public void testGetActions_FR() {
         JsonObject actions = CommandSettings.getActions(Locale.FRENCH);
-        for(CommandSettings.Action action: CommandSettings.Action.values()) {
+        for(Action action: Action.values()) {
             assertTrue("The action value for '" + action + "' is not in the resource bundle", actions.containsKey(action.toString()));
             assertNotNull(actions.getJsonArray(action.toString()));
             assertNotSame(0, actions.getJsonArray(action.toString()).size());
@@ -73,11 +78,14 @@ public class TestCommandSettings {
         equivalents.add("delete");
         equivalents.add("stop");
         JsonObject actions = new GenericJsonObject();
-        actions.put(CommandSettings.Action.cancel.toString(), equivalents);
+        actions.put(Action.cancel.toString(), equivalents);
 
-        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), "cancel"));
-        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), "delete"));
-        assertFalse(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.cancel.toString(), "destroy"));
+        Collator collator = Collator.getInstance(Locale.US);
+        collator.setStrength(Collator.PRIMARY);
+
+        assertTrue(CommandSettings.isEquivalentTo(actions, Action.cancel.toString(), "cancel", collator));
+        assertTrue(CommandSettings.isEquivalentTo(actions, Action.cancel.toString(), "delete", collator));
+        assertFalse(CommandSettings.isEquivalentTo(actions, Action.cancel.toString(), "destroy", collator));
     }
 
     @Test
@@ -86,17 +94,20 @@ public class TestCommandSettings {
         equivalents.add("help");
         equivalents.add("?");
         JsonObject actions = new GenericJsonObject();
-        actions.put(CommandSettings.Action.help.toString(), equivalents);
+        actions.put(Action.help.toString(), equivalents);
 
-        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.help.toString(), "help"));
-        assertTrue(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.help.toString(), "?"));
-        assertFalse(CommandSettings.isEquivalentTo(actions, CommandSettings.Action.help.toString(), "sos"));
+        Collator collator = Collator.getInstance(Locale.US);
+        collator.setStrength(Collator.PRIMARY);
+
+        assertTrue(CommandSettings.isEquivalentTo(actions, Action.help.toString(), "help", collator));
+        assertTrue(CommandSettings.isEquivalentTo(actions, Action.help.toString(), "?", collator));
+        assertFalse(CommandSettings.isEquivalentTo(actions, Action.help.toString(), "sos", collator));
     }
 
     @Test
     public void testGetStates_EN() {
         JsonObject states = CommandSettings.getStates(Locale.ENGLISH);
-        for(CommandSettings.State state: CommandSettings.State.values()) {
+        for(State state: State.values()) {
             assertTrue("The state value for '" + state + "' is not in the resource bundle", states.containsKey(state.toString()));
             assertNotNull(states.getString(state.toString()));
             assertNotSame(0, states.getString(state.toString()).length());
@@ -107,7 +118,7 @@ public class TestCommandSettings {
     @Test
     public void testGetStates_FR() {
         JsonObject states = CommandSettings.getStates(Locale.FRENCH);
-        for(CommandSettings.State state: CommandSettings.State.values()) {
+        for(State state: State.values()) {
             assertTrue("The state value for '" + state + "' is not in the resource bundle", states.containsKey(state.toString()));
             assertNotNull(states.getString(state.toString()));
             assertNotSame(0, states.getString(state.toString()).length());

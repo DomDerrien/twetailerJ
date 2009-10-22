@@ -19,6 +19,8 @@ public class LocaleValidator {
 
     public static final String KILOMETER_UNIT = "km";
     public static final String MILE_UNIT = "mi";
+    public static final String ALTERNATE_MILE_UNIT = "miles";
+    public static final String DEFAULT_RANGE_UNIT = KILOMETER_UNIT;
 
     public static void getGeoCoordinates(JsonObject command) {
         String postalCode = command.getString(Location.POSTAL_CODE);
@@ -113,12 +115,18 @@ public class LocaleValidator {
     private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
 
     public static String checkLanguage(String language) {
+        //
+        // It's expected that the language code respected the ISO 2-letters format
+        //
         if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return FRENCH_LANGUAGE; }
         if (ENGLISH_LANGUAGE.equalsIgnoreCase(language)) { return ENGLISH_LANGUAGE; }
         return DEFAULT_LANGUAGE; // Default language
     }
 
     public static Locale getLocale(String language) {
+        //
+        // It's expected that the language code respected the ISO 2-letters format
+        //
         if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return Locale.FRENCH; }
         else if (ENGLISH_LANGUAGE.equalsIgnoreCase(language)) { return Locale.ENGLISH; }
         return DEFAULT_LOCALE; // Default language
@@ -127,6 +135,9 @@ public class LocaleValidator {
     public static final String DEFAULT_COUNTRY_CODE = Locale.US.getCountry();
 
     public static String checkCountryCode(String countryCode) {
+        //
+        // It's expected that the country code respected the ISO 2-letters format
+        //
         if (Locale.CANADA.getCountry().equalsIgnoreCase(countryCode)) { return Locale.CANADA.getCountry(); }
         if (Locale.US.getCountry().equalsIgnoreCase(countryCode)) { return Locale.US.getCountry(); }
         return DEFAULT_COUNTRY_CODE; // Default country code

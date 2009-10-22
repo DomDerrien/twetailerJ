@@ -105,6 +105,9 @@ public class Location extends Entity {
     }
 
     public void setPostalCode(String postalCode) {
+        //
+        // FIXME: Be sure that the given postal is in upper case for the country's locale?
+        //
         this.postalCode = postalCode;
         if(this.postalCode != null) {
             this.postalCode = this.postalCode.replaceAll("\\s", "").replaceAll("\\-", "").toUpperCase();
@@ -145,7 +148,9 @@ public class Location extends Entity {
 
     public boolean hasNewAttributes(JsonObject in) {
         boolean hasNewAttribute = false;
+        // Country code is an ISO 2-letters code
         hasNewAttribute = in.containsKey(COUNTRY_CODE) && !in.getString(COUNTRY_CODE).equals(getCountryCode());
+        // Postal code has been upper cased and comparison can be done bit-to-bit
         hasNewAttribute = hasNewAttribute || in.containsKey(POSTAL_CODE) && !in.getString(POSTAL_CODE).equals(getPostalCode());
         hasNewAttribute = hasNewAttribute || in.containsKey(LATITUDE) && !getLatitude().equals(in.getDouble(LATITUDE));
         hasNewAttribute = hasNewAttribute || in.containsKey(LONGITUDE) && !getLongitude().equals(in.getDouble(LONGITUDE));
