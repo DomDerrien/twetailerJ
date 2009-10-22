@@ -646,6 +646,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_command_close_invalid_parameters" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Only Proposals or Demands can be closed. Check '!help close' for more information.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note/>
