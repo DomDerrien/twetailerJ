@@ -805,6 +805,7 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
+        assertTrue(sentText.contains(Prefix.state.toString()+":"+State.cancelled.toString()));
     }
 
     @Test
@@ -853,6 +854,117 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_cancel_missing_demand_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandCancelV() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 2222L;
+        final Long retailerKey = 3333L;
+        final Long proposalKey = 5555L;
+
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Retailer.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(proposalKey, proposal.getKey());
+                assertEquals(State.cancelled, proposal.getState());
+                return proposal;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.cancel.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+        assertTrue(sentText.contains(Prefix.state.toString()+":"+State.cancelled.toString()));
+    }
+
+    @Test
+    public void testProcessCommandCancelVI() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 2222L;
+        final Long retailerKey = 3333L;
+        final Long proposalKey = 5555L;
+
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(Retailer.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                throw new RuntimeException("Done in purpose");
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.cancel.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_id", Locale.ENGLISH), sentText);
     }
 
     @Test

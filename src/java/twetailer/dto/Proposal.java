@@ -41,7 +41,9 @@ public class Proposal extends Entity {
     @Persistent
     private List<String> criteria = new ArrayList<String>();
 
-    public static final String CRITERIA = "criteria";
+    public static final String CRITERIA = Demand.CRITERIA;
+    public static final String CRITERIA_ADD = Demand.CRITERIA_ADD;
+    public static final String CRITERIA_REMOVE = Demand.CRITERIA_REMOVE;
 
     @Persistent
     private Long demandKey;
@@ -61,7 +63,7 @@ public class Proposal extends Entity {
     @Persistent
     private Long quantity = 1L;
 
-    public static final String QUANTITY = "quantity";
+    public static final String QUANTITY = Demand.QUANTITY;
 
     @Persistent
     private Long storeKey;
@@ -275,6 +277,19 @@ public class Proposal extends Entity {
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
             resetCriteria();
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addCriterion(jsonArray.getString(i));
+            }
+        }
+        Demand.removeDuplicates(in);
+        if (in.containsKey(CRITERIA_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                removeCriterion(jsonArray.getString(i));
+            }
+        }
+        if (in.containsKey(CRITERIA_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
             for (int i=0; i<jsonArray.size(); ++i) {
                 addCriterion(jsonArray.getString(i));
             }

@@ -33,17 +33,19 @@ public class Retailer extends Entity {
     @Persistent
     private List<String> criteria = new ArrayList<String>();
 
-    public final static String  CRITERIA = "criteria";
+    public final static String  CRITERIA = Demand.CRITERIA;
+    public static final String CRITERIA_ADD = Demand.CRITERIA_ADD;
+    public static final String CRITERIA_REMOVE = Demand.CRITERIA_REMOVE;
 
     @Persistent
     private String email;
 
-    public final static String EMAIL = "email";
+    public final static String EMAIL = Consumer.EMAIL;
 
     @Persistent
     private String jabberId;
 
-    public final static String JABBER_ID = "jabberId";
+    public final static String JABBER_ID = Consumer.JABBER_ID;
 
     @Persistent
     private Boolean isStoreAdmin;
@@ -53,7 +55,7 @@ public class Retailer extends Entity {
     @Persistent
     private String language = LocaleValidator.DEFAULT_LANGUAGE;
 
-    public final static String LANGUAGE = "language";
+    public final static String LANGUAGE = Consumer.LANGUAGE;
 
     @Persistent
     private Long locationKey;
@@ -63,12 +65,12 @@ public class Retailer extends Entity {
     @Persistent
     private String name;
 
-    public final static String NAME = "name";
+    public final static String NAME = Consumer.NAME;
 
     @Persistent
     private String phoneNumber;
 
-    public final static String PHONE_NUMBER = "phoneNb";
+    public final static String PHONE_NUMBER = Consumer.PHONE_NUMBER;
 
     @Persistent
     private Source preferredConnection = Source.twitter;
@@ -91,7 +93,7 @@ public class Retailer extends Entity {
     @Persistent
     private String twitterId;
 
-    public final static String TWITTER_ID = "twitterId";
+    public final static String TWITTER_ID = Consumer.TWITTER_ID;
 
     /** Default constructor */
     public Retailer() {
@@ -300,6 +302,19 @@ public class Retailer extends Entity {
         if (in.containsKey(CRITERIA)) {
             resetCriteria();
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addCriterion(jsonArray.getString(i));
+            }
+        }
+        Demand.removeDuplicates(in);
+        if (in.containsKey(CRITERIA_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                removeCriterion(jsonArray.getString(i));
+            }
+        }
+        if (in.containsKey(CRITERIA_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
             for (int i=0; i<jsonArray.size(); ++i) {
                 addCriterion(jsonArray.getString(i));
             }

@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 
 import twetailer.ClientException;
 import twetailer.connector.BaseConnector;
@@ -28,6 +27,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.Retailer;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -372,7 +372,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParsePriceV() throws ClientException, ParseException {
         JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25,3243", Locale.FRENCH);
-        assertEquals(25.3243, data.getDouble(Proposal.PRICE), 0.001);
+        assertEquals(25.3243, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
@@ -913,5 +913,65 @@ public class TestCommandLineSyntax {
         assertEquals("toy", data.getJsonArray("\\+" + Demand.CRITERIA).getString(2));
         assertEquals("service", data.getJsonArray("\\-" + Demand.CRITERIA).getString(0));
         assertEquals("help", data.getJsonArray("\\-" + Demand.CRITERIA).getString(1));
+    }
+
+    @Test
+    public void testParseMixedTagsIV() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(
+                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+                "ref:21 tags: total:45.3222 +tags: price:$25.80 -tags: quantity:12",
+                Locale.ENGLISH
+        );
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
+        assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
+        assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
+    }
+
+    @Test
+    public void testParseMixedTagsV() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(
+                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+                "action:demand ref:21 tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
+                Locale.ENGLISH
+        );
+        Demand demand = new Demand(data);
+        assertNotNull(demand.getCriteria());
+        assertEquals(4, demand.getCriteria().size());
+        assertTrue(demand.getCriteria().contains("one"));
+        assertTrue(demand.getCriteria().contains("two"));
+        assertTrue(demand.getCriteria().contains("four"));
+        assertTrue(demand.getCriteria().contains("five"));
+    }
+
+    @Test
+    public void testParseMixedTagsVI() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(
+                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+                "action:propose proposal:21 tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
+                Locale.ENGLISH
+        );
+        Proposal proposal = new Proposal(data);
+        assertNotNull(proposal.getCriteria());
+        assertEquals(4, proposal.getCriteria().size());
+        assertTrue(proposal.getCriteria().contains("one"));
+        assertTrue(proposal.getCriteria().contains("two"));
+        assertTrue(proposal.getCriteria().contains("four"));
+        assertTrue(proposal.getCriteria().contains("five"));
+    }
+
+    @Test
+    public void testParseMixedTagsVII() throws ClientException, ParseException {
+        JsonObject data = CommandProcessor.parseCommand(
+                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+                "action:supply tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
+                Locale.ENGLISH
+        );
+        Retailer retailer = new Retailer(data);
+        assertNotNull(retailer.getCriteria());
+        assertEquals(4, retailer.getCriteria().size());
+        assertTrue(retailer.getCriteria().contains("one"));
+        assertTrue(retailer.getCriteria().contains("two"));
+        assertTrue(retailer.getCriteria().contains("four"));
+        assertTrue(retailer.getCriteria().contains("five"));
     }
 }

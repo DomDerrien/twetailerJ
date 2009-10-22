@@ -82,6 +82,12 @@ public class DemandValidator {
                 else if (/* LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && */ (demand.getRange() == null || demand.getRange().doubleValue() < 3.0D)) {
                     message = LabelExtractor.get("dv_demandRangeInMilesTooSmall", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange() }, locale);
                 }
+                else if (LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && demand.getRange().doubleValue() > 24906.0D) {
+                    message = LabelExtractor.get("dv_demandRangeInMilesTooBig", new Object[] { demand.getKey(), demand.getRange() }, locale);
+                }
+                else if (/* LocaleValidator.KILOMETER_UNIT.equals(demand.getRangeUnit()) && */ demand.getRange().doubleValue() > 40075.0D) {
+                    message = LabelExtractor.get("dv_demandRangeInKMTooBig", new Object[] { demand.getKey(), demand.getRange() }, locale);
+                }
                 else if (demand.getQuantity() == null || demand.getQuantity() == 0L) {
                     message = LabelExtractor.get("dv_demandShouldConcernAtLeastOneItem", new Object[] { demand.getKey() }, locale);
                 }

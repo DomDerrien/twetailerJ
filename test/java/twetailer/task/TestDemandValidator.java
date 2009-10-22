@@ -348,7 +348,7 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessVI() throws DataSourceException {
+    public void testProcessVIa() throws DataSourceException {
         //
         // Valid criteria
         // Valid expiration date
@@ -366,6 +366,50 @@ public class TestDemandValidator {
                     @Override
                     public Double getRange() {
                         return 0.0D;
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(OwnerKey);
+                demand.setSource(source);
+                demand.addCriterion("test");
+                demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessVIb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid expiration date
+        // Invalid range
+        //
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Double getRange() {
+                        return 100000000000000.0D;
                     }
                 };
                 demand.setKey(demandKey);
@@ -436,7 +480,7 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessVIII() throws DataSourceException {
+    public void testProcessVIIIa() throws DataSourceException {
         //
         // Valid criteria
         // Valid expiration date
@@ -480,7 +524,51 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessIX() throws DataSourceException {
+    public void testProcessVIIIb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid expiration date
+        // Invalid range
+        //
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Double getRange() {
+                        return 1000000000000000000.0D;
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(OwnerKey);
+                demand.setSource(source);
+                demand.addCriterion("test");
+                demand.setRangeUnit(LocaleValidator.MILE_UNIT);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIXa() throws DataSourceException {
         //
         // Valid criteria
         // Valid expiration date
@@ -506,6 +594,51 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIXb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid expiration date
+        // Valid range
+        // Invalid quantity
+        //
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Long getQuantity() {
+                        return null;
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(OwnerKey);
+                demand.setSource(source);
+                demand.addCriterion("test");
+                demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
             }
             @Override

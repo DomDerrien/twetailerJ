@@ -47,6 +47,8 @@ public class Demand extends Entity {
     private List<String> criteria = new ArrayList<String>();
 
     public static final String CRITERIA = "criteria";
+    public static final String CRITERIA_ADD = "\\+criteria";
+    public static final String CRITERIA_REMOVE = "\\-criteria";
 
     @Persistent
     private Date expirationDate;
@@ -374,6 +376,19 @@ public class Demand extends Entity {
                 addCriterion(jsonArray.getString(i));
             }
         }
+        removeDuplicates(in);
+        if (in.containsKey(CRITERIA_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                removeCriterion(jsonArray.getString(i));
+            }
+        }
+        if (in.containsKey(CRITERIA_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addCriterion(jsonArray.getString(i));
+            }
+        }
         if (in.containsKey(EXPIRATION_DATE)) {
             try {
                 Date expirationDate = DateUtils.isoToDate(in.getString(EXPIRATION_DATE));
@@ -399,5 +414,21 @@ public class Demand extends Entity {
         if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }
 
         return this;
+    }
+
+    protected static void removeDuplicates(JsonObject in) {
+        if (in.containsKey(CRITERIA_REMOVE) && in.containsKey(CRITERIA_ADD)) {
+            JsonArray inAdd = in.getJsonArray(CRITERIA_ADD);
+            JsonArray inRemove = in.getJsonArray(CRITERIA_REMOVE);
+            int idx = inRemove.size();
+            while (0 < idx) {
+                --idx;
+                String tag = inRemove.getString(idx);
+                if (inAdd.getList().contains(tag)) {
+                    inAdd.remove(tag);
+                    inRemove.remove(tag);
+                }
+            }
+        }
     }
 }

@@ -310,7 +310,7 @@ public class CommandProcessor {
             matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put("\\+" + Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
+                command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -321,7 +321,7 @@ public class CommandProcessor {
             matcher = patterns.get("\\-" + Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put("\\-" + Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
+                command.put(Demand.CRITERIA_REMOVE, new GenericJsonArray(getTags(currentGroup)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -944,17 +944,43 @@ public class CommandProcessor {
                 );
             }
             if (demand != null) {
+                // Update the demand and echo back the new state
                 demand.setState(State.cancelled);
                 demandOperations.updateDemand(pm, demand);
-                // Echo back the updated demand
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
                 communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+                // FIXME: cancel also attached proposals
+                // FIXME: inform the retailers who proposed articles about the cancellation
+                // FIXME: inform the retailer if the demand was in the confirmed state
+                // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
+            }
+        }
+        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
+            // Get the retailer
+            Retailer retailer = retrieveRetailer(pm, consumer, Action.cancel);
+            // FIXME: allow also attached demand owner to cancel the proposal
+            // Update proposal state
+            Proposal proposal = null;
+            try {
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
+            }
+            catch(Exception ex) {
+                communicateToEmitter(
+                        rawCommand,
+                        LabelExtractor.get("cp_command_cancel_invalid_proposal_id", consumer.getLocale())
+                );
+            }
+            if (proposal != null) {
+                // Update the proposal and echo back the new state
+                proposal.setState(State.cancelled);
+                proposalOperations.updateProposal(pm, proposal);
+                communicateToEmitter(rawCommand, generateTweet(proposal, retailer.getLocale()));
+                // FIXME: inform the consumer who owns the attached demand about the cancellation
+                // FIXME: put the demand in the published state if the proposal was in the confirmed state
+                // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
             }
         }
         /* TODO: implement other variations
-        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            throw new ClientException("Canceling proposals - Not yet implemented");
-        }
         else if (command.containsKey(Wish.REFERENCE)) {
             throw new ClientException("Canceling proposals - Not yet implemented");
         }
@@ -1277,7 +1303,17 @@ public class CommandProcessor {
         }
         */
         else {
-            // FIXME: select only {invalid, open, published, proposed} demands -- {canceled, closed} demands can be only listed with the Web console
+            /* FIXME: select only {invalid, open, published, proposed} demands -- {canceled, closed} demands can be only listed with the Web console
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put(Command.OWNER_KEY, consumer.getKey());
+            parameters.put(Command.STATE, State.opened.toString());
+            parameters.put(Command.STATE, State.published.toString());
+            parameters.put(Command.STATE, State.confirmed.toString());
+            parameters.put("!" + Command.STATE, State.closed.toString());
+            parameters.put("!" + Command.STATE, State.cancelled.toString());
+            List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
+            => Operator <> not supported by App Engine :(
+            */
             List<Demand> demands = demandOperations.getDemands(pm, Command.OWNER_KEY, consumer.getKey(), 0);
             if (demands.size() == 0) {
                 communicateToEmitter(
