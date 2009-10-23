@@ -1,4 +1,3 @@
-// ATM 23333
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
@@ -68,25 +67,25 @@ public class ProposalValidator {
                 String message = null;
 
                 if(proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
-                    message = LabelExtractor.get("pv_proposalShouldHaveAtLeastOneTag", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposal.getKey() }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {
-                    message = LabelExtractor.get("pv_proposalShouldConcernAtLeastOneItem", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposal.getKey() }, locale);
                 }
                 else if ((proposal.getPrice() == null || Double.valueOf(0.0D).equals(proposal.getPrice())) && (proposal.getTotal() == null || Double.valueOf(0.0D).equals(proposal.getTotal()))) {
-                    message = LabelExtractor.get("pv_proposalShouldHaveAUnitPriceOrTotalPrice", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposal.getKey() }, locale);
                 }
                 else {
                     Long demandKey = proposal.getDemandKey();
                     if (demandKey == null || demandKey == 0L) {
-                        message = LabelExtractor.get("pv_proposalShouldHaveADemandReference", new Object[] { proposal.getKey() }, locale);
+                        message = LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposal.getKey() }, locale);
                     }
                     else {
                         try {
                             demandOperations.getDemand(pm, demandKey, null);
                         }
                         catch (DataSourceException ex) {
-                            message = LabelExtractor.get("pv_proposalHaveInvalidDemandReference", new Object[] { proposal.getKey(), demandKey }, locale);
+                            message = LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposal.getKey(), demandKey }, locale);
                         }
                    }
                 }
@@ -102,7 +101,7 @@ public class ProposalValidator {
                     Queue queue = QueueFactory.getDefaultQueue();
                     queue.add(url("/API/maezel/processPublishedProposal").param(Proposal.KEY, proposalKey.toString()).method(Method.GET));
                 }
-                proposalOperations.updateProposal(pm, proposal);
+                proposal = proposalOperations.updateProposal(pm, proposal);
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information for retailer: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());

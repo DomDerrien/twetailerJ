@@ -648,7 +648,7 @@ public class CommandProcessor {
             );
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
-            rawCommandOperations.updateRawCommand(pm, rawCommand);
+            rawCommand = rawCommandOperations.updateRawCommand(pm, rawCommand);
         }
     }
 
@@ -946,7 +946,7 @@ public class CommandProcessor {
             if (demand != null) {
                 // Update the demand and echo back the new state
                 demand.setState(State.cancelled);
-                demandOperations.updateDemand(pm, demand);
+                demand = demandOperations.updateDemand(pm, demand);
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
                 communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
                 // FIXME: cancel also attached proposals
@@ -973,7 +973,7 @@ public class CommandProcessor {
             if (proposal != null) {
                 // Update the proposal and echo back the new state
                 proposal.setState(State.cancelled);
-                proposalOperations.updateProposal(pm, proposal);
+                proposal = proposalOperations.updateProposal(pm, proposal);
                 communicateToEmitter(rawCommand, generateTweet(proposal, retailer.getLocale()));
                 // FIXME: inform the consumer who owns the attached demand about the cancellation
                 // FIXME: put the demand in the published state if the proposal was in the confirmed state
@@ -1004,7 +1004,7 @@ public class CommandProcessor {
             try {
                 demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
                 demand.setState(State.closed);
-                demandOperations.updateDemand(pm, demand);
+                demand = demandOperations.updateDemand(pm, demand);
                 communicateToEmitter(
                         rawCommand,
                         LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demand.getKey() }, consumer.getLocale())
@@ -1044,7 +1044,7 @@ public class CommandProcessor {
                 Retailer retailer = retrieveRetailer(pm, consumer, Action.close);
                 proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
                 proposal.setState(State.closed);
-                proposalOperations.updateProposal(pm, proposal);
+                proposal = proposalOperations.updateProposal(pm, proposal);
                 communicateToEmitter(
                         rawCommand,
                         LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
@@ -1147,9 +1147,9 @@ public class CommandProcessor {
                 );
                 // Update the proposal and the demand states
                 proposal.setState(State.confirmed);
-                proposalOperations.updateProposal(pm, proposal);
+                proposal = proposalOperations.updateProposal(pm, proposal);
                 demand.setState(State.confirmed);
-                demandOperations.updateDemand(pm, demand);
+                demand = demandOperations.updateDemand(pm, demand);
             }
         }
     }
@@ -1187,15 +1187,24 @@ public class CommandProcessor {
                 );
             }
             if (demand != null) {
-                demand.fromJson(command);
-                demand.setState(State.opened); // Will force the re-validation of the entire demand
-                demand.resetProposalKeys(); // All existing proposals are removed
-                demandOperations.updateDemand(pm, demand);
-                // Echo back the updated demand
-                Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
-                // Get the demandKey for the task scheduling
-                demandKey = demand.getKey();
+                State state = demand.getState();
+                if (state.equals(State.opened) || state.equals(State.published) || state.equals(State.invalid)) {
+                    demand.fromJson(command);
+                    demand.setState(State.opened); // Will force the re-validation of the entire demand
+                    demand.resetProposalKeys(); // All existing proposals are removed
+                    demand = demandOperations.updateDemand(pm, demand);
+                    // Echo back the updated demand
+                    Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
+                    communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
+                    // Get the demandKey for the task scheduling
+                    demandKey = demand.getKey();
+                }
+                else {
+                    communicateToEmitter(
+                            rawCommand,
+                            LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state}, consumer.getLocale())
+                    );
+                }
             }
         }
         else {
@@ -1365,7 +1374,7 @@ public class CommandProcessor {
             if (proposal != null) {
                 proposal.fromJson(command);
                 proposal.setState(State.opened); // Will force the re-validation of the entire proposal
-                proposalOperations.updateProposal(pm, proposal);
+                proposal = proposalOperations.updateProposal(pm, proposal);
                 // Echo back the updated proposal
                 communicateToEmitter(rawCommand, generateTweet(proposal, consumer.getLocale()));
                 // Get the proposalKey for the task scheduling

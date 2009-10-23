@@ -102,7 +102,7 @@ public class MaezelServlet extends HttpServlet {
 
                     Location location = locationOperations.getLocation(pm, locationKey);
                     location.setHasStore(Boolean.TRUE);
-                    locationOperations.updateLocation(pm, location);
+                    location = locationOperations.updateLocation(pm, location);
 
                     Store santaFactory = new Store();
                     santaFactory.setLocationKey(locationKey);
@@ -160,7 +160,7 @@ public class MaezelServlet extends HttpServlet {
                         for (int i = 0; i < supplies.length; i++) {
                             retailer2.addCriterion(supplies[i]);
                         }
-                        retailerOperations.updateRetailer(pm, retailer2);
+                        retailer2 = retailerOperations.updateRetailer(pm, retailer2);
                     }
                 }
                 finally {
@@ -189,7 +189,7 @@ public class MaezelServlet extends HttpServlet {
                         // if (request.getParameter(Consumer.TWITTER_ID) != null) { oneUpdate = true; consumer.setTwitterId(request.getParameter(Consumer.TWITTER_ID)); }
 
                         if (oneUpdate) {
-                            consumerOperations.updateConsumer(pm, consumer);
+                            consumer = consumerOperations.updateConsumer(pm, consumer);
                         }
                         else {
                             throw new ClientException("No attribute recognized for the consumer with " + Consumer.TWITTER_ID + " attribute == " + request.getParameter(Consumer.TWITTER_ID));

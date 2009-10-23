@@ -515,9 +515,12 @@
         <!-- Tweet loader definitions -->
         <!-- ======================== -->
 
-        <tu tuid="tl_messageToNonFollower" datatype="Text">
+        <tu tuid="tl_inform_dm_sender_no_more_a_follower" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>For the Twitter adapter, message sent to non followers. {0} is the sender screen name.</note>
+            <note>
+            	For the Twitter adapter, message sent to non followers.|
+            	{0} is the sender screen name.
+            </note>
             <tuv xml:lang="en">
                 <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like d twetailer ...</seg>
             </tuv>
@@ -529,8 +532,9 @@
 
         <tu tuid="cp_unexpected_error" datatype="Text">
             <prop type="x-tier">javarb</prop>
-                Report an unexpected error while processing the raw command with the key {0}|
-                {1} is an optional information, in English only.
+                Report an unexpected error while processing the raw command.|
+                {0}: raw command key|
+                {1}: an optional information, in English only.
             <note/>
             <tuv xml:lang="en">
                 <seg>
@@ -542,7 +546,10 @@
 
         <tu tuid="cp_command_parser_unsupported_action" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Error message generated when the given action {0} is not recognized</note>
+            <note>
+            	Error message generated when the given action is not recognized.|
+            	{0}: action label
+            </note>
             <tuv xml:lang="en">
                 <seg>The Action {0} is not recognized by the System. Send '!help action' for the list of available actions.</seg>
             </tuv>
@@ -550,7 +557,10 @@
 
         <tu tuid="cp_command_parser_reserved_action" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Error message generated when the given action {0} is not allowed by the user's profile</note>
+            <note>
+            	Error message generated when the given action is not allowed by the user's profile.|
+            	{0}: action label
+            </note>
             <tuv xml:lang="en">
                 <seg>The Action {0} is not allowed by your profile. Send '!help {0}' for the list of available actions.</seg>
             </tuv>
@@ -590,10 +600,12 @@
 
         <tu tuid="cp_command_close_acknowledge_demand_closing" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>0: is the demand reference</note>
+            <note>
+            	{0}: demand key
+        	</note>
             <tuv xml:lang="en">
                 <seg>
-                    The Demand {0} has been successfully closed.|
+                    The Demand reference:{0} has been successfully closed.|
                     The system will now consolidate data and establish scores. Thanks for using Twetailer.
                 </seg>
             </tuv>
@@ -602,12 +614,12 @@
         <tu tuid="cp_command_close_demand_closed_proposal_to_close" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                0: is the demand reference|
-                1: is the proposal reference
+                {0}: demand key|
+                {1}: proposal key
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Demand {0} has been closed by the consumer. You should close the corresponding Proposal {1} too.|
+                    The Demand reference:{0} has been closed by the consumer. You should close the corresponding Proposal {1} too.|
                     Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
                 </seg>
             </tuv>
@@ -623,7 +635,9 @@
 
         <tu tuid="cp_command_close_acknowledge_proposal_closing" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>0: is the proposal reference</note>
+            <note>
+            	{0}: proposal key
+            </note>
             <tuv xml:lang="en">
                 <seg>
                     The Proposal {0} has been successfully closed.|
@@ -635,8 +649,8 @@
         <tu tuid="cp_command_close_proposal_closed_demand_to_close" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                0: is the proposal reference|
-                1: is the demand reference
+                {0}: proposal key|
+                {1}: demand key
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -665,9 +679,9 @@
         <tu tuid="cp_command_confirm_invalid_state_demand" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                0: proposal key|
-                1: demand key|
-                2: demand state
+                {0}: proposal key|
+                {1}: demand key|
+                {2}: demand state
             </note>
             <tuv xml:lang="en">
                 <seg>The Demand reference:{1} is not in a state ({2}) that allows the proposal:{0} confirmation.</seg>
@@ -677,10 +691,10 @@
         <tu tuid="cp_command_confirm_acknowledge_confirmation" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                0: proposal key|
-                1: demand key|
-                2: demand tags|
-                3: store key
+                {0}: proposal key|
+                {1}: demand key|
+                {2}: demand tags|
+                {3}: store key
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -695,9 +709,9 @@
         <tu tuid="cp_command_confirm_inform_about_confirmation" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                0: proposal key|
-                1: proposal tags|
-                2: demand key
+                {0}: proposal key|
+                {1}: proposal tags|
+                {2}: demand key
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -712,7 +726,7 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
-                {0}: dynamically generated demand reference
+                {0}: dynamically generated demand key
             </note>
             <tuv xml:lang="en">
                 <seg>Listing your request for reference:{0}... You can send "!help" for more options afterwards.</seg>
@@ -724,6 +738,17 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>The identifier specified with the Demand Command is invalid. Your proposed update did not happen.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_demand_non_modifiable_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+            	{0}: demand key
+            	{1}: demand state
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Demand reference:{0} is not in a modifiable state ({1}). Your proposed update did not happen.</seg>
             </tuv>
         </tu>
 
@@ -774,7 +799,7 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
-                {0}: dynamically generated proposal reference
+                {0}: dynamically generated proposal key
             </note>
             <tuv xml:lang="en">
                 <seg>Listing your proposition for proposal:{0}... You can send "!help" for more options afterwards.</seg>
@@ -785,81 +810,121 @@
         <!-- Demand validator definitions -->
         <!-- ============================ -->
 
-        <tu tuid="dv_demandShouldHaveAtLeastOneTag" datatype="Text">
+        <tu tuid="dv_report_demand_without_tag" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the demand should have at least one tag. {0} is the demand reference.</note>
+            <note>
+            	Inform the consumer the demand should have at least one tag.|
+            	{0}: demand key
+            </note>
             <tuv xml:lang="en">
                 <seg>Your demand reference:{0} should have at least one tag.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandExpirationShouldBeInFuture" datatype="Text">
+        <tu tuid="dv_report_expiration_in_past" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the expiration date should be in the future. {0} is the demand reference.</note>
+            <note>
+	            Inform the consumer the expiration date should be in the future.|
+            	{0}: demand key
+        	</note>
             <tuv xml:lang="en">
                 <seg>Your demand reference:{0} should have its expiration date in the future.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandRangeInKMTooSmall" datatype="Text">
+        <tu tuid="dv_report_range_km_too_small" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the range is too small. {0} is the demand reference. {1} is the too small distance.</note>
+            <note>
+            	Inform the consumer the range is too small.|
+            	{0}: demand key|
+            	{1}: given distance|
+            	{2}: system limit
+        	</note>
             <tuv xml:lang="en">
-                <seg>The range ({1} km) for the demand reference:{0} is too small. It should be greater than 5 km.</seg>
+                <seg>The range ({1}km) for the demand reference:{0} is too small. It should be greater than {2}km.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandRangeInKMTooBig" datatype="Text">
+        <tu tuid="dv_report_range_km_too_big" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the range is too small. {0} is the demand reference. {1} is the too small distance.</note>
+            <note>
+            	Inform the consumer the range is too big.|
+            	{0}: demand key|
+            	{1}: given distance|
+            	{2}: system limit
+        	</note>        	
             <tuv xml:lang="en">
                 <seg>The range ({1} km) for the demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandRangeInMilesTooSmall" datatype="Text">
+        <tu tuid="dv_report_range_mi_too_small" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the range is too small. {0} is the demand reference. {1} is the too small distance.</note>
+            <note>
+            	Inform the consumer the range is too small.|
+            	{0}: demand key|
+            	{1}: given distance|
+            	{2}: system limit
+			</note>
             <tuv xml:lang="en">
-                <seg>The range ({1} mi) for the demand reference:{0} is too small. It should be greater than 3 miles.</seg>
+                <seg>The range ({1} mi) for the demand reference:{0} is too small. It should be greater than {2} miles.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandRangeInMilesTooBig" datatype="Text">
+        <tu tuid="dv_report_range_mi_too_big" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the range is too small. {0} is the demand reference. {1} is the too small distance.</note>
+            <note>
+            	Inform the consumer the range is too big.|
+            	{0}: demand key|
+            	{1}: given distance|
+            	{2}: system limit
+        	</note>        	
             <tuv xml:lang="en">
                 <seg>The range ({1} mi) for the demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandShouldConcernAtLeastOneItem" datatype="Text">
+        <tu tuid="dv_report_quantity_zero" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer the quantity cannot be 0. {0} is the demand reference.</note>
+            <note>
+            	Inform the consumer the quantity cannot be 0.|
+            	{0}: demand key
+        	</note>        	
             <tuv xml:lang="en">
                 <seg>Your demand reference:{0} should concern at least one item.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandShouldHaveALocale" datatype="Text">
+        <tu tuid="dv_report_missing_locale" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer that the locale information is missing. {0} is the demand reference.</note>
+            <note>
+            	Inform the consumer that the locale information is missing.|
+            	{0}: demand key
+        	</note>
             <tuv xml:lang="en">
                 <seg>Please update the Demand reference:{0} with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_demandShouldHaveAValidLocale" datatype="Text">
+        <tu tuid="dv_report_invalid_locale" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer that the locale information is invalid. {0} is the demand reference, {1} is the given postal code, and {2} is the country code.</note>
+            <note>
+            	Inform the consumer that the locale information is invalid.|
+            	{0}: demand key|
+            	{1}: given postal code|
+            	{2}: given country code.
+        	</note>
             <tuv xml:lang="en">
                 <seg>The locale \u0022{1} {2}\u0022 given demand reference:{0} cannot be resolved. Please provide a valid locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_unableToGetLocaleInformation" datatype="Text">
+        <tu tuid="dv_report_unable_to_get_locale_information" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer that the information for the locale cannot be retrieved.</note>
+            <note>
+            	Inform the consumer that the information for the locale cannot be retrieved.|
+            	{0}: demand key
+        	</note>
             <tuv xml:lang="en">
                 <seg>The locale information for demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
             </tuv>
@@ -869,16 +934,30 @@
         <!-- Published demand processor definitions -->
         <!-- ====================================== -->
 
-        <tu tuid="dp_informNewDemand" datatype="Text">
+        <tu tuid="dp_inform_retailer_about_demand_one_item" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a retailer about a new demand.|
-                {0} is the reference of the demand.|
-                {1} is the demand tags separated by a comma.|
-                {2} is the expiration date in ISO format.
+                {0}: demand key|
+                {1}: given tags, separated by a space|
+                {2}: expiration date, ISO formatted
             </note>
             <tuv xml:lang="en">
                 <seg>Can you serve demand reference:{0} with the tags: {1}? The expiration date is: {2}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="dp_inform_retailer_about_demand_many_items" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform a retailer about a new demand.|
+                {0}: demand key|
+                {1}: given tags, separated by a space|
+                {2}: expiration date, ISO formatted|
+                {3}: quantity
+            </note>
+            <tuv xml:lang="en">
+                <seg>Can you serve demand reference:{0} with the tags: {1}? The consumers looks for {3} items. The expiration date is: {2}.</seg>
             </tuv>
         </tu>
 
@@ -886,44 +965,56 @@
         <!-- Proposal validator definitions -->
         <!-- ============================== -->
 
-        <tu tuid="pv_proposalShouldHaveAtLeastOneTag" datatype="Text">
+        <tu tuid="pv_report_proposal_without_tag" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the retailer the proposal should have at least one tag. {0} is the proposal reference.</note>
+            <note>
+            	Inform the retailer the proposal should have at least one tag.|
+            	{0}: proposal key:
+        	</note>
             <tuv xml:lang="en">
                 <seg>Your proposition proposal:{0} should have at least one tag.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="pv_proposalShouldConcernAtLeastOneItem" datatype="Text">
+        <tu tuid="pv_report_quantity_zero" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the retailer the quantity cannot be 0. {0} is the proposal reference.</note>
+            <note>
+            	Inform the retailer the quantity cannot be 0.|
+            	{0}: proposal key
+        	</note>
             <tuv xml:lang="en">
                 <seg>Your proposition proposal:{0} should concern at least one item.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="pv_proposalShouldHaveAUnitPriceOrTotalPrice" datatype="Text">
+        <tu tuid="pv_report_missing_price_and_total" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the retailer a unit price or the total price is required. {0} is the proposal reference.</note>
+            <note>
+            	Inform the retailer a unit price or the total price is required.|
+            	{0}: proposal key
+        	</note>
             <tuv xml:lang="en">
                 <seg>Your proposition proposal:{0} should have a unit price or the total order price.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="pv_proposalShouldHaveADemandReference" datatype="Text">
+        <tu tuid="pv_report_missing_demand_reference" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Inform the retailer the demand reference is missing. {0} is the proposal reference.</note>
+            <note>
+            	Inform the retailer the demand reference is missing.|
+            	{0}: proposal key
+        	</note>
             <tuv xml:lang="en">
                 <seg>Your proposition proposal:{0} should reference a demand (with reference:[id]).</seg>
             </tuv>
         </tu>
 
-        <tu tuid="pv_proposalHaveInvalidDemandReference" datatype="Text">
+        <tu tuid="pv_report_invalid_demand_reference" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the retailer that the given reference is invalid.|
-                {0} is the proposal reference.|
-                {1} is the demand reference
+                {0}: proposal key|
+                {1}: demand key
             </note>
             <tuv xml:lang="en">
                 <seg>The demand reference:{1} linked to your proposition proposal:{0} is invalid.</seg>
@@ -934,27 +1025,45 @@
         <!-- Published proposal processor definitions -->
         <!-- ======================================== -->
 
-        <tu tuid="pp_informNewProposal" datatype="Text">
+        <tu tuid="pp_inform_consumer_about_proposal_with_price" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
-                {0} is the reference of the proposal.|
-                {1} is the reference of the demand.|
-                {2} is the proposal tags.|
-                {3} is the reference of the store where the retailer works.
+                {0}: proposal key|
+                {1}: demand key|
+                {2}: proposal tags, separated by a space|
+                {3}: store key, identifying the place where the retailer works.
+                {4}: proposed unit price (expected to be unit price)
+                {5}: currency symbol
             </note>
             <tuv xml:lang="en">
-                <seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3}.</seg>
+                <seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3} for the unit price: {5}{4}.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="pp_informDemandNotPublished" datatype="Text">
+        <tu tuid="pp_inform_consumer_about_proposal_with_total_cost" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform a consumer about a new proposal.|
+                {0}: proposal key|
+                {1}: demand key|
+                {2}: proposal tags, separated by a space|
+                {3}: store key, identifying the place where the retailer works.
+                {4}: proposed total cost (expected to be total cost, taxes included)
+                {5}: currency symbol
+            </note>
+            <tuv xml:lang="en">
+                <seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3} for the total cost of: {5}{4}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="pp_inform_retailer_demand_not_published_state" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the retailer his proposal cannot be submitted to the demand.|
-                {0} is the reference of the proposal.|
-                {1} is the reference of the demand.|
-                {2} is the localized demand state.
+                {0}: proposal key|
+                {1}: demand key|
+                {2}: demand state
             </note>
             <tuv xml:lang="en">
                 <seg>Your proposal:{0} cannot be attached to the demand reference:{1} because it is not in the correct state! (actual demand state: {2}).</seg>
@@ -965,9 +1074,13 @@
         <!-- Robot message definitions -->
         <!-- ========================= -->
 
-        <tu tuid="rr_automated_response" datatype="Text">
+        <tu tuid="rr_robot_automatic_proposition" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Message generated automatically to demand located with postal code "H0H0H0"</note>
+            <note>
+            	Message generated automatically to demand located with postal code "H0H0H0".|
+            	The content is displayed as the "Proposal tags" (see message pp_inform_consumer_about_proposal).
+            	IMPORTANT: Accomodate this message to provide a natural sentence ;)
+        	</note>
             <tuv xml:lang="en">
                 <seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
             </tuv>
@@ -977,15 +1090,18 @@
         <!-- Console definitions -->
         <!-- =================== -->
 
-        <tu tuid="redirectionMsg" datatype="Text">
+        <tu tuid="ui_page_redirection_message" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Message printed in redirection page</note>
+            <note>
+            	Message printed in redirection page|
+            	{0}: url where the page is going to be redirected towards
+            </note>
             <tuv xml:lang="en">
                 <seg>Redirecting...<br/>Click <a href="{0}">here</a> to force the redirection.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="applicationName" datatype="Text">
+        <tu tuid="ui_application_name" datatype="Text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>Name of the entire application</note>
@@ -994,7 +1110,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="splashScreenMsg" datatype="Text">
+        <tu tuid="ui_splash_screen_message" datatype="Text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>Message printed while the application dependencies are loaded, while the console is being built</note>
@@ -1003,7 +1119,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="globalCommandLogin" datatype="Text">
+        <tu tuid="ui_global_command_login" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of a global command</note>
             <tuv xml:lang="en">
@@ -1011,7 +1127,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="globalCommandLogout" datatype="Text">
+        <tu tuid="ui_global_command_Logout" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of a global command</note>
             <tuv xml:lang="en">
@@ -1019,7 +1135,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="globalCommandHelp" datatype="Text">
+        <tu tuid="ui_global_command_help" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of a global command</note>
             <tuv xml:lang="en">
@@ -1027,7 +1143,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="loginFormPaneTitle" datatype="Text">
+        <tu tuid="ui_login_form_pane_title" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Title of the login form</note>
             <tuv xml:lang="en">
@@ -1035,7 +1151,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="loginFormPaneMessage" datatype="Text">
+        <tu tuid="ui_login_form_pane_message" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Informative message printed in the login form</note>
             <tuv xml:lang="en">
@@ -1043,7 +1159,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="loginFormPaneUsernameLabel" datatype="Text">
+        <tu tuid="ui_login_form_pane_username_label" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of the username field in the login form</note>
             <tuv xml:lang="en">
@@ -1051,7 +1167,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="loginFormPanePasswordLabel" datatype="Text">
+        <tu tuid="ui_login_form_pane_password_label" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of the password field in the login form</note>
             <tuv xml:lang="en">
@@ -1059,7 +1175,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="loginFormPaneAdministrativeStateLabel" datatype="Text">
+        <tu tuid="ui_login_form_pane_administrative_state_label" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of the Administrator field in the login form</note>
             <tuv xml:lang="en">
@@ -1067,7 +1183,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="loginFormPaneActionLabel" datatype="Text">
+        <tu tuid="ui_login_form_pane_actionlabel" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Label of the button/link starting the authentication verification</note>
             <tuv xml:lang="en">

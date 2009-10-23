@@ -131,17 +131,17 @@ public class DemandProcessor {
                             queue.add(url("/API/maezel/processDemandForRobot").param(Demand.KEY, demand.getKey().toString()).method(Method.GET));
                         }
                         else {
-                            StringBuilder tags = new StringBuilder();
-                            for(String tag: demand.getCriteria()) {
-                                tags.append(tag).append(" ");
-                            }
-                            tags.setLength(tags.length() - 1); // To remove the trailing space
                             communicateToRetailer(
                                     retailer.getPreferredConnection(),
                                     retailer,
                                     LabelExtractor.get(
-                                            "dp_informNewDemand",
-                                            new Object[] { demand.getKey(), tags, demand.getExpirationDate() },
+                                            demand.getQuantity() == 1 ? "dp_inform_retailer_about_demand_one_item" : "dp_inform_retailer_about_demand_many_items",
+                                            new Object[] {
+                                                demand.getKey(), 
+                                                demand.getSerializedCriteria(), 
+                                                demand.getExpirationDate(), 
+                                                demand.getQuantity()
+                                            },
                                             retailer.getLocale()
                                     )
                             );

@@ -16,7 +16,9 @@
 			        dl#bundle_language, dl#\_introduction\_ { display: none; }
 			        dl dt { margin-bottom: 5px; font-weight: bold; }
 			        dl dd { margin-left: 30px; }
-					dd.programmingLanguage, dd.note { color: grey; font-size: smaller; }
+					dd.programmingLanguage, dd.note { font-size: smaller; }
+					dd.note { color: grey; }
+					dd.programmingLanguage { color: brown; }
 					span.dojotk { color: green; }
 					span.python { color: orange; }
 					span.javarb { color: blue; }

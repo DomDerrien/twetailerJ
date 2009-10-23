@@ -72,7 +72,7 @@ public class ProposalProcessor {
                             demand.getSource(),
                             consumer,
                             LabelExtractor.get(
-                                    "pp_informNewProposal",
+                                    "pp_inform_consumer_about_proposal",
                                     new Object[] {
                                             proposal.getKey(),
                                             demand.getKey(),
@@ -83,24 +83,41 @@ public class ProposalProcessor {
                             )
                     );
                     demand.addProposalKey(proposalKey);
-                    demandOperations.updateDemand(pm, demand);
+                    demand = demandOperations.updateDemand(pm, demand);
                 }
                 else {
                     Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                    communicateToRetailer(
-                            retailer.getPreferredConnection(),
-                            retailer,
-                            LabelExtractor.get(
-                                    "pp_informDemandNotPublished",
-                                    new Object[] {
-                                            proposal.getKey(),
-                                            demand.getKey(),
-                                            CommandSettings.getStates(retailer.getLocale()).getString(demand.getState().toString()),
-                                            proposal.getStoreKey()
-                                    },
-                                    retailer.getLocale()
-                            )
-                    );
+                    Double totalCost = proposal.getTotal();
+                    String message = null;
+                    if (totalCost == null || totalCost.doubleValue() == 0.0D) {
+                        message =  LabelExtractor.get(
+                                "pp_inform_consumer_about_proposal_with_price",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        demand.getKey(),
+                                        CommandSettings.getStates(retailer.getLocale()).getString(demand.getState().toString()),
+                                        proposal.getStoreKey(),
+                                        proposal.getPrice(),
+                                        "$", //proposal.getCurrencySymbol()
+                                },
+                                retailer.getLocale()
+                        );
+                    }
+                    else {
+                        message =  LabelExtractor.get(
+                                "pp_inform_consumer_about_proposal_with_total_cost",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        demand.getKey(),
+                                        CommandSettings.getStates(retailer.getLocale()).getString(demand.getState().toString()),
+                                        proposal.getStoreKey(),
+                                        totalCost,
+                                        "$", //proposal.getCurrencySymbol()
+                                },
+                                retailer.getLocale()
+                        );
+                    }
+                    communicateToRetailer(retailer.getPreferredConnection(), retailer, message);
                 }
             }
             catch (DataSourceException ex) {

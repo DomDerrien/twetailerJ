@@ -55,7 +55,7 @@ public class TweetLoader {
             Long lastId = loadDirectMessages(pm, sinceId);
             if (!lastId.equals(sinceId)) {
                 settings.setLastProcessDirectMessageId(lastId);
-                settingsOperations.updateSettings(pm, settings);
+                settings = settingsOperations.updateSettings(pm, settings);
             }
             return lastId;
         }
@@ -105,7 +105,7 @@ public class TweetLoader {
                 Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
                 Locale senderLocale = consumer.getLocale();
                 if (!sender.isFollowing()) {
-                    TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_messageToNonFollower", new Object[] { senderScreenName }, senderLocale));
+                    TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_inform_dm_sender_no_more_a_follower", new Object[] { senderScreenName }, senderLocale));
                     nonFollowerIds.put(senderScreenName, Boolean.TRUE);
                 }
                 else {

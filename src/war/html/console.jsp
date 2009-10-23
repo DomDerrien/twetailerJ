@@ -27,7 +27,7 @@
     String uri = request.getRequestURI(); // TODO: verify that the parameters are kept
 %><html>
 <head>
-    <title><%= LabelExtractor.get("applicationName", locale) %></title>
+    <title><%= LabelExtractor.get("ui_application_name", locale) %></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF8">
     <link rel="shortcut icon" href="/images/logo/favicon.ico" />
     <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
@@ -55,7 +55,7 @@
 <body class="tundra">
 
     <div id="introFlash">
-        <div><span><%= LabelExtractor.get("splashScreenMsg", locale) %></span></div>
+        <div><span><%= LabelExtractor.get("ui_splash_screen_message", locale) %></span></div>
     </div>
 
     <script type="text/javascript" src="/js/gears_init.js"></script>
@@ -142,25 +142,25 @@
                  href="help-standalone.html"
                  onClick="dijit.byId('helpSystemDialog').show(); return false;"
                  target="_blank"
-                 title="<%= LabelExtractor.get("globalCommandHelp", locale) %>"
+                 title="<%= LabelExtractor.get("ui_global_command_help", locale) %>"
             ><img src="/images/help.png" width="16" height="16" /></a>
             <%
             if (loggedUser == null) {
             %><a
                  class="globalCommand"
                  href="javascript:dijit.byId('checkPoint').show();"
-                 title="<%= LabelExtractor.get("globalCommandLogin", locale) %>"
+                 title="<%= LabelExtractor.get("ui_global_command_login", locale) %>"
             ><img src="/images/key.png" width="16" height="16" /></a><%
             }
             else {
             %><a
                  class="globalCommand"
                  href="<%= userService.createLogoutURL(uri) %>"
-                 title="<%= LabelExtractor.get("globalCommandLogout", locale) %>"
+                 title="<%= LabelExtractor.get("ui_global_command_logout", locale) %>"
             ><img src="/images/door_out.png" width="16" height="16" /></a><%
             }
-            %><img height="48" src="/images/logo/logo-48x48.png" title="<%= LabelExtractor.get("applicationName", locale) %>" width="48" />
-            <%= LabelExtractor.get("applicationName", locale) %>
+            %><img height="48" src="/images/logo/logo-48x48.png" title="<%= LabelExtractor.get("ui_application_name", locale) %>" width="48" />
+            <%= LabelExtractor.get("ui_application_name", locale) %>
         </div>
 
         <div
@@ -696,7 +696,7 @@
     <div
         dojoType="dijit.Dialog"
         id="checkPoint"
-        title="<%= LabelExtractor.get("loginFormPaneTitle", locale) %>"
+        title="<%= LabelExtractor.get("ui_login_form_pane_title", locale) %>"
         htref="<%= userService.createLoginURL(uri) %>"
     >
         <form
@@ -706,21 +706,21 @@
         >
             <input type="hidden" name="continue" value="/html/console.jsp">
             <div style="width: 20em; margin: 1em auto; text-align: left; padding: 0 2em 1.25em 2em; background-color: #d6e9f8; border: 2px solid #67a7e3">
-                <h3><%= LabelExtractor.get("loginFormPaneMessage", locale) %></h3>
+                <h3><%= LabelExtractor.get("ui_login_form_pane_message", locale) %></h3>
                 <p style="padding: 0; margin: 0">
-                    <label for="email" style="width: 3em"><%= LabelExtractor.get("loginFormPaneUsernameLabel", locale) %></label>
+                    <label for="email" style="width: 3em"><%= LabelExtractor.get("ui_login_form_pane_username_label", locale) %></label>
                     <input type="text" name="email">
                 </p>
                 <p style="padding: 0; margin: 0">
-                    <label for="password" style="width: 3em"><%= LabelExtractor.get("loginFormPanePasswordLabel", locale) %></label>
+                    <label for="password" style="width: 3em"><%= LabelExtractor.get("ui_login_form_pane_password_label", locale) %></label>
                     <input type="text" name="password" disabled="true">
                 </p>
                 <p style="margin: .5em 0 0 3em; font-size:12px">
                     <input type="checkbox" name="isAdmin">
-                    <label for="isAdmin"><%= LabelExtractor.get("loginFormPaneAdministrativeStateLabel", locale) %></label>
+                    <label for="isAdmin"><%= LabelExtractor.get("ui_login_form_pane_administrative_state_label", locale) %></label>
                 </p>
                 <p style="margin-left: 3em;">
-                    <input type="submit" value="<%= LabelExtractor.get("loginFormPaneActionLabel", locale) %>">
+                    <input type="submit" value="<%= LabelExtractor.get("ui_login_form_pane_action_label", locale) %>">
                 </p>
             </div>
         </form>

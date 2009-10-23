@@ -77,8 +77,17 @@
 	<dt>closed</dt>
 	<dd class="done">The product or service offered by a proposal in response to a demand has just been served.</dd>
 
-	<dt>canceled</dt>
+	<dt>cancelled</dt>
 	<dd class="done">An object has been canceled by its owner.</dd>
+
+	<dt>reserved</dt>
+	<dd class="notdone">After a proposal confirmation, the consumer can used Amazon FPS to pay for the transaction.</dd>
+
+	<dt>settled</dt>
+	<dd class="notdone">
+		Once the product(s) for a reserved demand/proposal is(are) ready to be delivered, the demand goes into the settled state.
+		At that time, Amazon FPS sends the money to the retailer.
+	</dd>
 
 	<dt>marked-for-deletion</dt>
 	<dd class="notdone">A canceled object has been been marked for deletion by its owner.</dd>
@@ -96,6 +105,11 @@
 	is very basic: without indication, all given pieces of text are considered as tags. To transmit other information, users
 	have to prefix them, as in <code>range: 25km</code> when they want to specify that the search should be done 25km around
 	their default or specification location.
+</p>
+
+<p>
+	The system allows prefix labels to be submitted as shortened to 3 letters. For example sending <code>proposal:123 totalCost:$34.76</code>
+	is equivalent to send just <code>prop:123 tot:34.76</code>. The system ignores also the prefix case.
 </p>
 
 <dl>
@@ -125,16 +139,16 @@
 
 	<dt>price, unitPrice, cost</dt>
 	<dd class="done">Introduces a unit price, without tax in the currency of the store country.</dd>
-	<dd class="notdone">The money sign should be ignored, like in <code>$5</code>.</dd>
+	<dd class="done">The money sign should be ignored, like in <code>$5</code>.</dd>
 
-	<dt>proposal</dt>
+	<dt>proposalKey</dt>
 	<dd class="done">Introduces the identifier of a <code>Proposal</code>.</dd>
 
 	<dt>quantity, qty</dt>
 	<dd class="done">Introduces the quantity of demanded products or the quantity of offered products.</dd>
 	<dd class="done">Default: <code>1</code>.</dd>
 
-	<dt>reference</dt>
+	<dt>reference, demandKey</dt>
 	<dd class="done">Introduces the identifier of a <code>Demand</code>.</dd>
 
 	<dt>range, rng, distance</dt>
@@ -146,37 +160,40 @@
 	<dt>state</dt>
 	<dd class="done">Introduces the current <a href="#states">state</a> of an <a href="#classes">object</a>.</dd>
 
+	<dt>storeKey</dt>
+	<dd class="done">Introduces the identifier of a <code>Store</code>.</dd>
+
 	<dt>tags, tag, keyword, keywords, []</dt>
 	<dd class="done">Introduces the description of the action.</dd>
 	<dd class="done">The prefix, like <code>tags:</code>, is optional.</dd>
 	<dd class="done">If the prefix is omitted, all elements submitted that have not been associated to another prefix are considered being part of the tags.</dd>
 	<dd class="done">If the prefix is present, all elements submitted <u>following the tag</u> and that have not been associated to another prefix are considered being part of the tags.</dd>
 
-	<dt>total</dt>
+	<dt>totalCost</dt>
 	<dd class="done">Introduces the total transaction price, <u>all taxes included</u>, in the currency of the store country.</dd>
-	<dd class="notdone">The money sign should be ignored, like in <code>$5</code>.</dd>
+	<dd class="done">The money sign should be ignored, like in <code>$5</code>.</dd>
 </dl>
 
 <h1><a name="states"></a>Actions</h1>
 
 <dl>
 	<dt>cancel</dt>
-	<dd class="done">[demandKey]: cancel demand (restriction: owner), <span class="notdone">with notification of the cancellation to associated proposal owners</span></dd>
-	<dd class="notdone">[proposalKey]: cancel proposal (restriction: owner).</dd>
+	<dd class="done">[demandKey]: cancel demand (restriction: owner), <span class="notdone">with notification of the associated proposal's owner.</span></dd>
+	<dd class="notdone">[proposalKey]: cancel proposal (restriction: owner), with notification of the demand owner.</dd>
 
 	<dt>close</dt>
-	<dd class="notdone">[demandKey]: confirm the delivery of the product (restriction: owner).</dd>
-	<dd class="notdone">[proposalKey]: confirm the delivery of the product (restriction: owner).</dd>
+	<dd class="notdone">[demandKey]: confirm the delivery of the product (restriction: owner), with notification of the other retailer if it did closed the proposal yet.</dd>
+	<dd class="notdone">[proposalKey]: confirm the delivery of the product (restriction: owner), with notification of the other consumer if it did closed the demand yet.</dd>
 
 	<dt>confirm</dt>
-	<dd class="notdone">[proposalKey]: select one proposal (restriction: demand.owner), with the notification to the proposal owner with consumer information.</dd>
+	<dd class="done">[proposalKey]: select one proposal (restriction: demand.owner), with 1) notification about the store information, and 2) notification to the proposal owner.</dd>
 
 	<dt>decline</dt>
 	<dd class="notdone">proposalKey]: refuse one proposal (restriction: demand.owner), with the notification to the proposal owner.</dd>
 
 	<dt>demand</dt>
 	<dd class="done">[tags, ...]: create a demand.</dd>
-	<dd class="done">[demandKey, tags, ...]: update a demand (restriction: owner).</dd>
+	<dd class="done">[demandKey, tags, ...]: update a demand which is still updatable (restriction: owner) <span class="notdone">with notification of the associated proposals' owner that their proposals have been cancelled.</dd>
 
 	<dt>help</dt>
 	<dd class="done">[]: send generic message.</dd>
@@ -187,7 +204,7 @@
 
 	<dt>propose</dt>
 	<dd class="done">[tags, ...]: create a proposal (restriction: only retailers can propose <span class="notdone">for demands that has been sent to them or their store</span>).</dd>
-	<dd class="done">[proposalKey, tags, ...]: update one proposal (restriction: owner <span class="notdone">or another retailer from the same store</span>).</dd>
+	<dd class="done">[proposalKey, tags, ...]: update one proposal which is still updatable (restriction: owner <span class="notdone">or another retailer from the same store</span>).</dd>
 
 	<dt>supply</dt>
 	<dd class="notdone">[tags]: add supplied tags to the retailer account.</dd>
@@ -202,27 +219,46 @@
 
 <h2><a name="action:list"></a>Action: list</h2>
 
+<p>
+	Listing results introduces paging issues: if too much data have
+	to be sent to the end-users, for example, more than 10 short messages,
+	the system cannot just send them in a whole thread. So, after a certain
+	limit, the system should display a message informing the user that just
+	the first set of messages have been sent and that it should submit his/her
+	request again with the parameter <code>page=###</code> to be able to get
+	the corresponding chunk of messages.
+</p>
+
 <dl>
 	<dt>[]</dt>
 	<dd class="done">All consumer demands, <span class="notdone">in the state {<code>invalid</code>, <code>published</code>, <code>confirmed</code>}</span></dd>
 
-	<dt>[demandKey]</dt>
+	<dt>[demandKey/*]</dt>
 	<dd class="done">Identified demand, <span class="notdone"> with the list of proposals</span>.</dd>
 	<dd class="done">Restriction: owner <span class="notdone">or one associated proposal owner</span>.</dd>
 	<dd class="notdone">Meta-character <code>*</code> for all consumer demands, equivalent to submitting <code>!list</code> without arguments.</dd>
 
-	<dt>[proposalKey]</dt>
+	<dt>[proposalKey/*]</dt>
 	<dd class="done">Identified proposal, <span class="notdone"> with the store information</span>.</dd>
 	<dd class="done">Restriction: owner <span class="notdone">or associated demand owner</span>.</dd>
 	<dd class="notdone">Meta-character <code>*</code> for all retailer proposals.</dd>
 
-	<dt>[storeKey]</dt>
+	<dt>[storeKey/*]</dt>
 	<dd class="notdone">Identified store with:<ul>
-		<li>the store address, phone number, Web site, and opening hours</li>
-		<li>statistics for the store: total number of proposals, total number of closed demands, number of pending proposals, number of employees</li>
-		<li>statistics from third parties like Praize/Yelp/etc.</li>
+		<li>Store information: address, phone number, Web site, and opening hours</li>
+		<li>Statistics for the store: total number of proposals, total number of closed demands, number of pending proposals, number of employees</li>
+		<li>Statistics from third parties like Praize/Yelp/etc.</li>
 	</ul></dd>
 	<dd class="notdone">Meta-character <code>*</code> for all stores in the default or the specified area.</dd>
+
+	<dt>[tags/*]</dt>
+	<dd class="notdone">List the other tags in relation with the given ones for all stores/retailers in the default or the specified area.</dd>
+	<dd class="notdone">Tags should be printed in the decreasing frequency, something like: <code>wii(35) games(32) xbox(12) ...</code></dd>
+	<dd class="notdone">Meta-character <code>*</code> for demanded tags in the default or the specified area.</dd>
+
+	<dt>[supply/*]</dt>
+	<dd class="notdone"></dd>
+	<dd class="notdone">Meta-character <code>*</code> for all supplied tags in the default or the specified area.</dd>
 </dl>
 
 </body>
