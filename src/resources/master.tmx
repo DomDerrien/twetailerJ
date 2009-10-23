@@ -586,7 +586,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposal identifier specified with the Cancel Command is invalid.</seg>
+                <seg>The Proposition identifier specified with the Cancel Command is invalid.</seg>
             </tuv>
         </tu>
 
@@ -619,7 +619,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Demand reference:{0} has been closed by the consumer. You should close the corresponding Proposal {1} too.|
+                    The Demand reference:{0} has been closed by the consumer. You should close the corresponding Proposition proposal:{1} too.|
                     Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
                 </seg>
             </tuv>
@@ -629,7 +629,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposal identifier specified with the Close Command is invalid.</seg>
+                <seg>The Proposition identifier specified with the Close Command is invalid.</seg>
             </tuv>
         </tu>
 
@@ -640,7 +640,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Proposal {0} has been successfully closed.|
+                    The Proposition proposal:{0} has been successfully closed.|
                     The system will now consolidate data and establish scores. Thanks for using Twetailer.
                 </seg>
             </tuv>
@@ -654,7 +654,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Proposal {0} has been closed by the retailer. You should close the corresponding Demand {1} too.|
+                    The Proposition proposal:{0} has been closed by the retailer. You should close the corresponding Demand {1} too.|
                     Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
                 </seg>
             </tuv>
@@ -672,7 +672,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposal identifier specified with the Confirm Command is invalid.</seg>
+                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
             </tuv>
         </tu>
 
@@ -684,7 +684,7 @@
                 {2}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>The Demand reference:{1} is not in a state ({2}) that allows the proposal:{0} confirmation.</seg>
+                <seg>The Demand reference:{1} is not in a state ({2}) that allows the Proposition proposal:{0} confirmation.</seg>
             </tuv>
         </tu>
 
@@ -698,10 +698,10 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Your confirmation for the proposal {0} is successfully.|
-                    The demand reference:{1} for the tags:{2} is now in the state:confirmed.|
-                    The store:{3} is going to be informed of your confirmation to put your product aside.|
-                    Don't forget to close your demand once you have picked it up. Thanks for using Twetailer.
+                    Your confirmation for the Proposition proposal:{0} is successfully.|
+                    The Demand reference:{1} for the Tags:{2} is now in the State:Confirmed.|
+                    The Store:{3} is going to be informed of your confirmation to put your product aside.|
+                    Don't forget to Close your demand once you have picked it up. Thanks for using Twetailer.
                 </seg>
             </tuv>
         </tu>
@@ -715,9 +715,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Your proposal:{0} has been accepted for the tags:{1}.|
-                    Please prepare the product to deliver it for the Demand reference: {2}.|
-                    Don't forget to close the proposal once the product has been picked up. Thanks for using Twetailer.
+                    Your Proposition proposal:{0} has been accepted for the Tags:{1}.|
+                    Please prepare the Product to deliver it for the Demand reference: {2}.|
+                    Don't forget to Close the Proposition once the product has been picked up. Thanks for using Twetailer.
                 </seg>
             </tuv>
         </tu>
@@ -729,7 +729,7 @@
                 {0}: dynamically generated demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Listing your request for reference:{0}... You can send "!help" for more options afterwards.</seg>
+                <seg>Listing your Demand for reference:{0}... You can send "!help" for more options afterwards.</seg>
             </tuv>
         </tu>
 
@@ -764,7 +764,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>You have no Proposal matching the specified identifier.</seg>
+                <seg>You have no Proposition matching the specified identifier.</seg>
             </tuv>
         </tu>
 
@@ -791,7 +791,18 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The identifier specified with the Proposal Command is invalid. Your proposed update did not happen.</seg>
+                <seg>The identifier specified with the Propose Command is invalid. Your sumbitted update did not happen.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_proposal_non_modifiable_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key
+                {1}: proposal state
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Proposition proposal:{0} is not in a modifiable state ({1}). Your submitted update did not happen.</seg>
             </tuv>
         </tu>
 
@@ -802,7 +813,7 @@
                 {0}: dynamically generated proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Listing your proposition for proposal:{0}... You can send "!help" for more options afterwards.</seg>
+                <seg>Listing your proposition for Proposition proposal:{0}... You can send "!help" for more options afterwards.</seg>
             </tuv>
         </tu>
 
@@ -817,7 +828,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Your demand reference:{0} should have at least one tag.</seg>
+                <seg>Your Demand reference:{0} should have at least one Tag.</seg>
             </tuv>
         </tu>
 
@@ -828,7 +839,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Your demand reference:{0} should have its expiration date in the future.</seg>
+                <seg>Your Demand reference:{0} should have its Expiration date in the future.</seg>
             </tuv>
         </tu>
 
@@ -841,7 +852,7 @@
                 {2}: system limit
             </note>
             <tuv xml:lang="en">
-                <seg>The range ({1}km) for the demand reference:{0} is too small. It should be greater than {2}km.</seg>
+                <seg>The Range ({1}km) for the Demand reference:{0} is too small. It should be greater than {2}km.</seg>
             </tuv>
         </tu>
 
@@ -854,7 +865,7 @@
                 {2}: system limit
             </note>
             <tuv xml:lang="en">
-                <seg>The range ({1} km) for the demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
+                <seg>The Range ({1} km) for the Demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
             </tuv>
         </tu>
 
@@ -867,7 +878,7 @@
                 {2}: system limit
             </note>
             <tuv xml:lang="en">
-                <seg>The range ({1} mi) for the demand reference:{0} is too small. It should be greater than {2} miles.</seg>
+                <seg>The Range ({1} mi) for the Demand reference:{0} is too small. It should be greater than {2} miles.</seg>
             </tuv>
         </tu>
 
@@ -880,7 +891,7 @@
                 {2}: system limit
             </note>
             <tuv xml:lang="en">
-                <seg>The range ({1} mi) for the demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
+                <seg>The Range ({1} mi) for the Demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
             </tuv>
         </tu>
 
@@ -891,7 +902,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Your demand reference:{0} should concern at least one item.</seg>
+                <seg>Your Demand reference:{0} should concern at least one item.</seg>
             </tuv>
         </tu>
 
@@ -902,7 +913,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Please update the Demand reference:{0} with your locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+                <seg>Please update the Demand reference:{0} with your lLocale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
             </tuv>
         </tu>
 
@@ -915,7 +926,7 @@
                 {2}: given country code.
             </note>
             <tuv xml:lang="en">
-                <seg>The locale \u0022{1} {2}\u0022 given demand reference:{0} cannot be resolved. Please provide a valid locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+                <seg>The Locale \u0022{1} {2}\u0022 given Demand reference:{0} cannot be resolved. Please provide a valid Locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
             </tuv>
         </tu>
 
@@ -926,7 +937,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The locale information for demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
+                <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
             </tuv>
         </tu>
 
@@ -943,7 +954,7 @@
                 {2}: expiration date, ISO formatted
             </note>
             <tuv xml:lang="en">
-                <seg>Can you serve demand reference:{0} with the tags: {1}? The expiration date is: {2}.</seg>
+                <seg>Can you serve Demand reference:{0} with the Tags: {1}? The Expiration date is: {2}.</seg>
             </tuv>
         </tu>
 
@@ -957,7 +968,7 @@
                 {3}: quantity
             </note>
             <tuv xml:lang="en">
-                <seg>Can you serve demand reference:{0} with the tags: {1}? The consumers looks for {3} items. The expiration date is: {2}.</seg>
+                <seg>Can you serve dDemand reference:{0} with the Tags: {1}? The consumers looks for {3} items. The Expiration date is: {2}.</seg>
             </tuv>
         </tu>
 
@@ -972,7 +983,7 @@
                 {0}: proposal key:
             </note>
             <tuv xml:lang="en">
-                <seg>Your proposition proposal:{0} should have at least one tag.</seg>
+                <seg>Your Proposition proposal:{0} should have at least one Tag.</seg>
             </tuv>
         </tu>
 
@@ -983,7 +994,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Your proposition proposal:{0} should concern at least one item.</seg>
+                <seg>Your Proposition proposal:{0} should concern at least one item.</seg>
             </tuv>
         </tu>
 
@@ -994,7 +1005,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Your proposition proposal:{0} should have a unit price or the total order price.</seg>
+                <seg>Your Proposition proposal:{0} should have a unit Price or the Total order price.</seg>
             </tuv>
         </tu>
 
@@ -1005,7 +1016,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Your proposition proposal:{0} should reference a demand (with reference:[id]).</seg>
+                <seg>Your Proposition proposal:{0} should reference a Demand (with reference:[id]).</seg>
             </tuv>
         </tu>
 
@@ -1017,7 +1028,7 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The demand reference:{1} linked to your proposition proposal:{0} is invalid.</seg>
+                <seg>The identification of the Demand (reference:{1}) linked to your Proposition proposal:{0} is invalid.</seg>
             </tuv>
         </tu>
 
@@ -1037,7 +1048,7 @@
                 {5}: currency symbol
             </note>
             <tuv xml:lang="en">
-                <seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3} for the unit price: {5}{4}.</seg>
+                <seg>In response to your Demand reference:{1}, you have received the Proposition proposal:{0} with the Tags: {2}. It's available at Store:{3} for the unit Price: {5}{4}.</seg>
             </tuv>
         </tu>
 
@@ -1053,7 +1064,7 @@
                 {5}: currency symbol
             </note>
             <tuv xml:lang="en">
-                <seg>In response to your demand reference:{1}, you have received the proposal:{0} with the tags: {2}. It's available at store:{3} for the total cost of: {5}{4}.</seg>
+                <seg>In response to your Demand reference:{1}, you have received the Proposition proposal:{0} with the Tags: {2}. It's available at Store:{3} for the Total cost of: {5}{4}.</seg>
             </tuv>
         </tu>
 
@@ -1066,7 +1077,7 @@
                 {2}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>Your proposal:{0} cannot be attached to the demand reference:{1} because it is not in the correct state! (actual demand state: {2}).</seg>
+                <seg>Your Proposition proposal:{0} cannot be attached to the Demand reference:{1} because it is not in the correct State! (actual Demand State: {2}).</seg>
             </tuv>
         </tu>
 

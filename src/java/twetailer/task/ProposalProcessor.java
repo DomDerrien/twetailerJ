@@ -23,6 +23,7 @@ import twetailer.dto.Retailer;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.JsonObject;
 
 public class ProposalProcessor {
 
@@ -68,55 +69,56 @@ public class ProposalProcessor {
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), null);
                 if (State.published.equals(demand.getState())) {
                     Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
+                    Double totalCost = proposal.getTotal();
+                    String message = null;
+                    if (totalCost == null || totalCost.doubleValue() == 0.0D) {
+                        message = LabelExtractor.get(
+                                "pp_inform_consumer_about_proposal_with_price",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        demand.getKey(),
+                                        proposal.getSerializedCriteria(),
+                                        proposal.getStoreKey(),
+                                        proposal.getPrice(),
+                                        "$", //proposal.getCurrencySymbol()
+                                },
+                                consumer.getLocale()
+                        );
+                    }
+                    else {
+                        message = LabelExtractor.get(
+                                "pp_inform_consumer_about_proposal_with_total_cost",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        demand.getKey(),
+                                        proposal.getSerializedCriteria(),
+                                        proposal.getStoreKey(),
+                                        proposal.getTotal(),
+                                        "$", //proposal.getCurrencySymbol()
+                                },
+                                consumer.getLocale()
+                        );
+                    }
                     communicateToConsumer(
                             demand.getSource(),
                             consumer,
-                            LabelExtractor.get(
-                                    "pp_inform_consumer_about_proposal",
-                                    new Object[] {
-                                            proposal.getKey(),
-                                            demand.getKey(),
-                                            proposal.getSerializedCriteria(),
-                                            proposal.getStoreKey()
-                                    },
-                                    consumer.getLocale()
-                            )
+                            message
                     );
                     demand.addProposalKey(proposalKey);
                     demand = demandOperations.updateDemand(pm, demand);
                 }
                 else {
                     Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                    Double totalCost = proposal.getTotal();
-                    String message = null;
-                    if (totalCost == null || totalCost.doubleValue() == 0.0D) {
-                        message =  LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_price",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        CommandSettings.getStates(retailer.getLocale()).getString(demand.getState().toString()),
-                                        proposal.getStoreKey(),
-                                        proposal.getPrice(),
-                                        "$", //proposal.getCurrencySymbol()
-                                },
-                                retailer.getLocale()
-                        );
-                    }
-                    else {
-                        message =  LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_total_cost",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        CommandSettings.getStates(retailer.getLocale()).getString(demand.getState().toString()),
-                                        proposal.getStoreKey(),
-                                        totalCost,
-                                        "$", //proposal.getCurrencySymbol()
-                                },
-                                retailer.getLocale()
-                        );
-                    }
+                    JsonObject states = CommandSettings.getStates(retailer.getLocale());
+                    String message = LabelExtractor.get(
+                            "pp_inform_retailer_demand_not_published_state",
+                            new Object[] {
+                                    proposal.getKey(),
+                                    demand.getKey(),
+                                    states.getString(demand.getState().toString())
+                            },
+                            retailer.getLocale()
+                    );
                     communicateToRetailer(retailer.getPreferredConnection(), retailer, message);
                 }
             }

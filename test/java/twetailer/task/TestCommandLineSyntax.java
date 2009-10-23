@@ -42,7 +42,7 @@ public class TestCommandLineSyntax {
     @Before
     public void setUp() throws Exception {
         // Simplified list of prefixes
-        CommandProcessor.localizedPrefixes.clear();
+        CommandLineParser.localizedPrefixes.clear();
         JsonObject prefixes = new GenericJsonObject();
         for (Prefix prefix: Prefix.values()) {
             JsonArray equivalents = new GenericJsonArray();
@@ -55,29 +55,29 @@ public class TestCommandLineSyntax {
             }
             prefixes.put(prefix.toString(), equivalents);
         }
-        CommandProcessor.localizedPrefixes.put(Locale.ENGLISH, prefixes);
+        CommandLineParser.localizedPrefixes.put(Locale.ENGLISH, prefixes);
 
         // Simplified list of actions
-        CommandProcessor.localizedActions.clear();
+        CommandLineParser.localizedActions.clear();
         JsonObject actions = new GenericJsonObject();
         for (Action action: Action.values()) {
             JsonArray equivalents = new GenericJsonArray();
             equivalents.add(action.toString());
             actions.put(action.toString(), equivalents);
         }
-        CommandProcessor.localizedActions.put(Locale.ENGLISH, actions);
+        CommandLineParser.localizedActions.put(Locale.ENGLISH, actions);
 
         // Simplified list of states
-        CommandProcessor.localizedStates.clear();
+        CommandLineParser.localizedStates.clear();
         JsonObject states = new GenericJsonObject();
         for (State state: State.values()) {
             states.put(state.toString(), state.toString());
         }
-        CommandProcessor.localizedStates.put(Locale.ENGLISH, states);
+        CommandLineParser.localizedStates.put(Locale.ENGLISH, states);
 
         // Invoke the defined logic to build the list of RegEx patterns for the simplified list of prefixes
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
     }
 
     @After
@@ -94,83 +94,83 @@ public class TestCommandLineSyntax {
         CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
         // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
-        CommandProcessor.localizedPrefixes = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedActions = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedStates = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
+        CommandLineParser.localizedPrefixes = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedActions = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedStates = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
     }
 
     @Test
     public void testLoadLocalizedSettings() {
-        CommandProcessor.localizedPrefixes.clear();
-        CommandProcessor.localizedActions.clear();
-        CommandProcessor.localizedStates.clear();
-        CommandProcessor.localizedHelpKeywords.clear();
-        CommandProcessor.localizedPatterns.clear();
+        CommandLineParser.localizedPrefixes.clear();
+        CommandLineParser.localizedActions.clear();
+        CommandLineParser.localizedStates.clear();
+        CommandLineParser.localizedHelpKeywords.clear();
+        CommandLineParser.localizedPatterns.clear();
 
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        assertNotSame(0, CommandProcessor.localizedPrefixes.size());
-        assertNotSame(0, CommandProcessor.localizedActions.size());
-        assertNotSame(0, CommandProcessor.localizedStates.size());
-        assertNotSame(0, CommandProcessor.localizedHelpKeywords.size());
-        assertNotSame(0, CommandProcessor.localizedPatterns.size());
+        assertNotSame(0, CommandLineParser.localizedPrefixes.size());
+        assertNotSame(0, CommandLineParser.localizedActions.size());
+        assertNotSame(0, CommandLineParser.localizedStates.size());
+        assertNotSame(0, CommandLineParser.localizedHelpKeywords.size());
+        assertNotSame(0, CommandLineParser.localizedPatterns.size());
     }
 
     @Test(expected=java.lang.NullPointerException.class)
     public void testParseNull() throws ClientException, ParseException {
         // Cannot pass a null reference
-        CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), null, Locale.ENGLISH);
+        CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), null, Locale.ENGLISH);
     }
 
     @Test(expected=twetailer.ClientException.class)
     public void testParseEmpty() throws ClientException, ParseException {
         // At least the twitter identifier of the sender is required
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "", Locale.ENGLISH);
         assertEquals(0, data.size());
     }
 
     @Test(expected=twetailer.ClientException.class)
     public void testParseWithOnlySeparators() throws ClientException, ParseException {
         // At least the twitter identifier of the sender is required
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), " \t \r\n ", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " \t \r\n ", Locale.ENGLISH);
         assertEquals(0, data.size());
     }
 
     @Test
     public void testParseReferenceI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "reference:21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "reference:21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.REFERENCE));
     }
 
     @Test
     public void testParseReferenceII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "reference: 21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "reference: 21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.REFERENCE));
     }
 
     @Test
     public void testParseReferenceShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.REFERENCE));
     }
 
     @Test
     public void testParseOneWordTag() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 product", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 product", Locale.ENGLISH);
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
     }
 
     @Test
     public void testParseOneWordTagPrefixed() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:product", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:product", Locale.ENGLISH);
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
     }
 
     @Test
     public void testParseMultipleWordsTag() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 brand product part", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 brand product part", Locale.ENGLISH);
         assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
         assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
@@ -178,7 +178,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMultipleWordsTagPrefixed() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:brand product part", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:brand product part", Locale.ENGLISH);
         assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
         assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
         assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
@@ -186,93 +186,93 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseExpirationI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:2050-01-01", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:2050-01-01", Locale.ENGLISH);
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 2050-01-01", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 2050-01-01", Locale.ENGLISH);
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 20500101", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 20500101", Locale.ENGLISH);
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:50-01-01", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:50-01-01", Locale.ENGLISH);
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseExpirationShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 exp:2050-01-01", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 exp:2050-01-01", Locale.ENGLISH);
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseRangeI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1mi", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1mi", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range: 1mi", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range: 1mi", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range: 1 mi", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range: 1 mi", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1234567mi", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1234567mi", Locale.ENGLISH);
         assertEquals(1234567, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1km", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1km", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeVI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:100 km", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:100 km", Locale.ENGLISH);
         assertEquals(100, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeVII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1mile", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:1mile", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals("mile", data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeVIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:10miles", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 range:10miles", Locale.ENGLISH);
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.ALTERNATE_MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseRangeShortI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 ran:1mi", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 ran:1mi", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
@@ -280,219 +280,219 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseRangeShortII() throws ClientException, ParseException {
         // Add an equivalent to "range" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.range.toString()).add("rng");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.range.toString()).add("rng");
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 rng:1mi", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 rng:1mi", Locale.ENGLISH);
         assertEquals(1, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseLocaleI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6 ca", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6-ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6-ca", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323 us", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323 us", Locale.ENGLISH);
         assertEquals("97323", data.getString(Location.POSTAL_CODE));
         assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345 us", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345 us", Locale.ENGLISH);
         assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
         assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleVI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345-us", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345-us", Locale.ENGLISH);
         assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
         assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleShortI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343-us", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343-us", Locale.ENGLISH);
         assertEquals("97343", data.getString(Location.POSTAL_CODE));
         assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleShortII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343us", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343us", Locale.ENGLISH);
         assertEquals("97343", data.getString(Location.POSTAL_CODE));
         assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParsePriceI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: $ 25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: $ 25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99€", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99€", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25,3243", Locale.FRENCH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25,3243", Locale.FRENCH);
         assertEquals(25.3243, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceVI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25$", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25$", Locale.ENGLISH);
         assertEquals(25, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pri: 25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 pri: 25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParseProposalI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal:1234567890", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal:1234567890", Locale.ENGLISH);
         assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
     }
 
     @Test
     public void testParseProposalII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal: \t 1234567890", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 proposal: \t 1234567890", Locale.ENGLISH);
         assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
     }
 
     @Test
     public void testParseProposalShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 pro: 1234567890", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 pro: 1234567890", Locale.ENGLISH);
         assertEquals(1234567890L, data.getLong(Proposal.PROPOSAL_KEY));
     }
 
     @Test
     public void testParseQuantityI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity:21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity:21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity: 21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity: 21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity: 21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 quantity: 21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityShortI() throws ClientException, ParseException {
         // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.quantity.toString()).add("qty");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.quantity.toString()).add("qty");
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 qty:21", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 qty:21", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseQuantityShortII() throws ClientException, ParseException {
         // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.quantity.toString()).add("qty");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.quantity.toString()).add("qty");
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:  21    qty:  \t 50   ", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:  21    qty:  \t 50   ", Locale.ENGLISH);
         assertEquals(21, data.getLong(Demand.REFERENCE));
         assertEquals(50, data.getLong(Demand.QUANTITY));
     }
 
     @Test
     public void testParseTotalI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 total:25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 total:25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
     }
 
     @Test
     public void testParseTotalII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL:  25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL:  25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
     }
 
     @Test
     public void testParseTotalIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL: € 25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL: € 25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
     }
 
     @Test
     public void testParseTotalIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL:  25.99£", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 toTAL:  25.99£", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
     }
 
     @Test
     public void testParseTotalShort() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tot: 25.99", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tot: 25.99", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.TOTAL), 0.0);
     }
 
     @Test
     public void testParseMixedCase() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 RaNge: 25 kM", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 RaNge: 25 kM", Locale.ENGLISH);
         assertEquals(25, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 
     @Test
     public void testParseCompositeI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 exp:2050-12-31", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:1234 exp:2050-12-31", Locale.ENGLISH);
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
     @Test
     public void testParseCompositeII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 range: 10 mi exp:2050-12-31", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:1234 range: 10 mi exp:2050-12-31", Locale.ENGLISH);
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
@@ -501,7 +501,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseCompositeIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:1234 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
@@ -512,7 +512,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseCompositeIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:1234 quantity:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:1234 quantity:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
@@ -525,7 +525,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseCompositeV() throws ClientException, ParseException {
         String keywords = "Wii  console\tremote \t control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca " + keywords, Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca " + keywords, Locale.ENGLISH);
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
@@ -541,7 +541,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseCompositeVI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi exp:2050-12-31 " + keywords + " locale: h0h 0h0 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi exp:2050-12-31 " + keywords + " locale: h0h 0h0 ca", Locale.ENGLISH);
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
@@ -557,7 +557,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseCompositeVII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "qua:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
@@ -573,7 +573,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseCompositeVIII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "" + keywords + " quant:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "" + keywords + " quant:12 range: 10 mi exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
@@ -589,7 +589,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseCompositeIX() throws ClientException, ParseException {
         String keywords = "Wii console remote control et des épices sèches de suiße";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "quant:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "quant:12 range: 10 mi " + keywords + " exp:2050-12-31 locale: h0h 0h0 ca", Locale.ENGLISH);
         assertEquals("2050-12-31T23:59:59", data.getString(Demand.EXPIRATION_DATE));
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
@@ -605,7 +605,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseActionI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:demand ref:1234 " + keywords, Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "action:demand ref:1234 " + keywords, Locale.ENGLISH);
         assertEquals("demand", data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
@@ -617,7 +617,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseActionII() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "!demand ref:1234 " + keywords, Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "!demand ref:1234 " + keywords, Locale.ENGLISH);
         assertEquals("demand", data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
@@ -629,20 +629,20 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseIncompleteMessage() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
-        CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:demand " + keywords, Locale.ENGLISH);
+        CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "action:demand " + keywords, Locale.ENGLISH);
         // Now, the function consuming the incomplete tweet does the checking
     }
 
     @Test
     public void testParseActionIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "action:list ref:1234", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "action:list ref:1234", Locale.ENGLISH);
         assertEquals("list", data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
     }
 
     @Test
     public void testParseHelpI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "help:", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "help:", Locale.ENGLISH);
         assertEquals(1, data.size());
         assertNotNull(data.getString(Command.NEED_HELP));
         assertEquals(0, data.getString(Command.NEED_HELP).length());
@@ -650,7 +650,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseHelpII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "help:action:", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "help:action:", Locale.ENGLISH);
         assertEquals(1, data.size());
         assertNotNull(data.getString(Command.NEED_HELP));
         assertEquals("action:", data.getString(Command.NEED_HELP));
@@ -659,11 +659,11 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseHelpShortI() throws ClientException, ParseException {
         // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.help.toString()).add("?");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.help.toString()).add("?");
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "?", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "?", Locale.ENGLISH);
         assertEquals(1, data.size());
         assertTrue(data.containsKey(Command.NEED_HELP));
         assertNotNull(data.getString(Command.NEED_HELP));
@@ -671,11 +671,11 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseHelpShortII() throws ClientException, ParseException {
         // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.help.toString()).add("?");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.help.toString()).add("?");
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), " action ? ", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " action ? ", Locale.ENGLISH);
         assertEquals(1, data.size());
         assertTrue(data.containsKey(Command.NEED_HELP));
         assertNotNull(data.getString(Command.NEED_HELP));
@@ -685,11 +685,11 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseHelpShortIII() throws ClientException, ParseException {
         // Add an equivalent to "quantity" and rebuild the RegEx patterns
-        CommandProcessor.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.help.toString()).add("?");
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPrefixes.get(Locale.ENGLISH).getJsonArray(Prefix.help.toString()).add("?");
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), " action: ? exp:", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " action: ? exp:", Locale.ENGLISH);
         assertEquals(1, data.size());
         assertTrue(data.containsKey(Command.NEED_HELP));
         assertNotNull(data.getString(Command.NEED_HELP));
@@ -722,8 +722,8 @@ public class TestCommandLineSyntax {
 
         assertNotNull(response);
         assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0) + ":2025-01-01"));
@@ -755,8 +755,8 @@ public class TestCommandLineSyntax {
 
         assertNotNull(response);
         assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0) + ":1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":12345"));
@@ -783,8 +783,8 @@ public class TestCommandLineSyntax {
 
         assertNotNull(response);
         assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0) + ":2025-01-01"));
@@ -807,7 +807,7 @@ public class TestCommandLineSyntax {
 
         assertNotNull(response);
         assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)));
     }
 
@@ -824,7 +824,7 @@ public class TestCommandLineSyntax {
 
         assertNotNull(response);
         assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)));
     }
 
@@ -844,8 +844,8 @@ public class TestCommandLineSyntax {
 
         assertNotNull(response);
         assertNotSame(0, response.length());
-        JsonObject prefixes = CommandProcessor.localizedPrefixes.get(locale);
-        JsonObject states = CommandProcessor.localizedStates.get(locale);
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
@@ -858,7 +858,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseAddTag() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 +tags:product", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 +tags:product", Locale.ENGLISH);
         assertNull(data.getJsonArray(Demand.CRITERIA));
         assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
         assertEquals("product", data.getJsonArray("\\+" + Demand.CRITERIA).getString(0));
@@ -866,7 +866,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseRemoveTag() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 -tags:product", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 -tags:product", Locale.ENGLISH);
         assertNull(data.getJsonArray(Demand.CRITERIA));
         assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
         assertEquals("product", data.getJsonArray("\\-" + Demand.CRITERIA).getString(0));
@@ -874,7 +874,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 -tags:product +tags:service tags:excellence", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 -tags:product +tags:service tags:excellence", Locale.ENGLISH);
         assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
         assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
         assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
@@ -885,7 +885,7 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(CommandProcessor.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:excellence -tags:product price:25.80£ +tags:service quantity:12", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:excellence -tags:product price:25.80£ +tags:service quantity:12", Locale.ENGLISH);
         assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
         assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
         assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
@@ -896,8 +896,8 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsIII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(
-                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
                 "ref:21 tags:excellence excellency royal royalty +tags:product thing toy price:$25.80 -tags:service help quantity:12",
                 Locale.ENGLISH
         );
@@ -917,8 +917,8 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsIV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(
-                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
                 "ref:21 tags: total:45.3222 +tags: price:$25.80 -tags: quantity:12",
                 Locale.ENGLISH
         );
@@ -929,8 +929,8 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsV() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(
-                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
                 "action:demand ref:21 tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
                 Locale.ENGLISH
         );
@@ -945,8 +945,8 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsVI() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(
-                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
                 "action:propose proposal:21 tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
                 Locale.ENGLISH
         );
@@ -961,8 +961,8 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseMixedTagsVII() throws ClientException, ParseException {
-        JsonObject data = CommandProcessor.parseCommand(
-                CommandProcessor.localizedPatterns.get(Locale.ENGLISH),
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
                 "action:supply tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
                 Locale.ENGLISH
         );

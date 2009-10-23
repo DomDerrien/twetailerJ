@@ -64,7 +64,7 @@ public class TestCommandProcessor {
     @Before
     public void setUp() throws Exception {
         // Simplified list of prefixes
-        CommandProcessor.localizedPrefixes.clear();
+        CommandLineParser.localizedPrefixes.clear();
         JsonObject prefixes = new GenericJsonObject();
         for (Prefix prefix: Prefix.values()) {
             JsonArray equivalents = new GenericJsonArray();
@@ -77,29 +77,29 @@ public class TestCommandProcessor {
             }
             prefixes.put(prefix.toString(), equivalents);
         }
-        CommandProcessor.localizedPrefixes.put(Locale.ENGLISH, prefixes);
+        CommandLineParser.localizedPrefixes.put(Locale.ENGLISH, prefixes);
 
         // Simplified list of actions
-        CommandProcessor.localizedActions.clear();
+        CommandLineParser.localizedActions.clear();
         JsonObject actions = new GenericJsonObject();
         for (Action action: Action.values()) {
             JsonArray equivalents = new GenericJsonArray();
             equivalents.add(action.toString());
             actions.put(action.toString(), equivalents);
         }
-        CommandProcessor.localizedActions.put(Locale.ENGLISH, actions);
+        CommandLineParser.localizedActions.put(Locale.ENGLISH, actions);
 
         // Simplified list of states
-        CommandProcessor.localizedStates.clear();
+        CommandLineParser.localizedStates.clear();
         JsonObject states = new GenericJsonObject();
         for (State state: State.values()) {
             states.put(state.toString(), state.toString());
         }
-        CommandProcessor.localizedStates.put(Locale.ENGLISH, states);
+        CommandLineParser.localizedStates.put(Locale.ENGLISH, states);
 
         // Invoke the defined logic to build the list of RegEx patterns for the simplified list of prefixes
-        CommandProcessor.localizedPatterns.clear();
-        CommandProcessor.loadLocalizedSettings(Locale.ENGLISH);
+        CommandLineParser.localizedPatterns.clear();
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
     }
 
     @After
@@ -116,11 +116,11 @@ public class TestCommandProcessor {
         CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
         // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
-        CommandProcessor.localizedPrefixes = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedActions = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedStates = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-        CommandProcessor.localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
+        CommandLineParser.localizedPrefixes = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedActions = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedStates = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
     }
 
     @Test
@@ -214,7 +214,6 @@ public class TestCommandProcessor {
     @Test(expected=DataSourceException.class)
     public void testRetrieveConsumerVI() throws DataSourceException {
         final String emitterId = "emitter";
-        final Consumer consumer = new Consumer();
 
         // Mock RawCommandOperations
         ConsumerOperations consumerOperations = new ConsumerOperations() {
@@ -570,8 +569,8 @@ public class TestCommandProcessor {
             }
         };
         CommandProcessor.rawCommandOperations = rawCommandOperations;
-        CommandProcessor.localizedStates.clear();
-        CommandProcessor.localizedStates = new HashMap<Locale, JsonObject>();
+        CommandLineParser.localizedStates.clear();
+        CommandLineParser.localizedStates = new HashMap<Locale, JsonObject>();
 
         CommandProcessor.processRawCommands(0L);
 
@@ -604,8 +603,8 @@ public class TestCommandProcessor {
         equivalents.add(helpKeywordEquivalent);
         JsonObject helpKeywords = new GenericJsonObject();
         helpKeywords.put(helpKeyword, equivalents);
-        CommandProcessor.localizedHelpKeywords.clear();
-        CommandProcessor.localizedHelpKeywords.put(Locale.ENGLISH, helpKeywords);
+        CommandLineParser.localizedHelpKeywords.clear();
+        CommandLineParser.localizedHelpKeywords.put(Locale.ENGLISH, helpKeywords);
 
         CommandProcessor.processRawCommands(0L);
 
@@ -2496,7 +2495,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2555,7 +2554,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2611,7 +2610,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2671,7 +2670,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2734,7 +2733,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2795,7 +2794,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2864,7 +2863,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -2934,7 +2933,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -3008,7 +3007,7 @@ public class TestCommandProcessor {
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 
         appEnv.setUp();
-        CommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandProcessor.localizedPrefixes.get(Locale.ENGLISH), CommandProcessor.localizedActions.get(Locale.ENGLISH));
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
         appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();

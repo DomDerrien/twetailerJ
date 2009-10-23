@@ -92,6 +92,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -145,7 +146,7 @@ public class TestProposalProcessor {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("pp_informNewProposal", new Object[] { proposalKey, demandKey, "test", storeKey }, Locale.ENGLISH),
+                LabelExtractor.get("pp_inform_consumer_about_proposal_with_total_cost", new Object[] { proposalKey, demandKey, "test", storeKey, total, currency }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
@@ -352,7 +353,7 @@ public class TestProposalProcessor {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(
-                LabelExtractor.get("pp_informDemandNotPublished", new Object[] { proposalKey, demandKey, State.invalid.toString() }, Locale.ENGLISH),
+                LabelExtractor.get("pp_inform_retailer_demand_not_published_state", new Object[] { proposalKey, demandKey, State.invalid.toString() }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
