@@ -137,9 +137,9 @@ public class DemandProcessor {
                                     LabelExtractor.get(
                                             demand.getQuantity() == 1 ? "dp_inform_retailer_about_demand_one_item" : "dp_inform_retailer_about_demand_many_items",
                                             new Object[] {
-                                                demand.getKey(), 
-                                                demand.getSerializedCriteria(), 
-                                                demand.getExpirationDate(), 
+                                                demand.getKey(),
+                                                demand.getSerializedCriteria(),
+                                                demand.getExpirationDate(),
                                                 demand.getQuantity()
                                             },
                                             retailer.getLocale()

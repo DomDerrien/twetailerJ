@@ -52,7 +52,7 @@ public class DemandValidator {
             pm.close();
         }
     }
-    
+
     public static final Double RANGE_KM_MIN = Double.valueOf(5.0D);
     public static final Double RANGE_KM_MAX = Double.valueOf(40075.0D);
     public static final Double RANGE_MI_MIN = Double.valueOf(3.0D);
@@ -85,7 +85,7 @@ public class DemandValidator {
                     message = LabelExtractor.get("dv_report_range_km_too_small", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange(), RANGE_KM_MIN }, locale);
                 }
                 else if (/* LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && */ (demand.getRange() == null || demand.getRange().doubleValue() < RANGE_MI_MIN.doubleValue())) {
-                    message = LabelExtractor.get("dv_report_range_mi_too_small", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange(), RANGE_MI_MIN )}, locale);
+                    message = LabelExtractor.get("dv_report_range_mi_too_small", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange(), RANGE_MI_MIN }, locale);
                 }
                 else if (LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && demand.getRange().doubleValue() > RANGE_MI_MAX.doubleValue()) {
                     message = LabelExtractor.get("dv_report_range_mi_too_big", new Object[] { demand.getKey(), demand.getRange(), RANGE_MI_MAX }, locale);
