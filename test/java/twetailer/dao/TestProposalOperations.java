@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
@@ -78,6 +79,7 @@ public class TestProposalOperations {
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
         retailer.setStoreKey(222L);
+        retailer.setPreferredConnection(Source.simulated);
 
         Proposal object = new ProposalOperations().createProposal(item, retailer);
         assertNotNull(object.getKey());
@@ -92,6 +94,7 @@ public class TestProposalOperations {
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
         retailer.setStoreKey(222L);
+        retailer.setPreferredConnection(Source.simulated);
 
         Proposal object = new ProposalOperations().createProposal(item, retailer);
         assertNotNull(object.getKey());
@@ -106,6 +109,7 @@ public class TestProposalOperations {
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
         retailer.setStoreKey(222L);
+        retailer.setPreferredConnection(Source.simulated);
 
         Proposal object = new ProposalOperations().createProposal(item, retailer);
         assertNotNull(object.getKey());
@@ -120,6 +124,7 @@ public class TestProposalOperations {
         Retailer retailer = new Retailer();
         retailer.setKey(111L);
         retailer.setStoreKey(222L);
+        retailer.setPreferredConnection(Source.simulated);
 
         new ProposalOperations().createProposal(item, retailer);
     }

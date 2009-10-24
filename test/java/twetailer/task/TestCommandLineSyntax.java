@@ -102,6 +102,11 @@ public class TestCommandLineSyntax {
     }
 
     @Test
+    public void testConstructor() {
+        new CommandLineParser();
+    }
+
+    @Test
     public void testLoadLocalizedSettings() {
         CommandLineParser.localizedPrefixes.clear();
         CommandLineParser.localizedActions.clear();
@@ -858,80 +863,80 @@ public class TestCommandLineSyntax {
 
     @Test
     public void testParseAddTag() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 +tags:product", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "+tags:product", Locale.ENGLISH);
         assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
-        assertEquals("product", data.getJsonArray("\\+" + Demand.CRITERIA).getString(0));
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
     }
 
     @Test
     public void testParseRemoveTag() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 -tags:product", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "-tags:product", Locale.ENGLISH);
         assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
-        assertEquals("product", data.getJsonArray("\\-" + Demand.CRITERIA).getString(0));
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
     }
 
     @Test
     public void testParseMixedTagsI() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 -tags:product +tags:service tags:excellence", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "-tags:product +tags:service tags:excellence", Locale.ENGLISH);
         assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
         assertEquals("excellence", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("service", data.getJsonArray("\\+" + Demand.CRITERIA).getString(0));
-        assertEquals("product", data.getJsonArray("\\-" + Demand.CRITERIA).getString(0));
+        assertEquals("service", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
     }
 
     @Test
     public void testParseMixedTagsII() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:excellence -tags:product price:25.80£ +tags:service quantity:12", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "tags:excellence -tags:product price:25.80£ +tags:service quantity:12", Locale.ENGLISH);
         assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
         assertEquals("excellence", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("service", data.getJsonArray("\\+" + Demand.CRITERIA).getString(0));
-        assertEquals("product", data.getJsonArray("\\-" + Demand.CRITERIA).getString(0));
+        assertEquals("service", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
     }
 
     @Test
     public void testParseMixedTagsIII() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(
                 CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "ref:21 tags:excellence excellency royal royalty +tags:product thing toy price:$25.80 -tags:service help quantity:12",
+                "tags:excellence excellency royal royalty +tags:product thing toy price:$25.80 -tags:service help quantity:12",
                 Locale.ENGLISH
         );
         assertEquals(4, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(3, data.getJsonArray("\\+" + Demand.CRITERIA).size());
-        assertEquals(2, data.getJsonArray("\\-" + Demand.CRITERIA).size());
+        assertEquals(3, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals(2, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
         assertEquals("excellence", data.getJsonArray(Demand.CRITERIA).getString(0));
         assertEquals("excellency", data.getJsonArray(Demand.CRITERIA).getString(1));
         assertEquals("royal", data.getJsonArray(Demand.CRITERIA).getString(2));
         assertEquals("royalty", data.getJsonArray(Demand.CRITERIA).getString(3));
-        assertEquals("product", data.getJsonArray("\\+" + Demand.CRITERIA).getString(0));
-        assertEquals("thing", data.getJsonArray("\\+" + Demand.CRITERIA).getString(1));
-        assertEquals("toy", data.getJsonArray("\\+" + Demand.CRITERIA).getString(2));
-        assertEquals("service", data.getJsonArray("\\-" + Demand.CRITERIA).getString(0));
-        assertEquals("help", data.getJsonArray("\\-" + Demand.CRITERIA).getString(1));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("thing", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("toy", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
+        assertEquals("service", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
+        assertEquals("help", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(1));
     }
 
     @Test
     public void testParseMixedTagsIV() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(
                 CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "ref:21 tags: total:45.3222 +tags: price:$25.80 -tags: quantity:12",
+                "tags: total:45.3222 +tags: price:$25.80 -tags: quantity:12",
                 Locale.ENGLISH
         );
         assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray("\\+" + Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray("\\-" + Demand.CRITERIA).size());
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
     }
 
     @Test
     public void testParseMixedTagsV() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(
                 CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:demand ref:21 tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
+                "action:demand tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
                 Locale.ENGLISH
         );
         Demand demand = new Demand(data);
@@ -973,5 +978,47 @@ public class TestCommandLineSyntax {
         assertTrue(retailer.getCriteria().contains("two"));
         assertTrue(retailer.getCriteria().contains("four"));
         assertTrue(retailer.getCriteria().contains("five"));
+    }
+
+    @Test
+    public void testParseMixedTagsVIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "action:demand +tags:test price:$25.80 quantity:12",
+                Locale.ENGLISH
+        );
+        assertEquals(1, new Demand(data).getCriteria().size());
+        assertNull(data.getJsonArray(Demand.CRITERIA));
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertNull(data.getJsonArray(Demand.CRITERIA_REMOVE));
+        assertEquals("test", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+    }
+
+    @Test
+    public void testParseMixedTagsIX() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "action:demand -tags:test price:$25.80 quantity:12",
+                Locale.ENGLISH
+        );
+        assertEquals(0, new Demand(data).getCriteria().size());
+        assertNull(data.getJsonArray(Demand.CRITERIA));
+        assertNull(data.getJsonArray(Demand.CRITERIA_ADD));
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
+        assertEquals("test", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
+    }
+
+    @Test
+    public void testParseMixedTagsX() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "action:demand price:$25.80 quantity:12",
+                Locale.ENGLISH
+        );
+        new Demand(data);
+        assertEquals(0, new Demand(data).getCriteria().size());
+        assertNull(data.getJsonArray(Demand.CRITERIA));
+        assertNull(data.getJsonArray(Demand.CRITERIA_ADD));
+        assertNull(data.getJsonArray(Demand.CRITERIA_REMOVE));
     }
 }

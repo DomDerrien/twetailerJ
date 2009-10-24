@@ -5,6 +5,7 @@ import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToEmitter;
 import static twetailer.connector.BaseConnector.communicateToRetailer;
 
+import java.io.PrintStream;
 import java.text.Collator;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
+import domderrien.mocks.MockOutputStream;
 
 public class CommandProcessor {
     private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());
@@ -185,7 +187,6 @@ public class CommandProcessor {
             processCommand(pm, consumer, rawCommand, command);
         }
         catch(Exception ex) {
-            ex.printStackTrace();
             String additionalInfo = getDebugInfo(ex);
             boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
             // Report the error to the raw command emitter
@@ -197,6 +198,11 @@ public class CommandProcessor {
             rawCommand.setErrorMessage(additionalInfo);
             rawCommand = rawCommandOperations.updateRawCommand(pm, rawCommand);
             log.info("Error reported while processing rawCommand: " + rawCommand.getKey() + ", with the info: " + additionalInfo);
+            if (exposeInfo) {
+                MockOutputStream out = new MockOutputStream();
+                ex.printStackTrace(new PrintStream(out));
+                log.info(out.getStream());
+            }
         }
     }
 

@@ -24,8 +24,6 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class CommandLineParser {
-    private static final Logger log = Logger.getLogger(CommandLineParser.class.getName());
-
     protected static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
     protected static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
     protected static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
@@ -158,7 +156,6 @@ public class CommandLineParser {
     public static JsonObject parseCommand (Map<String, Pattern> patterns, String message, Locale locale) throws ClientException, ParseException {
         Matcher matcher;
         boolean oneFieldOverriden = false;
-        log.warning("Message to parse: " + message);
         JsonObject command = new GenericJsonObject();
         // Help
         try {

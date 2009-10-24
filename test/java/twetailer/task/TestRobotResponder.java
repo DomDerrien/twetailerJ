@@ -230,7 +230,7 @@ public class TestRobotResponder {
                 for (String tag : proposal.getCriteria()) {
                     message.append(tag).append(" ");
                 }
-                assertEquals(LabelExtractor.get("rr_automated_response", Locale.ENGLISH).trim(), message.toString().trim());
+                assertEquals(LabelExtractor.get("rr_robot_automatic_proposition", Locale.ENGLISH).trim(), message.toString().trim());
                 proposal.setKey(proposalKey);
                 return proposal;
             }

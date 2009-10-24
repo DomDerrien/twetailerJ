@@ -80,7 +80,7 @@ public class ProposalProcessor {
                                         proposal.getSerializedCriteria(),
                                         proposal.getStoreKey(),
                                         proposal.getPrice(),
-                                        "$", //proposal.getCurrencySymbol()
+                                        "\\$", //proposal.getCurrencySymbol()
                                 },
                                 consumer.getLocale()
                         );
@@ -94,7 +94,7 @@ public class ProposalProcessor {
                                         proposal.getSerializedCriteria(),
                                         proposal.getStoreKey(),
                                         proposal.getTotal(),
-                                        "$", //proposal.getCurrencySymbol()
+                                        "\\$", //proposal.getCurrencySymbol()
                                 },
                                 consumer.getLocale()
                         );

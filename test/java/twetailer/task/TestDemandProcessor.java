@@ -3,6 +3,7 @@ package twetailer.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class TestDemandProcessor {
         DemandProcessor.proposalOperations = DemandProcessor._baseOperations.getProposalOperations();
         DemandProcessor.retailerOperations = DemandProcessor._baseOperations.getRetailerOperations();
         DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
+
+        BaseConnector.resetLastCommunicationInSimulatedMode();
     }
 
     @Test
@@ -499,7 +502,7 @@ public class TestDemandProcessor {
 
     @Test
     @SuppressWarnings("serial")
-    public void testProcessOneDemand() throws DataSourceException {
+    public void testProcessOneDemandI() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -510,6 +513,7 @@ public class TestDemandProcessor {
         consumerDemand.addCriterion("test");
         consumerDemand.setKey(demandKey);
         consumerDemand.setLocationKey(locationKey);
+        // consumerDemand.setQuantity(1L); // Default quantity
         consumerDemand.setRange(demandRange);
         consumerDemand.setState(State.published);
 
@@ -551,6 +555,7 @@ public class TestDemandProcessor {
         final Retailer selectedRetailer = new Retailer();
         selectedRetailer.setTwitterId(retailerId);
         selectedRetailer.addCriterion("test");
+        selectedRetailer.setPreferredConnection(Source.simulated);
 
         DemandProcessor.retailerOperations = new RetailerOperations() {
             @Override
@@ -568,22 +573,97 @@ public class TestDemandProcessor {
             }
         };
 
-        final Twitter mockTwitterAccount = (new Twitter() {
+        DemandProcessor.process(demandKey);
+
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(consumerDemand.getKey().toString()));
+        assertTrue(sentText.contains("test"));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testProcessOneDemandII() throws DataSourceException {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Long demandKey = 67890L;
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.addCriterion("test");
+        consumerDemand.setKey(demandKey);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setQuantity(123L);
+        consumerDemand.setState(State.published);
+
+        DemandProcessor.demandOperations = new DemandOperations() {
             @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                assertEquals(retailerId.toString(), id);
-                assertTrue(text.contains(consumerDemand.getKey().toString()));
-                assertTrue(text.contains("test"));
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(consumerKey);
+                return consumerDemand;
+            }
+        };
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
                 return null;
             }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+        };
+
+        final Long storeKey = 12345L;
+        final Store targetedStore = new Store();
+        targetedStore.setKey(storeKey);
+
+        DemandProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(targetedStore);
+                return stores;
+            }
+        };
+
+        final String retailerId = "Ryan";
+        final Retailer selectedRetailer = new Retailer();
+        selectedRetailer.setTwitterId(retailerId);
+        selectedRetailer.addCriterion("test");
+        selectedRetailer.setPreferredConnection(Source.simulated);
+
+        DemandProcessor.retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(selectedRetailer);
+                return retailers;
+            }
+        };
+
+        DemandProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
+                return new ArrayList<Proposal>();
+            }
+        };
 
         DemandProcessor.process(demandKey);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(consumerDemand.getKey().toString()));
+        assertTrue(sentText.contains("test"));
     }
 
     @Test

@@ -2223,7 +2223,79 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessCommandProposeII() throws Exception {
+    public void testProcessCommandProposeIIa() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long retailerKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(storeKey, sKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                // proposal.setState(State.opened); // Default state
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(State.opened, proposal.getState());
+                proposal.setKey(proposalKey);
+                return proposal;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandProposeIIb() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
         final Long retailerKey =  6666L;
@@ -2292,6 +2364,144 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandProposeIIc() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long retailerKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(storeKey, sKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setState(State.invalid);
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(State.opened, proposal.getState());
+                proposal.setKey(proposalKey);
+                return proposal;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testProcessCommandProposeIId() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long retailerKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                assertEquals(storeKey, sKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(retailerKey);
+                proposal.setState(State.confirmed); // Too late
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+        };
+        // RetailerOperations mock
+        final RetailerOperations retailerOperations = new RetailerOperations() {
+            @Override
+            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, Retailer.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                Retailer retailer = new Retailer();
+                retailer.setKey(retailerKey);
+                retailer.setConsumerKey(consumerKey);
+                retailer.setStoreKey(storeKey);
+                List<Retailer> retailers = new ArrayList<Retailer>();
+                retailers.add(retailer);
+                return retailers;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.retailerOperations = retailerOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposalKey, State.confirmed.toString()}, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -2448,7 +2658,7 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testProcessExisitingDemandI() throws Exception {
+    public void testProcessExisitingDemandIa() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
 
@@ -2458,6 +2668,7 @@ public class TestCommandProcessor {
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
                 Demand demand = new Demand();
+                // demand.setState(State.opened); // Default state
                 demand.setKey(demandKey);
                 return demand;
             }
@@ -2501,6 +2712,161 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessExisitingDemandIb() throws Exception {
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.published);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(State.opened, demand.getState());
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, demandKey);
+        command.put(Location.POSTAL_CODE, "zzz");
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessExisitingDemandIc() throws Exception {
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.invalid);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(State.opened, demand.getState());
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, demandKey);
+        command.put(Location.POSTAL_CODE, "zzz");
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessExisitingDemandId() throws Exception {
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.confirmed); // Too late to update it
+                return demand;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, demandKey);
+        command.put(Demand.QUANTITY, 123L);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        CommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demandKey, State.confirmed.toString()}, Locale.ENGLISH), sentText);
     }
 
     @Test

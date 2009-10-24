@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotSame;
 
 import java.util.Locale;
 
@@ -85,14 +86,14 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposal() throws DataSourceException {
+    public void testProcessOneValidProposalI() throws DataSourceException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
-        final Double price = 25.75D;
+        final Double price = 25.75D; // Will be ignored because total cost given
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "$";
+        final String currency = "\\$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -109,6 +110,8 @@ public class TestProposalProcessor {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
+                assertNotNull(proposal.getCriteria());
+                assertNotSame(0, proposal.getCriteria().size());
                 return proposal;
             }
         };
@@ -145,8 +148,151 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String expectedMessage = LabelExtractor.get("pp_inform_consumer_about_proposal_with_total_cost", new Object[] { proposalKey, demandKey, "test", storeKey, total, currency }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pp_inform_consumer_about_proposal_with_total_cost", new Object[] { proposalKey, demandKey, "test", storeKey, total, currency }, Locale.ENGLISH),
+                expectedMessage,
+                BaseConnector.getLastCommunicationInSimulatedMode()
+        );
+        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessOneValidProposalIIa() throws DataSourceException {
+        final Long proposalKey = 67890L;
+        final Long demandKey = 12345L;
+        final Double price = 25.75D;
+        final Long quantity = 32L;
+        final Long storeKey = 5555L;
+        final Double total = 0.0D; // Not total cost given, will fallback on unit price
+        final String currency = "\\$";
+        final Proposal proposal = new Proposal();
+        proposal.addCriterion("test");
+        proposal.setKey(proposalKey);
+        proposal.setDemandKey(demandKey);
+        proposal.setPrice(price);
+        proposal.setQuantity(quantity);
+        proposal.setState(State.published);
+        proposal.setStoreKey(storeKey);
+        proposal.setTotal(total);
+
+        ProposalProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertNull(cKey);
+                assertNull(sKey);
+                assertNotNull(proposal.getCriteria());
+                assertNotSame(0, proposal.getCriteria().size());
+                return proposal;
+            }
+        };
+
+        final Long ownerKey = 6666L;
+        final Demand demand = new Demand();
+        demand.setKey(demandKey);
+        demand.setOwnerKey(ownerKey);
+        demand.setState(State.published);
+        demand.setSource(Source.simulated);
+        ProposalProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertTrue(demand.getProposalKeys().contains(proposalKey));
+                return demand;
+            }
+        };
+
+        final Consumer consumer = new Consumer();
+        consumer.setKey(ownerKey);
+        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                return consumer;
+            }
+        };
+
+        ProposalProcessor.process(proposalKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String expectedMessage = LabelExtractor.get("pp_inform_consumer_about_proposal_with_price", new Object[] { proposalKey, demandKey, "test", storeKey, price, currency }, Locale.ENGLISH);
+        assertEquals(
+                expectedMessage,
+                BaseConnector.getLastCommunicationInSimulatedMode()
+        );
+        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessOneValidProposalIIb() throws DataSourceException {
+        final Long proposalKey = 67890L;
+        final Long demandKey = 12345L;
+        final Double price = 25.75D;
+        final Long quantity = 32L;
+        final Long storeKey = 5555L;
+        final Double total = null; // Not total cost given, will fallback on unit price
+        final String currency = "\\$";
+        final Proposal proposal = new Proposal();
+        proposal.addCriterion("test");
+        proposal.setKey(proposalKey);
+        proposal.setDemandKey(demandKey);
+        proposal.setPrice(price);
+        proposal.setQuantity(quantity);
+        proposal.setState(State.published);
+        proposal.setStoreKey(storeKey);
+        proposal.setTotal(total);
+
+        ProposalProcessor.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertNull(cKey);
+                assertNull(sKey);
+                assertNotNull(proposal.getCriteria());
+                assertNotSame(0, proposal.getCriteria().size());
+                return proposal;
+            }
+        };
+
+        final Long ownerKey = 6666L;
+        final Demand demand = new Demand();
+        demand.setKey(demandKey);
+        demand.setOwnerKey(ownerKey);
+        demand.setState(State.published);
+        demand.setSource(Source.simulated);
+        ProposalProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertTrue(demand.getProposalKeys().contains(proposalKey));
+                return demand;
+            }
+        };
+
+        final Consumer consumer = new Consumer();
+        consumer.setKey(ownerKey);
+        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                return consumer;
+            }
+        };
+
+        ProposalProcessor.process(proposalKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String expectedMessage = LabelExtractor.get("pp_inform_consumer_about_proposal_with_price", new Object[] { proposalKey, demandKey, "test", storeKey, price, currency }, Locale.ENGLISH);
+        assertEquals(
+                expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
@@ -352,8 +498,9 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String expectedMessage = LabelExtractor.get("pp_inform_retailer_demand_not_published_state", new Object[] { proposalKey, demandKey, State.invalid.toString() }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pp_inform_retailer_demand_not_published_state", new Object[] { proposalKey, demandKey, State.invalid.toString() }, Locale.ENGLISH),
+                expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());

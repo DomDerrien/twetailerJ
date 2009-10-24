@@ -74,7 +74,7 @@ public class RobotResponder {
                 proposal.setStoreKey(stores.get(0).getKey());
                 proposal.setTotal(1.15D);
                 // Prepare the automated response
-                String message = LabelExtractor.get("rr_automated_response", consumer.getLocale());
+                String message = LabelExtractor.get("rr_robot_automatic_proposition", consumer.getLocale());
                 String[] parts = message.split(" ");
                 for (String part: parts) {
                     proposal.addCriterion(part);

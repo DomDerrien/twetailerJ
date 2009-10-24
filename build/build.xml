@@ -79,6 +79,10 @@
         value="${basedir}${file.separator}bin${file.separator}temp"
     />
 
+    <property name="junit.timeout.seconds"
+        description="Delay before considering a test being too long. In milliseconds"
+        value="60000"
+    />
     <!--property name="no.cobertura.html.reports"
         description="Prevents the generation of Cobertura reports (HTML format). Use local.build.properties to set it."
         value="The value is not important, the presence of the property is only used..."
@@ -451,7 +455,7 @@
         </echo>
     </target>
 
-    <target name="step-file-format">
+    <target name="step-file-format" unless="testcase">
         <fixcrlf
             eof="remove"
             eol="crlf"
@@ -977,7 +981,7 @@
             printSummary="yes"
             haltOnError="true"
             haltOnFailure="true"
-            timeout="10000"
+            timeout="${junit.timeout.seconds}"
             maxMemory="512M"
         >
             <classpath location="bin/instrumented" />
@@ -1037,7 +1041,7 @@
             printSummary="yes"
             haltonerror="true"
             haltonfailure="true"
-            timeout="60000"
+            timeout="junit.timeout.seconds"
             maxmemory="512M"
         >
             <classpath refid="jsunit.classpath" />
