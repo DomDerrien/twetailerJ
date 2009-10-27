@@ -154,6 +154,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_prefix_hash" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>hash,#</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_prefix_help" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
@@ -752,6 +760,21 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_command_demand_hashtag_warning" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: demand key
+                {1}: given hashtag
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The hash tag (#) concept is reserved for a future feature. For now, the value you gave is ignored.|
+                    Add it to the list of demand tags with \u0022action:demand reference:{0} +tag:{1}\u0022|
+                    Join the Twetailer community to get more details.
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_command_list_invalid_demand_id" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -814,6 +837,21 @@
             </note>
             <tuv xml:lang="en">
                 <seg>Listing your proposition for Proposition proposal:{0}... You can send "!help" for more options afterwards.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_proposal_hashtag_warning" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key
+                {1}: given hashtag
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The hash tag (#) concept is reserved for a future feature. For now, the value you gave is ignored.|
+                    Add it to the list of proposal tags with \u0022action:propose proposal:{0} +tag:{1}\u0022|
+                    Join the Twetailer community to get more details.
+                </seg>
             </tuv>
         </tu>
 
@@ -913,7 +951,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Please update the Demand reference:{0} with your lLocale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+                <seg>Please update the Demand reference:{0} with your lLocale(postal/zip code and country) - like \u0022ref:{0} locale:12345 us\u0022</seg>
             </tuv>
         </tu>
 
@@ -926,7 +964,10 @@
                 {2}: given country code.
             </note>
             <tuv xml:lang="en">
-                <seg>The Locale \u0022{1} {2}\u0022 given Demand reference:{0} cannot be resolved. Please provide a valid Locale(postal/zip code and country) - like \u0022 ref:{0} locale:12345 us \u0022</seg>
+                <seg>
+                    The Locale \u0022{1} {2}\u0022 given Demand reference:{0} cannot be resolved.|
+                    Please provide a valid Locale(postal/zip code and country) - like \u0022ref:{0} locale:12345 us\u0022
+                </seg>
             </tuv>
         </tu>
 

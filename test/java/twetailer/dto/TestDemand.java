@@ -216,6 +216,9 @@ public class TestDemand {
         object.setRangeUnit(LocaleValidator.MILE_UNIT.toUpperCase(Locale.ENGLISH));
         assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
 
+        object.setRangeUnit(LocaleValidator.ALTERNATE_MILE_UNIT.toUpperCase(Locale.ENGLISH));
+        assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
+
         object.setRangeUnit("zzz");
         assertEquals(LocaleValidator.KILOMETER_UNIT, object.getRangeUnit());
 

@@ -28,6 +28,9 @@ public class Wish extends Entity {
     private Action action;
 
     @Persistent
+    private String hastTag;
+
+    @Persistent
     private Long ownerKey;
 
     @Persistent
@@ -92,6 +95,14 @@ public class Wish extends Entity {
 
     public void setAction(String action) {
         setAction(Action.valueOf(action));
+    }
+
+    public String getHastTag() {
+        return hastTag;
+    }
+
+    public void setHastTag(String hastTag) {
+        this.hastTag = hastTag;
     }
 
     public Long getOwnerKey() {
@@ -212,6 +223,7 @@ public class Wish extends Entity {
         JsonObject out = super.toJson();
         /*** Command ***/
         out.put(Command.ACTION, getAction().toString());
+        out.put(Command.HASH_TAG, getHastTag());
         if (getOwnerKey() != null) { out.put(Command.OWNER_KEY, getOwnerKey()); }
         out.put(Command.SOURCE, getSource().toString());
         out.put(Command.STATE, getState().toString());
@@ -232,6 +244,7 @@ public class Wish extends Entity {
         super.fromJson(in);
         /*** Command ***/
         if (in.containsKey(Command.ACTION)) { setAction(in.getString(Command.ACTION)); }
+        if (in.containsKey(Command.HASH_TAG)) { setHastTag(in.getString(Command.HASH_TAG)); }
         if (in.containsKey(Command.OWNER_KEY)) { setOwnerKey(in.getLong(Command.OWNER_KEY)); }
         if (in.containsKey(Command.SOURCE)) { setSource(in.getString(Command.SOURCE)); }
         if (in.containsKey(Command.STATE)) { setState(in.getString(Command.STATE)); }

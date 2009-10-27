@@ -48,6 +48,7 @@ public class TestCommand {
     }
 
     Action action = Action.cancel;
+    String hashTag = "hash";
     Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
@@ -59,6 +60,7 @@ public class TestCommand {
 
         object.setAction(action);
         object.setAction(action.toString());
+        object.setHashTag(hashTag);
         object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
@@ -68,6 +70,7 @@ public class TestCommand {
 
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
+        assertEquals(hashTag, object.getHashTag());
         assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
@@ -79,6 +82,7 @@ public class TestCommand {
         Command object = new Command();
 
         object.setAction(action);
+        object.setHashTag(hashTag);
         object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
@@ -87,6 +91,7 @@ public class TestCommand {
         Command clone = new Command(object.toJson());
 
         assertEquals(action, clone.getAction());
+        assertEquals(hashTag, clone.getHashTag());
         assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());

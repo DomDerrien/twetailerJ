@@ -1041,7 +1041,7 @@
             printSummary="yes"
             haltonerror="true"
             haltonfailure="true"
-            timeout="junit.timeout.seconds"
+            timeout="${junit.timeout.seconds}"
             maxmemory="512M"
         >
             <classpath refid="jsunit.classpath" />

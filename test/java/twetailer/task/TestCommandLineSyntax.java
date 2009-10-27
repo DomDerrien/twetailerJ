@@ -53,6 +53,9 @@ public class TestCommandLineSyntax {
             else if (Prefix.help.equals(prefix)) {
                 equivalents.add("?");
             }
+            else if (Prefix.hash.equals(prefix)) {
+                equivalents.add("#");
+            }
             prefixes.put(prefix.toString(), equivalents);
         }
         CommandLineParser.localizedPrefixes.put(Locale.ENGLISH, prefixes);
@@ -114,6 +117,7 @@ public class TestCommandLineSyntax {
         CommandLineParser.localizedHelpKeywords.clear();
         CommandLineParser.localizedPatterns.clear();
 
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
         CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
         assertNotSame(0, CommandLineParser.localizedPrefixes.size());
@@ -1020,5 +1024,59 @@ public class TestCommandLineSyntax {
         assertNull(data.getJsonArray(Demand.CRITERIA));
         assertNull(data.getJsonArray(Demand.CRITERIA_ADD));
         assertNull(data.getJsonArray(Demand.CRITERIA_REMOVE));
+    }
+
+    @Test
+    public void testIssueWithPartOfTheTagsLostI() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "ref:249 wii #console locale:h0h0h0 mario range:25 km kart",
+                Locale.ENGLISH
+        );
+        System.err.println(data);
+
+        assertEquals("console", data.getString(Command.HASH_TAG));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA).getString(1));
+        assertEquals("mario", data.getJsonArray(Demand.CRITERIA).getString(2));
+        assertEquals("kart", data.getJsonArray(Demand.CRITERIA).getString(3));
+        assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
+        assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
+    }
+
+    @Test
+    public void testIssueWithPartOfTheTagsLostII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "ref:249 wii hash:console locale:h0h0h0 mario range:25 km kart",
+                Locale.ENGLISH
+        );
+        System.err.println(data);
+
+        assertEquals("console", data.getString(Command.HASH_TAG));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA).getString(1));
+        assertEquals("mario", data.getJsonArray(Demand.CRITERIA).getString(2));
+        assertEquals("kart", data.getJsonArray(Demand.CRITERIA).getString(3));
+        assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
+        assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
+    }
+
+    @Test
+    public void testIssueWithPartOfTheTagsLostIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "ref:249 tags: wii hash:console locale:h0h0h0 mario range:25 km kart",
+                Locale.ENGLISH
+        );
+        System.err.println(data);
+
+        assertEquals("console", data.getString(Command.HASH_TAG));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA).getString(1));
+        assertEquals("mario", data.getJsonArray(Demand.CRITERIA).getString(2));
+        assertEquals("kart", data.getJsonArray(Demand.CRITERIA).getString(3));
+        assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
+        assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }
 }

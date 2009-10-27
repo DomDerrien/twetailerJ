@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,6 +69,7 @@ public class CommandLineParser {
 
             preparePattern(prefixes, patterns, Prefix.action, "\\s*\\w+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.expiration, "[\\d- ]+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.hash, "\\s*\\S+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
             // FIXME: use DecimalFormatSymbols.getInstance(locale).getCurrencySymbol() in the following expression
@@ -86,6 +86,8 @@ public class CommandLineParser {
             String tagPattern = assembleModularPrefixes(prefixes.getJsonArray(tagKey), tagKey).toString();
             patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
             patterns.put("\\-" + tagKey, Pattern.compile("((?:\\-(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
+
+            patterns.put(tagKey + "Start", Pattern.compile("^(" + tagPattern + ")", Pattern.CASE_INSENSITIVE));
 
             localizedPatterns.put(locale, patterns);
         }
@@ -191,6 +193,17 @@ public class CommandLineParser {
             }
         }
         catch(IllegalStateException ex) {}
+        // Hash tag
+        try {
+            matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Command.HASH_TAG, getHashTag(currentGroup.toLowerCase(locale)));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
         // Locale
         try {
             matcher = patterns.get(Prefix.locale.toString()).matcher(messageCopy);
@@ -275,7 +288,7 @@ public class CommandLineParser {
             matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup)));
+                command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup, null)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -286,7 +299,7 @@ public class CommandLineParser {
             matcher = patterns.get("\\-" + Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.CRITERIA_REMOVE, new GenericJsonArray(getTags(currentGroup)));
+                command.put(Demand.CRITERIA_REMOVE, new GenericJsonArray(getTags(currentGroup, null)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -298,7 +311,7 @@ public class CommandLineParser {
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
                 if (0 < currentGroup.length()) {
-                    command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup)));
+                    command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup, patterns)));
                     messageCopy = extractPart(messageCopy, currentGroup);
                     oneFieldOverriden = true;
                 }
@@ -338,7 +351,6 @@ public class CommandLineParser {
         else {
             command = pattern.substring(pattern.indexOf(":") + 1);
         }
-        // TODO: validate the command among a list
         return command;
     }
 
@@ -363,6 +375,22 @@ public class CommandLineParser {
             date = "20" + date;
         }
         return date + "T23:59:59";
+    }
+
+    /**
+     * Helper extracting commands
+     * @param pattern Parameters extracted by a regular expression
+     * @return valid command
+     */
+    private static String getHashTag(String pattern) {
+        String command;
+        if (pattern.charAt(0) == '#') {
+            command = pattern.substring(1);
+        }
+        else {
+            command = pattern.substring(pattern.indexOf(":") + 1);
+        }
+        return command;
     }
 
     /**
@@ -472,12 +500,23 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return tags
      */
-    private static String[] getTags(String pattern) {
+    private static String[] getTags(String pattern, Map<String, Pattern> patterns) {
         String keywords = pattern;
-        if (pattern.indexOf(":") != -1) {
+        // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of _tags or -tags)
+        if (patterns == null) { // && pattern.indexOf(":") != -1) {
             keywords = pattern.substring(pattern.indexOf(":") + 1).trim();
         }
-        return keywords.split("\\s+");
+        else {
+            // Because it's possible the keywords are not prefixed, it's not possible to ignore everything before the colon
+            // So we use the pattern with the equivalents of tags: and this group will be replaced
+            Matcher matcher = patterns.get(Prefix.tags.toString() + "Start").matcher(keywords);
+            if (matcher.find()) { // Runs the matcher once
+                keywords = matcher.replaceFirst("");
+            }
+            // Incorrect tags that lands among the keywords are neutralized
+            keywords = keywords.replace(':', '_');
+        }
+        return keywords.trim().split("\\s+");
     }
 
 }

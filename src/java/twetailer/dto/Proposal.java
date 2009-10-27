@@ -25,6 +25,9 @@ public class Proposal extends Entity {
     private Action action;
 
     @Persistent
+    private String hashTag;
+
+    @Persistent
     private Long ownerKey;
 
     @Persistent
@@ -113,6 +116,14 @@ public class Proposal extends Entity {
 
     public void setAction(String action) {
         setAction(Action.valueOf(action));
+    }
+
+    public String getHashTag() {
+        return hashTag;
+    }
+
+    public void setHashTag(String hashTag) {
+        this.hashTag = hashTag;
     }
 
     public Long getOwnerKey() {
@@ -245,6 +256,7 @@ public class Proposal extends Entity {
         JsonObject out = super.toJson();
         /*** Command ***/
         out.put(Command.ACTION, getAction().toString());
+        out.put(Command.HASH_TAG, getHashTag());
         if (getOwnerKey() != null) { out.put(Command.OWNER_KEY, getOwnerKey()); }
         if (getRawCommandId() != null) { out.put(Command.RAW_COMMAND_ID, getRawCommandId()); }
         out.put(Command.SOURCE, getSource().toString());
@@ -269,6 +281,7 @@ public class Proposal extends Entity {
         super.fromJson(in);
         /*** Command ***/
         if (in.containsKey(Command.ACTION)) { setAction(in.getString(Command.ACTION)); }
+        if (in.containsKey(Command.HASH_TAG)) { setHashTag(in.getString(Command.HASH_TAG)); }
         if (in.containsKey(Command.OWNER_KEY)) { setOwnerKey(in.getLong(Command.OWNER_KEY)); }
         if (in.containsKey(Command.RAW_COMMAND_ID)) { setRawCommandId(in.getLong(Command.RAW_COMMAND_ID)); }
         if (in.containsKey(Command.SOURCE)) { setSource(in.getString(Command.SOURCE)); }

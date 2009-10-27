@@ -131,8 +131,8 @@
             <filterchain refid="genericFilterChain" />
         </copy>
     </target>
-    
-    <target name="step-datanucleus-enhance" depends="compile, step-configuration-push">
+
+    <target name="step-devfiles-clean">
         <delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
         <delete failonerror="yes">
             <fileset dir="src/war/WEB-INF/classes">
@@ -140,9 +140,12 @@
                 <include name="**/Mock*.*" />
             </fileset>
         </delete>
+    </target>
+
+    <target name="step-datanucleus-enhance" depends="compile, step-configuration-push, step-devfiles-clean">
         <enhance_war war="${basedir}/src/war" />
     </target>
-    
+
     <target name="step-datanucleus-enhance-for-tests" depends="compile, step-configuration-push">
         <delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
         <enhance_war war="${basedir}/src/war" includes="twetailer/dto/*.class" />

@@ -10,6 +10,10 @@ import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * @author ddd
+ *
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Command extends Entity {
 
@@ -17,6 +21,11 @@ public class Command extends Entity {
     private Action action;
 
     public static final String ACTION = "action";
+
+    @Persistent
+    private String hashTag;
+
+    public static final String HASH_TAG = "hasTag";
 
     @Persistent
     private Long ownerKey;
@@ -70,6 +79,14 @@ public class Command extends Entity {
         setAction(Action.valueOf(action));
     }
 
+    public String getHashTag() {
+        return hashTag;
+    }
+
+    public void setHashTag(String hashTag) {
+        this.hashTag = hashTag;
+    }
+
     public Long getOwnerKey() {
         return ownerKey;
     }
@@ -119,6 +136,7 @@ public class Command extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
+        if (getHashTag() != null) { out.put(HASH_TAG, getHashTag()); }
         if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
         out.put(SOURCE, getSource().toString());
@@ -129,6 +147,7 @@ public class Command extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
+        if (in.containsKey(HASH_TAG)) { setHashTag(in.getString(HASH_TAG)); }
         if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
         if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }

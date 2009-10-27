@@ -756,7 +756,7 @@ public class CommandProcessor {
                 else {
                     communicateToEmitter(
                             rawCommand,
-                            LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state}, consumer.getLocale())
+                            LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale())
                     );
                 }
             }
@@ -807,6 +807,15 @@ public class CommandProcessor {
             communicateToEmitter(rawCommand, generateTweet(newDemand, location, consumer.getLocale()));
             // Get the demandKey for the task scheduling
             demandKey = newDemand.getKey();
+        }
+
+        // Temporary warning
+        String hashTag = command.getString(Command.HASH_TAG);
+        if (hashTag != null){
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_demand_hashtag_warning", new Object[] { demandKey, hashTag }, consumer.getLocale())
+            );
         }
 
         // Create a task for that demand
@@ -962,6 +971,15 @@ public class CommandProcessor {
             communicateToEmitter(rawCommand, generateTweet(newProposal, consumer.getLocale()));
             // Get the proposalKey for the task scheduling
             proposalKey = newProposal.getKey();
+        }
+
+        // Temporary warning
+        String hashTag = command.getString(Command.HASH_TAG);
+        if (hashTag != null){
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_proposal_hashtag_warning", new Object[] { proposalKey, hashTag }, consumer.getLocale())
+            );
         }
 
         // Create a task for that proposal
