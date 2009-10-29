@@ -27,6 +27,24 @@
         <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>waveresponder</servlet-name>
+        <servlet-class>twetailer.j2ee.WaveResponderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>waveresponder</servlet-name>
+        <url-pattern>/_wave/robot/jsonrpc</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>waveprofile</servlet-name>
+        <servlet-class>twetailer.j2ee.WaveProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>waveprofile</servlet-name>
+        <url-pattern>/_wave/robot/profile</url-pattern>
+    </servlet-mapping>
+
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Administrative tools</web-resource-name>

@@ -4,6 +4,7 @@ docs/test-reports/*
 src/war/js/dojo/*
 src/war/js/twetailer/nls/*
 src/war/WEB-INF/*
+src/war/_wave/capabilities.xml
 WEB-INF/*
 cobertura.ser
 *.class

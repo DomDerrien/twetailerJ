@@ -778,6 +778,7 @@ public class CommandProcessor {
                 latestDemand.resetKey();
                 latestDemand.resetCoreDates();
                 latestDemand.setAction(Action.demand);
+                latestDemand.setHashTag(null);
                 latestDemand.resetCriteria();
                 latestDemand.setDefaultExpirationDate();
                 latestDemand.setState(State.opened);

@@ -328,6 +328,9 @@
             <file name="jdo/jdo2-api-2.3-eb.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
+            <file name="wave/json.jar" />
+            <file name="wave/jsonrpc.jar" />
+            <file name="wave/wave-robot-api-20090916.jar" />
         </filelist>
     </path>
 
@@ -347,6 +350,9 @@
             <file name="jdo/jdo2-api-2.3-eb.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
+            <file name="wave/json.jar" />
+            <file name="wave/jsonrpc.jar" />
+            <file name="wave/wave-robot-api-20090916.jar" />
         </filelist>
     </path>
 

@@ -47,6 +47,8 @@
         <delete file="src/war/WEB-INF/lib/jdo2*.jar" />
         <delete file="src/war/WEB-INF/lib/domderrien*.jar" />
         <delete file="src/war/WEB-INF/lib/twitter4j*.jar" />
+    	<delete files="src/war/WEB-INF/lib/json*.jar" />
+    	<delete files="src/war/WEB-INF/lib/wave*.jar" />
     </target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
@@ -55,8 +57,11 @@
                 <include name="**/*.jar" />
             </fileset>
         </copy>
-        <copy file="deps/lib/domderrien/domderrien-0.8.6.jar" todir="src/war/WEB-INF/lib"/>
-        <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib"/>
+        <copy file="deps/lib/domderrien/domderrien-0.8.6.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/wave/json.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/wave/jsonrpc.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/wave/wave-robot-api-20090916.jar" todir="src/war/WEB-INF/lib" />
     </target>
 
     <target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
@@ -126,6 +131,13 @@
         <copy 
             file="src/resources/jdoconfig.xml.tmpl"
             tofile="src/war/WEB-INF/classes/META-INF/jdoconfig.xml"
+            overwrite="true"
+        >
+            <filterchain refid="genericFilterChain" />
+        </copy>
+        <copy
+            file="src/resources/capabilities.xml.tmpl"
+            tofile="src/war/_wave/capabilities.xml"
             overwrite="true"
         >
             <filterchain refid="genericFilterChain" />
