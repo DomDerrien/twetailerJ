@@ -60,17 +60,17 @@ o-tmf="RichWebApps">
 <!-- =================== -->
 <!-- Console definitions -->
 <!-- =================== -->
-<tu tuid="redirectionMsg" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Redirection...<br/>Cliquer <a href="{0}">ici</a> pour forcer la redirection.</seg></tuv></tu>
-<tu tuid="applicationName" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Console de Twetailer</seg></tuv></tu>
-<tu tuid="splashScreenMsg" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>S'il vous plaît, patientez pendant que la console se construit...</seg></tuv></tu>
-<tu tuid="globalCommandLogin" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Connexion</seg></tuv></tu>
-<tu tuid="globalCommandLogout" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Déconnexion</seg></tuv></tu>
-<tu tuid="globalCommandHelp" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Aide</seg></tuv></tu>
-<tu tuid="loginFormPaneTitle" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Point de vérification de l'identité</seg></tuv></tu>
-<tu tuid="loginFormPaneMessage" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Vous n'êtes pas connecté.</seg></tuv></tu>
-<tu tuid="loginFormPaneUsernameLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Courriel</seg></tuv></tu>
-<tu tuid="loginFormPanePasswordLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Mot de passe</seg></tuv></tu>
-<tu tuid="loginFormPaneAdministrativeStateLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Authentification en tant qu'administrateur</seg></tuv></tu>
-<tu tuid="loginFormPaneActionLabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Se connecter</seg></tuv></tu>
+<tu tuid="ui_page_redirection_message" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Redirection...<br/>Cliquer <a href="{0}">ici</a> pour forcer la redirection.</seg></tuv></tu>
+<tu tuid="ui_application_name" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Console de Twetailer</seg></tuv></tu>
+<tu tuid="ui_splash_screen_message" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>S'il vous plaît, patientez pendant que la console se construit...</seg></tuv></tu>
+<tu tuid="ui_global_command_login" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Connexion</seg></tuv></tu>
+<tu tuid="ui_global_command_logout" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Déconnexion</seg></tuv></tu>
+<tu tuid="ui_global_command_help" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Aide</seg></tuv></tu>
+<tu tuid="ui_login_form_pane_title" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Point de vérification de l'identité</seg></tuv></tu>
+<tu tuid="ui_login_form_pane_message" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Vous n'êtes pas connecté.</seg></tuv></tu>
+<tu tuid="ui_login_form_pane_username_label" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Courriel</seg></tuv></tu>
+<tu tuid="ui_login_form_pane_password_label" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Mot de passe</seg></tuv></tu>
+<tu tuid="ui_login_form_pane_administrative_state_label" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Authentification en tant qu'administrateur</seg></tuv></tu>
+<tu tuid="ui_login_form_pane_actionlabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Se connecter</seg></tuv></tu>
 </body>
 </tmx>

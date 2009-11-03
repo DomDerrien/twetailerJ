@@ -13,8 +13,8 @@ import twitter4j.TwitterException;
 public class TwitterConnector {
     private static final Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
-    private static String twetailerScreenName = "twtlr";
-    private static String twetailerPassword = "twetailer@shortcut0";
+    private static String twetailerScreenName = "twetailer";
+    private static String twetailerPassword = "ec0n0m1cs";
 
     private static String robotScreenName = "jacktroll";
     private static String robotPassword = "twetailer@robot1";

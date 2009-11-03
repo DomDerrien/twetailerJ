@@ -9,7 +9,11 @@ html, body {
 
 body, th, td {
     font-family: Tahoma, Segoe UI, Arial, Bitstream Vera Sans, Verdana, Helvetica, sans-serif;
-    font-size: 9pt;
+}
+
+body {
+	background-color: #eee;
+	border-top: 4px solid black;
 }
 
 #introFlash {
@@ -31,203 +35,116 @@ body, th, td {
 }
 
 #introFlash>div>span {
-    background-color:#F9F9F9;
+    background-color: #F9F9F9;
    	border: 1px solid #BFBFBF;
    	padding: 4px;
    	line-height: 30px;
 }
 
-#header {
-    font-size: 16pt;
-    text-align: center;
-    margin-top: 5px;
+#topContainer {
+	margin: 0 10px;
+	background-color: white;
 }
 
-#footer {
-	text-align: right;
+#headerZone {
+	background-color: #aaa;
+	margin: 0 10px;
 }
 
-#header>img, #footer>img {
-	vertical-align: middle;
+#brand {
 }
 
-
-#header .globalCommand {
+#brand>h1 {
 	margin: 0;
-    padding: 0;
-    float: right;
+	padding: 0.7em 1em;
+	font-size: 3em;
+	font-weight: normal;
 }
 
-#header .globalCommand.dijitComboBox {
-	font-size: 10pt;
-	width: 120px;
-	margin: 10px 5px 0 0;
+#brand>h1>a {
+	text-decoration: none;
+	color: black;
 }
 
-#header a.globalCommand {
-	margin-top: 5px;
+#mantra {
+	float: left;
+	margin-top:-25px;
+	padding-left: 70px;
+	font-size: 1.2em !important;
 }
 
-#header a.globalCommand>img {
-    vertical-align: middle;
-	margin: 0 6px 2px 6px;
-    border: 0 none;
-    padding: 0;
-}
-
-.hiddenToNonAuthenticated {
-	display: none;
-}
-
-.a11y {
-	display: none;
-}
-
-.documentedText {
-	background-color: #eee;
-	padding: 0 2px;
-}
-
-.searchField.dijitTextBox {
-	padding: 5px;
-}
-
-.searchField.dijitButton .dijitButtonContents {
-	padding: 2px;
-}
-
-.areaBox {
+#logo {
 	float: right;
-	border: 1px solid rgb(204, 204, 204);
-	padding: 5px;
 }
 
-.areaLabel {
-	text-align: center;
-	margin-top: 0;
-	margin-bottom: 10px;
-	border-bottom: 1px solid rgb(204, 204, 204);
+#navigation {
+	background-color: black;
+	padding: 2px 0
 }
 
-.countryField {
-	width: 100px;
+#navigation>ul, #navigation>ul>li {
+	display: inline;
+	margin: 0;
+	padding: 0;
 }
 
-.postalCodeField {
-	width: 100px;
+#navigation>ul>li {
+	margin-left: 3em;
 }
 
-.distanceField {
-	width: 60px;
+#navigation>ul>li.subItem {
+	float: right;
+	margin-left: 0;
+	margin-right: 3em;
 }
 
-.silkIcon {
+#navigation>ul>li>a {
+	text-decoration: none;
+	font-weight: bold;
+	color: white;
+}
+
+#widget_languageSelector {
+	margin-top: -4px;
+	width: 10em;
+}
+
+#footerZone {
+	background-color: #666;
+	margin: 0 10px 10px 10px;
+	padding: 10px 30px;
+	color: #ccc;
+}
+
+#footerZone>a {
+	text-decoration: none;
+	color: white;
+}
+
+#centerZone {
+	background-color: white;
+	margin: 0 10px;
+}
+
+#signInForm {
+	background-color: #ccc;
+	border: 1px solid black;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+	padding: 10px;
+}
+
+#openid_identifier {
+	background-image: url(/images/icons/openid.gif) !important;
+	background-position: 3px 2px;
+	background-repeat: no-repeat;
+	padding: 0.2em 0.2em 0.2em 20px;
+}
+
+.openidSignInButton {
+    background-image:url(/images/icons/openid.gif);
     background-repeat:no-repeat;
     text-align:center;
     height:18px;
     width:18px;
-}
-
-.silkAcceptIcon {
-    background-image:url(../images/accept.png);
-}
-
-.silkCancelIcon {
-    background-image:url(../images/cancel.png);
-}
-
-.silkCloseIcon {
-    background-image:url(../images/asterisk_orange.png);
-}
-
-.silkAddIcon {
-    background-image:url(../images/add.png);
-}
-
-.silkSearchIcon {
-    background-image:url(../images/search.png);
-}
-
-.silkRemoveIcon {
-    background-image:url(../images/delete.png);
-}
-
-.silkViewIcon {
-    background-image:url(../images/page_white_text.png);
-}
-
-.silkEditIcon {
-    background-image:url(../images/page_white_edit.png);
-}
-
-.silkSelectIcon {
-    background-image:url(../images/page_white_go.png);
-}
-
-#helpSystemDialog {
-    height: 445px;
-    width: 60%;
-}
-
-.helpContainer {
-    height: 400px; /* Overriden in help-standalone to '100%' */
-}
-
-.helpContainer p {
-	margin: 0;
-    padding: 5px 40px 2px 10px;
-}
-
-.helpContainer img {
-	margin: 0;
-	border: 0 none;
-	padding: 0;
-	text-align: center;
-}
-
-.helpContainer dt {
-    font-weight: bold;
-    padding: 5px 40px 2px 10px;
-}
-
-.helpContainer dd {
-    padding: 2px 30px 2px 30px;
-}
-
-.settingsAccordion.dijitAccordionPane .dijitAccordionBody {
-	padding: 10px;
-}
-
-.settingsAccordion.dijitAccordionPane .dijitAccordionBody label {
-	width: 100px;
-	margin: 5px 0;
-	display: inline-block;
-}
-
-table.attributeValueList {
-	border: 1px solid #CCC;
-}
-
-table.attributeValueList td.title {
-	background: #E9E9E9 url(/images/tabEnabled.png) repeat-x scroll center top;
-	text-align: center;
-	height: 20px;
-	border: 1px solid #EEE;
-}
-
-table.attributeValueList td.attribute {
-	text-align: right;
-	vertical-align: top;
-	padding: 5px 10px 3px 5px;
-}
-
-table.attributeValueList td.value {
-	whitespace: no-wrap;
-	vertical-align: top;
-	padding: 3px 5px 3px 0;
-}
-
-table.attributeValueList td.value span.hint{
-	font-size: smaller;
-	color: grey;
 }

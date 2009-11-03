@@ -331,6 +331,9 @@
             <file name="wave/json.jar" />
             <file name="wave/jsonrpc.jar" />
             <file name="wave/wave-robot-api-20090916.jar" />
+            <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
+            <file name="dyuproject/dyuproject-util-1.1.6.jar" />
+            <file name="dyuproject/dyuproject-web-1.1.6.jar" />
         </filelist>
     </path>
 
@@ -353,6 +356,9 @@
             <file name="wave/json.jar" />
             <file name="wave/jsonrpc.jar" />
             <file name="wave/wave-robot-api-20090916.jar" />
+            <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
+            <file name="dyuproject/dyuproject-util-1.1.6.jar" />
+            <file name="dyuproject/dyuproject-web-1.1.6.jar" />
         </filelist>
     </path>
 

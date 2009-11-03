@@ -16,7 +16,7 @@
     String cdnBaseURL = appSettings.getCdnBaseURL();
 
     // Locale detection
-    Locale locale = LocaleController.getLocale(request);
+    Locale locale = LocaleController.detectLocale(request);
     String localeId = LocaleController.getLocaleId(request);
 %><html>
 <head>
@@ -68,29 +68,9 @@
     } // endif (useCDN)
     %>
     <script type="text/javascript">
-    /*
-    dojo.require("dijit.layout.AccordionContainer");
-    dojo.require("dijit.layout.TabContainer");
-    dojo.require("dojox.grid.DataGrid");
-    dojo.require("dojox.grid.cells");
-    dojo.require("dijit.form.Form");
-    dojo.require("dijit.form.Button");
-    dojo.require("dijit.form.DateTextBox");
-    dojo.require("dijit.form.TimeTextBox");
-    dojo.require("dijit.form.NumberTextBox");
-    dojo.require("dijit.form.NumberSpinner");
-    dojo.require("dijit.form.CurrencyTextBox");
-    dojo.require("dijit.form.ValidationTextBox");
-    dojo.require("dijit.form.FilteringSelect");
-    dojo.require("dijit.form.CheckBox");
-    dojo.require("dijit.form.MultiSelect");
-    dojo.require("dijit.form.Textarea");
-    // dojo.require("dijit.Editor");
-    */
     dojo.require("dijit.Dialog");
     dojo.require("dijit.layout.BorderContainer");
     dojo.require("dijit.layout.ContentPane");
-    dojo.require("dijit.layout.TabContainer");
     dojo.require("dijit.form.Form");
     dojo.require("dijit.form.Button");
     dojo.require("dijit.form.TextBox");
@@ -100,8 +80,8 @@
     dojo.addOnLoad(function(){
         dojo.parser.parse();
         var uiTMXName = "master"; // @rwa.masterTMXfilename@
-        var userLocale = "en"; // "<%= localeId %>"
-        twetailer.Console.init(uiTMXName, userLocale);
+        var userLocale = "<%= localeId %>";
+        twetailer.Console.init(uiTMXName, userLocale, true);
         dojo.fadeOut({
             node: "introFlash",
             delay: 50,
@@ -109,6 +89,7 @@
                 dojo.style("introFlash", "display", "none");
             }
         }).play();
+        dijit.byId("openid_identifier").focus();
     });
     </script>
 
@@ -124,16 +105,51 @@
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a href="javascript:twetailer.Console.showModule('consumer');">Consumer</a></li>
-                    <li><a href="javascript:twetailer.Console.showModule('retailer');">Retailer</a></li>
+                    <li><a name="zzz">Consumer</a></li>
+                    <li><a name="yyy">Retailer</a></li>
                     <!--  Reverse order because they are right aligned -->
-                    <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="About Twetailer">About</a></li>
-                    <li class="subItem"><a href="/control/logout" title="Release your authentified session">Sign Out</a></li>
+                    <li class="subItem"><a href="#" onclick="dijit.byId('aboutPopup').show();" title="About Twetailer">About</a></li>
+                    <li class="subItem">
+                        <input id="languageSelector" title="Select the language for the session" />
+                        <script type="text/javascript">
+                        domderrien.i18n.LanguageSelector.createSelector("languageSelector", "globalCommand", [<%
+                            ResourceBundle languageList = LocaleController.getLanguageListRB();
+                            Enumeration<String> keys = languageList.getKeys();
+                            while(keys.hasMoreElements()) {
+                                String key = keys.nextElement();
+                                %>{abbreviation:"<%= key %>",name:"<%= languageList.getString(key) %>"}<%
+                                if (keys.hasMoreElements()) {
+                                    %>,<%
+                                }
+                            }
+                            %>], "<%= localeId %>");
+                        </script>
+                    </li>
                 </ul>
             </div>
         </div>
         <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
-            <!-- Place holder for the console content -->
+            <table style="width: 100%; height: 100%;">
+                <tr>
+                    <td>&nbsp;</td>
+                    <td valign="middle" style="width: 40em;">
+                        <div id="signInForm">
+                            <div style="color:#888; text-align: justify;">
+                                 In order to use the Twetailer console, you <u>need to be authenticated first</u>.
+                                 To eliminate the management of yet another set of credentials, Twetailer relies on OpenID.
+                                 Consult <a href="http://openid.net/" target="_blank">OpendId.net</a> website for more information on that technology.
+                            </div>
+                            <br/>
+                            <form action="/control/login" dojoType="dijit.form.Form" method="post">
+                                <label for="openid_identifier">Your OpenID identifier:</label><br/>
+                                <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;" type="text" /></center>
+                                <center><button dojoType="dijit.form.Button" type="submit" iconClass="openidSignInButton">Sign in with OpenID</button></center>
+                            </form>
+                        </div>
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
         </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             Copyright &copy; 2009 <a href="http://www.milstein-assoc.com/">Milstein & associates inc.</a>
