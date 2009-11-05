@@ -14,12 +14,17 @@
 
     <property name="rwa.release"
         description="Planned release of this build"
-        value="0.1"
+        value="0.23a"
     />
 
     <property name="rwa.productName"
         description="Product name"
-        value="Twetailer Console"
+        value="Twetailer"
+    />
+
+    <property name="rwa.productWebsite"
+        description="Product website"
+        value="http://www.twetailer.com/"
     />
 
     <property name="rwa.productShortName"
@@ -359,6 +364,7 @@
             <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
             <file name="dyuproject/dyuproject-util-1.1.6.jar" />
             <file name="dyuproject/dyuproject-web-1.1.6.jar" />
+            <file name="dyuproject/jetty-util-6.1.19.jar" />
         </filelist>
     </path>
 
@@ -384,6 +390,7 @@
     <filterchain id="genericFilterChain">
         <replacetokens>
             <token key="rwa.release" value="${rwa.release}" />
+            <token key="rwa.productWebsite" value="${rwa.productWebsite}" />
             <token key="rwa.productName" value="${rwa.productName}" />
             <token key="rwa.productShortName" value="${rwa.productShortName}" />
             <token key="rwa.contextRoot" value="${rwa.contextRoot}" />

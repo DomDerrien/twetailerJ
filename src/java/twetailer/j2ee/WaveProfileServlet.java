@@ -1,5 +1,7 @@
 package twetailer.j2ee;
 
+import twetailer.validator.ApplicationSettings;
+
 import com.google.wave.api.ProfileServlet;
 
 @SuppressWarnings("serial")
@@ -7,16 +9,16 @@ public class WaveProfileServlet extends ProfileServlet {
 
     @Override
     public String getRobotAvatarUrl() {
-        return "http://twetailer.appspot.com/images/logo/logo-48x48.png";
+        return ApplicationSettings.get().getLogoURL();
     }
 
     @Override
     public String getRobotName() {
-        return "Twetailer";
+        return ApplicationSettings.get().getProductName();
     }
 
     @Override
     public String getRobotProfilePageUrl() {
-        return "http://www.twetailer.com/";
+        return ApplicationSettings.get().getProductWebsite();
     }
 }

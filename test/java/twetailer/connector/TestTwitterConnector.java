@@ -62,7 +62,7 @@ public class TestTwitterConnector {
     }
 
     @Test
-    public void testSendPublicMessage() throws TwitterException {
+    public void testSendPublicMessageI() throws TwitterException {
         Status status = EasyMock.createMock(Status.class);
 
         Twitter account = EasyMock.createMock(Twitter.class);
@@ -76,12 +76,42 @@ public class TestTwitterConnector {
         assertEquals(status, response);
     }
 
+    @Test(expected=TwitterException.class)
+    public void testSendPublicMessageII() throws TwitterException {
+        Status status = EasyMock.createMock(Status.class);
+
+        Twitter account = EasyMock.createMock(Twitter.class);
+        EasyMock.expect(account.updateStatus("test")).andThrow(new TwitterException("Done in purpose")).once();
+        EasyMock.replay(account);
+
+        // To inject the mock account
+        TwitterConnector.releaseTwetailerAccount(account);
+
+        Status response = TwitterConnector.sendPublicMessage("test");
+        assertEquals(status, response);
+    }
+
     @Test
-    public void testSendDirectMessage() throws TwitterException {
+    public void testSendDirectMessageI() throws TwitterException {
         DirectMessage dm = EasyMock.createMock(DirectMessage.class);
 
         Twitter account = EasyMock.createMock(Twitter.class);
         EasyMock.expect(account.sendDirectMessage("target", "test")).andReturn(dm).once();
+        EasyMock.replay(account);
+
+        // To inject the mock account
+        TwitterConnector.releaseTwetailerAccount(account);
+
+        DirectMessage response = TwitterConnector.sendDirectMessage("target", "test");
+        assertEquals(dm, response);
+    }
+
+    @Test(expected=TwitterException.class)
+    public void testSendDirectMessageII() throws TwitterException {
+        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
+
+        Twitter account = EasyMock.createMock(Twitter.class);
+        EasyMock.expect(account.sendDirectMessage("target", "test")).andThrow(new TwitterException("Done in purpose")).once();
         EasyMock.replay(account);
 
         // To inject the mock account

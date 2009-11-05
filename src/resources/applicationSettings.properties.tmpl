@@ -1,5 +1,32 @@
-# application global settings
-useCDN=n
-cdnBaseURL=http://ajax.googleapis.com/ajax/libs/dojo/1.3
-mainPageURL=/html/console.jsp
-loginPageURL=/html/login.jsp
+# Application global settings
+#
+# Information loaded automatically by the singleton:
+#     twetailer.validator.ApplicationSettings
+#
+
+# Boolean used in the JSP file to decide if the Dojo library
+# (JavaScript, CSS, images) should be used from a distributed Content
+# Delivery Network -- Enabling value: true -- Default: false
+useCDN = false
+
+# URL for the Dojo library hosted on a public Content Delivery Network
+# Example: http://ajax.googleapis.com/ajax/libs/dojo/1.3
+cdnBaseURL =
+
+# Optional relative path from the application context root to the
+# login page -- Default: /html/login.jsp
+# loginPageURL =
+
+# Optional relative path from the application context root to the
+# main page -- Default: /html/console.jsp
+# mainPageURL =
+
+# Product name
+productName = @rwa.productName@
+
+# Product website
+productWebsite = @rwa.productWebsite@
+
+# Optional URL of the product logo
+# Default: /images/logo/logo-48x48.png
+# logoURL =

@@ -1,11 +1,11 @@
 package twetailer.j2ee;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.wave.api.AbstractRobotServlet;
 import com.google.wave.api.Blip;
 import com.google.wave.api.Event;
-import com.google.wave.api.EventType;
 import com.google.wave.api.RobotMessageBundle;
 import com.google.wave.api.TextView;
 import com.google.wave.api.Wavelet;
@@ -33,19 +33,19 @@ public class WaveResponderServlet extends AbstractRobotServlet {
         // DOCUMENT_CHANGED: ?
         // FORM_BUTTON_CLICKED: ?
 
-        log.info("Wave responder activated!");
-
         if (bundle.wasSelfAdded()) {
+            log.info("Wave responder activated after its addition to the Wavelet!");
             Blip blip = wavelet.appendBlip();
             TextView textView = blip.getDocument();
             textView.append("Hi\nIf this is your first visit, don't hesitate to send the command '!help' for a brief introduction");
         }
 
-        for(Event e:bundle.getEvents()) {
-            if(e.getType() == EventType.BLIP_SUBMITTED) {
+        List<Event> submittedBlips = bundle.getBlipSubmittedEvents();
+        if (submittedBlips != null) {
+            for(Event e : submittedBlips) {
                 Blip blip = wavelet.appendBlip();
                 TextView textView = blip.getDocument();
-                textView.append("Sorry, I dunno how to process your commands for now :(");
+                textView.append("Sorry, I cannot process your commands for now :( -- " + e.getBlip().getDocument().getText());
             }
         }
     }
