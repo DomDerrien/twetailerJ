@@ -55,7 +55,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>maezelcontrol</servlet-name>
-        <url-pattern>/API/maezel/*</url-pattern>
+        <url-pattern>@rwa.servletApiPath@/maezel/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -66,6 +66,16 @@
     <servlet-mapping>
         <servlet-name>jabberresponder</servlet-name>
         <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>mailresponder</servlet-name>
+        <servlet-class>twetailer.j2ee.MailResponderServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mailresponder</servlet-name>
+        <url-pattern>/_ah/mail/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -91,6 +101,16 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Administrative tools</web-resource-name>
+            <url-pattern>/API/maezel/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Administrative tools</web-resource-name>
             <url-pattern>/admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
@@ -101,7 +121,17 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Administrative tools</web-resource-name>
-            <url-pattern>/API/*</url-pattern>
+            <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Administrative tools</web-resource-name>
+            <url-pattern>/_ah/mail/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>

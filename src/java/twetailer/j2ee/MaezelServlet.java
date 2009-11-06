@@ -93,8 +93,8 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/createStore".equals(pathInfo)) {
                 // Supported formats:
-                //   http:<host:port>/API/maezel/createStore?postalCode=H0H0H0&address=number, street, city, postal code, country&name=store name
-                //   http:<host:port>/API/maezel/createStore?postalCode=H0H0H0&address=1, Frozen street, North Pole, H0H 0H0, Canada&name=Toys Factory
+                //   http:<host:port>/@servletApiPath@/maezel/createStore?postalCode=H0H0H0&address=number, street, city, postal code, country&name=store name
+                //   http:<host:port>/@servletApiPath@/maezel/createStore?postalCode=H0H0H0&address=1, Frozen street, North Pole, H0H 0H0, Canada&name=Toys Factory
 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
@@ -116,7 +116,7 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/createRetailer".equals(pathInfo)) {
                 // Supported formats:
-                //   http:<host:port>/API/maezel/createRetailer?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
+                //   http:<host:port>/@servletApiPath/maezel/createRetailer?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
@@ -170,7 +170,7 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/updateConsumer".equals(pathInfo)) {
                 // Supported formats:
-                //   http:<host:port>/API/maezel/updateConsumer?key=###&jabberId=[name@domain]&twitterId=[screen-name]&locationKey=###
+                //   http:<host:port>/@servletApiPath@/maezel/updateConsumer?key=###&jabberId=[name@domain]&twitterId=[screen-name]&locationKey=###
 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {

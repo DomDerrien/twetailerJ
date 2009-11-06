@@ -530,7 +530,7 @@
                 {0} is the sender screen name.
             </note>
             <tuv xml:lang="en">
-                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like d twetailer ...</seg>
+                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like 'd twetailer ...'</seg>
             </tuv>
         </tu>
 
@@ -613,9 +613,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Demand reference:{0} has been successfully closed.|
-                    The system will now consolidate data and establish scores. Thanks for using Twetailer.
-                </seg>
+                    Thank you for closing Demand reference:{0}. Twetailer will update everyone's Ratings shortly. |
+                    Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
+                    Regards, The Twetailer Community.</seg>
             </tuv>
         </tu>
 
@@ -627,9 +627,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Demand reference:{0} has been closed by the consumer. You should close the corresponding Proposition proposal:{1} too.|
-                    Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
-                </seg>
+                    Demand reference:{0} has been closed by the Consumer. |
+                    In order to improve your Twetailer Rating, please remember to finalize your Proposal by sending ... |
+                    \u0022d twetailer !close proposal:{1}\u0022, or, \u0022d twetailer !flag proposal:{1} note:[enter your issue here]\u0022</seg>
             </tuv>
         </tu>
 
@@ -648,9 +648,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Proposition proposal:{0} has been successfully closed.|
-                    The system will now consolidate data and establish scores. Thanks for using Twetailer.
-                </seg>
+                    Thank you for closing Proposal:{0}. Twetailer will update everyone's Ratings shortly. |
+                    Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
+                    Regards, The Twetailer Community.</seg>
             </tuv>
         </tu>
 
@@ -662,9 +662,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Proposition proposal:{0} has been closed by the retailer. You should close the corresponding Demand {1} too.|
-                    Closing transactions allows the system to consolidate data and to establish scores. Thanks for using Twetailer.
-                </seg>
+                    Proposal:{0} has been closed by the Retailer. |
+                    In order to improve your Twetailer Rating, please remember to finalize your Demand by sending ... |
+                    \u0022d twetailer !close ref:{1}\u0022, or, \u0022d twetailer !flag ref:{1} note:[enter your issue here]\u0022</seg>
             </tuv>
         </tu>
 
@@ -703,14 +703,15 @@
                 {1}: demand key|
                 {2}: demand tags|
                 {3}: store key
+                {4}: store name
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Your confirmation for the Proposition proposal:{0} is successfully.|
-                    The Demand reference:{1} for the Tags:{2} is now in the State:Confirmed.|
-                    The Store:{3} is going to be informed of your confirmation to put your product aside.|
-                    Don't forget to Close your demand once you have picked it up. Thanks for using Twetailer.
-                </seg>
+                    Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
+                    Store:{3}, {4} will be notified and asked to keep you Demand, marked with ref:{1}, on the side for you. |
+                    Send \u0022d twetailer !list store:{3}\u0022 for more details |
+                    In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
+                    \u0022d twetailer !close ref:{0}\u0022, or, \u0022d twetailer !flag ref:{0} note:[enter your issue here]\u0022</seg>
             </tuv>
         </tu>
 
@@ -723,10 +724,10 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Your Proposition proposal:{0} has been accepted for the Tags:{1}.|
-                    Please prepare the Product to deliver it for the Demand reference: {2}.|
-                    Don't forget to Close the Proposition once the product has been picked up. Thanks for using Twetailer.
-                </seg>
+                    Confirming Proposal:{0} Tags:{1} |
+                    Please prepare product:{2} by marking it with Demand ref:{2} and placing it on the side.|
+                    In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
+                    \u0022d twetailer !close ref:{2}\u0022, or, \u0022d twetailer !flag ref:{2} note:[enter your issue here]\u0022</seg>
             </tuv>
         </tu>
 
@@ -737,7 +738,7 @@
                 {0}: dynamically generated demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Listing your Demand for reference:{0}... You can send "!help" for more options afterwards.</seg>
+                <seg>The following listing will confirm your Demand Reference:{0}... You can send "!help" for more options afterwards.</seg>
             </tuv>
         </tu>
 
@@ -1009,7 +1010,9 @@
                 {3}: quantity
             </note>
             <tuv xml:lang="en">
-                <seg>Can you serve dDemand reference:{0} with the Tags: {1}? The consumers looks for {3} items. The Expiration date is: {2}.</seg>
+                <seg>I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}? Please complete and send the following proposal if you have matching supply  ...  |
+                \u0022d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here] total:[enter final price including all taxes and service fees]\u0022 |
+                Otherwise, please reply with \u0022d twetailer !decline ref:{0}\u0022 </seg>
             </tuv>
         </tu>
 
@@ -1046,7 +1049,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Your Proposition proposal:{0} should have a unit Price or the Total order price.</seg>
+                <seg>Your Proposition proposal:{0} should have a unit retail Price and the Total cost which includes all taxes and service fees.</seg>
             </tuv>
         </tu>
 
@@ -1077,35 +1080,70 @@
         <!-- Published proposal processor definitions -->
         <!-- ======================================== -->
 
-        <tu tuid="pp_inform_consumer_about_proposal_with_price" datatype="Text">
+        <tu tuid="pp_inform_consumer_about_proposal_with_price_and_total_cost" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
                 {0}: proposal key|
-                {1}: demand key|
-                {2}: proposal tags, separated by a space|
-                {3}: store key, identifying the place where the retailer works.
-                {4}: proposed unit price (expected to be unit price)
-                {5}: currency symbol
+                {1}: proposal product|
+                {2}: demand key|
+                {3}: demand tags|
+                {4}: demand expiration date|
+                {5}: store key, identifying the place where the retailer works.|
+                {6}: store name |
+                {7}: currency symbol|
+                {8}: proposed unit price (expected to be unit price)|
+                {9}: proposed total cost (expected to be total cost, taxes included)
             </note>
             <tuv xml:lang="en">
-                <seg>In response to your Demand reference:{1}, you have received the Proposition proposal:{0} with the Tags: {2}. It's available at Store:{3} for the unit Price: {5}{4}.</seg>
+                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
+                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} total:{7}{9} |
+                Send \u0022d twetailer !list store:{5}\u0022 for more details |
+                Please reply with either \u0022d twetailer !confirm proposal:{0}\u0022, or, \u0022d twetailer!decline proposal:{0} \u0022</seg>
             </tuv>
         </tu>
 
-        <tu tuid="pp_inform_consumer_about_proposal_with_total_cost" datatype="Text">
+        <tu tuid="pp_inform_consumer_about_proposal_with_price_only" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
                 {0}: proposal key|
-                {1}: demand key|
-                {2}: proposal tags, separated by a space|
-                {3}: store key, identifying the place where the retailer works.
-                {4}: proposed total cost (expected to be total cost, taxes included)
-                {5}: currency symbol
+                {1}: proposal product|
+                {2}: demand key|
+                {3}: demand tags|
+                {4}: demand expiration date|
+                {5}: store key, identifying the place where the retailer works.|
+                {6}: store name |
+                {7}: currency symbol|
+                {8}: proposed unit price (expected to be unit price)|
             </note>
             <tuv xml:lang="en">
-                <seg>In response to your Demand reference:{1}, you have received the Proposition proposal:{0} with the Tags: {2}. It's available at Store:{3} for the Total cost of: {5}{4}.</seg>
+                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
+                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} |
+                Send \u0022d twetailer !list store:{5}\u0022 for more details |
+                Please reply with either \u0022d twetailer !confirm proposal:{0}\u0022, or, \u0022d twetailer!decline proposal:{0} \u0022</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="pp_inform_consumer_about_proposal_with_total_cost_only" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform a consumer about a new proposal.|
+                {0}: proposal key|
+                {1}: proposal product|
+                {2}: demand key|
+                {3}: demand tags|
+                {4}: demand expiration date|
+                {5}: store key, identifying the place where the retailer works.|
+                {6}: store name |
+                {7}: currency symbol|
+                {8}: proposed total cost (expected to be total cost, taxes included)
+            </note>
+            <tuv xml:lang="en">
+                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
+                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} total:{7}{8} |
+                Send \u0022d twetailer !list store:{5}\u0022 for more details |
+                Please reply with either \u0022d twetailer !confirm proposal:{0}\u0022, or, \u0022d twetailer!decline proposal:{0} \u0022</seg>
             </tuv>
         </tu>
 

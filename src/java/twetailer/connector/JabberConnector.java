@@ -19,10 +19,7 @@ public class JabberConnector {
     }
 
     public static void sendInstantMessage(String receiverId, String message) {
-        Message instantMessage = new MessageBuilder()
-        .withRecipientJids(new JID(receiverId))
-        .withBody(message)
-        .build();
+        Message instantMessage = new MessageBuilder().withRecipientJids(new JID(receiverId)).withBody(message).build();
 
         XMPPService xmpp = XMPPServiceFactory.getXMPPService();
         xmpp.sendMessage(instantMessage);

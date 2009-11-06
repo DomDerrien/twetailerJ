@@ -36,6 +36,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -679,7 +680,9 @@ public class CommandProcessor {
                                         proposal.getKey(),
                                         demand.getKey(),
                                         demand.getSerializedCriteria(),
-                                        proposal.getStoreKey()
+                                        proposal.getStoreKey(),
+                                        // TODO: Add the lookup to the store table to get the store name
+                                        "[Not yet implemented]" // store.getName()
                                 },
                                 consumer.getLocale()
                         )
@@ -822,7 +825,11 @@ public class CommandProcessor {
         // Create a task for that demand
         if (demandKey != 0L) {
             Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(url("/API/maezel/validateOpenDemand").param(Demand.KEY, demandKey.toString()).method(Method.GET));
+            queue.add(
+                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
+                        param(Demand.KEY, demandKey.toString()).
+                        method(Method.GET)
+            );
         }
     }
 
@@ -986,7 +993,11 @@ public class CommandProcessor {
         // Create a task for that proposal
         if (proposalKey != 0L) {
             Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(url("/API/maezel/validateOpenProposal").param(Proposal.KEY, proposalKey.toString()).method(Method.GET));
+            queue.add(
+                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
+                        param(Proposal.KEY, proposalKey.toString()).
+                        method(Method.GET)
+            );
         }
     }
 

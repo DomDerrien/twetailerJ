@@ -22,6 +22,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.validator.ApplicationSettings;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 
@@ -111,7 +112,7 @@ public class TweetLoader {
                 else {
                     RawCommand rawCommand = new RawCommand();
                     rawCommand.setSource(Source.twitter);
-                    rawCommand.setEmitterId(senderScreenName);
+                    rawCommand.setEmitterId(consumer.getTwitterId());
                     rawCommand.setMessageId(dmId);
                     rawCommand.setCommand(message);
 
@@ -128,7 +129,11 @@ public class TweetLoader {
             rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
 
             Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(url("/API/maezel/processCommand").param(Command.KEY, rawCommand.getKey().toString()).method(Method.GET));
+            queue.add(
+                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                        param(Command.KEY, rawCommand.getKey().toString()).
+                        method(Method.GET)
+            );
         }
 
         return Long.valueOf(lastId);

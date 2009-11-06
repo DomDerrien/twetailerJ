@@ -70,31 +70,56 @@ public class ProposalProcessor {
                 if (State.published.equals(demand.getState())) {
                     Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
                     Double totalCost = proposal.getTotal();
+                    Double price = proposal.getPrice();
                     String message = null;
                     if (totalCost == null || totalCost.doubleValue() == 0.0D) {
                         message = LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_price",
+                                "pp_inform_consumer_about_proposal_with_price_only",
                                 new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        proposal.getSerializedCriteria(),
-                                        proposal.getStoreKey(),
-                                        proposal.getPrice(),
-                                        "\\$", //proposal.getCurrencySymbol()
+                                        proposal.getKey(),                // {0}: proposal key
+                                        proposal.getSerializedCriteria(), // {1}: proposal product
+                                        demand.getKey(),                  // {2}: demand key
+                                        demand.getSerializedCriteria(),   // {3}: demand tags
+                                        demand.getExpirationDate(),       // {4}: demand expiration date
+                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the retailer works.
+                                        "[Not yet implemented]",          // {6}: store name 
+                                        "$",                              // {7}: currency symbol
+                                        price                             // {8}: price
+                                },
+                                consumer.getLocale()
+                        );
+                    }
+                    else if (price == null || price.doubleValue() == 0.0D) {
+                        message = LabelExtractor.get(
+                                "pp_inform_consumer_about_proposal_with_total_cost_only",
+                                new Object[] {
+                                        proposal.getKey(),                // {0}: proposal key
+                                        proposal.getSerializedCriteria(), // {1}: proposal product
+                                        demand.getKey(),                  // {2}: demand key
+                                        demand.getSerializedCriteria(),   // {3}: demand tags
+                                        demand.getExpirationDate(),       // {4}: demand expiration date
+                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the retailer works.
+                                        "[Not yet implemented]",          // {6}: store name 
+                                        "$",                              // {7}: currency symbol
+                                        totalCost                         // {8}: total
                                 },
                                 consumer.getLocale()
                         );
                     }
                     else {
                         message = LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_total_cost",
+                                "pp_inform_consumer_about_proposal_with_price_and_total_cost",
                                 new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        proposal.getSerializedCriteria(),
-                                        proposal.getStoreKey(),
-                                        proposal.getTotal(),
-                                        "\\$", //proposal.getCurrencySymbol()
+                                        proposal.getKey(),                // {0}: proposal key
+                                        proposal.getSerializedCriteria(), // {1}: proposal product
+                                        demand.getKey(),                  // {2}: demand key
+                                        demand.getSerializedCriteria(),   // {3}: demand tags
+                                        demand.getExpirationDate(),       // {4}: demand expiration date
+                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the retailer works.
+                                        "[Not yet implemented]",          // {6}: store name 
+                                        "$",                              // {7}: currency symbol
+                                        price,                            // {8}: price
+                                        totalCost                         // {9}: total
                                 },
                                 consumer.getLocale()
                         );

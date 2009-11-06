@@ -47,6 +47,12 @@ public class ApplicationSettings {
 
     protected final static String PRODUCT_WEBSITE_KEY = "productWebsite";
 
+    public final static String DEFAULT_SERVLET_API_PATH = "/API";
+
+    private String servletApiPath = DEFAULT_SERVLET_API_PATH;
+
+    protected final static String SERVLET_API_PARH_KEY = "servletApiPath";
+
     /**
      * Boolean used in the JSP file to decide if the Dojo library
      * (JavaScript, CSS, images) should be used from a distributed Content
@@ -115,6 +121,15 @@ public class ApplicationSettings {
     public String getProductWebsite() {
         return productWebsite;
     }
+    
+    /**
+     * Get the servlet API path
+     * 
+     * return Related path
+     */
+    public String getServletApiPath() {
+        return servletApiPath;
+    }
 
     /**
      * Singleton accessor
@@ -180,6 +195,12 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 productWebsite = DEFAULT_PRODUCT_WEBSITE;
+            }
+            try {
+                servletApiPath = appSettings.getString(SERVLET_API_PARH_KEY);
+            }
+            catch(Exception ex) {
+                servletApiPath = DEFAULT_SERVLET_API_PATH;
             }
         }
         catch(Exception ex) {

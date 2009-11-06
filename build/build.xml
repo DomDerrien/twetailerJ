@@ -36,6 +36,11 @@
         description="Application context root for the containers"
         value="${rwa.productShortName}"
     />
+	
+	<property name="rwa.servletApiPath"
+		description="Prefix for the API access"
+		value="/API"
+	/>
     
     <property name="rwa.languageListFilename"
         value="languages"
@@ -394,6 +399,7 @@
             <token key="rwa.productName" value="${rwa.productName}" />
             <token key="rwa.productShortName" value="${rwa.productShortName}" />
             <token key="rwa.contextRoot" value="${rwa.contextRoot}" />
+            <token key="rwa.servletApiPath" value="${rwa.servletApiPath}" />
             <token key="dd2tu.languageListFilename" value="${rwa.languageListFilename}" />
             <token key="dd2tu.masterLocalizedLabelBaseFilename" value="${rwa.masterLocalizedLabelBaseFilename}" />
             <token key="dd2tu.secondLocalizedLabelBaseFilename" value="${rwa.secondLocalizedLabelBaseFilename}" />

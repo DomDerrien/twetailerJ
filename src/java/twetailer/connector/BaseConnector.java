@@ -15,7 +15,7 @@ public class BaseConnector {
         twitter,
         jabber,
         facebook,
-        imap
+        mail
     }
 
     /**

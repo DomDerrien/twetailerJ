@@ -22,6 +22,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
@@ -83,7 +84,11 @@ public class RobotResponder {
                 proposal = proposalOperations.createProposal(pm, proposal);
                 // Schedule a task to transmit the proposal to the demand owner
                 Queue queue = QueueFactory.getDefaultQueue();
-                queue.add(url("/API/maezel/processPublishedProposal").param(Proposal.KEY, proposal.getKey().toString()).method(Method.GET));
+                queue.add(
+                        url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
+                            param(Proposal.KEY, proposal.getKey().toString()).
+                            method(Method.GET)
+                );
             }
         }
     }

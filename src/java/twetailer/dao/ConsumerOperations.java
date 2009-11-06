@@ -162,6 +162,49 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param senderAddress Mail address of the sender
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, User)
+     */
+    public Consumer createConsumer(javax.mail.internet.InternetAddress senderAddress) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createConsumer(pm, senderAddress);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param senderAddress Mail address of the sender
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     */
+    public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress) {
+        try {
+            // Try to retrieve the same location
+            List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, senderAddress.getAddress(), 1);
+            if (0 < consumers.size()) {
+                return consumers.get(0);
+            }
+        }
+        catch (DataSourceException ex) {}
+
+        // Creates new consumer record and persist it
+        Consumer newConsumer = new Consumer();
+        newConsumer.setName(senderAddress.getPersonal());
+        newConsumer.setEmail(senderAddress.getAddress());
+        pm.makePersistent(newConsumer);
+        return newConsumer;
+    }
+
+    /**
      * Use the given key to get the corresponding Consumer instance
      *
      * @param key Identifier of the consumer

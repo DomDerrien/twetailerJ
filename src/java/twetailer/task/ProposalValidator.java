@@ -14,8 +14,10 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RetailerOperations;
+import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -99,7 +101,11 @@ public class ProposalValidator {
 
                     // Create a task for that proposal
                     Queue queue = QueueFactory.getDefaultQueue();
-                    queue.add(url("/API/maezel/processPublishedProposal").param(Proposal.KEY, proposalKey.toString()).method(Method.GET));
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
+                                param(Proposal.KEY, proposalKey.toString()).
+                                method(Method.GET)
+                    );
                 }
                 proposal = proposalOperations.updateProposal(pm, proposal);
             }

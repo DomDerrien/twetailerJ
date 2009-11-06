@@ -22,6 +22,7 @@ import twetailer.dao.LocationOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.DateUtils;
@@ -129,7 +130,11 @@ public class DemandValidator {
 
                     // Create a task for that demand
                     Queue queue = QueueFactory.getDefaultQueue();
-                    queue.add(url("/API/maezel/processPublishedDemand").param(Demand.KEY, demandKey.toString()).method(Method.GET));
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
+                                param(Demand.KEY, demandKey.toString()).
+                                method(Method.GET)
+                    );
                 }
                 demand = demandOperations.updateDemand(pm, demand);
             }

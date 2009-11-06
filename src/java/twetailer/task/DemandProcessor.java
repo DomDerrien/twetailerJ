@@ -26,6 +26,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Retailer;
 import twetailer.dto.Store;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
@@ -73,7 +74,11 @@ public class DemandProcessor {
                 Queue queue = QueueFactory.getDefaultQueue();
                 for (Demand demand: demands) {
                     // Create a task for that demand
-                    queue.add(url("/API/maezel/processPublishedDemand").param(Demand.KEY, demand.getKey().toString()).method(Method.GET));
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
+                                param(Demand.KEY, demand.getKey().toString()).
+                                method(Method.GET)
+                    );
                 }
             }
         }
@@ -128,7 +133,11 @@ public class DemandProcessor {
                         if (RobotResponder.ROBOT_NAME.equals(retailer.getName())) {
                             // Schedule a task to transmit the proposal to the demand owner
                             Queue queue = QueueFactory.getDefaultQueue();
-                            queue.add(url("/API/maezel/processDemandForRobot").param(Demand.KEY, demand.getKey().toString()).method(Method.GET));
+                            queue.add(
+                                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
+                                        param(Demand.KEY, demand.getKey().toString()).
+                                        method(Method.GET)
+                            );
                         }
                         else {
                             communicateToRetailer(
