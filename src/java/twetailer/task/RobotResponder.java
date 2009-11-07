@@ -14,13 +14,13 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -39,7 +39,7 @@ public class RobotResponder {
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     public static final String ROBOT_NAME = "Jack the Troll";
@@ -57,8 +57,8 @@ public class RobotResponder {
     }
 
     public static void processDemand(PersistenceManager pm, Long demandKey) throws DataSourceException {
-        List<Retailer> retailers = retailerOperations.getRetailers(pm, Retailer.NAME, ROBOT_NAME, 1);
-        if (0 < retailers.size()) {
+        List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.NAME, ROBOT_NAME, 1);
+        if (0 < saleAssociates.size()) {
             List<Location> locations = locationOperations.getLocations(pm, ROBOT_POSTAL_CODE, ROBOT_COUNTRY_CODE);
             List<Store> stores = storeOperations.getStores(pm, Store.LOCATION_KEY, locations.get(0).getKey(), 1);
             Demand demand = demandOperations.getDemand(pm, demandKey, null);
@@ -67,7 +67,7 @@ public class RobotResponder {
                 // Create a new and valid proposal
                 Proposal proposal = new Proposal();
                 proposal.setDemandKey(demandKey);
-                proposal.setOwnerKey(retailers.get(0).getKey());
+                proposal.setOwnerKey(saleAssociates.get(0).getKey());
                 proposal.setPrice(0.01D);
                 proposal.setQuantity(100L);
                 proposal.setSource(Source.simulated);

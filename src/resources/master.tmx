@@ -355,7 +355,7 @@
                 IMPORTANT: note the case of the keyword MUST be the same as the value of the tuid attribute into the lexicon TMX file.
             </note>
             <tuv xml:lang="en">
-                <seg>140,24906,AKA,Amazon,Attribute,Command-line,Consumer,CRUD,Demand-crud,Fee,Flag,Flagged,Founders,Free,Friend,Fulfil,IM,MI,Note,Object,Proposed,Rate,Register,Reserve,Reserved,Retailer,Sentiment,Settle,Settled,State-flow,Tags-consumer,Tags-retailer,Twitter</seg>
+                <seg>140,24906,AKA,Amazon,Attribute,Command-line,CRUD,Demand-crud,Fee,Flag,Flagged,Founders,Free,Friend,Fulfil,IM,MI,Note,Object,Proposed,Rate,Register,Reserve,Reserved,Retailer,Sentiment,Settle,Settled,State-flow,Tags-consumer,Tags-retailer,Twitter</seg>
             </tuv>
         </tu>
 
@@ -479,9 +479,9 @@
             <tuv xml:lang="en"><seg>reserved</seg></tuv>
         </tu>
 
-        <tu tuid="help_keyword_equivalents_Retailer" datatype="Text">
+        <tu tuid="help_keyword_equivalents_SaleAssociate" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>retailer</seg></tuv>
+            <tuv xml:lang="en"><seg>saleassociate,associate,agent</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Sentiment" datatype="Text">
@@ -987,10 +987,10 @@
         <!-- Published demand processor definitions -->
         <!-- ====================================== -->
 
-        <tu tuid="dp_inform_retailer_about_demand_one_item" datatype="Text">
+        <tu tuid="dp_inform_saleAssociate_about_demand_one_item" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform a retailer about a new demand.|
+                Inform a sale associate about a new demand.|
                 {0}: demand key|
                 {1}: given tags, separated by a space|
                 {2}: expiration date, ISO formatted
@@ -1000,10 +1000,10 @@
             </tuv>
         </tu>
 
-        <tu tuid="dp_inform_retailer_about_demand_many_items" datatype="Text">
+        <tu tuid="dp_inform_saleAssociate_about_demand_many_items" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform a retailer about a new demand.|
+                Inform a sale associate about a new demand.|
                 {0}: demand key|
                 {1}: given tags, separated by a space|
                 {2}: expiration date, ISO formatted|
@@ -1023,7 +1023,7 @@
         <tu tuid="pv_report_proposal_without_tag" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the retailer the proposal should have at least one tag.|
+                Inform the sale associate the proposal should have at least one tag.|
                 {0}: proposal key:
             </note>
             <tuv xml:lang="en">
@@ -1034,7 +1034,7 @@
         <tu tuid="pv_report_quantity_zero" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the retailer the quantity cannot be 0.|
+                Inform the sale associate the quantity cannot be 0.|
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
@@ -1045,7 +1045,7 @@
         <tu tuid="pv_report_missing_price_and_total" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the retailer a unit price or the total price is required.|
+                Inform the sale associate a unit price or the total price is required.|
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
@@ -1056,7 +1056,7 @@
         <tu tuid="pv_report_missing_demand_reference" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the retailer the demand reference is missing.|
+                Inform the sale associate the demand reference is missing.|
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
@@ -1067,7 +1067,7 @@
         <tu tuid="pv_report_invalid_demand_reference" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the retailer that the given reference is invalid.|
+                Inform the sale associate that the given reference is invalid.|
                 {0}: proposal key|
                 {1}: demand key
             </note>
@@ -1089,7 +1089,7 @@
                 {2}: demand key|
                 {3}: demand tags|
                 {4}: demand expiration date|
-                {5}: store key, identifying the place where the retailer works.|
+                {5}: store key, identifying the place where the sale associate works.|
                 {6}: store name |
                 {7}: currency symbol|
                 {8}: proposed unit price (expected to be unit price)|
@@ -1112,7 +1112,7 @@
                 {2}: demand key|
                 {3}: demand tags|
                 {4}: demand expiration date|
-                {5}: store key, identifying the place where the retailer works.|
+                {5}: store key, identifying the place where the sale associate works.|
                 {6}: store name |
                 {7}: currency symbol|
                 {8}: proposed unit price (expected to be unit price)|
@@ -1134,7 +1134,7 @@
                 {2}: demand key|
                 {3}: demand tags|
                 {4}: demand expiration date|
-                {5}: store key, identifying the place where the retailer works.|
+                {5}: store key, identifying the place where the sale associate works.|
                 {6}: store name |
                 {7}: currency symbol|
                 {8}: proposed total cost (expected to be total cost, taxes included)
@@ -1147,10 +1147,10 @@
             </tuv>
         </tu>
 
-        <tu tuid="pp_inform_retailer_demand_not_published_state" datatype="Text">
+        <tu tuid="pp_inform_saleAssociate_demand_not_published_state" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the retailer his proposal cannot be submitted to the demand.|
+                Inform the sale associate his proposal cannot be submitted to the demand.|
                 {0}: proposal key|
                 {1}: demand key|
                 {2}: demand state

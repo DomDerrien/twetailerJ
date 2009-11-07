@@ -23,7 +23,7 @@ import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
@@ -76,12 +76,12 @@ public class TestProposalOperations {
         JsonObject item = new GenericJsonObject();
         // item.put(Proposal.OWNER_KEY, null);
 
-        Retailer retailer = new Retailer();
-        retailer.setKey(111L);
-        retailer.setStoreKey(222L);
-        retailer.setPreferredConnection(Source.simulated);
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setKey(111L);
+        saleAssociate.setStoreKey(222L);
+        saleAssociate.setPreferredConnection(Source.simulated);
 
-        Proposal object = new ProposalOperations().createProposal(item, retailer);
+        Proposal object = new ProposalOperations().createProposal(item, saleAssociate);
         assertNotNull(object.getKey());
         assertEquals(Long.valueOf(222L), object.getStoreKey());
     }
@@ -91,12 +91,12 @@ public class TestProposalOperations {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 0L);
 
-        Retailer retailer = new Retailer();
-        retailer.setKey(111L);
-        retailer.setStoreKey(222L);
-        retailer.setPreferredConnection(Source.simulated);
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setKey(111L);
+        saleAssociate.setStoreKey(222L);
+        saleAssociate.setPreferredConnection(Source.simulated);
 
-        Proposal object = new ProposalOperations().createProposal(item, retailer);
+        Proposal object = new ProposalOperations().createProposal(item, saleAssociate);
         assertNotNull(object.getKey());
         assertEquals(Long.valueOf(222L), object.getStoreKey());
     }
@@ -106,12 +106,12 @@ public class TestProposalOperations {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 111L);
 
-        Retailer retailer = new Retailer();
-        retailer.setKey(111L);
-        retailer.setStoreKey(222L);
-        retailer.setPreferredConnection(Source.simulated);
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setKey(111L);
+        saleAssociate.setStoreKey(222L);
+        saleAssociate.setPreferredConnection(Source.simulated);
 
-        Proposal object = new ProposalOperations().createProposal(item, retailer);
+        Proposal object = new ProposalOperations().createProposal(item, saleAssociate);
         assertNotNull(object.getKey());
         assertEquals(Long.valueOf(222L), object.getStoreKey());
     }
@@ -121,12 +121,12 @@ public class TestProposalOperations {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 333L);
 
-        Retailer retailer = new Retailer();
-        retailer.setKey(111L);
-        retailer.setStoreKey(222L);
-        retailer.setPreferredConnection(Source.simulated);
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setKey(111L);
+        saleAssociate.setStoreKey(222L);
+        saleAssociate.setPreferredConnection(Source.simulated);
 
-        new ProposalOperations().createProposal(item, retailer);
+        new ProposalOperations().createProposal(item, saleAssociate);
     }
 
     @Test

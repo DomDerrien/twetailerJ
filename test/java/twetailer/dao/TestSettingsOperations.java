@@ -38,9 +38,9 @@ public class TestSettingsOperations {
 
     @Test
     public void testGetLogger() throws IOException {
-        Logger log1 = new RetailerOperations().getLogger();
+        Logger log1 = new SettingsOperations().getLogger();
         assertNotNull(log1);
-        Logger log2 = new RetailerOperations().getLogger();
+        Logger log2 = new SettingsOperations().getLogger();
         assertNotNull(log2);
         assertEquals(log1, log2);
     }

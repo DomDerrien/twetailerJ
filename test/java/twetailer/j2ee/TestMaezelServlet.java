@@ -27,7 +27,7 @@ import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
@@ -36,7 +36,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.task.MockCommandProcessor;
@@ -517,16 +517,16 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetCreateRetailerI() throws IOException {
+    public void testDoGetCreateSaleAssociateI() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
-                return "/createRetailer";
+                return "/createSaleAssociate";
             }
             @Override
             public String getParameter(String key) {
-                if (Retailer.CONSUMER_KEY.equals(key)) { return "12345"; }
-                if (Retailer.STORE_KEY.equals(key)) { return "67890"; }
+                if (SaleAssociate.CONSUMER_KEY.equals(key)) { return "12345"; }
+                if (SaleAssociate.STORE_KEY.equals(key)) { return "67890"; }
                 if ("supplies".equals(key)) { return "one two three"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
@@ -545,38 +545,38 @@ public class TestMaezelServlet {
                 return new Consumer();
             }
         };
-        final RetailerOperations mockRetailerOperations = new RetailerOperations() {
+        final SaleAssociateOperations mockSaleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public Retailer createRetailer(PersistenceManager pm, Consumer consumer, Long storeKey) {
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, Consumer consumer, Long storeKey) {
                 assertEquals(Long.valueOf(67890L), storeKey);
-                Retailer retailer = new Retailer();
-                retailer.setKey(12345L);
-                return retailer;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(12345L);
+                return saleAssociate;
             }
             @Override
-            public Retailer getRetailer(PersistenceManager pm, Long key) {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(Long.valueOf(12345L), key);
-                return new Retailer();
+                return new SaleAssociate();
             }
             @Override
-            public Retailer updateRetailer(PersistenceManager pm, Retailer retailer) {
-                return retailer;
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                return saleAssociate;
             }
         };
 
         servlet.consumerOperations = mockConsumerOperations;
-        servlet.retailerOperations = mockRetailerOperations;
+        servlet.saleAssociateOperations = mockSaleAssociateOperations;
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
         assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test
-    public void testDoGetCreateRetailerII() throws IOException {
+    public void testDoGetCreateSaleAssociateII() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
-                return "/createRetailer";
+                return "/createSaleAssociate";
             }
             @Override
             public String getParameter(String key) {
@@ -781,7 +781,7 @@ public class TestMaezelServlet {
         };
 
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp(); // In that configuration, no Robot retailer account will be found, so the request will do nothing
+        appEnv.setUp(); // In that configuration, no Robot sale associate account will be found, so the request will do nothing
         servlet.doGet(mockRequest, mockResponse);
         appEnv.tearDown();
 

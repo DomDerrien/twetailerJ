@@ -15,14 +15,14 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
@@ -44,7 +44,7 @@ public class MaezelServlet extends HttpServlet {
     protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     @Override
@@ -114,53 +114,53 @@ public class MaezelServlet extends HttpServlet {
                     pm.close();
                 }
             }
-            else if ("/createRetailer".equals(pathInfo)) {
+            else if ("/createSaleAssociate".equals(pathInfo)) {
                 // Supported formats:
-                //   http:<host:port>/@servletApiPath/maezel/createRetailer?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
+                //   http:<host:port>/@servletApiPath/maezel/createSaleAssociate?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
-                    Consumer consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter(Retailer.CONSUMER_KEY)));
+                    Consumer consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter(SaleAssociate.CONSUMER_KEY)));
                     Long storeKey = Long.valueOf(request.getParameter("storeKey"));
 
                     if (true) { // Manual object creation
-                        Retailer retailer = new Retailer();
+                        SaleAssociate saleAssociate = new SaleAssociate();
 
-                        retailer.setName(consumer.getName());
-                        retailer.setConsumerKey(consumer.getKey());
+                        saleAssociate.setName(consumer.getName());
+                        saleAssociate.setConsumerKey(consumer.getKey());
 
                         // Copy the user's attribute
-                        retailer.setJabberId(consumer.getJabberId());
-                        retailer.setEmail(consumer.getEmail());
-                        retailer.setTwitterId(consumer.getTwitterId());
-                        retailer.setLanguage(consumer.getLanguage());
-                        retailer.setPreferredConnection(Source.jabber);
+                        saleAssociate.setJabberId(consumer.getJabberId());
+                        saleAssociate.setEmail(consumer.getEmail());
+                        saleAssociate.setTwitterId(consumer.getTwitterId());
+                        saleAssociate.setLanguage(consumer.getLanguage());
+                        saleAssociate.setPreferredConnection(Source.jabber);
 
                         // Attach to the store
-                        retailer.setStoreKey(storeKey);
+                        saleAssociate.setStoreKey(storeKey);
 
                         // Set the supplied keywords
                         String[] supplies = request.getParameter("supplies").split(" ");
                         for (int i = 0; i < supplies.length; i++) {
-                            retailer.addCriterion(supplies[i]);
+                            saleAssociate.addCriterion(supplies[i]);
                         }
 
                         // Persist the account
-                        retailerOperations.createRetailer(pm, retailer);
+                        saleAssociateOperations.createSaleAssociate(pm, saleAssociate);
                     }
                     else { // Automatic creation and attempt to add the criteria a second time
-                        Retailer retailer1 = retailerOperations.createRetailer(pm, consumer, storeKey);
+                        SaleAssociate saleAssociate1 = saleAssociateOperations.createSaleAssociate(pm, consumer, storeKey);
 
                         pm.close();
                         pm = _baseOperations.getPersistenceManager();
 
-                        Retailer retailer2 = retailerOperations.getRetailer(pm, retailer1.getKey());
+                        SaleAssociate saleAssociate2 = saleAssociateOperations.getSaleAssociate(pm, saleAssociate1.getKey());
 
                         String[] supplies = request.getParameter("supplies").split(" ");
                         for (int i = 0; i < supplies.length; i++) {
-                            retailer2.addCriterion(supplies[i]);
+                            saleAssociate2.addCriterion(supplies[i]);
                         }
-                        retailer2 = retailerOperations.updateRetailer(pm, retailer2);
+                        saleAssociate2 = saleAssociateOperations.updateSaleAssociate(pm, saleAssociate2);
                     }
                 }
                 finally {

@@ -17,9 +17,9 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Retailer extends Entity {
+public class SaleAssociate extends Entity {
 
-    /*** Retailer ***/
+    /*** SaleAssociate ***/
     @Persistent
     private Long consumerKey;
 
@@ -78,7 +78,7 @@ public class Retailer extends Entity {
     public final static String PREFERRED_CONNECTION = "preferredConnection";
 
     // Shortcut
-    public final static String RETAILER_KEY = "retailerKey";
+    public final static String SALEASSOCIATE_KEY = "saleAssociateKey";
 
     @Persistent
     private Long storeKey;
@@ -96,16 +96,16 @@ public class Retailer extends Entity {
     public final static String TWITTER_ID = Consumer.TWITTER_ID;
 
     /** Default constructor */
-    public Retailer() {
+    public SaleAssociate() {
         super();
     }
 
     /**
-     * Creates a retailer
+     * Creates a sale associate
      *
      * @param in HTTP request parameters
      */
-    public Retailer(JsonObject in) {
+    public SaleAssociate(JsonObject in) {
         this();
         fromJson(in);
     }
@@ -332,7 +332,7 @@ public class Retailer extends Entity {
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
 
         // Shortcut
-        if (in.containsKey(RETAILER_KEY)) { setKey(in.getLong(RETAILER_KEY)); }
+        if (in.containsKey(SALEASSOCIATE_KEY)) { setKey(in.getLong(SALEASSOCIATE_KEY)); }
 
         return this;
     }

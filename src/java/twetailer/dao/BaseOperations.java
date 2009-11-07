@@ -249,17 +249,17 @@ public class BaseOperations {
         }
         return _rawCommandOperations;
     }
-    private RetailerOperations _retailerOperations;
+    private SaleAssociateOperations _saleAssociateOperations;
 
     /**
-     * Factory for the RetailerOperations instance
-     * @return RetailerOperations instance
+     * Factory for the SaleAssociateOperations instance
+     * @return SaleAssociateOperations instance
      */
-    public RetailerOperations getRetailerOperations() {
-        if (_retailerOperations == null) {
-            _retailerOperations = new RetailerOperations();
+    public SaleAssociateOperations getSaleAssociateOperations() {
+        if (_saleAssociateOperations == null) {
+            _saleAssociateOperations = new SaleAssociateOperations();
         }
-        return _retailerOperations;
+        return _saleAssociateOperations;
     }
 
     private SettingsOperations _settingsOperations;

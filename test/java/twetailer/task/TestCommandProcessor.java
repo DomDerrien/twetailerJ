@@ -33,14 +33,14 @@ import twetailer.dao.MockBaseOperations;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.Action;
@@ -112,7 +112,7 @@ public class TestCommandProcessor {
         CommandProcessor.locationOperations = CommandProcessor._baseOperations.getLocationOperations();
         CommandProcessor.proposalOperations = CommandProcessor._baseOperations.getProposalOperations();
         CommandProcessor.rawCommandOperations = CommandProcessor._baseOperations.getRawCommandOperations();
-        CommandProcessor.retailerOperations = CommandProcessor._baseOperations.getRetailerOperations();
+        CommandProcessor.saleAssociateOperations = CommandProcessor._baseOperations.getSaleAssociateOperations();
         CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
         // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
@@ -428,15 +428,15 @@ public class TestCommandProcessor {
                 return rawCommand;
             }
         };
-        // Mock RetailerOperations
-        RetailerOperations retailerOperations = new RetailerOperations() {
+        // Mock SaleAssociateOperations
+        SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<Retailer>();
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<SaleAssociate>();
             }
         };
         CommandProcessor.rawCommandOperations = rawCommandOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         CommandProcessor.processRawCommands(0L);
 
@@ -858,20 +858,20 @@ public class TestCommandProcessor {
     @Test
     public void testProcessCommandCancelV() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 2222L;
-        final Long retailerKey = 3333L;
+        final Long saleAssociateKey = 3333L;
         final Long proposalKey = 5555L;
 
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Retailer.CONSUMER_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // ProposalOperations mock
@@ -892,7 +892,7 @@ public class TestCommandProcessor {
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -918,20 +918,20 @@ public class TestCommandProcessor {
     @Test
     public void testProcessCommandCancelVI() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 2222L;
-        final Long retailerKey = 3333L;
+        final Long saleAssociateKey = 3333L;
         final Long proposalKey = 5555L;
 
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Retailer.CONSUMER_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // ProposalOperations mock
@@ -944,7 +944,7 @@ public class TestCommandProcessor {
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1063,7 +1063,7 @@ public class TestCommandProcessor {
         final Long demandKey = 5555L;
         final State demandState = State.confirmed;
         final Long proposalKey = 6666L;
-        final Long retailerKey = 7777L;
+        final Long saleAssociateKey = 7777L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -1091,28 +1091,28 @@ public class TestCommandProcessor {
                 assertEquals(demandState.toString(), (String) parameters.get(Command.STATE));
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.simulated);
                 List<Proposal> proposals = new ArrayList<Proposal>();
                 proposals.add(proposal);
                 return proposals;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public Retailer getRetailer(PersistenceManager pm, Long key) {
-                assertEquals(retailerKey, key);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                return retailer;
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                return saleAssociate;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1168,20 +1168,20 @@ public class TestCommandProcessor {
     public void testProcessCommandCloseV() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
         final Long consumerKey = 6666L;
-        final Long retailerKey = 7777L;
+        final Long saleAssociateKey = 7777L;
         final State proposalState = State.confirmed;
 
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Retailer.CONSUMER_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // ProposalOperations mock
@@ -1189,10 +1189,10 @@ public class TestCommandProcessor {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) {
                 assertEquals(proposalKey, key);
-                assertEquals(retailerKey, rKey);
+                assertEquals(saleAssociateKey, rKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.simulated);
                 proposal.setState(proposalState);
                 return proposal;
@@ -1218,7 +1218,7 @@ public class TestCommandProcessor {
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1244,21 +1244,21 @@ public class TestCommandProcessor {
     public void testProcessCommandCloseVI() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
         final Long consumerKey = 6666L;
-        final Long retailerKey = 7777L;
+        final Long saleAssociateKey = 7777L;
         final Long demandKey = 888888L;
         final State proposalState = State.confirmed;
 
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Retailer.CONSUMER_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // ProposalOperations mock
@@ -1266,10 +1266,10 @@ public class TestCommandProcessor {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) {
                 assertEquals(proposalKey, key);
-                assertEquals(retailerKey, rKey);
+                assertEquals(saleAssociateKey, rKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.simulated);
                 return proposal;
             }
@@ -1312,7 +1312,7 @@ public class TestCommandProcessor {
         CommandProcessor.consumerOperations = consumerOperations;
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1341,20 +1341,20 @@ public class TestCommandProcessor {
     public void testProcessCommandCloseVII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
         final Long consumerKey = 6666L;
-        final Long retailerKey = 7777L;
+        final Long saleAssociateKey = 7777L;
         final State proposalState = State.confirmed;
 
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Retailer.CONSUMER_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // ProposalOperations mock
@@ -1362,10 +1362,10 @@ public class TestCommandProcessor {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) {
                 assertEquals(proposalKey, key);
-                assertEquals(retailerKey, rKey);
+                assertEquals(saleAssociateKey, rKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.simulated);
                 return proposal;
             }
@@ -1390,7 +1390,7 @@ public class TestCommandProcessor {
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1417,18 +1417,18 @@ public class TestCommandProcessor {
         final Long proposalKey = 5555L;
         final Long consumerKey = 6666L;
 
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Retailer.CONSUMER_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
                 throw new IllegalArgumentException("Done in purpose");
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1471,7 +1471,7 @@ public class TestCommandProcessor {
     public void testProcessCommandConfirmI() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long demandKey = 5555L;
-        final Long retailerKey = 6666L;
+        final Long saleAssociateKey = 6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -1482,7 +1482,7 @@ public class TestCommandProcessor {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setDemandKey(demandKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(State.published);
                 proposal.setStoreKey(storeKey);
                 return proposal;
@@ -1511,22 +1511,22 @@ public class TestCommandProcessor {
                 return demand;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public Retailer getRetailer(PersistenceManager pm, Long key) {
-                assertEquals(retailerKey, key);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setPreferredConnection(Source.simulated);
-                return retailer;
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setPreferredConnection(Source.simulated);
+                return saleAssociate;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1546,7 +1546,7 @@ public class TestCommandProcessor {
         assertTrue(sentText.contains(storeKey.toString()));
         assertTrue(sentText.contains("test"));
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText); // Informs the retailer
+        assertNotNull(sentText); // Informs the saleAssociate
         assertTrue(sentText.contains(proposalKey.toString()));
         assertTrue(sentText.contains(demandKey.toString()));
     }
@@ -1587,7 +1587,7 @@ public class TestCommandProcessor {
     public void testProcessCommandConfirmIII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long demandKey = 5555L;
-        final Long retailerKey = 6666L;
+        final Long saleAssociateKey = 6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -1598,7 +1598,7 @@ public class TestCommandProcessor {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setDemandKey(demandKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(State.published);
                 proposal.setStoreKey(storeKey);
                 return proposal;
@@ -1636,7 +1636,7 @@ public class TestCommandProcessor {
     public void testProcessCommandConfirmIV() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long demandKey = 5555L;
-        final Long retailerKey = 6666L;
+        final Long saleAssociateKey = 6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -1647,7 +1647,7 @@ public class TestCommandProcessor {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setDemandKey(demandKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(State.published);
                 proposal.setStoreKey(storeKey);
                 return proposal;
@@ -2053,38 +2053,38 @@ public class TestCommandProcessor {
     public void testProcessCommandListVII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 2222L;
         final Long consumerKey = 3333L;
-        final Long retailerKey = 4444L;
+        final Long saleAssociateKey = 4444L;
 
         // ProposalOperations mock
         final ProposalOperations proposalOperations = new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) throws DataSourceException {
                 assertEquals(proposalKey, key);
-                assertEquals(retailerKey, rKey);
+                assertEquals(saleAssociateKey, rKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2110,35 +2110,35 @@ public class TestCommandProcessor {
     public void testProcessCommandListVIII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 2222L;
         final Long consumerKey = 3333L;
-        final Long retailerKey = 4444L;
+        final Long saleAssociateKey = 4444L;
 
         // ProposalOperations mock
         final ProposalOperations proposalOperations = new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long rKey, Long sKey) throws DataSourceException {
                 assertEquals(proposalKey, key);
-                assertEquals(retailerKey, rKey);
+                assertEquals(saleAssociateKey, rKey);
                 throw new DataSourceException("Done in purpose");
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2164,39 +2164,39 @@ public class TestCommandProcessor {
     public void testProcessCommandProposeI() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
         final ProposalOperations proposalOperations = new ProposalOperations() {
             @Override
-            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, Retailer retailer) {
-                assertEquals(consumerKey, retailer.getConsumerKey());
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2226,7 +2226,7 @@ public class TestCommandProcessor {
     public void testProcessCommandProposeIIa() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -2237,7 +2237,7 @@ public class TestCommandProcessor {
                 assertEquals(storeKey, sKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 // proposal.setState(State.opened); // Default state
                 proposal.setStoreKey(storeKey);
                 return proposal;
@@ -2249,25 +2249,25 @@ public class TestCommandProcessor {
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2298,7 +2298,7 @@ public class TestCommandProcessor {
     public void testProcessCommandProposeIIb() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -2309,7 +2309,7 @@ public class TestCommandProcessor {
                 assertEquals(storeKey, sKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(State.published); // To be able to verify the reset to "open"
                 proposal.setStoreKey(storeKey);
                 return proposal;
@@ -2321,25 +2321,25 @@ public class TestCommandProcessor {
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2370,7 +2370,7 @@ public class TestCommandProcessor {
     public void testProcessCommandProposeIIc() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -2381,7 +2381,7 @@ public class TestCommandProcessor {
                 assertEquals(storeKey, sKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(State.invalid);
                 proposal.setStoreKey(storeKey);
                 return proposal;
@@ -2393,25 +2393,25 @@ public class TestCommandProcessor {
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2442,7 +2442,7 @@ public class TestCommandProcessor {
     public void testProcessCommandProposeIId() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -2453,31 +2453,31 @@ public class TestCommandProcessor {
                 assertEquals(storeKey, sKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(State.confirmed); // Too late
                 proposal.setStoreKey(storeKey);
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -2508,7 +2508,7 @@ public class TestCommandProcessor {
     public void testProcessCommandProposeIII() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -2518,25 +2518,25 @@ public class TestCommandProcessor {
                 throw new IllegalArgumentException("Done in purpose");
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -3445,7 +3445,7 @@ public class TestCommandProcessor {
     public void testProcessExisitingProposalIdWithHashTag() throws Exception {
         final Long consumerKey = 3333L;
         final Long proposalKey = 5555L;
-        final Long retailerKey =  6666L;
+        final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
 
         // ProposalOperations mock
@@ -3465,25 +3465,25 @@ public class TestCommandProcessor {
                 return proposal;
             }
         };
-        // RetailerOperations mock
-        final RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, Retailer.CONSUMER_KEY);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
                 assertEquals(consumerKey, (Long) value);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setConsumerKey(consumerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.retailerOperations = retailerOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();

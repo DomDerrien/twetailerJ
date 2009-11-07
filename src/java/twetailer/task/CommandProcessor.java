@@ -3,7 +3,7 @@ package twetailer.task;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToEmitter;
-import static twetailer.connector.BaseConnector.communicateToRetailer;
+import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.io.PrintStream;
 import java.text.Collator;
@@ -26,7 +26,7 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -34,7 +34,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -62,7 +62,7 @@ public class CommandProcessor {
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     /**
@@ -244,23 +244,23 @@ public class CommandProcessor {
     }
 
     /**
-     * Helper querying the data store to retrieve the Retailer account attached to the given Consumer one.
-     * If no Retailer account is found, the error is reported that the corresponding action which required a Retailer account failed.
+     * Helper querying the data store to retrieve the SaleAssociate account attached to the given Consumer one.
+     * If no SaleAssociate account is found, the error is reported that the corresponding action which required a SaleAssociate account failed.
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Consumer account to consider
      * @param action Action involved for that lookup
-     * @return The Retailer account
+     * @return The SaleAssociate account
      *
      * @throws DataSourceException If the data retrieval fails
      * @throws ReservedOperationException If no account is returned
      */
-    protected static Retailer retrieveRetailer(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
-        List<Retailer> retailers = retailerOperations.getRetailers(pm, Retailer.CONSUMER_KEY, consumer.getKey(), 1);
-        if (retailers.size() == 0) {
+    protected static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
+        List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumer.getKey(), 1);
+        if (saleAssociates.size() == 0) {
             throw new ReservedOperationException(action);
         }
-        return retailers.get(0);
+        return saleAssociates.get(0);
     }
 
     /**
@@ -505,19 +505,19 @@ public class CommandProcessor {
                 Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
                 communicateToEmitter(rawCommand, generateTweet(demand, location, consumer.getLocale()));
                 // FIXME: cancel also attached proposals
-                // FIXME: inform the retailers who proposed articles about the cancellation
-                // FIXME: inform the retailer if the demand was in the confirmed state
+                // FIXME: inform the sale associates who proposed articles about the cancellation
+                // FIXME: inform the sale associate if the demand was in the confirmed state
                 // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
             }
         }
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            // Get the retailer
-            Retailer retailer = retrieveRetailer(pm, consumer, Action.cancel);
+            // Get the sale associate
+            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.cancel);
             // FIXME: allow also attached demand owner to cancel the proposal
             // Update proposal state
             Proposal proposal = null;
             try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
             }
             catch(Exception ex) {
                 communicateToEmitter(
@@ -529,7 +529,7 @@ public class CommandProcessor {
                 // Update the proposal and echo back the new state
                 proposal.setState(State.cancelled);
                 proposal = proposalOperations.updateProposal(pm, proposal);
-                communicateToEmitter(rawCommand, generateTweet(proposal, retailer.getLocale()));
+                communicateToEmitter(rawCommand, generateTweet(proposal, saleAssociate.getLocale()));
                 // FIXME: inform the consumer who owns the attached demand about the cancellation
                 // FIXME: put the demand in the published state if the proposal was in the confirmed state
                 // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
@@ -579,10 +579,10 @@ public class CommandProcessor {
                     List<Proposal> proposals = proposalOperations.getProposals(pm, parameters, 1);
                     if (0 < proposals.size()) {
                         Proposal proposal = proposals.get(0);
-                        Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                        communicateToRetailer(
+                        SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                        communicateToSaleAssociate(
                                 proposal.getSource(),
-                                retailer,
+                                saleAssociate,
                                 LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale())
                         );
                     }
@@ -596,8 +596,8 @@ public class CommandProcessor {
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             Proposal proposal = null;
             try {
-                Retailer retailer = retrieveRetailer(pm, consumer, Action.close);
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
+                SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.close);
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
                 proposal.setState(State.closed);
                 proposal = proposalOperations.updateProposal(pm, proposal);
                 communicateToEmitter(
@@ -647,7 +647,7 @@ public class CommandProcessor {
         // Note that the proposal should refer to a demand owned by the consumer
         //
         // The consumer receives a notification with the store location
-        // The retailer receives a notification with the confirmation and the suggestion to put the product aside for the consumer
+        // The sale associate receives a notification with the confirmation and the suggestion to put the product aside for the consumer
         //
         Proposal proposal = null;
         Demand demand = null;
@@ -682,16 +682,16 @@ public class CommandProcessor {
                                         demand.getSerializedCriteria(),
                                         proposal.getStoreKey(),
                                         // TODO: Add the lookup to the store table to get the store name
-                                        "[Not yet implemented]" // store.getName()
+                                        "\\[Not yet implemented\\]" // store.getName()
                                 },
                                 consumer.getLocale()
                         )
                 );
-                // Inform the retailer of the successful confirmation
-                Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                communicateToRetailer(
-                        retailer.getPreferredConnection(),
-                        retailer,
+                // Inform the sale associate of the successful confirmation
+                SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                communicateToSaleAssociate(
+                        saleAssociate.getPreferredConnection(),
+                        saleAssociate,
                         LabelExtractor.get(
                                 "cp_command_confirm_inform_about_confirmation",
                                 new Object[] {
@@ -861,9 +861,9 @@ public class CommandProcessor {
         }
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             Proposal proposal = null;
-            Retailer retailer = retrieveRetailer(pm, consumer, Action.list);
+            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.list);
             try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), retailer.getKey(), null);
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
             }
             catch(Exception ex) {
                 communicateToEmitter(
@@ -873,7 +873,7 @@ public class CommandProcessor {
             }
             if (proposal != null) {
                 // Echo back the specified proposal
-                communicateToEmitter(rawCommand, generateTweet(proposal, retailer.getLocale()));
+                communicateToEmitter(rawCommand, generateTweet(proposal, saleAssociate.getLocale()));
             }
         }
         /* TODO: implement other listing variations
@@ -925,18 +925,18 @@ public class CommandProcessor {
 
     protected static void processProposeCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
-        // Used by a retailer to:
+        // Used by a sale associate to:
         //
         // 1. create a new proposal
         // 2. update the identified proposal
         //
         Long proposalKey = 0L;
-        Retailer retailer = retrieveRetailer(pm, consumer, Action.propose);
+        SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.propose);
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             // Update the proposal attributes
             Proposal proposal = null;
             try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, retailer.getStoreKey());
+                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, saleAssociate.getStoreKey());
             }
             catch(Exception ex) {
                 communicateToEmitter(
@@ -967,7 +967,7 @@ public class CommandProcessor {
             // Get the proposal attributes
             command.put(Command.SOURCE, rawCommand.getSource().toString());
             // Persist the new proposal
-            Proposal newProposal = proposalOperations.createProposal(pm, command, retailer);
+            Proposal newProposal = proposalOperations.createProposal(pm, command, saleAssociate);
             communicateToEmitter(
                     rawCommand,
                     LabelExtractor.get(
@@ -1003,7 +1003,7 @@ public class CommandProcessor {
 
     protected static void processSupplyCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
         //
-        // Used by a retailer to add/remove tags to his supply list
+        // Used by a sale associate to add/remove tags to his supply list
         //
         throw new ClientException("Supplying tags - Not yet implemented");
     }

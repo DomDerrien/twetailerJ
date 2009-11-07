@@ -24,10 +24,10 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
@@ -45,28 +45,28 @@ public class TestProposalValidator {
         }
     };
 
-    final Long retailerKey = 54321L;
+    final Long saleAssociateKey = 54321L;
     final Source source = Source.simulated;
     final State state = State.opened;
     MockAppEngineEnvironment appEnv;
 
     @Before
     public void setUp() throws Exception {
-        // RetailerOperations mock
-        RetailerOperations retailerOperations = new RetailerOperations() {
+        // SaleAssociateOperations mock
+        SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public Retailer getRetailer(PersistenceManager pm, Long key) {
-                assertEquals(retailerKey, key);
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setPreferredConnection(source);
-                return retailer;
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setPreferredConnection(source);
+                return saleAssociate;
             }
         };
 
         // Install the mocks
         ProposalValidator._baseOperations = new MockBaseOperations();
-        ProposalValidator.retailerOperations = retailerOperations;
+        ProposalValidator.saleAssociateOperations = saleAssociateOperations;
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -79,7 +79,7 @@ public class TestProposalValidator {
     @After
     public void tearDown() throws Exception {
         ProposalValidator._baseOperations = new BaseOperations();
-        ProposalValidator.retailerOperations = ProposalValidator._baseOperations.getRetailerOperations();
+        ProposalValidator.saleAssociateOperations = ProposalValidator._baseOperations.getSaleAssociateOperations();
         ProposalValidator.proposalOperations = ProposalValidator._baseOperations.getProposalOperations();
 
         appEnv.tearDown();
@@ -166,7 +166,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.setState(state);
                 return proposal;
@@ -211,7 +211,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.setState(state);
                 return proposal;
@@ -257,7 +257,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -303,7 +303,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -352,7 +352,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -401,7 +401,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -450,7 +450,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -499,7 +499,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -545,7 +545,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -591,7 +591,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -641,7 +641,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -692,7 +692,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -749,7 +749,7 @@ public class TestProposalValidator {
                     }
                 };
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
                 return proposal;
@@ -781,7 +781,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessXIII() throws DataSourceException {
         //
-        // Error while getting retailer information
+        // Error while getting sale associate information
         //
 
         // ProposalOperations mock
@@ -791,14 +791,14 @@ public class TestProposalValidator {
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 return proposal;
             }
         };
-        ProposalValidator.retailerOperations = new RetailerOperations() {
+        ProposalValidator.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public Retailer getRetailer(PersistenceManager pm, Long key) throws DataSourceException {
-                assertEquals(retailerKey, key);
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(saleAssociateKey, key);
                 throw new DataSourceException("Done in purpose");
             }
         };
@@ -824,7 +824,7 @@ public class TestProposalValidator {
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
-                proposal.setOwnerKey(retailerKey);
+                proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.twitter);
                 return proposal;
             }

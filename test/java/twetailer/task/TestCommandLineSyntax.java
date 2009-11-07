@@ -27,7 +27,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -93,7 +93,7 @@ public class TestCommandLineSyntax {
         CommandProcessor.locationOperations = CommandProcessor._baseOperations.getLocationOperations();
         CommandProcessor.proposalOperations = CommandProcessor._baseOperations.getProposalOperations();
         CommandProcessor.rawCommandOperations = CommandProcessor._baseOperations.getRawCommandOperations();
-        CommandProcessor.retailerOperations = CommandProcessor._baseOperations.getRetailerOperations();
+        CommandProcessor.saleAssociateOperations = CommandProcessor._baseOperations.getSaleAssociateOperations();
         CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
         // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
@@ -975,13 +975,13 @@ public class TestCommandLineSyntax {
                 "action:supply tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
                 Locale.ENGLISH
         );
-        Retailer retailer = new Retailer(data);
-        assertNotNull(retailer.getCriteria());
-        assertEquals(4, retailer.getCriteria().size());
-        assertTrue(retailer.getCriteria().contains("one"));
-        assertTrue(retailer.getCriteria().contains("two"));
-        assertTrue(retailer.getCriteria().contains("four"));
-        assertTrue(retailer.getCriteria().contains("five"));
+        SaleAssociate saleAssociate = new SaleAssociate(data);
+        assertNotNull(saleAssociate.getCriteria());
+        assertEquals(4, saleAssociate.getCriteria().size());
+        assertTrue(saleAssociate.getCriteria().contains("one"));
+        assertTrue(saleAssociate.getCriteria().contains("two"));
+        assertTrue(saleAssociate.getCriteria().contains("four"));
+        assertTrue(saleAssociate.getCriteria().contains("five"));
     }
 
     @Test

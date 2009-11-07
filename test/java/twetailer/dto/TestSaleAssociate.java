@@ -21,7 +21,7 @@ import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
-public class TestRetailer {
+public class TestSaleAssociate {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
 
@@ -39,14 +39,14 @@ public class TestRetailer {
 
     @Test
     public void testConstructorI() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
 
     @Test
     public void testConstructorII() throws JsonException {
-        Retailer object = new Retailer(new JsonParser("{}").getJsonObject());
+        SaleAssociate object = new SaleAssociate(new JsonParser("{}").getJsonObject());
         assertNull(object.getKey());
         assertNotNull(object.getCreationDate());
     }
@@ -67,7 +67,7 @@ public class TestRetailer {
 
     @Test
     public void testAccessors() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
 
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
@@ -99,7 +99,7 @@ public class TestRetailer {
 
     @Test(expected=IllegalArgumentException.class)
     public void testResetCriteriaI() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
 
         object.addCriterion("first");
         assertEquals(1, object.getCriteria().size());
@@ -121,7 +121,7 @@ public class TestRetailer {
 
     @Test
     public void testResetCriteriaII() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
 
         object.resetLists(); // To force the criteria list creation
         object.addCriterion("first");
@@ -136,14 +136,14 @@ public class TestRetailer {
 
     @Test
     public void testGetLocale() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
         object.setLanguage(language);
         assertEquals(Locale.FRENCH, object.getLocale());
     }
 
     @Test
     public void testJsonCommandsI() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
 
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
@@ -159,7 +159,7 @@ public class TestRetailer {
         object.setScore(score);
         object.setTwitterId(twitterId);
 
-        Retailer clone = new Retailer(object.toJson());
+        SaleAssociate clone = new SaleAssociate(object.toJson());
 
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(creatorKey, clone.getCreatorKey());
@@ -177,7 +177,7 @@ public class TestRetailer {
 
     @Test
     public void testJsonCommandsII() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
 
         object.resetLists();
 
@@ -189,7 +189,7 @@ public class TestRetailer {
         assertNull(object.getScore());
         assertNull(object.getTwitterId());
 
-        Retailer clone = new Retailer(object.toJson());
+        SaleAssociate clone = new SaleAssociate(object.toJson());
 
         assertNull(clone.getConsumerKey());
         assertNull(clone.getCreatorKey());
@@ -202,7 +202,7 @@ public class TestRetailer {
 
     @Test(expected=IllegalArgumentException.class)
     public void testSetPreferredConnection() {
-        Retailer object = new Retailer();
+        SaleAssociate object = new SaleAssociate();
 
         object.setPreferredConnection((Source) null);
     }
@@ -211,8 +211,8 @@ public class TestRetailer {
     public void testShortcut() {
         Long key = 12345L;
         JsonObject parameters = new GenericJsonObject();
-        parameters.put(Retailer.RETAILER_KEY, key);
+        parameters.put(SaleAssociate.SALEASSOCIATE_KEY, key);
 
-        assertEquals(key, new Retailer(parameters).getKey());
+        assertEquals(key, new SaleAssociate(parameters).getKey());
     }
 }

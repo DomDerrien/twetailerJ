@@ -12,7 +12,7 @@ import domderrien.jsontools.JsonObject;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 
 public class ProposalOperations extends BaseOperations {
     private static final Logger log = Logger.getLogger(ProposalOperations.class.getName());
@@ -26,17 +26,17 @@ public class ProposalOperations extends BaseOperations {
      * Create the Proposal instance with the given parameters
      *
      * @param parameters HTTP proposal parameters
-     * @param retailer Proposal owner
+     * @param saleAssociate Proposal owner
      * @return Just created resource
      *
      * @throws ClientException If the data given by the client are incorrect
      *
      * @see ProposalOperations#createProposal(Proposal)
      */
-    public Proposal createProposal(JsonObject parameters, Retailer retailer) throws ClientException {
+    public Proposal createProposal(JsonObject parameters, SaleAssociate saleAssociate) throws ClientException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return createProposal(pm, parameters, retailer);
+            return createProposal(pm, parameters, saleAssociate);
         }
         finally {
             pm.close();
@@ -48,28 +48,28 @@ public class ProposalOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters HTTP proposal parameters
-     * @param retailer Proposal owner
+     * @param saleAssociate Proposal owner
      * @return Just created resource
      *
      * @throws ClientException If the data given by the client are incorrect
      *
      * @see ProposalOperations#createProposal(PersistenceManager, Proposal)
      */
-    public Proposal createProposal(PersistenceManager pm, JsonObject parameters, Retailer retailer) throws ClientException {
-        Long retailerKey = retailer.getKey();
-        getLogger().warning("Create proposal for retailer id: " + retailerKey + " with: " + parameters.toString());
+    public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) throws ClientException {
+        Long saleAssociateKey = saleAssociate.getKey();
+        getLogger().warning("Create proposal for sale associate id: " + saleAssociateKey + " with: " + parameters.toString());
         // Creates new proposal record and persist it
         Proposal newProposal = new Proposal(parameters);
         // Updates the identifier of the creator owner
         Long ownerId = newProposal.getOwnerKey();
         if (ownerId == null || ownerId == 0L) {
-            newProposal.setOwnerKey(retailerKey);
+            newProposal.setOwnerKey(saleAssociateKey);
         }
-        else if (!retailerKey.equals(ownerId)) {
-            throw new ClientException("Mismatch of owner identifiers [" + ownerId + "/" + retailerKey + "]");
+        else if (!saleAssociateKey.equals(ownerId)) {
+            throw new ClientException("Mismatch of owner identifiers [" + ownerId + "/" + saleAssociateKey + "]");
         }
         // Save the store identifier
-        newProposal.setStoreKey(retailer.getStoreKey());
+        newProposal.setStoreKey(saleAssociate.getStoreKey());
         // Persist it
         return createProposal(pm, newProposal);
     }
@@ -102,7 +102,7 @@ public class ProposalOperations extends BaseOperations {
         return proposal;
     }
     /**
-     * Use the given reference to get the corresponding Proposal instance for the identified retailer
+     * Use the given reference to get the corresponding Proposal instance for the identified sale associate
      *
      * @param key Identifier of the proposal
      * @param ownerKey Identifier of the proposal owner
@@ -124,7 +124,7 @@ public class ProposalOperations extends BaseOperations {
     }
 
     /**
-     * Use the given reference to get the corresponding Proposal instance for the identified retailer while leaving the given persistence manager open for future updates
+     * Use the given reference to get the corresponding Proposal instance for the identified sale associate while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the proposal

@@ -15,7 +15,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -135,18 +135,18 @@ public class TestBaseConnector {
     }
 
     @Test
-    public void testCommunicateToRetailerI() throws ClientException {
-        BaseConnector.communicateToRetailer(Source.simulated, new Retailer(), null);
+    public void testCommunicateToSaleAssociateI() throws ClientException {
+        BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), null);
     }
 
     @Test
-    public void testCommunicateToRetailerII() throws ClientException {
-        BaseConnector.communicateToRetailer(Source.twitter, new Retailer(), null);
+    public void testCommunicateToSaleAssociateII() throws ClientException {
+        BaseConnector.communicateToSaleAssociate(Source.twitter, new SaleAssociate(), null);
     }
 
     @Test
-    public void testCommunicateToRetailerIII() throws ClientException {
-        BaseConnector.communicateToRetailer(Source.jabber, new Retailer(), null);
+    public void testCommunicateToSaleAssociateIII() throws ClientException {
+        BaseConnector.communicateToSaleAssociate(Source.jabber, new SaleAssociate(), null);
     }
 
     @Test
@@ -159,14 +159,14 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1000));
 
         String first = "first";
-        BaseConnector.communicateToRetailer(Source.simulated, new Retailer(), first);
+        BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), first);
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1));
 
         String second = "second";
-        BaseConnector.communicateToRetailer(Source.simulated, new Retailer(), second);
+        BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), second);
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));

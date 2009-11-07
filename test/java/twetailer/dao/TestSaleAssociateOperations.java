@@ -18,11 +18,11 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 
 import com.google.appengine.api.users.User;
 
-public class TestRetailerOperations {
+public class TestSaleAssociateOperations {
 
     private MockAppEngineEnvironment mockAppEngineEnvironment;
 
@@ -41,9 +41,9 @@ public class TestRetailerOperations {
 
     @Test
     public void testGetLogger() throws IOException {
-        Logger log1 = new RetailerOperations().getLogger();
+        Logger log1 = new SaleAssociateOperations().getLogger();
         assertNotNull(log1);
-        Logger log2 = new RetailerOperations().getLogger();
+        Logger log2 = new SaleAssociateOperations().getLogger();
         assertNotNull(log2);
         assertEquals(log1, log2);
     }
@@ -52,7 +52,7 @@ public class TestRetailerOperations {
     public void testCreateI() {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
 
-        Retailer item = new RetailerOperations().createRetailer(consumer, 111L);
+        SaleAssociate item = new SaleAssociateOperations().createSaleAssociate(consumer, 111L);
         assertNotNull(item.getKey());
         assertEquals(consumer.getKey(), item.getConsumerKey());
         assertEquals(Long.valueOf(111L), item.getStoreKey());
@@ -61,45 +61,45 @@ public class TestRetailerOperations {
     @Test(expected=RuntimeException.class)
     public void testCreateII() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        RetailerOperations ops = new RetailerOperations() {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return pm; // Return always the same object to be able to verify it has been closed
             }
             @Override
-            public Retailer createRetailer(PersistenceManager pm, Retailer retailer) {
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
                 throw new RuntimeException("Done in purpose");
             }
         };
 
-        ops.createRetailer(new Consumer(), 0L);
+        ops.createSaleAssociate(new Consumer(), 0L);
     }
 
     @Test
     public void testGetI() throws DataSourceException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
 
-        RetailerOperations ops = new RetailerOperations();
-        Retailer item = ops.createRetailer(consumer, 111L);
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate item = ops.createSaleAssociate(consumer, 111L);
 
-        Retailer selected = ops.getRetailer(item.getKey());
+        SaleAssociate selected = ops.getSaleAssociate(item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testGetII() throws DataSourceException {
-        new RetailerOperations().getRetailer(null);
+        new SaleAssociateOperations().getSaleAssociate(null);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testGetIII() throws DataSourceException {
-        new RetailerOperations().getRetailer(0L);
+        new SaleAssociateOperations().getSaleAssociate(0L);
     }
 
     @Test(expected=DataSourceException.class)
     public void testGetIV() throws DataSourceException {
-        new RetailerOperations().getRetailer(888L);
+        new SaleAssociateOperations().getSaleAssociate(888L);
     }
 
     @Test
@@ -107,10 +107,10 @@ public class TestRetailerOperations {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
         consumer.setTwitterId("Ryan");
 
-        RetailerOperations ops = new RetailerOperations();
-        Retailer item = ops.createRetailer(consumer, 111L);
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate item = ops.createSaleAssociate(consumer, 111L);
 
-        List<Retailer> selection = ops.getRetailers(Retailer.TWITTER_ID, "Ryan", 0);
+        List<SaleAssociate> selection = ops.getSaleAssociates(SaleAssociate.TWITTER_ID, "Ryan", 0);
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(item.getKey(), selection.get(0).getKey());
@@ -119,18 +119,18 @@ public class TestRetailerOperations {
     @Test(expected=RuntimeException.class)
     public void testGetsII() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        RetailerOperations ops = new RetailerOperations() {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return pm; // Return always the same object to be able to verify it has been closed
             }
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 throw new RuntimeException("Done in purpose");
             }
         };
 
-        ops.getRetailers("test", null, 0);
+        ops.getSaleAssociates("test", null, 0);
     }
 
     @Test
@@ -139,17 +139,17 @@ public class TestRetailerOperations {
         consumer.setTwitterId("Ryan");
 
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        RetailerOperations ops = new RetailerOperations() {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return pm; // Return always the same object to be able to verify it has been closed
             }
         };
-        Retailer item = ops.createRetailer(pm, consumer, 111L); // Gives the PersistenceManager so it won't be closed
+        SaleAssociate item = ops.createSaleAssociate(pm, consumer, 111L); // Gives the PersistenceManager so it won't be closed
 
         item.setEmail("test@test.com");
 
-        Retailer updated = ops.updateRetailer(item);
+        SaleAssociate updated = ops.updateSaleAssociate(item);
         assertNotNull(updated);
         assertEquals(item.getKey(), updated.getKey());
         assertEquals(item.getEmail(), updated.getEmail());
@@ -158,30 +158,30 @@ public class TestRetailerOperations {
     @Test(expected=RuntimeException.class)
     public void testUpdateII() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        RetailerOperations ops = new RetailerOperations() {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return pm; // Return always the same object to be able to verify it has been closed
             }
             @Override
-            public Retailer updateRetailer(PersistenceManager pm, Retailer retailer) {
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
                 throw new RuntimeException("Done in purpose");
             }
         };
 
-        ops.updateRetailer(new Retailer());
+        ops.updateSaleAssociate(new SaleAssociate());
     }
 
     @Test
     public void testGetExtendedI() throws DataSourceException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
 
-        RetailerOperations ops = new RetailerOperations();
-        Retailer item = ops.createRetailer(consumer, 111L);
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate item = ops.createSaleAssociate(consumer, 111L);
 
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
 
-        Retailer selected = ops.getRetailer(pm, item.getKey());
+        SaleAssociate selected = ops.getSaleAssociate(pm, item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
         assertNull(selected.getCriteria()); // The empty List<String> has been nullified by the JPO by creation process
@@ -191,7 +191,7 @@ public class TestRetailerOperations {
         assertNotNull(selected.getCriteria());
         assertNotSame(0, selected.getCriteria().size());
 
-        Retailer updated = ops.updateRetailer(pm, selected);
+        SaleAssociate updated = ops.updateSaleAssociate(pm, selected);
         assertNotNull(updated.getCriteria());
         assertNotSame(0, updated.getCriteria().size());
         assertEquals("first", updated.getCriteria().get(0));
@@ -199,7 +199,7 @@ public class TestRetailerOperations {
 
         pm.close();
 
-        selected = ops.getRetailer(item.getKey());
+        selected = ops.getSaleAssociate(item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
         assertNotNull(selected.getCriteria());

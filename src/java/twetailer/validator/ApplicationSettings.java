@@ -121,10 +121,10 @@ public class ApplicationSettings {
     public String getProductWebsite() {
         return productWebsite;
     }
-    
+
     /**
      * Get the servlet API path
-     * 
+     *
      * return Related path
      */
     public String getServletApiPath() {

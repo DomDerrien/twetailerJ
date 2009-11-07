@@ -3,7 +3,6 @@ package twetailer.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -27,12 +26,12 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
@@ -60,7 +59,7 @@ public class TestDemandProcessor {
         DemandProcessor.demandOperations = DemandProcessor._baseOperations.getDemandOperations();
         DemandProcessor.locationOperations = DemandProcessor._baseOperations.getLocationOperations();
         DemandProcessor.proposalOperations = DemandProcessor._baseOperations.getProposalOperations();
-        DemandProcessor.retailerOperations = DemandProcessor._baseOperations.getRetailerOperations();
+        DemandProcessor.saleAssociateOperations = DemandProcessor._baseOperations.getSaleAssociateOperations();
         DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -91,7 +90,7 @@ public class TestDemandProcessor {
     }
 
     @Test
-    public void testIdentifyRetailersNoLocationAround() throws DataSourceException {
+    public void testIdentifySaleAssociatesNoLocationAround() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -116,13 +115,13 @@ public class TestDemandProcessor {
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(0, retailers.size());
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(0, saleAssociates.size());
     }
 
     @Test
-    public void testIdentifyRetailersNoStoreForLocationAround() throws DataSourceException {
+    public void testIdentifySaleAssociatesNoStoreForLocationAround() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -160,13 +159,13 @@ public class TestDemandProcessor {
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(0, retailers.size());
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(0, saleAssociates.size());
     }
 
     @Test
-    public void testIdentifyRetailersForAStoreWithoutEmployees() throws DataSourceException {
+    public void testIdentifySaleAssociatesForAStoreWithoutEmployees() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -210,23 +209,23 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
-                assertEquals(Retailer.STORE_KEY, key);
+                assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
-                return new ArrayList<Retailer>();
+                return new ArrayList<SaleAssociate>();
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(0, retailers.size());
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(0, saleAssociates.size());
     }
 
     @Test
-    public void testIdentifyRetailersWithEmployeeWithoutExpectedTagsI() throws DataSourceException {
+    public void testIdentifySaleAssociatesWithEmployeeWithoutExpectedTagsI() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -271,32 +270,32 @@ public class TestDemandProcessor {
             }
         };
 
-        final Retailer selectedRetailer = new Retailer() {
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate() {
             @Override
             public List<String> getCriteria() {
                 return null;
             }
         };
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
-                assertEquals(Retailer.STORE_KEY, key);
+                assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(0, retailers.size());
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(0, saleAssociates.size());
     }
 
     @Test
-    public void testIdentifyRetailersWithEmployeeWithoutExpectedTagsII() throws DataSourceException {
+    public void testIdentifySaleAssociatesWithEmployeeWithoutExpectedTagsII() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -341,27 +340,27 @@ public class TestDemandProcessor {
             }
         };
 
-        final Retailer selectedRetailer = new Retailer();
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
-                assertEquals(Retailer.STORE_KEY, key);
+                assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(0, retailers.size());
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(0, saleAssociates.size());
     }
 
     @Test
-    public void testIdentifyRetailersWithEmployeeWithExpectedTagsI() throws DataSourceException {
+    public void testIdentifySaleAssociatesWithEmployeeWithExpectedTagsI() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -406,29 +405,29 @@ public class TestDemandProcessor {
             }
         };
 
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.addCriterion("test");
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.addCriterion("test");
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
-                assertEquals(Retailer.STORE_KEY, key);
+                assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(1, retailers.size());
-        assertEquals(selectedRetailer, retailers.get(0));
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(1, saleAssociates.size());
+        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
     }
 
     @Test
-    public void testIdentifyRetailersWithEmployeeWithExpectedTagsII() throws DataSourceException {
+    public void testIdentifySaleAssociatesWithEmployeeWithExpectedTagsII() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
         consumerLocation.setKey(locationKey);
@@ -476,32 +475,31 @@ public class TestDemandProcessor {
             }
         };
 
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.addCriterion("ich");
-        selectedRetailer.addCriterion("ni");
-        selectedRetailer.addCriterion("san");
-        selectedRetailer.addCriterion("test");
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.addCriterion("ich");
+        selectedSaleAssociate.addCriterion("ni");
+        selectedSaleAssociate.addCriterion("san");
+        selectedSaleAssociate.addCriterion("test");
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
-                assertEquals(Retailer.STORE_KEY, key);
+                assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
-        List<Retailer> retailers = DemandProcessor.identifyRetailers(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
-        assertNotNull(retailers);
-        assertEquals(1, retailers.size());
-        assertEquals(selectedRetailer, retailers.get(0));
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(1, saleAssociates.size());
+        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testProcessOneDemandI() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
@@ -551,18 +549,18 @@ public class TestDemandProcessor {
             }
         };
 
-        final String retailerId = "Ryan";
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.setTwitterId(retailerId);
-        selectedRetailer.addCriterion("test");
-        selectedRetailer.setPreferredConnection(Source.simulated);
+        final String saleAssociateId = "Ryan";
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.setTwitterId(saleAssociateId);
+        selectedSaleAssociate.addCriterion("test");
+        selectedSaleAssociate.setPreferredConnection(Source.simulated);
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
@@ -584,7 +582,6 @@ public class TestDemandProcessor {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testProcessOneDemandII() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
@@ -634,18 +631,18 @@ public class TestDemandProcessor {
             }
         };
 
-        final String retailerId = "Ryan";
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.setTwitterId(retailerId);
-        selectedRetailer.addCriterion("test");
-        selectedRetailer.setPreferredConnection(Source.simulated);
+        final String saleAssociateId = "Ryan";
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.setTwitterId(saleAssociateId);
+        selectedSaleAssociate.addCriterion("test");
+        selectedSaleAssociate.setPreferredConnection(Source.simulated);
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
@@ -667,7 +664,6 @@ public class TestDemandProcessor {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testProcessOneDemandForTheRobot() throws Exception {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();
@@ -716,17 +712,17 @@ public class TestDemandProcessor {
             }
         };
 
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.setName(RobotResponder.ROBOT_NAME);
-        selectedRetailer.setPreferredConnection(Source.simulated);
-        selectedRetailer.addCriterion("test");
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.setName(RobotResponder.ROBOT_NAME);
+        selectedSaleAssociate.setPreferredConnection(Source.simulated);
+        selectedSaleAssociate.addCriterion("test");
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
@@ -798,19 +794,19 @@ public class TestDemandProcessor {
             }
         };
 
-        final String retailerId = "Ryan";
-        final Long retailerKey = 56478L;
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.setKey(retailerKey);
-        selectedRetailer.setTwitterId(retailerId);
-        selectedRetailer.addCriterion("test");
+        final String saleAssociateId = "Ryan";
+        final Long saleAssociateKey = 56478L;
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.setKey(saleAssociateKey);
+        selectedSaleAssociate.setTwitterId(saleAssociateId);
+        selectedSaleAssociate.addCriterion("test");
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 
@@ -818,9 +814,9 @@ public class TestDemandProcessor {
             @Override
             public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
                 Proposal badProposal = new Proposal();
-                badProposal.setOwnerKey(retailerKey + 12325L);
+                badProposal.setOwnerKey(saleAssociateKey + 12325L);
                 Proposal goodProposal = new Proposal();
-                goodProposal.setOwnerKey(retailerKey);
+                goodProposal.setOwnerKey(saleAssociateKey);
                 List<Proposal> proposals = new ArrayList<Proposal>();
                 proposals.add(badProposal);
                 proposals.add(goodProposal);
@@ -831,7 +827,7 @@ public class TestDemandProcessor {
         final Twitter mockTwitterAccount = (new Twitter() {
             @Override
             public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                assertEquals(retailerId.toString(), id);
+                assertEquals(saleAssociateId.toString(), id);
                 assertTrue(text.contains(consumerDemand.getKey().toString()));
                 assertTrue(text.contains("test"));
                 return null;
@@ -944,17 +940,17 @@ public class TestDemandProcessor {
             }
         };
 
-        final String retailerId = "Ryan";
-        final Retailer selectedRetailer = new Retailer();
-        selectedRetailer.setTwitterId(retailerId);
-        selectedRetailer.addCriterion("test");
+        final String saleAssociateId = "Ryan";
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.setTwitterId(saleAssociateId);
+        selectedSaleAssociate.addCriterion("test");
 
-        DemandProcessor.retailerOperations = new RetailerOperations() {
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(selectedRetailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
             }
         };
 

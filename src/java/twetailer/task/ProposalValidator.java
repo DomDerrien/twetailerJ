@@ -1,7 +1,7 @@
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToRetailer;
+import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -13,10 +13,10 @@ import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 
@@ -31,7 +31,7 @@ public class ProposalValidator {
     private static final Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
 
@@ -64,8 +64,8 @@ public class ProposalValidator {
         Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
         if (CommandSettings.State.opened.equals(proposal.getState())) {
             try {
-                Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                Locale locale = retailer.getLocale();
+                SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                Locale locale = saleAssociate.getLocale();
                 String message = null;
 
                 if(proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
@@ -93,7 +93,7 @@ public class ProposalValidator {
                 }
                 if (message != null) {
                     log.warning("Invalid state for the proposal: " + proposal.getKey() + " -- message: " + message);
-                    communicateToRetailer(proposal.getSource(), retailer, message);
+                    communicateToSaleAssociate(proposal.getSource(), saleAssociate, message);
                     proposal.setState(CommandSettings.State.invalid);
                 }
                 else {
@@ -110,10 +110,10 @@ public class ProposalValidator {
                 proposal = proposalOperations.updateProposal(pm, proposal);
             }
             catch (DataSourceException ex) {
-                log.warning("Cannot get information for retailer: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());
+                log.warning("Cannot get information for sale associate: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
-                log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
+                log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
             }
         }
     }

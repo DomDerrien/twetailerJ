@@ -624,14 +624,14 @@ public class TestBaseOperations {
     }
 
     @Test
-    public void testGetRetailerOperations() {
+    public void testGetSaleAssociateOperations() {
         BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getRetailerOperations();
+        BaseOperations ops1 = base.getSaleAssociateOperations();
         assertNotNull(ops1);
-        BaseOperations ops2 = base.getRetailerOperations();
+        BaseOperations ops2 = base.getSaleAssociateOperations();
         assertNotNull(ops2);
         assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getRetailerOperations();
+        BaseOperations ops3 = new BaseOperations().getSaleAssociateOperations();
         assertNotNull(ops3);
         assertNotSame(ops1, ops3);
     }

@@ -1,7 +1,7 @@
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToRetailer;
+import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,13 +18,13 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -45,7 +45,7 @@ public class DemandProcessor {
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     /**
@@ -88,7 +88,7 @@ public class DemandProcessor {
     }
 
     /**
-     * Forward the identified demand to listening retailers
+     * Forward the identified demand to listening sale associates
      *
      * @param demandKey Identifier of the demand to process
      *
@@ -105,7 +105,7 @@ public class DemandProcessor {
     }
 
     /**
-     * Forward the identified demand to listening retailers
+     * Forward the identified demand to listening sale associates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demandKey Identifier of the demand to process
@@ -117,20 +117,20 @@ public class DemandProcessor {
         if (CommandSettings.State.published.equals(demand.getState())) {
             try {
                 List<Proposal> proposals = proposalOperations.getProposals(pm, Proposal.DEMAND_KEY, demand.getKey(), 0);
-                List<Retailer> retailers = identifyRetailers(pm, demand);
-                for(Retailer retailer: retailers) {
-                    boolean contactRetailerJustOnce = true;
+                List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand);
+                for(SaleAssociate saleAssociate: saleAssociates) {
+                    boolean contactSaleAssociateJustOnce = true;
                     for (Proposal proposal: proposals) {
-                        if (proposal.getOwnerKey().equals(retailer.getKey())) {
-                            contactRetailerJustOnce = false;
+                        if (proposal.getOwnerKey().equals(saleAssociate.getKey())) {
+                            contactSaleAssociateJustOnce = false;
                             break;
                         }
                     }
-                    if (contactRetailerJustOnce) {
+                    if (contactSaleAssociateJustOnce) {
                         //
                         // Special treatment for demand posted to "locale:H0H H0H CA"
                         //
-                        if (RobotResponder.ROBOT_NAME.equals(retailer.getName())) {
+                        if (RobotResponder.ROBOT_NAME.equals(saleAssociate.getName())) {
                             // Schedule a task to transmit the proposal to the demand owner
                             Queue queue = QueueFactory.getDefaultQueue();
                             queue.add(
@@ -140,18 +140,18 @@ public class DemandProcessor {
                             );
                         }
                         else {
-                            communicateToRetailer(
-                                    retailer.getPreferredConnection(),
-                                    retailer,
+                            communicateToSaleAssociate(
+                                    saleAssociate.getPreferredConnection(),
+                                    saleAssociate,
                                     LabelExtractor.get(
-                                            demand.getQuantity() == 1 ? "dp_inform_retailer_about_demand_one_item" : "dp_inform_retailer_about_demand_many_items",
+                                            demand.getQuantity() == 1 ? "dp_inform_saleAssociate_about_demand_one_item" : "dp_inform_saleAssociate_about_demand_many_items",
                                             new Object[] {
                                                 demand.getKey(),
                                                 demand.getSerializedCriteria(),
                                                 demand.getExpirationDate(),
                                                 demand.getQuantity()
                                             },
-                                            retailer.getLocale()
+                                            saleAssociate.getLocale()
                                     )
                             );
                         }
@@ -162,7 +162,7 @@ public class DemandProcessor {
                 log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
-                log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
+                log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
             }
         }
     }
@@ -172,37 +172,37 @@ public class DemandProcessor {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demand Consumer demand to consider
-     * @return List of retailer listening for the demand tags, within the area specified by the consumer
+     * @return List of sale associates listening for the demand tags, within the area specified by the consumer
      *
      * @throws DataSourceException If the data manipulation fails
      */
-    protected static List<Retailer> identifyRetailers(PersistenceManager pm, Demand demand) throws DataSourceException {
+    protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand) throws DataSourceException {
         // Get the stores around the demanded location
         Location location = locationOperations.getLocation(pm, demand.getLocationKey());
         List<Location> locations = locationOperations.getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), 0);
         List<Store> stores = storeOperations.getStores(pm, locations, 0);
-        // Extracts all retailers
-        List<Retailer> retailers = new ArrayList<Retailer>();
+        // Extracts all sale associates
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
         for (Store store: stores) {
-            List<Retailer> employees = retailerOperations.getRetailers(pm, Retailer.STORE_KEY, store.getKey(), 0);
-            retailers.addAll(employees);
+            List<SaleAssociate> employees = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.STORE_KEY, store.getKey(), 0);
+            saleAssociates.addAll(employees);
         }
-        // Verifies that the retailers supply the demanded tags
-        List<Retailer> selectedRetailers = new ArrayList<Retailer>();
-        for (Retailer retailer: retailers) {
+        // Verifies that the sale associates supply the demanded tags
+        List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
+        for (SaleAssociate saleAssociate: saleAssociates) {
             long score = 0;
             for (String tag: demand.getCriteria()) {
-                if (retailer.getCriteria() != null && retailer.getCriteria().contains(tag)) {
+                if (saleAssociate.getCriteria() != null && saleAssociate.getCriteria().contains(tag)) {
                     ++ score;
                     break; // TODO: check if it's useful to continue counting
                 }
             }
             if (0 < score) {
-                log.warning("Retailer " + retailer.getKey() + " selected for the demand: " + demand.getKey());
-                retailer.setScore(score);
-                selectedRetailers.add(retailer);
+                log.warning("Sale sssociate " + saleAssociate.getKey() + " selected for the demand: " + demand.getKey());
+                saleAssociate.setScore(score);
+                selectedSaleAssociates.add(saleAssociate);
             }
         }
-        return selectedRetailers;
+        return selectedSaleAssociates;
     }
 }

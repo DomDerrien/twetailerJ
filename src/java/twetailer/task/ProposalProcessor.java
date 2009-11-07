@@ -1,7 +1,7 @@
 package twetailer.task;
 
 import static twetailer.connector.BaseConnector.communicateToConsumer;
-import static twetailer.connector.BaseConnector.communicateToRetailer;
+import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.logging.Logger;
 
@@ -14,12 +14,12 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
@@ -34,11 +34,11 @@ public class ProposalProcessor {
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    protected static RetailerOperations retailerOperations = _baseOperations.getRetailerOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     /**
-     * Forward the identified proposal to listening retailers
+     * Forward the identified proposal to listening sale associates
      *
      * @param proposalKey Identifier of the proposal to process
      *
@@ -55,7 +55,7 @@ public class ProposalProcessor {
     }
 
     /**
-     * Forward the identified proposal to listening retailers
+     * Forward the identified proposal to listening sale associates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param proposalKey Identifier of the proposal to process
@@ -81,9 +81,9 @@ public class ProposalProcessor {
                                         demand.getKey(),                  // {2}: demand key
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
-                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the retailer works.
-                                        "[Not yet implemented]",          // {6}: store name 
-                                        "$",                              // {7}: currency symbol
+                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
+                                        "\\[Not yet implemented\\]",          // {6}: store name
+                                        "\\$",                              // {7}: currency symbol
                                         price                             // {8}: price
                                 },
                                 consumer.getLocale()
@@ -98,9 +98,9 @@ public class ProposalProcessor {
                                         demand.getKey(),                  // {2}: demand key
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
-                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the retailer works.
-                                        "[Not yet implemented]",          // {6}: store name 
-                                        "$",                              // {7}: currency symbol
+                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
+                                        "\\[Not yet implemented\\]",          // {6}: store name
+                                        "\\$",                              // {7}: currency symbol
                                         totalCost                         // {8}: total
                                 },
                                 consumer.getLocale()
@@ -115,9 +115,9 @@ public class ProposalProcessor {
                                         demand.getKey(),                  // {2}: demand key
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
-                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the retailer works.
-                                        "[Not yet implemented]",          // {6}: store name 
-                                        "$",                              // {7}: currency symbol
+                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
+                                        "\\[Not yet implemented\\]",          // {6}: store name
+                                        "\\$",                              // {7}: currency symbol
                                         price,                            // {8}: price
                                         totalCost                         // {9}: total
                                 },
@@ -133,25 +133,25 @@ public class ProposalProcessor {
                     demand = demandOperations.updateDemand(pm, demand);
                 }
                 else {
-                    Retailer retailer = retailerOperations.getRetailer(pm, proposal.getOwnerKey());
-                    JsonObject states = CommandSettings.getStates(retailer.getLocale());
+                    SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                    JsonObject states = CommandSettings.getStates(saleAssociate.getLocale());
                     String message = LabelExtractor.get(
-                            "pp_inform_retailer_demand_not_published_state",
+                            "pp_inform_saleAssociate_demand_not_published_state",
                             new Object[] {
                                     proposal.getKey(),
                                     demand.getKey(),
                                     states.getString(demand.getState().toString())
                             },
-                            retailer.getLocale()
+                            saleAssociate.getLocale()
                     );
-                    communicateToRetailer(retailer.getPreferredConnection(), retailer, message);
+                    communicateToSaleAssociate(saleAssociate.getPreferredConnection(), saleAssociate, message);
                 }
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information retaled to proposal: " + proposal.getKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
-                log.warning("Cannot communicate with retailer -- ex: " + ex.getMessage());
+                log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
             }
         }
     }

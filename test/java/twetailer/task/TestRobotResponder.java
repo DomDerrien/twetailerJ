@@ -24,13 +24,13 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RetailerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
@@ -61,7 +61,7 @@ public class TestRobotResponder {
         RobotResponder.demandOperations = RobotResponder._baseOperations.getDemandOperations();
         RobotResponder.consumerOperations = RobotResponder._baseOperations.getConsumerOperations();
         RobotResponder.locationOperations = RobotResponder._baseOperations.getLocationOperations();
-        RobotResponder.retailerOperations = RobotResponder._baseOperations.getRetailerOperations();
+        RobotResponder.saleAssociateOperations = RobotResponder._baseOperations.getSaleAssociateOperations();
         RobotResponder.proposalOperations = RobotResponder._baseOperations.getProposalOperations();
         RobotResponder.storeOperations = RobotResponder._baseOperations.getStoreOperations();
     }
@@ -72,7 +72,7 @@ public class TestRobotResponder {
     }
 
     final Long demandKey = 111L;
-    final Long retailerKey = 222L;
+    final Long saleAssociateKey = 222L;
     final Long locationKey = 333L;
     final Long storeKey = 444L;
     final Long consumerKey = 555L;
@@ -80,11 +80,11 @@ public class TestRobotResponder {
 
     @Test
     public void testProcessDemandI() throws TwitterException, DataSourceException {
-        RobotResponder.retailerOperations = new RetailerOperations() {
+        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                return saleAssociates;
             }
         };
 
@@ -96,15 +96,15 @@ public class TestRobotResponder {
 
     @Test
     public void testProcessDemandII() throws TwitterException, DataSourceException {
-        RobotResponder.retailerOperations = new RetailerOperations() {
+        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         RobotResponder.locationOperations = new LocationOperations() {
@@ -163,15 +163,15 @@ public class TestRobotResponder {
 
     @Test
     public void testProcessDemandIII() throws Exception {
-        RobotResponder.retailerOperations = new RetailerOperations() {
+        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Retailer> getRetailers(PersistenceManager pm, String key, Object value, int limit) {
-                Retailer retailer = new Retailer();
-                retailer.setKey(retailerKey);
-                retailer.setStoreKey(storeKey);
-                List<Retailer> retailers = new ArrayList<Retailer>();
-                retailers.add(retailer);
-                return retailers;
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
             }
         };
         RobotResponder.locationOperations = new LocationOperations() {

@@ -6,7 +6,7 @@ import java.util.List;
 import twetailer.ClientException;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
-import twetailer.dto.Retailer;
+import twetailer.dto.SaleAssociate;
 import twitter4j.TwitterException;
 
 public class BaseConnector {
@@ -50,20 +50,20 @@ public class BaseConnector {
     }
 
     /**
-     * Send the specified message to the identified retailer, using the suggested communication channel.
-     * If the suggested communication fails, the System can try to use another channel if the Retailer profile contains alternatives.
+     * Send the specified message to the identified sale associate, using the suggested communication channel.
+     * If the suggested communication fails, the System can try to use another channel if the SaleAssociate profile contains alternatives.
      *
      * @param source Identifier of the suggested communication channel
-     * @param retailer targeted user
+     * @param saleAssociate targeted user
      * @param message Message to send back
      *
      * @throws ClientException If all communication attempts fail
      */
-    public static void communicateToRetailer(Source source, Retailer retailer, String message) throws ClientException {
+    public static void communicateToSaleAssociate(Source source, SaleAssociate saleAssociate, String message) throws ClientException {
         // TODO: implement the fallback mechanism
         String userId =
-            Source.twitter.equals(source) ? retailer.getTwitterId() :
-            Source.jabber.equals(source) ? retailer.getJabberId() :
+            Source.twitter.equals(source) ? saleAssociate.getTwitterId() :
+            Source.jabber.equals(source) ? saleAssociate.getJabberId() :
             null;
         communicateToUser(source, userId, message);
     }
@@ -72,8 +72,8 @@ public class BaseConnector {
     protected static List<String> lastCommunications = new ArrayList<String>();
 
     /**
-     * Send the specified message to the identified retailer, using the suggested communication channel.
-     * If the suggested communication fails, the System can try to use another channel if the Retailer profile contains alternatives.
+     * Send the specified message to the identified sale associate, using the suggested communication channel.
+     * If the suggested communication fails, the System can try to use another channel if the SaleAssociate profile contains alternatives.
      *
      * @param source Identifier of the suggested communication channel
      * @param userId User identifier (can be Jabber ID, Twitter screen name, etc.)
