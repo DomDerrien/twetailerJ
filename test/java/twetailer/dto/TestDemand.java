@@ -69,6 +69,7 @@ public class TestDemand {
     Long quantity = 15L;
     Double range = 25.52D;
     String rangeUnit = LocaleValidator.MILE_UNIT;
+    List<Long> saleAssociateKeys = new ArrayList<Long>(Arrays.asList(new Long[] {1111L, 2222L}));
 
     @Test
     public void testAccessors() {
@@ -92,6 +93,7 @@ public class TestDemand {
         object.setQuantity(quantity);
         object.setRange(range);
         object.setRangeUnit(rangeUnit);
+        object.setSaleAssociateKeys(saleAssociateKeys);
 
         // Command
         assertEquals(action, object.getAction());
@@ -109,6 +111,7 @@ public class TestDemand {
         assertEquals(quantity, object.getQuantity());
         assertEquals(range, object.getRange());
         assertEquals(rangeUnit, object.getRangeUnit());
+        assertEquals(saleAssociateKeys, object.getSaleAssociateKeys());
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -233,6 +236,43 @@ public class TestDemand {
         object.setState((State) null);
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void testResetSaleAssociateKeysI() {
+        Demand object = new Demand();
+
+        object.addSaleAssociateKey(12345L);
+        assertEquals(1, object.getSaleAssociateKeys().size());
+
+        object.addSaleAssociateKey(12345L); // Add it twice
+        assertEquals(1, object.getSaleAssociateKeys().size());
+
+        object.addSaleAssociateKey(67890L);
+        assertEquals(2, object.getSaleAssociateKeys().size());
+
+        object.removeSaleAssociateKey(12345L); // Remove first
+        assertEquals(1, object.getSaleAssociateKeys().size());
+
+        object.resetSaleAssociateKeys(); // Reset all
+        assertEquals(0, object.getSaleAssociateKeys().size());
+
+        object.setSaleAssociateKeys(null); // Failure!
+    }
+
+    @Test
+    public void testResetSaleAssociateKeysII() {
+        Demand object = new Demand();
+
+        object.resetLists(); // To force the criteria list creation
+        object.addSaleAssociateKey(12345L);
+        assertEquals(1, object.getSaleAssociateKeys().size());
+
+        object.resetLists(); // To be sure there's no error
+        object.removeSaleAssociateKey(23L); // Remove first
+
+        object.resetLists(); // To be sure there's no error
+        object.resetSaleAssociateKeys(); // Reset all
+    }
+
     @Test
     public void testJsonDemandsI() {
         Demand object = new Demand();
@@ -252,6 +292,7 @@ public class TestDemand {
         object.setQuantity(quantity);
         object.setRange(range);
         object.setRangeUnit(rangeUnit);
+        object.setSaleAssociateKeys(saleAssociateKeys);
 
         Demand clone = new Demand(object.toJson());
 
@@ -270,6 +311,7 @@ public class TestDemand {
         assertEquals(quantity, clone.getQuantity());
         assertEquals(range, clone.getRange());
         assertEquals(rangeUnit, clone.getRangeUnit());
+        assertEquals(saleAssociateKeys, clone.getSaleAssociateKeys());
     }
 
     @Test
@@ -285,6 +327,7 @@ public class TestDemand {
         assertNull(object.getLocationKey());
         assertEquals(0, object.getCriteria().size());
         assertEquals(0, object.getProposalKeys().size());
+        assertEquals(0, object.getSaleAssociateKeys().size());
 
         Demand clone = new Demand(object.toJson());
 
@@ -296,6 +339,7 @@ public class TestDemand {
         assertNull(clone.getLocationKey());
         assertEquals(0, clone.getCriteria().size());
         assertEquals(0, clone.getProposalKeys().size());
+        assertEquals(0, clone.getSaleAssociateKeys().size());
     }
 
     @Test
@@ -308,12 +352,14 @@ public class TestDemand {
         // Demand
         assertNull(object.getCriteria());
         assertNull(object.getProposalKeys());
+        assertNull(object.getSaleAssociateKeys());
 
         Demand clone = new Demand(object.toJson());
 
         // Demand
         assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
         assertEquals(0, clone.getProposalKeys().size()); // Not null because the clone object creation creates empty List<Long>
+        assertEquals(0, clone.getSaleAssociateKeys().size()); // Not null because the clone object creation creates empty List<Long>
     }
 
     @Test

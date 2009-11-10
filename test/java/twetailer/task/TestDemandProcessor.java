@@ -500,6 +500,219 @@ public class TestDemandProcessor {
     }
 
     @Test
+    public void testIdentifyUnkownSaleAssociatesWithEmployeeWithExpectedTagsI() throws DataSourceException {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand() {
+            @Override
+            public List<Long> getSaleAssociateKeys() {
+                return null;
+            }
+        };
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.addCriterion("test");
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(location, consumerLocation);
+                assertEquals(demandRange, range);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
+            }
+        };
+
+        final Long storeKey = 12345L;
+        final Store targetedStore = new Store();
+        targetedStore.setKey(storeKey);
+
+        DemandProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertNotNull(locations);
+                assertEquals(1, locations.size());
+                assertEquals(consumerLocation, locations.get(0));
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(targetedStore);
+                return stores;
+            }
+        };
+
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.addCriterion("test");
+
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(SaleAssociate.STORE_KEY, key);
+                assertEquals(storeKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(1, saleAssociates.size());
+        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
+    }
+
+    @Test
+    public void testIdentifyUnkownSaleAssociatesWithEmployeeWithExpectedTagsII() throws DataSourceException {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand() {
+            @Override
+            public List<Long> getSaleAssociateKeys() {
+                return new ArrayList<Long>();
+            }
+        };
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.addCriterion("test");
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(location, consumerLocation);
+                assertEquals(demandRange, range);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
+            }
+        };
+
+        final Long storeKey = 12345L;
+        final Store targetedStore = new Store();
+        targetedStore.setKey(storeKey);
+
+        DemandProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertNotNull(locations);
+                assertEquals(1, locations.size());
+                assertEquals(consumerLocation, locations.get(0));
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(targetedStore);
+                return stores;
+            }
+        };
+
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.addCriterion("test");
+
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(SaleAssociate.STORE_KEY, key);
+                assertEquals(storeKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(1, saleAssociates.size());
+        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
+    }
+
+    @Test
+    public void testIdentifyKownSaleAssociatesWithEmployeeWithExpectedTags() throws DataSourceException {
+        final Long locationKey = 12345L;
+        final Long saleAssociateKey = 1111L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.addCriterion("test");
+        consumerDemand.addSaleAssociateKey(saleAssociateKey);
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(location, consumerLocation);
+                assertEquals(demandRange, range);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
+            }
+        };
+
+        final Long storeKey = 12345L;
+        final Store targetedStore = new Store();
+        targetedStore.setKey(storeKey);
+
+        DemandProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertNotNull(locations);
+                assertEquals(1, locations.size());
+                assertEquals(consumerLocation, locations.get(0));
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(targetedStore);
+                return stores;
+            }
+        };
+
+        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
+        selectedSaleAssociate.setKey(saleAssociateKey);
+        selectedSaleAssociate.addCriterion("test");
+
+        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(SaleAssociate.STORE_KEY, key);
+                assertEquals(storeKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(selectedSaleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(DemandProcessor._baseOperations.getPersistenceManager(), consumerDemand);
+        assertNotNull(saleAssociates);
+        assertEquals(0, saleAssociates.size());
+    }
+
+    @Test
     public void testProcessOneDemandI() throws DataSourceException {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();

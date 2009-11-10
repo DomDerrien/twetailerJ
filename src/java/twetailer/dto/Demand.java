@@ -86,6 +86,11 @@ public class Demand extends Entity {
 
     public static final String RANGE_UNIT = "rangeUnit";
 
+    @Persistent
+    private List<Long> saleAssociateKeys = new ArrayList<Long>();
+
+    public static final String SALE_ASSOCIATE_KEYS = "saleAssociateKeys";
+
     /** Default constructor */
     public Demand() {
         super();
@@ -109,6 +114,7 @@ public class Demand extends Entity {
     protected void resetLists() {
         criteria = null;
         proposalKeys = null;
+        saleAssociateKeys = null;
     }
 
     /*** Command ***/
@@ -324,6 +330,40 @@ public class Demand extends Entity {
             this.rangeUnit = LocaleValidator.KILOMETER_UNIT;
         }
     }
+    
+    public List<Long> getSaleAssociateKeys() {
+        return saleAssociateKeys;
+    }
+
+    public void setSaleAssociateKeys(List<Long> saleAssociateKeys) {
+        if (saleAssociateKeys == null) {
+            throw new IllegalArgumentException("Cannot nuulify the attribute 'saleAssociateKeys' of type List<Long>");
+        }
+        this.saleAssociateKeys = saleAssociateKeys;
+    }
+
+    public void addSaleAssociateKey(Long saleAssociateKey) {
+        if (saleAssociateKeys == null) {
+            saleAssociateKeys = new ArrayList<Long>();
+        }
+        if (!saleAssociateKeys.contains(saleAssociateKey)) {
+            saleAssociateKeys.add(saleAssociateKey);
+        }
+    }
+
+    public void resetSaleAssociateKeys() {
+        if (saleAssociateKeys == null) {
+            return;
+        }
+        saleAssociateKeys = new ArrayList<Long>();
+    }
+
+    public void removeSaleAssociateKey(Long saleAssociateKey) {
+        if (saleAssociateKeys == null) {
+            return;
+        }
+        saleAssociateKeys.remove(saleAssociateKey);
+    }
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
@@ -355,6 +395,13 @@ public class Demand extends Entity {
         out.put(RANGE, getRange());
         out.put(RANGE_UNIT, getRangeUnit());
         out.put(REFERENCE, getKey());
+        if (getSaleAssociateKeys() != null && 0 < getSaleAssociateKeys().size()) {
+            JsonArray jsonArray = new GenericJsonArray();
+            for(Long key: getSaleAssociateKeys()) {
+                jsonArray.add(key);
+            }
+            out.put(SALE_ASSOCIATE_KEYS, jsonArray);
+        }
         return out;
     }
 
@@ -408,6 +455,13 @@ public class Demand extends Entity {
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
+        if (in.containsKey(SALE_ASSOCIATE_KEYS)) {
+            resetSaleAssociateKeys();
+            JsonArray jsonArray = in.getJsonArray(SALE_ASSOCIATE_KEYS);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addSaleAssociateKey(jsonArray.getLong(i));
+            }
+        }
 
         // Shortcut
         if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }

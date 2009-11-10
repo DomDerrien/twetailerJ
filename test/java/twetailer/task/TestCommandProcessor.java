@@ -1706,6 +1706,22 @@ public class TestCommandProcessor {
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
     }
 
+    @Test(expected=ClientException.class)
+    public void testProcessCommandDelete() throws TwitterException, DataSourceException, ClientException {
+        final Long demandKey = 5555L;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.delete.toString());
+        command.put(Demand.REFERENCE, demandKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+    }
+
     @Test
     public void testProcessCommandDemandI() throws Exception {
         final Long consumerKey = 3333L;

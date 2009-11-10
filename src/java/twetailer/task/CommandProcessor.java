@@ -314,6 +314,9 @@ public class CommandProcessor {
             else if (CommandSettings.isEquivalentTo(actions, Action.decline.toString(), action, collator)) {
                 processDeclineCommand(pm, consumer, rawCommand, command);
             }
+            else if (CommandSettings.isEquivalentTo(actions, Action.delete.toString(), action, collator)) {
+                processDeleteCommand(pm, consumer, rawCommand, command);
+            }
             else if (CommandSettings.isEquivalentTo(actions, Action.demand.toString(), action, collator)) {
                 processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
@@ -715,7 +718,14 @@ public class CommandProcessor {
         //
         // Used by a consumer to refuse a proposal
         //
-        throw new ClientException("Declining proposals - Not yet implemented");
+        throw new ClientException("Declining demands/proposals - Not yet implemented");
+    }
+
+    protected static void processDeleteCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
+        //
+        // Used by a consumer to refuse a proposal
+        //
+        throw new ClientException("Deleting demands/proposals - Not yet implemented");
     }
 
     public static void processDemandCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
@@ -749,6 +759,7 @@ public class CommandProcessor {
                     demand.fromJson(command);
                     demand.setState(State.opened); // Will force the re-validation of the entire demand
                     demand.resetProposalKeys(); // All existing proposals are removed
+                    demand.resetSaleAssociateKeys(); // All existing sale associates need to be recontacted again
                     demand = demandOperations.updateDemand(pm, demand);
                     // Echo back the updated demand
                     Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());

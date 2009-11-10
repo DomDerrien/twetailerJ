@@ -190,17 +190,19 @@ public class DemandProcessor {
         // Verifies that the sale associates supply the demanded tags
         List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
         for (SaleAssociate saleAssociate: saleAssociates) {
-            long score = 0;
-            for (String tag: demand.getCriteria()) {
-                if (saleAssociate.getCriteria() != null && saleAssociate.getCriteria().contains(tag)) {
-                    ++ score;
-                    break; // TODO: check if it's useful to continue counting
+            if (demand.getSaleAssociateKeys() == null || !demand.getSaleAssociateKeys().contains(saleAssociate.getKey())) {
+                long score = 0;
+                for (String tag: demand.getCriteria()) {
+                    if (saleAssociate.getCriteria() != null && saleAssociate.getCriteria().contains(tag)) {
+                        ++ score;
+                        break; // TODO: check if it's useful to continue counting
+                    }
                 }
-            }
-            if (0 < score) {
-                log.warning("Sale sssociate " + saleAssociate.getKey() + " selected for the demand: " + demand.getKey());
-                saleAssociate.setScore(score);
-                selectedSaleAssociates.add(saleAssociate);
+                if (0 < score) {
+                    log.warning("Sale sssociate " + saleAssociate.getKey() + " selected for the demand: " + demand.getKey());
+                    saleAssociate.setScore(score);
+                    selectedSaleAssociates.add(saleAssociate);
+                }
             }
         }
         return selectedSaleAssociates;
