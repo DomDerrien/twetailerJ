@@ -66,19 +66,19 @@
     </datastore-index>
 
     <!-- Used 1 time in query history -->
-    <datastore-index kind="Retailer" ancestor="false" source="auto">
+    <datastore-index kind="SaleAssociate" ancestor="false" source="auto">
         <property name="consumerKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
     <!-- Used 1 time in query history -->
-    <datastore-index kind="Retailer" ancestor="false" source="auto">
+    <datastore-index kind="SaleAssociate" ancestor="false" source="auto">
         <property name="name" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
     <!-- Used 1 time in query history -->
-    <datastore-index kind="Retailer" ancestor="false" source="auto">
+    <datastore-index kind="SaleAssociate" ancestor="false" source="auto">
         <property name="storeKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>

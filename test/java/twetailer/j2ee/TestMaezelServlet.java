@@ -527,6 +527,7 @@ public class TestMaezelServlet {
             public String getParameter(String key) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) { return "12345"; }
                 if (SaleAssociate.STORE_KEY.equals(key)) { return "67890"; }
+                if (SaleAssociate.NAME.equals(key)) { return "name"; }
                 if ("supplies".equals(key)) { return "one two three"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;

@@ -1,5 +1,7 @@
 package twetailer.j2ee;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
 import javax.servlet.ServletInputStream;
@@ -58,6 +60,8 @@ public class TestJabberResponderServlet {
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
+                assertEquals(jabberId, rawCommand.getEmitterId());
+                assertEquals(message, rawCommand.getCommand());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }

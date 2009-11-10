@@ -1,6 +1,7 @@
 package twetailer.connector;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
@@ -29,6 +30,14 @@ public class MailConnector {
     //   mail.password: ???
     //
 
+    /**
+     * Use the Google App Engine API to get the Mail message carried by the HTTP request
+     *
+     * @param request Request parameters submitted by the Google App Engine in response to the reception of an mail message sent to maezel@twetailer.appspotmail.com
+     * @return Extracted mail message information
+     *
+     * @throws IOException If the HTTP request stream parsing fails
+     */
     public static MimeMessage getMailMessage(HttpServletRequest request) throws IOException, MessagingException {
         // Extract the incoming message
         Properties properties = new Properties();
@@ -37,28 +46,32 @@ public class MailConnector {
         return mailMessage;
     }
 
+    /**
+     * Use the Google App Engine API to send an mail message to the identified e-mail address
+     *
+     * @param receiverId E-mail address of the recipient
+     * @param message Message to send
+     */
     public static void sendMailMessage(String receiverId, String message) throws UnsupportedEncodingException, MessagingException {
         Properties properties = new Properties();
         Session session = Session.getDefaultInstance(properties, null);
 
         MimeMessage mailMessage = new MimeMessage(session);
-        mailMessage.setFrom(new InternetAddress("command@twetailer.appspomaol.com", ApplicationSettings.get().getProductName()));
+        mailMessage.setFrom(new InternetAddress("maezel@twetailer.appspotmail.com", ApplicationSettings.get().getProductName()));
         mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(receiverId, ""));
         mailMessage.setSubject("Twetailer notification");
-        // setContentAsPlainText(mailMessage, message);
-        // setContentAsHTML(mailMessage, message);
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);
     }
 
-    protected static void setContentAsPlainText(MimeMessage message, String content) throws MessagingException {
-        message.setText(content);
-    }
-
-    protected static void setContentAsHTML(MimeMessage message, String content) throws MessagingException {
-        message.setContent(content, "text/html; charset=UTF-8");
-    }
-
+    /**
+     * Utility inserting the given text into the message as a multi-part segment with a plain text and a plain HTML version
+     *
+     * @param message Message container
+     * @param content Text to send
+     *
+     * @throws MessagingException If the submitted text is not accepted
+     */
     protected static void setContentAsPlainTextAndHtml(MimeMessage message, String content) throws MessagingException {
         MimeBodyPart textPart = new MimeBodyPart();
         MimeBodyPart htmlPart = new MimeBodyPart();
@@ -82,20 +95,82 @@ public class MailConnector {
      * @throws MessagingException When an error occurs while parsing a piece of the message
      * @throws IOException When an error occurs while reading the message stream
      */
-    public static String getText(Part message) throws MessagingException, IOException {
-        if (message.isMimeType("text/*")) {
-            return (String) message.getContent();
+    public static String getText(MimeMessage message) throws MessagingException, IOException {
+        if (message.isMimeType("text/plain")) {
+            return convertToString((InputStream) message.getContent());
         }
-        if (message != null && message.isMimeType("multipart/*")) {
-            Multipart multipart = (Multipart) message.getContent();
-            for(int i = 0; i < multipart.getCount(); i++) {
-                Part part = multipart.getBodyPart(i);
-                String text = getText(part);
-                if (!"".equals(text)) {
-                    return text;
-                }
+        if (message.isMimeType("text/html")) {
+            return convertToString((InputStream) message.getContent());
+        }
+        if (message.isMimeType("multipart/*")) {
+            Multipart multipart = new MimeMultipart(message.getDataHandler().getDataSource());
+            return getText(multipart);
+        }
+        return "";
+    }
+
+    /**
+     * Study the given MIME part collection to extract the first text content
+     *
+     * @param multipart Collection to study
+     * @return Extracted text or empty string
+     *
+     * @throws MessagingException When an error occurs while parsing a piece of the message
+     * @throws IOException When an error occurs while reading the message stream
+     */
+    protected static String getText(Multipart multipart) throws MessagingException, IOException {
+        int count = multipart.getCount();
+        for(int i = 0; i < count; i++) {
+            Part part = multipart.getBodyPart(i);
+            String partText = getText(part);
+            if (!"".equals(partText)) {
+                return partText;
             }
         }
         return "";
+    }
+
+    /**
+     * Study the given MIME part to extract the first text content.
+     * Note that the algorithm excludes "text/*" attachment.
+     * Note also that the algorithm does not parse recursively the "multipart/*" elements.
+     *
+     * @param part Piece of content to study
+     * @return Extracted text or empty string
+     *
+     * @throws MessagingException When an error occurs while parsing a piece of the message
+     * @throws IOException When an error occurs while reading the message stream
+     */
+    protected static String getText(Part part) throws MessagingException, IOException {
+        String filename = part.getFileName();
+        if (filename == null && part.isMimeType("text/plain")) {
+            return convertToString((InputStream) part.getContent());
+        }
+        if (filename == null && part.isMimeType("text/html")) {
+            return convertToString((InputStream) part.getContent());
+        }
+        // We don't want to go deeper because this part is probably an attachment or a reply!
+        // if (part.isMimeType("multipart/*")) {
+            // return getText(new MimeMultipart(part.getDataHandler().getDataSource()));
+        // }
+        return "";
+    }
+
+    /**
+     * Utility method dumping the content of an InputStream into a String buffer
+     *
+     * @param in InputStream to process
+     * @return String containing all characters extracted from the InputStream
+     *
+     * @throws IOException If the InputStream process fails
+     */
+    protected static String convertToString(InputStream in) throws IOException {
+        int character = in.read();
+        StringBuilder out = new StringBuilder();
+        while (character != -1) {
+            out.append((char) character);
+            character = in.read();
+        }
+        return out.toString();
     }
 }

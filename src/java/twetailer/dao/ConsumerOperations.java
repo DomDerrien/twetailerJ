@@ -43,9 +43,10 @@ public class ConsumerOperations extends BaseOperations {
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      */
     public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.users.User loggedUser) {
+        String address = loggedUser.getEmail().toLowerCase();
         try {
             // Try to retrieve the same location
-            List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, loggedUser.getEmail(), 1);
+            List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, address, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
             }
@@ -55,7 +56,7 @@ public class ConsumerOperations extends BaseOperations {
         // Creates new consumer record and persist it
         Consumer newConsumer = new Consumer();
         newConsumer.setName(loggedUser.getNickname());
-        newConsumer.setEmail(loggedUser.getEmail());
+        newConsumer.setEmail(address);
         pm.makePersistent(newConsumer);
         return newConsumer;
     }
@@ -95,9 +96,10 @@ public class ConsumerOperations extends BaseOperations {
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      */
     public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.xmpp.JID jabberId) {
+        String identifier = getSimplifiedJabberId(jabberId.getId()).toLowerCase();
         try {
             // Try to retrieve the same location
-            List<Consumer> consumers = getConsumers(pm, Consumer.JABBER_ID, jabberId.getId(), 1);
+            List<Consumer> consumers = getConsumers(pm, Consumer.JABBER_ID, identifier, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
             }
@@ -106,9 +108,8 @@ public class ConsumerOperations extends BaseOperations {
 
         // Creates new consumer record and persist it
         Consumer newConsumer = new Consumer();
-        String simplifiedJabberId = getSimplifiedJabberId(jabberId.getId());
-        newConsumer.setName(simplifiedJabberId);
-        newConsumer.setJabberId(simplifiedJabberId);
+        newConsumer.setName(identifier);
+        newConsumer.setJabberId(identifier);
         pm.makePersistent(newConsumer);
         return newConsumer;
     }
@@ -143,9 +144,10 @@ public class ConsumerOperations extends BaseOperations {
      * @throws DataSourceException Forward error reported when trying to get a consumer record
      */
     public Consumer createConsumer(PersistenceManager pm, twitter4j.User twitterUser) throws DataSourceException {
+        String identifier = twitterUser.getScreenName();
         try {
             // Try to retrieve the same location
-            List<Consumer> consumers = getConsumers(pm, Consumer.TWITTER_ID, twitterUser.getScreenName(), 1);
+            List<Consumer> consumers = getConsumers(pm, Consumer.TWITTER_ID, identifier, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
             }
@@ -156,7 +158,7 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(twitterUser.getName());
         newConsumer.setAddress(twitterUser.getLocation());
-        newConsumer.setTwitterId(twitterUser.getScreenName());
+        newConsumer.setTwitterId(identifier);
         pm.makePersistent(newConsumer);
         return newConsumer;
     }
@@ -187,9 +189,10 @@ public class ConsumerOperations extends BaseOperations {
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      */
     public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress) {
+        String email = senderAddress.getAddress().toLowerCase();
         try {
             // Try to retrieve the same location
-            List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, senderAddress.getAddress(), 1);
+            List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, email, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
             }
@@ -199,7 +202,7 @@ public class ConsumerOperations extends BaseOperations {
         // Creates new consumer record and persist it
         Consumer newConsumer = new Consumer();
         newConsumer.setName(senderAddress.getPersonal());
-        newConsumer.setEmail(senderAddress.getAddress());
+        newConsumer.setEmail(email);
         pm.makePersistent(newConsumer);
         return newConsumer;
     }

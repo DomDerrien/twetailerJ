@@ -82,8 +82,8 @@ public class ProposalProcessor {
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        "\\[Not yet implemented\\]",          // {6}: store name
-                                        "\\$",                              // {7}: currency symbol
+                                        "\\[Not yet implemented\\]",      // {6}: store name
+                                        "\\$",                            // {7}: currency symbol
                                         price                             // {8}: price
                                 },
                                 consumer.getLocale()
@@ -99,8 +99,8 @@ public class ProposalProcessor {
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        "\\[Not yet implemented\\]",          // {6}: store name
-                                        "\\$",                              // {7}: currency symbol
+                                        "\\[Not yet implemented\\]",      // {6}: store name
+                                        "\\$",                            // {7}: currency symbol
                                         totalCost                         // {8}: total
                                 },
                                 consumer.getLocale()
@@ -116,8 +116,8 @@ public class ProposalProcessor {
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        "\\[Not yet implemented\\]",          // {6}: store name
-                                        "\\$",                              // {7}: currency symbol
+                                        "\\[Not yet implemented\\]",      // {6}: store name
+                                        "\\$",                            // {7}: currency symbol
                                         price,                            // {8}: price
                                         totalCost                         // {9}: total
                                 },

@@ -28,7 +28,7 @@ public class TestApplicationSettings {
 
     @Test
     public void testUseCDN() {
-        assertFalse(ApplicationSettings.get().isUseCDN());
+        assertTrue(ApplicationSettings.get().isUseCDN());
     }
 
     @Test

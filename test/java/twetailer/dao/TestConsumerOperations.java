@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -413,11 +414,13 @@ public class TestConsumerOperations {
         assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Create the user once
-        ops.createConsumer(user);
+        Consumer consumer = ops.createConsumer(user);
 
         // Verify there's one instance
         query = new Query(Consumer.class.getSimpleName());
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(name, consumer.getTwitterId());
 
         // Tries to recreate it
         ops.createConsumer(user);
@@ -429,7 +432,8 @@ public class TestConsumerOperations {
 
     @Test
     public void testCreateV() throws DataSourceException {
-        com.google.appengine.api.xmpp.JID user = new com.google.appengine.api.xmpp.JID("test");
+        final String jabberId = "unit@test.net";
+        com.google.appengine.api.xmpp.JID user = new com.google.appengine.api.xmpp.JID(jabberId);
 
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -443,14 +447,51 @@ public class TestConsumerOperations {
         assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Create the user once
-        ops.createConsumer(user);
+        Consumer consumer = ops.createConsumer(user);
 
         // Verify there's one instance
         query = new Query(Consumer.class.getSimpleName());
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
+        assertEquals(jabberId, consumer.getJabberId());
+
         // Tries to recreate it
         ops.createConsumer(user);
+
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    public void testCreateVI() throws DataSourceException, UnsupportedEncodingException {
+        final String email = "unit@test.net";
+        final String name = "Mr Unit Test";
+        javax.mail.internet.InternetAddress address = new javax.mail.internet.InternetAddress(email, name);
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(address);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(email, consumer.getEmail());
+        assertEquals(name, consumer.getName());
+
+        // Tries to recreate it
+        ops.createConsumer(address);
 
         // Verify there's still one instance
         query = new Query(Consumer.class.getSimpleName());

@@ -48,6 +48,9 @@ public class MailResponderServlet extends HttpServlet {
         try {
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
+            if (mailMessage.getFrom() == null) {
+                throw new MessagingException("Incorrect message (no FROM!)");
+            }
 
             // Creation only occurs if the corresponding Consumer instance is not retrieved
             consumer = consumerOperations.createConsumer((InternetAddress) (mailMessage.getFrom()[0]));
@@ -64,23 +67,18 @@ public class MailResponderServlet extends HttpServlet {
         rawCommandOperations.createRawCommand(rawCommand);
 
         if (rawCommand.getErrorMessage() != null) {
-            if (consumer == null) {
-                // Ignored because we to know with who we should communicate
+            try {
+                BaseConnector.communicateToConsumer(
+                        Source.mail,
+                        consumer,
+                        LabelExtractor.get(
+                                "cp_unexpected_error",
+                                new Object[] { rawCommand.getKey(), rawCommand.getErrorMessage()},
+                                Locale.ENGLISH)
+                );
             }
-            else {
-                try {
-                    BaseConnector.communicateToConsumer(
-                            Source.mail,
-                            consumer,
-                            LabelExtractor.get(
-                                    "cp_unexpected_error",
-                                    new Object[] { rawCommand.getKey(), rawCommand.getErrorMessage()},
-                                    Locale.ENGLISH)
-                    );
-                }
-                catch (ClientException e) {
-                    // Ignored because we can't do much now
-                }
+            catch (ClientException e) {
+                // Ignored because we can't do much now
             }
         }
         else {

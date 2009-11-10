@@ -122,46 +122,31 @@ public class MaezelServlet extends HttpServlet {
                 try {
                     Consumer consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter(SaleAssociate.CONSUMER_KEY)));
                     Long storeKey = Long.valueOf(request.getParameter("storeKey"));
+                    String name = request.getParameter(SaleAssociate.NAME);
 
-                    if (true) { // Manual object creation
-                        SaleAssociate saleAssociate = new SaleAssociate();
+                    SaleAssociate saleAssociate = new SaleAssociate();
 
-                        saleAssociate.setName(consumer.getName());
-                        saleAssociate.setConsumerKey(consumer.getKey());
+                    saleAssociate.setName(name == null ? consumer.getName() : name);
+                    saleAssociate.setConsumerKey(consumer.getKey());
 
-                        // Copy the user's attribute
-                        saleAssociate.setJabberId(consumer.getJabberId());
-                        saleAssociate.setEmail(consumer.getEmail());
-                        saleAssociate.setTwitterId(consumer.getTwitterId());
-                        saleAssociate.setLanguage(consumer.getLanguage());
-                        saleAssociate.setPreferredConnection(Source.jabber);
+                    // Copy the user's attribute
+                    saleAssociate.setJabberId(consumer.getJabberId());
+                    saleAssociate.setEmail(consumer.getEmail());
+                    saleAssociate.setTwitterId(consumer.getTwitterId());
+                    saleAssociate.setLanguage(consumer.getLanguage());
+                    saleAssociate.setPreferredConnection(Source.jabber);
 
-                        // Attach to the store
-                        saleAssociate.setStoreKey(storeKey);
+                    // Attach to the store
+                    saleAssociate.setStoreKey(storeKey);
 
-                        // Set the supplied keywords
-                        String[] supplies = request.getParameter("supplies").split(" ");
-                        for (int i = 0; i < supplies.length; i++) {
-                            saleAssociate.addCriterion(supplies[i]);
-                        }
-
-                        // Persist the account
-                        saleAssociateOperations.createSaleAssociate(pm, saleAssociate);
+                    // Set the supplied keywords
+                    String[] supplies = request.getParameter("supplies").split(" ");
+                    for (int i = 0; i < supplies.length; i++) {
+                        saleAssociate.addCriterion(supplies[i]);
                     }
-                    else { // Automatic creation and attempt to add the criteria a second time
-                        SaleAssociate saleAssociate1 = saleAssociateOperations.createSaleAssociate(pm, consumer, storeKey);
 
-                        pm.close();
-                        pm = _baseOperations.getPersistenceManager();
-
-                        SaleAssociate saleAssociate2 = saleAssociateOperations.getSaleAssociate(pm, saleAssociate1.getKey());
-
-                        String[] supplies = request.getParameter("supplies").split(" ");
-                        for (int i = 0; i < supplies.length; i++) {
-                            saleAssociate2.addCriterion(supplies[i]);
-                        }
-                        saleAssociate2 = saleAssociateOperations.updateSaleAssociate(pm, saleAssociate2);
-                    }
+                    // Persist the account
+                    saleAssociateOperations.createSaleAssociate(pm, saleAssociate);
                 }
                 finally {
                     pm.close();

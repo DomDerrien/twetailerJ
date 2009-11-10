@@ -156,6 +156,10 @@ public class SaleAssociate extends Entity {
         criteria.remove(criterion);
     }
 
+    public String getSerializedCriteria() {
+        return Demand.getSerializedCriteria(criteria);
+    }
+
     public List<String> getCriteria() {
         return criteria;
     }

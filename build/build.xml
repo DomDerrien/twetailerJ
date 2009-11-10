@@ -14,7 +14,7 @@
 
     <property name="rwa.release"
         description="Planned release of this build"
-        value="0.23a"
+        value="8"
     />
 
     <property name="rwa.productName"
@@ -91,7 +91,7 @@
 
     <property name="junit.timeout.seconds"
         description="Delay before considering a test being too long. In milliseconds"
-        value="60000"
+        value="30000"
     />
     <!--property name="no.cobertura.html.reports"
         description="Prevents the generation of Cobertura reports (HTML format). Use local.build.properties to set it."
@@ -312,8 +312,6 @@
     </path>
     
     <fileset id="runtime.deps" dir="deps/lib">
-        <include name="apache/commons-lang-2.2.jar" />
-        <include name="apache/commons-logging-1.0.4.jar" />
         <include name="domderrien/domderrien-0.8.6.jar" />
         <include name="easymock/easymock-2.5.1.jar" />
         <include name="easymock/easymockclassextension.jar" />
@@ -325,25 +323,20 @@
     <path id="java.compile.classpath">
         <fileset refid="runtime.deps" />
         <filelist dir="deps/lib">
-            <file name="xml/xalan-2.7.0.jar" />
-            <file name="xml/xercesImpl-2.4.0.jar" />
-            <file name="xml/xml-apis-1.3.02.jar" />
-            <file name="junit/junit-4.7.jar" />
-            <file name="junit/junit-dep-4.7.jar" />
-            <!--file name="tomcat/j2ee.jar" /-->
-            <!--file name="was/j2ee-6.0.jar.jar" /-->
-            <file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
             <file name="appengine/appengine-api-1.0-sdk-1.2.6.jar" />
             <file name="appengine/appengine-api-labs-1.2.6.jar" />
-            <file name="jdo/jdo2-api-2.3-eb.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
-            <file name="wave/json.jar" />
-            <file name="wave/jsonrpc.jar" />
-            <file name="wave/wave-robot-api-20090916.jar" />
             <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
             <file name="dyuproject/dyuproject-util-1.1.6.jar" />
             <file name="dyuproject/dyuproject-web-1.1.6.jar" />
+            <file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
+            <file name="jdo/jdo2-api-2.3-eb.jar" />
+            <file name="junit/junit-4.7.jar" />
+            <file name="wave/wave-robot-api-20090916.jar" />
+            <file name="xml/xalan-2.7.0.jar" />
+            <file name="xml/xercesImpl-2.4.0.jar" />
+            <file name="xml/xml-apis-1.3.02.jar" />
         </filelist>
     </path>
 
@@ -358,18 +351,9 @@
             <file name="datanucleus/datanucleus-appengine-1.0.3.jar" />
             <file name="datanucleus/datanucleus-core-1.1.5.jar" />
             <file name="datanucleus/datanucleus-jpa-1.1.5.jar" />
-            <file name="appengine/appengine-api-1.0-sdk-1.2.6.jar" />
-            <file name="appengine/appengine-api-labs-1.2.6.jar" />
-            <file name="jdo/jdo2-api-2.3-eb.jar" />
-            <file name="appengine/appengine-api-stubs.jar" />
-            <file name="appengine/appengine-local-runtime.jar" />
+            <file name="dyuproject/jetty-util-6.1.19.jar" />
             <file name="wave/json.jar" />
             <file name="wave/jsonrpc.jar" />
-            <file name="wave/wave-robot-api-20090916.jar" />
-            <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
-            <file name="dyuproject/dyuproject-util-1.1.6.jar" />
-            <file name="dyuproject/dyuproject-web-1.1.6.jar" />
-            <file name="dyuproject/jetty-util-6.1.19.jar" />
         </filelist>
     </path>
 
