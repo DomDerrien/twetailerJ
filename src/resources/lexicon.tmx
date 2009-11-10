@@ -252,6 +252,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="Delete" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the action 'delete'</note>
+            <tuv xml:lang="en">
+                <seg>Delete -- To be completed</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="Demand" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'demand'</note>
@@ -530,13 +538,23 @@
         <!--        -M-          -->
         <!-- =================== -->
 
+        <tu tuid="MarkedForDeletion" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'markedForDeletion'</note>
+            <tuv xml:lang="en">
+                <seg>Marked for deletion (glossary): state of an object before it deletion that will occurs as a background task later. |
+                    Marked for deletion (see also): cancel |
+                    Marked for deletion (since): v0.0</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="MI" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'mi'</note>
             <tuv xml:lang="en">
                 <seg>MI (glossary): A range unit of measure meaning Miles. Another valid value is "km" meaning kilometers. |
                     MI (rules): range, locale, demand |
-                    MI (see also): ki |
+                    MI (see also): km |
                     MI (since): v0.0</seg>
             </tuv>
         </tu>

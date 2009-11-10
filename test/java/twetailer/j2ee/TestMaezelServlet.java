@@ -581,6 +581,62 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String key) {
+                if (SaleAssociate.CONSUMER_KEY.equals(key)) { return "12345"; }
+                if (SaleAssociate.STORE_KEY.equals(key)) { return "67890"; }
+                if (SaleAssociate.NAME.equals(key)) { return null; }
+                if ("supplies".equals(key)) { return "one two three"; }
+                fail("Unexpected parameter gathering for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        final ConsumerOperations mockConsumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                return new Consumer();
+            }
+        };
+        final SaleAssociateOperations mockSaleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, Consumer consumer, Long storeKey) {
+                assertEquals(Long.valueOf(67890L), storeKey);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(12345L);
+                return saleAssociate;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(Long.valueOf(12345L), key);
+                return new SaleAssociate();
+            }
+            @Override
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                return saleAssociate;
+            }
+        };
+
+        servlet.consumerOperations = mockConsumerOperations;
+        servlet.saleAssociateOperations = mockSaleAssociateOperations;
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(servlet._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testDoGetCreateSaleAssociateIII() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/createSaleAssociate";
+            }
+            @Override
+            public String getParameter(String key) {
                 throw new RuntimeException("Done in purpose");
             }
         };

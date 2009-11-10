@@ -19,6 +19,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -2563,17 +2564,362 @@ public class TestCommandProcessor {
         assertEquals(LabelExtractor.get("cp_command_proposal_invalid_proposal_id", Locale.ENGLISH), sentText);
     }
 
-    @Test(expected=ClientException.class)
-    public void testProcessCommandSupply() throws TwitterException, DataSourceException, ClientException {
+    @Test
+    public void testProcessCommandSupplyIa() throws TwitterException, DataSourceException, ClientException {
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, Action.supply.toString());
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand();
         rawCommand.setSource(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_tag_list", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandSupplyIb() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate() {
+                    @Override
+                    public List<String> getCriteria() {
+                        return null;
+                    }
+                };
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_tag_list", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandSupplyII() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+        final String tag1 = "tag1";
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociate.addCriterion(tag1);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { tag1 }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandSupplyIII() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+        final String tag1 = "tag1";
+        final String tag2 = "tag2";
+        final String tag3 = "tag3";
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociate.addCriterion(tag1);
+                saleAssociate.addCriterion(tag2);
+                saleAssociate.addCriterion(tag3);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tag1 + " " + tag2 + " " + tag3, 3 }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandSupplyIV() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+        final String newTag = "newTag";
+        JsonArray tagList = new GenericJsonArray();
+        tagList.add(newTag);
+        command.put(SaleAssociate.CRITERIA, tagList);
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+        final String tag1 = "tag1";
+        final String tag2 = "tag2";
+        final String tag3 = "tag3";
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociate.addCriterion(tag1);
+                saleAssociate.addCriterion(tag2);
+                saleAssociate.addCriterion(tag3);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { newTag }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandSupplyV() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+        final String newTag = "newTag";
+        JsonArray tagList = new GenericJsonArray();
+        tagList.add(newTag);
+        command.put(SaleAssociate.CRITERIA_ADD, tagList);
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+        final String tag1 = "tag1";
+        final String tag2 = "tag2";
+        final String tag3 = "tag3";
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociate.addCriterion(tag1);
+                saleAssociate.addCriterion(tag2);
+                saleAssociate.addCriterion(tag3);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tag1 + " " + tag2 + " " + tag3 + " " + newTag, 4 }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessCommandSupplyVI() throws TwitterException, DataSourceException, ClientException {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+        final String newTag = "newTag";
+        JsonArray tagList = new GenericJsonArray();
+        tagList.add(newTag);
+        command.put(SaleAssociate.CRITERIA_REMOVE, tagList);
+
+        final Long consumerKey = 111L;
+        final Long saleAssociateKey = 222L;
+        final Long storeKey = 333L;
+        final String tag1 = "tag1";
+        final String tag2 = newTag;
+        final String tag3 = "tag3";
+
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociate.addCriterion(tag1);
+                saleAssociate.addCriterion(tag2);
+                saleAssociate.addCriterion(tag3);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand();
+        rawCommand.setSource(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tag1 + " " + tag3, 2 }, Locale.ENGLISH), sentText);
     }
 
     @Test(expected=ClientException.class)

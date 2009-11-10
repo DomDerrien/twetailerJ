@@ -59,6 +59,7 @@ public class CommandSettings {
         close,
         confirm,
         decline,
+        delete,
         demand,
         help,
         list,
@@ -98,7 +99,8 @@ public class CommandSettings {
         published,
         confirmed,
         closed,
-        cancelled
+        cancelled,
+        markedForDeletion
     }
 
     private static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();

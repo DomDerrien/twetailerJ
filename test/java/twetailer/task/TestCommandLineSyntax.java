@@ -168,7 +168,7 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseOneWordTag() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 product", Locale.ENGLISH);
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
     }
 
     @Test
@@ -180,9 +180,9 @@ public class TestCommandLineSyntax {
     @Test
     public void testParseMultipleWordsTag() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 brand product part", Locale.ENGLISH);
-        assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
+        assertEquals("brand", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("part", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
     }
 
     @Test
@@ -543,7 +543,7 @@ public class TestCommandLineSyntax {
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -559,7 +559,7 @@ public class TestCommandLineSyntax {
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -575,7 +575,7 @@ public class TestCommandLineSyntax {
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -591,7 +591,7 @@ public class TestCommandLineSyntax {
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -607,7 +607,7 @@ public class TestCommandLineSyntax {
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -619,7 +619,7 @@ public class TestCommandLineSyntax {
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -631,7 +631,7 @@ public class TestCommandLineSyntax {
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA).getString(i));
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
     }
 
@@ -1033,13 +1033,12 @@ public class TestCommandLineSyntax {
                 "ref:249 wii #console locale:h0h0h0 mario range:25 km kart",
                 Locale.ENGLISH
         );
-        System.err.println(data);
 
         assertEquals("console", data.getString(Command.HASH_TAG));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("mario", data.getJsonArray(Demand.CRITERIA).getString(2));
-        assertEquals("kart", data.getJsonArray(Demand.CRITERIA).getString(3));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
+        assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(3));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }
@@ -1051,13 +1050,12 @@ public class TestCommandLineSyntax {
                 "ref:249 wii hash:console locale:h0h0h0 mario range:25 km kart",
                 Locale.ENGLISH
         );
-        System.err.println(data);
 
         assertEquals("console", data.getString(Command.HASH_TAG));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("mario", data.getJsonArray(Demand.CRITERIA).getString(2));
-        assertEquals("kart", data.getJsonArray(Demand.CRITERIA).getString(3));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
+        assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(3));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }
@@ -1069,13 +1067,12 @@ public class TestCommandLineSyntax {
                 "ref:249 tags: wii hash:console locale:h0h0h0 mario range:25 km kart",
                 Locale.ENGLISH
         );
-        System.err.println(data);
 
         assertEquals("console", data.getString(Command.HASH_TAG));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("mario", data.getJsonArray(Demand.CRITERIA).getString(2));
-        assertEquals("kart", data.getJsonArray(Demand.CRITERIA).getString(3));
+        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
     }

@@ -297,7 +297,7 @@ public class CommandProcessor {
             if (CommandSettings.isEquivalentTo(prefixes, Prefix.help.toString(), action, collator)) {
                 processHelpCommand(
                         rawCommand,
-                        command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getString(0) : "",
+                        command.containsKey(Demand.CRITERIA_ADD) ? command.getJsonArray(Demand.CRITERIA_ADD).getString(0) : "",
                         locale,
                         collator
                 );
@@ -958,7 +958,7 @@ public class CommandProcessor {
                 else {
                     communicateToEmitter(
                             rawCommand,
-                            LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposal.getKey(), state}, consumer.getLocale())
+                            LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposal.getKey(), state }, consumer.getLocale())
                     );
                 }
             }
@@ -1001,11 +1001,62 @@ public class CommandProcessor {
         }
     }
 
-    protected static void processSupplyCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
+    protected static void processSupplyCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
         // Used by a sale associate to add/remove tags to his supply list
         //
-        throw new ClientException("Supplying tags - Not yet implemented");
+
+        // Process the command for the identifier sale associate
+        boolean updateDetected = false;
+        SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.supply);
+        if (command.containsKey(SaleAssociate.CRITERIA)) {
+            updateDetected = true;
+            saleAssociate.resetCriteria();
+            List<Object> tags = command.getJsonArray(SaleAssociate.CRITERIA).getList();
+            for (Object tag : tags) {
+                saleAssociate.addCriterion((String) tag);
+            }
+        }
+        if (command.containsKey(SaleAssociate.CRITERIA_ADD)) {
+            updateDetected = true;
+            List<Object> tags = command.getJsonArray(SaleAssociate.CRITERIA_ADD).getList();
+            for (Object tag : tags) {
+                saleAssociate.addCriterion((String) tag);
+            }
+        }
+        if (command.containsKey(SaleAssociate.CRITERIA_REMOVE)) {
+            updateDetected = true;
+            List<Object> tags = command.getJsonArray(SaleAssociate.CRITERIA_REMOVE).getList();
+            for (Object tag : tags) {
+                saleAssociate.removeCriterion((String) tag);
+            }
+        }
+
+        // Persist the update if any
+        if (updateDetected) {
+            saleAssociateOperations.updateSaleAssociate(pm, saleAssociate);
+        }
+
+        int tagNb = saleAssociate.getCriteria() == null ? 0 : saleAssociate.getCriteria().size();
+        if (tagNb == 0) {
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_supply_empty_tag_list", saleAssociate.getLocale())
+
+            );
+        }
+        else if (tagNb == 1) {
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { saleAssociate.getCriteria().get(0) }, saleAssociate.getLocale())
+            );
+        }
+        else {
+            communicateToEmitter(
+                    rawCommand,
+                    LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { saleAssociate.getSerializedCriteria(), tagNb }, saleAssociate.getLocale())
+            );
+        }
     }
 
     protected static void processWishCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {

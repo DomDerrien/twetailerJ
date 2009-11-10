@@ -79,15 +79,15 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.reference, "\\s*\\d+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.range, "[\\s\\d\\.,]+(?:miles|mile|mi|km)", ".*" + separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.state, "\\s*\\w+", separatorFromNonAlpha);
-            preparePattern(prefixes, patterns, Prefix.tags, "?.+", "");
             preparePattern(prefixes, patterns, Prefix.total, "[\\s$€£\\d\\.,]+", separatorFromNonDigit);
 
             String tagKey = Prefix.tags.toString();
             String tagPattern = assembleModularPrefixes(prefixes.getJsonArray(tagKey), tagKey).toString();
-            patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
+            patterns.put(tagKey, Pattern.compile("((?:(?:^|[^\\+\\-])(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
             patterns.put("\\-" + tagKey, Pattern.compile("((?:\\-(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
+            patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))?.+)", Pattern.CASE_INSENSITIVE));
 
-            patterns.put(tagKey + "Start", Pattern.compile("^(" + tagPattern + ")", Pattern.CASE_INSENSITIVE));
+            patterns.put("\\+" + tagKey + "Start", Pattern.compile("^(\\+" + tagPattern + ")", Pattern.CASE_INSENSITIVE));
 
             localizedPatterns.put(locale, patterns);
         }
@@ -283,12 +283,12 @@ public class CommandLineParser {
             }
         }
         catch(IllegalStateException ex) {}
-        // \+Tags
+        // Tags
         try {
-            matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
+            matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup, null)));
+                command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup, null)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -305,13 +305,13 @@ public class CommandLineParser {
             }
         }
         catch(IllegalStateException ex) {}
-        // Tags
+        // \+Tags
         try {
-            matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
+            matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
                 if (0 < currentGroup.length()) {
-                    command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup, patterns)));
+                    command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup, patterns)));
                     messageCopy = extractPart(messageCopy, currentGroup);
                     oneFieldOverriden = true;
                 }
@@ -502,14 +502,14 @@ public class CommandLineParser {
      */
     private static String[] getTags(String pattern, Map<String, Pattern> patterns) {
         String keywords = pattern;
-        // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of _tags or -tags)
+        // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of tags: or -tags:)
         if (patterns == null) { // && pattern.indexOf(":") != -1) {
             keywords = pattern.substring(pattern.indexOf(":") + 1).trim();
         }
         else {
             // Because it's possible the keywords are not prefixed, it's not possible to ignore everything before the colon
-            // So we use the pattern with the equivalents of tags: and this group will be replaced
-            Matcher matcher = patterns.get(Prefix.tags.toString() + "Start").matcher(keywords);
+            // So we use the pattern with the equivalents of +tags: and this group will be replaced
+            Matcher matcher = patterns.get("\\+" + Prefix.tags.toString() + "Start").matcher(keywords);
             if (matcher.find()) { // Runs the matcher once
                 keywords = matcher.replaceFirst("");
             }

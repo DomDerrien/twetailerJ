@@ -134,6 +134,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_state_markedForDeletion" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
+            <tuv xml:lang="en">
+                <seg>markedForDeletion</seg>
+            </tuv>
+        </tu>
+
         <!-- ================================ -->
         <!-- Command line related definitions -->
         <!-- ================================ -->
@@ -283,6 +291,14 @@
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>decline</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cl_action_delete" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>delete</seg>
             </tuv>
         </tu>
 
@@ -853,6 +869,35 @@
                     Add it to the list of proposal tags with \u0022action:propose proposal:{0} +tag:{1}\u0022|
                     Join the Twetailer community to get more details.
                 </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_supply_empty_tag_list" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Your tag list is now empty. You cannot receive notifications about demands in your area anymore.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_supply_updated_1_tag_list" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: unique tag
+            </note>
+            <tuv xml:lang="en">
+                <seg>Your tag list contains 1 keyword: {0}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_supply_updated_n_tag_list" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: list of tags, separated by a blank space
+                {1}: list size
+            </note>
+            <tuv xml:lang="en">
+                <seg>Your tag list contains {1} keywords: {0}.</seg>
             </tuv>
         </tu>
 
