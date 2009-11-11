@@ -42,7 +42,7 @@ public class TestBaseConnector {
 
     @Test(expected=ClientException.class)
     public void testUnsupportedSource() throws ClientException {
-        BaseConnector.communicateToUser(null, null, null);
+        BaseConnector.communicateToUser(null, null, null, null);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
         final String message = "test";
-        BaseConnector.communicateToUser(Source.simulated, null, message);
+        BaseConnector.communicateToUser(Source.simulated, null, null, message);
 
         assertEquals(BaseConnector.getLastCommunicationInSimulatedMode(), message);
     }
@@ -82,7 +82,7 @@ public class TestBaseConnector {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        BaseConnector.communicateToUser(Source.twitter, twitterId, message);
+        BaseConnector.communicateToUser(Source.twitter, twitterId, null, message);
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -100,7 +100,7 @@ public class TestBaseConnector {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        BaseConnector.communicateToUser(Source.twitter, twitterId, message);
+        BaseConnector.communicateToUser(Source.twitter, twitterId, null, message);
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -109,14 +109,28 @@ public class TestBaseConnector {
     public void testJabberSource() throws ClientException {
         final String jabberId = "jId";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.jabber, jabberId, message);
+        BaseConnector.communicateToUser(Source.jabber, jabberId, null, message);
+    }
+
+    @Test
+    public void testMailSourceI() throws ClientException {
+        final String mailAddress = "unit@test.net";
+        final String message = "test";
+        BaseConnector.communicateToUser(Source.mail, mailAddress, null, message);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testMailSourceII() throws ClientException {
+        final String mailAddress = "@@@";
+        final String message = "test";
+        BaseConnector.communicateToUser(Source.mail, mailAddress, null, message);
     }
 
     @Test(expected=RuntimeException.class)
     public void testFacebookSource() throws ClientException {
         final String facebookId = "fId";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.facebook, facebookId, message);
+        BaseConnector.communicateToUser(Source.facebook, facebookId, null, message);
     }
 
     @Test
@@ -135,6 +149,16 @@ public class TestBaseConnector {
     }
 
     @Test
+    public void testCommunicateToConsumerIV() throws ClientException {
+        BaseConnector.communicateToConsumer(Source.mail, new Consumer(), null);
+    }
+
+    @Test
+    public void testCommunicateToConsumerV() throws ClientException {
+        BaseConnector.communicateToConsumer(Source.mail, new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, null);
+    }
+
+    @Test
     public void testCommunicateToSaleAssociateI() throws ClientException {
         BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), null);
     }
@@ -147,6 +171,16 @@ public class TestBaseConnector {
     @Test
     public void testCommunicateToSaleAssociateIII() throws ClientException {
         BaseConnector.communicateToSaleAssociate(Source.jabber, new SaleAssociate(), null);
+    }
+
+    @Test
+    public void testCommunicateToSaleAssociateIV() throws ClientException {
+        BaseConnector.communicateToSaleAssociate(Source.mail, new SaleAssociate(), null);
+    }
+
+    @Test
+    public void testCommunicateToSaleAssociateV() throws ClientException {
+        BaseConnector.communicateToSaleAssociate(Source.mail, new SaleAssociate() { @Override public String getEmail() { return "unit@test.net"; } }, null);
     }
 
     @Test

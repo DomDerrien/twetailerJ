@@ -134,6 +134,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_state_declined" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
+            <tuv xml:lang="en">
+                <seg>declined</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_state_markedForDeletion" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>

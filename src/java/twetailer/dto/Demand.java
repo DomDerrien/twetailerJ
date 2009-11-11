@@ -91,6 +91,11 @@ public class Demand extends Entity {
 
     public static final String SALE_ASSOCIATE_KEYS = "saleAssociateKeys";
 
+    @Persistent
+    private Boolean stateCmdList = Boolean.TRUE;
+
+    public static final String STATE_COMMAND_LIST = "stateCmdList";
+
     /** Default constructor */
     public Demand() {
         super();
@@ -182,6 +187,12 @@ public class Demand extends Entity {
             throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
         }
         this.state = state;
+        // TODO: remove the following setting when the inheritance is fixed
+        stateCmdList =
+            !State.cancelled.equals(state) &&
+            !State.closed.equals(state) &&
+            !State.declined.equals(state) &&
+            !State.markedForDeletion.equals(state);
     }
 
     public void setState(String state) {
@@ -330,7 +341,7 @@ public class Demand extends Entity {
             this.rangeUnit = LocaleValidator.KILOMETER_UNIT;
         }
     }
-    
+
     public List<Long> getSaleAssociateKeys() {
         return saleAssociateKeys;
     }
@@ -363,6 +374,22 @@ public class Demand extends Entity {
             return;
         }
         saleAssociateKeys.remove(saleAssociateKey);
+    }
+
+    /* TODO: enable when the inheritance is fixed !
+    @Override
+    public void setState(State state) {
+        super.setState();
+        stateCmdList =
+            !State.cancelled.equals(state) &&
+            !State.closed.equals(state) &&
+            !State.declined.equals(state) &&
+            !State.markedForDeletion.equals(state);
+    }
+    */
+
+    public Boolean getStateCmdList() {
+        return stateCmdList;
     }
 
     public JsonObject toJson() {
@@ -402,6 +429,7 @@ public class Demand extends Entity {
             }
             out.put(SALE_ASSOCIATE_KEYS, jsonArray);
         }
+        out.put(STATE_COMMAND_LIST, getStateCmdList());
         return out;
     }
 
@@ -462,6 +490,7 @@ public class Demand extends Entity {
                 addSaleAssociateKey(jsonArray.getLong(i));
             }
         }
+        if (in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); }
 
         // Shortcut
         if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }

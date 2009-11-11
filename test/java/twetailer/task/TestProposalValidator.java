@@ -825,25 +825,25 @@ public class TestProposalValidator {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
-                proposal.setSource(Source.twitter);
+                proposal.setSource(Source.mail);
                 return proposal;
             }
         };
 
-        final Twitter mockTwitterAccount = (new Twitter() {
+        ProposalValidator.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                throw new TwitterException("done in purpose");
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws DataSourceException {
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setEmail("@@@@");
+                return saleAssociate;
             }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+        };
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 }

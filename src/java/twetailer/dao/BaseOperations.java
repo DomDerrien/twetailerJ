@@ -68,7 +68,7 @@ public class BaseOperations {
     private static Object[] prepareParameter(String name, Object value) throws DataSourceException {
         String declaration;
         if (value == null) {
-            throw new DataSourceException("Cannot determine the class of an attribute with a null value");
+            throw new DataSourceException("Cannot determine the class of the attribute " + name + " with a null value");
         }
         if (value instanceof String) {
             declaration = "String " + name;

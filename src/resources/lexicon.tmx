@@ -149,7 +149,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the state 'cancelled'</note>
             <tuv xml:lang="en">
-                <seg>Cancelled (glossary: transaction State triggered by a Consumer, or, Retailer to cease further transaction processing |
+                <seg>Cancelled (glossary): transaction State triggered by a Consumer, or, Retailer to cease further transaction processing |
                 Cancelled (see also): cancel, state-flow, state |
                 Cancelled (AKA): canceled |
                 Cancelled (since): v0.0</seg>
@@ -249,6 +249,14 @@
                 Decline (rules): Optional. Consumers can only decline open Proposals for their Demands. Declined Proposals cannot be undone |
                 Decline (see also): declined, state, state-flow, action |
                 Decline (since): v0.0</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="Declined" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the state 'declined'</note>
+            <tuv xml:lang="en">
+                <seg>Declined -- To be completed</seg>
             </tuv>
         </tu>
 

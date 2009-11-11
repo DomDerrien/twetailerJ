@@ -74,6 +74,7 @@ public class TestMailConnector {
         assertEquals("", MailConnector.getText(mailMessage));
         assertEquals(0, stream.getNotProcessedContents().length());
     }
+
     public static MockServletInputStream prepareTextStream(String from, String name, String message) {
         MockServletInputStream stream = new MockServletInputStream();
         stream.setData(
@@ -368,7 +369,7 @@ public class TestMailConnector {
         return stream;
     }
 
-    @Test
+    @Test(expected=MessagingException.class)
     public void testGetMailMessageXIV() throws IOException, MessagingException {
         final String from = "test-emitter@appspot.com";
         final String name = "Mr Emitter";
@@ -390,8 +391,8 @@ public class TestMailConnector {
         assertEquals(name, ((InternetAddress) mailMessage.getFrom()[0]).getPersonal());
         // TODO: implement the logic cleaning up the HTML tags
         // assertEquals(message, MailConnector.getText(mailMessage));
-        assertEquals("", MailConnector.getText(mailMessage)); // Just attachments have been sent
-        assertEquals(0, stream.getNotProcessedContents().length());
+
+        MailConnector.getText(mailMessage); // Just attachments have been sent => Exception MessagingException thrown!
     }
 
     public static MockServletInputStream prepareMultipartWithEmbeddedStream(String boundary, String from, String name, String message) {
@@ -459,6 +460,10 @@ public class TestMailConnector {
 
     @Test
     public void testSendMailMessage() throws UnsupportedEncodingException, MessagingException {
-        MailConnector.sendMailMessage("test", "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************");
+        MailConnector.sendMailMessage(
+                "testId",
+                "testName",
+                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************"
+        );
     }
 }

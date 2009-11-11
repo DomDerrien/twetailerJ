@@ -67,18 +67,23 @@ public class MailResponderServlet extends HttpServlet {
         rawCommandOperations.createRawCommand(rawCommand);
 
         if (rawCommand.getErrorMessage() != null) {
-            try {
-                BaseConnector.communicateToConsumer(
-                        Source.mail,
-                        consumer,
-                        LabelExtractor.get(
-                                "cp_unexpected_error",
-                                new Object[] { rawCommand.getKey(), rawCommand.getErrorMessage()},
-                                Locale.ENGLISH)
-                );
+            if (consumer != null) {
+                try {
+                    BaseConnector.communicateToConsumer(
+                            Source.mail,
+                            consumer,
+                            LabelExtractor.get(
+                                    "cp_unexpected_error",
+                                    new Object[] { rawCommand.getKey(), rawCommand.getErrorMessage()},
+                                    Locale.ENGLISH)
+                    );
+                }
+                catch (ClientException e) {
+                    // Ignored because we can't do much now
+                }
             }
-            catch (ClientException e) {
-                // Ignored because we can't do much now
+            else {
+                // No way to contact the consumer
             }
         }
         else {

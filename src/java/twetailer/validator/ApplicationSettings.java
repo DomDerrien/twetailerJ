@@ -35,13 +35,19 @@ public class ApplicationSettings {
 
     protected final static String LOGO_URL_KEY = "logoURL";
 
+    public final static String DEFAULT_PRODUCT_EMAIL = "maezel@twetailer.appspotmail.com";
+
+    private String productEmail = DEFAULT_PRODUCT_EMAIL;
+
+    protected final static String PRODUCT_EMAIL_KEY = "productEmail";
+
     public final static String DEFAULT_PRODUCT_NAME = "";
 
     private String productName = DEFAULT_PRODUCT_NAME;
 
     protected final static String PRODUCT_NAME_KEY = "productName";
 
-    public final static String DEFAULT_PRODUCT_WEBSITE = "";
+    public final static String DEFAULT_PRODUCT_WEBSITE = "http://www.twetailer.com/";
 
     private String productWebsite = DEFAULT_PRODUCT_WEBSITE;
 
@@ -51,7 +57,7 @@ public class ApplicationSettings {
 
     private String servletApiPath = DEFAULT_SERVLET_API_PATH;
 
-    protected final static String SERVLET_API_PARH_KEY = "servletApiPath";
+    protected final static String SERVLET_API_PATH_KEY = "servletApiPath";
 
     /**
      * Boolean used in the JSP file to decide if the Dojo library
@@ -105,6 +111,15 @@ public class ApplicationSettings {
     }
 
     /**
+     * Get the product e-mail address
+     *
+     * @return E-mail address
+     */
+    public String getProductEmail() {
+        return productEmail;
+    }
+
+    /**
      * Get the product name
      *
      * @return Name
@@ -142,7 +157,7 @@ public class ApplicationSettings {
         return settings;
     }
 
-    private static ApplicationSettings settings;
+    protected static ApplicationSettings settings;
 
     protected static void reset() {
         settings = null;
@@ -185,6 +200,12 @@ public class ApplicationSettings {
                 logoURL = DEFAULT_LOGO_URL;
             }
             try {
+                productEmail = appSettings.getString(PRODUCT_EMAIL_KEY);
+            }
+            catch(Exception ex) {
+                productEmail = DEFAULT_PRODUCT_EMAIL;
+            }
+            try {
                 productName = appSettings.getString(PRODUCT_NAME_KEY);
             }
             catch(Exception ex) {
@@ -197,7 +218,7 @@ public class ApplicationSettings {
                 productWebsite = DEFAULT_PRODUCT_WEBSITE;
             }
             try {
-                servletApiPath = appSettings.getString(SERVLET_API_PARH_KEY);
+                servletApiPath = appSettings.getString(SERVLET_API_PATH_KEY);
             }
             catch(Exception ex) {
                 servletApiPath = DEFAULT_SERVLET_API_PATH;

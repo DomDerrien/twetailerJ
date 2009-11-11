@@ -3,6 +3,8 @@ package twetailer.dto;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -312,6 +314,7 @@ public class TestDemand {
         assertEquals(range, clone.getRange());
         assertEquals(rangeUnit, clone.getRangeUnit());
         assertEquals(saleAssociateKeys, clone.getSaleAssociateKeys());
+        assertFalse(clone.getStateCmdList());
     }
 
     @Test
@@ -387,5 +390,43 @@ public class TestDemand {
         parameters.put(Demand.REFERENCE, key);
 
         assertEquals(key, new Demand(parameters).getKey());
+    }
+
+    @Test
+    public void testSetStateCommandList() {
+        Demand demand = new Demand();
+        // demand.getState() == State.opened by default
+        assertTrue(demand.getStateCmdList());
+
+        demand.setState(State.cancelled);
+        assertFalse(demand.getStateCmdList());
+
+        demand.setState(State.invalid);
+        assertTrue(demand.getStateCmdList());
+
+        demand.setState(State.declined);
+        assertFalse(demand.getStateCmdList());
+
+        demand.setState(State.published);
+        assertTrue(demand.getStateCmdList());
+
+        demand.setState(State.markedForDeletion);
+        assertFalse(demand.getStateCmdList());
+
+        demand.setState(State.opened);
+        assertTrue(demand.getStateCmdList());
+
+        demand.setState(State.closed);
+        assertFalse(demand.getStateCmdList());
+    }
+
+    @Test
+    public void testGetSerialized() {
+        Demand demand = new Demand();
+        demand.addCriterion("one");
+        demand.addCriterion("two");
+        demand.addCriterion("three");
+
+        assertEquals("one two three", demand.getSerializedCriteria());
     }
 }

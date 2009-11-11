@@ -215,4 +215,14 @@ public class TestSaleAssociate {
 
         assertEquals(key, new SaleAssociate(parameters).getKey());
     }
+
+    @Test
+    public void testGetSerialized() {
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.addCriterion("one");
+        saleAssociate.addCriterion("two");
+        saleAssociate.addCriterion("three");
+
+        assertEquals("one two three", saleAssociate.getSerializedCriteria());
+    }
 }

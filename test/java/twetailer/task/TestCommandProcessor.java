@@ -19,7 +19,6 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -357,7 +356,7 @@ public class TestCommandProcessor {
         final IllegalArgumentException exception = new IllegalArgumentException("Done in purpose");
         DemandOperations demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) {
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
                 throw exception;
             }
         };
@@ -1247,7 +1246,6 @@ public class TestCommandProcessor {
         final Long consumerKey = 6666L;
         final Long saleAssociateKey = 7777L;
         final Long demandKey = 888888L;
-        final State proposalState = State.confirmed;
 
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
@@ -1287,10 +1285,10 @@ public class TestCommandProcessor {
                 assertTrue(parameters.containsKey(Demand.PROPOSAL_KEYS));
                 assertEquals(proposalKey, (Long) parameters.get(Demand.PROPOSAL_KEYS));
                 assertTrue(parameters.containsKey(Command.STATE));
-                assertEquals(proposalState.toString(), (String) parameters.get(Command.STATE));
+                assertEquals(State.confirmed.toString(), (String) parameters.get(Command.STATE));
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setState(proposalState);
+                demand.setState(State.confirmed);
                 demand.setOwnerKey(consumerKey);
                 demand.setSource(Source.simulated);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -1843,7 +1841,7 @@ public class TestCommandProcessor {
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
                 return new ArrayList<Demand>();
             }
         };
@@ -1873,7 +1871,7 @@ public class TestCommandProcessor {
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 List<Demand> demands = new ArrayList<Demand>();
@@ -1911,7 +1909,7 @@ public class TestCommandProcessor {
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setLocationKey(locationKey);

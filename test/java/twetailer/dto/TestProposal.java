@@ -1,8 +1,10 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,6 +191,7 @@ public class TestProposal {
         assertEquals(quantity, clone.getQuantity());
         assertEquals(storeKey, clone.getStoreKey());
         assertEquals(total, clone.getTotal());
+        assertFalse(clone.getStateCmdList());
     }
 
     @Test
@@ -250,5 +253,43 @@ public class TestProposal {
         Proposal proposal = new Proposal(parameters);
         assertEquals(key, proposal.getKey());
         assertEquals(key, proposal.getDemandKey());
+    }
+
+    @Test
+    public void testSetStateCommandList() {
+        Proposal proposal = new Proposal();
+        // proposal.getState() == State.opened by default
+        assertTrue(proposal.getStateCmdList());
+
+        proposal.setState(State.cancelled);
+        assertFalse(proposal.getStateCmdList());
+
+        proposal.setState(State.invalid);
+        assertTrue(proposal.getStateCmdList());
+
+        proposal.setState(State.declined);
+        assertFalse(proposal.getStateCmdList());
+
+        proposal.setState(State.published);
+        assertTrue(proposal.getStateCmdList());
+
+        proposal.setState(State.markedForDeletion);
+        assertFalse(proposal.getStateCmdList());
+
+        proposal.setState(State.opened);
+        assertTrue(proposal.getStateCmdList());
+
+        proposal.setState(State.closed);
+        assertFalse(proposal.getStateCmdList());
+    }
+
+    @Test
+    public void testGetSerialized() {
+        Proposal proposal = new Proposal();
+        proposal.addCriterion("one");
+        proposal.addCriterion("two");
+        proposal.addCriterion("three");
+
+        assertEquals("one two three", proposal.getSerializedCriteria());
     }
 }

@@ -17,9 +17,19 @@
         value="8"
     />
 
+    <property name="rwa.companyName"
+        description="Company name"
+        value="Steven Milstein &amp; Associates inc."
+    />
+
     <property name="rwa.productName"
         description="Product name"
         value="Twetailer"
+    />
+
+    <property name="rwa.productEmail"
+        description="Product e-mail address"
+        value="maezel@twetailer.appspotmail.com"
     />
 
     <property name="rwa.productWebsite"
@@ -217,7 +227,7 @@
         <antcall target="step-jsdoc-unzip" />
     </target>
 
-    <target name="compile" description="compile the application" depends="step-info-get, step-file-format">
+    <target name="compile" description="compile the application" depends="step-info-get, step-statistics-get, step-file-format">
         <echo>Target: compile</echo>
         <!-- Verify JavaScript code -->
         <!-- TODO: use JSLint -->
@@ -381,6 +391,7 @@
             <token key="rwa.release" value="${rwa.release}" />
             <token key="rwa.productWebsite" value="${rwa.productWebsite}" />
             <token key="rwa.productName" value="${rwa.productName}" />
+            <token key="rwa.productEmail" value="${rwa.productEmail}" />
             <token key="rwa.productShortName" value="${rwa.productShortName}" />
             <token key="rwa.contextRoot" value="${rwa.contextRoot}" />
             <token key="rwa.servletApiPath" value="${rwa.servletApiPath}" />
@@ -409,6 +420,9 @@
         </tstamp>
         <property name="rwa.stageId" value="${DSTAMP}.${TSTAMP}" />
         <property name="rwa.taggedDir" value="${rwa.stageId}" />
+    </target>
+
+    <target name="step-statistics-get" unless="testcase">
         <resourcecount property="java.source.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />

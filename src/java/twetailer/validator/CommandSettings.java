@@ -99,6 +99,7 @@ public class CommandSettings {
         published,
         confirmed,
         closed,
+        declined,
         cancelled,
         markedForDeletion
     }

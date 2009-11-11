@@ -50,16 +50,23 @@ public class MailConnector {
      * Use the Google App Engine API to send an mail message to the identified e-mail address
      *
      * @param receiverId E-mail address of the recipient
+     * @param receiverName recipient display name
      * @param message Message to send
+     *
+     * @throws MessagingException If one of the message attribute is incorrect
+     * @throws UnsupportedEncodingException if the e-mail address is invalid
      */
-    public static void sendMailMessage(String receiverId, String message) throws UnsupportedEncodingException, MessagingException {
+    public static void sendMailMessage(String receiverId, String recipientName, String message) throws MessagingException, UnsupportedEncodingException {
+        InternetAddress twetailer = new InternetAddress(ApplicationSettings.get().getProductEmail(), ApplicationSettings.get().getProductName(), "UTF-8");
+        InternetAddress recipient = new InternetAddress(receiverId, recipientName, "UTF-8");
+
         Properties properties = new Properties();
         Session session = Session.getDefaultInstance(properties, null);
 
         MimeMessage mailMessage = new MimeMessage(session);
-        mailMessage.setFrom(new InternetAddress("maezel@twetailer.appspotmail.com", ApplicationSettings.get().getProductName()));
-        mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(receiverId, ""));
-        mailMessage.setSubject("Twetailer notification");
+        mailMessage.setFrom(twetailer);
+        mailMessage.setRecipient(Message.RecipientType.TO, recipient);
+        mailMessage.setSubject("Twetailer notification"); // FIXME: Should be a localized message!
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);
     }
@@ -127,7 +134,7 @@ public class MailConnector {
                 return partText;
             }
         }
-        return "";
+        throw new MessagingException("No text found in this message");
     }
 
     /**

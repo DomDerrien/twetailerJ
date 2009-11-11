@@ -655,7 +655,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalForAnInvalidDemand() throws DataSourceException {
+    public void testProcessOneValidProposalForAnInvalidDemandButWithCommunicationFailure() throws DataSourceException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -683,11 +683,21 @@ public class TestProposalProcessor {
         };
 
         final Long consumerKey = 12590L;
+        final Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+        consumer.setEmail("@@@@");
+        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                return consumer;
+            }
+        };
+
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(consumerKey);
         demand.setState(State.invalid);
-        demand.setSource(Source.twitter); // To be able to simulate the failure
+        demand.setSource(Source.mail); // To be able to simulate the failure
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -700,7 +710,8 @@ public class TestProposalProcessor {
         final Long saleAssociateKey = 444L;
         final SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setKey(saleAssociateKey);
-        saleAssociate.setPreferredConnection(Source.simulated);
+        saleAssociate.setEmail("@@@@");
+        saleAssociate.setPreferredConnection(Source.mail);
         ProposalProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
@@ -709,13 +720,5 @@ public class TestProposalProcessor {
         };
 
         ProposalProcessor.process(proposalKey);
-
-        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        String expectedMessage = LabelExtractor.get("pp_inform_saleAssociate_demand_not_published_state", new Object[] { proposalKey, demandKey, State.invalid.toString() }, Locale.ENGLISH);
-        assertEquals(
-                expectedMessage,
-                BaseConnector.getLastCommunicationInSimulatedMode()
-        );
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
     }
 }

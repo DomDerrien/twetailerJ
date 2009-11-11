@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.connector.TestMailConnector;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockAppEngineEnvironment;
@@ -123,6 +124,116 @@ public class TestMailResponderServlet {
         };
 
         MailResponderServlet servlet = new MailResponderServlet();
+        servlet.rawCommandOperations = rawCommandOperations;
+
+        servlet.doPost(request, null);
+    }
+
+    public static MockServletInputStream prepareCorruptedStream(String from, String name) {
+        MockServletInputStream stream = new MockServletInputStream();
+        stream.setData(
+                "MIME-Version: 1.0\n" +
+                "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
+                "From: " + name + "<" + from + ">\n" +
+                "To: Twetailer <maezel@twetailer.appspotmail.com>\n" +
+                "Cc: unit@test.net\n" +
+                "Subject: Twetailer\n" +
+                "Content-Type: multipart/alternative; boundary=BBBBBB\n" +
+                "\n" +
+                "--BBBBBB\n" +
+                "\n" +
+                "--BBBBBB--"
+        );
+        return stream;
+    }
+
+    @Test
+    public void testDoPostIV() throws IOException {
+        final String from = "test-emitter@appspot.com";
+        final String name = "Mr Emitter";
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return prepareCorruptedStream(from, name);
+            }
+        };
+
+        final Long consumerKey = 12345L;
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(InternetAddress address) {
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setEmail(from);
+                return consumer;
+            }
+        };
+
+        final Long rawCommandKey = 12345L;
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand createRawCommand(RawCommand rawCommand) {
+                assertNotNull(from, rawCommand.getEmitterId());
+                assertNull(rawCommand.getCommand());
+                assertNotNull(rawCommand.getErrorMessage());
+                rawCommand.setKey(rawCommandKey);
+                return rawCommand;
+            }
+        };
+
+        MailResponderServlet servlet = new MailResponderServlet();
+        servlet.consumerOperations = consumerOperations;
+        servlet.rawCommandOperations = rawCommandOperations;
+
+        servlet.doPost(request, null);
+    }
+
+    @Test
+    public void testDoPostV() throws IOException {
+        final String from = "test-emitter@appspot.com";
+        final String name = "Mr Emitter";
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return prepareCorruptedStream(from, name);
+            }
+        };
+
+        final Long consumerKey = 12345L;
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(InternetAddress address) {
+                Consumer consumer = new Consumer() {
+                    int accessNbAllowed = 1;
+                    @Override
+                    public String getEmail() {
+                        if (0 < accessNbAllowed) {
+                            -- accessNbAllowed;
+                            return from;
+                        }
+                        // To generate UnsupportedEncodingException in MailConnector.setMailMessage()
+                        return "@@@@";
+                    }
+                };
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+
+        final Long rawCommandKey = 12345L;
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand createRawCommand(RawCommand rawCommand) {
+                assertNotNull(from, rawCommand.getEmitterId());
+                assertNull(rawCommand.getCommand());
+                assertNotNull(rawCommand.getErrorMessage());
+                rawCommand.setKey(rawCommandKey);
+                return rawCommand;
+            }
+        };
+
+        MailResponderServlet servlet = new MailResponderServlet();
+        servlet.consumerOperations = consumerOperations;
         servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);

@@ -69,6 +69,11 @@ public class Proposal extends Entity {
     public static final String QUANTITY = Demand.QUANTITY;
 
     @Persistent
+    private Boolean stateCmdList = Boolean.TRUE;
+
+    public static final String STATE_COMMAND_LIST = Demand.STATE_COMMAND_LIST;
+
+    @Persistent
     private Long storeKey;
 
     public static final String STORE_KEY = Store.STORE_KEY;
@@ -166,6 +171,12 @@ public class Proposal extends Entity {
             throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
         }
         this.state = state;
+        // TODO: remove the following setting when the inheritance is fixed
+        stateCmdList =
+            !State.cancelled.equals(state) &&
+            !State.closed.equals(state) &&
+            !State.declined.equals(state) &&
+            !State.markedForDeletion.equals(state);
     }
 
     public void setState(String state) {
@@ -236,6 +247,22 @@ public class Proposal extends Entity {
         this.quantity = quantity;
     }
 
+    /* TODO: enable when the inheritance is fixed !
+    @Override
+    public void setState(State state) {
+        super.setState();
+        stateCmdList =
+            !State.cancelled.equals(state) &&
+            !State.closed.equals(state) &&
+            !State.declined.equals(state) &&
+            !State.markedForDeletion.equals(state);
+    }
+    */
+
+    public Boolean getStateCmdList() {
+        return stateCmdList;
+    }
+
     public Long getStoreKey() {
         return storeKey;
     }
@@ -272,6 +299,7 @@ public class Proposal extends Entity {
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         out.put(PRICE, getPrice());
         out.put(QUANTITY, getQuantity());
+        out.put(STATE_COMMAND_LIST, getStateCmdList());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
         out.put(TOTAL, getTotal());
         return out;
@@ -310,6 +338,7 @@ public class Proposal extends Entity {
         if (in.containsKey(DEMAND_KEY)) { setDemandKey(in.getLong(DEMAND_KEY)); }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
+        if (in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(TOTAL)) { setTotal(in.getDouble(TOTAL)); }
 

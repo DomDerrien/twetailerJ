@@ -234,6 +234,9 @@ public class CommandProcessor {
         else if (Source.jabber.equals(rawCommand.getSource())) {
             consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, rawCommand.getEmitterId(), 1);
         }
+        else if (Source.mail.equals(rawCommand.getSource())) {
+            consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, rawCommand.getEmitterId(), 1);
+        }
         else {
             throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
         }
@@ -896,18 +899,10 @@ public class CommandProcessor {
         }
         */
         else {
-            /* FIXME: select only {invalid, open, published, proposed} demands -- {canceled, closed} demands can be only listed with the Web console
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put(Command.OWNER_KEY, consumer.getKey());
-            parameters.put(Command.STATE, State.opened.toString());
-            parameters.put(Command.STATE, State.published.toString());
-            parameters.put(Command.STATE, State.confirmed.toString());
-            parameters.put("!" + Command.STATE, State.closed.toString());
-            parameters.put("!" + Command.STATE, State.cancelled.toString());
+            parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
             List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
-            => Operator <> not supported by App Engine :(
-            */
-            List<Demand> demands = demandOperations.getDemands(pm, Command.OWNER_KEY, consumer.getKey(), 0);
             if (demands.size() == 0) {
                 communicateToEmitter(
                         rawCommand,

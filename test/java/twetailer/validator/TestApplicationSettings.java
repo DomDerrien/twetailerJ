@@ -56,8 +56,10 @@ public class TestApplicationSettings {
     final String loginURL = "login";
     final String mainURL = "main";
     final String logoURL = "http://";
+    final String productEmail = "e-mail";
     final String productName = "name";
     final String productWebsite = "http://";
+    final String servletApiPath = "/api/path";
 
     class MockResourceBundle extends ListResourceBundle {
         private Object[][] contents = new Object[][]{
@@ -66,8 +68,10 @@ public class TestApplicationSettings {
             {ApplicationSettings.LOGIN_PAGE_URL_KEY, loginURL},
             {ApplicationSettings.MAIN_PAGE_URL_KEY, mainURL},
             {ApplicationSettings.LOGO_URL_KEY, logoURL},
+            {ApplicationSettings.PRODUCT_EMAIL_KEY, productEmail},
             {ApplicationSettings.PRODUCT_NAME_KEY, productName},
-            {ApplicationSettings.PRODUCT_WEBSITE_KEY, productWebsite}
+            {ApplicationSettings.PRODUCT_WEBSITE_KEY, productWebsite},
+            {ApplicationSettings.SERVLET_API_PATH_KEY, servletApiPath}
         };
         protected Object[][] getContents() {
             return contents;
@@ -100,8 +104,10 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
@@ -115,8 +121,10 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
@@ -130,8 +138,10 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
@@ -145,8 +155,10 @@ public class TestApplicationSettings {
         assertEquals(ApplicationSettings.DEFAULT_LOGIN_PAGE_URL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
@@ -160,8 +172,10 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(ApplicationSettings.DEFAULT_MAIN_PAGE_URL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
@@ -175,14 +189,33 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(ApplicationSettings.DEFAULT_LOGO_URL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
+    }
+
+    @Test
+    public void testProductEmailNotSet() {
+        MockResourceBundle mRB = new MockResourceBundle();
+        mRB.contents[5] = new Object[] { ApplicationSettings.PRODUCT_EMAIL_KEY, 12345L };
+        ApplicationSettings.setResourceBundle(mRB);
+
+        assertTrue(ApplicationSettings.get().isUseCDN());
+        assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
+        assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
+        assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
+        assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(ApplicationSettings.DEFAULT_PRODUCT_EMAIL, ApplicationSettings.get().getProductEmail());
+        assertEquals(productName, ApplicationSettings.get().getProductName());
+        assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
     public void testProductNameNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[5] = new Object[] { ApplicationSettings.PRODUCT_NAME_KEY, 12345L };
+        mRB.contents[6] = new Object[] { ApplicationSettings.PRODUCT_NAME_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
@@ -190,14 +223,16 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(ApplicationSettings.DEFAULT_PRODUCT_NAME, ApplicationSettings.get().getProductName());
         assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
     }
 
     @Test
     public void testProductWebsiteNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[6] = new Object[] { ApplicationSettings.PRODUCT_WEBSITE_KEY, 12345L };
+        mRB.contents[7] = new Object[] { ApplicationSettings.PRODUCT_WEBSITE_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
@@ -205,7 +240,26 @@ public class TestApplicationSettings {
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
         assertEquals(ApplicationSettings.DEFAULT_PRODUCT_WEBSITE, ApplicationSettings.get().getProductWebsite());
+        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
+    }
+
+    @Test
+    public void testServletApiPathNotSet() {
+        MockResourceBundle mRB = new MockResourceBundle();
+        mRB.contents[8] = new Object[] { ApplicationSettings.SERVLET_API_PATH_KEY, 12345L };
+        ApplicationSettings.setResourceBundle(mRB);
+
+        assertTrue(ApplicationSettings.get().isUseCDN());
+        assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
+        assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
+        assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
+        assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
+        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
+        assertEquals(productName, ApplicationSettings.get().getProductName());
+        assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
+        assertEquals(ApplicationSettings.DEFAULT_SERVLET_API_PATH, ApplicationSettings.get().getServletApiPath());
     }
 }

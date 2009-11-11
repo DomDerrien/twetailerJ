@@ -27,7 +27,7 @@ public class BaseConnector {
      * @throws ClientException If the communication fails
      */
     public static void communicateToEmitter(RawCommand rawCommand, String message) throws ClientException {
-        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), message);
+        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), null, message);
     }
 
     /**
@@ -44,9 +44,13 @@ public class BaseConnector {
         // TODO: implement the fallback mechanism
         String userId =
             Source.twitter.equals(source) ? consumer.getTwitterId() :
-            Source.jabber.equals(source) ? consumer.getJabberId() :
-            null;
-        communicateToUser(source, userId, message);
+                Source.jabber.equals(source) ? consumer.getJabberId() :
+                    Source.mail.equals(source) ? consumer.getEmail() :
+                        null;
+        String userName = consumer.getName();
+        if (userId != null || Source.simulated.equals(source)) {
+            communicateToUser(source, userId, userName, message);
+        }
     }
 
     /**
@@ -63,9 +67,13 @@ public class BaseConnector {
         // TODO: implement the fallback mechanism
         String userId =
             Source.twitter.equals(source) ? saleAssociate.getTwitterId() :
-            Source.jabber.equals(source) ? saleAssociate.getJabberId() :
-            null;
-        communicateToUser(source, userId, message);
+                Source.jabber.equals(source) ? saleAssociate.getJabberId() :
+                    Source.mail.equals(source) ? saleAssociate.getEmail() :
+                        null;
+        String userName = saleAssociate.getName();
+        if (userId != null || Source.simulated.equals(source)) {
+            communicateToUser(source, userId, userName, message);
+        }
     }
 
     /** Buffer for the last messages sent with the source being set to <code>Source.simulated</code>, made available only for test purposes */
@@ -77,10 +85,12 @@ public class BaseConnector {
      *
      * @param source Identifier of the suggested communication channel
      * @param userId User identifier (can be Jabber ID, Twitter screen name, etc.)
+     * @param userName User display name
      * @param message Message to send back
+     *
      * @throws ClientException If all communication attempts fail
      */
-    protected static void communicateToUser(Source source, String userId, String message) throws ClientException {
+    protected static void communicateToUser(Source source, String userId, String userName, String message) throws ClientException {
         if (Source.simulated.equals(source)) {
             lastCommunications.add(message);
         }
@@ -99,6 +109,14 @@ public class BaseConnector {
             List<String> messageParts = checkMessageLength(message, 512);
             for (String part: messageParts) {
                 JabberConnector.sendInstantMessage(userId, part);
+            }
+        }
+        else if (Source.mail.equals(source)) {
+            try {
+                MailConnector.sendMailMessage(userId, userName, message);
+            }
+            catch(Exception ex) {
+                throw new ClientException("Cannot communicate by E-mail to the consumer: " + userId, ex);
             }
         }
         else if (Source.facebook.equals(source)) {
