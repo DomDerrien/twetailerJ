@@ -68,8 +68,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("help: " + Prefix.action.toString());
                 return rawCommand;
             }
@@ -90,8 +89,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("!help " + Prefix.action.toString());
                 return rawCommand;
             }
@@ -112,8 +110,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("? " + Prefix.action.toString());
                 return rawCommand;
             }
@@ -134,8 +131,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand(Prefix.action.toString() + "?");
                 return rawCommand;
             }
@@ -156,8 +152,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand(Action.demand.toString() + "?");
                 return rawCommand;
             }
@@ -178,8 +173,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand(State.invalid.toString() + "?");
                 return rawCommand;
             }
@@ -205,8 +199,7 @@ public class TestHelpCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("help: " + helpKeywordEquivalent);
                 return rawCommand;
             }
@@ -236,8 +229,7 @@ public class TestHelpCommandProcessor {
         command.put(Command.NEED_HELP, ""); // No keyword, just the help system call
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -253,8 +245,7 @@ public class TestHelpCommandProcessor {
         command.put(Command.ACTION, Action.help.toString()); // No keyword, just the help system call
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -270,8 +261,7 @@ public class TestHelpCommandProcessor {
         command.put(Command.NEED_HELP, "\t : zzz"); // No keyword, just the help system call
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -287,8 +277,7 @@ public class TestHelpCommandProcessor {
         command.put(Command.NEED_HELP, "zzz:"); // No keyword, just the help system call
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -304,8 +293,7 @@ public class TestHelpCommandProcessor {
         command.put(Command.NEED_HELP, "zzz\t"); // No keyword, just the help system call
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -321,8 +309,7 @@ public class TestHelpCommandProcessor {
         command.put(Command.NEED_HELP, "zzz "); // No keyword, just the help system call
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author ddd
+ * @author Dom Derrien
  *
  */
 public class MockOpenIdUserManager implements OpenIdUserManager {

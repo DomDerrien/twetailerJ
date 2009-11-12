@@ -38,7 +38,7 @@ public class CancelCommandProcessor {
                 if (State.closed.equals(state) || State.cancelled.equals(state) || State.markedForDeletion.equals(state)) {
                     String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
                     communicateToConsumer(
-                            rawCommand.getSource(),
+                            rawCommand,
                             consumer,
                             LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale())
                     );
@@ -47,7 +47,7 @@ public class CancelCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_cancel_invalid_demand_id", consumer.getLocale())
                 );
@@ -60,7 +60,7 @@ public class CancelCommandProcessor {
                 demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                 Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         CommandProcessor.generateTweet(demand, location, consumer.getLocale())
                 );
@@ -87,7 +87,7 @@ public class CancelCommandProcessor {
                 if (State.closed.equals(state) || State.cancelled.equals(state) || State.markedForDeletion.equals(state)) {
                     String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
                     communicateToSaleAssociate(
-                            rawCommand.getSource(),
+                            rawCommand,
                             saleAssociate,
                             LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale())
                     );
@@ -96,7 +96,7 @@ public class CancelCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToSaleAssociate(
-                        rawCommand.getSource(),
+                        rawCommand,
                         saleAssociate,
                         LabelExtractor.get("cp_command_cancel_invalid_proposal_id", consumer.getLocale())
                 );
@@ -108,7 +108,7 @@ public class CancelCommandProcessor {
                 // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                 communicateToSaleAssociate(
-                        rawCommand.getSource(),
+                        rawCommand,
                         saleAssociate,
                         CommandProcessor.generateTweet(proposal, saleAssociate.getLocale())
                 );
@@ -126,7 +126,7 @@ public class CancelCommandProcessor {
         */
         else {
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     LabelExtractor.get("cp_command_cancel_missing_demand_id", consumer.getLocale())
             );

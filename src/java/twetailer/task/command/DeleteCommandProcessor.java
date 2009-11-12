@@ -34,7 +34,7 @@ public class DeleteCommandProcessor {
                 if (!State.cancelled.equals(state)) {
                     String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
                     communicateToConsumer(
-                            rawCommand.getSource(),
+                            rawCommand,
                             consumer,
                             LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale())
                     );
@@ -44,7 +44,7 @@ public class DeleteCommandProcessor {
                     demand.setState(State.markedForDeletion);
                     demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                     communicateToConsumer(
-                            rawCommand.getSource(),
+                            rawCommand,
                             consumer,
                             LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demand.getKey() }, consumer.getLocale())
                     );
@@ -52,7 +52,7 @@ public class DeleteCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_delete_invalid_demand_id", consumer.getLocale())
                 );
@@ -67,7 +67,7 @@ public class DeleteCommandProcessor {
                 if (!State.cancelled.equals(state)) {
                     String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
                     communicateToSaleAssociate(
-                            rawCommand.getSource(),
+                            rawCommand,
                             saleAssociate,
                             LabelExtractor.get("cp_command_delete_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale())
                     );
@@ -77,7 +77,7 @@ public class DeleteCommandProcessor {
                     proposal.setState(State.markedForDeletion);
                     proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                     communicateToSaleAssociate(
-                            rawCommand.getSource(),
+                            rawCommand,
                             saleAssociate,
                             LabelExtractor.get("cp_command_delete_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
                     );
@@ -85,7 +85,7 @@ public class DeleteCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToSaleAssociate(
-                        rawCommand.getSource(),
+                        rawCommand,
                         saleAssociate,
                         LabelExtractor.get("cp_command_delete_invalid_proposal_id", consumer.getLocale())
                 );
@@ -93,7 +93,7 @@ public class DeleteCommandProcessor {
         }
         else {
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     LabelExtractor.get("cp_command_delete_invalid_parameters", consumer.getLocale())
             );

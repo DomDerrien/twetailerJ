@@ -24,6 +24,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.ApplicationSettings;
@@ -141,7 +142,7 @@ public class DemandProcessor {
                         }
                         else {
                             communicateToSaleAssociate(
-                                    saleAssociate.getPreferredConnection(),
+                                    new RawCommand(saleAssociate.getPreferredConnection()),
                                     saleAssociate,
                                     LabelExtractor.get(
                                             demand.getQuantity() == 1 ? "dp_inform_saleAssociate_about_demand_one_item" : "dp_inform_saleAssociate_about_demand_many_items",

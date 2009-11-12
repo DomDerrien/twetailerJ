@@ -28,6 +28,13 @@
 
     <!-- Used 1 time in query history -->
     <datastore-index kind="Demand" ancestor="false" source="auto">
+        <property name="ownerKey" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="Demand" ancestor="false" source="auto">
         <property name="state" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>

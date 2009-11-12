@@ -14,8 +14,8 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
-import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -93,7 +93,11 @@ public class ProposalValidator {
                 }
                 if (message != null) {
                     log.warning("Invalid state for the proposal: " + proposal.getKey() + " -- message: " + message);
-                    communicateToSaleAssociate(proposal.getSource(), saleAssociate, message);
+                    communicateToSaleAssociate(
+                            new RawCommand(proposal.getSource()),
+                            saleAssociate,
+                            message
+                    );
                     proposal.setState(CommandSettings.State.invalid);
                 }
                 else {

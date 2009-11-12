@@ -83,8 +83,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -133,8 +132,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -180,8 +178,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -231,8 +228,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -286,8 +282,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -341,8 +336,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -396,8 +390,7 @@ public class TestSupplyCommandProcessor {
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();

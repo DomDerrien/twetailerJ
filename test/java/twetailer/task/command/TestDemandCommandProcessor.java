@@ -102,8 +102,7 @@ public class TestDemandCommandProcessor {
         command.put(Location.POSTAL_CODE, "zzz");
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -159,8 +158,7 @@ public class TestDemandCommandProcessor {
         command.put(Location.POSTAL_CODE, "zzz");
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -216,8 +214,7 @@ public class TestDemandCommandProcessor {
         command.put(Location.POSTAL_CODE, "zzz");
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -256,8 +253,7 @@ public class TestDemandCommandProcessor {
         command.put(Demand.QUANTITY, 123L);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -315,8 +311,7 @@ public class TestDemandCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -371,8 +366,7 @@ public class TestDemandCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -430,8 +424,7 @@ public class TestDemandCommandProcessor {
         JsonObject command = new GenericJsonObject();
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
         command.put(Location.POSTAL_CODE, "zzz");
 
         // App Engine Environment mock
@@ -494,8 +487,7 @@ public class TestDemandCommandProcessor {
         JsonObject command = new GenericJsonObject();
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -555,8 +547,7 @@ public class TestDemandCommandProcessor {
         command.put(Demand.LOCATION_KEY, locationKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -624,8 +615,7 @@ public class TestDemandCommandProcessor {
         JsonObject command = new GenericJsonObject();
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -694,8 +684,7 @@ public class TestDemandCommandProcessor {
         JsonObject command = new GenericJsonObject();
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -764,8 +753,7 @@ public class TestDemandCommandProcessor {
         JsonObject command = new GenericJsonObject();
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -826,8 +814,7 @@ public class TestDemandCommandProcessor {
         command.put(Command.HASH_TAG, "test");
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
@@ -896,8 +883,7 @@ public class TestDemandCommandProcessor {
         command.put(Command.HASH_TAG, "test");
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -959,8 +945,7 @@ public class TestDemandCommandProcessor {
         command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -1014,8 +999,7 @@ public class TestDemandCommandProcessor {
         command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();

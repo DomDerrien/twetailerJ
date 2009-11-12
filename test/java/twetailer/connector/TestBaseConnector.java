@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class TestBaseConnector {
 
     @Test(expected=ClientException.class)
     public void testUnsupportedSource() throws ClientException {
-        BaseConnector.communicateToUser(null, null, null, null);
+        BaseConnector.communicateToUser(null, null, null, null, null, Locale.ENGLISH);
     }
 
     @Test
@@ -51,18 +52,17 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
         final String message = "test";
-        BaseConnector.communicateToUser(Source.simulated, null, null, message);
+        BaseConnector.communicateToUser(Source.simulated, null, null, null, message, Locale.ENGLISH);
 
         assertEquals(BaseConnector.getLastCommunicationInSimulatedMode(), message);
     }
 
     @Test
     public void testFromRawCommand() throws ClientException {
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         final String message = "test";
-        BaseConnector.communicateToEmitter(rawCommand, message);
+        BaseConnector.communicateToEmitter(rawCommand, message, Locale.ENGLISH);
 
         assertEquals(BaseConnector.getLastCommunicationInSimulatedMode(), message);
     }
@@ -82,7 +82,7 @@ public class TestBaseConnector {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        BaseConnector.communicateToUser(Source.twitter, twitterId, null, message);
+        BaseConnector.communicateToUser(Source.twitter, twitterId, null, null, message, Locale.ENGLISH);
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -100,7 +100,7 @@ public class TestBaseConnector {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        BaseConnector.communicateToUser(Source.twitter, twitterId, null, message);
+        BaseConnector.communicateToUser(Source.twitter, twitterId, null, null, message, Locale.ENGLISH);
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -109,78 +109,81 @@ public class TestBaseConnector {
     public void testJabberSource() throws ClientException {
         final String jabberId = "jId";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.jabber, jabberId, null, message);
+        BaseConnector.communicateToUser(Source.jabber, jabberId, null, null, message, Locale.ENGLISH);
     }
 
     @Test
     public void testMailSourceI() throws ClientException {
         final String mailAddress = "unit@test.net";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.mail, mailAddress, null, message);
+        final String subject = "subject";
+        BaseConnector.communicateToUser(Source.mail, mailAddress, null, subject, message, Locale.ENGLISH);
     }
 
     @Test(expected=ClientException.class)
     public void testMailSourceII() throws ClientException {
         final String mailAddress = "@@@";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.mail, mailAddress, null, message);
+        final String subject = "subject";
+        BaseConnector.communicateToUser(Source.mail, mailAddress, null, subject, message, Locale.ENGLISH);
     }
 
     @Test(expected=RuntimeException.class)
     public void testFacebookSource() throws ClientException {
         final String facebookId = "fId";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.facebook, facebookId, null, message);
+        final String subject = "subject";
+        BaseConnector.communicateToUser(Source.facebook, facebookId, null, subject, message, Locale.ENGLISH);
     }
 
     @Test
     public void testCommunicateToConsumerI() throws ClientException {
-        BaseConnector.communicateToConsumer(Source.simulated, new Consumer(), null);
+        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), null);
     }
 
     @Test
     public void testCommunicateToConsumerII() throws ClientException {
-        BaseConnector.communicateToConsumer(Source.twitter, new Consumer(), null);
+        BaseConnector.communicateToConsumer(new RawCommand(Source.twitter), new Consumer(), null);
     }
 
     @Test
     public void testCommunicateToConsumerIII() throws ClientException {
-        BaseConnector.communicateToConsumer(Source.jabber, new Consumer(), null);
+        BaseConnector.communicateToConsumer(new RawCommand(Source.jabber), new Consumer(), null);
     }
 
     @Test
     public void testCommunicateToConsumerIV() throws ClientException {
-        BaseConnector.communicateToConsumer(Source.mail, new Consumer(), null);
+        BaseConnector.communicateToConsumer(new RawCommand(Source.mail), new Consumer(), null);
     }
 
     @Test
     public void testCommunicateToConsumerV() throws ClientException {
-        BaseConnector.communicateToConsumer(Source.mail, new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, null);
+        BaseConnector.communicateToConsumer(new RawCommand(Source.mail), new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, null);
     }
 
     @Test
     public void testCommunicateToSaleAssociateI() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), null);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), null);
     }
 
     @Test
     public void testCommunicateToSaleAssociateII() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(Source.twitter, new SaleAssociate(), null);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.twitter), new SaleAssociate(), null);
     }
 
     @Test
     public void testCommunicateToSaleAssociateIII() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(Source.jabber, new SaleAssociate(), null);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.jabber), new SaleAssociate(), null);
     }
 
     @Test
     public void testCommunicateToSaleAssociateIV() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(Source.mail, new SaleAssociate(), null);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.mail), new SaleAssociate(), null);
     }
 
     @Test
     public void testCommunicateToSaleAssociateV() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(Source.mail, new SaleAssociate() { @Override public String getEmail() { return "unit@test.net"; } }, null);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.mail), new SaleAssociate() { @Override public String getEmail() { return "unit@test.net"; } }, null);
     }
 
     @Test
@@ -193,14 +196,14 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1000));
 
         String first = "first";
-        BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), first);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), first);
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1));
 
         String second = "second";
-        BaseConnector.communicateToSaleAssociate(Source.simulated, new SaleAssociate(), second);
+        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), second);
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));

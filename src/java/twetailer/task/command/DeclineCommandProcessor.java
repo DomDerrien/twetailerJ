@@ -26,7 +26,7 @@ public class DeclineCommandProcessor {
         if (command.containsKey(Demand.REFERENCE)) {
             SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.decline);
             communicateToSaleAssociate(
-                    rawCommand.getSource(),
+                    rawCommand,
                     saleAssociate,
                     "Not yet implemented!" // FIXME: decides what it means for sale associates
             );
@@ -41,14 +41,14 @@ public class DeclineCommandProcessor {
                 proposal.setState(State.declined);
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
                 );
             }
             catch(Exception ex) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_decline_invalid_proposal_id", consumer.getLocale())
                 );
@@ -56,7 +56,7 @@ public class DeclineCommandProcessor {
         }
         else {
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     LabelExtractor.get("cp_command_decline_invalid_parameters", consumer.getLocale())
             );

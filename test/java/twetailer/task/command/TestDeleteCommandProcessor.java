@@ -61,8 +61,7 @@ public class TestDeleteCommandProcessor {
         command.put(Command.ACTION, Action.delete.toString());
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -89,8 +88,7 @@ public class TestDeleteCommandProcessor {
         command.put(Demand.REFERENCE, 1111L);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -123,8 +121,7 @@ public class TestDeleteCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -157,8 +154,7 @@ public class TestDeleteCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -202,8 +198,7 @@ public class TestDeleteCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, 1111L);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -257,8 +252,7 @@ public class TestDeleteCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -312,8 +306,7 @@ public class TestDeleteCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();

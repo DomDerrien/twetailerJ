@@ -6,6 +6,10 @@ import javax.jdo.annotations.Persistent;
 
 import twetailer.connector.BaseConnector.Source;
 
+/**
+ * @author Dom Derrien
+ *
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class RawCommand extends Entity {
 
@@ -24,9 +28,17 @@ public class RawCommand extends Entity {
     @Persistent
     private Source source;
 
+    @Persistent
+    private String subject;
+
     /** Default constructor */
     public RawCommand() {
         super();
+    }
+
+    public RawCommand(Source source) {
+        this();
+        setSource(source);
     }
 
     public String getCommand() {
@@ -74,5 +86,13 @@ public class RawCommand extends Entity {
 
     public void setSource(String source) {
         setSource(Source.valueOf(source));
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

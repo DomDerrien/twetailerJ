@@ -11,7 +11,7 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 /**
- * @author ddd
+ * @author Dom Derrien
  *
  */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")

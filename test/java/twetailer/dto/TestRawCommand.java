@@ -35,10 +35,17 @@ public class TestRawCommand {
         assertNotNull(object.getCreationDate());
     }
 
+    @Test
+    public void testConstructorII() {
+        RawCommand object = new RawCommand(Source.mail);
+        assertEquals(Source.mail, object.getSource());
+    }
+
     String command = "North Pole, H0H 0H0, Canada";
     String emitterId = "emitter";
     Long messageId = 67890L;
     Source source = Source.simulated;
+    String subject = "subject";
 
     @Test
     public void testAccessors() {
@@ -49,11 +56,13 @@ public class TestRawCommand {
         object.setMessageId(messageId);
         object.setSource(source);
         object.setSource(source.toString());
+        object.setSubject(subject);
 
         assertEquals(command, object.getCommand());
         assertEquals(emitterId, object.getEmitterId());
         assertEquals(messageId, object.getMessageId());
         assertEquals(source, object.getSource());
+        assertEquals(subject, object.getSubject());
     }
 
     @Test(expected=IllegalArgumentException.class)

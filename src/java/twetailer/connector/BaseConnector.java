@@ -2,6 +2,8 @@ package twetailer.connector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Logger;
 
 import twetailer.ClientException;
 import twetailer.dto.Consumer;
@@ -10,6 +12,8 @@ import twetailer.dto.SaleAssociate;
 import twitter4j.TwitterException;
 
 public class BaseConnector {
+    private static final Logger log = Logger.getLogger(BaseConnector.class.getName());
+
     public enum Source {
         simulated,
         twitter,
@@ -23,25 +27,27 @@ public class BaseConnector {
      *
      * @param rawCommand Command as received by the system, from an IM, in a tweet, an e-mail, etc.
      * @param message Message to send back
+     * @param locale recipient's locale
      *
      * @throws ClientException If the communication fails
      */
-    public static void communicateToEmitter(RawCommand rawCommand, String message) throws ClientException {
-        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), null, message);
+    public static void communicateToEmitter(RawCommand rawCommand, String message, Locale locale) throws ClientException {
+        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), null, rawCommand.getSubject(), message, locale);
     }
 
     /**
      * Send the specified message to the identified consumer, using the suggested communication channel.
      * If the suggested communication fails, the System can try to use another channel if the Consumer profile contains alternatives.
      *
-     * @param source Identifier of the suggested communication channel
+     * @param rawCommand Message triggering this response
      * @param consumer targeted user
      * @param message Message to send back
      *
      * @throws ClientException If all communication attempts fail
      */
-    public static void communicateToConsumer(Source source, Consumer consumer, String message) throws ClientException {
+    public static void communicateToConsumer(RawCommand rawCommand, Consumer consumer, String message) throws ClientException {
         // TODO: implement the fallback mechanism
+        Source source = rawCommand.getSource();
         String userId =
             Source.twitter.equals(source) ? consumer.getTwitterId() :
                 Source.jabber.equals(source) ? consumer.getJabberId() :
@@ -49,7 +55,7 @@ public class BaseConnector {
                         null;
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, userId, userName, message);
+            communicateToUser(source, userId, userName, rawCommand.getSubject(), message, consumer.getLocale());
         }
     }
 
@@ -57,14 +63,15 @@ public class BaseConnector {
      * Send the specified message to the identified sale associate, using the suggested communication channel.
      * If the suggested communication fails, the System can try to use another channel if the SaleAssociate profile contains alternatives.
      *
-     * @param source Identifier of the suggested communication channel
+     * @param rawCommand Message triggering this response
      * @param saleAssociate targeted user
      * @param message Message to send back
      *
      * @throws ClientException If all communication attempts fail
      */
-    public static void communicateToSaleAssociate(Source source, SaleAssociate saleAssociate, String message) throws ClientException {
+    public static void communicateToSaleAssociate(RawCommand rawCommand, SaleAssociate saleAssociate, String message) throws ClientException {
         // TODO: implement the fallback mechanism
+        Source source = rawCommand.getSource();
         String userId =
             Source.twitter.equals(source) ? saleAssociate.getTwitterId() :
                 Source.jabber.equals(source) ? saleAssociate.getJabberId() :
@@ -72,7 +79,7 @@ public class BaseConnector {
                         null;
         String userName = saleAssociate.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, userId, userName, message);
+            communicateToUser(source, userId, userName, rawCommand.getSubject(), message, saleAssociate.getLocale());
         }
     }
 
@@ -86,11 +93,13 @@ public class BaseConnector {
      * @param source Identifier of the suggested communication channel
      * @param userId User identifier (can be Jabber ID, Twitter screen name, etc.)
      * @param userName User display name
+     * @param subject TODO
      * @param message Message to send back
-     *
+     * @param locale recipient's locale
      * @throws ClientException If all communication attempts fail
      */
-    protected static void communicateToUser(Source source, String userId, String userName, String message) throws ClientException {
+    protected static void communicateToUser(Source source, String userId, String userName, String subject, String message, Locale locale) throws ClientException {
+        log.warning("Communicating with " + userId + " (medium: " + source.toString() + ") -- message: " + message);
         if (Source.simulated.equals(source)) {
             lastCommunications.add(message);
         }
@@ -113,7 +122,7 @@ public class BaseConnector {
         }
         else if (Source.mail.equals(source)) {
             try {
-                MailConnector.sendMailMessage(userId, userName, message);
+                MailConnector.sendMailMessage(userId, userName, subject, message, locale);
             }
             catch(Exception ex) {
                 throw new ClientException("Cannot communicate by E-mail to the consumer: " + userId, ex);

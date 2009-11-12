@@ -24,10 +24,12 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
@@ -57,6 +59,7 @@ public class TestProposalProcessor {
         ProposalProcessor.proposalOperations = ProposalProcessor._baseOperations.getProposalOperations();
         ProposalProcessor.locationOperations = ProposalProcessor._baseOperations.getLocationOperations();
         ProposalProcessor.proposalOperations = ProposalProcessor._baseOperations.getProposalOperations();
+        ProposalProcessor.rawCommandOperations = ProposalProcessor._baseOperations.getRawCommandOperations();
         ProposalProcessor.saleAssociateOperations = ProposalProcessor._baseOperations.getSaleAssociateOperations();
         ProposalProcessor.storeOperations = ProposalProcessor._baseOperations.getStoreOperations();
     }
@@ -117,12 +120,26 @@ public class TestProposalProcessor {
             }
         };
 
+        final Long rawCommandKey = 111L;
+        final Source source = Source.simulated;
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(ownerKey);
         demand.setState(State.published);
-        demand.setSource(Source.simulated);
+        demand.setSource(source);
+        demand.setRawCommandId(rawCommandKey);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -201,12 +218,26 @@ public class TestProposalProcessor {
             }
         };
 
+        final Long rawCommandKey = 111L;
+        final Source source = Source.simulated;
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(ownerKey);
         demand.setState(State.published);
-        demand.setSource(Source.simulated);
+        demand.setSource(source);
+        demand.setRawCommandId(rawCommandKey);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -285,12 +316,26 @@ public class TestProposalProcessor {
             }
         };
 
+        final Long rawCommandKey = 111L;
+        final Source source = Source.simulated;
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(ownerKey);
         demand.setState(State.published);
-        demand.setSource(Source.simulated);
+        demand.setSource(source);
+        demand.setRawCommandId(rawCommandKey);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -369,12 +414,26 @@ public class TestProposalProcessor {
             }
         };
 
+        final Long rawCommandKey = 111L;
+        final Source source = Source.simulated;
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(ownerKey);
         demand.setState(State.published);
-        demand.setSource(Source.simulated);
+        demand.setSource(source);
+        demand.setRawCommandId(rawCommandKey);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -453,12 +512,26 @@ public class TestProposalProcessor {
             }
         };
 
+        final Long rawCommandKey = 111L;
+        final Source source = Source.simulated;
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(ownerKey);
         demand.setState(State.published);
-        demand.setSource(Source.simulated);
+        demand.setSource(source);
+        demand.setRawCommandId(rawCommandKey);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -613,6 +686,19 @@ public class TestProposalProcessor {
             }
         };
 
+        final Long rawCommandKey = 111L;
+        final Source source = Source.twitter; // To be able to simulate the failure
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long consumerKey = 12590L;
         final Demand demand = new Demand();
         demand.setKey(demandKey);
@@ -620,7 +706,8 @@ public class TestProposalProcessor {
         demand.addCriterion("test");
         demand.setExpirationDate(demandExpirationDate);
         demand.setState(State.published);
-        demand.setSource(Source.twitter); // To be able to simulate the failure
+        demand.setSource(source);
+        demand.setRawCommandId(rawCommandKey);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
@@ -656,6 +743,19 @@ public class TestProposalProcessor {
 
     @Test
     public void testProcessOneValidProposalForAnInvalidDemandButWithCommunicationFailure() throws DataSourceException {
+        final Long rawCommandKey = 111L;
+        final Source source = Source.mail; // To be able to simulate the failure
+        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -671,6 +771,7 @@ public class TestProposalProcessor {
         proposal.setState(State.published);
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
+        proposal.setRawCommandId(rawCommandKey);
 
         ProposalProcessor.proposalOperations = new ProposalOperations() {
             @Override
@@ -697,7 +798,7 @@ public class TestProposalProcessor {
         demand.setKey(demandKey);
         demand.setOwnerKey(consumerKey);
         demand.setState(State.invalid);
-        demand.setSource(Source.mail); // To be able to simulate the failure
+        demand.setSource(source);
         ProposalProcessor.demandOperations = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {

@@ -87,8 +87,7 @@ public class TestCloseCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -140,8 +139,7 @@ public class TestCloseCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -194,8 +192,7 @@ public class TestCloseCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -267,8 +264,7 @@ public class TestCloseCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -303,8 +299,7 @@ public class TestCloseCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -375,8 +370,7 @@ public class TestCloseCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -452,8 +446,7 @@ public class TestCloseCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -547,8 +540,7 @@ public class TestCloseCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -627,8 +619,7 @@ public class TestCloseCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -685,8 +676,7 @@ public class TestCloseCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -706,8 +696,7 @@ public class TestCloseCommandProcessor {
         command.put(Command.ACTION, Action.close.toString());
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 

@@ -14,11 +14,13 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
@@ -34,6 +36,7 @@ public class ProposalProcessor {
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
@@ -124,8 +127,9 @@ public class ProposalProcessor {
                                 consumer.getLocale()
                         );
                     }
+                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
                     communicateToConsumer(
-                            demand.getSource(),
+                            rawCommand,
                             consumer,
                             message
                     );
@@ -144,7 +148,8 @@ public class ProposalProcessor {
                             },
                             saleAssociate.getLocale()
                     );
-                    communicateToSaleAssociate(saleAssociate.getPreferredConnection(), saleAssociate, message);
+                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, proposal.getRawCommandId());
+                    communicateToSaleAssociate(rawCommand, saleAssociate, message);
                 }
             }
             catch (DataSourceException ex) {

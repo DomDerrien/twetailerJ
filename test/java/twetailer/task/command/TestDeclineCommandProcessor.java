@@ -63,8 +63,7 @@ public class TestDeclineCommandProcessor {
         command.put(Command.ACTION, Action.decline.toString());
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -101,8 +100,7 @@ public class TestDeclineCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -137,8 +135,7 @@ public class TestDeclineCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -195,8 +192,7 @@ public class TestDeclineCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();

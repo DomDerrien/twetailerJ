@@ -39,7 +39,7 @@ public class ListCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_list_invalid_demand_id", consumer.getLocale())
                 );
@@ -48,7 +48,7 @@ public class ListCommandProcessor {
                 // Echo back the specified demand
                 Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         CommandProcessor.generateTweet(demand, location, consumer.getLocale())
                 );
@@ -62,7 +62,7 @@ public class ListCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_list_invalid_proposal_id", consumer.getLocale())
                 );
@@ -70,7 +70,7 @@ public class ListCommandProcessor {
             if (proposal != null) {
                 // Echo back the specified proposal
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         CommandProcessor.generateTweet(proposal, saleAssociate.getLocale())
                 );
@@ -91,7 +91,7 @@ public class ListCommandProcessor {
             List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, 0);
             if (demands.size() == 0) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get(
                                 "cp_command_list_no_active_demand",
@@ -101,7 +101,7 @@ public class ListCommandProcessor {
             }
             else {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get(
                                 "cp_command_list_series_introduction",
@@ -112,7 +112,7 @@ public class ListCommandProcessor {
                 for (Demand demand: demands) {
                     Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
                     communicateToConsumer(
-                            rawCommand.getSource(),
+                            rawCommand,
                             consumer,
                             CommandProcessor.generateTweet(demand, location, consumer.getLocale())
                     );

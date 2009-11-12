@@ -121,8 +121,7 @@ public class TestConfirmCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -160,8 +159,7 @@ public class TestConfirmCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -209,8 +207,7 @@ public class TestConfirmCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
@@ -264,8 +261,7 @@ public class TestConfirmCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 

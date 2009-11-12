@@ -48,7 +48,7 @@ public class DemandCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_demand_invalid_demand_id", consumer.getLocale())
                 );
@@ -64,7 +64,7 @@ public class DemandCommandProcessor {
                     // Echo back the updated demand
                     Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
                     communicateToConsumer(
-                            rawCommand.getSource(),
+                            rawCommand,
                             consumer,
                             CommandProcessor.generateTweet(demand, location, consumer.getLocale())
                     );
@@ -73,7 +73,7 @@ public class DemandCommandProcessor {
                 }
                 else {
                     communicateToConsumer(
-                            rawCommand.getSource(),
+                            rawCommand,
                             consumer,
                             LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale())
                     );
@@ -116,7 +116,7 @@ public class DemandCommandProcessor {
             // Persist the new demand
             Demand newDemand = CommandProcessor.demandOperations.createDemand(pm, command, consumer.getKey());
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     LabelExtractor.get(
                             "cp_command_demand_acknowledge_creation",
@@ -126,7 +126,7 @@ public class DemandCommandProcessor {
             );
             Location location = newDemand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, newDemand.getLocationKey());
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     CommandProcessor.generateTweet(newDemand, location, consumer.getLocale())
             );
@@ -138,7 +138,7 @@ public class DemandCommandProcessor {
         String hashTag = command.getString(Command.HASH_TAG);
         if (hashTag != null){
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     LabelExtractor.get("cp_command_demand_hashtag_warning", new Object[] { demandKey, hashTag }, consumer.getLocale())
             );

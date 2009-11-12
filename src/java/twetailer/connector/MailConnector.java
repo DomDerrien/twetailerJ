@@ -3,6 +3,7 @@ package twetailer.connector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -18,6 +19,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
 
 import twetailer.validator.ApplicationSettings;
+import domderrien.i18n.LabelExtractor;
 
 public class MailConnector {
     //
@@ -50,13 +52,15 @@ public class MailConnector {
      * Use the Google App Engine API to send an mail message to the identified e-mail address
      *
      * @param receiverId E-mail address of the recipient
-     * @param receiverName recipient display name
+     * @param recipientName recipient display name
+     * @param subject Subject of the message that triggered this response
      * @param message Message to send
+     * @param locale recipient's locale
      *
      * @throws MessagingException If one of the message attribute is incorrect
      * @throws UnsupportedEncodingException if the e-mail address is invalid
      */
-    public static void sendMailMessage(String receiverId, String recipientName, String message) throws MessagingException, UnsupportedEncodingException {
+    public static void sendMailMessage(String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
         InternetAddress twetailer = new InternetAddress(ApplicationSettings.get().getProductEmail(), ApplicationSettings.get().getProductName(), "UTF-8");
         InternetAddress recipient = new InternetAddress(receiverId, recipientName, "UTF-8");
 
@@ -66,7 +70,16 @@ public class MailConnector {
         MimeMessage mailMessage = new MimeMessage(session);
         mailMessage.setFrom(twetailer);
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
-        mailMessage.setSubject("Twetailer notification"); // FIXME: Should be a localized message!
+        String responsePrefix = LabelExtractor.get("mc_mail_subject_response_prefix", locale);
+        if (subject == null || subject.length() == 0) {
+            mailMessage.setSubject(LabelExtractor.get("mc_mail_subject_response_default", locale));
+        }
+        else if (subject.startsWith(responsePrefix)) {
+            mailMessage.setSubject(responsePrefix + subject);
+        }
+        else {
+            mailMessage.setSubject(subject);
+        }
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);
     }

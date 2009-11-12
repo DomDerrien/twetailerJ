@@ -95,8 +95,7 @@ public class TestProposeCommandProcessor {
         command.put(Command.ACTION, Action.propose.toString());
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -167,8 +166,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -239,8 +237,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -311,8 +308,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -377,8 +373,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();
@@ -436,8 +431,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.PROPOSAL_KEY, proposalKey);
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         // Consumer mock
         Consumer consumer = new Consumer();

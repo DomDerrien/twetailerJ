@@ -40,8 +40,7 @@ public class JabberResponderServlet extends HttpServlet {
         Consumer consumer = consumerOperations.createConsumer(instantMessage.getFromJid());
 
         // Prepare the message to persist
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.jabber);
+        RawCommand rawCommand = new RawCommand(Source.jabber);
         rawCommand.setEmitterId(consumer.getJabberId());
         rawCommand.setCommand(instantMessage.getBody());
 

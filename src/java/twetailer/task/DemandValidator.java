@@ -19,9 +19,11 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
@@ -36,6 +38,7 @@ public class DemandValidator {
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
 
     /**
      * Check the validity of the identified demand
@@ -122,7 +125,12 @@ public class DemandValidator {
                 }
                 if (message != null) {
                     log.warning("Invalid state for the demand: " + demand.getKey() + " -- message: " + message);
-                    communicateToConsumer(demand.getSource(), consumer, message);
+                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                    communicateToConsumer(
+                            rawCommand,
+                            consumer,
+                            message
+                    );
                     demand.setState(CommandSettings.State.invalid);
                 }
                 else {

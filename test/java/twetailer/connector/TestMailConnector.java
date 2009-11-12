@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -16,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.dao.MockAppEngineEnvironment;
+import domderrien.i18n.LabelExtractor;
 import domderrien.mocks.MockHttpServletRequest;
 import domderrien.mocks.MockServletInputStream;
 
@@ -459,11 +461,46 @@ public class TestMailConnector {
     }
 
     @Test
-    public void testSendMailMessage() throws UnsupportedEncodingException, MessagingException {
+    public void testSendMailMessageI() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
                 "testId",
                 "testName",
-                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************"
+                LabelExtractor.get("mc_mail_subject_response_prefix", Locale.ENGLISH) + "subject",
+                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
+    public void testSendMailMessageII() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                "testId",
+                "testName",
+                "subject",
+                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
+    public void testSendMailMessageIII() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                "testId",
+                "testName",
+                "",
+                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
+    public void testSendMailMessageIV() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                "testId",
+                "testName",
+                null,
+                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                Locale.ENGLISH
         );
     }
 }

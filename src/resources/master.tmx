@@ -1363,6 +1363,26 @@
             </tuv>
         </tu>
 
+        <!-- ========================== -->
+        <!-- Mail connector definitions -->
+        <!-- ========================== -->
+
+        <tu tuid="mc_mail_subject_response_default" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Default subject for e-mail sent to end-users</note>
+            <tuv xml:lang="en">
+                <seg>Twetailer notification</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="mc_mail_subject_response_prefix" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Prefix put in front of e-mail subject when replying to an end-user message</note>
+            <tuv xml:lang="en">
+                <seg>Re: </seg>
+            </tuv>
+        </tu>
+
         <!-- ========================= -->
         <!-- Robot message definitions -->
         <!-- ========================= -->

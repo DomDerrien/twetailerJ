@@ -42,8 +42,7 @@ public class MailResponderServlet extends HttpServlet {
         Consumer consumer = null;
 
         // Prepare the message to persist
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.mail);
+        RawCommand rawCommand = new RawCommand(Source.mail);
 
         try {
             // Extract the incoming message
@@ -57,7 +56,9 @@ public class MailResponderServlet extends HttpServlet {
 
             // Fill up the message to persist
             rawCommand.setEmitterId(consumer.getEmail());
-            rawCommand.setCommand(MailConnector.getText(mailMessage));
+            rawCommand.setSubject(mailMessage.getSubject());
+            String command = MailConnector.getText(mailMessage);
+            rawCommand.setCommand(command);
         }
         catch (MessagingException ex) {
             rawCommand.setErrorMessage("Error while parsing the mail message -- ex: " + ex.getMessage());
@@ -70,7 +71,7 @@ public class MailResponderServlet extends HttpServlet {
             if (consumer != null) {
                 try {
                     BaseConnector.communicateToConsumer(
-                            Source.mail,
+                            rawCommand,
                             consumer,
                             LabelExtractor.get(
                                     "cp_unexpected_error",

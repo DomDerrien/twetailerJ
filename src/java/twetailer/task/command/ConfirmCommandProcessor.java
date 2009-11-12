@@ -36,7 +36,7 @@ public class ConfirmCommandProcessor {
         }
         catch(Exception ex) {
             communicateToConsumer(
-                    rawCommand.getSource(),
+                    rawCommand,
                     consumer,
                     LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale())
             );
@@ -44,7 +44,7 @@ public class ConfirmCommandProcessor {
         if (demand != null) {
             if (!State.published.equals(demand.getState())) {
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposal.getKey(), demand.getKey(), demand.getState().toString() }, consumer.getLocale())
                 );
@@ -52,7 +52,7 @@ public class ConfirmCommandProcessor {
             else {
                 // Inform the consumer of the successful confirmation
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        rawCommand,
                         consumer,
                         LabelExtractor.get(
                                 "cp_command_confirm_acknowledge_confirmation",
@@ -70,7 +70,7 @@ public class ConfirmCommandProcessor {
                 // Inform the sale associate of the successful confirmation
                 SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
                 communicateToSaleAssociate(
-                        saleAssociate.getPreferredConnection(),
+                        new RawCommand(saleAssociate.getPreferredConnection()),
                         saleAssociate,
                         LabelExtractor.get(
                                 "cp_command_confirm_inform_about_confirmation",

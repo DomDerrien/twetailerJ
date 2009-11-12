@@ -117,8 +117,7 @@ public class TestCommandProcessor {
 
     @Test
     public void testRetrieveConsumerI() throws DataSourceException {
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         assertNotNull(CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
     }
@@ -141,8 +140,7 @@ public class TestCommandProcessor {
         };
         CommandProcessor.consumerOperations = consumerOperations;
 
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.twitter);
+        RawCommand rawCommand = new RawCommand(Source.twitter);
         rawCommand.setEmitterId(emitterId);
 
         assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
@@ -166,8 +164,7 @@ public class TestCommandProcessor {
         };
         CommandProcessor.consumerOperations = consumerOperations;
 
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.jabber);
+        RawCommand rawCommand = new RawCommand(Source.jabber);
         rawCommand.setEmitterId(emitterId);
 
         assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
@@ -191,8 +188,7 @@ public class TestCommandProcessor {
         };
         CommandProcessor.consumerOperations = consumerOperations;
 
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.facebook); // Unsupported source
+        RawCommand rawCommand = new RawCommand(Source.facebook); // Unsupported source
         rawCommand.setEmitterId(emitterId);
 
         CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand);
@@ -211,8 +207,7 @@ public class TestCommandProcessor {
         };
         CommandProcessor.consumerOperations = consumerOperations;
 
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.twitter);
+        RawCommand rawCommand = new RawCommand(Source.twitter);
         rawCommand.setEmitterId(emitterId);
 
         CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand); // No user...
@@ -241,8 +236,7 @@ public class TestCommandProcessor {
         };
         CommandProcessor.consumerOperations = consumerOperations;
 
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.mail);
+        RawCommand rawCommand = new RawCommand(Source.mail);
         rawCommand.setEmitterId(emitterId);
 
         assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
@@ -271,9 +265,8 @@ public class TestCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setKey(commandKey);
-                rawCommand.setSource(Source.simulated);
                 // No command
                 return rawCommand;
             }
@@ -282,7 +275,7 @@ public class TestCommandProcessor {
                 assertEquals(commandKey, rawCommand.getKey());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertNotSame("", rawCommand.getErrorMessage());
-                rawCommand.setSource(Source.simulated);
+                // rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
         };
@@ -305,10 +298,9 @@ public class TestCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setKey(commandKey);
                 rawCommand.setCommand("!list test blah-blah-bla");
-                rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
             @Override
@@ -316,7 +308,7 @@ public class TestCommandProcessor {
                 assertEquals(commandKey, rawCommand.getKey());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertNotSame("", rawCommand.getErrorMessage());
-                rawCommand.setSource(Source.simulated);
+                // rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
         };
@@ -348,10 +340,9 @@ public class TestCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setKey(commandKey);
                 rawCommand.setCommand("!list test blah-blah-bla " + CommandProcessor.DEBUG_INFO_SWITCH);
-                rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
             @Override
@@ -359,7 +350,7 @@ public class TestCommandProcessor {
                 assertEquals(commandKey, rawCommand.getKey());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertNotSame("", rawCommand.getErrorMessage());
-                rawCommand.setSource(Source.simulated);
+                // rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
         };
@@ -390,8 +381,7 @@ public class TestCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("? demand");
                 return rawCommand;
             }
@@ -411,8 +401,7 @@ public class TestCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("!" + action + " ref:10 wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
                 return rawCommand;
             }
@@ -435,8 +424,7 @@ public class TestCommandProcessor {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
+                RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setCommand("!" + action + " wii console");
                 return rawCommand;
             }

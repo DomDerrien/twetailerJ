@@ -42,7 +42,7 @@ public class ProposeCommandProcessor {
             }
             catch(Exception ex) {
                 communicateToSaleAssociate(
-                        rawCommand.getSource(),
+                        rawCommand,
                         saleAssociate,
                         LabelExtractor.get("cp_command_proposal_invalid_proposal_id", consumer.getLocale())
                 );
@@ -55,7 +55,7 @@ public class ProposeCommandProcessor {
                     proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                     // Echo back the updated proposal
                     communicateToSaleAssociate(
-                            rawCommand.getSource(),
+                            rawCommand,
                             saleAssociate,
                             CommandProcessor.generateTweet(proposal, consumer.getLocale())
                     );
@@ -64,7 +64,7 @@ public class ProposeCommandProcessor {
                 }
                 else {
                     communicateToSaleAssociate(
-                            rawCommand.getSource(),
+                            rawCommand,
                             saleAssociate,
                             LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposal.getKey(), state }, consumer.getLocale())
                     );
@@ -77,7 +77,7 @@ public class ProposeCommandProcessor {
             // Persist the new proposal
             Proposal newProposal = CommandProcessor.proposalOperations.createProposal(pm, command, saleAssociate);
             communicateToSaleAssociate(
-                    rawCommand.getSource(),
+                    rawCommand,
                     saleAssociate,
                     LabelExtractor.get(
                             "cp_command_proposal_acknowledge_creation",
@@ -86,7 +86,7 @@ public class ProposeCommandProcessor {
                     )
             );
             communicateToSaleAssociate(
-                    rawCommand.getSource(),
+                    rawCommand,
                     saleAssociate,
                     CommandProcessor.generateTweet(newProposal, consumer.getLocale())
             );
@@ -98,7 +98,7 @@ public class ProposeCommandProcessor {
         String hashTag = command.getString(Command.HASH_TAG);
         if (hashTag != null){
             communicateToSaleAssociate(
-                    rawCommand.getSource(),
+                    rawCommand,
                     saleAssociate,
                     LabelExtractor.get("cp_command_proposal_hashtag_warning", new Object[] { proposalKey, hashTag }, consumer.getLocale())
             );

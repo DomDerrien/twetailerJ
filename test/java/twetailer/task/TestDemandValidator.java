@@ -25,9 +25,11 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockPersistenceManager;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.RawCommand;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -83,6 +85,7 @@ public class TestDemandValidator {
         DemandValidator.consumerOperations = DemandValidator._baseOperations.getConsumerOperations();
         DemandValidator.demandOperations = DemandValidator._baseOperations.getDemandOperations();
         DemandValidator.locationOperations = DemandValidator._baseOperations.getLocationOperations();
+        DemandValidator.rawCommandOperations = DemandValidator._baseOperations.getRawCommandOperations();
 
         appEnv.tearDown();
     }
@@ -145,6 +148,19 @@ public class TestDemandValidator {
         // Invalid criteria
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -161,6 +177,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 return demand;
             }
             @Override
@@ -174,6 +191,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process(demandKey);
 
+        System.err.println(BaseConnector.getLastCommunicationInSimulatedMode());
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
@@ -184,6 +202,19 @@ public class TestDemandValidator {
         //
         // Invalid criteria
         //
+
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
 
         // DemandOperations mock
         final Long demandKey = 67890L;
@@ -201,6 +232,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 return demand;
             }
             @Override
@@ -226,6 +258,19 @@ public class TestDemandValidator {
         // Invalid expiration date
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -242,6 +287,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 return demand;
             }
@@ -268,6 +314,19 @@ public class TestDemandValidator {
         // Invalid expiration date
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -284,6 +343,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 return demand;
             }
@@ -311,6 +371,19 @@ public class TestDemandValidator {
         // Invalid range
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -327,6 +400,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -355,6 +429,19 @@ public class TestDemandValidator {
         // Invalid range
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -371,6 +458,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -399,6 +487,19 @@ public class TestDemandValidator {
         // Invalid range
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -415,6 +516,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -443,6 +545,19 @@ public class TestDemandValidator {
         // Invalid range
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -459,6 +574,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
@@ -487,6 +603,19 @@ public class TestDemandValidator {
         // Invalid range
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -503,6 +632,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
@@ -531,6 +661,19 @@ public class TestDemandValidator {
         // Invalid range
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -547,6 +690,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
@@ -576,6 +720,19 @@ public class TestDemandValidator {
         // Invalid quantity
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -592,6 +749,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -621,6 +779,19 @@ public class TestDemandValidator {
         // Invalid quantity
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -637,6 +808,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
@@ -666,6 +838,19 @@ public class TestDemandValidator {
         // Invalid quantity
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -682,6 +867,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -712,6 +898,19 @@ public class TestDemandValidator {
         // Invalid location key
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -732,6 +931,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -762,6 +962,19 @@ public class TestDemandValidator {
         // Invalid location key
         //
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -778,6 +991,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
@@ -835,6 +1049,19 @@ public class TestDemandValidator {
             }
         };
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -851,6 +1078,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -898,6 +1126,19 @@ public class TestDemandValidator {
             }
         };
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -914,6 +1155,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -958,6 +1200,19 @@ public class TestDemandValidator {
             }
         };
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -974,6 +1229,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -1014,6 +1270,19 @@ public class TestDemandValidator {
             }
         };
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -1030,6 +1299,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
@@ -1066,6 +1336,19 @@ public class TestDemandValidator {
             }
         };
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -1077,6 +1360,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
                 return demand;
             }
         };
@@ -1103,6 +1387,19 @@ public class TestDemandValidator {
         };
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
+        // RawCommandOperation mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(Source.twitter);
+                return rawCommand;
+            }
+        };
+
         // DemandOperations mock
         final Long demandKey = 67890L;
         DemandValidator.demandOperations = new DemandOperations() {
@@ -1114,6 +1411,7 @@ public class TestDemandValidator {
                 demand.setKey(demandKey);
                 demand.setOwnerKey(OwnerKey);
                 demand.setSource(Source.twitter);
+                demand.setRawCommandId(rawCommandKey);
                 return demand;
             }
         };

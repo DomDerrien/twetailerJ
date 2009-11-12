@@ -43,8 +43,7 @@ public class TestWishCommandProcessor {
         command.put(Command.ACTION, Action.wish.toString());
 
         // RawCommand mock
-        RawCommand rawCommand = new RawCommand();
-        rawCommand.setSource(Source.simulated);
+        RawCommand rawCommand = new RawCommand(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
     }

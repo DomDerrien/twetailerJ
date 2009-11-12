@@ -110,8 +110,7 @@ public class TweetLoader {
                     nonFollowerIds.put(senderScreenName, Boolean.TRUE);
                 }
                 else {
-                    RawCommand rawCommand = new RawCommand();
-                    rawCommand.setSource(Source.twitter);
+                    RawCommand rawCommand = new RawCommand(Source.twitter);
                     rawCommand.setEmitterId(consumer.getTwitterId());
                     rawCommand.setMessageId(dmId);
                     rawCommand.setCommand(message);
