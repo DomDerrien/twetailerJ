@@ -1,13 +1,9 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
-import static twetailer.connector.BaseConnector.communicateToEmitter;
-import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.io.PrintStream;
 import java.text.Collator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,34 +32,38 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
-import twetailer.validator.ApplicationSettings;
+import twetailer.task.command.CancelCommandProcessor;
+import twetailer.task.command.CloseCommandProcessor;
+import twetailer.task.command.ConfirmCommandProcessor;
+import twetailer.task.command.DeclineCommandProcessor;
+import twetailer.task.command.DeleteCommandProcessor;
+import twetailer.task.command.DemandCommandProcessor;
+import twetailer.task.command.HelpCommandProcessor;
+import twetailer.task.command.ListCommandProcessor;
+import twetailer.task.command.ProposeCommandProcessor;
+import twetailer.task.command.SupplyCommandProcessor;
+import twetailer.task.command.WWWCommandProcessor;
+import twetailer.task.command.WishCommandProcessor;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
-import twetailer.validator.CommandSettings.State;
-
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
-import domderrien.i18n.LabelExtractor.ResourceFileId;
-import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.mocks.MockOutputStream;
 
 public class CommandProcessor {
     private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());
 
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
+    // References made public for the business logic located in package twetailer.task.command
+    public static BaseOperations _baseOperations = new BaseOperations();
+    public static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    public static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    public static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    public static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+    public static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+    public static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+    public static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     /**
      * Prepare a message to be submit a user
@@ -259,7 +259,7 @@ public class CommandProcessor {
      * @throws DataSourceException If the data retrieval fails
      * @throws ReservedOperationException If no account is returned
      */
-    protected static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
+    public static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
         List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumer.getKey(), 1);
         if (saleAssociates.size() == 0) {
             throw new ReservedOperationException(action);
@@ -287,7 +287,7 @@ public class CommandProcessor {
         collator.setStrength(Collator.PRIMARY);
         // Clear case of help being requested at the prefix level
         if (command.containsKey(Command.NEED_HELP)) {
-            processHelpCommand(
+            HelpCommandProcessor.processHelpCommand(
                     rawCommand,
                     command.getString(Command.NEED_HELP),
                     locale,
@@ -299,7 +299,7 @@ public class CommandProcessor {
         try {
             // Alternate case of the help being asked as an action...
             if (CommandSettings.isEquivalentTo(prefixes, Prefix.help.toString(), action, collator)) {
-                processHelpCommand(
+                HelpCommandProcessor.processHelpCommand(
                         rawCommand,
                         command.containsKey(Demand.CRITERIA_ADD) ? command.getJsonArray(Demand.CRITERIA_ADD).getString(0) : "",
                         locale,
@@ -307,37 +307,37 @@ public class CommandProcessor {
                 );
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.cancel.toString(), action, collator)) {
-                processCancelCommand(pm, consumer, rawCommand, command);
+                CancelCommandProcessor.processCancelCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.close.toString(), action, collator)) {
-                processCloseCommand(pm, consumer, rawCommand, command);
+                CloseCommandProcessor.processCloseCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.confirm.toString(), action, collator)) {
-                processConfirmCommand(pm, consumer, rawCommand, command);
+                ConfirmCommandProcessor.processConfirmCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.decline.toString(), action, collator)) {
-                processDeclineCommand(pm, consumer, rawCommand, command);
+                DeclineCommandProcessor.processDeclineCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.delete.toString(), action, collator)) {
-                processDeleteCommand(pm, consumer, rawCommand, command);
+                DeleteCommandProcessor.processDeleteCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.demand.toString(), action, collator)) {
-                processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
+                DemandCommandProcessor.processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.list.toString(), action, collator)) {
-                processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
+                ListCommandProcessor.processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.propose.toString(), action, collator)) {
-                processProposeCommand(pm, consumer, rawCommand, command);
+                ProposeCommandProcessor.processProposeCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.supply.toString(), action, collator)) {
-                processSupplyCommand(pm, consumer, rawCommand, command);
+                SupplyCommandProcessor.processSupplyCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.wish.toString(), action, collator)) {
-                processWishCommand(pm, consumer, rawCommand, command);
+                WishCommandProcessor.processWishCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.www.toString(), action, collator)) {
-                processWWWCommand(pm, consumer, rawCommand, command);
+                WWWCommandProcessor.processWWWCommand(pm, consumer, rawCommand, command);
             }
             else {
                 communicateToConsumer(
@@ -380,935 +380,5 @@ public class CommandProcessor {
             }
         }
         return action;
-    }
-
-    /**
-     * Use the keyword given as an argument to select an Help text among {prefixes, actions, registered keywords}.
-     * If the extracted keyword does not match anything, the default Help text is tweeted.
-     *
-     * @param rawCommand raw command with emitter coordinates
-     * @param prefixes List of localized prefixes for the orginator's locale
-     * @param actions List of location actions for the originator's locale
-     * @param arguments Sequence submitted in addition to the question mark (?) or to the help command
-     * @param locale Originator's locale
-     * @param collator for locale-dependent comparison
-     *
-     * @throws DataSourceException If sending the help message to the originator fails
-     * @throws ClientException If the communication back with the user fails
-     */
-    protected static void processHelpCommand(RawCommand rawCommand, String arguments, Locale locale, Collator collator) throws DataSourceException, ClientException {
-        // Extract the first keyword
-        int limit = arguments.length();
-        String keyword = "";
-        for(int i = 0; i < limit; i++) {
-            char current = arguments.charAt(i);
-            if (current == ' ' || current == '\t' || current == ':') {
-                if (0 < keyword.length()) {
-                    break;
-                }
-            }
-            else {
-                keyword += current;
-            }
-        }
-        // Tweet the default help message if there's no keyword
-        if (keyword.length() == 0) {
-            communicateToEmitter(
-                    rawCommand,
-                    LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale)
-            );
-            return;
-        }
-        String message = null;
-        // TODO: lookup into the cache to see if the given keyword has already been resolved
-        // if (getCache().containsKey(keyword + locale.toString()) {
-        //     message = (String) getCache().get(keyword + locale.toString());
-        // }
-        // Check if the keyword is a prefix
-        if (true) { // if (message == null) {
-            JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-            for (Prefix prefix: Prefix.values()) {
-                if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword, collator)) {
-                    String key = prefix.toString();
-                    key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
-                    message = LabelExtractor.get(ResourceFileId.second, key, locale);
-                    break;
-                }
-            }
-        }
-        // Check if the keyword is an action
-        if (message == null) {
-            JsonObject actions = CommandLineParser.localizedActions.get(locale);
-            for (Action action: Action.values()) {
-                if (CommandSettings.isEquivalentTo(actions, action.toString(), keyword, collator)) {
-                    String key = action.toString();
-                    key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
-                    message = LabelExtractor.get(ResourceFileId.second, key, locale);
-                    break;
-                }
-            }
-        }
-        // Check if the keyword is a state
-        if (message == null) {
-            JsonObject states = CommandLineParser.localizedStates.get(locale);
-            for (State state: State.values()) {
-                if (collator.compare(states.getString(state.toString()), keyword) == 0) {
-                // if (states.getString(state.toString()).equals(keyword)) {
-                    String key = state.toString();
-                    key = key.substring(0, 1).toUpperCase(locale) + key.substring(1).toLowerCase(locale);
-                    message = LabelExtractor.get(ResourceFileId.second, key, locale);
-                    break;
-                }
-            }
-        }
-        // Check of the keyword is one registered
-        if (message == null) {
-            JsonObject helpKeywords = CommandLineParser.localizedHelpKeywords.get(locale);
-            for (String helpKeyword: helpKeywords.getMap().keySet()) {
-                JsonArray equivalents = helpKeywords.getJsonArray(helpKeyword);
-                for (int i = 0; i < equivalents.size(); i++) {
-                    if (collator.compare(equivalents.getString(i), keyword) == 0) {
-                    // if (equivalents.getString(i).equals(keyword)) {
-                        message = LabelExtractor.get(ResourceFileId.second, helpKeyword, locale);
-                        break;
-                    }
-                }
-                if (message != null) {
-                    break;
-                }
-            }
-        }
-        // Tweet the default help message if the given keyword is not recognized
-        if (message == null) {
-            message = LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale);
-        }
-        // TODO: save the match into the cache for future queries
-        // getCache().put(keyword + locale.toString(), message);
-        communicateToEmitter(
-                rawCommand,
-                message
-        );
-    }
-
-    protected static void processCancelCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by resource owner to stop the process of his resource
-        //
-        // 1. Cancel the identified demand
-        // 2. Cancel the identified proposal
-        // 3. Cancel the identified wish
-        //
-        if (command.containsKey(Demand.REFERENCE)) {
-            // Update demand state
-            Demand demand = null;
-            try {
-                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
-                State state = demand.getState();
-                if (State.closed.equals(state) || State.cancelled.equals(state) || State.markedForDeletion.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale())
-                    );
-                    demand = null; // To stop the process
-                }
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_cancel_invalid_demand_id", consumer.getLocale())
-                );
-            }
-            if (demand != null) {
-                // Update the demand and echo back the new state
-                State previousState = demand.getState();
-                demand.setState(State.cancelled);
-                // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
-                demand = demandOperations.updateDemand(pm, demand);
-                Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        generateTweet(demand, location, consumer.getLocale())
-                );
-                if (State.confirmed.equals(previousState)) {
-                    // FIXME: inform the sale associate if the demand was in the confirmed state
-                }
-                else { // if (State.published.equals(previousState)) {
-                    // FIXME: cancel also attached proposals
-                    // FIXME: inform the sale associates who proposed articles about the cancellation
-                }
-            }
-        }
-        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            // Get the sale associate
-            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.cancel);
-            // FIXME: allow also attached demand owner to cancel the proposal
-            // Update proposal state
-            Proposal proposal = null;
-            try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
-                State state = proposal.getState();
-                if (State.closed.equals(state) || State.cancelled.equals(state) || State.markedForDeletion.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale())
-                    );
-                    proposal = null; // To stop the process
-                }
-            }
-            catch(Exception ex) {
-                communicateToSaleAssociate(
-                        rawCommand.getSource(),
-                        saleAssociate,
-                        LabelExtractor.get("cp_command_cancel_invalid_proposal_id", consumer.getLocale())
-                );
-            }
-            if (proposal != null) {
-                // Update the proposal and echo back the new state
-                State previousState = proposal.getState();
-                proposal.setState(State.cancelled);
-                // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
-                proposal = proposalOperations.updateProposal(pm, proposal);
-                communicateToSaleAssociate(
-                        rawCommand.getSource(),
-                        saleAssociate,
-                        generateTweet(proposal, saleAssociate.getLocale())
-                );
-                if (!State.declined.equals(previousState)) {
-                    // FIXME: inform the consumer who owns the attached demand about the cancellation
-                    // FIXME: put the demand in the published state if the proposal was in the confirmed state
-                }
-            }
-        }
-        /* TODO: implement other variations
-        else if (command.containsKey(Wish.REFERENCE)) {
-            throw new ClientException("Canceling proposals - Not yet implemented");
-        }
-        */
-        else {
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get("cp_command_cancel_missing_demand_id", consumer.getLocale())
-            );
-        }
-    }
-
-    protected static void processCloseCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by the resource owner to report that the expected product has been delivered
-        //
-        // 1. Close the identified demand
-        // 2. Close the identified proposal
-        if (command.containsKey(Demand.REFERENCE)) {
-            Demand demand = null;
-            try {
-                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
-                State state = demand.getState();
-                if (!State.confirmed.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            LabelExtractor.get("cp_command_close_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale())
-                    );
-                    demand = null; // To stop the process
-                }
-                else {
-                    demand.setState(State.closed);
-                    demand = demandOperations.updateDemand(pm, demand);
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demand.getKey() }, consumer.getLocale())
-                    );
-                }
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_close_invalid_demand_id", consumer.getLocale())
-                );
-            }
-            if (demand !=  null) {
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put(Proposal.DEMAND_KEY, demand.getKey());
-                parameters.put(Command.STATE, State.confirmed.toString());
-                try {
-                    List<Proposal> proposals = proposalOperations.getProposals(pm, parameters, 1);
-                    if (0 < proposals.size()) {
-                        Proposal proposal = proposals.get(0);
-                        SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
-                        communicateToSaleAssociate(
-                                proposal.getSource(),
-                                saleAssociate,
-                                LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale())
-                        );
-                    }
-                }
-                catch(Exception ex) {
-                    // Too bad, the proposal owner can be informed about the demand closing...
-                    // He/she can still do it without notification
-                }
-            }
-        }
-        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            Proposal proposal = null;
-            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.close);
-            try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
-                State state = proposal.getState();
-                if (!State.confirmed.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_close_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale())
-                    );
-                    proposal = null; // To stop the process
-                }
-                else {
-                    proposal.setState(State.closed);
-                    proposal = proposalOperations.updateProposal(pm, proposal);
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
-                    );
-                }
-            }
-            catch(ClientException ex) {
-                communicateToSaleAssociate(
-                        rawCommand.getSource(),
-                        saleAssociate,
-                        LabelExtractor.get("cp_command_close_invalid_proposal_id", consumer.getLocale())
-                );
-            }
-            if (proposal != null) {
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put(Demand.PROPOSAL_KEYS, proposal.getKey());
-                parameters.put(Command.STATE, State.confirmed.toString());
-                try {
-                    List<Demand> demands = demandOperations.getDemands(pm, parameters, 1);
-                    if (0 < demands.size()) {
-                        Demand demand = demands.get(0);
-                        Consumer demandOwner = consumerOperations.getConsumer(pm, demand.getOwnerKey());
-                        communicateToConsumer(
-                                demand.getSource(),
-                                demandOwner,
-                                LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale())
-                        );
-                    }
-                }
-                catch(Exception ex) {
-                    // Too bad, the demand owner can be informed about the proposal closing...
-                    // He/she can still do it without notification
-                }
-            }
-        }
-        else {
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get("cp_command_close_invalid_parameters", consumer.getLocale())
-            );
-        }
-    }
-
-    protected static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by the consumer to accept a proposal
-        // Note that the proposal should refer to a demand owned by the consumer
-        //
-        // The consumer receives a notification with the store location
-        // The sale associate receives a notification with the confirmation and the suggestion to put the product aside for the consumer
-        //
-        Proposal proposal = null;
-        Demand demand = null;
-        try {
-            // If there's no PROPOSAL_KEY attribute, it's going to generate an exception as the desired side-effect
-            proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
-            // If the proposal is not for a demand the consumer owns, it's going to generate an exception as the desired side-effect
-            demand = demandOperations.getDemand(pm, proposal.getDemandKey(), consumer.getKey());
-        }
-        catch(Exception ex) {
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale())
-            );
-        }
-        if (demand != null) {
-            if (!State.published.equals(demand.getState())) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposal.getKey(), demand.getKey(), demand.getState().toString() }, consumer.getLocale())
-                );
-            }
-            else {
-                // Inform the consumer of the successful confirmation
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get(
-                                "cp_command_confirm_acknowledge_confirmation",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        demand.getSerializedCriteria(),
-                                        proposal.getStoreKey(),
-                                        // TODO: Add the lookup to the store table to get the store name
-                                        "\\[Not yet implemented\\]" // store.getName()
-                                },
-                                consumer.getLocale()
-                        )
-                );
-                // Inform the sale associate of the successful confirmation
-                SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
-                communicateToSaleAssociate(
-                        saleAssociate.getPreferredConnection(),
-                        saleAssociate,
-                        LabelExtractor.get(
-                                "cp_command_confirm_inform_about_confirmation",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        proposal.getSerializedCriteria(),
-                                        demand.getKey()
-                                },
-                                consumer.getLocale()
-                        )
-                );
-                // Update the proposal and the demand states
-                proposal.setState(State.confirmed);
-                proposal = proposalOperations.updateProposal(pm, proposal);
-                demand.setState(State.confirmed);
-                demand = demandOperations.updateDemand(pm, demand);
-            }
-        }
-    }
-
-    protected static void processDeclineCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by a consumer to refuse a proposal or by a sale associate to refuse a demand
-        //
-        if (command.containsKey(Demand.REFERENCE)) {
-            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.decline);
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    "Not yet implemented!" // FIXME: decides what it means for sale associates
-            );
-        }
-        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            try {
-                // Get the proposal
-                Proposal proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
-                // Get the corresponding demand -- No need for this demand, just the verification it exists
-                demandOperations.getDemand(proposal.getDemandKey(), consumer.getKey());
-                // Update the proposal state
-                proposal.setState(State.declined);
-                proposal = proposalOperations.updateProposal(pm, proposal);
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
-                );
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_decline_invalid_proposal_id", consumer.getLocale())
-                );
-            }
-        }
-        else {
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get("cp_command_decline_invalid_parameters", consumer.getLocale())
-            );
-        }
-    }
-
-    protected static void processDeleteCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by the resource owner to delete it
-        //
-        // 1. Delete the identified demand
-        // 2. Delete the identified proposal
-        if (command.containsKey(Demand.REFERENCE)) {
-            Demand demand = null;
-            try {
-                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
-                State state = demand.getState();
-                if (!State.cancelled.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale())
-                    );
-                    demand = null; // To stop the process
-                }
-                else {
-                    demand.setState(State.markedForDeletion);
-                    demand = demandOperations.updateDemand(pm, demand);
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demand.getKey() }, consumer.getLocale())
-                    );
-                }
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_delete_invalid_demand_id", consumer.getLocale())
-                );
-            }
-        }
-        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            Proposal proposal = null;
-            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.delete);
-            try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
-                State state = proposal.getState();
-                if (!State.cancelled.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_delete_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale())
-                    );
-                    proposal = null; // To stop the process
-                }
-                else {
-                    proposal.setState(State.markedForDeletion);
-                    proposal = proposalOperations.updateProposal(pm, proposal);
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_delete_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
-                    );
-                }
-            }
-            catch(ClientException ex) {
-                communicateToSaleAssociate(
-                        rawCommand.getSource(),
-                        saleAssociate,
-                        LabelExtractor.get("cp_command_delete_invalid_proposal_id", consumer.getLocale())
-                );
-            }
-        }
-        else {
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get("cp_command_delete_invalid_parameters", consumer.getLocale())
-            );
-        }
-    }
-
-    public static void processDemandCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
-        //
-        // Used by a consumer to:
-        //
-        // 1. create a new demand
-        // 2. update the identified demand
-        //
-        Long demandKey = 0L;
-        Location newLocation = Location.hasAttributeForANewLocation(command) ? locationOperations.createLocation(pm, command) : null;
-        if (command.containsKey(Demand.REFERENCE)) {
-            // Extracts the new location
-            if (newLocation != null) {
-                command.put(Demand.LOCATION_KEY, newLocation.getKey());
-            }
-            // Update the demand attributes
-            Demand demand = null;
-            try {
-                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_demand_invalid_demand_id", consumer.getLocale())
-                );
-            }
-            if (demand != null) {
-                State state = demand.getState();
-                if (state.equals(State.opened) || state.equals(State.published) || state.equals(State.invalid)) {
-                    demand.fromJson(command);
-                    demand.setState(State.opened); // Will force the re-validation of the entire demand
-                    demand.resetProposalKeys(); // All existing proposals are removed
-                    demand.resetSaleAssociateKeys(); // All existing sale associates need to be recontacted again
-                    demand = demandOperations.updateDemand(pm, demand);
-                    // Echo back the updated demand
-                    Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            generateTweet(demand, location, consumer.getLocale())
-                    );
-                    // Get the demandKey for the task scheduling
-                    demandKey = demand.getKey();
-                }
-                else {
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale())
-                    );
-                }
-            }
-        }
-        else {
-            // Extracts the new location
-            Long newLocationKey = consumer.getLocationKey();
-            if (newLocation != null) {
-                newLocationKey = newLocation.getKey();
-            }
-            // Get the latest demand or the default one
-            List<Demand> demands = demandOperations.getDemands(pm, Command.OWNER_KEY, consumer.getKey(), 1);
-            Demand latestDemand = null;
-            if (0 < demands.size()) {
-                latestDemand = demands.get(0);
-                // Transfer the demand into a new object
-                latestDemand = new Demand(latestDemand.toJson()); // To avoid attempts to persist the object
-                // Reset sensitive fields
-                latestDemand.resetKey();
-                latestDemand.resetCoreDates();
-                latestDemand.setAction(Action.demand);
-                latestDemand.setHashTag(null);
-                latestDemand.resetCriteria();
-                latestDemand.setDefaultExpirationDate();
-                latestDemand.setState(State.opened);
-            }
-            else {
-                latestDemand = new Demand();
-                // Set fields with default values
-                latestDemand.setAction(Action.demand);
-            }
-            latestDemand.setSource(rawCommand.getSource());
-            // Update of the latest command (can be the default one) with the just extracted parameters
-            command = latestDemand.fromJson(command).toJson();
-            if (newLocationKey != null && !newLocationKey.equals(command.getLong(Demand.LOCATION_KEY))) {
-                command.put(Demand.LOCATION_KEY, newLocationKey);
-            }
-            // Persist the new demand
-            Demand newDemand = demandOperations.createDemand(pm, command, consumer.getKey());
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get(
-                            "cp_command_demand_acknowledge_creation",
-                            new Object[] { newDemand.getKey() },
-                            consumer.getLocale()
-                    )
-            );
-            Location location = newDemand.getLocationKey() == null ? null : locationOperations.getLocation(pm, newDemand.getLocationKey());
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    generateTweet(newDemand, location, consumer.getLocale())
-            );
-            // Get the demandKey for the task scheduling
-            demandKey = newDemand.getKey();
-        }
-
-        // Temporary warning
-        String hashTag = command.getString(Command.HASH_TAG);
-        if (hashTag != null){
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    consumer,
-                    LabelExtractor.get("cp_command_demand_hashtag_warning", new Object[] { demandKey, hashTag }, consumer.getLocale())
-            );
-        }
-
-        // Create a task for that demand
-        if (demandKey != 0L) {
-            Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
-                        param(Demand.KEY, demandKey.toString()).
-                        method(Method.GET)
-            );
-        }
-    }
-
-    protected static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
-        //
-        // Used by actors to:
-        //
-        // 1. Get the details about the identified demand
-        // 2. Get the details about the identified proposal
-        // 3. Get the details about the identified product
-        // 4. Get the details about the identified store
-        //
-        if (command.containsKey(Demand.REFERENCE)) {
-            Demand demand = null;
-            try {
-                demand = demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_list_invalid_demand_id", consumer.getLocale())
-                );
-            }
-            if (demand != null) {
-                // Echo back the specified demand
-                Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        generateTweet(demand, location, consumer.getLocale())
-                );
-            }
-        }
-        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            Proposal proposal = null;
-            SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.list);
-            try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
-            }
-            catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get("cp_command_list_invalid_proposal_id", consumer.getLocale())
-                );
-            }
-            if (proposal != null) {
-                // Echo back the specified proposal
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        generateTweet(proposal, saleAssociate.getLocale())
-                );
-            }
-        }
-        /* TODO: implement other listing variations
-        else if (command.getString(Product.PRODUCT_KEY) != null) {
-            throw new ClientException("Listing Stores - Not yet implemented");
-        }
-        else if (command.getString(Store.STORE_KEY) != null) {
-            throw new ClientException("Listing Stores - Not yet implemented");
-        }
-        */
-        else {
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put(Command.OWNER_KEY, consumer.getKey());
-            parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
-            List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
-            if (demands.size() == 0) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get(
-                                "cp_command_list_no_active_demand",
-                                consumer.getLocale()
-                        )
-                );
-            }
-            else {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        consumer,
-                        LabelExtractor.get(
-                                "cp_command_list_series_introduction",
-                                new Object[] { demands.size() },
-                                consumer.getLocale()
-                        )
-                );
-                for (Demand demand: demands) {
-                    Location location = demand.getLocationKey() == null ? null : locationOperations.getLocation(pm, demand.getLocationKey());
-                    communicateToConsumer(
-                            rawCommand.getSource(),
-                            consumer,
-                            generateTweet(demand, location, consumer.getLocale())
-                    );
-                }
-            }
-        }
-    }
-
-    protected static void processProposeCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by a sale associate to:
-        //
-        // 1. create a new proposal
-        // 2. update the identified proposal
-        //
-        Long proposalKey = 0L;
-        SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.propose);
-        if (command.containsKey(Proposal.PROPOSAL_KEY)) {
-            // Update the proposal attributes
-            Proposal proposal = null;
-            try {
-                proposal = proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, saleAssociate.getStoreKey());
-            }
-            catch(Exception ex) {
-                communicateToSaleAssociate(
-                        rawCommand.getSource(),
-                        saleAssociate,
-                        LabelExtractor.get("cp_command_proposal_invalid_proposal_id", consumer.getLocale())
-                );
-            }
-            if (proposal != null) {
-                State state = proposal.getState();
-                if (state.equals(State.opened) || state.equals(State.published) || state.equals(State.invalid)) {
-                    proposal.fromJson(command);
-                    proposal.setState(State.opened); // Will force the re-validation of the entire proposal
-                    proposal = proposalOperations.updateProposal(pm, proposal);
-                    // Echo back the updated proposal
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            generateTweet(proposal, consumer.getLocale())
-                    );
-                    // Get the proposalKey for the task scheduling
-                    proposalKey = proposal.getKey();
-                }
-                else {
-                    communicateToSaleAssociate(
-                            rawCommand.getSource(),
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposal.getKey(), state }, consumer.getLocale())
-                    );
-                }
-            }
-        }
-        else {
-            // Get the proposal attributes
-            command.put(Command.SOURCE, rawCommand.getSource().toString());
-            // Persist the new proposal
-            Proposal newProposal = proposalOperations.createProposal(pm, command, saleAssociate);
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    LabelExtractor.get(
-                            "cp_command_proposal_acknowledge_creation",
-                            new Object[] { newProposal.getKey() },
-                            consumer.getLocale()
-                    )
-            );
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    generateTweet(newProposal, consumer.getLocale())
-            );
-            // Get the proposalKey for the task scheduling
-            proposalKey = newProposal.getKey();
-        }
-
-        // Temporary warning
-        String hashTag = command.getString(Command.HASH_TAG);
-        if (hashTag != null){
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_proposal_hashtag_warning", new Object[] { proposalKey, hashTag }, consumer.getLocale())
-            );
-        }
-
-        // Create a task for that proposal
-        if (proposalKey != 0L) {
-            Queue queue = QueueFactory.getDefaultQueue();
-            queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
-                        param(Proposal.KEY, proposalKey.toString()).
-                        method(Method.GET)
-            );
-        }
-    }
-
-    protected static void processSupplyCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
-        //
-        // Used by a sale associate to add/remove tags to his supply list
-        //
-
-        // Process the command for the identifier sale associate
-        boolean updateDetected = false;
-        SaleAssociate saleAssociate = retrieveSaleAssociate(pm, consumer, Action.supply);
-        if (command.containsKey(SaleAssociate.CRITERIA)) {
-            updateDetected = true;
-            saleAssociate.resetCriteria();
-            List<Object> tags = command.getJsonArray(SaleAssociate.CRITERIA).getList();
-            for (Object tag : tags) {
-                saleAssociate.addCriterion((String) tag);
-            }
-        }
-        if (command.containsKey(SaleAssociate.CRITERIA_ADD)) {
-            updateDetected = true;
-            List<Object> tags = command.getJsonArray(SaleAssociate.CRITERIA_ADD).getList();
-            for (Object tag : tags) {
-                saleAssociate.addCriterion((String) tag);
-            }
-        }
-        if (command.containsKey(SaleAssociate.CRITERIA_REMOVE)) {
-            updateDetected = true;
-            List<Object> tags = command.getJsonArray(SaleAssociate.CRITERIA_REMOVE).getList();
-            for (Object tag : tags) {
-                saleAssociate.removeCriterion((String) tag);
-            }
-        }
-
-        // Persist the update if any
-        if (updateDetected) {
-            saleAssociateOperations.updateSaleAssociate(pm, saleAssociate);
-        }
-
-        int tagNb = saleAssociate.getCriteria() == null ? 0 : saleAssociate.getCriteria().size();
-        if (tagNb == 0) {
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_supply_empty_tag_list", saleAssociate.getLocale())
-
-            );
-        }
-        else if (tagNb == 1) {
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { saleAssociate.getCriteria().get(0) }, saleAssociate.getLocale())
-            );
-        }
-        else {
-            communicateToSaleAssociate(
-                    rawCommand.getSource(),
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { saleAssociate.getSerializedCriteria(), tagNb }, saleAssociate.getLocale())
-            );
-        }
-    }
-
-    protected static void processWishCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
-        //
-        // Used by a consumer to:
-        //
-        // 1. Create a wish
-        // 2. Update a wish
-        //
-        throw new ClientException("Wishing - Not yet implemented");
-    }
-
-    protected static void processWWWCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException {
-        //
-        // Used by the resource owner to get the tiny URL that will open the Twetailer Web console
-        //
-        throw new ClientException("Surfing on the web - Not yet implemented");
     }
 }

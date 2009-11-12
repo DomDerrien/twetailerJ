@@ -23,11 +23,13 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class CommandLineParser {
-    protected static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
-    protected static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
-    protected static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
-    protected static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
-    protected static Map<Locale, Map<String, Pattern>> localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
+
+    // References made public for the business logic located in package twetailer.task.command
+    public static Map<Locale, JsonObject> localizedPrefixes = new HashMap<Locale, JsonObject>();
+    public static Map<Locale, JsonObject> localizedActions = new HashMap<Locale, JsonObject>();
+    public static Map<Locale, JsonObject> localizedStates = new HashMap<Locale, JsonObject>();
+    public static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+    public static Map<Locale, Map<String, Pattern>> localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
 
     /**
      * Load the command processor parameters for the specified locale
