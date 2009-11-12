@@ -614,6 +614,17 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_command_cancel_invalid_demand_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: demand key|
+                {1}: demand state
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Cancel Command has no effect of the Demand reference:{0} being in the state:{1}.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_command_cancel_invalid_proposal_id" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -622,11 +633,33 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_command_cancel_invalid_proposal_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key|
+                {1}: proposal state
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Cancel Command has no effect of the Proposal reference:{0} being in the state:{1}.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_command_close_invalid_demand_id" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
                 <seg>The Demand identifier specified with the Close Command is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_close_invalid_demand_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: demand key|
+                {1}: demand state
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Close Command has no effect of the Demand reference:{0} being in the state:{1}.</seg>
             </tuv>
         </tu>
 
@@ -662,6 +695,17 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>The Proposition identifier specified with the Close Command is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_close_invalid_proposal_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key|
+                {1}: proposal state
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Close Command has no effect of the Proposal reference:{0} being in the state:{1}.</seg>
             </tuv>
         </tu>
 
@@ -752,6 +796,112 @@
                     Please prepare product:{2} by marking it with Demand ref:{2} and placing it on the side.|
                     In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
                     \u0022d twetailer !close ref:{2}\u0022, or, \u0022d twetailer !flag ref:{2} note:[enter your issue here]\u0022</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_decline_acknowledge_proposal_closing" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Now that Proposal:{0} has been declined, you won't be notified about any related updates.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_decline_invalid_proposal_id" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>The Proposition identifier specified with the Decline Command is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_decline_invalid_parameters" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Only Proposals or Demands can be declined. Check '!help decline' for more information.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_invalid_demand_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: demand key
+                {1}: demand state
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The Delete action can only be applied to Demands in the state:cancelled. Your Demand reference:{0} is in the state:{1}.|
+                    Please cancel the proposition first with '!cancel reference:{0}'. Check '!help delete' for more information.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_acknowledge_demand_closing" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: demand key
+            </note>
+            <tuv xml:lang="en">
+                <seg>That Demand reference:{0} has been marked for deletion. It will be garbage collected in a near future. In the meanwhile, it is no more accessible.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_invalid_demand_id" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>The Proposition identifier specified with the Delete Command is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_invalid_proposal_state" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key
+                {1}: proposal state
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The Delete action can only be applied to Proposals in the state:cancelled. Your Proposal:{0} is in the state:{1}.|
+                    Please cancel the proposition first with '!cancel proposal:{0}'. Check '!help delete' for more information.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_acknowledge_proposal_closing" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>That Proposal:{0} has been marked for deletion. It will be garbage collected in a near future. In the meanwhile, it is no more accessible.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_invalid_proposal_id" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>The Proposition identifier specified with the Delete Command is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_delete_invalid_parameters" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Only Proposals or Demands can be deleted. Check '!help delete' for more information.</seg>
             </tuv>
         </tu>
 
