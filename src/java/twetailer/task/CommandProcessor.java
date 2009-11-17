@@ -203,7 +203,7 @@ public class CommandProcessor {
             if (exposeInfo) {
                 MockOutputStream out = new MockOutputStream();
                 ex.printStackTrace(new PrintStream(out));
-                log.info(out.getStream());
+                log.warning(out.getStream());
             }
         }
     }

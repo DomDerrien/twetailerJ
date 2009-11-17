@@ -14,6 +14,29 @@ import domderrien.jsontools.TransferObject;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Consumer extends Entity {
 
+    // Check http://code.google.com/appengine/docs/java/datastore/dataclasses.html for the various data types
+    //
+    // Type                             Java class
+    // ------------------------------   ---------------------------------------------------------------
+    // short text string, < 500 bytes   java.lang.String
+    // short byte string, < 500 bytes   com.google.appengine.api.datastore.ShortBlob
+    // Boolean value                    boolean or java.lang.Boolean
+    // integer                          short, java.lang.Short, int, java.lang.Integer, long, java.lang.Long
+    // floating point number            float, java.lang.Float, double, java.lang.Double
+    // date-time                        java.util.Date
+    // Google account                   com.google.appengine.api.users.User
+    // long text string                 com.google.appengine.api.datastore.Text
+    // long byte string                 com.google.appengine.api.datastore.Blob
+    // entity key                       com.google.appengine.api.datastore.Key, or the referenced object (as a child)
+    // a category                       com.google.appengine.api.datastore.Category
+    // an email address                 com.google.appengine.api.datastore.Email
+    // a geographical point             com.google.appengine.api.datastore.GeoPt
+    // an instant messaging handle      com.google.appengine.api.datastore.IMHandle
+    // a URL                            com.google.appengine.api.datastore.Link
+    // a phone number                   com.google.appengine.api.datastore.PhoneNumber
+    // a postal address                 com.google.appengine.api.datastore.PostalAddress
+    // a user-provided rating, [0; 100] com.google.appengine.api.datastore.Rating
+
     @Persistent
     private String address;
 

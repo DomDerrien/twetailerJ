@@ -141,6 +141,7 @@ public class DemandProcessor {
                             );
                         }
                         else {
+                            // Communicate with the sale associate
                             communicateToSaleAssociate(
                                     new RawCommand(saleAssociate.getPreferredConnection()),
                                     saleAssociate,
@@ -155,6 +156,9 @@ public class DemandProcessor {
                                             saleAssociate.getLocale()
                                     )
                             );
+                            // Keep track of the notification to not ping him/her another time
+                            demand.addSaleAssociateKey(saleAssociate.getKey());
+                            demandOperations.updateDemand(pm, demand);
                         }
                     }
                 }

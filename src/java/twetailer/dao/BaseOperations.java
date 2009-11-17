@@ -111,12 +111,21 @@ public class BaseOperations {
      * @throws DataSourceException If given value cannot matched a data store type
      */
     public static Object prepareQuery(Query query, String attribute, Object value, int limit) throws DataSourceException {
-        query.setFilter(attribute + " == value");
+        query.setFilter(attribute + " == attributeValue");
+        // -- begin --
+        // Note: The Java datastore interface does not support the != and IN filter operators that are implemented in the Python datastore interface.
+        // (In the Python interface, these operators are implemented in the client-side libraries as multiple datastore queries; they are not features of the datastore itself.)
+        // More details at: http://code.google.com/appengine/docs/java/datastore/queriesandindexes.html
+        //
+        // if (!attribute.equals(Command.STATE)) {
+        //     query.setFilter(" && " + Command.STATE + " != \"" + State.markedForDeletion.toString() + "\"");
+        // }
+        // -- end --
         query.setOrdering("creationDate desc");
         if (0 < limit) {
             query.setRange(0, limit);
         }
-        Object[] preparation = prepareParameter("value", value);
+        Object[] preparation = prepareParameter("attributeValue", value);
         query.declareParameters((String) preparation[0]);
         return preparation[1];
     }

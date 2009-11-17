@@ -274,7 +274,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>cancel,delete</seg>
+                <seg>cancel</seg>
             </tuv>
         </tu>
 
@@ -847,7 +847,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_delete_acknowledge_demand_closing" datatype="Text">
+        <tu tuid="cp_command_delete_acknowledge_demand_markedForDeletion" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -879,7 +879,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_delete_acknowledge_proposal_closing" datatype="Text">
+        <tu tuid="cp_command_delete_acknowledge_proposal_markedForDeletion" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key

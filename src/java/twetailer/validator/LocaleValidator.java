@@ -64,6 +64,7 @@ public class LocaleValidator {
         else if (Locale.CANADA.getCountry().equals(countryCode)) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
+                // Manual parsing
                 String line = reader.readLine();
                 while (line != null) {
                     if (line.indexOf("<error>") != -1) {
@@ -78,7 +79,57 @@ public class LocaleValidator {
                     line = reader.readLine();
                 }
                 reader.close();
+                /* Automated parsing
+                import javax.xml.parsers.DocumentBuilder;
+                import javax.xml.parsers.DocumentBuilderFactory;
+                import javax.xml.parsers.ParserConfigurationException;
+                import javax.xml.xpath.XPath;
+                import javax.xml.xpath.XPathConstants;
+                import javax.xml.xpath.XPathExpression;
+                import javax.xml.xpath.XPathExpressionException;
+                import javax.xml.xpath.XPathFactory;
 
+                import org.w3c.dom.Document;
+                import org.w3c.dom.NodeList;
+                import org.xml.sax.InputSource;
+                import org.xml.sax.SAXException;
+
+                StringBuilder bufferedResponse = new StringBuilder();
+                String line = reader.readLine();
+                while (line != null) {
+                    bufferedResponse.append(line);
+                    line = reader.readLine();
+                }
+                reader.close();
+                try {
+                    DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder builder = builderFactory.newDocumentBuilder();
+                    Document doc = builder.parse(new InputSource(new StringReader(bufferedResponse.toString())));
+
+                    XPathFactory factory = XPathFactory.newInstance();
+                    XPath xpath = factory.newXPath();
+                    XPathExpression expr = xpath.compile("//geodata]/latt/text()");
+
+                    Object result = expr.evaluate(doc, XPathConstants.NODESET);
+                    NodeList nodes = (NodeList) result;
+
+                    if (0 < nodes.getLength()) {
+                        coordinates[0] = Double.valueOf(nodes.item(0).getNodeValue());
+                    }
+
+                    expr = xpath.compile("//geodata]/longt/text()");
+
+                    result = expr.evaluate(doc, XPathConstants.NODESET);
+                    nodes = (NodeList) result;
+
+                    if (0 < nodes.getLength()) {
+                        coordinates[1] = Double.valueOf(nodes.item(0).getNodeValue());
+                    }
+                }
+                catch(ParserConfigurationException ex) { }
+                catch(SAXException ex) { }
+                catch(XPathExpressionException ex) { }
+                */
             }
             catch (IOException e) { }
         }

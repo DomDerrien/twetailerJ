@@ -29,6 +29,11 @@ public class Entity implements TransferObject {
     public static final String CREATION_DATE = "creationDate";
 
     @Persistent
+    private Boolean markedForDeletion = Boolean.FALSE;
+
+    public static final String MARKED_FOR_DELETION = "markedForDeletion";
+
+    @Persistent
     private Date modificationDate = DateUtils.getNowDate();
 
     public static final String MODIFICATION_DATE = "modificationDate";
@@ -102,6 +107,14 @@ public class Entity implements TransferObject {
         this.modificationDate = modificationDate;
     }
 
+    public Boolean getMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
+    public void setMarkedForDeletion(Boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
+    }
+
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         if (getKey() != null) {
@@ -109,6 +122,7 @@ public class Entity implements TransferObject {
         }
         out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate()));
         out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate()));
+        out.put(MARKED_FOR_DELETION, getMarkedForDeletion());
         return out;
     }
 
@@ -126,6 +140,11 @@ public class Entity implements TransferObject {
             }
         }
         updateModificationDate();
+        // Don't accept deletion here by external source because of possible side-effects
+        // However, each final class is free to accept it if the side-effects are controlled
+        // if (in.containsKey(MARKED_FOR_DELETION)) {
+        //    setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION));
+        // }
         return this;
     }
 }

@@ -1,5 +1,6 @@
 package twetailer.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,7 +11,7 @@ import javax.jdo.Query;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Demand;
-
+import twetailer.dto.Entity;
 import domderrien.jsontools.JsonObject;
 
 public class DemandOperations extends BaseOperations {
@@ -186,10 +187,14 @@ public class DemandOperations extends BaseOperations {
     public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Demand.class);
-        value = prepareQuery(queryObj, attribute, value, limit);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(attribute, value);
+        // TODO: enable following when the inheritance problem is fixed
+        // parameters.put(Entity.MARKED_FOR_DELETION, Boolean.FALSE);
+        Object[] values = prepareQuery(queryObj, parameters, limit);
         getLogger().warning("Select demand(s) with: " + queryObj.toString());
         // Select the corresponding resources
-        List<Demand> demands = (List<Demand>) queryObj.execute(value);
+        List<Demand> demands = (List<Demand>) queryObj.executeWithArray(values);
         demands.size(); // FIXME: remove workaround for a bug in DataNucleus
         return demands;
     }
@@ -208,6 +213,8 @@ public class DemandOperations extends BaseOperations {
     public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Demand.class);
+        // TODO: enable following when the inheritance problem is fixed
+        // parameters.put(Entity.MARKED_FOR_DELETION, Boolean.FALSE);
         Object[] values = prepareQuery(query, parameters, limit);
         getLogger().warning("Select demand(s) with: " + query.toString());
         // Select the corresponding resources
