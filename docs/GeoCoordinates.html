@@ -1,84 +1,168 @@
 <html>
 <head>
-    <title>Geo Coordinates Computation</title>
-    <style type="text/css">
-        dl dt { font-family: courier; }
-        .done { color: green; }
-        .notdone { color: orange; }
-    </style>
+<title>Geo Coordinates Computation</title>
+<style type="text/css">
+dl dt {
+	font-family: courier;
+}
+
+.done {
+	color: green;
+}
+
+.notdone {
+	color: orange;
+}
+</style>
 </head>
 <body>
 <h1>Introduction</h1>
 
-<p>
-One key element of Twetailer/Lusanga concept is the locality: actors contact the hub to get information about products and services in their area.
-For sure, the coordinates of the area can be dynamically specified, as the range to consider around the area center.
-</p>
+<p>One key element of Twetailer/Lusanga concept is the locality:
+actors contact the hub to get information about products and services in
+their area. For sure, the coordinates of the area can be dynamically
+specified, as the range to consider around the area center.</p>
 
-<p>
-Here is a scenario Twetailer will be able to serve:
-</p>
+<p>Here is a scenario Twetailer will be able to serve:</p>
 <ul>
-    <li>A politician working Montreal downtown needs to call a cab to go to the airport.</li>
-    <li>He contacts Twetailer with the following request: #taxi YUL airport loc: H3C 2N6 CA.</li>
-    <li>Almost immediately, two drivers from nearby stations reply and their proposals are forwarded to the politician.</li>
-    <li>The man picks one, confirms the proposal, and goes into the street to take the cab.</li>
-    <li>Knowing his meeting is Ottawa downtown, he wants to bring back one of the famous "Obama's maple leaf cookie".</li>
-    <li>Because he does not remember the exact store, he queries Twetailer with: "Obama cookie market loc:Ottawa CA".</li>
-    <li>Twetailer forwards the response from the baker Claude Bonnet: "Obama Maple Leaf Cookie Byward Market price:$8.50 store:32443".</li>
-    <li>Once out of his meeting, the visitor will just have to send "!list store:32443: to get the exact store coordinates ;)</li>
+	<li>A politician working Montreal downtown needs to call a cab to
+	go to the airport.</li>
+	<li>He contacts Twetailer with the following request: #taxi YUL
+	airport loc: H3C 2N6 CA.</li>
+	<li>Almost immediately, two drivers from nearby stations reply and
+	their proposals are forwarded to the politician.</li>
+	<li>The man picks one, confirms the proposal, and goes into the
+	street to take the cab.</li>
+	<li>Knowing his meeting is Ottawa downtown, he wants to bring back
+	one of the famous "Obama's maple leaf cookie".</li>
+	<li>Because he does not remember the exact store, he queries
+	Twetailer with: "Obama cookie market loc:Ottawa CA".</li>
+	<li>Twetailer forwards the response from the baker Claude Bonnet:
+	"Obama Maple Leaf Cookie Byward Market price:$8.50 store:32443".</li>
+	<li>Once out of his meeting, the visitor will just have to send
+	"!list store:32443: to get the exact store coordinates ;)</li>
 </ul>
 
 <h1>Location resolution from a postal code</h1>
 
+<p>The easiest way to specify a location to Twetailer is to give the
+corresponding postal code. They are many third party services offering
+public API to validate them and to get the corresponding
+geo-coordinates.</p>
+
+<ul>
+	<li>Anywhere: <a
+		href="http://code.google.com/apis/maps/documentation/geocoding/">Google
+	Maps Geocoding service</a> which offers the geo-coordinates in CSV format
+	when queried with the parameters <a
+		href="http://maps.google.com/maps/geo?sensor=false&output=csv&q=h3c2n6&gl=ca"
+		target="blank">/maps/geo?sensor=false&amp;output=csv&amp;q=[postal_code]&amp;gl=[country_code]</a>.
+	<ul>
+		<li>Note: the geocoding service may only be used in conjunction
+		with displaying results on a Google map; geocoding results without
+		displaying them on a map is prohibited. For complete details on
+		allowed usage, consult the <a
+			href="http://code.google.com/apis/maps/terms.html#section_10_12">Maps
+		API Terms of Service License Restrictions</a>.</li>
+		<li>Note: the country code is a country code top level domain (<a
+			href="http://en.wikipedia.org/wiki/CcTLD">ccTLD</a>). Most ccTLD
+		codes are identical to ISO 3166-1 codes, with some notable exceptions.
+		For example, Great Britain's ccTLD is "uk" (.co.uk) while its ISO
+		3166-1 code is "GB".</li>
+	</ul></li>
+	<li>Canada: <a href="http://geocoder.ca/">geocoder.ca</a> which
+	offers the geo-coordinates in XML format when queried with the
+	parameters <a href="http://geocoder.ca/?geoit=xml&postal=h3c2n6"
+		target="blank">?geoit=xml&amp;postal=[postal_code]</a>.</li>
+	<li>USA: <a href="http://geocoder.us/">geocoder.us</a> which
+	offers the geo-coordinates in a line of comma-separated values when
+	queried with the parameters <a
+		href="http://geocoder.us/service/csv/geocode?zip=95321"
+		target="blank">/service/csv/geocode?zip=[postal_code]</a>.</li>
+</ul>
+
 <h1>Location resolution from a city name</h1>
+
+<p>From the usability point of view, forcing users to get the postal
+code of the targeted area for a demand is not very friendly, especially
+for travelers. The system should allow them to enter full addresses, or
+just city names. As for now, very third party providers offer the
+possibility to validate this type of entries (Google Maps as documented
+in the previous section, Yahoo! Maps, and Live Maps).</p>
+
+<p>The key element is the country code which should continue to be
+required. But that's not sufficient because if there's only one "Paris,
+FR", there are many "Paris, US". The system cannot just report “invalid
+location” in such a situation. The error handling mechanism should be
+precisely tuned here.</p>
+
+<p>One side-effect of the of letting users entering full addresses
+instead of simple postal codes is the multiplication of <code>Location</code>
+instances in the system. It might be important to consolidate all
+physical addresses by postal code to reduce the amount of <code>Location</code>
+instances, then reducing the complexity of the algorithm matching
+demands and stores.</p>
 
 <h1>Computation of the area around a location</h1>
 
-<p>
-The following picture illustrates the globe with the latitude (horizontal lines, like the <span style="color:red;">red one</span>)
-and the longitude (vertical lines, like the <span style="color:green;">green one</span>).
-</p>
+<p>The following picture illustrates the globe with the latitude
+(horizontal lines, like the <span style="color: red;">red one</span>)
+and the longitude (vertical lines, like the <span style="color: green;">green
+one</span>).</p>
 
-<center>
-<img src="diagrams/globe-2.png" /><br/>
-Illustration of the latitude and longitude on the globe
-</center>
+<center><img src="diagrams/globe-2.png" /><br />
+Illustration of the latitude and longitude on the globe</center>
 
-<p>
-By <a href="http://en.wikipedia.org/wiki/Geographic_coordinate_system">convention</a>:
+<p>By <a
+	href="http://en.wikipedia.org/wiki/Geographic_coordinate_system">convention</a>:
 </p>
 
 <ul>
-<li>
-The latitude is the angle from a point on the Earth's surface to the equatorial plane. At the Equator (<span style="color:red;">red line</span>), the latitude is 0&deg;.
-On the North pole, the latitude is 90&deg; and on the South pole it is -90&deg;.</li>
-<li>
-The longitude is the angle east or west of a reference meridian (vertical line). The Prime meridian <span style="color:green;">green line</span>)
-passing in the back of the Royal Observatory, Greenwich (near London in UK) is the zero-longitude reference.</li>
+	<li>The latitude (&phi;) is the angle from a point on the Earth's
+	surface to the equatorial plane. At the Equator (<span
+		style="color: red;">red line</span>), the latitude is 0&deg;. On the
+	North pole, the latitude is 90&deg; and on the South pole it is
+	-90&deg;.</li>
+	<li>The longitude (&lambda;) is the angle east or west of a
+	reference meridian (vertical line). The Prime meridian <span
+		style="color: green;">green line</span>) passing in the back of the
+	Royal Observatory, Greenwich (near London in UK) is the zero-longitude
+	reference.</li>
 </ul>
 
-<p>
-For its computing algorithm, Twetailer uses the following approximation:
-</p>
+<p>For its computing algorithm, Twetailer uses the following
+approximations:</p>
 <ul>
-<li><img src="diagrams/longitude.png" align="right"/>59 km on a longitude line means a variation of 0.53&deg; of latitude.</li>
-<li>l = 40,075 km / 4 = 10,018.75 km</li>
-<li>sin(&#966;) = l / d = 59 / 10.018,75</li>
-<li>&#966; = arcsin(59 / 10.018.75) = 0.53&deg;</li>
+	<li><img src="diagrams/longitude.png" align="right" />The
+	distance of <code>59km</code> (d) on a longitude line means a variation
+	(&Delta;&phi;) of <code>0.53&deg;</code> of latitude.</li>
+	<li><code>l = 40075km / 4 = 10018.75km</code></li>
+	<li><code>sin(&phi;) = l / d = 59 / 10018.75</code></li>
+	<li><code>&Delta;&phi; = arcsin(59 / 10018.75) = 0.53&deg;</code></li>
 </ul>
 <br clear="both" />
 <ul>
-<li><img src="diagrams/latitude.png" align="right"/>59 km on the Equator line means a variation of 0.53&deg; of longitude.</li>
-<li>Greater is the latitude, more degrees on the longitude are covered by this 59 km distance.</li>
-<li>360&deg; is the maximum longitude range covered.</li>
-<li>Near the North pole, these 360&deg; can be covered with a little distance.</li>
-<li>The covered distance is relative to the latitude : &#955; = arcsin(59 / 10.018.75) * cos(&#966;)</li>
-<ul>
-<li>&#955;<sub>1</sub> = 0.53&deg; * cos(0&deg;) = 0.53&deg;</li>
-<li>&#955;<sub>2</sub> = 0.53&deg; * cos(45&deg;) = 0.75&deg;</li>
-<li>&#955;<sub>3</sub> = 0.53&deg; * cos(60&deg;) = 1.06&deg;</li>
-</ul>
+	<li><img src="diagrams/latitude.png" align="right" />The distance
+	of <code>59km</code> on the Equator latitude line means a variation
+	(&Delta;&lambda;) of <code>0.53&deg;</code> of longitude.</li>
+	<li>Greater is the latitude, more degrees on the longitude are
+	covered by this <code>59km</code> distance.</li>
+	<li><code>360&deg;</code> is the maximum longitude range covered.</li>
+	<li>Near the North pole, these <code>360&deg;</code> can be
+	covered with a little distance.</li>
+	<li>The covered distance is relative to the latitude : <code
+		style="whitespace: nowrap;">&Delta;&lambda; = max(arcsin(59 /
+	10018.75) / cos(&phi;), 360&deg;)<code></li>
+	<ul>
+		<li><code>&Delta;&lambda;<sub>1</sub> = max(0.53&deg; /
+		cos(0&deg;), 360&deg;) = 0.53&deg;</code></li>
+		<li><code>&Delta;&lambda;<sub>2</sub> = max(0.53&deg; /
+		cos(45&deg;), 360&deg;) = 0.75&deg;</code></li>
+		<li><code>&Delta;&lambda;<sub>3</sub> = max(0.53&deg; /
+		cos(60&deg;), 360&deg;) = 1.06&deg;</code></li>
+		<li><code>&Delta;&lambda;<sub>NP</sub> = max(0.53&deg; /
+		cos(89.999999999&deg;), 360&deg;) = 360&deg;</code></li>
+	</ul>
 </ul>
 
 </body>
