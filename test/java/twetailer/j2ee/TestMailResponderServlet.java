@@ -7,21 +7,20 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.MockHttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import twetailer.ClientException;
 import twetailer.connector.TestMailConnector;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockServletInputStream;
 
 public class TestMailResponderServlet {
 

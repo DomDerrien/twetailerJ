@@ -13,14 +13,9 @@ import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
+import javax.servlet.http.MockHttpServletRequest;
+import javax.servlet.http.MockHttpServletResponse;
 
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockHttpServletResponse;
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonObject;
-import domderrien.jsontools.JsonUtils;
-import domderrien.jsontools.TransferObject;
 import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -29,6 +24,12 @@ import org.junit.Test;
 import twetailer.dao.BaseOperations;
 
 import com.google.appengine.api.users.User;
+
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonUtils;
+import domderrien.jsontools.TransferObject;
 
 public class TestUtils {
 

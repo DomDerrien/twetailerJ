@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import javamocks.io.MockInputStream;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +15,6 @@ import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
-import domderrien.mocks.MockInputStream;
 
 public class TestLocaleValidator {
 

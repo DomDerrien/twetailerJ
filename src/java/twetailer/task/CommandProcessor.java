@@ -50,7 +50,7 @@ import twetailer.validator.CommandSettings.Prefix;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
-import domderrien.mocks.MockOutputStream;
+import javamocks.io.MockOutputStream;
 
 public class CommandProcessor {
     private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());

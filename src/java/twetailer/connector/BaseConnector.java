@@ -99,7 +99,7 @@ public class BaseConnector {
      * @throws ClientException If all communication attempts fail
      */
     protected static void communicateToUser(Source source, String userId, String userName, String subject, String message, Locale locale) throws ClientException {
-        log.warning("Communicating with " + userId + " (medium: " + source.toString() + ") -- message: " + message);
+        log.warning("Communicating with " + userId + " (medium: " + (source == null ? "null" : source.toString()) + ") -- message: " + message);
         if (Source.simulated.equals(source)) {
             lastCommunications.add(message);
         }

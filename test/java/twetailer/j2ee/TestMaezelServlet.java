@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
+import javax.servlet.MockServletOutputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.MockHttpServletRequest;
+import javax.servlet.http.MockHttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,9 +52,6 @@ import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Twitter;
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockHttpServletResponse;
-import domderrien.mocks.MockServletOutputStream;
 
 public class TestMaezelServlet {
 

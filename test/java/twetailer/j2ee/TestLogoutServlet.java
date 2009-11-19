@@ -1,12 +1,14 @@
 package twetailer.j2ee;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.MockHttpServletRequest;
+import javax.servlet.http.MockHttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,9 +18,6 @@ import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.MockOpenIdUserManager;
 import com.dyuproject.openid.RelyingParty;
-
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockHttpServletResponse;
 
 public class TestLogoutServlet {
 

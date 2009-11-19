@@ -10,7 +10,9 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.MockHttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,8 +20,6 @@ import org.junit.Test;
 
 import twetailer.dao.MockAppEngineEnvironment;
 import domderrien.i18n.LabelExtractor;
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockServletInputStream;
 
 public class TestMailConnector {
 

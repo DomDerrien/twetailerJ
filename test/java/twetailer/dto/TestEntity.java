@@ -50,6 +50,7 @@ public class TestEntity {
 
     Long key = 12345L;
     Date date = new Date();
+    Boolean markForDeletion = Boolean.TRUE;
 
     @Test
     public void testAccessors() {
@@ -58,10 +59,12 @@ public class TestEntity {
         object.setKey(key);
         object.setCreationDate(date);
         object.setModificationDate(date);
+        object.setMarkedForDeletion(markForDeletion);
 
         assertEquals(key, object.getKey());
         assertEquals(date, object.getCreationDate());
         assertEquals(date, object.getModificationDate());
+        assertEquals(markForDeletion, object.getMarkedForDeletion());
     }
 
     @Test
@@ -146,12 +149,14 @@ public class TestEntity {
         object.setKey(key);
         object.setCreationDate(date);
         object.setModificationDate(date);
+        object.setMarkedForDeletion(markForDeletion);
 
         Entity clone = new Entity(object.toJson());
 
         assertEquals(key, clone.getKey());
         assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(clone.getCreationDate()));
         assertTrue(date.getTime() <= clone.getModificationDate().getTime()); // Always adjusted to the time of the un-marshalling process
+        assertEquals(markForDeletion, clone.getMarkedForDeletion());
     }
 
     @Test

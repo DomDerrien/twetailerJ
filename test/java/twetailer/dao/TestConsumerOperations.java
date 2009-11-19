@@ -50,7 +50,7 @@ public class TestConsumerOperations {
                 return new MockQuery() {
                     @Override
                     public void setFilter(String pattern) {
-                        assertEquals(qA + " == value", pattern);
+                        assertEquals(qA + " == attributeValue", pattern);
                     }
                     @Override
                     public void setOrdering(String pattern) {
@@ -58,7 +58,7 @@ public class TestConsumerOperations {
                     }
                     @Override
                     public void declareParameters(String pattern) {
-                        assertEquals("String value", pattern);
+                        assertEquals("String attributeValue", pattern);
                     }
                     @Override
                     public List<Object> execute(Object value) {

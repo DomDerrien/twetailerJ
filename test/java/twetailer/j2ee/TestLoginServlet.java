@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.MockHttpServletRequest;
+import javax.servlet.http.MockHttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,9 +35,6 @@ import com.dyuproject.openid.YadisDiscovery;
 import com.dyuproject.openid.ext.AxSchemaExtension;
 import com.dyuproject.openid.ext.SRegExtension;
 import com.dyuproject.util.http.UrlEncodedParameterMap;
-
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockHttpServletResponse;
 
 @SuppressWarnings("serial")
 public class TestLoginServlet {

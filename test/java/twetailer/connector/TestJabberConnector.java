@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.MockHttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,9 +16,6 @@ import org.junit.Test;
 import twetailer.dao.MockAppEngineEnvironment;
 
 import com.google.appengine.api.xmpp.Message;
-
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockServletInputStream;
 
 public class TestJabberConnector {
 

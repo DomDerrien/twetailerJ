@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.MockHttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,9 +16,6 @@ import twetailer.connector.TestJabberConnector;
 import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.RawCommand;
-
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockServletInputStream;
 
 public class TestJabberResponderServlet {
 

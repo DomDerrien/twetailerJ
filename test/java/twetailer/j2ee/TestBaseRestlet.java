@@ -1,31 +1,36 @@
 package twetailer.j2ee;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.servlet.MockServletOutputStream;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.MockHttpServletRequest;
+import javax.servlet.http.MockHttpServletResponse;
 
-import domderrien.mocks.MockHttpServletRequest;
-import domderrien.mocks.MockHttpServletResponse;
-import domderrien.mocks.MockLogger;
-import domderrien.mocks.MockServletOutputStream;
-import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import twetailer.DataSourceException;
 
 import com.google.appengine.api.users.User;
-import twetailer.DataSourceException;
+
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
 
 public class TestBaseRestlet {
 
