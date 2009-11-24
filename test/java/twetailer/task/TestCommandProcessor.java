@@ -1,9 +1,11 @@
 package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
@@ -499,5 +502,80 @@ public class TestCommandProcessor {
         command.put(Store.ADDRESS, "address");
 
         assertNull(CommandProcessor.guessAction(command)); // Cannot update Store instance from Twitter
+    }
+
+    @Test
+    public void testGenerateTweetForStoreI() {
+        Store store = new Store();
+        store.setKey(12345L);
+        String name = "Grumb LLC inc.";
+        store.setName(name);
+        store.setAddress("432 Lane W, Montreal, Qc, Canada");
+
+        String tweet = CommandProcessor.generateTweet(store, null, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains(name));
+        assertFalse(tweet.contains(Prefix.phoneNumber.toString()));
+        assertFalse(tweet.contains(Prefix.locale.toString()));
+    }
+
+    @Test
+    public void testGenerateTweetForStoreII() {
+        Store store = new Store();
+        store.setKey(12345L);
+        String name = "Grumb LLC inc.";
+        store.setName(name);
+        store.setAddress("432 Lane W, Montreal, Qc, Canada");
+        String phoneNumber = "+1 (514) 111-2233 #444-555";
+        store.setPhoneNumber(phoneNumber);
+
+        String tweet = CommandProcessor.generateTweet(store, null, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains(name));
+        assertTrue(tweet.contains(Prefix.phoneNumber.toString()));
+        assertTrue(tweet.contains(phoneNumber));
+        assertFalse(tweet.contains(Prefix.locale.toString()));
+    }
+
+    @Test
+    public void testGenerateTweetForStoreIII() {
+        Store store = new Store();
+        store.setKey(12345L);
+        String name = "Grumb LLC inc.";
+        store.setName(name);
+        store.setAddress("432 Lane W, Montreal, Qc, Canada");
+        String phoneNumber = "+1 (514) 111-2233 #444-555";
+        store.setPhoneNumber(phoneNumber);
+        Location location = new Location();
+        location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        location.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+
+        String tweet = CommandProcessor.generateTweet(store, location, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains(name));
+        assertTrue(tweet.contains(phoneNumber));
+        assertTrue(tweet.contains(Prefix.locale.toString()));
+        assertTrue(tweet.contains(RobotResponder.ROBOT_POSTAL_CODE));
+        assertTrue(tweet.contains(RobotResponder.ROBOT_COUNTRY_CODE));
+    }
+
+    @Test
+    public void testGenerateTweetForStoreIV() {
+        Store store = new Store();
+        store.setKey(12345L);
+        String name = "Grumb LLC inc.";
+        store.setName(name);
+        store.setAddress("432 Lane W, Montreal, Qc, Canada");
+        String phoneNumber = "+1 (514) 111-2233 #444-555";
+        store.setPhoneNumber(phoneNumber);
+        Location location = new Location();
+        location.setLatitude(45.5D);
+        location.setLongitude(-73.3D);
+
+        String tweet = CommandProcessor.generateTweet(store, location, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains(name));
+        assertTrue(tweet.contains(phoneNumber));
+        assertFalse(tweet.contains(Prefix.locale.toString()));
     }
 }

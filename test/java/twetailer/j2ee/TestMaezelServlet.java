@@ -45,6 +45,7 @@ import twetailer.dto.Store;
 import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
 import twetailer.task.MockDemandValidator;
+import twetailer.task.MockLocationValidator;
 import twetailer.task.MockProposalProcessor;
 import twetailer.task.MockProposalValidator;
 import twetailer.task.MockTweetLoader;
@@ -231,6 +232,70 @@ public class TestMaezelServlet {
 
         // Clean-up
         MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetValidateLocation() throws Exception {
+        final String postalCode = "H2N3C6";
+        final String countryCode = "CA";
+        final Long consumerKey = 111L;
+        final Long rawCommandKey = 222L;
+        final Double longitude = -73.3D;
+
+        // Inject LocationOperations mock
+        final LocationOperations mockLocationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
+                Location location = new Location();
+                location.setLongitude(longitude);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+        };
+        MockLocationValidator.injectMocks(servlet._baseOperations);
+        MockLocationValidator.injectMocks(mockLocationOperations);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/validateLocation";
+            }
+            @Override
+            public String getParameter(String name) {
+                if (Location.POSTAL_CODE.equals(name)) {
+                    return postalCode;
+                }
+                if (Location.COUNTRY_CODE.equals(name)) {
+                    return countryCode;
+                }
+                if (Consumer.CONSUMER_KEY.equals(name)) {
+                    return consumerKey.toString();
+                }
+                if (Command.KEY.equals(name)) {
+                    return rawCommandKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        MockAppEngineEnvironment appEngine = new MockAppEngineEnvironment();
+        appEngine.setUp();
+        servlet.doGet(mockRequest, mockResponse);
+        appEngine.tearDown();
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockLocationValidator.restoreOperations();
     }
 
     @Test

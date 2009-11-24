@@ -350,7 +350,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.KILOMETER_UNIT, 0);
+        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, 0);
         pm.close();
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -373,7 +373,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
+        List<Location> selection = ops.getLocations(pm, source, 52.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(1, selection.size());
@@ -396,7 +396,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
+        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(0, selection.size());
@@ -418,7 +418,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
+        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(0, selection.size());
@@ -440,7 +440,29 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 1000.0D, LocaleValidator.MILE_UNIT, 50);
+        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+        pm.close();
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test
+    public void testGetsExtendedVI() throws DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        LocationOperations ops = new LocationOperations();
+
+        Location source = new Location();
+        source.setLatitude(90.0D);
+        source.setLongitude(-27.5D);
+        source = ops.createLocation(source);
+
+        Location target = new Location();
+        target.setLatitude(45.0D);
+        target.setLongitude(10.0D);
+        target.setHasStore(Boolean.TRUE);
+        target = ops.createLocation(target);
+
+        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
         pm.close();
         assertNotNull(selection);
         assertEquals(0, selection.size());

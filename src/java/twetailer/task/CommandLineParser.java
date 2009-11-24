@@ -14,6 +14,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Prefix;
@@ -70,17 +71,21 @@ public class CommandLineParser {
             final String separatorFromNonAlpha = "(?:\\W|$)";
 
             preparePattern(prefixes, patterns, Prefix.action, "\\s*\\w+", separatorFromNonAlpha);
+            preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.expiration, "[\\d- ]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.hash, "\\s*\\S+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
             // FIXME: use DecimalFormatSymbols.getInstance(locale).getCurrencySymbol() in the following expression
+            preparePattern(prefixes, patterns, Prefix.name, "[^\\:]+", separatorFromOtherPrefix);
+            preparePattern(prefixes, patterns, Prefix.phoneNumber, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.price, "[ $€£¥\\d\\.,]+", separatorFromNonDigit);
-            preparePattern(prefixes, patterns, Prefix.proposal, "\\s*\\d+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.proposal, "\\s*(?:\\d+)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.quantity, "[\\s\\d\\.,]+", separatorFromNonDigit);
-            preparePattern(prefixes, patterns, Prefix.reference, "\\s*\\d+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.reference, "\\s*(?:\\d+)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.range, "[\\s\\d\\.,]+(?:miles|mile|mi|km)", ".*" + separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.state, "\\s*\\w+", separatorFromNonAlpha);
+            preparePattern(prefixes, patterns, Prefix.store, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.total, "[\\s$€£\\d\\.,]+", separatorFromNonDigit);
 
             String tagKey = Prefix.tags.toString();
@@ -184,6 +189,17 @@ public class CommandLineParser {
             }
         }
         catch(IllegalStateException ex) {}
+        // Address
+        try {
+            matcher = patterns.get(Prefix.address.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Store.ADDRESS, getValue(currentGroup));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
         // Expiration
         try {
             matcher = patterns.get(Prefix.expiration.toString()).matcher(messageCopy);
@@ -197,13 +213,8 @@ public class CommandLineParser {
         catch(IllegalStateException ex) {}
         // Hash tag
         try {
-            matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Command.HASH_TAG, getHashTag(currentGroup.toLowerCase(locale)));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+            // Moved just before the tags detection
+            // Otherwise, # in a name, an address, or a phone number will be extracted
         }
         catch(IllegalStateException ex) {}
         // Locale
@@ -213,6 +224,28 @@ public class CommandLineParser {
                 String currentGroup = matcher.group(1).trim();
                 command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase(locale));
                 command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase(locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // Name
+        try {
+            matcher = patterns.get(Prefix.name.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Store.NAME, getValue(currentGroup));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // Phone Number
+        try {
+            matcher = patterns.get(Prefix.phoneNumber.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Store.PHONE_NUMBER, getValue(currentGroup));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -274,12 +307,34 @@ public class CommandLineParser {
             }
         }
         catch(IllegalStateException ex) {}
+        // Store
+        try {
+            matcher = patterns.get(Prefix.store.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Store.STORE_KEY, getLongValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
         // Total
         try {
             matcher = patterns.get(Prefix.total.toString()).matcher(messageCopy);
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
                 command.put(Proposal.TOTAL, getDoubleValue(currentGroup, locale));
+                messageCopy = extractPart(messageCopy, currentGroup);
+                oneFieldOverriden = true;
+            }
+        }
+        catch(IllegalStateException ex) {}
+        // Hash tag
+        try {
+            matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                command.put(Command.HASH_TAG, getHashTag(currentGroup.toLowerCase(locale)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
@@ -492,8 +547,20 @@ public class CommandLineParser {
      * @throws ParseException if the parsing fails
      */
     private static long getLongValue(String pattern, Locale locale) throws ParseException {
+        if (pattern.contains("*")) {
+            return -1L;
+        }
         NumberFormat extractor = DecimalFormat.getInstance(locale);
         return extractor.parse(getCleanNumber(pattern)).longValue();
+    }
+
+    /**
+     * Helper extracting value after the prefix
+     * @param pattern Parameters extracted by a regular expression
+     * @return any value
+     */
+    private static String getValue(String pattern) {
+        return pattern.substring(pattern.indexOf(":") + 1).trim();
     }
 
     /**

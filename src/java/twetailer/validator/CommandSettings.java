@@ -15,10 +15,13 @@ public class CommandSettings {
 
     public enum Prefix {
         action,
+        address,
         expiration,
         hash,
         help,
         locale,
+        name,
+        phoneNumber,
         price,
         proposal,
         quantity,

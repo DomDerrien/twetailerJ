@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javamocks.io.MockOutputStream;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -24,6 +26,7 @@ import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -50,7 +53,6 @@ import twetailer.validator.CommandSettings.Prefix;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
-import javamocks.io.MockOutputStream;
 
 public class CommandProcessor {
     private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());
@@ -63,15 +65,15 @@ public class CommandProcessor {
     public static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     public static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     public static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+    public static StoreOperations storeOperations = _baseOperations.getStoreOperations();
     public static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     /**
      * Prepare a message to be submit a user
      *
-     * @param command Command to convert
-     * @param location Place where the command starts
-     * @param prefixes List of localized prefix labels
-     * @param actions List of localized action labels
+     * @param demand Demand to process
+     * @param location Place where the demand is attached to
+     * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
      */
     public static String generateTweet(Demand demand, Location location, Locale locale) {
@@ -86,7 +88,7 @@ public class CommandProcessor {
         JsonObject states = CommandLineParser.localizedStates.get(locale);
         tweet.append(prefixes.getJsonArray(Prefix.state.toString()).getString(0)).append(":").append(states.getString(demand.getState().toString())).append(space);
         tweet.append(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToYMD(demand.getExpirationDate())).append(space);
-        if (location != null && location.getPostalCode() != null && location.getCountryCode() != null) {
+        if (location != null && location.getPostalCode() != null) { // && location.getCountryCode() != null) { // CountryCode always set!
             tweet.append(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
         }
         tweet.append(prefixes.getJsonArray(Prefix.range.toString()).getString(0)).append(":").append(demand.getRange()).append(demand.getRangeUnit()).append(space);
@@ -103,10 +105,8 @@ public class CommandProcessor {
     /**
      * Prepare a message to be submit a user
      *
-     * @param command Command to convert
-     * @param location Place where the command starts
-     * @param prefixes List of localized prefix labels
-     * @param actions List of localized action labels
+     * @param proposal Proposal to process
+     * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
      */
     public static String generateTweet(Proposal proposal, Locale locale) {
@@ -137,6 +137,30 @@ public class CommandProcessor {
         }
         tweet.append(prefixes.getJsonArray(Prefix.price.toString()).getString(0)).append(":").append(proposal.getPrice()).append(space);
         tweet.append(prefixes.getJsonArray(Prefix.total.toString()).getString(0)).append(":").append(proposal.getTotal()).append(space);
+        return tweet.toString();
+    }
+
+    /**
+     * Prepare a message to be submit a user
+     *
+     * @param store Store to process
+     * @param location Place where the store is located
+     * @param locale Indicator for the localized resource bundle to use
+     * @return Serialized command
+     */
+    public static String generateTweet(Store store, Location location, Locale locale) {
+        final String space = " ";
+        StringBuilder tweet = new StringBuilder();
+        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+        tweet.append(prefixes.getJsonArray(Prefix.store.toString()).getString(0)).append(":").append(store.getKey().toString()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.name.toString()).getString(0)).append(":").append(store.getName()).append(space);
+        tweet.append(prefixes.getJsonArray(Prefix.address.toString()).getString(0)).append(":").append(store.getAddress()).append(space);
+        if (store.getPhoneNumber() != null) {
+            tweet.append(prefixes.getJsonArray(Prefix.phoneNumber.toString()).getString(0)).append(":").append(store.getPhoneNumber()).append(space);
+        }
+        if (location != null && location.getPostalCode() != null) { // && location.getCountryCode() != null) { // CountryCode always set!
+            tweet.append(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
+        }
         return tweet.toString();
     }
 
@@ -190,6 +214,12 @@ public class CommandProcessor {
         catch(Exception ex) {
             String additionalInfo = getDebugInfo(ex);
             boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
+            log.info("Error reported while processing rawCommand: " + rawCommand.getKey() + ", with the info: " + additionalInfo);
+            if (exposeInfo) {
+                MockOutputStream out = new MockOutputStream();
+                ex.printStackTrace(new PrintStream(out));
+                log.warning(out.getStream());
+            }
             // Report the error to the raw command emitter
             communicateToConsumer(
                     rawCommand,
@@ -199,12 +229,6 @@ public class CommandProcessor {
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
             rawCommand = rawCommandOperations.updateRawCommand(pm, rawCommand);
-            log.info("Error reported while processing rawCommand: " + rawCommand.getKey() + ", with the info: " + additionalInfo);
-            if (exposeInfo) {
-                MockOutputStream out = new MockOutputStream();
-                ex.printStackTrace(new PrintStream(out));
-                log.warning(out.getStream());
-            }
         }
     }
 

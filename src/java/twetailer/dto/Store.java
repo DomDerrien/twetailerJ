@@ -30,7 +30,8 @@ public class Store extends Entity {
 
     public final static String NAME = "name";
 
-    public static final String STORE_KEY = "storeKey";
+    // Shortcut
+    public static final String STORE_KEY = "store";
 
     @Persistent
     private String phoneNumber;

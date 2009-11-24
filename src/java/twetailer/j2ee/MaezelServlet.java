@@ -28,6 +28,7 @@ import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
 import twetailer.task.DemandValidator;
+import twetailer.task.LocationValidator;
 import twetailer.task.ProposalProcessor;
 import twetailer.task.ProposalValidator;
 import twetailer.task.RobotResponder;
@@ -67,6 +68,13 @@ public class MaezelServlet extends HttpServlet {
             else if ("/processCommand".equals(pathInfo)) {
                 Long commandId = Long.parseLong(request.getParameter(Command.KEY));
                 CommandProcessor.processRawCommands(commandId);
+            }
+            else if ("/validateLocation".equals(pathInfo)) {
+                String postalCode = request.getParameter(Location.POSTAL_CODE);
+                String countryCode = request.getParameter(Location.COUNTRY_CODE);
+                Long consumerKey = Long.parseLong(request.getParameter(Consumer.CONSUMER_KEY));
+                Long commandKey = Long.parseLong(request.getParameter(Command.KEY));
+                LocationValidator.process(postalCode, countryCode, consumerKey, commandKey);
             }
             else if ("/validateOpenDemand".equals(pathInfo)) {
                 Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
@@ -116,12 +124,12 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/createSaleAssociate".equals(pathInfo)) {
                 // Supported formats:
-                //   http:<host:port>/@servletApiPath/maezel/createSaleAssociate?storeKey=11&name=Jack the Troll&supplies=wii console xbox gamecube
+                //   http:<host:port>/@servletApiPath/maezel/createSaleAssociate?store=11&name=Jack the Troll&supplies=wii console xbox gamecube
 
                 PersistenceManager pm = _baseOperations.getPersistenceManager();
                 try {
                     Consumer consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter(SaleAssociate.CONSUMER_KEY)));
-                    Long storeKey = Long.valueOf(request.getParameter("storeKey"));
+                    Long storeKey = Long.valueOf(request.getParameter(Store.STORE_KEY));
                     String name = request.getParameter(SaleAssociate.NAME);
 
                     SaleAssociate saleAssociate = new SaleAssociate();

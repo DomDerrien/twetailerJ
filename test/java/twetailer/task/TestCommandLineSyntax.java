@@ -28,6 +28,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -821,23 +822,6 @@ public class TestCommandLineSyntax {
     }
 
     @Test
-    public void testGeneratePartialTweetIII() {
-        Demand demand = new Demand();
-
-        Location location = new Location();
-        location.setPostalCode("zzz");
-
-        Locale locale = Locale.ENGLISH;
-
-        String response = CommandProcessor.generateTweet(demand, location, locale);
-
-        assertNotNull(response);
-        assertNotSame(0, response.length());
-        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        assertFalse(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)));
-    }
-
-    @Test
     public void testGeneratePartialTweetIV() {
 
         Proposal proposal = new Proposal();
@@ -1075,5 +1059,79 @@ public class TestCommandLineSyntax {
         assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
         assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
+    }
+
+    @Test
+    public void testParseAddressI() throws ClientException, ParseException {
+        final String address = "12345, Lamb Street, Montreal, Qc, Canada";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "address: " + address, Locale.ENGLISH);
+        assertEquals(address, data.getString(Store.ADDRESS));
+    }
+
+    @Test
+    public void testParseAddressII() throws ClientException, ParseException {
+        final String address = "12345, Appt. 123, Lamb Street, Montreal, Qc, Canada";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii address: " + address + " ref:12345 console", Locale.ENGLISH);
+        assertEquals(address, data.getString(Store.ADDRESS));
+        assertEquals(12345, data.getLong(Demand.REFERENCE));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+    }
+
+    @Test
+    public void testParseNameI() throws ClientException, ParseException {
+        final String name = "Grumb LLC inc.";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "name: " + name, Locale.ENGLISH);
+        assertEquals(name, data.getString(Store.NAME));
+    }
+
+    @Test
+    public void testParseNameII() throws ClientException, ParseException {
+        final String name = "Grumb LLC inc.";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii name: " + name + " ref:12345 console", Locale.ENGLISH);
+        assertEquals(name, data.getString(Store.NAME));
+        assertEquals(12345, data.getLong(Demand.REFERENCE));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+    }
+
+    @Test
+    public void testParsePhoneNumberI() throws ClientException, ParseException {
+        final String phoneNumber = "+1 (222) 333 4455 #666-777";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "phoneNumber: " + phoneNumber, Locale.ENGLISH);
+        assertEquals(phoneNumber, data.getString(Store.PHONE_NUMBER));
+    }
+
+    @Test
+    public void testParsePhoneNumberII() throws ClientException, ParseException {
+        final String phoneNumber = "+1 (222) 333 4455 #666-777";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii phoneNumber: " + phoneNumber + " ref:12345 console", Locale.ENGLISH);
+        assertEquals(phoneNumber, data.getString(Store.PHONE_NUMBER));
+        assertEquals(12345, data.getLong(Demand.REFERENCE));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+    }
+
+    @Test
+    public void testParseStoreI() throws ClientException, ParseException {
+        final long storeKey = 1234567890L;
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "store: " + storeKey, Locale.ENGLISH);
+        assertEquals(storeKey, data.getLong(Store.STORE_KEY));
+    }
+
+    @Test
+    public void testParseStoreII() throws ClientException, ParseException {
+        final long storeKey = 1234567890L;
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii store: " + storeKey + " ref:12345 console", Locale.ENGLISH);
+        assertEquals(storeKey, data.getLong(Store.STORE_KEY));
+        assertEquals(12345, data.getLong(Demand.REFERENCE));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+    }
+
+    @Test
+    public void testParseStoreIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "store: *", Locale.ENGLISH);
+        assertEquals(-1, data.getLong(Store.STORE_KEY));
     }
 }

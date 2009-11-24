@@ -74,7 +74,7 @@ public class Demand extends Entity {
     public static final String QUANTITY = "quantity";
 
     @Persistent
-    private Double range = 25.0D;
+    private Double range = LocaleValidator.DEFAULT_RANGE;
 
     public static final String RANGE = "range";
 
@@ -82,7 +82,7 @@ public class Demand extends Entity {
     public static final String REFERENCE = "reference";
 
     @Persistent
-    private String rangeUnit = LocaleValidator.KILOMETER_UNIT;
+    private String rangeUnit = LocaleValidator.DEFAULT_RANGE_UNIT;
 
     public static final String RANGE_UNIT = "rangeUnit";
 

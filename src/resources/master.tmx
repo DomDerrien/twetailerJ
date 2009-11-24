@@ -38,7 +38,7 @@
               2) Forbidden characters are : ampersand, quotes, double-quotes, less-than. and greater-than signs
                  Their unicode value MUST be used in place:
                      - ampersand: \u0026
-                     - double quotes: \u0022
+                     - double quotes: \u0022 (for content going into dojotk resource bundles only)
                      - less than: \u003c
                      - greater than: \u003e
                      - non break space: \u00a0
@@ -162,6 +162,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_prefix_address" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the address attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>address</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_prefix_expiration" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
@@ -172,7 +180,7 @@
 
         <tu tuid="cl_prefix_hash" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <note>For the command line arguments, accepted labels for the hash attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>hash,#</seg>
             </tuv>
@@ -190,7 +198,23 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>locale,location,postalCode,postal,zip,zipcode</seg>
+                <seg>locale,location,postalCode,zipCode</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cl_prefix_name" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the name attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>name</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cl_prefix_phoneNumber" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the phoneNumber attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>phoneNumber</seg>
             </tuv>
         </tu>
 
@@ -206,7 +230,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the proposal attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>proposalKey,pk</seg>
+                <seg>proposal,proposalKey,pk</seg>
             </tuv>
         </tu>
 
@@ -246,7 +270,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the store attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>storeKey,sk</seg>
+                <seg>store,storeKey,sk</seg>
             </tuv>
         </tu>
 
@@ -266,7 +290,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the total attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>totalcost,tc</seg>
+                <seg>totalCost,tc</seg>
             </tuv>
         </tu>
 
@@ -686,7 +710,7 @@
                 <seg>
                     Demand reference:{0} has been closed by the Consumer. |
                     In order to improve your Twetailer Rating, please remember to finalize your Proposal by sending ... |
-                    \u0022d twetailer !close proposal:{1}\u0022, or, \u0022d twetailer !flag proposal:{1} note:[enter your issue here]\u0022</seg>
+                    "d twetailer !close proposal:{1}", or, "d twetailer !flag proposal:{1} note:[enter your issue here]"</seg>
             </tuv>
         </tu>
 
@@ -732,7 +756,7 @@
                 <seg>
                     Proposal:{0} has been closed by the Retailer. |
                     In order to improve your Twetailer Rating, please remember to finalize your Demand by sending ... |
-                    \u0022d twetailer !close ref:{1}\u0022, or, \u0022d twetailer !flag ref:{1} note:[enter your issue here]\u0022</seg>
+                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
             </tuv>
         </tu>
 
@@ -777,9 +801,9 @@
                 <seg>
                     Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
                     Store:{3}, {4} will be notified and asked to keep you Demand, marked with ref:{1}, on the side for you. |
-                    Send \u0022d twetailer !list store:{3}\u0022 for more details |
+                    Send "d twetailer !list store:{3}" for more details |
                     In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
-                    \u0022d twetailer !close ref:{0}\u0022, or, \u0022d twetailer !flag ref:{0} note:[enter your issue here]\u0022</seg>
+                    "d twetailer !close ref:{0}", or, "d twetailer !flag ref:{0} note:[enter your issue here]"</seg>
             </tuv>
         </tu>
 
@@ -795,7 +819,7 @@
                     Confirming Proposal:{0} Tags:{1} |
                     Please prepare product:{2} by marking it with Demand ref:{2} and placing it on the side.|
                     In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
-                    \u0022d twetailer !close ref:{2}\u0022, or, \u0022d twetailer !flag ref:{2} note:[enter your issue here]\u0022</seg>
+                    "d twetailer !close ref:{2}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
             </tuv>
         </tu>
 
@@ -944,7 +968,7 @@
             <tuv xml:lang="en">
                 <seg>
                     The hash tag (#) concept is reserved for a future feature. For now, the value you gave is ignored.|
-                    Add it to the list of demand tags with \u0022action:demand reference:{0} +tag:{1}\u0022|
+                    Add it to the list of demand tags with "action:demand reference:{0} +tag:{1}"|
                     Join the Twetailer community to get more details.
                 </seg>
             </tuv>
@@ -966,6 +990,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_command_list_invalid_store_id" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>You have no Store matching the specified identifier.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_command_list_no_active_demand" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Message informing that no result can be displayed for the !list command.</note>
@@ -974,7 +1006,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_list_series_introduction" datatype="Text">
+        <tu tuid="cp_command_list_demand_series_introduction" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list command.|
@@ -982,6 +1014,56 @@
             </note>
             <tuv xml:lang="en">
                 <seg>This message is followed by {0} other(s) - one per Active Demand...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_store_missing_location" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that location information is missing for the !list store:* command.
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The Locale information is missing in your command.|
+                    Please provide a valid Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_store_with_new_location" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that no result can be displayed for the !list store:* command.
+                {0}: postal code
+                {1}: country code
+            </note>
+            <tuv xml:lang="en">
+                <seg>You've just submitted a locale:{0} {1} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_no_store_in_location" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that no result can be displayed for the !list store:* command.
+                {0}: postal code
+                {1}: country code
+                {2}: range
+                {3}: range unit
+            </note>
+            <tuv xml:lang="en">
+                <seg>No Store found {2}{3} around locale:{0} {1}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_store_series_introduction" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message introducing the series of messages to be sent in response to a !list store:* command.|
+                {0}: number of messages to be sent
+            </note>
+            <tuv xml:lang="en">
+                <seg>This message is followed by {0} other(s) - one per Store...</seg>
             </tuv>
         </tu>
 
@@ -1024,7 +1106,7 @@
             <tuv xml:lang="en">
                 <seg>
                     The hash tag (#) concept is reserved for a future feature. For now, the value you gave is ignored.|
-                    Add it to the list of proposal tags with \u0022action:propose proposal:{0} +tag:{1}\u0022|
+                    Add it to the list of proposal tags with "action:propose proposal:{0} +tag:{1}"|
                     Join the Twetailer community to get more details.
                 </seg>
             </tuv>
@@ -1155,7 +1237,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Please update the Demand reference:{0} with your lLocale(postal/zip code and country) - like \u0022ref:{0} locale:12345 us\u0022</seg>
+                <seg>Please update the Demand reference:{0} with your Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
@@ -1169,8 +1251,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Locale \u0022{1} {2}\u0022 given Demand reference:{0} cannot be resolved.|
-                    Please provide a valid Locale(postal/zip code and country) - like \u0022ref:{0} locale:12345 us\u0022
+                    The Locale "{1} {2}" given Demand reference:{0} cannot be resolved.|
+                    Please provide a valid Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"
                 </seg>
             </tuv>
         </tu>
@@ -1183,6 +1265,24 @@
             </note>
             <tuv xml:lang="en">
                 <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
+            </tuv>
+        </tu>
+
+        <!-- ============================== -->
+        <!-- Location validator definitions -->
+        <!-- ============================== -->
+
+        <tu tuid="lv_report_invalid_locale" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer that the locale information is invalid.|
+                {0}: original command.
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The Locale given for the Command "{0}" cannot be resolved.|
+                    Please provide a valid Locale(postal/zip code and country)"
+                </seg>
             </tuv>
         </tu>
 
@@ -1214,8 +1314,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}? Please complete and send the following proposal if you have matching supply  ...  |
-                \u0022d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here] total:[enter final price including all taxes and service fees]\u0022 |
-                Otherwise, please reply with \u0022d twetailer !decline ref:{0}\u0022 </seg>
+                "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here] total:[enter final price including all taxes and service fees]" |
+                Otherwise, please reply with "d twetailer !decline ref:{0}" </seg>
             </tuv>
         </tu>
 
@@ -1301,8 +1401,8 @@
             <tuv xml:lang="en">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
                 Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} total:{7}{9} |
-                Send \u0022d twetailer !list store:{5}\u0022 for more details |
-                Please reply with either \u0022d twetailer !confirm proposal:{0}\u0022, or, \u0022d twetailer!decline proposal:{0} \u0022</seg>
+                Send "d twetailer !list store:{5}" for more details |
+                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
         </tu>
 
@@ -1323,8 +1423,8 @@
             <tuv xml:lang="en">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
                 Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} |
-                Send \u0022d twetailer !list store:{5}\u0022 for more details |
-                Please reply with either \u0022d twetailer !confirm proposal:{0}\u0022, or, \u0022d twetailer!decline proposal:{0} \u0022</seg>
+                Send "d twetailer !list store:{5}" for more details |
+                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
         </tu>
 
@@ -1345,8 +1445,8 @@
             <tuv xml:lang="en">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
                 Store:{5}, name:{6} has proposed Proposal:{0} product:{1} total:{7}{8} |
-                Send \u0022d twetailer !list store:{5}\u0022 for more details |
-                Please reply with either \u0022d twetailer !confirm proposal:{0}\u0022, or, \u0022d twetailer!decline proposal:{0} \u0022</seg>
+                Send "d twetailer !list store:{5}" for more details |
+                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
         </tu>
 

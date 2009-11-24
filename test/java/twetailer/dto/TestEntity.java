@@ -156,7 +156,7 @@ public class TestEntity {
         assertEquals(key, clone.getKey());
         assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(clone.getCreationDate()));
         assertTrue(date.getTime() <= clone.getModificationDate().getTime()); // Always adjusted to the time of the un-marshalling process
-        assertEquals(markForDeletion, clone.getMarkedForDeletion());
+        assertEquals(Boolean.FALSE, clone.getMarkedForDeletion()); // Because this flag can only be changed manually!
     }
 
     @Test

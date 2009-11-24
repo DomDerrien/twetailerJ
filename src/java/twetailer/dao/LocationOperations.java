@@ -265,15 +265,20 @@ public class LocationOperations extends BaseOperations {
         if (LocaleValidator.MILE_UNIT.equals(rangeUnit)) {
             range = range * 1.8;
         }
+        range = range * 0.53 / 59;
         Double latitude = location.getLatitude();
-        Double topLatitude = latitude + range * 0.001; // TODO: verify the formula
-        Double bottomLatitude = latitude - range * 0.001; // TODO: verify the formula
+        Double topLatitude = latitude + range;
+        Double bottomLatitude = latitude - range;
 
         // The horizontal gap is latitude dependent for the meridians
-        range = range / Math.abs(Math.cos(latitude)); // TODO: verify the formula
-        Double longitude = location.getLongitude();
-        Double leftLongitude = longitude - range * 0.001; // TODO: verify the formula
-        Double rightLongitude = longitude + range * 0.001; // TODO: verify the formula
+        Double leftLongitude = -180.0D;
+        Double rightLongitude = +180.0D;
+        if(latitude < 89.9D) {
+            range = range / Math.abs(Math.cos(latitude));
+            Double longitude = location.getLongitude();
+            leftLongitude = longitude - range;
+            rightLongitude = longitude + range;
+        }
         // FIXME: take into account that the value can be greater than 360° and smaller than 0°
         // FIXME: that means two request have to be done at the limit...
 
