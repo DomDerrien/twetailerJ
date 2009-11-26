@@ -101,7 +101,7 @@
 
     <property name="junit.timeout.seconds"
         description="Delay before considering a test being too long. In milliseconds"
-        value="30000"
+        value="300000"
     />
     <!--property name="no.cobertura.html.reports"
         description="Prevents the generation of Cobertura reports (HTML format). Use local.build.properties to set it."
@@ -980,11 +980,11 @@
 
     <target name="step-cobertura-instrument">
         <!-- Remove the coverage data file.-->
-        <delete file="cobertura.ser" />
+        <delete file="${temp.dir}/cobertura.ser" />
         <delete dir="bin/instrumented" />
 
         <!--Instrument the application classes  -->
-        <cobertura-instrument todir="bin/instrumented">
+        <cobertura-instrument datafile="${temp.dir}/cobertura.ser" todir="bin/instrumented">
             <!-- Ignore log4j -->
             <ignore regex="org.apache.log4j.*" />
 
@@ -1003,12 +1003,15 @@
             dir="${basedir}"
             failureProperty="junit.test.failed"
             fork="yes"
+            forkmode="once"
             printSummary="yes"
             haltOnError="true"
             haltOnFailure="true"
             timeout="${junit.timeout.seconds}"
             maxMemory="512M"
         >
+            <sysproperty key="net.sourceforge.cobertura.datafile" file="${temp.dir}/cobertura.ser" />
+        	
             <classpath location="bin/instrumented" />
             <!-- Important: instrumented classes are before the original (uninstrumented) classes. -->
             <classpath location="src/war/WEB-INF/classes" />
@@ -1031,18 +1034,16 @@
             </fileset>
             <report format="frames" todir="docs/test-reports/junit-html" />
         </junitreport>
-
-        <antcall target="step-configuration-clean" />
     </target>
 
     <target name="step-cobertura-xml-report" unless="no.cobertura.xml.reports">
         <!-- Generate an XML file coverage -->
-        <cobertura-report srcdir="src" destdir="docs/test-reports/cobertura-xml" format="xml" />
+        <cobertura-report datafile="${temp.dir}/cobertura.ser" destdir="docs/test-reports/cobertura-xml" format="xml" srcdir="src" />
     </target>
 
     <target name="step-cobertura-html-report" unless="no.cobertura.html.reports">
         <!-- Generate a series of HTML files containing the coverage -->
-        <cobertura-report destdir="docs/test-reports/cobertura-html">
+        <cobertura-report datafile="${temp.dir}/cobertura.ser" destdir="docs/test-reports/cobertura-html">
             <fileset dir="src/java">
                 <include name="**/*.java" />
                 <exclude name="**/Test*.java" />
@@ -1063,6 +1064,7 @@
             dir="${basedir}"
             failureProperty="jsunit.test.failed"
             fork="yes"
+            forkmode="once"
             printSummary="yes"
             haltonerror="true"
             haltonfailure="true"

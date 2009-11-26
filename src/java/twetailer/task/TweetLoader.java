@@ -33,12 +33,17 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.LabelExtractor;
 
 public class TweetLoader {
-    private static final Logger log = Logger.getLogger(TweetLoader.class.getName());
+    private static Logger log = Logger.getLogger(TweetLoader.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Extract commands from the pending Direct Messages and save them into the command table

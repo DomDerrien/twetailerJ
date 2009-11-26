@@ -8,11 +8,15 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -21,9 +25,7 @@ import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
-import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.MockBaseOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.MockSettingsOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
@@ -34,6 +36,9 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.jsontools.JsonException;
 
 public class TestTweetLoader {
@@ -61,11 +66,16 @@ public class TestTweetLoader {
         return dm;
     }
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TweetLoader.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
     }
 

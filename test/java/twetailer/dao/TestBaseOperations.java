@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockQuery;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -26,6 +29,7 @@ import twetailer.j2ee.MockUserService;
 import twetailer.j2ee.ServletUtils;
 
 import com.google.appengine.api.users.User;
+import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
@@ -34,8 +38,12 @@ public class TestBaseOperations {
 
     static final User user = new User("test-email", "test-domain");
 
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() {
+        BaseOperations.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         ServletUtils.setUserService(new MockUserService(){
             @Override
             public User getCurrentUser() {
@@ -48,13 +56,9 @@ public class TestBaseOperations {
     public static void tearDownAfterClass() throws Exception {
     }
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
-
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+        mockAppEngineEnvironment.setUp();
     }
 
     @After
@@ -73,7 +77,6 @@ public class TestBaseOperations {
 
     @Test
     public void testGetPersistenceManagerFactory() throws IOException {
-        BaseOperations.setPersistenceManagerFactory(null); // Reset it because the setUp() function has replaced it with a mock
         PersistenceManager pm = new BaseOperations().getPersistenceManager();
         assertNotNull(pm);
     }

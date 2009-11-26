@@ -12,7 +12,12 @@ import com.google.wave.api.Wavelet;
 
 @SuppressWarnings("serial")
 public class WaveResponderServlet extends AbstractRobotServlet {
-    private static final Logger log = Logger.getLogger(WaveResponderServlet.class.getName());
+    private static Logger log = Logger.getLogger(WaveResponderServlet.class.getName());
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     @Override
     public void processEvents(RobotMessageBundle bundle) {

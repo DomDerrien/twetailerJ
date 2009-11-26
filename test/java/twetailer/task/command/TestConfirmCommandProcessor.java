@@ -6,15 +6,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonObject;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -22,7 +20,6 @@ import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
@@ -36,8 +33,16 @@ import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
+import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 public class TestConfirmCommandProcessor {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestCommandProcessor.setUpBeforeClass();
+    }
 
     @Before
     public void setUp() throws Exception {

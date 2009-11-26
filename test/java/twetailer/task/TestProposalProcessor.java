@@ -9,10 +9,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.Locale;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -22,7 +26,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
@@ -46,6 +49,11 @@ public class TestProposalProcessor {
             return pm;
         }
     };
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        ProposalProcessor.setLogger(new MockLogger("test", null));
+    }
 
     @Before
     public void setUp() throws Exception {

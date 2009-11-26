@@ -1,17 +1,13 @@
 package twetailer.task;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToConsumer;
+
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -27,18 +23,28 @@ import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
+
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class DemandValidator {
 
-    private static final Logger log = Logger.getLogger(DemandValidator.class.getName());
+    private static Logger log = Logger.getLogger(DemandValidator.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Check the validity of the identified demand

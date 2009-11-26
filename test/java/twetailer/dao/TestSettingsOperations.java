@@ -7,28 +7,36 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Settings;
 
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 public class TestSettingsOperations {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        BaseOperations.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
-
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
     }
 
     @After

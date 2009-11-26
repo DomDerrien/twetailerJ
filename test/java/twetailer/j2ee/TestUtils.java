@@ -5,31 +5,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.MockHttpServletRequest;
 import javax.servlet.http.MockHttpServletResponse;
 
-import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import twetailer.dao.BaseOperations;
-
 import com.google.appengine.api.users.User;
-
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonObject;
-import domderrien.jsontools.JsonUtils;
-import domderrien.jsontools.TransferObject;
+import com.google.appengine.api.users.UserService;
 
 public class TestUtils {
 
@@ -43,28 +28,7 @@ public class TestUtils {
 
     @Test
     public void testConstructor() {
-        PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
-        BaseOperations.setPersistenceManagerFactory(pmf);
         new ServletUtils();
-    }
-
-    @Test
-    public void testGetPersistenceManagerFactory() {
-        PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
-        BaseOperations.setPersistenceManagerFactory(pmf);
-        pmf = BaseOperations.getPersistenceManagerFactory();
-        assertNotNull(pmf);
-        assertEquals(pmf, BaseOperations.getPersistenceManagerFactory());
-    }
-
-    @Test
-    public void testGetPersistenceManager() {
-        PersistenceManagerFactory pmf = EasyMock.createMock(PersistenceManagerFactory.class);
-        EasyMock.expect(pmf.getPersistenceManager()).andReturn(EasyMock.createMock(PersistenceManager.class)).once();
-        EasyMock.replay(pmf);
-        BaseOperations.setPersistenceManagerFactory(pmf);
-        PersistenceManager pm = BaseOperations.getPersistenceManagerFactory().getPersistenceManager();
-        assertNotNull(pm);
     }
 
     @Test
@@ -102,8 +66,16 @@ public class TestUtils {
     }
 
     @Test
-    public void testGetUserService() {
+    public void testGetUserServiceI() {
         assertNotNull(ServletUtils.getUserService());
+    }
+
+    @Test
+    public void testGetUserServiceII() {
+        UserService service = new MockUserService();
+        ServletUtils.setUserService(service);
+        assertNotNull(ServletUtils.getUserService());
+        assertEquals(service, ServletUtils.getUserService());
     }
 
     @Test(expected=RuntimeException.class)
@@ -123,49 +95,4 @@ public class TestUtils {
         });
         ServletUtils.getLoggedUser();
     }
-
-    @Test
-    public void testListToJsonI() {
-        final JsonObject converted = new GenericJsonObject();
-        List<TransferObject> list = new ArrayList<TransferObject>();
-        list.add(new TransferObject() {
-            public TransferObject fromJson(JsonObject in) throws ParseException {
-                return null;
-            }
-            public JsonObject toJson() {
-                return converted;
-            }
-        });
-        JsonArray array = JsonUtils.toJson(list);
-        assertEquals(1, array.size());
-        assertEquals(converted, array.getJsonObject(0));
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void testListToJsonII() {
-        JsonUtils.toJson((List <?>) null);
-    }
-
-    @Test
-    public void testMapToJsonI() {
-        final JsonObject converted = new GenericJsonObject();
-        Map<String, TransferObject> map = new HashMap<String, TransferObject>();
-        map.put("test", new TransferObject() {
-            public TransferObject fromJson(JsonObject in) throws ParseException {
-                return null;
-            }
-            public JsonObject toJson() {
-                return converted;
-            }
-        });
-        JsonObject object = JsonUtils.toJson(map);
-        assertEquals(1, object.size());
-        assertEquals(converted, object.getJsonObject("test"));
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void testMapToJsonII() {
-        JsonUtils.toJson((Map <String, ?>) null);
-    }
-
 }

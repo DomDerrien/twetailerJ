@@ -5,8 +5,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.wave.api.Blip;
@@ -40,6 +43,11 @@ public class TestWaveResponderServlet {
         public boolean wasSelfAdded() { return false; }
         public boolean wasSelfRemoved() { return false; }
     };
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        WaveResponderServlet.setLogger(new MockLogger("test", null));
+    }
 
     @Before
     public void setUp() throws Exception {

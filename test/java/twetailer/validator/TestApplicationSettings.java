@@ -10,10 +10,23 @@ import java.util.ListResourceBundle;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javamocks.util.logging.MockLogger;
+
 import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestApplicationSettings {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        ApplicationSettings.setLogger(new MockLogger("test", null));
+    }
+
+    @Before
+    public void setUp() {
+    }
 
     @After
     public void tearDown() throws Exception {

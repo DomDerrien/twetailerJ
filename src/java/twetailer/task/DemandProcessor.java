@@ -40,7 +40,7 @@ import domderrien.i18n.LabelExtractor;
 
 public class DemandProcessor {
 
-    private static final Logger log = Logger.getLogger(DemandProcessor.class.getName());
+    private static Logger log = Logger.getLogger(DemandProcessor.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
@@ -48,6 +48,11 @@ public class DemandProcessor {
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Load the published demand that has not been updated during the last 8 hours and reinsert them into the task queue

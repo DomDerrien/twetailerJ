@@ -11,7 +11,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class TwitterConnector {
-    private static final Logger log = Logger.getLogger(TwitterConnector.class.getName());
+    private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
     private static String twetailerScreenName = "twetailer";
     private static String twetailerPassword = "ec0n0m1cs";
@@ -24,6 +24,11 @@ public class TwitterConnector {
     }
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Accessor provided for unit tests

@@ -1,5 +1,6 @@
 package twetailer.dao;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 public class MockBaseOperations extends BaseOperations {

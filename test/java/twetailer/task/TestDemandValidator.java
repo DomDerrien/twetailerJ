@@ -9,10 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -23,8 +27,6 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -36,6 +38,8 @@ import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestDemandValidator {
 
@@ -50,10 +54,19 @@ public class TestDemandValidator {
     final Long OwnerKey = 54321L;
     final String consumerTwitterId = "Katelyn";
     final Source source = Source.simulated;
-    MockAppEngineEnvironment appEnv;
+
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        DemandValidator.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
+        mockAppEngineEnvironment.setUp();
+
         // ConsumerOperations mock
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
@@ -73,21 +86,16 @@ public class TestDemandValidator {
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
-
-        // App Engine Environment mock
-        appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
         DemandValidator._baseOperations = new BaseOperations();
         DemandValidator.consumerOperations = DemandValidator._baseOperations.getConsumerOperations();
         DemandValidator.demandOperations = DemandValidator._baseOperations.getDemandOperations();
         DemandValidator.locationOperations = DemandValidator._baseOperations.getLocationOperations();
         DemandValidator.rawCommandOperations = DemandValidator._baseOperations.getRawCommandOperations();
-
-        appEnv.tearDown();
     }
 
     @Test

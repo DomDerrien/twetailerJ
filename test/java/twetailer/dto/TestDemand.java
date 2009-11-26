@@ -1,10 +1,10 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,14 +14,16 @@ import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
@@ -30,13 +32,16 @@ import domderrien.jsontools.JsonParser;
 
 public class TestDemand {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+        mockAppEngineEnvironment.setUp();
     }
 
     @After

@@ -9,10 +9,15 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockQuery;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -22,10 +27,17 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestConsumerOperations {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        BaseOperations.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {

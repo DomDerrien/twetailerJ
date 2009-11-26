@@ -30,12 +30,17 @@ import domderrien.i18n.LabelExtractor;
 
 public class LocationValidator {
 
-    protected static Logger log = Logger.getLogger(DemandValidator.class.getName());
+    private static Logger log = Logger.getLogger(DemandValidator.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Check the validity of the identified demand

@@ -7,24 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonObject;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.MockBaseOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -34,8 +29,18 @@ import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
+import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonObject;
 
 public class TestSupplyCommandProcessor {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestCommandProcessor.setUpBeforeClass();
+    }
 
     @Before
     public void setUp() throws Exception {

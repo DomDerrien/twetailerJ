@@ -29,7 +29,7 @@ import domderrien.jsontools.JsonObject;
 
 public class ProposalProcessor {
 
-    private static final Logger log = Logger.getLogger(ProposalProcessor.class.getName());
+    private static Logger log = Logger.getLogger(ProposalProcessor.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
@@ -39,6 +39,11 @@ public class ProposalProcessor {
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Forward the identified proposal to listening sale associates

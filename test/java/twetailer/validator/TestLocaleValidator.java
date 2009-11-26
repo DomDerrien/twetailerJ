@@ -7,8 +7,11 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import javamocks.io.MockInputStream;
+import javamocks.util.logging.MockLogger;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.dto.Location;
@@ -18,9 +21,18 @@ import domderrien.jsontools.JsonObject;
 
 public class TestLocaleValidator {
 
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        LocaleValidator.setLogger(new MockLogger("test", null));
+    }
+
     @Before
     public void setUp() throws Exception {
         LocaleValidator.setValidatorStream(null);
+    }
+
+    @After
+    public void tearDown() throws Exception {
     }
 
     @Test

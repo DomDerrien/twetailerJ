@@ -1,13 +1,15 @@
 package twetailer.task.command;
 
+import javax.jdo.MockPersistenceManager;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -19,6 +21,11 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestWWWCommandProcessor {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestCommandProcessor.setUpBeforeClass();
+    }
 
     @Before
     public void setUp() throws Exception {

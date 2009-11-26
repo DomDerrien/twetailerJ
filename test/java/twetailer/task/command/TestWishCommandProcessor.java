@@ -1,16 +1,15 @@
 package twetailer.task.command;
 
+import javax.jdo.MockPersistenceManager;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonObject;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -18,8 +17,15 @@ import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 public class TestWishCommandProcessor {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestCommandProcessor.setUpBeforeClass();
+    }
 
     @Before
     public void setUp() throws Exception {

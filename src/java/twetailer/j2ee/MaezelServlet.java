@@ -39,7 +39,7 @@ import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
-    private static final Logger log = Logger.getLogger(MaezelServlet.class.getName());
+    private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
     protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
@@ -47,6 +47,11 @@ public class MaezelServlet extends HttpServlet {
     protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

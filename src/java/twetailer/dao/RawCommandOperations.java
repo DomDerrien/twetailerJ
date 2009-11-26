@@ -8,7 +8,7 @@ import twetailer.DataSourceException;
 import twetailer.dto.RawCommand;
 
 public class RawCommandOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(RawCommandOperations.class.getName());
+    private static Logger log = Logger.getLogger(RawCommandOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

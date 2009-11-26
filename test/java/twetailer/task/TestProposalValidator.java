@@ -9,20 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
-import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
@@ -30,9 +31,9 @@ import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
-import twitter4j.DirectMessage;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.LabelExtractor;
 
 public class TestProposalValidator {
@@ -48,10 +49,19 @@ public class TestProposalValidator {
     final Long saleAssociateKey = 54321L;
     final Source source = Source.simulated;
     final State state = State.opened;
-    MockAppEngineEnvironment appEnv;
+
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        ProposalValidator.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
+        mockAppEngineEnvironment.setUp();
+
         // SaleAssociateOperations mock
         SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
@@ -70,19 +80,14 @@ public class TestProposalValidator {
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
-
-        // App Engine Environment mock
-        appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
         ProposalValidator._baseOperations = new BaseOperations();
         ProposalValidator.saleAssociateOperations = ProposalValidator._baseOperations.getSaleAssociateOperations();
         ProposalValidator.proposalOperations = ProposalValidator._baseOperations.getProposalOperations();
-
-        appEnv.tearDown();
     }
 
     @Test

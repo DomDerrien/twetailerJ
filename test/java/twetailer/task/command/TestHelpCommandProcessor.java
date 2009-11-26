@@ -8,25 +8,18 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domderrien.i18n.LabelExtractor;
-import domderrien.i18n.LabelExtractor.ResourceFileId;
-import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonException;
-import domderrien.jsontools.JsonObject;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -39,11 +32,23 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
+import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 
 public class TestHelpCommandProcessor {
 
     private String firstLetterToUpper (String key) {
         return key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1).toLowerCase(Locale.ENGLISH);
+    }
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestCommandProcessor.setUpBeforeClass();
     }
 
     @Before

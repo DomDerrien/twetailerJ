@@ -15,10 +15,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -28,7 +32,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
@@ -50,6 +53,11 @@ import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 
 public class TestCommandProcessor {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        CommandProcessor.setLogger(new MockLogger("test", null));
+    }
 
     @Before
     public void setUp() throws Exception {

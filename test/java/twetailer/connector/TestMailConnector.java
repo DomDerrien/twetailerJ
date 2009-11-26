@@ -16,18 +16,24 @@ import javax.servlet.http.MockHttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.dao.MockAppEngineEnvironment;
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.LabelExtractor;
 
 public class TestMailConnector {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
     }
 

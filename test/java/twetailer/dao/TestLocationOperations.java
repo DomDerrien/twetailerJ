@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -20,19 +23,25 @@ import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import twetailer.validator.LocaleValidator;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestLocationOperations {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        BaseOperations.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
-
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
     }
 
     @After

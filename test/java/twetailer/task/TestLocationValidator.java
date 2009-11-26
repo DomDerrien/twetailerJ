@@ -17,6 +17,7 @@ import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -40,24 +41,27 @@ import domderrien.i18n.LabelExtractor;
 
 public class TestLocationValidator {
 
-    MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        LocationValidator.setLogger(new MockLogger("unit-test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        LocationValidator.log = new MockLogger("unit-test", null);
-
-        appEnv.setUp();
+        mockAppEngineEnvironment.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
         LocationValidator.locationOperations = LocationValidator._baseOperations.getLocationOperations();
         LocationValidator.rawCommandOperations = LocationValidator._baseOperations.getRawCommandOperations();
         LocationValidator.consumerOperations = LocationValidator._baseOperations.getConsumerOperations();
         LocaleValidator.setValidatorStream(null);
         BaseConnector.resetLastCommunicationInSimulatedMode();
-
-        appEnv.tearDown();
     }
 
     @Test

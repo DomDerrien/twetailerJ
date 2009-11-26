@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 import javax.servlet.MockServletOutputStream;
 import javax.servlet.ServletOutputStream;
@@ -18,6 +21,7 @@ import javax.servlet.http.MockHttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -26,8 +30,6 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
@@ -54,6 +56,8 @@ import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Twitter;
 
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 public class TestMaezelServlet {
 
     private class MockBaseOperations extends BaseOperations {
@@ -79,14 +83,24 @@ public class TestMaezelServlet {
 
     MaezelServlet servlet;
 
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        MaezelServlet.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
+
     @Before
     public void setUp() throws Exception {
         servlet = new MaezelServlet();
         servlet._baseOperations = new MockBaseOperations();
+        mockAppEngineEnvironment.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
     }
 
     @Test
@@ -288,10 +302,7 @@ public class TestMaezelServlet {
             }
         };
 
-        MockAppEngineEnvironment appEngine = new MockAppEngineEnvironment();
-        appEngine.setUp();
         servlet.doGet(mockRequest, mockResponse);
-        appEngine.tearDown();
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
@@ -902,10 +913,7 @@ public class TestMaezelServlet {
             }
         };
 
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp(); // In that configuration, no Robot sale associate account will be found, so the request will do nothing
         servlet.doGet(mockRequest, mockResponse);
-        appEnv.tearDown();
 
         assertTrue(stream.contains("'success':true"));
     }

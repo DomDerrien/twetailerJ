@@ -10,20 +10,26 @@ import javax.servlet.http.MockHttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.TestJabberConnector;
-import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.RawCommand;
 
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 public class TestJabberResponderServlet {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
     }
 

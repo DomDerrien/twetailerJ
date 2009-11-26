@@ -5,45 +5,35 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
-import com.google.appengine.api.users.User;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
+
+import com.google.appengine.api.users.User;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
 public class DemandsRestlet extends BaseRestlet {
-    private static final Logger log = Logger.getLogger(DemandsRestlet.class.getName());
+    private static Logger log = Logger.getLogger(DemandsRestlet.class.getName());
 
-    private BaseOperations _baseOperations = new BaseOperations();
-    private DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected BaseOperations _baseOperations = new BaseOperations();
+    protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     @Override
     protected Logger getLogger() {
         return log;
-    }
-
-    /**
-     * Setter for the unit tests
-     * @param ops instance of a mock class
-     */
-    protected void setConsumerOperations(ConsumerOperations cOps) {
-        consumerOperations = cOps;
-    }
-
-    /**
-     * Setter for the unit tests
-     * @param ops instance of a mock class
-     */
-    protected void setDemandOperations(DemandOperations dOps) {
-        demandOperations = dOps;
     }
 
     @Override

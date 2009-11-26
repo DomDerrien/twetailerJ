@@ -8,15 +8,14 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import domderrien.jsontools.JsonObject;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import domderrien.jsontools.JsonObject;
 
 public class ProposalOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(ProposalOperations.class.getName());
+    private static Logger log = Logger.getLogger(ProposalOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

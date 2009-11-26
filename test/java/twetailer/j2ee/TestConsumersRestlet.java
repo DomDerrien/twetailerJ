@@ -7,8 +7,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -26,6 +29,11 @@ public class TestConsumersRestlet {
 
     static final User user = new User("test-email", "test-domain");
     ConsumersRestlet ops;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        ConsumersRestlet.setLogger(new MockLogger("test", null));
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -56,7 +64,7 @@ public class TestConsumersRestlet {
     @Test
     public void testGetResourceI() throws DataSourceException {
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
                 assertEquals(resourceId, key);
@@ -64,7 +72,7 @@ public class TestConsumersRestlet {
                 temp.setKey(resourceId);
                 return temp;
             }
-        });
+        };
         JsonObject resource = ops.getResource(null, resourceId.toString(), user);
         assertEquals(resourceId.longValue(), resource.getLong(Entity.KEY));
     }
@@ -72,20 +80,20 @@ public class TestConsumersRestlet {
     @Test(expected=DataSourceException.class)
     public void testGetResourceII() throws DataSourceException {
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
                 assertEquals(resourceId, key);
                 return null;
             }
-        });
+        };
         ops.getResource(null, resourceId.toString(), user);
     }
 
     @Test
     public void testGetResourceIII() throws DataSourceException {
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String attribute, Object value, int limit) {
                 assertEquals(Consumer.EMAIL, attribute);
@@ -96,21 +104,21 @@ public class TestConsumersRestlet {
                 list.add(temp);
                 return list;
             }
-        });
+        };
         JsonObject resource = ops.getResource(null, "current", user);
         assertEquals(resourceId.longValue(), resource.getLong(Entity.KEY));
     }
 
     @Test(expected=DataSourceException.class)
     public void testGetResourceIV() throws DataSourceException {
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String attribute, Object value, int limit) {
                 assertEquals(Consumer.EMAIL, attribute);
                 assertEquals(user.getEmail(), (String) value);
                 return new ArrayList<Consumer>();
             }
-        });
+        };
 
         ops.getResource(null, "current", user);
     }
@@ -122,7 +130,7 @@ public class TestConsumersRestlet {
         parameters.put("qA", Consumer.EMAIL);
         parameters.put("qV", email);
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -135,7 +143,7 @@ public class TestConsumersRestlet {
                 temps.add(temp);
                 return temps;
             }
-        });
+        };
         JsonArray resources = ops.selectResources(parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
@@ -147,7 +155,7 @@ public class TestConsumersRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put("q", email);
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -160,7 +168,7 @@ public class TestConsumersRestlet {
                 temps.add(temp);
                 return temps;
             }
-        });
+        };
         JsonArray resources = ops.selectResources(parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
@@ -173,7 +181,7 @@ public class TestConsumersRestlet {
         parameters.put("qA", ""); // To fall back on "qA = Consumer.EMAIL"
         parameters.put("qV", email);
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -186,7 +194,7 @@ public class TestConsumersRestlet {
                 temps.add(temp);
                 return temps;
             }
-        });
+        };
         JsonArray resources = ops.selectResources(parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
@@ -197,12 +205,12 @@ public class TestConsumersRestlet {
         final String email = "d.d@d.dom";
         JsonObject parameters = new GenericJsonObject();
         parameters.put("q", email);
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(String key, Object value, int index) throws DataSourceException {
                 throw new DataSourceException("Done in purpose");
             }
-        });
+        };
         ops.selectResources(parameters);
     }
 

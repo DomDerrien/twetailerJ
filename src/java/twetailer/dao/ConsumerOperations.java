@@ -10,7 +10,7 @@ import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 
 public class ConsumerOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(ConsumerOperations.class.getName());
+    private static Logger log = Logger.getLogger(ConsumerOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

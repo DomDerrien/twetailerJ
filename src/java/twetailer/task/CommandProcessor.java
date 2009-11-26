@@ -55,7 +55,7 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
 public class CommandProcessor {
-    private static final Logger log = Logger.getLogger(CommandProcessor.class.getName());
+    private static Logger log = Logger.getLogger(CommandProcessor.class.getName());
 
     // References made public for the business logic located in package twetailer.task.command
     public static BaseOperations _baseOperations = new BaseOperations();
@@ -67,6 +67,11 @@ public class CommandProcessor {
     public static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     public static StoreOperations storeOperations = _baseOperations.getStoreOperations();
     public static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Prepare a message to be submit a user

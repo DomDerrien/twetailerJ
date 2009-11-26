@@ -6,21 +6,25 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.MockAppEngineEnvironment;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestRawCommand {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+        mockAppEngineEnvironment.setUp();
     }
 
     @After

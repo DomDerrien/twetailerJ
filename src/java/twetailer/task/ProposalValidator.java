@@ -28,12 +28,17 @@ import domderrien.i18n.LabelExtractor;
 
 public class ProposalValidator {
 
-    private static final Logger log = Logger.getLogger(ProposalValidator.class.getName());
+    private static Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Check the validity of the identified proposal

@@ -10,10 +10,14 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -21,7 +25,6 @@ import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -36,6 +39,11 @@ public class TestDemandsRestlet {
 
     static final User user = new User("test-email", "test-domain");
     DemandsRestlet ops;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        DemandsRestlet.setLogger(new MockLogger("test", null));
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -59,7 +67,7 @@ public class TestDemandsRestlet {
         final JsonObject proposedParameters = new GenericJsonObject();
         final Source source = Source.simulated;
         final Long resourceId = 12345L;
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(proposedPM, pm);
@@ -75,8 +83,8 @@ public class TestDemandsRestlet {
                 temps.add(temp);
                 return temps;
             }
-        });
-        ops.setDemandOperations(new DemandOperations() {
+        };
+        ops.demandOperations = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return proposedPM;
@@ -93,7 +101,7 @@ public class TestDemandsRestlet {
                 temp.setSource(source);
                 return temp;
             }
-        });
+        };
 
         JsonObject returnedDemand = ops.createResource(proposedParameters, user);
         assertTrue(proposedPM.isClosed());
@@ -108,7 +116,7 @@ public class TestDemandsRestlet {
     public void testCreateResourceII() throws DataSourceException, ClientException {
         final PersistenceManager proposedPM = new MockPersistenceManager();
         final JsonObject proposedParameters = new GenericJsonObject();
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(proposedPM, pm);
@@ -119,8 +127,8 @@ public class TestDemandsRestlet {
                 assertEquals(1, limit);
                 return new ArrayList<Consumer>();
             }
-        });
-        ops.setDemandOperations(new DemandOperations() {
+        };
+        ops.demandOperations = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return proposedPM;
@@ -130,7 +138,7 @@ public class TestDemandsRestlet {
                 fail("Should not be called!");
                 throw new ClientException("Done in purpose");
             }
-        });
+        };
 
         JsonObject returnedDemand = ops.createResource(proposedParameters, user);
         assertTrue(proposedPM.isClosed());
@@ -140,12 +148,12 @@ public class TestDemandsRestlet {
     @Test(expected=RuntimeException.class)
     public void testCreateResourceIII() throws DataSourceException, ClientException {
         final JsonObject proposedParameters = new GenericJsonObject();
-        ops.setConsumerOperations(new ConsumerOperations() {
+        ops.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 throw new RuntimeException("done in purpose");
             }
-        });
+        };
 
         ops.createResource(proposedParameters, user);
     }

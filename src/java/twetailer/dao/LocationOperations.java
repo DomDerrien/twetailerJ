@@ -11,11 +11,10 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.validator.LocaleValidator;
-
 import domderrien.jsontools.JsonObject;
 
 public class LocationOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(LocationOperations.class.getName());
+    private static Logger log = Logger.getLogger(LocationOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

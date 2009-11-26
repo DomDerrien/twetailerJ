@@ -7,13 +7,15 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 import java.util.Locale;
 
+import javamocks.util.logging.MockLogger;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.MockAppEngineEnvironment;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
@@ -21,13 +23,20 @@ import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 public class TestBaseConnector {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        BaseConnector.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
         mockAppEngineEnvironment.setUp();
     }
 

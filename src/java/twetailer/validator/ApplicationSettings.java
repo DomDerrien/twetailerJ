@@ -163,7 +163,12 @@ public class ApplicationSettings {
         settings = null;
     }
 
-    private static final Logger log = Logger.getLogger(ApplicationSettings.class.getName());
+    private static Logger log = Logger.getLogger(ApplicationSettings.class.getName());
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     protected ApplicationSettings() {
         settings = this;

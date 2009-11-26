@@ -3,11 +3,12 @@ package twetailer.j2ee;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.users.User;
 import twetailer.DataSourceException;
-import twetailer.dto.Consumer;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
+import twetailer.dto.Consumer;
+
+import com.google.appengine.api.users.User;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -15,17 +16,14 @@ import domderrien.jsontools.JsonUtils;
 
 @SuppressWarnings("serial")
 public class ConsumersRestlet extends BaseRestlet {
-    private static final Logger log = Logger.getLogger(ConsumersRestlet.class.getName());
+    private static Logger log = Logger.getLogger(ConsumersRestlet.class.getName());
 
-    private BaseOperations _baseOperations = new BaseOperations();
-    private ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected BaseOperations _baseOperations = new BaseOperations();
+    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
-    /**
-     * Setter for the unit tests
-     * @param ops instance of a mock class
-     */
-    protected void setConsumerOperations(ConsumerOperations ops) {
-        consumerOperations = ops;
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
     }
 
     @Override

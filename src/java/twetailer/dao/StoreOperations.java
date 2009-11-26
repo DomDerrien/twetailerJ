@@ -12,7 +12,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Store;
 
 public class StoreOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(StoreOperations.class.getName());
+    private static Logger log = Logger.getLogger(StoreOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

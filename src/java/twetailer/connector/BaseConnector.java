@@ -12,7 +12,7 @@ import twetailer.dto.SaleAssociate;
 import twitter4j.TwitterException;
 
 public class BaseConnector {
-    private static final Logger log = Logger.getLogger(BaseConnector.class.getName());
+    private static Logger log = Logger.getLogger(BaseConnector.class.getName());
 
     public enum Source {
         simulated,
@@ -20,6 +20,11 @@ public class BaseConnector {
         jabber,
         facebook,
         mail
+    }
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        log = mock;
     }
 
     /**

@@ -15,7 +15,7 @@ import twetailer.DataSourceException;
 import twetailer.dto.Settings;
 
 public class SettingsOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(SettingsOperations.class.getName());
+    private static Logger log = Logger.getLogger(SettingsOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

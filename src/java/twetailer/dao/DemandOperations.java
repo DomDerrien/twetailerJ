@@ -11,11 +11,10 @@ import javax.jdo.Query;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Demand;
-import twetailer.dto.Entity;
 import domderrien.jsontools.JsonObject;
 
 public class DemandOperations extends BaseOperations {
-    private static final Logger log = Logger.getLogger(DemandOperations.class.getName());
+    private static Logger log = Logger.getLogger(DemandOperations.class.getName());
 
     @Override
     protected Logger getLogger() {

@@ -10,23 +10,27 @@ import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.dao.BaseOperations;
-import twetailer.dao.MockAppEngineEnvironment;
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonParser;
 
 public class TestEntity {
 
-    private MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-
-        BaseOperations.setPersistenceManagerFactory(mockAppEngineEnvironment.getPersistenceManagerFactory());
+        mockAppEngineEnvironment.setUp();
     }
 
     @After

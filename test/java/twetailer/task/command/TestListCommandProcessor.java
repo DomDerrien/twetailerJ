@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -24,7 +24,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
@@ -42,11 +41,19 @@ import twetailer.task.TestCommandProcessor;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestListCommandProcessor {
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestCommandProcessor.setUpBeforeClass();
+    }
 
     @Before
     public void setUp() throws Exception {

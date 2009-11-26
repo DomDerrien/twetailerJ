@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -21,8 +23,6 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
@@ -34,6 +34,9 @@ import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
+
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.LabelExtractor;
 
 public class TestRobotResponder {
@@ -46,9 +49,17 @@ public class TestRobotResponder {
         }
     };
 
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
+
     @Before
     public void setUp() throws Exception {
         // Install the mocks
+        mockAppEngineEnvironment.setUp();
         RobotResponder._baseOperations = new MockBaseOperations();
 
         // Be sure to start with a clean message stack
@@ -57,6 +68,7 @@ public class TestRobotResponder {
 
     @After
     public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
         RobotResponder._baseOperations = new BaseOperations();
         RobotResponder.demandOperations = RobotResponder._baseOperations.getDemandOperations();
         RobotResponder.consumerOperations = RobotResponder._baseOperations.getConsumerOperations();
@@ -236,10 +248,7 @@ public class TestRobotResponder {
             }
         };
 
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
         RobotResponder.processDemand(demandKey);
-        appEnv.tearDown();
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());

@@ -110,7 +110,10 @@
 
     <target name="step-configuration-clean">
         <delete file="src/war/WEB-INF/appengine-web.xml" />
+        <delete file="src/war/WEB-INF/cron.xml" />
+        <delete file="src/war/WEB-INF/queue.xml" />
         <delete file="src/war/WEB-INF/classes/META-INF/jdoconfig.xml" />
+        <delete file="src/war/_wave/capabilities.xml" />
     </target>
 
     <target name="step-configuration-push" depends="base_build_control.step-configuration-push">
@@ -124,6 +127,13 @@
         <copy
             file="src/resources/cron.xml.tmpl"
             tofile="src/war/WEB-INF/cron.xml"
+            overwrite="true"
+        >
+            <filterchain refid="genericFilterChain" />
+        </copy>
+        <copy
+            file="src/resources/queue.xml.tmpl"
+            tofile="src/war/WEB-INF/queue.xml"
             overwrite="true"
         >
             <filterchain refid="genericFilterChain" />

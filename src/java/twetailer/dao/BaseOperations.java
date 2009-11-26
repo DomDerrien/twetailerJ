@@ -14,7 +14,12 @@ import javax.jdo.Query;
 import twetailer.DataSourceException;
 
 public class BaseOperations {
-    private static final Logger _log = Logger.getLogger(BaseOperations.class.getName());
+    private static Logger _log = Logger.getLogger(BaseOperations.class.getName());
+
+    // Setter for injection of a MockLogger at test time
+    protected static void setLogger(Logger mock) {
+        _log = mock;
+    }
 
     /**
      * Get the logging handler
@@ -26,11 +31,7 @@ public class BaseOperations {
     }
 
     private static PersistenceManagerFactory pmfInstance = null;
-
-    /** Setter for the injection of a mock */
-    public static void setPersistenceManagerFactory(PersistenceManagerFactory pmf) {
-        pmfInstance = pmf;
-    }
+    private static PersistenceManagerFactory originalPmfInstance = null;
 
     /**
      * Singleton accessor

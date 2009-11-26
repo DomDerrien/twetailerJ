@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotSame;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
 import org.easymock.classextension.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,7 @@ public class TestTwitterConnector {
     @Before
     public void setUp() throws Exception {
         TwitterConnector.resetAccountLists();
+        TwitterConnector.setLogger(new MockLogger("test", null));
     }
 
     @Test

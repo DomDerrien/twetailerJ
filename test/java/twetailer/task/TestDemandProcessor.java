@@ -9,10 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -23,8 +27,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.MockAppEngineEnvironment;
-import twetailer.dao.MockPersistenceManager;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
@@ -38,6 +40,8 @@ import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 public class TestDemandProcessor {
 
     private class MockBaseOperations extends BaseOperations {
@@ -48,13 +52,23 @@ public class TestDemandProcessor {
         }
     };
 
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        DemandProcessor.setLogger(new MockLogger("test", null));
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
+
     @Before
     public void setUp() throws Exception {
+        mockAppEngineEnvironment.setUp();
         DemandProcessor._baseOperations = new MockBaseOperations();
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
         DemandProcessor._baseOperations = new BaseOperations();
         DemandProcessor.demandOperations = DemandProcessor._baseOperations.getDemandOperations();
         DemandProcessor.locationOperations = DemandProcessor._baseOperations.getLocationOperations();
@@ -947,12 +961,9 @@ public class TestDemandProcessor {
         };
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
 
         DemandProcessor.process(demandKey);
 
-        appEnv.tearDown();
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
@@ -1243,12 +1254,7 @@ public class TestDemandProcessor {
             }
         };
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandProcessor.batchProcess();
-        appEnv.tearDown();
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
