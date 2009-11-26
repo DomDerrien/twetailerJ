@@ -7,6 +7,7 @@
     import="java.util.Locale"
     import="java.util.ResourceBundle"
     import="domderrien.i18n.LabelExtractor"
+    import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
 %><%
     // Application settings
@@ -19,7 +20,7 @@
     String localeId = LocaleController.getLocaleId(request);
 %><html>
 <head>
-    <title><%= LabelExtractor.get("ui_application_name", locale) %></title>
+    <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/images/favicon.ico" />
@@ -42,6 +43,6 @@
     %>
 </head>
 <body class="tundra">
-    <h3 style="text-align:center;"><%= LabelExtractor.get("ui_page_redirection_message", new Object[] {"/html/console.jsp"},locale) %></h3>
+    <h3 style="text-align:center;"><%= LabelExtractor.get(ResourceFileId.third, "ui_page_redirection_message", new Object[] {"/html/console.jsp"},locale) %></h3>
 </body>
 </html>

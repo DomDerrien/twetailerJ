@@ -27,7 +27,6 @@
 
         <!-- ========================= -->
         <!-- Help messages for Twitter -->
-        <!-- ISSUE: used to denote inconsistencies with source -->
         <!-- AKA: ? -->
         <!-- ========================= -->
 
@@ -600,7 +599,7 @@
 
         <tu tuid="Opened" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <note>Help text associated to the state 'opened'. ISSUE: source uses "open"</note>
+            <note>Help text associated to the state 'opened'.</note>
             <tuv xml:lang="en">
                 <seg>Opened: transaction State triggered by a Consumer after initial Demand creation |
                 Opened (see also): state-flow, state |

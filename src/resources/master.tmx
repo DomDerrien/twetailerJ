@@ -82,6 +82,44 @@
             </tuv>
         </tu>
 
+        <!-- ================== -->
+        <!-- Shared definitions -->
+        <!-- ================== -->
+
+        <tu tuid="product_name" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Name of the entire application</note>
+            <tuv xml:lang="en">
+                <seg>Twetailer:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="product_ascii_logo" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>&lt;(^v^)&gt;</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="product_mantra" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Lusanga mantra</note>
+            <tuv xml:lang="en">
+                <seg>Another Social Economy</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="product_copyright" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Copyright &copy; 2009 &lt;a href=\u0022http://www.milstein-assoc.com/\u0022&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
+            </tuv>
+        </tu>
+
         <!-- ======================= -->
         <!-- Core engine definitions -->
         <!-- ======================= -->
@@ -1496,111 +1534,6 @@
             </note>
             <tuv xml:lang="en">
                 <seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
-            </tuv>
-        </tu>
-
-        <!-- =================== -->
-        <!-- Console definitions -->
-        <!-- =================== -->
-
-        <tu tuid="ui_page_redirection_message" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>
-                Message printed in redirection page|
-                {0}: url where the page is going to be redirected towards
-            </note>
-            <tuv xml:lang="en">
-                <seg>Redirecting...<br/>Click <a href="{0}">here</a> to force the redirection.</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_application_name" datatype="Text">
-            <prop type="x-tier">dojotk</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>Name of the entire application</note>
-            <tuv xml:lang="en">
-                <seg>Twetailer Console</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_splash_screen_message" datatype="Text">
-            <prop type="x-tier">dojotk</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>Message printed while the application dependencies are loaded, while the console is being built</note>
-            <tuv xml:lang="en">
-                <seg>Please, wait while the Console is being built...</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_global_command_login" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of a global command</note>
-            <tuv xml:lang="en">
-                <seg>Log In</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_global_command_Logout" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of a global command</note>
-            <tuv xml:lang="en">
-                <seg>Log Out</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_global_command_help" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of a global command</note>
-            <tuv xml:lang="en">
-                <seg>Help</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_login_form_pane_title" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Title of the login form</note>
-            <tuv xml:lang="en">
-                <seg>Authentication check point</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_login_form_pane_message" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Informative message printed in the login form</note>
-            <tuv xml:lang="en">
-                <seg>You are not logged in.</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_login_form_pane_username_label" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of the username field in the login form</note>
-            <tuv xml:lang="en">
-                <seg>Email</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_login_form_pane_password_label" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of the password field in the login form</note>
-            <tuv xml:lang="en">
-                <seg>Password</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_login_form_pane_administrative_state_label" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of the Administrator field in the login form</note>
-            <tuv xml:lang="en">
-                <seg>Sign in a Administrator</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="ui_login_form_pane_actionlabel" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <note>Label of the button/link starting the authentication verification</note>
-            <tuv xml:lang="en">
-                <seg>Log In</seg>
             </tuv>
         </tu>
 

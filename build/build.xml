@@ -64,6 +64,10 @@
         value="lexicon"
     />
 
+    <property name="rwa.thirdLocalizedLabelBaseFilename"
+        value="console"
+    />
+
     <property name="rwa.sessionTimeout"
         description="HTTP session timeout, in minutes"
         value="30"
@@ -193,6 +197,7 @@
                 <include name="src/war/WEB-INF/classes/org/**/*" />
                 <include name="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}*.properties" />
                 <include name="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}*.properties" />
+                <include name="src/war/WEB-INF/classes/${rwa.thirdLocalizedLabelBaseFilename}*.properties" />
                 <include name="src/war/WEB-INF/classes/${rwa.languageListFilename}*.properties" />
                 <exclude name="test" />
             </fileset>
@@ -398,6 +403,7 @@
             <token key="dd2tu.languageListFilename" value="${rwa.languageListFilename}" />
             <token key="dd2tu.masterLocalizedLabelBaseFilename" value="${rwa.masterLocalizedLabelBaseFilename}" />
             <token key="dd2tu.secondLocalizedLabelBaseFilename" value="${rwa.secondLocalizedLabelBaseFilename}" />
+            <token key="dd2tu.thirdLocalizedLabelBaseFilename" value="${rwa.thirdLocalizedLabelBaseFilename}" />
             <token key="rwa.dbDriver" value="${rwa.dbDriver}" />
             <token key="rwa.dbName" value="${rwa.dbName}" />
             <token key="rwa.dbURL" value="${rwa.dbURL}" />
@@ -747,6 +753,40 @@
         <mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
         <copy
             file="src/war/js/${rwa.productShortName}/nls/${rwa.secondLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${rwa.productShortName}/nls/en"
+        />
+        <java
+            classname="domderrien.build.TMXConverter"
+            fork="true"
+        >
+            <classpath refid="tmxconverter.classpath" />
+            <jvmarg value="-Dfile.encoding=UTF-8" />
+            <arg value="-tmxFilenameBase" />
+            <arg value="${rwa.thirdLocalizedLabelBaseFilename}" />
+            <arg value="-sourcePath" />
+            <arg value="${basedir}${file.separator}src${file.separator}resources" />
+            <arg value="-jsDestPath" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+            <arg value="-javaDestPath" />
+            <arg value="${temp.dir}" />
+            <arg value="-languageFilenameBase" />
+            <arg value="${rwa.languageListFilename}" />
+            <arg value="-buildStamp" />
+            <arg value="${rwa.stageId}" />
+        </java>
+        <native2ascii
+            src="${temp.dir}"
+            dest="src/war/WEB-INF/classes"
+            encoding="UTF8"
+            includes="*.properties-utf8" ext=".properties"
+        />
+        <copy
+            file="src/war/WEB-INF/classes/${rwa.thirdLocalizedLabelBaseFilename}.properties"
+            tofile="src/war/WEB-INF/classes/${rwa.thirdLocalizedLabelBaseFilename}_en.properties"
+        />
+        <mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+        <copy
+            file="src/war/js/${rwa.productShortName}/nls/${rwa.thirdLocalizedLabelBaseFilename}.js"
             todir="src/war/js/${rwa.productShortName}/nls/en"
         />
     </target>

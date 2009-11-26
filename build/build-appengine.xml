@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project default="webserver-start" name="build_control_for_google_appengine" basedir="..">
-    
+
     <description>
         Basic build system for Web Application development
         with target to manage the Google App Engine Web container
     </description>
-    
+
     <property file="${user.home}/local.build.properties"
         description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
     />
 
     <import file="build.xml" optional="false" taskname="base_build_control" />
-    
+
     <property name="appengine.sdk.dir"
         description="Location of the Google App Engine SDK"
         location="${basedir}/bin/appengine-java-sdk-1.2.6"
     />
-    
+
     <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
 
     <!-- ================ -->
     <!-- Public variables -->
     <!-- ================ -->
-    
+
     <property environment="env"/>
 
     <property name="rwa.hostname"
         description="Name of the local host. Update it in your local.build.properties file."
         value="${env.COMPUTERNAME}"
     />
-    
+
     <property name="rwa.serverPort"
         description="Port number used by the Web server"
         value="9999"
@@ -47,8 +47,8 @@
         <delete file="src/war/WEB-INF/lib/jdo2*.jar" />
         <delete file="src/war/WEB-INF/lib/domderrien*.jar" />
         <delete file="src/war/WEB-INF/lib/twitter4j*.jar" />
-    	<delete files="src/war/WEB-INF/lib/json*.jar" />
-    	<delete files="src/war/WEB-INF/lib/wave*.jar" />
+        <delete files="src/war/WEB-INF/lib/json*.jar" />
+        <delete files="src/war/WEB-INF/lib/wave*.jar" />
     </target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
@@ -64,46 +64,33 @@
         <copy file="deps/lib/wave/wave-robot-api-20090916.jar" todir="src/war/WEB-INF/lib" />
     </target>
 
-    <target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
-    
-    <target name="webserver-start" description="start the configured webserver" depends="webserver-stop, step-datanucleus-enhance, step-appengine-start" />
-    
-    <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-info-get">
-        <echo>Target: webserver-start-debug</echo>
-        <antcall target="step-appengine-start-debug" />
-    </target>
-    
-    <target name="webserver-stop" description="stop the configured webserver" depends="step-info-get">
-        <echo>Target: webserver-stop</echo>
-        <condition property="webserver.started">
-            <socket server="localhost" port="${rwa.serverPort}"/>
-        </condition>
-        <antcall target="step-appengine-stop" />
-        <!--sleep seconds="2" /-->
-    </target>
-    
-    <!--
-    <target name="undeploy" description="undeploy the application" depends="step-info-get">
-        <echo>Target: undeploy</echo>
-        <antcall target="step-application-undeploy" />
-    </target>
-    
-    <target name="deploy" description="compile, package, and deploy the application" depends="step-info-get">
-        <echo>Target: deploy</echo>
-        <antcall target="step-application-deploy" />
-    </target>
+    <target name="compile" description="compile the Java code and the JSP files" depends="base_build_control.compile, step-jsp-compile" />
 
-    <target name="redeploy" description="compile, package, and redeploy the application">
-        <echo>Target: redeploy</echo>
-        <antcall target="undeploy" />
-        <antcall target="deploy" />
-    </target>
-    -->
-    
-    <!-- ================= -->
+    <target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
+
+    <target name="webserver-start" description="start the configured webserver" depends="step-datanucleus-enhance, step-appengine-start" />
+
+    <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-datanucleus-enhance, step-appengine-start-debug" />
+
+	<!-- ================= -->
     <!-- Private variables -->
     <!-- ================= -->
-    
+
+    <path id="jspc.runtime.classpath">
+        <filelist dir="${appengine.sdk.dir}/lib/shared">
+            <file name="jsp/repackaged-appengine-jasper-compiler-5.0.28.jar" />
+            <file name="jsp/repackaged-appengine-jasper-runtime-5.0.28.jar" />
+            <file name="jsp/repackaged-appengine-commons-logging-1.1.1.jar" />
+            <file name="jsp/repackaged-appengine-commons-el-1.0.jar" />
+            <file name="geronimo-servlet_2.5_spec-1.2.jar" />
+            <file name="geronimo-jsp_2.1_spec-1.0.1.jar" />
+        </filelist>
+    </path>
+
+    <taskdef classname="org.apache.jasper.JspC" name="jspc2">
+        <classpath refid="jspc.runtime.classpath" />
+    </taskdef>
+
     <!-- =============== -->
     <!-- Private targets -->
     <!-- =============== -->
@@ -164,16 +151,37 @@
         </delete>
     </target>
 
-    <target name="step-datanucleus-enhance" depends="compile, step-configuration-push, step-devfiles-clean">
+    <target name="step-jsp-compile">
+        <delete dir="${temp.dir}/jsp" />
+        <mkdir dir="${temp.dir}/jsp" />
+        <jspc2
+            outputDir="${temp.dir}/jsp"
+            uriroot="src/war"
+            validateXml="false"
+            webXmlFragment="${temp.dir}/jsp/generated_web.xml"
+        />
+        <javac
+            destdir="${temp.dir}/jsp"
+            deprecation="false"
+            debug="true"
+            optimize="false"
+            excludes=""
+            srcdir="${temp.dir}/jsp"
+        >
+            <classpath location="src/war/WEB-INF/classes"/>
+            <classpath refid="java.compile.classpath" />
+            <classpath refid="jspc.runtime.classpath" />
+        </javac>
+    </target>
+
+    <target name="step-datanucleus-enhance" depends="compile, step-jsp-compile, step-configuration-push, step-devfiles-clean">
         <enhance_war war="${basedir}/src/war" />
     </target>
 
-    <target name="step-datanucleus-enhance-for-tests" depends="compile, step-configuration-push">
+    <target name="step-datanucleus-enhance-for-tests" depends="compile, step-jsp-compile, step-configuration-push">
         <delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
         <enhance_war war="${basedir}/src/war" includes="twetailer/dto/*.class" />
     </target>
-
-    <!-- Jetty start/stop: http://ptrthomas.wordpress.com/2009/01/24/how-to-start-and-stop-jetty-revisited/ -->
 
     <target name="step-appengine-start">
         <dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war" />
@@ -186,16 +194,6 @@
                 <arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${rwa.serverPort}"/>
             </options>
         </dev_appserver>
-    </target>
-
-    <target name="step-appengine-stop" if="webserver.started">
-    </target>
-
-    <target name="step-appengine-kill" if="webserver.started">
-        <exec executable="${temp.dir}${file.separator}pskill.exe" spawn="true" >
-            <arg value="-accepteula" />
-            <arg value="java.exe" />
-        </exec>
     </target>
 
 </project>

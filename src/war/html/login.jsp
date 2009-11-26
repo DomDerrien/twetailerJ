@@ -8,6 +8,7 @@
     import="java.util.ResourceBundle"
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
@@ -20,7 +21,7 @@
     String localeId = LocaleController.getLocaleId(request);
 %><html>
 <head>
-    <title><%= LabelExtractor.get("ui_application_name", locale) %></title>
+    <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF8">
     <link rel="shortcut icon" href="/images/logo/favicon.ico" />
     <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
@@ -47,8 +48,8 @@
 </head>
 <body class="tundra">
 
-    <div id="introFlash" style="display:none;">
-        <div><span><%= LabelExtractor.get("ui_splash_screen_message", locale) %></span></div>
+    <div id="introFlash">
+        <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
     </div>
 
     <%
@@ -97,20 +98,25 @@
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
             <div id="brand">
                 <h1>
-                    <img id="logo" src="/images/logo/logo-48x48.png" alt="<('v')>" title="Twetailer logo" />
-                    <a href="http://www.twetailer.com/">Twetailer:</a>
+                    <img
+                        alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
+                        id="logo"
+                        src="/images/logo/logo-48x48.png"
+                        title="<%= LabelExtractor.get("product_name", locale) %>"
+                    />
+                    <a href="http://www.twetailer.com/"><%= LabelExtractor.get("product_name", locale) %></a>
                 </h1>
-                <span id="mantra">Another Social Economy</span>
+                <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
             </div>
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a name="zzz">Consumer</a></li>
-                    <li><a name="yyy">Retailer</a></li>
+                    <li><a name="notImportantJustForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <li><a name="notImportantJustForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
                     <!--  Reverse order because they are right aligned -->
-                    <li class="subItem"><a href="#" onclick="dijit.byId('aboutPopup').show();" title="About Twetailer">About</a></li>
+                    <li class="subItem"><a href="#" onclick="dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
                     <li class="subItem">
-                        <input id="languageSelector" title="Select the language for the session" />
+                        <input id="languageSelector" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
                         <script type="text/javascript">
                         domderrien.i18n.LanguageSelector.createSelector("languageSelector", "globalCommand", [<%
                             ResourceBundle languageList = LocaleController.getLanguageListRB();
@@ -135,15 +141,13 @@
                     <td valign="middle" style="width: 40em;">
                         <div id="signInForm">
                             <div style="color:#888; text-align: justify;">
-                                 In order to use the Twetailer console, you <u>need to be authenticated first</u>.
-                                 To eliminate the management of yet another set of credentials, Twetailer relies on OpenID.
-                                 Consult <a href="http://openid.net/" target="_blank">OpendId.net</a> website for more information on that technology.
+                                 <%= LabelExtractor.get(ResourceFileId.third, "login_introduction_message", locale) %>
                             </div>
                             <br/>
                             <form action="/control/login" dojoType="dijit.form.Form" method="post">
-                                <label for="openid_identifier">Your OpenID identifier:</label><br/>
+                                <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
                                 <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;" type="text" /></center>
-                                <center><button dojoType="dijit.form.Button" type="submit" iconClass="openidSignInButton">Sign in with OpenID</button></center>
+                                <center><button dojoType="dijit.form.Button" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
                             </form>
                         </div>
                     </td>
@@ -152,7 +156,7 @@
             </table>
         </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
-            Copyright &copy; 2009 <a href="http://www.milstein-assoc.com/">Milstein & associates inc.</a>
+            <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
     </div>
 
@@ -165,7 +169,12 @@
         About box: To be completed.<br/>
         <br/>
         --<br/>
-        <img alt="Powered by Google App Engine" height="30" src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" width="120"/>
+        <img
+            alt="<%= LabelExtractor.get(ResourceFileId.third, "about_powered_by_appengine", locale) %>"
+            height="30"
+            src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif"
+            width="120"
+        />
     </div>
 </body>
 </html>

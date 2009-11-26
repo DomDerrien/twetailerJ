@@ -8,6 +8,7 @@
     import="java.util.ResourceBundle"
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
@@ -20,7 +21,7 @@
     String localeId = LocaleController.getLocaleId(request);
 %><html>
 <head>
-    <title><%= LabelExtractor.get("ui_application_name", locale) %></title>
+    <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF8">
     <link rel="shortcut icon" href="/images/logo/favicon.ico" />
     <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
@@ -48,7 +49,7 @@
 <body class="tundra">
 
     <div id="introFlash" style="display:none;">
-        <div><span><%= LabelExtractor.get("ui_splash_screen_message", locale) %></span></div>
+        <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
     </div>
 
     <%
@@ -68,47 +69,49 @@
     } // endif (useCDN)
     %>
     <script type="text/javascript">
-    /*
-    dojo.require("dijit.layout.AccordionContainer");
-    dojo.require("dijit.layout.TabContainer");
-    dojo.require("dojox.grid.DataGrid");
-    dojo.require("dojox.grid.cells");
-    dojo.require("dijit.form.Form");
-    dojo.require("dijit.form.Button");
-    dojo.require("dijit.form.DateTextBox");
-    dojo.require("dijit.form.TimeTextBox");
-    dojo.require("dijit.form.NumberTextBox");
-    dojo.require("dijit.form.NumberSpinner");
-    dojo.require("dijit.form.CurrencyTextBox");
-    dojo.require("dijit.form.ValidationTextBox");
-    dojo.require("dijit.form.FilteringSelect");
-    dojo.require("dijit.form.CheckBox");
-    dojo.require("dijit.form.MultiSelect");
-    dojo.require("dijit.form.Textarea");
-    // dojo.require("dijit.Editor");
-    */
-    dojo.require("dijit.Dialog");
-    dojo.require("dijit.layout.BorderContainer");
-    dojo.require("dijit.layout.ContentPane");
-    dojo.require("dijit.layout.TabContainer");
-    dojo.require("dijit.form.Form");
-    dojo.require("dijit.form.Button");
-    dojo.require("dijit.form.TextBox");
-    dojo.require("twetailer.Console");
-    dojo.require("domderrien.i18n.LanguageSelector");
-    dojo.require("dojo.parser");
     dojo.addOnLoad(function(){
-        dojo.parser.parse();
-        var uiTMXName = "master"; // @rwa.masterTMXfilename@
-        var userLocale = "en"; // "<%= localeId %>"
-        twetailer.Console.init(uiTMXName, userLocale);
-        dojo.fadeOut({
-            node: "introFlash",
-            delay: 50,
-            onEnd: function() {
-                dojo.style("introFlash", "display", "none");
-            }
-        }).play();
+        /*
+        dojo.require("dijit.layout.AccordionContainer");
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("dojox.grid.DataGrid");
+        dojo.require("dojox.grid.cells");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.DateTextBox");
+        dojo.require("dijit.form.TimeTextBox");
+        dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.NumberSpinner");
+        dojo.require("dijit.form.CurrencyTextBox");
+        dojo.require("dijit.form.ValidationTextBox");
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.CheckBox");
+        dojo.require("dijit.form.MultiSelect");
+        dojo.require("dijit.form.Textarea");
+        // dojo.require("dijit.Editor");
+        */
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("twetailer.Console");
+        dojo.require("domderrien.i18n.LanguageSelector");
+        dojo.require("dojo.parser");
+        dojo.addOnLoad(function(){
+            dojo.parser.parse();
+            var uiTMXName = "master"; // @rwa.masterTMXfilename@
+            var userLocale = "en"; // "<%= localeId %>"
+            twetailer.Console.init(uiTMXName, userLocale);
+            dojo.fadeOut({
+                node: "introFlash",
+                delay: 50,
+                onEnd: function() {
+                    dojo.style("introFlash", "display", "none");
+                }
+            }).play();
+        });
     });
     </script>
 
@@ -116,19 +119,24 @@
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
             <div id="brand">
                 <h1>
-                    <img id="logo" src="/images/logo/logo-48x48.png" alt="<('v')>" title="Twetailer logo" />
-                    <a href="http://www.twetailer.com/">Twetailer:</a>
+                    <img
+                        alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
+                        id="logo"
+                        src="/images/logo/logo-48x48.png"
+                        title="<%= LabelExtractor.get("product_name", locale) %>"
+                    />
+                    <a href="http://www.twetailer.com/"><%= LabelExtractor.get("product_name", locale) %></a>
                 </h1>
-                <span id="mantra">Another Social Economy</span>
+                <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
             </div>
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a href="javascript:twetailer.Console.showModule('consumer');">Consumer</a></li>
-                    <li><a href="javascript:twetailer.Console.showModule('retailer');">Retailer</a></li>
+                    <li><a href="javascript:twetailer.Console.showModule('consumer');"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <li><a href="javascript:twetailer.Console.showModule('retailer');"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
                     <!--  Reverse order because they are right aligned -->
-                    <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="About Twetailer">About</a></li>
-                    <li class="subItem"><a href="/control/logout" title="Release your authentified session">Sign Out</a></li>
+                    <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
+                    <li class="subItem"><a href="/control/logout" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
                 </ul>
             </div>
         </div>
@@ -136,7 +144,7 @@
             <!-- Place holder for the console content -->
         </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
-            Copyright &copy; 2009 <a href="http://www.milstein-assoc.com/">Milstein & associates inc.</a>
+            <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
     </div>
 

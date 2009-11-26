@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+    <header creationtool="developers" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="Twetailer">
+    </header>
+    <body>
+
+        <!-- =================== -->
+        <!-- Default definitions -->
+        <!-- =================== -->
+
+        <tu tuid="bundle_language" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
+                IMPORTANT: "English" should not be just translated!
+                IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
+                           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
+            </note>
+            <tuv xml:lang="en">
+                <seg>English</seg>
+            </tuv>
+        </tu>
+
+        <!-- ================== -->
+        <!-- Shared definitions -->
+        <!-- ================== -->
+
+        <tu tuid="ui_page_redirection_message" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message printed in redirection page|
+                {0}: url where the page is going to be redirected towards
+            </note>
+            <tuv xml:lang="en">
+                <seg>Redirecting...<br/>Click <a href="{0}">here</a> to force the redirection.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ui_application_name" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Name of the entire application</note>
+            <tuv xml:lang="en">
+                <seg>Twetailer Console</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ui_splash_screen_message" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>Message printed while the application dependencies are loaded, while the console is being built</note>
+            <tuv xml:lang="en">
+                <seg>Please, wait while the Console is being built...</seg>
+            </tuv>
+        </tu>
+
+        <!-- ================ -->
+        <!-- Navigation links -->
+        <!-- ================ -->
+
+        <tu tuid="navigation_consumer" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Consumer</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_sale_associate" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Sale Associate</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_about" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>About</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_sign_out" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Sign Out</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_language_selector" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Language Selector</seg>
+            </tuv>
+        </tu>
+
+        <!-- ========= -->
+        <!-- Login box -->
+        <!-- ========= -->
+
+        <tu tuid="login_introduction_message" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    In order to use the Twetailer console, you &lt;u&gt;need to be authenticated first&lt;/u&gt;.
+                    To eliminate the management of yet another set of credentials, Twetailer relies on OpenID.
+                    Consult &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; website for more information on that technology.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_open_id_label" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Your OpenID identifier:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_sign_in_button" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Sign In with OpenID</seg>
+            </tuv>
+        </tu>
+
+        <!-- ========= -->
+        <!-- About box -->
+        <!-- ========= -->
+
+        <tu tuid="about_powered_by_appengine" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Powered by Google App Engine</seg>
+            </tuv>
+        </tu>
+
+    </body>
+</tmx>
