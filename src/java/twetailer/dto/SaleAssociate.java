@@ -68,6 +68,11 @@ public class SaleAssociate extends Entity {
     public final static String NAME = Consumer.NAME;
 
     @Persistent
+    private String openID;
+
+    public final static String OPEN_ID = Consumer.OPEN_ID;
+
+    @Persistent
     private String phoneNumber;
 
     public final static String PHONE_NUMBER = Consumer.PHONE_NUMBER;
@@ -227,6 +232,14 @@ public class SaleAssociate extends Entity {
         this.name = name;
     }
 
+    public String getOpenID() {
+        return openID;
+    }
+
+    public void setOpenID(String openID) {
+        this.openID = openID;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -291,6 +304,7 @@ public class SaleAssociate extends Entity {
         out.put(LANGUAGE, getLanguage());
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
+        out.put(OPEN_ID, getOpenID());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(PREFERRED_CONNECTION, getPreferredConnection().toString());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
@@ -329,6 +343,7 @@ public class SaleAssociate extends Entity {
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
+        if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }

@@ -67,6 +67,7 @@ public class TestUtils {
 
     @Test
     public void testGetUserServiceI() {
+        ServletUtils.setUserService(null);
         assertNotNull(ServletUtils.getUserService());
     }
 

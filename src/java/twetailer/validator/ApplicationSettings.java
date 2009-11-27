@@ -29,6 +29,12 @@ public class ApplicationSettings {
 
     protected final static String MAIN_PAGE_URL_KEY = "mainPageURL";
 
+    public final static String DEFAULT_NEW_USER_PAGE_URL = "/html/new-user.jsp";
+
+    private String newUserPageURL = DEFAULT_NEW_USER_PAGE_URL;
+
+    protected final static String NEW_USER_PAGE_URL_KEY = "newUserPageURL";
+
     public final static String DEFAULT_LOGO_URL = "http://twetailer.appspot.com/images/logo/logo-48x48.png";
 
     private String logoURL = DEFAULT_LOGO_URL;
@@ -98,6 +104,16 @@ public class ApplicationSettings {
 
     public String getMainPageURL() {
         return mainPageURL;
+    }
+
+    /**
+     * Get the relative main page URL
+     *
+     * @return Relative URL
+     */
+
+    public String getNewUserPageURL() {
+        return newUserPageURL;
     }
 
 
@@ -197,6 +213,12 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 mainPageURL = DEFAULT_MAIN_PAGE_URL;
+            }
+            try {
+                newUserPageURL = appSettings.getString(NEW_USER_PAGE_URL_KEY);
+            }
+            catch(Exception ex) {
+                newUserPageURL = DEFAULT_NEW_USER_PAGE_URL;
             }
             try {
                 logoURL = appSettings.getString(LOGO_URL_KEY);

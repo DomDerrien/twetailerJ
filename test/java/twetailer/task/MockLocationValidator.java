@@ -1,10 +1,9 @@
 package twetailer.task;
 
 import twetailer.dao.BaseOperations;
-import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 
-public class MockLocationValidator extends DemandValidator {
+public class MockLocationValidator extends LocationValidator {
 
     private static BaseOperations originalBaseOperations;
     private static LocationOperations originalLocationOperations;

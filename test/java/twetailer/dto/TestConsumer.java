@@ -57,6 +57,7 @@ public class TestConsumer {
     String language = Locale.FRENCH.getLanguage();
     Long locationKey = 12345L;
     String name = "dom";
+    String openID = "http://dom.my-openid.org";
     String phoneNumber = "514-123-4567 #890";
     String twitterId = "Katelyn";
 
@@ -70,6 +71,7 @@ public class TestConsumer {
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
+        object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
         object.setTwitterId(twitterId);
 
@@ -79,6 +81,7 @@ public class TestConsumer {
         assertEquals(language, object.getLanguage());
         assertEquals(locationKey, object.getLocationKey());
         assertEquals(name, object.getName());
+        assertEquals(openID, object.getOpenID());
         assertEquals(phoneNumber, object.getPhoneNumber());
         assertEquals(twitterId, object.getTwitterId());
     }
@@ -100,6 +103,7 @@ public class TestConsumer {
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
+        object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
         object.setTwitterId(twitterId);
 
@@ -111,6 +115,7 @@ public class TestConsumer {
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(name, clone.getName());
+        assertEquals(openID, clone.getOpenID());
         assertEquals(phoneNumber, clone.getPhoneNumber());
         assertEquals(twitterId, clone.getTwitterId());
     }

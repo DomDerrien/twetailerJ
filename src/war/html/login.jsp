@@ -48,14 +48,14 @@
 </head>
 <body class="tundra">
 
-    <div id="introFlash">
+    <div id="introFlash" style="display: none;">
         <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
     </div>
 
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
@@ -118,7 +118,7 @@
                     <li class="subItem">
                         <input id="languageSelector" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
                         <script type="text/javascript">
-                        domderrien.i18n.LanguageSelector.createSelector("languageSelector", "globalCommand", [<%
+                        dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", "globalCommand", [<%
                             ResourceBundle languageList = LocaleController.getLanguageListRB();
                             Enumeration<String> keys = languageList.getKeys();
                             while(keys.hasMoreElements()) {
@@ -128,7 +128,7 @@
                                     %>,<%
                                 }
                             }
-                            %>], "<%= localeId %>");
+                            %>], "<%= localeId %>")});
                         </script>
                     </li>
                 </ul>

@@ -86,7 +86,6 @@ public class LocationValidator {
         }
         if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
             location = LocaleValidator.getGeoCoordinates(location);
-            System.err.println("longitude: " + location.getLongitude());
             if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                 log.warning("Invalid location for the command: " + commandKey + " -- [" + postalCode + " " + countryCode + "]");
                 RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, commandKey);

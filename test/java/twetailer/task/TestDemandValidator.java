@@ -199,7 +199,6 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process(demandKey);
 
-        System.err.println(BaseConnector.getLastCommunicationInSimulatedMode());
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());

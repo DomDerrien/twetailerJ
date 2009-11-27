@@ -4,8 +4,7 @@
 
     dojo.require("domderrien.i18n.LabelExtractor");
 
-    var _useMockFiles = true,
-        _labelExtractor;
+    var _labelExtractor;
 
     /**
      * Module initializer
@@ -15,9 +14,6 @@
      * @param {Boolean} Indicator of the login page
      */
     module.init = function(baseFilename, locale, isLoginPage) {
-        // Detection of the running mode (stand-alone or connected)
-        _useMockFiles = window.location.protocol == "file:";
-
         // Get the localized resource bundle
         _labelExtractor = domderrien.i18n.LabelExtractor.init(
                 "twetailer",
@@ -39,8 +35,8 @@
 
     module.showModule = function(moduleName) {
         switch (moduleName) {
-        case "retailer":
-            moduleName = "console-retailer.jsp";
+        case "sale-associate":
+            moduleName = "console-saleAssociate.jsp";
             break;
         case "consumer":
         default:
@@ -50,7 +46,7 @@
     };
 
     // TODO:
-    // - hide the retailer link if the consumer is not a retailer
-    // - block showModule if the user is not a retailer
+    // - hide the sale associate link if the consumer is not a sale associate
+    // - block showModule if the user is not a sale associate
 
 })(); // End of the function limiting the scope of the private variables

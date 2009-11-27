@@ -65,6 +65,7 @@ public class TestSaleAssociate {
     String language = Locale.FRENCH.getLanguage();
     Long locationKey = 12345L;
     String name = "dom";
+    String openID = "http://dom.my-openid.org";
     String phoneNumber = "514-123-4567 #890";
     Long storeKey = 54321L;
     Long score = 5L;
@@ -83,6 +84,7 @@ public class TestSaleAssociate {
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
+        object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
         object.setStoreKey(storeKey);
         object.setScore(score);
@@ -96,6 +98,7 @@ public class TestSaleAssociate {
         assertEquals(isStoreAdmin, object.getIsStoreAdmin());
         assertEquals(language, object.getLanguage());
         assertEquals(locationKey, object.getLocationKey());
+        assertEquals(name, object.getName());
         assertEquals(name, object.getName());
         assertEquals(storeKey, object.getStoreKey());
         assertEquals(score, object.getScore());
@@ -159,6 +162,7 @@ public class TestSaleAssociate {
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
+        object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
         object.setStoreKey(storeKey);
         object.setScore(score);
@@ -174,6 +178,7 @@ public class TestSaleAssociate {
         assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
+        assertEquals(name, clone.getName());
         assertEquals(name, clone.getName());
         assertEquals(storeKey, clone.getStoreKey());
         assertEquals(score, clone.getScore());

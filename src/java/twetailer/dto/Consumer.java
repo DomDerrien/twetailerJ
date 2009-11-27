@@ -71,6 +71,11 @@ public class Consumer extends Entity {
     public final static String NAME = "name";
 
     @Persistent
+    private String openID;
+
+    public final static String OPEN_ID = "openID";
+
+    @Persistent
     private String phoneNumber;
 
     public final static String PHONE_NUMBER = "phoneNb";
@@ -147,6 +152,14 @@ public class Consumer extends Entity {
         this.name = name;
     }
 
+    public String getOpenID() {
+        return openID;
+    }
+
+    public void setOpenID(String openID) {
+        this.openID = openID;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -171,6 +184,7 @@ public class Consumer extends Entity {
         out.put(LANGUAGE, getLanguage());
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
+        out.put(OPEN_ID, getOpenID());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(TWITTER_ID, getTwitterId());
         return out;
@@ -184,6 +198,7 @@ public class Consumer extends Entity {
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
+        if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
 
