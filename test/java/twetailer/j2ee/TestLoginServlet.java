@@ -2,12 +2,15 @@ package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -24,6 +27,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import twetailer.DataSourceException;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dto.Consumer;
 import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.Constants;
@@ -65,6 +71,7 @@ public class TestLoginServlet {
 
     @After
     public void tearDown() throws Exception {
+        LoginServlet.consumerOperations = new ConsumerOperations();
     }
 
     @Test
@@ -359,7 +366,7 @@ public class TestLoginServlet {
     }
 
     @Test
-    public void testLoginVI() throws IOException, ServletException {
+    public void testLoginVIa() throws IOException, ServletException {
         //
         // An OpendIdUser instance is stored in the request
         // The user is authenticated
@@ -400,6 +407,79 @@ public class TestLoginServlet {
             }
         };
         MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final Long consumerKey = 12345L;
+        LoginServlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(OpenIdUser user) {
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+
+        new LoginServlet() {
+            @Override
+            protected void preselectOpendIdServer(HttpServletRequest request) { }
+            @Override
+            protected RelyingParty getRelyingParty() {
+                return RelyingParty.newInstance(propertiesForInjection);
+            }
+        }.doGet(request, response);
+    }
+
+    @Test
+    public void testLoginVIb() throws IOException, ServletException {
+        //
+        // An OpendIdUser instance is stored in the request
+        // The user is authenticated
+        //
+        HttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if (Constants.OPENID_MODE.equals(name)) {
+                    return null;
+                }
+                if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                fail("Parameter access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("b", "identity"); // Means user.isAuthenticated() == true
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public RequestDispatcher getRequestDispatcher(String url) {
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url); // Authenticated, but not yet in our data store
+                return new MockRequestDispatcher();
+            }
+        };
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final Long consumerKey = 12345L;
+        LoginServlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(OpenIdUser user) {
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
 
         new LoginServlet() {
             @Override
@@ -475,7 +555,7 @@ public class TestLoginServlet {
     }
 
     @Test
-    public void testLoginVIII() throws IOException, ServletException {
+    public void testLoginVIIIa() throws IOException, ServletException {
         //
         // An OpendIdUser instance is stored in the request
         // The user is NOT authenticated
@@ -521,11 +601,106 @@ public class TestLoginServlet {
             }
             @Override
             public RequestDispatcher getRequestDispatcher(String url) {
-                assertEquals(ApplicationSettings.get().getLoginPageURL(), url);
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
                 return new MockRequestDispatcher();
             }
         };
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpServletResponse response = new MockHttpServletResponse() {
+            @Override
+            public void sendRedirect(String url) {
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+            }
+        };
+
+        final Long consumerKey = 12345L;
+        LoginServlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(OpenIdUser user) {
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+
+        new LoginServlet() {
+            @Override
+            protected void preselectOpendIdServer(HttpServletRequest request) { }
+            @Override
+            protected RelyingParty getRelyingParty() {
+                RelyingParty instance = RelyingParty.newInstance(propertiesForInjection);
+                ((MockAssociation) instance.getOpenIdContext().getAssociation()).makeItSuccessful();
+                return instance;
+            }
+        }.doGet(request, response);
+    }
+
+    @Test
+    public void testLoginVIIIb() throws IOException, ServletException {
+        //
+        // An OpendIdUser instance is stored in the request
+        // The user is NOT authenticated
+        // The user is associated and the response is authenticated
+        // At the end, the verification SUCCEED
+        //
+        HttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if (Constants.OPENID_MODE.equals(name)) {
+                    return Constants.Mode.ID_RES;
+                }
+                if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                fail("Parameter access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    public boolean hasMoreElements() { return false; }
+                    public String nextElement() { return null; }
+                };
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("c", "assocHandle");
+                    json.put("d", new HashMap<String, Object>());
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public RequestDispatcher getRequestDispatcher(String url) {
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+                return new MockRequestDispatcher();
+            }
+        };
+        MockHttpServletResponse response = new MockHttpServletResponse() {
+            @Override
+            public void sendRedirect(String url) {
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+            }
+        };
+
+        final Long consumerKey = 12345L;
+        LoginServlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(OpenIdUser user) {
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
 
         new LoginServlet() {
             @Override
@@ -1007,5 +1182,49 @@ public class TestLoginServlet {
         user.fromJSON(json);
 
         LoginServlet.relyingPartyListener.onAccess(user, new MockHttpServletRequest());
+    }
+
+    @Test
+    public void testAttachConsumerToSessionI() throws ServletException, IOException {
+        final Long consumerKey = 12345L;
+        LoginServlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(OpenIdUser user) {
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+
+        // Authenticated user already known
+        assertNull(user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+        LoginServlet.attachConsumerToSession(user);
+        assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+    }
+
+    @Test
+    public void testAttachConsumerToSessionII() throws ServletException, IOException {
+        final Long consumerKey = 12345L;
+        LoginServlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(OpenIdUser user) {
+                fail("Not expected call");
+                throw new IllegalArgumentException("Not expected call");
+            }
+        };
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+
+        // Authenticated user already attached
+        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        LoginServlet.attachConsumerToSession(user);
     }
 }

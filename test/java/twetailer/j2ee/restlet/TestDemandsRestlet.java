@@ -1,4 +1,4 @@
-package twetailer.j2ee;
+package twetailer.j2ee.restlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

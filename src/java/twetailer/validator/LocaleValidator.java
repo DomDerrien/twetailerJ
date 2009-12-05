@@ -175,6 +175,9 @@ public class LocaleValidator {
         //
         // It's expected that the language code respected the ISO 2-letters format
         //
+        if (language != null) {
+            language = language.substring(0, 2);
+        }
         if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return FRENCH_LANGUAGE; }
         if (ENGLISH_LANGUAGE.equalsIgnoreCase(language)) { return ENGLISH_LANGUAGE; }
         return DEFAULT_LANGUAGE; // Default language

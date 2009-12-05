@@ -75,10 +75,10 @@ public class MailConnector {
             mailMessage.setSubject(LabelExtractor.get("mc_mail_subject_response_default", locale));
         }
         else if (subject.startsWith(responsePrefix)) {
-            mailMessage.setSubject(responsePrefix + subject);
+            mailMessage.setSubject(subject);
         }
         else {
-            mailMessage.setSubject(subject);
+            mailMessage.setSubject(responsePrefix + subject);
         }
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);

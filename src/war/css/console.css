@@ -1,3 +1,6 @@
+/**
+ * Shared settings
+ */
 html, body {
 	width: 100%;
 	height: 100%;
@@ -99,9 +102,17 @@ body {
 }
 
 #navigation>ul>li>a {
-	text-decoration: none;
-	font-weight: bold;
-	color: white;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+}
+
+#navigation>ul>li>a:hover {
+    color: yellow;
+}
+
+#navigation>ul>li>a.active {
+    color: lightgreen;
 }
 
 #widget_languageSelector {
@@ -126,6 +137,24 @@ body {
 	margin: 0 10px;
 }
 
+.silkIcon {
+    background-repeat:no-repeat;
+    text-align:center;
+    height:18px;
+    width:18px;
+}
+
+.silkIconUpdate {
+    background-image:url(../images/page_white_edit.png);
+}
+
+.silkIconVerify {
+    background-image:url(../images/tick.png);
+}
+
+/**
+ * Login page settings
+ */
 #signInForm {
 	background-color: #ccc;
 	border: 1px solid black;
@@ -147,4 +176,29 @@ body {
     text-align:center;
     height:18px;
     width:18px;
+}
+
+/**
+ * Consumer Information Pane
+ */
+.consumerInformation {
+    border: 1px solid lightgrey;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.consumerInformation legend {
+	font-weight: bold;
+	color: green;
+}
+
+.consumerInformation>div {
+    margin: 3px 0;
+}
+
+.consumerInformation>div>span.hint {
+    font-size: smaller;
+    color: grey;
 }

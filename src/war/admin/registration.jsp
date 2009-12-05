@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<%@page
+    language="java"
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    import="java.util.Enumeration"
+    import="java.util.Locale"
+    import="java.util.Map"
+    import="java.util.ResourceBundle"
+    import="com.dyuproject.openid.OpenIdUser"
+    import="com.dyuproject.openid.RelyingParty"
+    import="domderrien.i18n.LabelExtractor"
+    import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="twetailer.validator.ApplicationSettings"
+    import="twetailer.dto.Location"
+    import="twetailer.dto.Store"
+    import="twetailer.dto.SaleAssociate"
+%><%
+    // Application settings
+    ApplicationSettings appSettings = ApplicationSettings.get();
+    boolean useCDN = appSettings.isUseCDN();
+    String cdnBaseURL = appSettings.getCdnBaseURL();
+
+    // Locale detection
+    Locale locale = LocaleController.getLocale(request);
+    String localeId = LocaleController.getLocaleId(request);
+%>
+<%@page import="twetailer.dto.SaleAssociate"%>
+<%@page import="twetailer.dto.Location"%>
+<%@page import="twetailer.dto.Store"%><html>
+<head>
+    <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF8">
+    <link rel="shortcut icon" href="/images/logo/favicon.ico" />
+    <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
+    <%
+    if (useCDN) {
+    %><style type="text/css">
+        @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
+        @import "/css/console.css";
+    </style><%
+    }
+    else { // elif (!useCDN)
+    %><style type="text/css">
+        @import "/js/dojo/dojo/resources/dojo.css";
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";
+        @import "/js/dojo/dojox/grid/resources/Grid.css";
+        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
+        @import "/css/console.css";
+    </style><%
+    } // endif (useCDN)
+    %>
+</head>
+<body class="tundra">
+
+    <div id="introFlash">
+        <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
+    </div>
+
+    <%
+    if (useCDN) {
+    %><script
+        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
+        type="text/javascript"
+    ></script><%
+    }
+    else { // elif (!useCDN)
+    %><script
+        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        src="/js/dojo/dojo/dojo.js"
+        type="text/javascript"
+    ></script><%
+    } // endif (useCDN)
+    %>
+    <script type="text/javascript">
+    dojo.addOnLoad(function(){
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.StackContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("twetailer.Console");
+        dojo.require("dojo.parser");
+        dojo.addOnLoad(function(){
+            dojo.parser.parse();
+            var userLocale = "<%= localeId %>";
+            twetailer.Console.init(userLocale, true);
+            dojo.fadeOut({
+                node: "introFlash",
+                delay: 50,
+                onEnd: function() {
+                    dojo.style("introFlash", "display", "none");
+                }
+            }).play();
+        });
+    });
+    </script>
+
+    <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
+        <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
+            <div id="brand">
+                <h1>
+                    <img
+                        alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
+                        id="logo"
+                        src="/images/logo/logo-48x48.png"
+                        title="<%= LabelExtractor.get("product_name", locale) %>"
+                    />
+                    <a href="http://www.twetailer.com/"><%= LabelExtractor.get("product_name", locale) %></a>
+                </h1>
+                <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
+            </div>
+            <div id="navigation">
+                <ul>
+                    <!--  Normal order because they are left aligned -->
+                    <li><a name="notImportantJustForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <li><a name="notImportantJustForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
+                    <!--  Reverse order because they are right aligned -->
+                    <li class="subItem"><a name="notImportantJustForStyle3"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
+                    <li class="subItem"><a id="logoutLnk" href="/control/logout" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
+                </ul>
+            </div>
+        </div>
+        <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
+            <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;">
+                <div dojoType="dijit.layout.ContentPane" jsId="step0">
+                    <fieldset class="consumerInformation">
+                        <legend>Action Selection</legend>
+                        <p>
+                            <button disabled="true" dojoType="dijit.form.Button"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);">New Location >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);">New Store >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);">New Sale Associate >></button>
+                        </p>
+                    </fieldset>
+                </div>
+                <div dojoType="dijit.layout.ContentPane" jsId="step1" style="display:hidden;">
+                    <fieldset class="consumerInformation">
+                        <legend>Location</legend>
+                        <form id="locationInformation">
+                            <div>
+                                <label for="postalCode">Postal Code</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Location.POSTAL_CODE %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
+                                <select dojoType="dijit.form.FilteringSelect" name="countryCode">
+                                    <option value="CA" selected="true">Canada</option>
+                                    <!--option value="US">United States of America</option-->
+                                </select>
+                            </div>
+                        </form>
+                        <p>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();registration.createLocation();">Next >></button>
+                        </p>
+                    </fieldset>
+                </div>
+                <div dojoType="dijit.layout.ContentPane" jsId="step2" style="display:hidden;">
+                    <fieldset class="consumerInformation">
+                        <legend>Store</legend>
+                        <form id="storeInformation">
+                            <div>
+                                <label for="locationKey">Location Key</label><br/>
+                                <input dojoType="dijit.form.TextBox" id="<%= Store.LOCATION_KEY %>" name="<%= Store.LOCATION_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="name">Store Name</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.NAME %>" style="width:20em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="address">Address</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.ADDRESS %>" style="width:30em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="phoneNumber">Phone Number</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.PHONE_NUMBER %>" style="width:10em;" type="text" value="" />
+                            </div>
+                        </form>
+                        <p>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();registration.createStore();">Next >></button>
+                        </p>
+                    </fieldset>
+                </div>
+                <div dojoType="dijit.layout.ContentPane" jsId="step3" style="display:hidden;">
+                    <fieldset class="consumerInformation">
+                        <legend>Sale Associate</legend>
+                        <form id="saleAssociateInformation">
+                            <div>
+                                <label for="storeKey">Store Key</label><br/>
+                                <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.STORE_KEY %>" name="<%= SaleAssociate.STORE_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="name">Associate Name</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= SaleAssociate.NAME %>" style="width:20em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="address">E-mail address</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= SaleAssociate.EMAIL %>" style="width:30em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="twitter">Twitter Name</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= SaleAssociate.TWITTER_ID %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="preferredConnection">Preferred Connection</label><br/>
+                                <select dojoType="dijit.form.FilteringSelect" name="<%= SaleAssociate.PREFERRED_CONNECTION %>">
+                                    <option value="twitter" selected="true">Twitter</option>
+                                    <!--option value="jabber">Jabber/XMPP</option-->
+                                    <!--option value="email">E-Mail</option-->
+                                </select>
+                            </div>
+                            <div>
+                                <label for="language">Language</label><br/>
+                                <select dojoType="dijit.form.FilteringSelect" name="<%= SaleAssociate.LANGUAGE %>">
+                                    <option value="en" selected="true">English</option>
+                                    <!--option value="fr">French</option-->
+                                </select>
+                            </div>
+                        </form>
+                        <p>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();registration.createSaleAssociate();">Next >></button>
+                        </p>
+                    </fieldset>
+                </div>
+                <div dojoType="dijit.layout.ContentPane" jsId="step4" style="display:hidden;">
+                    <fieldset class="consumerInformation">
+                        <legend>Repeat Again ;)</legend>
+                        <p>The Sale Associate can now tweet to @twetailer to supply his/her own tags.</p>
+                        <p>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);"><< Another Location</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);"><< Another Store</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);"><< Another Sale Associate</button>
+                            <button disabled="true" dojoType="dijit.form.Button">Next >></button>
+                        </p>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+            <%= LabelExtractor.get("product_copyright", locale) %>
+        </div>
+    </div>
+    <script type="text/javascript">
+    var registration = new Object();
+    registration.createLocation = function() {
+        dojo.xhrPost({
+            content: dojo.formToObject("locationInformation"),
+            handleAs: "json",
+            load: function(response, xhrRequest) {
+                if (response !== null && response.success) {
+                    dijit.byId("<%= Store.LOCATION_KEY %>").attr("value", response.<%= Location.KEY %>);
+                }
+                else {
+                    alert(response.message+"\nurl: "+xhrRequest.url);
+                }
+            },
+            error: function(message, xhrRequest) { alert(message+"\nurl: "+xhrRequest.url); },
+            url: "/API/maezel/createLocation"
+        });
+    },
+    registration.createStore = function() {
+        dojo.xhrPost({
+            content: dojo.formToObject("storeInformation"),
+            handleAs: "json",
+            load: function(response, xhrRequest) {
+                if (response !== null && response.success) {
+                    dijit.byId("<%= SaleAssociate.STORE_KEY %>").attr("value", response.<%= Store.KEY %>);
+                }
+                else {
+                    alert(response.message+"\nurl: "+xhrRequest.url);
+                }
+            },
+            error: function(message, xhrRequest) { alert(message+"\nurl: "+xhrRequest.url); },
+            url: "/API/maezel/createStore"
+        });
+    };
+    registration.createSaleAssociate = function() {
+        dojo.xhrPost({
+            content: dojo.formToObject("saleAssociateInformation"),
+            handleAs: "json",
+            load: function(response, xhrRequest) {
+                if (response !== null && response.success) {
+                    // No visual feedback
+                }
+                else {
+                    alert(response.message+"\nurl: "+xhrRequest.url);
+                }
+            },
+            error: function(message, xhrRequest) { alert(message+"\nurl: "+xhrRequest.url); },
+            url: "/API/maezel/createSaleAssociate"
+        });
+    };
+    </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-11910037-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script');
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        ga.setAttribute('async', 'true');
+        document.documentElement.firstChild.appendChild(ga);
+    })();
+    </script>
+</body>
+</html>

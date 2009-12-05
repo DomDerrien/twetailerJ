@@ -1,4 +1,4 @@
-package twetailer.j2ee;
+package twetailer.j2ee.restlet;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -12,6 +12,7 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.j2ee.BaseRestlet;
 
 import com.google.appengine.api.users.User;
 

@@ -120,6 +120,19 @@
             </tuv>
         </tu>
 
+        <tu tuid="display_name_pattern" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Use to compose the nickname / display name of a user
+                {0}: first name
+                {1}: last name
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0} {1}</seg>
+            </tuv>
+        </tu>
+
         <!-- ======================= -->
         <!-- Core engine definitions -->
         <!-- ======================= -->
@@ -1535,6 +1548,34 @@
             <tuv xml:lang="en">
                 <seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
             </tuv>
+        </tu>
+
+        <!-- ============= -->
+        <!-- Country names -->
+        <!-- ============= -->
+
+        <tu tuid="country_CA" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>Canada</seg></tuv>
+        </tu>
+
+        <tu tuid="country_FR" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>France</seg></tuv>
+        </tu>
+
+        <tu tuid="country_UK" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>United Kingdom</seg></tuv>
+        </tu>
+
+        <tu tuid="country_US" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>United States of America</seg></tuv>
         </tu>
 
     </body>

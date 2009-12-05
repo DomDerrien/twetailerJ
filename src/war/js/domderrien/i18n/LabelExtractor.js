@@ -6,7 +6,8 @@
      */
     var module = dojo.provide("domderrien.i18n.LabelExtractor");
 
-    var _dictionnary = null;
+    var _dictionary = {};
+    var _defaultDictionary = null;
 
     module.init = function(namespace, filename, locale) {
         // Dojo uses dash-separated (e.g en-US not en_US) and uses lower case names (e.g en-us not en_US)
@@ -20,7 +21,10 @@
             //   waiting for a call which meaningful <namespace> and <filename> values
             dojo["requireLocalization"](namespace, filename, locale); // Blocking call getting the file per XHR or <iframe/>
 
-            _dictionary = dojo.i18n.getLocalization(namespace, filename, locale);
+            _dictionary[filename] = dojo.i18n.getLocalization(namespace, filename, locale);
+            if (_defaultDictionary == null) {
+                _defaultDictionary = filename;
+            }
         }
         catch(ex) {
             alert("Deployment issue:" +
@@ -33,12 +37,16 @@
     };
 
     module.get = function(key, args) {
-        if (_dictionary == null) {
+        return module.getFrom(_defaultDictionary);
+    };
+
+    module.getFrom = function(bundleName, key, args) {
+        if (_dictionary[bundleName] == null) {
             return key;
         }
-        var message = _dictionary[key] || key;
+        var message = _dictionary[bundleName][key] || key;
         if (args != null) {
-            dojo.string.substituteParams(message, args);
+            message = dojo.string.substitute(message, args);
         }
         return message;
     };

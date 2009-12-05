@@ -29,7 +29,7 @@ public class ApplicationSettings {
 
     protected final static String MAIN_PAGE_URL_KEY = "mainPageURL";
 
-    public final static String DEFAULT_NEW_USER_PAGE_URL = "/html/new-user.jsp";
+    public final static String DEFAULT_NEW_USER_PAGE_URL = "/html/welcome.jsp";
 
     private String newUserPageURL = DEFAULT_NEW_USER_PAGE_URL;
 

@@ -56,6 +56,20 @@
             </tuv>
         </tu>
 
+        <tu tuid="update_button" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Update</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="verify_button" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Verify</seg>
+            </tuv>
+        </tu>
+
         <!-- ================ -->
         <!-- Navigation links -->
         <!-- ================ -->
@@ -128,6 +142,22 @@
         <!-- About box -->
         <!-- ========= -->
 
+        <tu tuid="about_text" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    &lt;p&gt;
+                    Twetailer is a creation of Steven Milstein and Dom Derrien.
+                    Twetailer is operated by Milstein &amp; Associates inc.
+                    &lt;/p&gt;
+                    &lt;p&gt;
+                    For more information, you can join the Twetailer
+                    community at &lt;a href="http://twetailer.cyn.in/"&gt;twetailer.cyn.in&lt;/a&gt;.
+                    &lt;/p&gt;
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="about_powered_by_appengine" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
@@ -135,5 +165,247 @@
             </tuv>
         </tu>
 
+        <!-- ============= -->
+        <!-- Page Sections -->
+        <!-- ============= -->
+
+        <tu tuid="navigation_consumer_createDemand" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Create a Demand</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_consumer_listDemand" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>List your Demands</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_consumer_listProposal" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>List your Proposals</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_consumer_profile" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Your Profile</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_saleAssociate_listDemand" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>List Received Demands</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_saleAssociate_listProposal" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>List your Proposals</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_saleAssociate_profile" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Your Profile</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_needHelp" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Need Help?</seg>
+            </tuv>
+        </tu>
+
+        <!-- ========================= -->
+        <!-- Consumer Information Pane -->
+        <!-- ========================= -->
+
+        <tu tuid="consumer_info_first_field_group" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Personal Identification</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_second_field_group" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Third-Party Access Points</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_openid" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>OpenID</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_openid" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Hint: as reported by your OpenID provider.</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_name" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Name</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_name" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg></seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_country" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Country</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_country" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg></seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_language" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Language</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_language" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg></seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_email" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>E-mail address</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_email" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Hint: to attach messages exchanged with &lt;a href="mailto:maezel@twetailer.appspotmail.com"&gt;maezel@twetailer.appspotmail.com&lt;/a&gt; with your account.</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_jabber" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Jabber/XMPP Identifier</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_jabber" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://twetailer.appspot.com"&gt;twetailer.appspot.com&lt;/a&gt; with your account.</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_label_twitter" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Twitter Name</seg></tuv>
+        </tu>
+
+        <tu tuid="consumer_info_hint_twitter" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    Hint: to attach direct messages exchanged with &lt;a href="http://twitter.com/twetailer" target="_blank"&gt;twitter.com/twetailer&lt;/a&gt; with your account.&lt;br/&gt;
+                    Note: you need to &lt;b&gt;follow @twetailer&lt;/b&gt; on Twitter in order to be able to get direct messages from us.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_verification_notification_title" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Confirmation code for the Twetailer registration process</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_verification_notification_body" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    Here is the confirmation code: {0}.
+                    You have to reported it into the Welcome page for new Twetailer users.|
+                    |
+                    Thanks for shopping with Twetailer.|
+                    |
+                    If you did not initiate this notification, it's possible someone miss-associates his account and yours.
+                    If you think someone tries to spoof your account, forward this message to abusive-notification@twetailer.appspot.com.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_verification_alert" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Information message for the screen screen at step 4, displayed when all given (and valid) identifiers match one existing account.
+                {0}: mechanism used to send the verification code -- See entries:
+                        - consumer_info_verification_alert_email
+                        - consumer_info_message_jabber_for_verification_code
+                        - consumer_info_message_twitter_for_verification_code
+                {1}: identifier for the third-party communication channel
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                        A verification code has been sent {0} to: {1}. Please, report
+                        it in the input field below to be able to complete
+                        the registration process.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_verification_alert_email" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Information message for the screen screen at step 4, mechanism for sending confirmation codes.
+                See entry: consumer_info_verification_alert
+            </note>
+            <tuv xml:lang="en">
+                <seg>by e-mail</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_verification_alert_jabberId" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Information message for the screen screen at step 4, mechanism for sending confirmation codes.
+                See entry: consumer_info_verification_alert
+            </note>
+            <tuv xml:lang="en">
+                <seg>by an instant message</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_verification_alert_twitterId" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Information message for the screen screen at step 4, mechanism for sending confirmation codes.
+                See entry: consumer_info_verification_alert
+            </note>
+            <tuv xml:lang="en">
+                <seg>by Twitter direct message</seg>
+            </tuv>
+        </tu>
+
+        <!-- ============== -->
+        <!-- Error messages -->
+        <!-- ============== -->
+
+        <tu tuid="error_client_side_communication_failed" datatype="Text">
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Generic error message presented to the Console user when there's
+                an error while communicating with the server
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    "Unexpected error while processing a request response." +
+                    "The incident is going to be reported to Twetailer analytics system.\n\n" +
+                    "You can send an e-mail to incident@twetailer.appspotmail.com if the issue is crucial to you.\n\n" +
+                    "Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues."
+                </seg>
+            </tuv>
+        </tu>
     </body>
 </tmx>

@@ -1,4 +1,4 @@
-package twetailer.j2ee;
+package twetailer.j2ee.restlet;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -7,6 +7,7 @@ import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Consumer;
+import twetailer.j2ee.BaseRestlet;
 
 import com.google.appengine.api.users.User;
 

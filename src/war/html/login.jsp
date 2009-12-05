@@ -48,7 +48,7 @@
 </head>
 <body class="tundra">
 
-    <div id="introFlash" style="display: none;">
+    <div id="introFlash">
         <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
     </div>
 
@@ -80,9 +80,8 @@
     dojo.require("dojo.parser");
     dojo.addOnLoad(function(){
         dojo.parser.parse();
-        var uiTMXName = "master"; // @rwa.masterTMXfilename@
         var userLocale = "<%= localeId %>";
-        twetailer.Console.init(uiTMXName, userLocale, true);
+        twetailer.Console.init(userLocale, true);
         dojo.fadeOut({
             node: "introFlash",
             delay: 50,
@@ -111,14 +110,14 @@
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a name="notImportantJustForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
-                    <li><a name="notImportantJustForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
+                    <li><a name="justForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <li><a name="justForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="#" onclick="dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
                     <li class="subItem">
                         <input id="languageSelector" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
                         <script type="text/javascript">
-                        dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", "globalCommand", [<%
+                        dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", null, [<%
                             ResourceBundle languageList = LocaleController.getLanguageListRB();
                             Enumeration<String> keys = languageList.getKeys();
                             while(keys.hasMoreElements()) {
@@ -128,7 +127,7 @@
                                     %>,<%
                                 }
                             }
-                            %>], "<%= localeId %>")});
+                            %>], "<%= localeId %>", "globalCommand", null)});
                         </script>
                     </li>
                 </ul>
@@ -166,8 +165,7 @@
         title="About"
         _href="about.jsp"
     >
-        About box: To be completed.<br/>
-        <br/>
+        <%= LabelExtractor.get(ResourceFileId.third, "about_text", locale) %>
         --<br/>
         <img
             alt="<%= LabelExtractor.get(ResourceFileId.third, "about_powered_by_appengine", locale) %>"
@@ -176,5 +174,17 @@
             width="120"
         />
     </div>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-11910037-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script');
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        ga.setAttribute('async', 'true');
+        document.documentElement.firstChild.appendChild(ga);
+    })();
+    </script>
 </body>
 </html>

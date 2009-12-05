@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
+import twetailer.dto.Consumer;
 import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.OpenIdServletFilter;
@@ -34,16 +37,16 @@ import com.dyuproject.util.http.UrlEncodedParameterMap;
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 
-    protected static Listener sregExtension = new SRegExtension().addExchange("email").addExchange("country").addExchange("language");
+    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_wetailerId";
 
-    protected static Listener axSchemaExtension = new AxSchemaExtension().addExchange("email").addExchange("country").addExchange("language");
+    protected static Listener sregExtension = new SRegExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("nickname"); // .addExchange("firstname").addExchange("lastname");
+
+    protected static Listener axSchemaExtension = new AxSchemaExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("firstname").addExchange("lastname").addExchange("nickname");
 
     protected static Listener relyingPartyListener = new RelyingParty.Listener() {
         public void onDiscovery(OpenIdUser user, HttpServletRequest request) {
-            System.err.println("******** discovered user: " + user.getClaimedId());
         }
         public void onPreAuthenticate(OpenIdUser user, HttpServletRequest request, UrlEncodedParameterMap params) {
-            System.err.println("******** pre-authenticate user: " + user.getClaimedId());
         }
         public void onAuthenticate(OpenIdUser user, HttpServletRequest request) {
             System.err.println("******** newly authenticated user: " + user.getIdentity());
@@ -152,6 +155,7 @@ public class LoginServlet extends HttpServlet {
 
             if (user.isAuthenticated()) {
                 // user already authenticated
+                attachConsumerToSession(user);
                 request.getRequestDispatcher(ApplicationSettings.get().getMainPageURL()).forward(request, response);
                 return;
             }
@@ -162,6 +166,7 @@ public class LoginServlet extends HttpServlet {
                 if (relyingParty.verifyAuth(user, request, response)) {
                     // authenticated redirect to home to remove the query params instead of doing:
                     // request.setAttribute("user", user); request.getRequestDispatcher("/home.jsp").forward(request, response);
+                    attachConsumerToSession(user);
                     response.sendRedirect(ApplicationSettings.get().getMainPageURL());
                 }
                 else {
@@ -193,5 +198,18 @@ public class LoginServlet extends HttpServlet {
         }
         request.setAttribute(OpenIdServletFilter.ERROR_MSG_ATTR, errorMsg);
         request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
+    }
+
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+
+    protected static void attachConsumerToSession(OpenIdUser user) {
+        Long consumerKey = (Long) user.getAttribute(AUTHENTICATED_USER_TWETAILER_ID);
+        if (consumerKey == null) {
+            // Create only if does not yet exist, otherwise return the existing instance
+            Consumer consumer = consumerOperations.createConsumer((OpenIdUser) user);
+            // Attached the consumer identifier to the OpenID user record
+            user.setAttribute(AUTHENTICATED_USER_TWETAILER_ID, consumer.getKey());
+        }
     }
 }

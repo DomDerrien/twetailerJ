@@ -73,7 +73,7 @@ public class TestApplicationSettings {
     final String cdnURL = "http://";
     final String loginURL = "login";
     final String mainURL = "main";
-    final String newUserURL = "new-user";
+    final String newUserURL = "welcome";
     final String logoURL = "http://";
     final String productEmail = "e-mail";
     final String productName = "name";

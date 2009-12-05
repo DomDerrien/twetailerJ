@@ -1,6 +1,8 @@
 package twetailer.dao;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -8,6 +10,8 @@ import javax.jdo.Query;
 
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
+import twetailer.validator.LocaleValidator;
+import domderrien.i18n.LabelExtractor;
 
 public class ConsumerOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(ConsumerOperations.class.getName());
@@ -23,7 +27,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param loggedUser System entity to attach with the just created user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
-     * @see ConsumerOperations#createConsumer(PersistenceManager, User)
+     * @see ConsumerOperations#createConsumer(PersistenceManager, com.google.appengine.api.users.User)
      */
     public Consumer createConsumer(com.google.appengine.api.users.User loggedUser) {
         PersistenceManager pm = getPersistenceManager();
@@ -43,9 +47,10 @@ public class ConsumerOperations extends BaseOperations {
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      */
     public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.users.User loggedUser) {
+        // Return consumer if it already exists
         String address = loggedUser.getEmail().toLowerCase();
         try {
-            // Try to retrieve the same location
+            // Try to retrieve the same consumer
             List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, address, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
@@ -57,8 +62,7 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(loggedUser.getNickname());
         newConsumer.setEmail(address);
-        pm.makePersistent(newConsumer);
-        return newConsumer;
+        return createConsumer(pm, newConsumer);
     }
 
     /**
@@ -67,7 +71,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param loggedUser System entity to attach with the just created user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
-     * @see ConsumerOperations#createConsumer(PersistenceManager, User)
+     * @see ConsumerOperations#createConsumer(PersistenceManager, com.google.appengine.api.xmpp.JID)
      */
     public Consumer createConsumer(com.google.appengine.api.xmpp.JID jabberId) {
         PersistenceManager pm = getPersistenceManager();
@@ -94,11 +98,14 @@ public class ConsumerOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param jabberId Identifier of a XMPP user
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
      */
     public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.xmpp.JID jabberId) {
+        // Return consumer if it already exists
         String identifier = getSimplifiedJabberId(jabberId.getId()).toLowerCase();
         try {
-            // Try to retrieve the same location
+            // Try to retrieve the same consumer
             List<Consumer> consumers = getConsumers(pm, Consumer.JABBER_ID, identifier, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
@@ -110,8 +117,7 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(identifier);
         newConsumer.setJabberId(identifier);
-        pm.makePersistent(newConsumer);
-        return newConsumer;
+        return createConsumer(pm, newConsumer);
     }
 
     /**
@@ -142,11 +148,14 @@ public class ConsumerOperations extends BaseOperations {
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
      * @throws DataSourceException Forward error reported when trying to get a consumer record
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
      */
     public Consumer createConsumer(PersistenceManager pm, twitter4j.User twitterUser) throws DataSourceException {
+        // Return consumer if it already exists
         String identifier = twitterUser.getScreenName();
         try {
-            // Try to retrieve the same location
+            // Try to retrieve the same consumer
             List<Consumer> consumers = getConsumers(pm, Consumer.TWITTER_ID, identifier, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
@@ -159,8 +168,7 @@ public class ConsumerOperations extends BaseOperations {
         newConsumer.setName(twitterUser.getName());
         newConsumer.setAddress(twitterUser.getLocation());
         newConsumer.setTwitterId(identifier);
-        pm.makePersistent(newConsumer);
-        return newConsumer;
+        return createConsumer(pm, newConsumer);
     }
 
     /**
@@ -169,7 +177,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param senderAddress Mail address of the sender
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
-     * @see ConsumerOperations#createConsumer(PersistenceManager, User)
+     * @see ConsumerOperations#createConsumer(PersistenceManager, javax.mail.internet.InternetAddress)
      */
     public Consumer createConsumer(javax.mail.internet.InternetAddress senderAddress) {
         PersistenceManager pm = getPersistenceManager();
@@ -187,11 +195,14 @@ public class ConsumerOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param senderAddress Mail address of the sender
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
      */
     public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress) {
+        // Return consumer if it already exists
         String email = senderAddress.getAddress().toLowerCase();
         try {
-            // Try to retrieve the same location
+            // Try to retrieve the same consumer
             List<Consumer> consumers = getConsumers(pm, Consumer.EMAIL, email, 1);
             if (0 < consumers.size()) {
                 return consumers.get(0);
@@ -203,8 +214,120 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(senderAddress.getPersonal());
         newConsumer.setEmail(email);
-        pm.makePersistent(newConsumer);
-        return newConsumer;
+        return createConsumer(pm, newConsumer);
+    }
+
+    /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param authenticatedUser user with his information has communicated by the OpenID provider
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, com.dyuproject.openid.OpenIdUser)
+     */
+    public Consumer createConsumer(com.dyuproject.openid.OpenIdUser authenticatedUser) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createConsumer(pm, authenticatedUser);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param authenticatedUser user with his information has communicated by the OpenID provider
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
+     */
+    @SuppressWarnings("unchecked")
+    public Consumer createConsumer(PersistenceManager pm, com.dyuproject.openid.OpenIdUser authenticatedUser) {
+        // Return consumer if it already exists
+        String openID = authenticatedUser.getClaimedId();
+        try {
+            // Try to retrieve the same consumer
+            List<Consumer> consumers = getConsumers(pm, Consumer.OPEN_ID, openID, 1);
+            if (0 < consumers.size()) {
+                return consumers.get(0);
+            }
+        }
+        catch (DataSourceException ex) {}
+
+        // Get user information
+        String email = "", language = LocaleValidator.DEFAULT_LANGUAGE, name = ""; //, country = LocaleValidator.DEFAULT_COUNTRY_CODE;
+        Map<String, String> info = (Map<String, String>) authenticatedUser.getAttribute("info");
+        if (info != null) {
+            if (info.get("language") != null) { language = LocaleValidator.checkLanguage(info.get("language")); }
+            if (info.get("nickname") != null) { name =  info.get("nickname"); }
+            if (name.length() == 0) {
+                String firstname = info.get("firstname") == null ? "" : info.get("firstname");
+                String lastname = info.get("lastname") == null ? "" : info.get("lastname");
+                name = LabelExtractor.get("display_name_pattern", new Object[] { firstname, lastname }, new Locale(language)).trim();
+            }
+            if (info.get("email") != null) { email = info.get("email"); }
+            // if (info.get("country") == null) { country = info.get("country"); }
+        }
+
+        // Return consumer if one has the same e-mail address after its update
+        if (0 < email.length()) {
+            // Try to retrieve the same consumer
+            List<Consumer> consumers;
+            try {
+                consumers = getConsumers(pm, Consumer.EMAIL, email, 1);
+                if (0 < consumers.size()) {
+                    Consumer existingConsumer = consumers.get(0);
+                    existingConsumer.setOpenID(openID);
+                    String existingName = existingConsumer.getName();
+                    if (existingName == null || existingName.length() == 0) {
+                        existingConsumer.setName(name);
+                    }
+                    existingConsumer = updateConsumer(pm, existingConsumer);
+                    return existingConsumer;
+                }
+            }
+            catch (DataSourceException e) { }
+        }
+
+        // Creates new consumer record and persist it
+        Consumer newConsumer = new Consumer();
+        newConsumer.setName(name);
+        newConsumer.setEmail(email);
+        newConsumer.setOpenID(openID);
+        newConsumer.setLanguage(language);
+        return createConsumer(pm, newConsumer);
+    }
+
+    /**
+     * Create the Consumer instance with the given parameters
+     *
+     * @param consumer Resource to persist
+     * @return Just created resource
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
+     */
+    public Consumer createConsumer(Consumer consumer) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createConsumer(pm, consumer);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Consumer instance with the given parameters
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumer Resource to persist
+     * @return Just created resource
+     */
+    public Consumer createConsumer(PersistenceManager pm, Consumer consumer) {
+        return pm.makePersistent(consumer);
     }
 
     /**

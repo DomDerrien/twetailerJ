@@ -6,7 +6,8 @@
 //
 function exposeTestFunctionNames() {
     return [
-            "testInitialization"
+            "testInitialization",
+            "testReportClientError"
     ];
 }
 
@@ -18,19 +19,38 @@ function jscoverageRunner() {
     jscoverageProcessor(testTitle, libDeps, testFunctions);
 }
 
+var _mockAlertBuffer = "";
+var nativeAlertFunction = window.alert;
+
 // JSUnit framework function
 function setUp() {
-    // NOP
+    _mockAlertBuffer = "";
+    window.alert = function(message) {
+        _mockAlertBuffer = message;
+    }
 }
 
 // JSUnit framework function
 function tearDown() {
-    // NOP
+    window.alert = nativeAlertFunction;
 }
 ////////////// Required header - end////////////////////////////////
 
 function testInitialization() {
     var module = twetailer.Console;
-    var tempConfig = module._appConfig;
-    module.init("master", "en", true);
+    module.init("en", true);
+    assertNotNull(module._labelExtractor);
+}
+
+function testReportClientError() {
+    var module = twetailer.Console;
+
+    assertEquals("", _mockAlertBuffer);
+
+    var message = "unit test";
+    var xhrRequest = { url: "unit test" };
+    module._reportClientError(message, xhrRequest);
+
+    // assertNotEquals("", _mockAlertBuffer); // assertNotEquals miss-interpreted by JsCoverage!
+    assertEquals(domderrien.i18n.LabelExtractor.getFrom("console", "error_client_side_communication_failed"), _mockAlertBuffer);
 }
