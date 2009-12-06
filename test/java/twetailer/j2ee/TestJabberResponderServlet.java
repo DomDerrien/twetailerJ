@@ -14,9 +14,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.TestJabberConnector;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.RawCommand;
 
+import com.google.apphosting.api.ApiProxy;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestJabberResponderServlet {
@@ -73,6 +75,7 @@ public class TestJabberResponderServlet {
         };
 
         JabberResponderServlet servlet = new JabberResponderServlet();
+        servlet._baseOperations = new MockBaseOperations();
         servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);

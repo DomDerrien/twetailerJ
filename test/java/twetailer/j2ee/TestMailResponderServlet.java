@@ -17,7 +17,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.TestMailConnector;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -52,7 +54,7 @@ public class TestMailResponderServlet {
     public void testDoPostI() throws IOException {
         final String from = "test-emitter@appspot.com";
         final String name = "Mr Emitter";
-        final String message = "wii console Mario Kart -- àéüôç";
+        final String message = "wii console Mario Kart"; // FIXME: -- àéüôç";
         final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, name, message);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
@@ -73,6 +75,7 @@ public class TestMailResponderServlet {
         };
 
         MailResponderServlet servlet = new MailResponderServlet();
+        servlet._baseOperations = new MockBaseOperations();
         servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);
@@ -100,6 +103,7 @@ public class TestMailResponderServlet {
         };
 
         MailResponderServlet servlet = new MailResponderServlet();
+        servlet._baseOperations = new MockBaseOperations();
         servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);
@@ -129,6 +133,7 @@ public class TestMailResponderServlet {
         };
 
         MailResponderServlet servlet = new MailResponderServlet();
+        servlet._baseOperations = new MockBaseOperations();
         servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);
@@ -187,6 +192,7 @@ public class TestMailResponderServlet {
         };
 
         MailResponderServlet servlet = new MailResponderServlet();
+        servlet._baseOperations = new MockBaseOperations();
         servlet.consumerOperations = consumerOperations;
         servlet.rawCommandOperations = rawCommandOperations;
 
@@ -238,6 +244,7 @@ public class TestMailResponderServlet {
         };
 
         MailResponderServlet servlet = new MailResponderServlet();
+        servlet._baseOperations = new MockBaseOperations();
         servlet.consumerOperations = consumerOperations;
         servlet.rawCommandOperations = rawCommandOperations;
 

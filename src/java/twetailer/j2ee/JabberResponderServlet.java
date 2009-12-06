@@ -19,7 +19,6 @@ import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import com.google.appengine.api.xmpp.Message;
 
@@ -48,7 +47,7 @@ public class JabberResponderServlet extends HttpServlet {
         rawCommandOperations.createRawCommand(rawCommand);
 
         // Create a task for that command
-        Queue queue = QueueFactory.getDefaultQueue();
+        Queue queue = _baseOperations.getQueue();
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                     param(Command.KEY, rawCommand.getKey().toString()).

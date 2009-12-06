@@ -25,7 +25,6 @@ import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
@@ -89,7 +88,7 @@ public class MailResponderServlet extends HttpServlet {
         }
         else {
             // Create a task for that command
-            Queue queue = QueueFactory.getDefaultQueue();
+            Queue queue = _baseOperations.getQueue();
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).

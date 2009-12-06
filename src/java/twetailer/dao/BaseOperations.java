@@ -11,6 +11,9 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+
 import twetailer.DataSourceException;
 
 public class BaseOperations {
@@ -55,6 +58,15 @@ public class BaseOperations {
         pm.setDetachAllOnCommit(true);
         pm.setCopyOnAttach(false);
         return pm;
+    }
+
+    /**
+     * Accessor isolated to facilitate tests by IOP
+     *
+     * @return Queue where to post asynchronous tasks
+     */
+    public Queue getQueue() {
+        return QueueFactory.getDefaultQueue();
     }
 
     /**

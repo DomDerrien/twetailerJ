@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -23,6 +22,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
@@ -40,14 +40,6 @@ import com.google.apphosting.api.MockAppEngineEnvironment;
 import domderrien.i18n.LabelExtractor;
 
 public class TestRobotResponder {
-
-    private class MockBaseOperations extends BaseOperations {
-        PersistenceManager pm = new MockPersistenceManager();
-        @Override
-        public PersistenceManager getPersistenceManager() {
-            return pm;
-        }
-    };
 
     private static MockAppEngineEnvironment mockAppEngineEnvironment;
 

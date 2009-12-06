@@ -20,7 +20,6 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
@@ -146,7 +145,7 @@ public class DemandCommandProcessor {
 
         // Create a task for that demand
         if (demandKey != 0L) {
-            Queue queue = QueueFactory.getDefaultQueue();
+            Queue queue = CommandProcessor._baseOperations.getQueue();
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
                         param(Demand.KEY, demandKey.toString()).

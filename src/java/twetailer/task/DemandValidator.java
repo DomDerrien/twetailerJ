@@ -25,7 +25,6 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
@@ -143,7 +142,7 @@ public class DemandValidator {
                     demand.setState(CommandSettings.State.published);
 
                     // Create a task for that demand
-                    Queue queue = QueueFactory.getDefaultQueue();
+                    Queue queue = _baseOperations.getQueue();
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
                                 param(Demand.KEY, demandKey.toString()).

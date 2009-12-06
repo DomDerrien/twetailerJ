@@ -10,41 +10,18 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import twetailer.validator.LocaleValidator;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
-import twetailer.connector.BaseConnector.Source;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
-import twetailer.validator.LocaleValidator;
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Demand extends Entity {
 
-    /*** Command ***/
-
-    @Persistent
-    private Action action;
-
-    @Persistent
-    private String hashTag;
-
-    @Persistent
-    private Long ownerKey;
-
-    @Persistent
-    private Long rawCommandId;
-
-    @Persistent
-    private Source source;
-
-    @Persistent
-    private State state = State.opened;
-
-    /*** Demand ***/
+public class Demand extends Command {
 
     @Persistent
     private List<String> criteria = new ArrayList<String>();
@@ -121,85 +98,6 @@ public class Demand extends Entity {
         proposalKeys = null;
         saleAssociateKeys = null;
     }
-
-    /*** Command ***/
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        if (action == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'action'");
-        }
-        this.action = action;
-    }
-
-    public void setAction(String action) {
-        setAction(Action.valueOf(action));
-    }
-
-    public String getHashTag() {
-        return hashTag;
-    }
-
-    public void setHashTag(String hashTag) {
-        this.hashTag = hashTag;
-    }
-
-    public Long getOwnerKey() {
-        return ownerKey;
-    }
-
-    public void setOwnerKey(Long ownerKey) {
-        this.ownerKey = ownerKey;
-    }
-
-    public Long getRawCommandId() {
-        return rawCommandId;
-    }
-
-    public void setRawCommandId(Long rawCommandId) {
-        this.rawCommandId = rawCommandId;
-    }
-
-    public Source getSource() {
-        return source;
-    }
-
-    public void setSource(Source source) {
-        if (source == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'source'");
-        }
-        this.source = source;
-    }
-
-    public void setSource(String source) {
-        setSource(Source.valueOf(source));
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        if (state == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
-        }
-        this.state = state;
-        // TODO: remove the following setting when the inheritance is fixed
-        stateCmdList =
-            !State.cancelled.equals(state) &&
-            !State.closed.equals(state) &&
-            !State.declined.equals(state) &&
-            !State.markedForDeletion.equals(state);
-    }
-
-    public void setState(String state) {
-        setState(State.valueOf(state));
-    }
-
-    /*** Demand ***/
 
     public String getSerializedCriteria() {
         return getSerializedCriteria(criteria);
@@ -376,17 +274,15 @@ public class Demand extends Entity {
         saleAssociateKeys.remove(saleAssociateKey);
     }
 
-    /* TODO: enable when the inheritance is fixed !
     @Override
     public void setState(State state) {
-        super.setState();
+        super.setState(state);
         stateCmdList =
             !State.cancelled.equals(state) &&
             !State.closed.equals(state) &&
             !State.declined.equals(state) &&
             !State.markedForDeletion.equals(state);
     }
-    */
 
     public Boolean getStateCmdList() {
         return stateCmdList;
@@ -394,14 +290,6 @@ public class Demand extends Entity {
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        /*** Command ***/
-        out.put(Command.ACTION, getAction().toString());
-        out.put(Command.HASH_TAG, getHashTag());
-        if (getOwnerKey() != null) { out.put(Command.OWNER_KEY, getOwnerKey()); }
-        if (getRawCommandId() != null) { out.put(Command.RAW_COMMAND_ID, getRawCommandId()); }
-        out.put(Command.SOURCE, getSource().toString());
-        out.put(Command.STATE, getState().toString());
-        /*** Demand ***/
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
@@ -435,14 +323,6 @@ public class Demand extends Entity {
 
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
-        /*** Command ***/
-        if (in.containsKey(Command.ACTION)) { setAction(in.getString(Command.ACTION)); }
-        if (in.containsKey(Command.HASH_TAG)) { setHashTag(in.getString(Command.HASH_TAG)); }
-        if (in.containsKey(Command.OWNER_KEY)) { setOwnerKey(in.getLong(Command.OWNER_KEY)); }
-        if (in.containsKey(Command.RAW_COMMAND_ID)) { setRawCommandId(in.getLong(Command.RAW_COMMAND_ID)); }
-        if (in.containsKey(Command.SOURCE)) { setSource(in.getString(Command.SOURCE)); }
-        if (in.containsKey(Command.STATE)) { setState(in.getString(Command.STATE)); }
-        /*** Demand ***/
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
             resetCriteria();

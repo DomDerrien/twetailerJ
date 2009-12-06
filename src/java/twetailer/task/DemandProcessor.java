@@ -32,7 +32,6 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
@@ -77,7 +76,7 @@ public class DemandProcessor {
             List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
             // Add the corresponding task in the queue
             if (0 < demands.size()) {
-                Queue queue = QueueFactory.getDefaultQueue();
+                Queue queue = _baseOperations.getQueue();
                 for (Demand demand: demands) {
                     // Create a task for that demand
                     queue.add(
@@ -138,7 +137,7 @@ public class DemandProcessor {
                         //
                         if (RobotResponder.ROBOT_NAME.equals(saleAssociate.getName())) {
                             // Schedule a task to transmit the proposal to the demand owner
-                            Queue queue = QueueFactory.getDefaultQueue();
+                            Queue queue = _baseOperations.getQueue();
                             queue.add(
                                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
                                         param(Demand.KEY, demand.getKey().toString()).

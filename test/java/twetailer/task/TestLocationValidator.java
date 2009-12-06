@@ -24,8 +24,10 @@ import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Location;
@@ -52,11 +54,13 @@ public class TestLocationValidator {
     @Before
     public void setUp() throws Exception {
         mockAppEngineEnvironment.setUp();
+        LocationValidator._baseOperations = new MockBaseOperations();
     }
 
     @After
     public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
+        LocationValidator._baseOperations = new BaseOperations();
         LocationValidator.locationOperations = LocationValidator._baseOperations.getLocationOperations();
         LocationValidator.rawCommandOperations = LocationValidator._baseOperations.getRawCommandOperations();
         LocationValidator.consumerOperations = LocationValidator._baseOperations.getConsumerOperations();

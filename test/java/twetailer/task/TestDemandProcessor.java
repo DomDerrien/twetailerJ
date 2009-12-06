@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -27,6 +26,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
@@ -43,14 +43,6 @@ import twitter4j.TwitterException;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestDemandProcessor {
-
-    private class MockBaseOperations extends BaseOperations {
-        private PersistenceManager pm = new MockPersistenceManager();
-        @Override
-        public PersistenceManager getPersistenceManager() {
-            return pm;
-        }
-    };
 
     private static MockAppEngineEnvironment mockAppEngineEnvironment;
 

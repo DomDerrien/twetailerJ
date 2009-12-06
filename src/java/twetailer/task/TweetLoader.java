@@ -27,7 +27,6 @@ import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
@@ -132,7 +131,7 @@ public class TweetLoader {
         for(RawCommand rawCommand: extractedCommands) {
             rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
 
-            Queue queue = QueueFactory.getDefaultQueue();
+            Queue queue = _baseOperations.getQueue();
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).

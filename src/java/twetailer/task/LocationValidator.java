@@ -23,7 +23,6 @@ import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
@@ -115,7 +114,7 @@ public class LocationValidator {
             }
         }
         // Create a task to re-process the raw command
-        Queue queue = QueueFactory.getDefaultQueue();
+        Queue queue = _baseOperations.getQueue();
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                     param(Command.KEY, commandKey.toString()).

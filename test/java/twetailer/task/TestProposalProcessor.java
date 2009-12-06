@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -26,6 +25,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
@@ -41,14 +41,6 @@ import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
 
 public class TestProposalProcessor {
-
-    private class MockBaseOperations extends BaseOperations {
-        private PersistenceManager pm = new MockPersistenceManager();
-        @Override
-        public PersistenceManager getPersistenceManager() {
-            return pm;
-        }
-    };
 
     @BeforeClass
     public static void setUpBeforeClass() {

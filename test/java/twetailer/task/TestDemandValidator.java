@@ -11,7 +11,6 @@ import java.util.List;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -27,6 +26,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -42,14 +42,6 @@ import twitter4j.TwitterException;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestDemandValidator {
-
-    private class MockBaseOperations extends BaseOperations {
-        private PersistenceManager pm = new MockPersistenceManager();
-        @Override
-        public PersistenceManager getPersistenceManager() {
-            return pm;
-        }
-    };
 
     final Long OwnerKey = 54321L;
     final String consumerTwitterId = "Katelyn";

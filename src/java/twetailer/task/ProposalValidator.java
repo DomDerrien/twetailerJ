@@ -21,7 +21,6 @@ import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
@@ -109,7 +108,7 @@ public class ProposalValidator {
                     proposal.setState(CommandSettings.State.published);
 
                     // Create a task for that proposal
-                    Queue queue = QueueFactory.getDefaultQueue();
+                    Queue queue = _baseOperations.getQueue();
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).

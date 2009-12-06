@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -24,6 +23,7 @@ import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
@@ -37,14 +37,6 @@ import com.google.apphosting.api.MockAppEngineEnvironment;
 import domderrien.i18n.LabelExtractor;
 
 public class TestProposalValidator {
-
-    private class MockBaseOperations extends BaseOperations {
-        private PersistenceManager pm = new MockPersistenceManager();
-        @Override
-        public PersistenceManager getPersistenceManager() {
-            return pm;
-        }
-    };
 
     final Long saleAssociateKey = 54321L;
     final Source source = Source.simulated;

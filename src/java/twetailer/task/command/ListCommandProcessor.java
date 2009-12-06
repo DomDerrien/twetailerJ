@@ -9,10 +9,6 @@ import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Command;
@@ -27,6 +23,10 @@ import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
+
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
@@ -126,7 +126,7 @@ public class ListCommandProcessor {
                                         consumer.getLocale()
                                 )
                         );
-                        Queue queue = QueueFactory.getDefaultQueue();
+                        Queue queue = CommandProcessor._baseOperations.getQueue();
                         queue.add(
                                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateLocation").
                                     param(Location.POSTAL_CODE, postalCode).

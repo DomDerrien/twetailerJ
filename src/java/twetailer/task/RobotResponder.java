@@ -27,7 +27,6 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
@@ -83,7 +82,7 @@ public class RobotResponder {
                 // Persist the newly created proposal
                 proposal = proposalOperations.createProposal(pm, proposal);
                 // Schedule a task to transmit the proposal to the demand owner
-                Queue queue = QueueFactory.getDefaultQueue();
+                Queue queue = _baseOperations.getQueue();
                 queue.add(
                         url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                             param(Proposal.KEY, proposal.getKey().toString()).

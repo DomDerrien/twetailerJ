@@ -191,7 +191,7 @@ public class TestSaleAssociateOperations {
         SaleAssociate selected = ops.getSaleAssociate(pm, item.getKey());
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
-        assertNull(selected.getCriteria()); // The empty List<String> has been nullified by the JPO by creation process
+        assertNotNull(selected.getCriteria()); // No more nullified by the JPO by creation process - appengine 1.2.8
 
         selected.addCriterion("first");
         selected.addCriterion("second");

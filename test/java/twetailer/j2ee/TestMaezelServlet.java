@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 import javax.servlet.MockServletOutputStream;
 import javax.servlet.ServletOutputStream;
@@ -26,10 +25,10 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.connector.MockTwitterConnector;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
@@ -59,27 +58,6 @@ import twitter4j.Twitter;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestMaezelServlet {
-
-    private class MockBaseOperations extends BaseOperations {
-        private PersistenceManager pm = new MockPersistenceManager();
-        @Override
-        public PersistenceManager getPersistenceManager() {
-            return pm;
-        }
-        @Override
-        public SettingsOperations getSettingsOperations() {
-            return new SettingsOperations() {
-                @Override
-                public Settings getSettings(PersistenceManager pm) {
-                    return new Settings();
-                }
-                @Override
-                public Settings updateSettings(PersistenceManager pm, Settings settings) {
-                    return settings;
-                }
-            };
-        }
-    };
 
     MaezelServlet servlet;
 
@@ -177,9 +155,20 @@ public class TestMaezelServlet {
         };
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
+        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
+            }
+            @Override
+            public Settings updateSettings(PersistenceManager pm, Settings settings) {
+                return settings;
+            }
+        };
+
         // Inject mock operators
         MockTweetLoader.injectMocks(servlet._baseOperations);
-        MockTweetLoader.injectMocks(servlet._baseOperations.getSettingsOperations());
+        MockTweetLoader.injectMocks(mockSettingsOperations);
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -217,8 +206,18 @@ public class TestMaezelServlet {
                 throw new DataSourceException("Done in purpose");
             }
         };
+        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
+            }
+            @Override
+            public Settings updateSettings(PersistenceManager pm, Settings settings) {
+                return settings;
+            }
+        };
         MockCommandProcessor.injectMocks(servlet._baseOperations);
-        MockCommandProcessor.injectMocks(servlet._baseOperations.getSettingsOperations());
+        MockCommandProcessor.injectMocks(mockSettingsOperations);
         MockCommandProcessor.injectMocks(rawCommandOperations);
 
         // Prepare mock servlet parameters
@@ -253,7 +252,7 @@ public class TestMaezelServlet {
         final String postalCode = "H2N3C6";
         final String countryCode = "CA";
         final Long consumerKey = 111L;
-        final Long rawCommandKey = 222L;
+        final Long rawCommandKey = 227L;
         final Double longitude = -73.3D;
 
         // Inject LocationOperations mock
