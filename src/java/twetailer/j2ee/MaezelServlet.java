@@ -190,9 +190,10 @@ public class MaezelServlet extends HttpServlet {
                         }
                         else {
                             consumer = new Consumer();
-                            consumer.setName(request.getParameter(SaleAssociate.NAME));
-                            consumer.setEmail(request.getParameter(SaleAssociate.EMAIL));
-                            consumer.setTwitterId(request.getParameter(SaleAssociate.TWITTER_ID));
+                            consumer.setName(request.getParameter(Consumer.NAME));
+                            consumer.setEmail(request.getParameter(Consumer.EMAIL));
+                            consumer.setTwitterId(request.getParameter(Consumer.TWITTER_ID));
+                            consumer.setLanguage(request.getParameter(Consumer.LANGUAGE));
                             consumer = consumerOperations.createConsumer(consumer);
                         }
                     }
@@ -209,7 +210,7 @@ public class MaezelServlet extends HttpServlet {
                     saleAssociate.setEmail(consumer.getEmail());
                     saleAssociate.setTwitterId(consumer.getTwitterId());
                     saleAssociate.setLanguage(consumer.getLanguage());
-                    saleAssociate.setPreferredConnection(Source.jabber);
+                    saleAssociate.setPreferredConnection(request.getParameter(SaleAssociate.PREFERRED_CONNECTION));
 
                     // Attach to the store
                     saleAssociate.setStoreKey(storeKey);

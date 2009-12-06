@@ -28,16 +28,16 @@ import domderrien.jsontools.JsonObject;
 public class TestConsumersRestlet {
 
     static final User user = new User("test-email", "test-domain");
-    ConsumersRestlet ops;
+    ConsumerRestlet ops;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        ConsumersRestlet.setLogger(new MockLogger("test", null));
+        ConsumerRestlet.setLogger(new MockLogger("test", null));
     }
 
     @Before
     public void setUp() throws Exception {
-        ops = new ConsumersRestlet();
+        ops = new ConsumerRestlet();
     }
 
     @After

@@ -49,8 +49,6 @@
 
     MockOutputStream serializedConsumer = new MockOutputStream();
     consumer.toJson().toStream(serializedConsumer, false);
-
-    useCDN = false; // FIXME
 %><html>
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>

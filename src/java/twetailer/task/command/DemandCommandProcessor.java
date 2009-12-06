@@ -107,6 +107,7 @@ public class DemandCommandProcessor {
                 latestDemand.setAction(Action.demand);
             }
             latestDemand.setSource(rawCommand.getSource());
+            latestDemand.setRawCommandId(rawCommand.getKey());
             // Update of the latest command (can be the default one) with the just extracted parameters
             command = latestDemand.fromJson(command).toJson();
             if (newLocationKey != null && !newLocationKey.equals(command.getLong(Demand.LOCATION_KEY))) {

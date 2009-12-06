@@ -560,7 +560,7 @@ public class TestCloseCommandProcessor {
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { demandKey, proposalKey }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposalKey, demandKey }, Locale.ENGLISH), sentText);
     }
 
     @Test

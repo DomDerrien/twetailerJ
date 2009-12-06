@@ -128,7 +128,7 @@ public class CloseCommandProcessor {
                         communicateToConsumer(
                                 new RawCommand(demand.getSource()),
                                 demandOwner,
-                                LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale())
+                                LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposal.getKey(), demand.getKey() }, consumer.getLocale())
                         );
                     }
                 }

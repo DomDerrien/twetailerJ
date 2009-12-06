@@ -20,8 +20,8 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
-public class DemandsRestlet extends BaseRestlet {
-    private static Logger log = Logger.getLogger(DemandsRestlet.class.getName());
+public class DemandRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(DemandRestlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
     protected DemandOperations demandOperations = _baseOperations.getDemandOperations();

@@ -208,7 +208,7 @@ public class DemandProcessor {
                     }
                 }
                 if (0 < score) {
-                    log.warning("Sale sssociate " + saleAssociate.getKey() + " selected for the demand: " + demand.getKey());
+                    log.warning("Sale Asssociate " + saleAssociate.getKey() + " selected for the demand: " + demand.getKey());
                     saleAssociate.setScore(score);
                     selectedSaleAssociates.add(saleAssociate);
                 }

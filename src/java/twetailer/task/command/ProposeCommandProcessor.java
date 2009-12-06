@@ -73,6 +73,7 @@ public class ProposeCommandProcessor {
         else {
             // Get the proposal attributes
             command.put(Command.SOURCE, rawCommand.getSource().toString());
+            command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
             // Persist the new proposal
             Proposal newProposal = CommandProcessor.proposalOperations.createProposal(pm, command, saleAssociate);
             communicateToSaleAssociate(

@@ -4,6 +4,8 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import com.google.appengine.api.datastore.Text;
+
 import twetailer.connector.BaseConnector.Source;
 
 /**
@@ -20,7 +22,7 @@ public class RawCommand extends Entity {
     private String emitterId;
 
     @Persistent
-    private String errorMessage;
+    private Text errorMessage;
 
     @Persistent
     private Long messageId;
@@ -58,11 +60,11 @@ public class RawCommand extends Entity {
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+        return errorMessage == null ? null : errorMessage.getValue();
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        this.errorMessage = new Text(errorMessage);
     }
 
     public Long getMessageId() {

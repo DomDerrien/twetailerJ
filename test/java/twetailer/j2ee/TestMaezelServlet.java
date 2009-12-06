@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.connector.MockTwitterConnector;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
@@ -50,6 +51,7 @@ import twetailer.task.MockLocationValidator;
 import twetailer.task.MockProposalProcessor;
 import twetailer.task.MockProposalValidator;
 import twetailer.task.MockTweetLoader;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
@@ -604,6 +606,8 @@ public class TestMaezelServlet {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) { return "12345"; }
                 if (SaleAssociate.STORE_KEY.equals(key)) { return "67890"; }
                 if (SaleAssociate.NAME.equals(key)) { return "name"; }
+                if (SaleAssociate.PREFERRED_CONNECTION.equals(key)) { return Source.jabber.toString(); }
+                if (SaleAssociate.LANGUAGE.equals(key)) { return LocaleValidator.DEFAULT_LANGUAGE; }
                 if ("supplies".equals(key)) { return "one two three"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;
@@ -660,6 +664,8 @@ public class TestMaezelServlet {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) { return "12345"; }
                 if (SaleAssociate.STORE_KEY.equals(key)) { return "67890"; }
                 if (SaleAssociate.NAME.equals(key)) { return null; }
+                if (SaleAssociate.PREFERRED_CONNECTION.equals(key)) { return Source.jabber.toString(); }
+                if (SaleAssociate.LANGUAGE.equals(key)) { return LocaleValidator.DEFAULT_LANGUAGE; }
                 if ("supplies".equals(key)) { return "one two three"; }
                 fail("Unexpected parameter gathering for: " + key);
                 return null;

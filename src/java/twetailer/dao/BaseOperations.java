@@ -119,7 +119,7 @@ public class BaseOperations {
      * @param attribute Name of the demand attribute used a the search criteria
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Updated query
+     * @return Value for the query submission
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -149,7 +149,7 @@ public class BaseOperations {
      * @param query Object to prepare
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Updated query
+     * @return Array of values for the query submission
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */

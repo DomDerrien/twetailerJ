@@ -805,7 +805,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Proposal:{0} has been closed by the Retailer. |
+                    Proposal:{0} for Demand ref:{1} has been closed by the Retailer. |
                     In order to improve your Twetailer Rating, please remember to finalize your Demand by sending ... |
                     "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
             </tuv>
@@ -854,7 +854,7 @@
                     Store:{3}, {4} will be notified and asked to keep you Demand, marked with ref:{1}, on the side for you. |
                     Send "d twetailer !list store:{3}" for more details |
                     In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
-                    "d twetailer !close ref:{0}", or, "d twetailer !flag ref:{0} note:[enter your issue here]"</seg>
+                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
             </tuv>
         </tu>
 

@@ -16,8 +16,8 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
 
 @SuppressWarnings("serial")
-public class ConsumersRestlet extends BaseRestlet {
-    private static Logger log = Logger.getLogger(ConsumersRestlet.class.getName());
+public class ConsumerRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(ConsumerRestlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
     protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();

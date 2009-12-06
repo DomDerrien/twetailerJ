@@ -16,6 +16,7 @@
     import="twetailer.dto.Location"
     import="twetailer.dto.Store"
     import="twetailer.dto.SaleAssociate"
+    import="twetailer.connector.BaseConnector.Source"
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
@@ -214,9 +215,9 @@
                             <div>
                                 <label for="preferredConnection">Preferred Connection</label><br/>
                                 <select dojoType="dijit.form.FilteringSelect" name="<%= SaleAssociate.PREFERRED_CONNECTION %>">
-                                    <option value="twitter" selected="true">Twitter</option>
-                                    <!--option value="jabber">Jabber/XMPP</option-->
-                                    <!--option value="email">E-Mail</option-->
+                                    <option value="<%= Source.twitter %>" selected="true">Twitter</option>
+                                    <option value="<%= Source.jabber %>">Jabber/XMPP</option>
+                                    <option value="<%= Source.mail %>">E-Mail</option>
                                 </select>
                             </div>
                             <div>

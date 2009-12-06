@@ -12,10 +12,6 @@ import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
-/**
- * @author Dom Derrien
- *
- */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class Command extends Entity {

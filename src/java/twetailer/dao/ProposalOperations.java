@@ -10,6 +10,7 @@ import javax.jdo.Query;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import domderrien.jsontools.JsonObject;
@@ -194,14 +195,10 @@ public class ProposalOperations extends BaseOperations {
     public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
         Query queryObj = pm.newQuery(Proposal.class);
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put(attribute, value);
-        // TODO: enable following when the inheritance problem is fixed
-        // parameters.put(Entity.MARKED_FOR_DELETION, Boolean.FALSE);
-        Object[] values = prepareQuery(queryObj, parameters, limit);
+        value = prepareQuery(queryObj, attribute, value, limit);
         getLogger().warning("Select proposal(s) with: " + queryObj.toString());
         // Select the corresponding resources
-        List<Proposal> proposals = (List<Proposal>) queryObj.executeWithArray(values);
+        List<Proposal> proposals = (List<Proposal>) queryObj.execute(value);
         proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
         return proposals;
     }
@@ -220,8 +217,6 @@ public class ProposalOperations extends BaseOperations {
     public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Proposal.class);
-        // TODO: enable following when the inheritance problem is fixed
-        // parameters.put(Entity.MARKED_FOR_DELETION, Boolean.FALSE);
         Object[] values = prepareQuery(query, parameters, limit);
         getLogger().warning("Select proposal(s) with: " + query.toString());
         // Select the corresponding resources
