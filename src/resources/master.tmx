@@ -91,7 +91,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Name of the entire application</note>
             <tuv xml:lang="en">
-                <seg>Twetailer:</seg>
+                <seg>!twetailer</seg>
             </tuv>
         </tu>
 

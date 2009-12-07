@@ -22,7 +22,7 @@
 %><html>
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="shortcut icon" href="/images/logo/favicon.ico" />
     <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
     <%
@@ -76,7 +76,6 @@
     dojo.require("dijit.form.Button");
     dojo.require("dijit.form.TextBox");
     dojo.require("twetailer.Console");
-    dojo.require("domderrien.i18n.LanguageSelector");
     dojo.require("dojo.parser");
     dojo.addOnLoad(function(){
         dojo.parser.parse();
@@ -100,8 +99,8 @@
                     <img
                         alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
                         id="logo"
-                        src="/images/logo/logo-48x48.png"
-                        title="<%= LabelExtractor.get("product_name", locale) %>"
+                        src="/images/logo/twitter-bird-and-cart-toLeft.png"
+                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
                     />
                     <a href="http://www.twetailer.com/"><%= LabelExtractor.get("product_name", locale) %></a>
                 </h1>
@@ -117,6 +116,7 @@
                     <li class="subItem">
                         <input id="languageSelector" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
                         <script type="text/javascript">
+                        dojo.require("domderrien.i18n.LanguageSelector");
                         dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", null, [<%
                             ResourceBundle languageList = LocaleController.getLanguageListRB();
                             Enumeration<String> keys = languageList.getKeys();

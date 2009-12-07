@@ -32,7 +32,7 @@
 <%@page import="twetailer.dto.Store"%><html>
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="shortcut icon" href="/images/logo/favicon.ico" />
     <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
     <%
@@ -112,8 +112,8 @@
                     <img
                         alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
                         id="logo"
-                        src="/images/logo/logo-48x48.png"
-                        title="<%= LabelExtractor.get("product_name", locale) %>"
+                        src="/images/logo/twitter-bird-and-cart-toLeft.png"
+                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
                     />
                     <a href="http://www.twetailer.com/"><%= LabelExtractor.get("product_name", locale) %></a>
                 </h1>

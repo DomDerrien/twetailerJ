@@ -9,11 +9,12 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
+    import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
-    ResourceBundle appSettings = ResourceBundle.getBundle("applicationSettings", Locale.ROOT);
-    boolean useCDN = "y".equals(appSettings.getString("useCDN"));
-    String cdnBaseURL = appSettings.getString("cdnBaseURL");
+    ApplicationSettings appSettings = ApplicationSettings.get();
+    boolean useCDN = appSettings.isUseCDN();
+    String cdnBaseURL = appSettings.getCdnBaseURL();
 
     // Locale detection
     Locale locale = LocaleController.detectLocale(request);
@@ -21,7 +22,7 @@
 %><html>
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/images/favicon.ico" />
     <meta http-equiv="refresh" content="0; URL=/html/console.jsp"/>
