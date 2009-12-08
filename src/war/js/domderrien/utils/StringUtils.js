@@ -19,14 +19,14 @@
         if (typeof character == 'number') {
             return true;
         }
-        if (typeof character != 'string') {
-            return false;
+        if (typeof character == 'string' || character instanceof String) {
+            if (1 < character.length) {
+                return false;
+            }
+            var charCode = character.charCodeAt(0);
+            return (48 <= charCode && charCode <= 57);
         }
-        if (1 < character.length) {
-            return false;
-        }
-        var charCode = character.charCodeAt(0);
-        return (48 <= charCode && charCode <= 57);
+        return false;
     };
 
     /** Helper returning <code>true</code> if the given character is a valid hexadecimal digit, <code>false</code> otherwise.
@@ -36,11 +36,17 @@
      *  @static
      */
     module.isHexaDigit = function(character) {
-        if (character == null || 1 < character.length) {
+        if (character == null) {
             return false;
         }
-        var charCode = character.charCodeAt(0);
-        return (48 <= charCode && charCode <= 57) || (65 <= charCode && charCode <= 70) || (97 <= charCode && charCode <= 102);
+        if (typeof character == 'string' || character instanceof String) {
+            if (1 < character.length) {
+                return false;
+            }
+            var charCode = character.charCodeAt(0);
+            return (48 <= charCode && charCode <= 57) || (65 <= charCode && charCode <= 70) || (97 <= charCode && charCode <= 102);
+        }
+        return false;
     };
 
     /** Helper returning <code>true</code> if the given character is a non-alphanumeric character, <code>false</code> otherwise.
@@ -50,15 +56,21 @@
      *  @static
      */
     module.isNonAlpha = function(character) {
-        if (character == null || 1 < character.length) {
+        if (character == null) {
             return true;
         }
-        var charCode = character.charCodeAt(0);
-        if (charCode < 48) return true; // Before '0'
-        if (122 < charCode) return true; // After 'z'
-        if (57 < charCode && charCode < 65) return true; // Between '9' and 'A'
-        if (90 < charCode && charCode < 97) return true; // Between 'Z' and 'a'
-        return false;
+        if (typeof character == 'string' || character instanceof String) {
+            if (1 < character.length) {
+                return true;
+            }
+            var charCode = character.charCodeAt(0);
+            if (charCode < 48) return true; // Before '0'
+            if (122 < charCode) return true; // After 'z'
+            if (57 < charCode && charCode < 65) return true; // Between '9' and 'A'
+            if (90 < charCode && charCode < 97) return true; // Between 'Z' and 'a'
+            return false;
+        }
+        return true;
     };
 
     /** Transcript the given number in its hexadecimal string representation

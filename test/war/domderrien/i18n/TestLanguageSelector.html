@@ -1,0 +1,37 @@
+<!-- <base> is the base project directory -->
+<!-- Current directory: <base>/test/war/domderrien/i18n -->
+<!-- Dojo directory: <base>/src/war/js/dojo/dojo -->
+<!-- JSUnit directory: <base>/bin/jsunit/app -->
+
+<html>
+<head>
+    <title>Language selector tester</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <!-- JSUnit related definitions -->
+    <script language="javascript" src="../../../../bin/jsunit/app/jsUnitCore.js"></script>
+
+    <!--  Dojo related definitions -->
+    <script language="JavaScript" type="text/javascript">
+        var djConfig = {
+            isDebug: false,
+            debugAtAllCosts: false,
+            modulePaths: { domderrien: '../../domderrien' },
+            parseOnLoad: true,
+            locale: "en"
+        };
+    </script>
+    <script language="JavaScript" src="../../../../src/war/js/dojo/dojo/dojo.js" type="text/javascript"></script>
+    <script language="JavaScript" type="text/javascript">
+        dojo.require("domderrien.i18n.LanguageSelector");
+
+        dojo.require("dojo.parser"); // djConfig.parseOnLoad:true tells dojo to parse widgets on page load
+    </script>
+
+</head>
+<body>
+
+    <script language="JavaScript" src="TestLanguageSelector.js" type="text/javascript"></script>
+
+</body>
+</html>
