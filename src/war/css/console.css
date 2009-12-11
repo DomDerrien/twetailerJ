@@ -152,6 +152,10 @@ body {
     background-image:url(../images/tick.png);
 }
 
+.silkIconCancel {
+    background-image:url(../images/cancel.png);
+}
+
 /**
  * Login page settings
  */
@@ -176,6 +180,25 @@ body {
     text-align:center;
     height:18px;
     width:18px;
+}
+
+#openIdProviderList {
+	margin: 0;
+	padding: 0;
+    text-align: center;
+}
+
+#openIdProviderList>li {
+    display: inline;
+}
+
+#openIdProviderList>li>a>div {
+    height: 50px;
+    background-color: white;
+    border:1px black solid;
+    vertical-align: middle;
+    display: inline;
+    position: relative;
 }
 
 /**

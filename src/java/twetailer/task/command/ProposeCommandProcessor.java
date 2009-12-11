@@ -21,6 +21,7 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class ProposeCommandProcessor {
@@ -43,7 +44,7 @@ public class ProposeCommandProcessor {
                 communicateToSaleAssociate(
                         rawCommand,
                         saleAssociate,
-                        LabelExtractor.get("cp_command_proposal_invalid_proposal_id", consumer.getLocale())
+                        LabelExtractor.get("cp_command_propose_invalid_proposal_id", consumer.getLocale())
                 );
             }
             if (proposal != null) {
@@ -65,7 +66,7 @@ public class ProposeCommandProcessor {
                     communicateToSaleAssociate(
                             rawCommand,
                             saleAssociate,
-                            LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposal.getKey(), state }, consumer.getLocale())
+                            LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposal.getKey(), state }, consumer.getLocale())
                     );
                 }
             }
@@ -80,7 +81,7 @@ public class ProposeCommandProcessor {
                     rawCommand,
                     saleAssociate,
                     LabelExtractor.get(
-                            "cp_command_proposal_acknowledge_creation",
+                            "cp_command_propose_acknowledge_creation",
                             new Object[] { newProposal.getKey() },
                             consumer.getLocale()
                     )
@@ -95,13 +96,30 @@ public class ProposeCommandProcessor {
         }
 
         // Temporary warning
-        String hashTag = command.getString(Command.HASH_TAG);
-        if (hashTag != null){
-            communicateToSaleAssociate(
-                    rawCommand,
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_proposal_hashtag_warning", new Object[] { proposalKey, hashTag }, consumer.getLocale())
-            );
+        if (command.containsKey(Command.HASH_TAG)){
+            JsonArray hashTags = command.getJsonArray(Command.HASH_TAG);
+            if (hashTags.size() != 0) {
+                String serializedHashTags = "";
+                String hashTag = hashTags.getString(0);
+                if (hashTags.size() == 1 && !"demo".equals(hashTag)) {
+                    serializedHashTags = hashTag;
+                }
+                else { // if (1 < hashTags.size()) {
+                    for(int i = 0; i < hashTags.size(); ++i) {
+                        hashTag = hashTags.getString(i);
+                        if (!"demo".equals(hashTag)) {
+                            serializedHashTags += " " + hashTag;
+                        }
+                    }
+                }
+                if (0 < serializedHashTags.length()) {
+                    communicateToSaleAssociate(
+                            rawCommand,
+                            saleAssociate,
+                            LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, serializedHashTags.trim() }, consumer.getLocale())
+                    );
+                }
+            }
         }
 
         // Create a task for that proposal

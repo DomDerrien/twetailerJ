@@ -9,6 +9,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
@@ -88,7 +89,7 @@
                 dojo.style("introFlash", "display", "none");
             }
         }).play();
-        dijit.byId("openid_identifier").focus();
+        loginLogic.init();
     });
     </script>
 
@@ -146,8 +147,61 @@
                             <form action="/control/login" dojoType="dijit.form.Form" method="post">
                                 <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
                                 <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;" type="text" /></center>
-                                <center><button dojoType="dijit.form.Button" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
+                                <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
                             </form>
+                            <br/>
+                            <%= LabelExtractor.get(ResourceFileId.third, "login_provider_list_message", locale) %>
+                            <br/>
+                            <div id="openIdProviderList">
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="window.location='/control/login?loginWith=google'"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/google.ico" width="16" height="16" /> </button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="window.location='/control/login?loginWith=yahoo'"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/yahoo.ico" width="16" height="16" /></button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="loginLogic.cookOpenId('http://www.myspace.com/', '');"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myspace", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/myspace.ico" width="16" height="16" /> </button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="loginLogic.cookOpenId('http://openid.aol.com/', '');"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_aol", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/aol.ico" width="16" height="16" /> </button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="loginLogic.cookOpenId('http://', 'wordpress.com');"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_wordpress", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/wordpress.ico" width="16" height="16" /> </button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="loginLogic.cookOpenId('http://', '.blogspot.com');"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_blogger", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/blogger.ico" width="16" height="16" /> </button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="loginLogic.cookOpenId('http://', '.mp');"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_chimp", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/chimp.gif" width="16" height="16" /> </button>
+                                <button
+                                    class="shortcutButton"
+                                    dojoType="dijit.form.Button"
+                                    onclick="loginLogic.cookOpenId('http://', '.myopenid.com');"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myopenid", locale) %>"
+                                ><img src="http://domderrien.github.com/images/icons/myopenid.ico" width="16" height="16" /> </button>
+                            </div>
                         </div>
                     </td>
                     <td>&nbsp;</td>
@@ -174,6 +228,56 @@
             width="120"
         />
     </div>
+
+    <div
+        dojoType="dijit.Dialog"
+        id="openIdResolver"
+        title="Additional information required"
+        execute="loginLogic.reportCookedOpenId();"
+    >
+        <p>
+            <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_prefix", locale) %>
+            <span id="openIdPrefix"></span>
+            <input dojoType="dijit.form.TextBox" id="openIdCustom" >
+            <span id="openIdSuffix">.livejournal.com</span>
+            <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_suffix", locale) %>
+        </p>
+        <center>
+            <button dojoType="dijit.form.Button" id="useAdditionalInfoButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button>
+            <button dojoType="dijit.form.Button" type="reset" iconClass="silkIcon silkIconCancel" onclick="dijit.byId('openIdResolver').hide();dijit.byId('openid_identifier').focus();"><%= LabelExtractor.get(ResourceFileId.third, "login_dialog_close_button", locale) %></button>
+        </center>
+    </div>
+
+    <script type="text/javascript">
+    var loginLogic = {};
+    loginLogic.init = function() {
+        dijit.byId("openid_identifier").focus();
+        dojo.query("#signInButton").onclick(function(evt) {
+        	dojo.query(".shortcutButton").forEach(function(node, index, arr){
+            	// dojo.fadeOut({ node: dijit.getEnclosingWidget(node).domNode, duration: 2000 }).play();
+                dijit.getEnclosingWidget(node).attr("disabled", true);
+            });
+        });
+        dojo.query("#openIdCustom").onkeypress(function(evt) {
+            if (evt.keyCode == dojo.keys.ENTER) {
+                dojo.byId("useAdditionalInfoButton").click();
+            }
+        });
+    };
+    loginLogic.cookOpenId = function(prefix, suffix) {
+        dojo.byId('openIdPrefix').innerHTML = prefix;
+        dojo.byId('openIdSuffix').innerHTML = suffix;
+        dijit.byId('openIdResolver').show();
+        dijit.byId('openIdCustom').focus();
+    };
+    loginLogic.reportCookedOpenId = function() {
+        var prefix = dojo.byId('openIdPrefix').innerHTML;
+        var custom = dijit.byId('openIdCustom').attr("value");
+        var suffix = dojo.byId('openIdSuffix').innerHTML;
+        dijit.byId("openid_identifier").attr("value", prefix + custom + suffix);
+        dojo.byId("signInButton").click();
+    };
+    </script>
 
     <script type="text/javascript">
     var _gaq = _gaq || [];

@@ -7,8 +7,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
@@ -29,15 +30,37 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.j2ee.LoginServlet;
 
-import com.google.appengine.api.users.User;
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
-public class TestDemandsRestlet {
+public class TestDemandRestlet {
 
-    static final User user = new User("test-email", "test-domain");
+    static final String OPEN_ID = "http://unit.test";
+    static final Long CONSUMER_KEY = 12345L;
+
+    static final OpenIdUser user = OpenIdUser.populate(
+            "http://www.yahoo.com",
+            YadisDiscovery.IDENTIFIER_SELECT,
+            LoginServlet.YAHOO_OPENID_SERVER_URL
+    );
+    static {
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", OPEN_ID);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", new HashMap<String, String>());
+        Map<String, String> info = new HashMap<String, String>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY);
+    }
+
     DemandRestlet ops;
 
     @BeforeClass
@@ -67,23 +90,6 @@ public class TestDemandsRestlet {
         final JsonObject proposedParameters = new GenericJsonObject();
         final Source source = Source.simulated;
         final Long resourceId = 12345L;
-        ops.consumerOperations = new ConsumerOperations() {
-            @Override
-            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
-                assertEquals(proposedPM, pm);
-                assertFalse(pm.isClosed());
-                assertEquals(Consumer.EMAIL, key);
-                assertTrue(value instanceof String);
-                assertEquals(user.getEmail(), (String) value);
-                assertEquals(1, limit);
-                Consumer temp = new Consumer();
-                temp.setKey(resourceId);
-                temp.setEmail(user.getEmail());
-                List<Consumer> temps = new ArrayList<Consumer>();
-                temps.add(temp);
-                return temps;
-            }
-        };
         ops.demandOperations = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -94,7 +100,7 @@ public class TestDemandsRestlet {
                 assertEquals(proposedPM, pm);
                 assertFalse(pm.isClosed());
                 assertEquals(proposedParameters, parameters);
-                assertEquals(resourceId, OwnerKey);
+                assertEquals(CONSUMER_KEY, OwnerKey);
                 Demand temp = new Demand();
                 temp.setOwnerKey(OwnerKey);
                 temp.setKey(resourceId);
@@ -109,40 +115,7 @@ public class TestDemandsRestlet {
         assertTrue(returnedDemand.containsKey(Entity.KEY));
         assertEquals(resourceId.longValue(), returnedDemand.getLong(Entity.KEY));
         assertTrue(returnedDemand.containsKey(Command.OWNER_KEY));
-        assertEquals(resourceId.longValue(), returnedDemand.getLong(Command.OWNER_KEY));
-    }
-
-    @Test
-    public void testCreateResourceII() throws DataSourceException, ClientException {
-        final PersistenceManager proposedPM = new MockPersistenceManager();
-        final JsonObject proposedParameters = new GenericJsonObject();
-        ops.consumerOperations = new ConsumerOperations() {
-            @Override
-            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
-                assertEquals(proposedPM, pm);
-                assertFalse(pm.isClosed());
-                assertEquals(Consumer.EMAIL, key);
-                assertTrue(value instanceof String);
-                assertEquals(user.getEmail(), (String) value);
-                assertEquals(1, limit);
-                return new ArrayList<Consumer>();
-            }
-        };
-        ops.demandOperations = new DemandOperations() {
-            @Override
-            public PersistenceManager getPersistenceManager() {
-                return proposedPM;
-            }
-            @Override
-            public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws ClientException {
-                fail("Should not be called!");
-                throw new ClientException("Done in purpose");
-            }
-        };
-
-        JsonObject returnedDemand = ops.createResource(proposedParameters, user);
-        assertTrue(proposedPM.isClosed());
-        assertNull(returnedDemand);
+        assertEquals(CONSUMER_KEY.longValue(), returnedDemand.getLong(Command.OWNER_KEY));
     }
 
     @Test(expected=RuntimeException.class)

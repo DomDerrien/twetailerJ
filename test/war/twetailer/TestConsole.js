@@ -48,8 +48,8 @@ function testReportClientError() {
     assertEquals("", _mockAlertBuffer);
 
     var message = "unit test";
-    var xhrRequest = { url: "unit test" };
-    module._reportClientError(message, xhrRequest);
+    var ioArgs = { url: "unit test" };
+    module._reportClientError(message, ioArgs);
 
     // assertNotEquals("", _mockAlertBuffer); // assertNotEquals miss-interpreted by JsCoverage!
     assertEquals(domderrien.i18n.LabelExtractor.getFrom("console", "error_client_side_communication_failed"), _mockAlertBuffer);

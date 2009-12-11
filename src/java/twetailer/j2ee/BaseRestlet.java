@@ -12,14 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.User;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.validator.ApplicationSettings;
+
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.RelyingParty;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonParser;
 
 @SuppressWarnings("serial")
 public abstract class BaseRestlet extends HttpServlet {
@@ -40,7 +44,7 @@ public abstract class BaseRestlet extends HttpServlet {
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException, ClientException;
+    abstract protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException;
 
     /**
      * Delete the identified resource
@@ -51,7 +55,7 @@ public abstract class BaseRestlet extends HttpServlet {
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException, ClientException;
+    abstract protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException;
 
     /**
      * Get the detailed information on the identified resource
@@ -64,7 +68,7 @@ public abstract class BaseRestlet extends HttpServlet {
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser)
+    abstract protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser)
             throws DataSourceException, ClientException;
 
     /**
@@ -89,12 +93,25 @@ public abstract class BaseRestlet extends HttpServlet {
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser)
+    abstract protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser)
             throws DataSourceException, ClientException;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+    }
+    
+    /**
+     * Helper made available to be able to inject a mock OpenIdUser from the unit tests
+     * 
+     * @param parameters HTTP request parameters
+     * @return OpenIdUser instance extracted from the session
+     * 
+     * @throws Exception If the OpendIdUser un-marshaling fails
+     */
+    protected OpenIdUser getLoggedUser(HttpServletRequest request) throws Exception {
+        // return ServletUtils.getLoggedUser();
+        return RelyingParty.getInstance().discover(request);
     }
 
     @Override
@@ -102,11 +119,13 @@ public abstract class BaseRestlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
-        JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = ServletUtils.getLoggedUser();
+            // TODO: verify Content-type = "application/x-www-form-urlencoded"
+            JsonObject in = new GenericJsonObject(request.getParameterMap());
+
+            OpenIdUser loggedUser = getLoggedUser(request);
 
             String pathInfo = request.getPathInfo();
             getLogger().fine("Path Info: " + pathInfo);
@@ -146,16 +165,16 @@ public abstract class BaseRestlet extends HttpServlet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
-        JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = ServletUtils.getLoggedUser();
-            loggedUser.toString(); // To prevent warnings
+            // TODO: verify Content-type == "application/json"
+            JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
+
+            OpenIdUser loggedUser = getLoggedUser(request);
 
             String pathInfo = request.getPathInfo();
             getLogger().finer("Path Info: " + pathInfo);
@@ -178,7 +197,7 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
-            getLogger().warning("doGet().exception: " + ex);
+            getLogger().warning("doPost().exception: " + ex);
             if (getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
@@ -190,16 +209,16 @@ public abstract class BaseRestlet extends HttpServlet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
-        JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = ServletUtils.getLoggedUser();
-            loggedUser.toString(); // To prevent warnings
+            // TODO: verify Content-type == "application/json"
+            JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
+
+            OpenIdUser loggedUser = getLoggedUser(request);
 
             String pathInfo = request.getPathInfo();
             getLogger().finer("Path Info: " + pathInfo);
@@ -215,12 +234,12 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
-            getLogger().warning("doGet().exception: " + ex);
+            getLogger().warning("doPut().exception: " + ex);
             if (getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
-            out = (new JsonException("UNEXPECTED_EXCEPTION",
-                    "Unexpected exception during BaseRESTServlet.doPut() operation", ex));
+            out = new JsonException("UNEXPECTED_EXCEPTION",
+                    "Unexpected exception during BaseRESTServlet.doPut() operation", ex);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -232,8 +251,7 @@ public abstract class BaseRestlet extends HttpServlet {
         JsonObject out = new GenericJsonObject();
 
         try {
-            User loggedUser = ServletUtils.getLoggedUser();
-            loggedUser.toString(); // To prevent warnings
+            OpenIdUser loggedUser = getLoggedUser(request);
 
             String pathInfo = request.getPathInfo();
             getLogger().finer("Path Info: " + pathInfo);
@@ -256,7 +274,7 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
-            getLogger().warning("doGet().exception: " + ex);
+            getLogger().warning("doDelete().exception: " + ex);
             if (getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }

@@ -223,7 +223,7 @@ public class CommandProcessor {
             if (exposeInfo) {
                 MockOutputStream out = new MockOutputStream();
                 ex.printStackTrace(new PrintStream(out));
-                log.warning(out.getStream());
+                log.warning(out.toString());
             }
             // Report the error to the raw command emitter
             communicateToConsumer(

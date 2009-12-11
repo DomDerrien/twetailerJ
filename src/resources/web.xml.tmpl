@@ -76,6 +76,46 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>demand</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.DemandRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>demand</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Demand/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>location</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.LocationRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>location</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Location/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>saleassociate</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.SaleAssociateRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>saleassociate</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/SaleAssociate/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>store</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.StoreRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>store</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Store/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>jabberresponder</servlet-name>
         <servlet-class>twetailer.j2ee.JabberResponderServlet</servlet-class>
         <load-on-startup>1</load-on-startup>

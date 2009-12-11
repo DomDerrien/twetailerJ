@@ -232,12 +232,7 @@ public class Demand extends Command {
     }
 
     public void setRangeUnit(String rangeUnit) {
-        if (LocaleValidator.MILE_UNIT.equalsIgnoreCase(rangeUnit) || LocaleValidator.ALTERNATE_MILE_UNIT.equalsIgnoreCase(rangeUnit)) {
-            this.rangeUnit = LocaleValidator.MILE_UNIT;
-        }
-        else {
-            this.rangeUnit = LocaleValidator.KILOMETER_UNIT;
-        }
+        this.rangeUnit = LocaleValidator.checkRangeUnit(rangeUnit);
     }
 
     public List<Long> getSaleAssociateKeys() {
@@ -330,7 +325,7 @@ public class Demand extends Command {
                 addCriterion(jsonArray.getString(i));
             }
         }
-        removeDuplicates(in);
+        removeDuplicates(in, CRITERIA_ADD, CRITERIA_REMOVE);
         if (in.containsKey(CRITERIA_REMOVE)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
             for (int i=0; i<jsonArray.size(); ++i) {
@@ -378,10 +373,10 @@ public class Demand extends Command {
         return this;
     }
 
-    protected static void removeDuplicates(JsonObject in) {
-        if (in.containsKey(CRITERIA_REMOVE) && in.containsKey(CRITERIA_ADD)) {
-            JsonArray inAdd = in.getJsonArray(CRITERIA_ADD);
-            JsonArray inRemove = in.getJsonArray(CRITERIA_REMOVE);
+    protected static void removeDuplicates(JsonObject in, String addLabel, String removeLabel) {
+        if (in.containsKey(addLabel) && in.containsKey(removeLabel)) {
+            JsonArray inAdd = in.getJsonArray(addLabel);
+            JsonArray inRemove = in.getJsonArray(removeLabel);
             int idx = inRemove.size();
             while (0 < idx) {
                 --idx;

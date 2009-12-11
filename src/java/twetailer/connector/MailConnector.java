@@ -117,16 +117,12 @@ public class MailConnector {
      */
     public static String getText(MimeMessage message) throws MessagingException, IOException {
         if (message.isMimeType("text/plain")) {
-            if (message.getContent() instanceof String) {
-                return (String) message.getContent();
-            }
-            return convertToString((InputStream) message.getContent());
+            return (String) message.getContent();
+            // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("text/html")) {
-            if (message.getContent() instanceof String) {
-                return (String) message.getContent();
-            }
-            return convertToString((InputStream) message.getContent());
+            return (String) message.getContent();
+            // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("multipart/*")) {
             Multipart multipart = new MimeMultipart(message.getDataHandler().getDataSource());
@@ -170,16 +166,12 @@ public class MailConnector {
     protected static String getText(Part part) throws MessagingException, IOException {
         String filename = part.getFileName();
         if (filename == null && part.isMimeType("text/plain")) {
-            if (part.getContent() instanceof String) {
-                return (String) part.getContent();
-            }
-            return convertToString((InputStream) part.getContent());
+            return (String) part.getContent();
+            // return convertToString((InputStream) part.getContent());
         }
         if (filename == null && part.isMimeType("text/html")) {
-            if (part.getContent() instanceof String) {
-                return (String) part.getContent();
-            }
-            return convertToString((InputStream) part.getContent());
+            return (String) part.getContent();
+            // return convertToString((InputStream) part.getContent());
         }
         // We don't want to go deeper because this part is probably an attachment or a reply!
         // if (part.isMimeType("multipart/*")) {
@@ -196,6 +188,10 @@ public class MailConnector {
      *
      * @throws IOException If the InputStream process fails
      */
+    /*
+    //
+    // Not used anymore since 1.2.8 because getContent() return String instance instead of InputStream
+    //
     protected static String convertToString(InputStream in) throws IOException {
         int character = in.read();
         StringBuilder out = new StringBuilder();
@@ -205,4 +201,5 @@ public class MailConnector {
         }
         return out.toString();
     }
+    */
 }

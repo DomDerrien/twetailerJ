@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,7 +20,10 @@ import twetailer.validator.CommandSettings.State;
 
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 public class TestCommand {
@@ -53,7 +60,7 @@ public class TestCommand {
     }
 
     Action action = Action.cancel;
-    String hashTag = "hash";
+    List<String> hashTags = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
@@ -65,7 +72,7 @@ public class TestCommand {
 
         object.setAction(action);
         object.setAction(action.toString());
-        object.setHashTag(hashTag);
+        object.setHashTags(hashTags);
         object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
@@ -75,7 +82,7 @@ public class TestCommand {
 
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
-        assertEquals(hashTag, object.getHashTag());
+        assertEquals(hashTags, object.getHashTags());
         assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
@@ -87,7 +94,7 @@ public class TestCommand {
         Command object = new Command();
 
         object.setAction(action);
-        object.setHashTag(hashTag);
+        object.setHashTags(hashTags);
         object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
@@ -96,7 +103,7 @@ public class TestCommand {
         Command clone = new Command(object.toJson());
 
         assertEquals(action, clone.getAction());
-        assertEquals(hashTag, clone.getHashTag());
+        assertEquals(hashTags, clone.getHashTags());
         assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
@@ -115,6 +122,22 @@ public class TestCommand {
 
         assertNull(clone.getOwnerKey());
         assertNull(clone.getRawCommandId());
+    }
+
+    @Test
+    public void testJsonDemandsIII() {
+        Command object = new Command();
+        object.setSource(source);
+
+        object.resetLists();
+
+        // Demand
+        assertNull(object.getHashTags());
+
+        Command clone = new Command(object.toJson());
+
+        // Demand
+        assertEquals(0, clone.getHashTags().size()); // Not null because the clone object creation creates empty List<String>
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -136,5 +159,84 @@ public class TestCommand {
         Command object = new Command();
 
         object.setState((State) null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testResetHashTagsI() {
+        Command object = new Command();
+
+        object.addHashTag("first");
+        assertEquals(1, object.getHashTags().size());
+
+        object.addHashTag("first"); // Add it twice
+        assertEquals(1, object.getHashTags().size());
+
+        object.addHashTag("second");
+        assertEquals(2, object.getHashTags().size());
+
+        object.removeHashTag("first"); // Remove first
+        assertEquals(1, object.getHashTags().size());
+
+        object.resetHashTags(); // Reset all
+        assertEquals(0, object.getHashTags().size());
+
+        object.setHashTags(null); // Failure!
+    }
+
+    @Test
+    public void testResetHashTagsII() {
+        Command object = new Command();
+
+        object.resetLists(); // To force the hashTags list creation
+        object.addHashTag("first");
+        assertEquals(1, object.getHashTags().size());
+
+        object.resetLists(); // To be sure there's no error
+        object.removeHashTag("first"); // Remove first
+
+        object.resetLists(); // To be sure there's no error
+        object.resetHashTags(); // Reset all
+    }
+
+    @Test
+    public void testGetSerialized() {
+        Command command = new Command();
+        command.addHashTag("one");
+        command.addHashTag("two");
+        command.addHashTag("three");
+
+        assertEquals("one two three", command.getSerializedHashTags());
+    }
+
+    @Test
+    public void testHashTagJsonI() {
+        Command command = new Command();
+        command.addHashTag("one");
+        command.addHashTag("two");
+        command.addHashTag("three");
+
+        JsonObject json = new GenericJsonObject();
+        json.put(Command.HASH_TAG_ADD, new GenericJsonArray());
+        json.getJsonArray(Command.HASH_TAG_ADD).add("four");
+
+        command.fromJson(json);
+
+        assertEquals(4, command.getHashTags().size());
+    }
+
+    @Test
+    public void testHashTagJsonII() {
+        Command command = new Command();
+        command.addHashTag("one");
+        command.addHashTag("two");
+        command.addHashTag("three");
+
+        JsonObject json = new GenericJsonObject();
+        json.put(Command.HASH_TAG_REMOVE, new GenericJsonArray());
+        json.getJsonArray(Command.HASH_TAG_REMOVE).add("two");
+
+        command.fromJson(json);
+
+        assertEquals(2, command.getHashTags().size());
     }
 }

@@ -57,7 +57,7 @@
                 <include name="**/*.jar" />
             </fileset>
         </copy>
-        <copy file="deps/lib/domderrien/domderrien-0.9.0.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/domderrien/domderrien-0.9.1.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/json.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/jsonrpc.jar" todir="src/war/WEB-INF/lib" />
@@ -174,16 +174,16 @@
         </javac>
     </target>
 
-    <target name="step-datanucleus-enhance" depends="compile, step-configuration-push, step-devfiles-clean">
+    <target name="step-datanucleus-enhance" depends="compile, step-devfiles-clean">
         <enhance_war war="${basedir}/src/war" />
     </target>
 
-    <target name="step-datanucleus-enhance-for-tests" depends="compile, step-configuration-push">
+    <target name="step-datanucleus-enhance-for-tests" depends="compile">
         <delete dir="src/war/WEB-INF/classes/org/domderrien/build" />
         <enhance_war war="${basedir}/src/war" includes="twetailer/dto/*.class" />
     </target>
 
-    <target name="step-appengine-start">
+    <target name="step-appengine-start" depends="step-configuration-push">
         <dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war" />
     </target>
 

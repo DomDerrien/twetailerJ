@@ -7,7 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
@@ -22,12 +25,16 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
+import twetailer.j2ee.LoginServlet;
 import twitter4j.MockTwitterUser;
 import twitter4j.TwitterException;
 
+import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.apphosting.api.MockAppEngineEnvironment;
+
+import domderrien.i18n.LabelExtractor;
 
 public class TestConsumerOperations {
 
@@ -508,6 +515,319 @@ public class TestConsumerOperations {
         // Verify there's still one instance
         query = new Query(Consumer.class.getSimpleName());
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    public void testCreateVII() throws DataSourceException, UnsupportedEncodingException {
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final String openId = "unit@test";
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        user.fromJSON(json);
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(openId, consumer.getOpenID());
+
+        // Tries to recreate it
+        ops.createConsumer(user);
+
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    public void testCreateVIII() throws DataSourceException, UnsupportedEncodingException {
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final String openId = "unit@test";
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", new HashMap<String, String>());
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(openId, consumer.getOpenID());
+
+        // Tries to recreate it
+        ops.createConsumer(user);
+
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    public void testCreateIX() throws DataSourceException, UnsupportedEncodingException {
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final String openId = "unit@test";
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("language", "FR");
+        info.put("firstname", "unit");
+        info.put("lastname", "test");
+        info.put("email", openId);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(openId, consumer.getOpenID());
+        assertEquals(Locale.FRENCH.getLanguage(), consumer.getLanguage());
+        assertEquals(LabelExtractor.get("display_name_pattern", new Object[] { "unit", "test"}, Locale.ENGLISH), consumer.getName());
+        assertEquals(openId, consumer.getEmail());
+    }
+
+    @Test
+    public void testCreateX() throws DataSourceException, UnsupportedEncodingException {
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final String openId = "unit@test";
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("nickname", "unit_test");
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(openId, consumer.getOpenID());
+        assertEquals("unit_test", consumer.getName());
+    }
+
+    @Test
+    public void testCreateXI() throws DataSourceException, UnsupportedEncodingException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Create the user once
+        final String openId = "unit@test";
+        Consumer consumer = new Consumer();
+        consumer.setEmail(openId);
+        consumer = ops.createConsumer(consumer);
+
+        // Verify there's one instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Creates the data for a user identified by its OpenID
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("email", openId);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        // Create the second user
+        Consumer secondConsumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(consumer.getKey(), secondConsumer.getKey());
+        assertEquals(openId, secondConsumer.getOpenID());
+        assertEquals(openId, secondConsumer.getEmail());
+    }
+
+    @Test
+    public void testCreateXII() throws DataSourceException, UnsupportedEncodingException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Create the user once
+        final String openId = "unit@test";
+        Consumer consumer = new Consumer();
+        consumer.setEmail(openId);
+        consumer.setName("");
+        consumer = ops.createConsumer(consumer);
+
+        // Verify there's one instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Creates the data for a user identified by its OpenID
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("email", openId);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        // Create the second user
+        Consumer secondConsumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(consumer.getKey(), secondConsumer.getKey());
+        assertEquals(openId, secondConsumer.getOpenID());
+        assertEquals(openId, secondConsumer.getEmail());
+    }
+
+    @Test
+    public void testCreateXIII() throws DataSourceException, UnsupportedEncodingException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
+
+        // Create the user once
+        final String openId = "unit@test";
+        Consumer consumer = new Consumer();
+        consumer.setEmail(openId);
+        consumer.setName("unit test");
+        consumer = ops.createConsumer(consumer);
+
+        // Verify there's one instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Creates the data for a user identified by its OpenID
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("email", openId);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        // Create the second user
+        Consumer secondConsumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(consumer.getKey(), secondConsumer.getKey());
+        assertEquals(openId, secondConsumer.getOpenID());
+        assertEquals(openId, secondConsumer.getEmail());
     }
 
     @Test

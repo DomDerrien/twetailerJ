@@ -203,4 +203,11 @@ public class LocaleValidator {
         return DEFAULT_COUNTRY_CODE; // Default country code
     }
 
+    public static String checkRangeUnit(String rangeUnit) {
+        if (LocaleValidator.MILE_UNIT.equalsIgnoreCase(rangeUnit) || LocaleValidator.ALTERNATE_MILE_UNIT.equalsIgnoreCase(rangeUnit)) {
+            return LocaleValidator.MILE_UNIT;
+        }
+        if (LocaleValidator.KILOMETER_UNIT.equalsIgnoreCase(rangeUnit)) { return LocaleValidator.KILOMETER_UNIT; }
+        return LocaleValidator.DEFAULT_RANGE_UNIT; // Default range unit
+    }
 }

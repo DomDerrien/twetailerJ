@@ -140,9 +140,7 @@ public class DemandOperations extends BaseOperations {
             if (ownerKey != null && !ownerKey.equals(demand.getOwnerKey())) {
                 throw new DataSourceException("Mismatch of owner identifiers [" + ownerKey + "/" + demand.getOwnerKey() + "]");
             }
-            if (demand.getCriteria() != null) {
-                demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
-            }
+            demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return demand;
         }
         catch(Exception ex) {

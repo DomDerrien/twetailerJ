@@ -32,10 +32,10 @@
      *
      * @private
      */
-    module._reportClientError = function(message, xhrRequest) {
+    module._reportClientError = function(message, ioArgs) {
         alert(module._labelExtractor.getFrom("console", "error_client_side_communication_failed"));
-        // alert(message + "\nurl: " + xhrRequest.url);
-        // dojo.analytics.addData("ClientError", "[" + message + "][" + xhrRequest.url + "]");
+        // alert(message + "\nurl: " + ioArgs.url);
+        // dojo.analytics.addData("ClientError", "[" + message + "][" + ioArgs.url + "]");
     };
 
     /**
@@ -46,8 +46,8 @@
      *
      * @private
      */
-    module._reportServerError = function(response, xhrRequest) {
-        message = "Unexpected failure while communicating over the URL: " + xhrRequest.url + ".\n";
+    module._reportServerError = function(response, ioArgs) {
+        message = "Unexpected failure while communicating over the URL: " + ioArgs.url + ".\n";
         if (response != null) {
             if (response.isException === true) {
                 message += response.message;
@@ -97,7 +97,7 @@
         dojo.xhrPost({
             content: data,
             handleAs: "json",
-            load: function(response, xhrRequest) {
+            load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     if (response.codeValidity === true) {
                         dijit.byId(fieldId + "Button").attr("disabled", true);
@@ -117,7 +117,7 @@
                     }
                 }
                 else {
-                    module._reportServerError(response, xhrRequest);
+                    module._reportServerError(response, ioArgs);
                 }
             },
             error: module._reportClientError,
@@ -132,7 +132,7 @@
         dojo.xhrPut({
             content: data,
             handleAs: "json",
-            load: function(response, xhrRequest) {
+            load: function(response, ioArgs) {
                 alert(response.success);
             },
             error: module._reportClientError,

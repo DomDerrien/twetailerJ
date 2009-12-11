@@ -318,7 +318,6 @@ public class LocationOperations extends BaseOperations {
         // Execute the query
         List<Location> locations = (List<Location>) query.executeWithArray(Boolean.TRUE, topLatitude, bottomLatitude);
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
-        log.finest(locations.size() + " location(s) loaded");
 
         List<Location> selection = new ArrayList<Location>();
         for (Location spot: locations) {
@@ -327,7 +326,6 @@ public class LocationOperations extends BaseOperations {
             }
         }
 
-        log.finest(selection.size() + " location(s) selected");
         return selection;
     }
 

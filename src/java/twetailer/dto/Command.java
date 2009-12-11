@@ -1,5 +1,8 @@
 package twetailer.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
@@ -9,6 +12,8 @@ import javax.jdo.annotations.Persistent;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -22,9 +27,11 @@ public class Command extends Entity {
     public static final String ACTION = "action";
 
     @Persistent
-    private String hashTag;
+    private List<String> hashTags = new ArrayList<String>();
 
     public static final String HASH_TAG = "hasTag";
+    public static final String HASH_TAG_ADD = "\\+hasTag";
+    public static final String HASH_TAG_REMOVE = "\\-hasTag";
 
     @Persistent
     private Long ownerKey;
@@ -63,6 +70,13 @@ public class Command extends Entity {
         fromJson(in);
     }
 
+    /**
+     * Provided to reproduce the JDO behavior with Unit tests
+     */
+    protected void resetLists() {
+        hashTags = null;
+    }
+
     public Action getAction() {
         return action;
     }
@@ -78,12 +92,42 @@ public class Command extends Entity {
         setAction(Action.valueOf(action));
     }
 
-    public String getHashTag() {
-        return hashTag;
+    public String getSerializedHashTags() {
+        return Demand.getSerializedCriteria(hashTags);
     }
 
-    public void setHashTag(String hashTag) {
-        this.hashTag = hashTag;
+    public List<String> getHashTags() {
+        return hashTags;
+    }
+
+    public void setHashTags(List<String> hashTags) {
+        if (hashTags == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'hashTags' of type List<String>");
+        }
+        this.hashTags = hashTags;
+    }
+
+    public void addHashTag(String hashTag) {
+        if (hashTags == null) {
+            hashTags = new ArrayList<String>();
+        }
+        if (!hashTags.contains(hashTag)) {
+            hashTags.add(hashTag);
+        }
+    }
+
+    public void resetHashTags() {
+        if (hashTags == null) {
+            return;
+        }
+        hashTags = new ArrayList<String>();
+    }
+
+    public void removeHashTag(String hashTag) {
+        if (hashTags == null) {
+            return;
+        }
+        hashTags.remove(hashTag);
     }
 
     public Long getOwnerKey() {
@@ -135,7 +179,13 @@ public class Command extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
-        if (getHashTag() != null) { out.put(HASH_TAG, getHashTag()); }
+        if (getHashTags() != null && 0 < getHashTags().size()) {
+            JsonArray jsonArray = new GenericJsonArray();
+            for(String hashTag: getHashTags()) {
+                jsonArray.add(hashTag);
+            }
+            out.put(HASH_TAG, jsonArray);
+        }
         if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
         out.put(SOURCE, getSource().toString());
@@ -146,7 +196,26 @@ public class Command extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
-        if (in.containsKey(HASH_TAG)) { setHashTag(in.getString(HASH_TAG)); }
+        if (in.containsKey(HASH_TAG)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAG);
+            resetHashTags();
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addHashTag(jsonArray.getString(i));
+            }
+        }
+        Demand.removeDuplicates(in, HASH_TAG_ADD, HASH_TAG_REMOVE);
+        if (in.containsKey(HASH_TAG_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAG_REMOVE);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                removeHashTag(jsonArray.getString(i));
+            }
+        }
+        if (in.containsKey(HASH_TAG_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAG_ADD);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addHashTag(jsonArray.getString(i));
+            }
+        }
         if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
         if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }

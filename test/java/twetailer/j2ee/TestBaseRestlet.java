@@ -11,9 +11,12 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.servlet.MockServletInputStream;
 import javax.servlet.MockServletOutputStream;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.MockHttpServletRequest;
 import javax.servlet.http.MockHttpServletResponse;
 
@@ -25,7 +28,8 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 
-import com.google.appengine.api.users.User;
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -33,6 +37,12 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestBaseRestlet {
+
+    static final OpenIdUser user = OpenIdUser.populate(
+            "http://www.yahoo.com",
+            YadisDiscovery.IDENTIFIER_SELECT,
+            LoginServlet.YAHOO_OPENID_SERVER_URL
+    );
 
     @SuppressWarnings("serial")
     class MockBaseRestlet extends BaseRestlet {
@@ -48,14 +58,18 @@ public class TestBaseRestlet {
             _logger = logger;
         }
         @Override
-        protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+        protected OpenIdUser getLoggedUser(HttpServletRequest request) {
+            return user;
+        }
+        @Override
+        protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
             return null;
         }
         @Override
-        protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
+        protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         }
         @Override
-        protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+        protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
             return null;
         }
         @Override
@@ -63,21 +77,13 @@ public class TestBaseRestlet {
             return null;
         }
         @Override
-        protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+        protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
             return null;
         }
     }
 
-    static final User user = new User("test-email", "test-domain");
-
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        ServletUtils.setUserService(new MockUserService(){
-            @Override
-            public User getCurrentUser() {
-                return user;
-            }
-        });
     }
 
     @AfterClass
@@ -192,7 +198,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject getResource(JsonObject parameters, String id, User loggedUser) throws DataSourceException {
+            protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals("current", id);
@@ -235,7 +241,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject getResource(JsonObject parameters, String id, User loggedUser) throws DataSourceException {
+            protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(uid, id);
@@ -332,6 +338,10 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -362,6 +372,10 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -396,6 +410,10 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -406,7 +424,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject updateResource(JsonObject parameters, String id, User loggedUser) throws DataSourceException {
+            protected JsonObject updateResource(JsonObject parameters, String id, OpenIdUser loggedUser) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(uid, id);
@@ -439,6 +457,10 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -470,6 +492,10 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -504,6 +530,10 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -515,7 +545,7 @@ public class TestBaseRestlet {
         final String uid = "uid1212";
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
@@ -547,6 +577,10 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -558,7 +592,7 @@ public class TestBaseRestlet {
         final String uid = "uid1212";
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
@@ -589,6 +623,10 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -621,6 +659,10 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -713,7 +755,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected void deleteResource(String id, User loggedUser) throws DataSourceException {
+            protected void deleteResource(String id, OpenIdUser loggedUser) throws DataSourceException {
                 assertEquals(uid, id);
                 assertEquals(user, loggedUser);
             }

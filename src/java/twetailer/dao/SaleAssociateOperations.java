@@ -6,10 +6,12 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import domderrien.jsontools.JsonObject;
+
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
-import twetailer.dto.Store;
 
 public class SaleAssociateOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(SaleAssociateOperations.class.getName());
@@ -17,6 +19,43 @@ public class SaleAssociateOperations extends BaseOperations {
     @Override
     protected Logger getLogger() {
         return log;
+    }
+
+    /**
+     * Create the SaleAssociate instance with the given parameters
+     *
+     * @param parameters HTTP sale associate parameters
+     * @return Just created resource
+     *
+     * @throws ClientException If mandatory attributes are missing
+     *
+     * @see SaleAssociateOperations#createSaleAssociate(SaleAssociate)
+     */
+    public SaleAssociate createSaleAssociate(JsonObject parameters) throws ClientException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createSaleAssociate(pm, parameters);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the SaleAssociate instance with the given parameters
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters HTTP sale associate parameters
+     * @return Just created resource
+     *
+     * @see SaleAssociateOperations#createSaleAssociate(PersistenceManager, SaleAssociate)
+     */
+    public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
+        getLogger().warning("Create sale associate with: " + parameters.toString());
+        // Creates new sale associate record and persist it
+        SaleAssociate newSaleAssociate = new SaleAssociate(parameters);
+        // Persist it
+        return createSaleAssociate(pm, newSaleAssociate);
     }
 
     /**
@@ -115,9 +154,7 @@ public class SaleAssociateOperations extends BaseOperations {
         getLogger().warning("Get SaleAssociate instance with id: " + key);
         try {
             SaleAssociate saleAssociate = pm.getObjectById(SaleAssociate.class, key);
-            if (saleAssociate.getCriteria() != null) {
-                saleAssociate.getCriteria().size();
-            }
+            saleAssociate.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return saleAssociate;
         }
         catch(Exception ex) {

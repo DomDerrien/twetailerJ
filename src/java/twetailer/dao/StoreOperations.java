@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import domderrien.jsontools.JsonObject;
+
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
@@ -17,6 +20,43 @@ public class StoreOperations extends BaseOperations {
     @Override
     protected Logger getLogger() {
         return log;
+    }
+
+    /**
+     * Create the Store instance with the given parameters
+     *
+     * @param parameters HTTP store parameters
+     * @return Just created resource
+     *
+     * @throws ClientException If mandatory attributes are missing
+     *
+     * @see StoreOperations#createStore(Store)
+     */
+    public Store createStore(JsonObject parameters) throws ClientException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createStore(pm, parameters);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Store instance with the given parameters
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters HTTP store parameters
+     * @return Just created resource
+     *
+     * @see StoreOperations#createStore(PersistenceManager, Store)
+     */
+    public Store createStore(PersistenceManager pm, JsonObject parameters) {
+        getLogger().warning("Create store with: " + parameters.toString());
+        // Creates new store record and persist it
+        Store newStore = new Store(parameters);
+        // Persist it
+        return createStore(pm, newStore);
     }
 
     /**

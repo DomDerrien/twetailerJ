@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
@@ -18,16 +20,38 @@ import twetailer.DataSourceException;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Entity;
+import twetailer.j2ee.LoginServlet;
 
-import com.google.appengine.api.users.User;
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
-public class TestConsumersRestlet {
+public class TestConsumerRestlet {
 
-    static final User user = new User("test-email", "test-domain");
+    static final String OPEN_ID = "http://unit.test";
+    static final Long CONSUMER_KEY = 12345L;
+
+    static final OpenIdUser user = OpenIdUser.populate(
+            "http://www.yahoo.com",
+            YadisDiscovery.IDENTIFIER_SELECT,
+            LoginServlet.YAHOO_OPENID_SERVER_URL
+    );
+    static {
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", OPEN_ID);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", new HashMap<String, String>());
+        Map<String, String> info = new HashMap<String, String>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY);
+    }
+
     ConsumerRestlet ops;
 
     @BeforeClass
@@ -77,50 +101,19 @@ public class TestConsumersRestlet {
         assertEquals(resourceId.longValue(), resource.getLong(Entity.KEY));
     }
 
-    @Test(expected=DataSourceException.class)
+    @Test
     public void testGetResourceII() throws DataSourceException {
-        final Long resourceId = 12345L;
         ops.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
-                assertEquals(resourceId, key);
-                return null;
-            }
-        };
-        ops.getResource(null, resourceId.toString(), user);
-    }
-
-    @Test
-    public void testGetResourceIII() throws DataSourceException {
-        final Long resourceId = 12345L;
-        ops.consumerOperations = new ConsumerOperations() {
-            @Override
-            public List<Consumer> getConsumers(String attribute, Object value, int limit) {
-                assertEquals(Consumer.EMAIL, attribute);
-                assertEquals(user.getEmail(), (String) value);
+                assertEquals(CONSUMER_KEY, key);
                 Consumer temp = new Consumer();
-                temp.setKey(resourceId);
-                List<Consumer> list = new ArrayList<Consumer>();
-                list.add(temp);
-                return list;
+                temp.setKey(CONSUMER_KEY);
+                return temp;
             }
         };
         JsonObject resource = ops.getResource(null, "current", user);
-        assertEquals(resourceId.longValue(), resource.getLong(Entity.KEY));
-    }
-
-    @Test(expected=DataSourceException.class)
-    public void testGetResourceIV() throws DataSourceException {
-        ops.consumerOperations = new ConsumerOperations() {
-            @Override
-            public List<Consumer> getConsumers(String attribute, Object value, int limit) {
-                assertEquals(Consumer.EMAIL, attribute);
-                assertEquals(user.getEmail(), (String) value);
-                return new ArrayList<Consumer>();
-            }
-        };
-
-        ops.getResource(null, "current", user);
+        assertEquals(CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
     }
 
     @Test

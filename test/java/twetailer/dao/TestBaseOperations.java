@@ -25,10 +25,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
-import twetailer.j2ee.MockUserService;
-import twetailer.j2ee.ServletUtils;
+import twetailer.j2ee.LoginServlet;
 
-import com.google.appengine.api.users.User;
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.YadisDiscovery;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.jsontools.GenericJsonObject;
@@ -36,7 +36,14 @@ import domderrien.jsontools.JsonObject;
 
 public class TestBaseOperations {
 
-    static final User user = new User("test-email", "test-domain");
+    static final String OPEN_ID = "http://unit.test";
+    static final Long CONSUMER_KEY = 12345L;
+
+    static final OpenIdUser user = OpenIdUser.populate(
+            "http://www.yahoo.com",
+            YadisDiscovery.IDENTIFIER_SELECT,
+            LoginServlet.YAHOO_OPENID_SERVER_URL
+    );
 
     private static MockAppEngineEnvironment mockAppEngineEnvironment;
 
@@ -44,12 +51,17 @@ public class TestBaseOperations {
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
         mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        ServletUtils.setUserService(new MockUserService(){
-            @Override
-            public User getCurrentUser() {
-                return user;
-            }
-        });
+
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", OPEN_ID);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", new HashMap<String, String>());
+        Map<String, String> info = new HashMap<String, String>();
+        info.put(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY.toString());
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
     }
 
     @AfterClass
@@ -663,5 +675,10 @@ public class TestBaseOperations {
         BaseOperations ops3 = new BaseOperations().getStoreOperations();
         assertNotNull(ops3);
         assertNotSame(ops1, ops3);
+    }
+
+    @Test
+    public void testGetQueue() {
+        assertNotNull(new BaseOperations().getQueue());
     }
 }

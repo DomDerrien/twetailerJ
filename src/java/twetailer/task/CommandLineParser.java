@@ -332,11 +332,17 @@ public class CommandLineParser {
         // Hash tag
         try {
             matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
+            // Loop to get all matching sequences
+            while (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
-                command.put(Command.HASH_TAG, getHashTag(currentGroup.toLowerCase(locale)));
+                if (!command.containsKey(Command.HASH_TAG)) {
+                    command.put(Command.HASH_TAG, new GenericJsonArray());
+                }
+                command.getJsonArray(Command.HASH_TAG).add(getHashTag(currentGroup.toLowerCase(locale)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
+                // Rescan the remaining sequence
+                matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
             }
         }
         catch(IllegalStateException ex) {}

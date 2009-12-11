@@ -5,8 +5,6 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import twetailer.validator.LocaleValidator;
-
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -115,7 +113,7 @@ public class Location extends Entity {
     }
 
     public JsonObject toJson() {
-        JsonObject out = new GenericJsonObject(); // super.toJson();
+        JsonObject out = super.toJson();
         out.put(COUNTRY_CODE, getCountryCode());
         out.put(HAS_STORE, getHasStore());
         out.put(LATITUDE, getLatitude());
@@ -125,7 +123,7 @@ public class Location extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in) {
-        // super.fromJson(in);
+        super.fromJson(in);
 
         if (hasNewAttributes(in)) {
             setCountryCode(null);

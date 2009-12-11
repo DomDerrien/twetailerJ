@@ -2,6 +2,7 @@ package twetailer.task.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import twetailer.validator.CommandSettings.State;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
@@ -395,7 +397,7 @@ public class TestProposeCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_proposal_non_modifiable_state", new Object[] { proposalKey, State.confirmed.toString()}, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposalKey, State.confirmed.toString()}, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -453,6 +455,333 @@ public class TestProposeCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_proposal_invalid_proposal_id", Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_propose_invalid_proposal_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessExisitingProposalIdWithHashTagI() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long saleAssociateKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                return proposal;
+            }
+        };
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.KEY, proposalKey);
+        command.put(Proposal.QUANTITY, 123L);
+        command.put(Command.HASH_TAG, new GenericJsonArray());
+        command.getJsonArray(Command.HASH_TAG); // No hash tag!
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        ProposeCommandProcessor.processProposeCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        // No warning
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotSame(LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessExisitingProposalIdWithHashTagII() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long saleAssociateKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                return proposal;
+            }
+        };
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.KEY, proposalKey);
+        command.put(Proposal.QUANTITY, 123L);
+        command.put(Command.HASH_TAG, new GenericJsonArray());
+        command.getJsonArray(Command.HASH_TAG).add("test"); // One invalid tag
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        ProposeCommandProcessor.processProposeCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        // Warning
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessExisitingProposalIdWithHashTagIII() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long saleAssociateKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                return proposal;
+            }
+        };
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.KEY, proposalKey);
+        command.put(Proposal.QUANTITY, 123L);
+        command.put(Command.HASH_TAG, new GenericJsonArray());
+        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid tag
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        ProposeCommandProcessor.processProposeCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        // No warning
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotSame(LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessExisitingProposalIdWithHashTagIV() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long saleAssociateKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                return proposal;
+            }
+        };
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.KEY, proposalKey);
+        command.put(Proposal.QUANTITY, 123L);
+        command.put(Command.HASH_TAG, new GenericJsonArray());
+        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid tag
+        command.getJsonArray(Command.HASH_TAG).add("test"); // One invalid tag
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        ProposeCommandProcessor.processProposeCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        // Warning
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotSame(LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessExisitingProposalIdWithHashTagV() throws Exception {
+        final Long consumerKey = 3333L;
+        final Long proposalKey = 5555L;
+        final Long saleAssociateKey =  6666L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                return proposal;
+            }
+        };
+        // SaleAssociateOperations mock
+        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+                assertEquals(consumerKey, (Long) value);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.propose.toString());
+        command.put(Proposal.KEY, proposalKey);
+        command.put(Proposal.QUANTITY, 123L);
+        command.put(Command.HASH_TAG, new GenericJsonArray());
+        command.getJsonArray(Command.HASH_TAG).add("demo"); // One invalid tag
+        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid tag
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        ProposeCommandProcessor.processProposeCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+        appEnv.tearDown();
+
+        // No warning
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotSame(LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
     }
 }

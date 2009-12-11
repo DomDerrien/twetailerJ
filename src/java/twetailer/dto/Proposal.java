@@ -203,7 +203,7 @@ public class Proposal extends Command {
                 addCriterion(jsonArray.getString(i));
             }
         }
-        Demand.removeDuplicates(in);
+        Demand.removeDuplicates(in, CRITERIA_ADD, CRITERIA_REMOVE);
         if (in.containsKey(CRITERIA_REMOVE)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
             for (int i=0; i<jsonArray.size(); ++i) {

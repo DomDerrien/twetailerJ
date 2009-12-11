@@ -1,13 +1,11 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +14,6 @@ import twetailer.ClientException;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
-import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -28,9 +25,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
-import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
 import twetailer.task.DemandValidator;
@@ -139,96 +134,6 @@ public class MaezelServlet extends HttpServlet {
             log.warning("Path Info: " + pathInfo);
 
             if (pathInfo == null || pathInfo.length() == 0) {
-            }
-            else if ("/createLocation".equals(pathInfo)) {
-                Location location = new Location();
-                location.setPostalCode(request.getParameter(Location.POSTAL_CODE));
-                location.setCountryCode(request.getParameter(Location.COUNTRY_CODE));
-                location = locationOperations.createLocation(location);
-                out.put(Location.KEY, location.getKey());
-            }
-            else if ("/createStore".equals(pathInfo)) {
-                // Supported formats:
-                //   http:<host:port>/@servletApiPath@/maezel/createStore?postalCode=H0H0H0&address=number, street, city, postal code, country&name=store name
-                //   http:<host:port>/@servletApiPath@/maezel/createStore?postalCode=H0H0H0&address=1, Frozen street, North Pole, H0H 0H0, Canada&name=Toys Factory
-
-                PersistenceManager pm = _baseOperations.getPersistenceManager();
-                try {
-                    Long locationKey = Long.parseLong(request.getParameter(Store.LOCATION_KEY));
-
-                    Location location = locationOperations.getLocation(pm, locationKey);
-                    location.setHasStore(Boolean.TRUE);
-                    location = locationOperations.updateLocation(pm, location);
-
-                    Store store = new Store();
-                    store.setLocationKey(locationKey);
-                    store.setAddress(request.getParameter(Store.ADDRESS));
-                    store.setName(request.getParameter(Store.NAME));
-                    store.setPhoneNumber(request.getParameter(Store.PHONE_NUMBER));
-                    store = storeOperations.createStore(pm, store);
-                    out.put(Store.KEY, store.getKey());
-                }
-                finally {
-                    pm.close();
-                }
-            }
-            else if ("/createSaleAssociate".equals(pathInfo)) {
-                // Supported formats:
-                //   http:<host:port>/@servletApiPath/maezel/createSaleAssociate?store=11&name=Jack the Troll&supplies=wii console xbox gamecube
-
-                PersistenceManager pm = _baseOperations.getPersistenceManager();
-                try {
-                    Consumer consumer = null;
-                    if (request.getParameter(SaleAssociate.CONSUMER_KEY) != null) {
-                        consumer = consumerOperations.getConsumer(pm, Long.parseLong(request.getParameter(SaleAssociate.CONSUMER_KEY)));
-                    }
-                    else if (request.getParameter(SaleAssociate.TWITTER_ID) != null) {
-                        // Assume the sale associate candidate has already submitted an account
-                        List<Consumer> consumers = consumerOperations.getConsumers(SaleAssociate.TWITTER_ID, request.getParameter(SaleAssociate.TWITTER_ID), 1);
-                        if (0 < consumers.size()) {
-                            consumer = consumers.get(0);
-                        }
-                        else {
-                            consumer = new Consumer();
-                            consumer.setName(request.getParameter(Consumer.NAME));
-                            consumer.setEmail(request.getParameter(Consumer.EMAIL));
-                            consumer.setTwitterId(request.getParameter(Consumer.TWITTER_ID));
-                            consumer.setLanguage(request.getParameter(Consumer.LANGUAGE));
-                            consumer = consumerOperations.createConsumer(consumer);
-                        }
-                    }
-                    Long storeKey = Long.valueOf(request.getParameter(Store.STORE_KEY));
-                    String name = request.getParameter(SaleAssociate.NAME);
-
-                    SaleAssociate saleAssociate = new SaleAssociate();
-
-                    saleAssociate.setName(name == null ? consumer.getName() : name);
-                    saleAssociate.setConsumerKey(consumer.getKey());
-
-                    // Copy the user's attribute
-                    saleAssociate.setJabberId(consumer.getJabberId());
-                    saleAssociate.setEmail(consumer.getEmail());
-                    saleAssociate.setTwitterId(consumer.getTwitterId());
-                    saleAssociate.setLanguage(consumer.getLanguage());
-                    saleAssociate.setPreferredConnection(request.getParameter(SaleAssociate.PREFERRED_CONNECTION));
-
-                    // Attach to the store
-                    saleAssociate.setStoreKey(storeKey);
-
-                    // Set the supplied keywords
-                    if (request.getParameter("supplies") != null) {
-                        String[] supplies = request.getParameter("supplies").split(" ");
-                        for (int i = 0; i < supplies.length; i++) {
-                            saleAssociate.addCriterion(supplies[i]);
-                        }
-                    }
-
-                    // Persist the account
-                    saleAssociateOperations.createSaleAssociate(pm, saleAssociate);
-                }
-                finally {
-                    pm.close();
-                }
             }
             else if ("/processVerificationCode".equals(pathInfo)) {
                 // Custom fields

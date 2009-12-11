@@ -1,6 +1,5 @@
 package twetailer.j2ee.restlet;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import twetailer.DataSourceException;
@@ -8,8 +7,9 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Consumer;
 import twetailer.j2ee.BaseRestlet;
+import twetailer.j2ee.LoginServlet;
 
-import com.google.appengine.api.users.User;
+import com.dyuproject.openid.OpenIdUser;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -33,23 +33,21 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, User loggedUser) throws DataSourceException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+        // Consumer instances are created automatically when users log in
         throw new RuntimeException("Not yet implemented!");
     }
 
     @Override
-    protected void deleteResource(String resourceId, User loggedUser) throws DataSourceException {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         Consumer consumer = null;
         if ("current".equals(resourceId)) {
-            List<Consumer> consumers = consumerOperations.getConsumers(Consumer.EMAIL, loggedUser.getEmail(), 1);
-            if (0 < consumers.size()) {
-                consumer = consumers.get(0);
-            }
+            consumer = consumerOperations.getConsumer((Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
         }
         else {
             consumer = consumerOperations.getConsumer(Long.valueOf(resourceId));
@@ -76,7 +74,7 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, User loggedUser) throws DataSourceException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 }

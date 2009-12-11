@@ -138,6 +138,83 @@
             </tuv>
         </tu>
 
+        <tu tuid="login_provider_list_message" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>OpenID Provider Shortcuts:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_google" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Google</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_google" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Google</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_yahoo" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Yahoo!</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_myspace" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with MySpace</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_aol" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with AOL</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_wordpress" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Wordpress</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_blogger" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Blogger</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_chimp" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Chi.mp</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_myopenid" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with myOpenID</seg></tuv>
+        </tu>
+
+        <tu tuid="login_dialog_custom_info_prefix" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Text place in front of the input field that is going to receive the user's input for his custom OpenID identifier.
+            </note>
+            <tuv xml:lang="en">
+                <seg>Enter:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_dialog_custom_info_suffix" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Text place after the input field that is going to receive the user's input for his custom OpenID identifier.
+            </note>
+            <tuv xml:lang="en">
+                <seg></seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_dialog_close_button" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Close</seg></tuv>
+        </tu>
+
         <!-- ========= -->
         <!-- About box -->
         <!-- ========= -->

@@ -23,6 +23,7 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class DemandCommandProcessor {
@@ -96,7 +97,7 @@ public class DemandCommandProcessor {
                 latestDemand.resetKey();
                 latestDemand.resetCoreDates();
                 latestDemand.setAction(Action.demand);
-                latestDemand.setHashTag(null);
+                latestDemand.resetHashTags();
                 latestDemand.resetCriteria();
                 latestDemand.setDefaultExpirationDate();
                 latestDemand.setState(State.opened);
@@ -135,13 +136,30 @@ public class DemandCommandProcessor {
         }
 
         // Temporary warning
-        String hashTag = command.getString(Command.HASH_TAG);
-        if (hashTag != null){
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    LabelExtractor.get("cp_command_demand_hashtag_warning", new Object[] { demandKey, hashTag }, consumer.getLocale())
-            );
+        if (command.containsKey(Command.HASH_TAG)){
+            JsonArray hashTags = command.getJsonArray(Command.HASH_TAG);
+            if (hashTags.size() != 0) {
+                String serializedHashTags = "";
+                String hashTag = hashTags.getString(0);
+                if (hashTags.size() == 1 && !"demo".equals(hashTag)) {
+                    serializedHashTags = hashTag;
+                }
+                else { // if (1 < hashTags.size()) {
+                    for(int i = 0; i < hashTags.size(); ++i) {
+                        hashTag = hashTags.getString(i);
+                        if (!"demo".equals(hashTag)) {
+                            serializedHashTags += " " + hashTag;
+                        }
+                    }
+                }
+                if (0 < serializedHashTags.length()) {
+                    communicateToConsumer(
+                            rawCommand,
+                            consumer,
+                            LabelExtractor.get("cp_command_demand_hashtag_warning", new Object[] { demandKey, serializedHashTags.trim() }, consumer.getLocale())
+                    );
+                }
+            }
         }
 
         // Create a task for that demand

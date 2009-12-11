@@ -148,9 +148,7 @@ public class ProposalOperations extends BaseOperations {
             if (storeKey != null && storeKey != 0L && !storeKey.equals(proposal.getStoreKey()) && (ownerKey == null || ownerKey == 0L)) {
                 throw new DataSourceException("Mismatch of store identifiers [" + storeKey + "/" + proposal.getStoreKey() + "]");
             }
-            if (proposal.getCriteria() != null) {
-                proposal.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
-            }
+            proposal.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return proposal;
         }
         catch(Exception ex) {

@@ -5,10 +5,8 @@ import java.util.logging.Logger;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
+import twetailer.dao.LocationOperations;
 import twetailer.j2ee.BaseRestlet;
-import twetailer.j2ee.LoginServlet;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -16,12 +14,11 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
-public class DemandRestlet extends BaseRestlet {
-    private static Logger log = Logger.getLogger(DemandRestlet.class.getName());
+public class LocationRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(LocationRestlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
-    protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -35,7 +32,7 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        return demandOperations.createDemand(parameters, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)).toJson();
+        return locationOperations.createLocation(parameters).toJson();
     }
 
     @Override

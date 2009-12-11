@@ -13,9 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-
 public class TestUtils {
 
     @Before
@@ -63,37 +60,5 @@ public class TestUtils {
             }
         };
         ServletUtils.configureHttpParameters(mockRequest, new MockHttpServletResponse());
-    }
-
-    @Test
-    public void testGetUserServiceI() {
-        ServletUtils.setUserService(null);
-        assertNotNull(ServletUtils.getUserService());
-    }
-
-    @Test
-    public void testGetUserServiceII() {
-        UserService service = new MockUserService();
-        ServletUtils.setUserService(service);
-        assertNotNull(ServletUtils.getUserService());
-        assertEquals(service, ServletUtils.getUserService());
-    }
-
-    @Test(expected=RuntimeException.class)
-    public void testGetLoggedUserI() {
-        ServletUtils.setUserService(new MockUserService());
-        ServletUtils.getLoggedUser();
-    }
-
-    @Test
-    public void testGetLoggedUserII() {
-        final User user = new User("test-email", "test-domain");
-        ServletUtils.setUserService(new MockUserService(){
-            @Override
-            public User getCurrentUser() {
-                return user;
-            }
-        });
-        ServletUtils.getLoggedUser();
     }
 }

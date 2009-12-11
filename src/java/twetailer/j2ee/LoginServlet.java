@@ -37,8 +37,6 @@ import com.dyuproject.util.http.UrlEncodedParameterMap;
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 
-    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_wetailerId";
-
     protected static Listener sregExtension = new SRegExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("nickname"); // .addExchange("firstname").addExchange("lastname");
 
     protected static Listener axSchemaExtension = new AxSchemaExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("firstname").addExchange("lastname").addExchange("nickname");
@@ -84,6 +82,9 @@ public class LoginServlet extends HttpServlet {
     }
 
     public final static String LOGIN_WITH_PARAMETER_KEY = "loginWith";
+    public final static String LOGIN_WITH_GOOGLE = "google";
+    public final static String LOGIN_WITH_YAHOO = "yahoo";
+
     public final static String GOOGLE_OPENID_SERVER_URL = "https://www.google.com/accounts/o8/ud";
     public final static String YAHOO_OPENID_SERVER_URL = "https://open.login.yahooapis.com/openid/op/auth";
 
@@ -98,11 +99,11 @@ public class LoginServlet extends HttpServlet {
         String loginWith = request.getParameter(LOGIN_WITH_PARAMETER_KEY);
         String openidIdentifier = request.getParameter(RelyingParty.DEFAULT_IDENTIFIER_PARAMETER);
         if (loginWith != null) {
-            if (loginWith.equals("google")) {
+            if (loginWith.equals(LOGIN_WITH_GOOGLE)) {
                 identifier = "https://www.google.com/accounts/o8/id";
                 openIdServer = GOOGLE_OPENID_SERVER_URL;
             }
-            else if (loginWith.equals("yahoo")) {
+            else if (loginWith.equals(LOGIN_WITH_YAHOO)) {
                 identifier = "http://yahoo.com/";
                 openIdServer = YAHOO_OPENID_SERVER_URL;
             }
@@ -202,6 +203,8 @@ public class LoginServlet extends HttpServlet {
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+
+    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_wetailerId";
 
     protected static void attachConsumerToSession(OpenIdUser user) {
         Long consumerKey = (Long) user.getAttribute(AUTHENTICATED_USER_TWETAILER_ID);
