@@ -116,7 +116,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Copyright &copy; 2009 &lt;a href=\u0022http://www.milstein-assoc.com/\u0022&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
+                <seg>Copyright &copy; 2009 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
             </tuv>
         </tu>
 
@@ -233,7 +233,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the hash attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>hash,#</seg>
+                <seg>hashtag,#</seg>
             </tuv>
         </tu>
 
@@ -454,7 +454,21 @@
                 IMPORTANT: note the case of the keyword MUST be the same as the value of the tuid attribute into the lexicon TMX file.
             </note>
             <tuv xml:lang="en">
-                <seg>140,24906,AKA,Amazon,Attribute,Command-line,CRUD,Demand-crud,Fee,Flag,Flagged,Founders,Free,Friend,Fulfil,IM,MI,Note,Object,Proposed,Rate,Register,Reserve,Reserved,Retailer,Sentiment,Settle,Settled,State-flow,Tags-consumer,Tags-retailer,Twitter</seg>
+                <seg>
+                    140, 24906,
+                    AKA, Amazon, Attribute,
+                    Backup,
+                    Command-line, Consumer, CRUD,
+                    Demand-crud,
+                    Fee, Flag, Flagged, Founders, Free, Friend, Fulfil,
+                    IM, List-demands-private, List-demands-public, List-proposal, List-store, List-tag,
+                    MI,
+                    Note,
+                    Object,
+                    Rate, Register, Register-link, Register-retailer, Register-salesassociate, Register-store, Reserve, Reserved, Retailer,
+                    Salesassociate, Sentiment, Settle, Settled, State-flow,
+                    Twitter
+                </seg>
             </tuv>
         </tu>
 
@@ -481,6 +495,11 @@
         <tu tuid="help_keyword_equivalents_Attribute" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>attribute</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Backup" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>backup</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Command-line" datatype="Text">
@@ -513,6 +532,11 @@
             <tuv xml:lang="en"><seg>flag,problem</seg></tuv>
         </tu>
 
+        <tu tuid="help_keyword_equivalents_Flagged" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>flagged</seg></tuv>
+        </tu>
+
         <tu tuid="help_keyword_equivalents_Founders" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>founders,founder</seg></tuv>
@@ -530,12 +554,37 @@
 
         <tu tuid="help_keyword_equivalents_Fulfil" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>fulfil,fulfill</seg></tuv>
+            <tuv xml:lang="en"><seg>fulfil</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_IM" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>im</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_List-demands-private" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>list-demands-private</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_List-demands-public" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>list-demands-public</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_List-proposal" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>list-proposal</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_List-store" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>list-store</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_List-tag" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>list-tag</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_MI" datatype="Text">
@@ -553,17 +602,32 @@
             <tuv xml:lang="en"><seg>object</seg></tuv>
         </tu>
 
-        <tu tuid="help_keyword_equivalents_Proposed" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>proposed</seg></tuv>
-        </tu>
-
         <tu tuid="help_keyword_equivalents_Rate" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>rate</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Register" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>register</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Register-link" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>register</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Register_retailer" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>register</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Register-saleassociate" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>register</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Register-store" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>register</seg></tuv>
         </tu>
@@ -578,9 +642,14 @@
             <tuv xml:lang="en"><seg>reserved</seg></tuv>
         </tu>
 
-        <tu tuid="help_keyword_equivalents_SaleAssociate" datatype="Text">
+        <tu tuid="help_keyword_equivalents_Retailer" datatype="Text">
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>saleassociate,associate,agent</seg></tuv>
+            <tuv xml:lang="en"><seg>retailer,banner</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Salesassociate" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>salesassociate,agent,sa</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Sentiment" datatype="Text">
@@ -603,16 +672,6 @@
             <tuv xml:lang="en"><seg>state-flow</seg></tuv>
         </tu>
 
-        <tu tuid="help_keyword_equivalents_Tags-consumer" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>tags-consumer</seg></tuv>
-        </tu>
-
-        <tu tuid="help_keyword_equivalents_Tags-retailer" datatype="Text">
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>tags-retailer</seg></tuv>
-        </tu>
-
         <tu tuid="help_keyword_equivalents_Twitter" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>twitter</seg></tuv>
@@ -629,7 +688,7 @@
                 {0} is the sender screen name.
             </note>
             <tuv xml:lang="en">
-                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like 'd twetailer ...'</seg>
+                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like requesting help with "d twetailer ?"</seg>
             </tuv>
         </tu>
 
@@ -793,7 +852,8 @@
                 <seg>
                     Thank you for closing Proposal:{0}. Twetailer will update everyone's Ratings shortly. |
                     Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
-                    Regards, The Twetailer Community.</seg>
+                    Regards, The Twetailer Community.
+                </seg>
             </tuv>
         </tu>
 
@@ -805,7 +865,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Proposal:{0} for Demand ref:{1} has been closed by the Retailer. |
+                    Proposal:{0} has been closed by the Retailer. |
                     In order to improve your Twetailer Rating, please remember to finalize your Demand by sending ... |
                     "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
             </tuv>
@@ -875,6 +935,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -883,6 +944,7 @@
         </tu>
 
         <tu tuid="cp_command_decline_acknowledge_proposal_closing" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -893,6 +955,7 @@
         </tu>
 
         <tu tuid="cp_command_decline_invalid_proposal_id" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -901,6 +964,7 @@
         </tu>
 
         <tu tuid="cp_command_decline_invalid_parameters" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -909,6 +973,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_demand_state" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -923,6 +988,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_acknowledge_demand_markedForDeletion" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -933,6 +999,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_demand_id" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -941,6 +1008,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_proposal_state" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -1011,8 +1079,8 @@
         </tu>
 
         <tu tuid="cp_command_demand_hashtag_warning" datatype="Text">
-            <prop type="x-tier">javarb</prop>
             <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
                 {1}: serialized list of rejected hash tags, separated by a space
@@ -1150,8 +1218,8 @@
         </tu>
 
         <tu tuid="cp_command_propose_hashtag_warning" datatype="Text">
-            <prop type="x-tier">javarb</prop>
             <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
                 {1}: serialized list of rejected hash tags, separated by a space
@@ -1349,10 +1417,12 @@
                 Inform a sale associate about a new demand.|
                 {0}: demand key|
                 {1}: given tags, separated by a space|
-                {2}: expiration date, ISO formatted
+                {2}: expiration date, ISO formatted|
+                Future release:  total:[enter final price including all taxes and service fees]
             </note>
             <tuv xml:lang="en">
-                <seg>Can you serve Demand reference:{0} with the Tags: {1}? The Expiration date is: {2}.</seg>
+                <seg>I have Demand ref:{0}, for tags:{1} which expires:{2}. If you have matching supply, please complete and send the following proposal ...  |
+                "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]" </seg>
             </tuv>
         </tu>
 
@@ -1363,12 +1433,15 @@
                 {0}: demand key|
                 {1}: given tags, separated by a space|
                 {2}: expiration date, ISO formatted|
-                {3}: quantity
+                {3}: quantity|
+                Future release:  total:[enter final price including all taxes and service fees]
             </note>
             <tuv xml:lang="en">
-                <seg>I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}? Please complete and send the following proposal if you have matching supply  ...  |
-                "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here] total:[enter final price including all taxes and service fees]" |
-                Otherwise, please reply with "d twetailer !decline ref:{0}" </seg>
+                <seg>
+                    I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}.
+                    If you have matching supply, please complete and send the following proposal ...|
+                    "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]"
+                </seg>
             </tuv>
         </tu>
 
@@ -1402,7 +1475,8 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate a unit price or the total price is required.|
-                {0}: proposal key
+                {0}: proposal key|
+                Future release
             </note>
             <tuv xml:lang="en">
                 <seg>Your Proposition proposal:{0} should have a unit retail Price and the Total cost which includes all taxes and service fees.</seg>

@@ -196,7 +196,7 @@
                 Text place in front of the input field that is going to receive the user's input for his custom OpenID identifier.
             </note>
             <tuv xml:lang="en">
-                <seg>Enter:</seg>
+                <seg>Enter the missing part of the OpenID:</seg>
             </tuv>
         </tu>
 

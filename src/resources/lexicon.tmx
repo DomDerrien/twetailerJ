@@ -79,6 +79,20 @@
             </tuv>
         </tu>
 
+        <tu tuid="Address" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'address'</note>
+            <tuv xml:lang="en">
+                <seg>Address (story):  |
+                Address (usage):  |
+                Address (rules):  |
+                Address (see also): attribute |
+                Address (AKA):  |
+                Address (since): v0.0</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="AKA" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'aka'</note>
@@ -403,6 +417,20 @@
         <!--        -H-          -->
         <!-- =================== -->
 
+        <tu tuid="Hash" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'address'</note>
+            <tuv xml:lang="en">
+                <seg>Hash (story):  |
+                Hash (usage):  |
+                Hash (rules):  |
+                Hash (see also): attribute |
+                Hash (AKA): hashtag, # |
+                Hash (since): v0.0</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="Help" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the prefix 'help'</note>
@@ -412,7 +440,7 @@
                 Help (example): Send "consumer?", or, "?consumer". Hint: You can query for Help on any capitalized help text keyword |
                 Help (rules): Help System currently supports only one word queries and will ignore everything after the first word. Query for words in singular form, regardless of case. Therefore "?consumer" = "?Consumer" = "?CONSUMER" |
                 Help (see also): ?, index, action |
-        Help (resources): http://www.thefreedictionary.com/, http://dictionary.reference.com/, http://www.businessdictionary.com, http://en.wikipedia.org/wiki/Main_Page
+                Help (resources): http://www.thefreedictionary.com/, http://dictionary.reference.com/, http://www.businessdictionary.com, http://en.wikipedia.org/wiki/Main_Page
                 Help (since): v0.0</seg>
             </tuv>
         </tu>
@@ -495,8 +523,8 @@
             <note>Help text associated to the action 'list-proposal'</note>
             <tuv xml:lang="en">
                 <seg>List-proposal (story): As a Consumer, or, Retailer, I want to List one, all, Proposals sent, or, received with optional search criteria |
-        List-proposal (usage): Send "!list proposal:[proposal-number | * | from | to] [reference:demand-reference-number] [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]" |
-        List-proposal (example): Send "!list proposal:*" |
+                List-proposal (usage): Send "!list proposal:[proposal-number | * | from | to] [reference:demand-reference-number] [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]" |
+                List-proposal (example): Send "!list proposal:*" |
                 List-proposal (rules): Only Proposals sent, or, received by their respective owners are listed |
                 List-proposal (see also): list, list-demands-private, list-demands-public,, list-proposal list-store, list-tag |
                 List-proposal (since): v0.0</seg>
@@ -508,8 +536,8 @@
             <note>Help text associated to the action 'list-store'</note>
             <tuv xml:lang="en">
                 <seg>List-store (story): As a Consumer, or, Retailer, I want to List one, or, all Stores with optional search criteria |
-        List-store (usage): Send "!list store:[* | store-number] [locale:h0h0 h0h ca] [range:25 km]" |
-        List-store (example): Send "!list store:*" |
+                List-store (usage): Send "!list store:[* | store-number] [locale:h0h0 h0h ca] [range:25 km]" |
+                List-store (example): Send "!list store:*" |
                 List-store (see also): list, list-demands-private, list-demands-public, list-proposal, list-tag |
                 List-store (since): v0.0</seg>
             </tuv>
@@ -520,8 +548,8 @@
             <note>Help text associated to the action 'list-tags'</note>
             <tuv xml:lang="en">
                 <seg>List-tag (story): As a Consumer, or, Retailer, I want to List all Demand, or Supply Tags with with optional search criteria |
-        List-tag (usage): Send "!list tags:[demand | supply] [locale:h0h0 h0h ca] [range:25 km] [expires:yyyy-mm-dd]" |
-        List-tag (example): Send "!list tags:supply [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]"|
+                List-tag (usage): Send "!list tags:[demand | supply] [locale:h0h0 h0h ca] [range:25 km] [expires:yyyy-mm-dd]" |
+                List-tag (example): Send "!list tags:supply [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]"|
                 List-tag (see also):  list, list-demands-private, list-demands-public, list-proposal, list-store |
                 List-tag (since): v0.0</seg>
             </tuv>
@@ -570,13 +598,27 @@
         <!--        -N-          -->
         <!-- =================== -->
 
+        <tu tuid="Name" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'address'</note>
+            <tuv xml:lang="en">
+                <seg>Name (story):  |
+                Name (usage):  |
+                Name (rules):  |
+                Name (see also): attribute |
+                Name (AKA):  |
+                Name (since): v0.0</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="Note" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the prefix 'note'</note>
             <tuv xml:lang="en">
                 <seg>Note (story): As a Consumer, I want to provide Twetailer with some feedback, so I can help improve the quality of service. |
                 Note (usage): "note:[any-text]" |
-        Note (example): "note:my product was not put aside :-( " |
+                Note (example): "note:my product was not put aside :-( " |
                 Note (see also): close, flag, attribute |
                 Note (since): Future release</seg>
             </tuv>
@@ -610,6 +652,20 @@
         <!-- =================== -->
         <!--        -P-          -->
         <!-- =================== -->
+
+        <tu tuid="Phonenumber" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Help text associated to the glossary 'address'</note>
+            <tuv xml:lang="en">
+                <seg>Phonenumber (story):  |
+                Phonenumber (usage):  |
+                Phonenumber (rules):  |
+                Phonenumber (see also): attribute |
+                Phonenumber (AKA):  |
+                Phonenumber (since): v0.0</seg>
+            </tuv>
+        </tu>
 
         <tu tuid="Price" datatype="Text">
             <prop type="x-tier">javarb</prop>
@@ -912,7 +968,8 @@
             <note>Help text associated to the glossary 'store'</note>
             <tuv xml:lang="en">
                 <seg>Store (glossary): a place where merchandise is offered for sale. |
-Twetailer has Retailers which are linked to Stores, which are linked to Sales Associates. However for the sake of simplicity, Twetailer lumps Sales Associates, Stores and Retailers all together and often refers to them collectively as "Retailers" |
+                Twetailer has Retailers which are linked to Stores, which are linked to Sales Associates.
+                However for the sake of simplicity, Twetailer lumps Sales Associates, Stores and Retailers all together and often refers to them collectively as "Retailers" |
                 Store (see also): retailer, salesassociate |
                 Store (since): v0.0</seg>
             </tuv>

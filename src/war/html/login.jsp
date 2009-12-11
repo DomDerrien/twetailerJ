@@ -180,7 +180,7 @@
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://', 'wordpress.com');"
+                                    onclick="loginLogic.cookOpenId('http://', '.wordpress.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_wordpress", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/wordpress.ico" width="16" height="16" /> </button>
                                 <button
@@ -235,13 +235,15 @@
         title="Additional information required"
         execute="loginLogic.reportCookedOpenId();"
     >
-        <p>
-            <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_prefix", locale) %>
-            <span id="openIdPrefix"></span>
-            <input dojoType="dijit.form.TextBox" id="openIdCustom" >
-            <span id="openIdSuffix">.livejournal.com</span>
-            <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_suffix", locale) %>
-        </p>
+        <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_prefix", locale) %>
+        <ul>
+            <li>
+                <span id="openIdPrefix"></span>
+                <input dojoType="dijit.form.TextBox" id="openIdCustom" >
+                <span id="openIdSuffix"></span>
+            </li>
+        </ul>
+        <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_suffix", locale) %>
         <center>
             <button dojoType="dijit.form.Button" id="useAdditionalInfoButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button>
             <button dojoType="dijit.form.Button" type="reset" iconClass="silkIcon silkIconCancel" onclick="dijit.byId('openIdResolver').hide();dijit.byId('openid_identifier').focus();"><%= LabelExtractor.get(ResourceFileId.third, "login_dialog_close_button", locale) %></button>
@@ -253,8 +255,8 @@
     loginLogic.init = function() {
         dijit.byId("openid_identifier").focus();
         dojo.query("#signInButton").onclick(function(evt) {
-        	dojo.query(".shortcutButton").forEach(function(node, index, arr){
-            	// dojo.fadeOut({ node: dijit.getEnclosingWidget(node).domNode, duration: 2000 }).play();
+            dojo.query(".shortcutButton").forEach(function(node, index, arr){
+                // dojo.fadeOut({ node: dijit.getEnclosingWidget(node).domNode, duration: 2000 }).play();
                 dijit.getEnclosingWidget(node).attr("disabled", true);
             });
         });

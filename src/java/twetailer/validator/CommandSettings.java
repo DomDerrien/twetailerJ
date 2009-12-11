@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -45,11 +46,12 @@ public class CommandSettings {
         if (!localizedPrefixes.containsKey(locale)) {
             JsonObject prefixes = new GenericJsonObject();
             for(Prefix prefix: Prefix.values()) {
+                // Extraction
+                JsonArray equivalents = getCleanKeywords(ResourceFileId.master, "cl_prefix_" + prefix.toString(), locale);
+                // Caching
                 prefixes.put(
                         prefix.toString(),
-                        new GenericJsonArray(
-                                LabelExtractor.get("cl_prefix_" + prefix.toString(), locale).split(",")
-                        )
+                        equivalents
                 );
             }
             localizedPrefixes.put(locale, prefixes);
@@ -76,6 +78,7 @@ public class CommandSettings {
 
     /**
      * Loads the labels for the action commands for the specified locale
+     *
      * @param locale Used to access the localized resource bundle
      * @return A JsonObject with the localized labels, one JsonArray of values per defined action
      */
@@ -83,11 +86,12 @@ public class CommandSettings {
         if (!localizedActions.containsKey(locale)) {
             JsonObject actions = new GenericJsonObject();
             for(Action action: Action.values()) {
+                // Extraction
+                JsonArray equivalents = getCleanKeywords(ResourceFileId.master, "cl_action_" + action.toString(), locale);
+                // Caching
                 actions.put(
                         action.toString(),
-                        new GenericJsonArray(
-                                LabelExtractor.get("cl_action_" + action.toString(), locale).split(",")
-                        )
+                        equivalents
                 );
             }
             localizedActions.put(locale, actions);
@@ -111,6 +115,7 @@ public class CommandSettings {
 
     /**
      * Loads the labels for the command states for the specified locale
+     *
      * @param locale Used to access the localized resource bundle
      * @return A JsonObject with the localized labels, one label per state
      */
@@ -132,10 +137,11 @@ public class CommandSettings {
     protected final static String HELP_KEYWORD_EQUIVALENTS_PREFIX = "help_keyword_equivalents_";
     public final static String HELP_INTRODUCTION_MESSAGE_ID = "_introduction_";
 
-    private static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+    protected static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
 
     /**
      * Loads the list of registered labels and the list of keyword list themselves for the specified locale
+     *
      * @param locale Used to access the localized resource bundle
      * @return A JsonObject with the localized labels, one JsonArray of values per defined help keyword
      */
@@ -143,10 +149,17 @@ public class CommandSettings {
         JsonObject helpKeywords = localizedHelpKeywords.get(locale);
         if (helpKeywords == null) {
             helpKeywords = new GenericJsonObject();
-            String keywordList = LabelExtractor.get(HELP_KEYWORD_LIST_ID , locale);
-            String[] keywords = keywordList.split(",");
+            // Extraction
+            String[] keywords = LabelExtractor.get(HELP_KEYWORD_LIST_ID , locale).split(",");
             for(String keyword: keywords) {
-                helpKeywords.put(keyword, new GenericJsonArray(LabelExtractor.get(HELP_KEYWORD_EQUIVALENTS_PREFIX + keyword, locale).split(",")));
+                keyword = keyword.trim();
+                // Extraction
+                JsonArray equivalents = getCleanKeywords(ResourceFileId.master, HELP_KEYWORD_EQUIVALENTS_PREFIX + keyword, locale);
+                // Caching
+                helpKeywords.put(
+                        keyword,
+                        equivalents
+                );
             }
             localizedHelpKeywords.put(locale, helpKeywords);
         }
@@ -174,5 +187,28 @@ public class CommandSettings {
            acceptedValueIdx++;
        }
        return false;
+   }
+
+   /**
+    * Helper getting a list of comma-separated keywords from a TMX and return them trimed in a JsonArray
+    *
+    * @param fileId Identifier of the TMX file to process
+    * @param tmxKey TMX entry key
+    * @param locale Used to access the localized resource bundle
+    * @return Clean list of keywords
+    */
+   protected static JsonArray getCleanKeywords(ResourceFileId fileId, String tmxKey, Locale locale) {
+       // Extraction
+       JsonArray equivalents = new GenericJsonArray(
+               LabelExtractor.get(fileId, tmxKey, locale).split(",")
+       );
+       // Clean-up
+       int idx = equivalents.size();
+       while (0 < idx) {
+           --idx;
+           String equivalent = equivalents.getString(idx);
+           equivalents.set(idx, equivalent.trim());
+       }
+       return equivalents;
    }
 }

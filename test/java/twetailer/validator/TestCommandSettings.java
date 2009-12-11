@@ -7,8 +7,11 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.text.Collator;
+import java.util.HashMap;
 import java.util.Locale;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import twetailer.validator.CommandSettings.Prefix;
@@ -23,6 +26,15 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestCommandSettings {
+
+    @Before
+    public void setUp() {
+        CommandSettings.localizedHelpKeywords = new HashMap<Locale, JsonObject>();
+    }
+
+    @After
+    public void tearDown() {
+    }
 
     @Test
     public void testConstructor() {
@@ -127,17 +139,62 @@ public class TestCommandSettings {
 
     @Test
     public void testGetHelpKeywords() {
-        MockLabelExtractor.init(ResourceFileId.master, new Object[][]{
+        Locale locale = null;
+        ResourceFileId fileId = ResourceFileId.master;
+        MockLabelExtractor.setup(fileId, new Object[][]{
             {CommandSettings.HELP_KEYWORD_LIST_ID, "one,two"},
             {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "one", "one help message"},
             {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "two", "two help message"}
-        });
+        }, locale);
 
-        JsonObject helpKeywords = CommandSettings.getHelpKeywords(null);
+        JsonObject helpKeywords = CommandSettings.getHelpKeywords(locale);
         assertNotNull(helpKeywords);
         assertNotSame(0, helpKeywords.size());
-        assertEquals(helpKeywords, CommandSettings.getHelpKeywords(null));
+        assertEquals(helpKeywords, CommandSettings.getHelpKeywords(locale));
 
-        MockLabelExtractor.close(ResourceFileId.master);
+        MockLabelExtractor.cleanup(fileId, locale);
+    }
+
+    @Test
+    public void testHandlingEquivalentListI() {
+        Locale locale = null;
+        ResourceFileId fileId = ResourceFileId.master;
+        MockLabelExtractor.setup(fileId, new Object[][]{
+            {"entry", "one , \n TWO, 333.3333E+333 \t\r\n,\r\n\t four"}
+        }, locale);
+
+        JsonArray keywords = CommandSettings.getCleanKeywords(fileId, "entry", locale);
+        assertNotNull(keywords);
+        assertEquals(4, keywords.size());
+        assertEquals("one", keywords.getString(0));
+        assertEquals("TWO", keywords.getString(1));
+        assertEquals("333.3333E+333", keywords.getString(2));
+        assertEquals("four", keywords.getString(3));
+    }
+
+    @Test
+    public void testHandlingEquivalentListII() {
+        Locale locale = null;
+        ResourceFileId fileId = ResourceFileId.master;
+        MockLabelExtractor.setup(fileId, new Object[][]{
+            {CommandSettings.HELP_KEYWORD_LIST_ID, " one , \t two \r\n, three "}, // With additional separator
+            {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "one", "one , \n ONE, 1 \t"},
+            {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "two", "2,TWO,two"},
+            {CommandSettings.HELP_KEYWORD_EQUIVALENTS_PREFIX + "three", "three     ,     3\t\t\t,\t\t\tTHREE"}
+        }, locale);
+
+        JsonObject helpKeywords = CommandSettings.getHelpKeywords(locale);
+
+        assertNotNull(helpKeywords);
+        assertNotSame(0, helpKeywords.size());
+        assertEquals(3, helpKeywords.size());
+        assertEquals(3, helpKeywords.getJsonArray("one").size());
+        assertEquals(3, helpKeywords.getJsonArray("two").size());
+        assertEquals(3, helpKeywords.getJsonArray("three").size());
+        assertEquals("one", helpKeywords.getJsonArray("one").getString(0));
+        assertEquals("ONE", helpKeywords.getJsonArray("one").getString(1));
+        assertEquals("1", helpKeywords.getJsonArray("one").getString(2));
+
+        MockLabelExtractor.cleanup(fileId, locale);
     }
 }

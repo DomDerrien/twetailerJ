@@ -57,7 +57,7 @@
                 <include name="**/*.jar" />
             </fileset>
         </copy>
-        <copy file="deps/lib/domderrien/domderrien-0.9.1.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/domderrien/domderrien-0.9.2.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/json.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/jsonrpc.jar" todir="src/war/WEB-INF/lib" />

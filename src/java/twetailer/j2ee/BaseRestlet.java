@@ -100,13 +100,13 @@ public abstract class BaseRestlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
-    
+
     /**
      * Helper made available to be able to inject a mock OpenIdUser from the unit tests
-     * 
+     *
      * @param parameters HTTP request parameters
      * @return OpenIdUser instance extracted from the session
-     * 
+     *
      * @throws Exception If the OpendIdUser un-marshaling fails
      */
     protected OpenIdUser getLoggedUser(HttpServletRequest request) throws Exception {
