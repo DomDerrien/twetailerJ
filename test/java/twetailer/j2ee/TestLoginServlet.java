@@ -7,10 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,7 +25,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import twetailer.DataSourceException;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Consumer;
 import twetailer.validator.ApplicationSettings;

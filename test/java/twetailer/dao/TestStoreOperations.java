@@ -19,11 +19,15 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dto.Command;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
 
 import com.google.apphosting.api.MockAppEngineEnvironment;
+
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 public class TestStoreOperations {
 
@@ -75,6 +79,17 @@ public class TestStoreOperations {
         };
 
         ops.createStore(new Store());
+    }
+
+    @Test
+    public void testCreateIII() throws ClientException {
+        String name="test";
+        JsonObject item = new GenericJsonObject();
+        item.put(Store.NAME, name);
+
+        Store store = new StoreOperations().createStore(item);
+        assertNotNull(store.getKey());
+        assertEquals(name, store.getName());
     }
 
     @Test

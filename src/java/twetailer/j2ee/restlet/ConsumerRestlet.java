@@ -52,9 +52,6 @@ public class ConsumerRestlet extends BaseRestlet {
         else {
             consumer = consumerOperations.getConsumer(Long.valueOf(resourceId));
         }
-        if (consumer == null) {
-            throw new DataSourceException("No Consumer resource matches the criteria");
-        }
         return consumer.toJson();
     }
 

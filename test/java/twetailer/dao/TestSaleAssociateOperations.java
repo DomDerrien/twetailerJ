@@ -22,9 +22,13 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 
 import com.google.appengine.api.users.User;
 import com.google.apphosting.api.MockAppEngineEnvironment;
+
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 public class TestSaleAssociateOperations {
 
@@ -80,6 +84,17 @@ public class TestSaleAssociateOperations {
         };
 
         ops.createSaleAssociate(new Consumer(), 0L);
+    }
+
+    @Test
+    public void testCreateIII() throws ClientException {
+        String name="test";
+        JsonObject item = new GenericJsonObject();
+        item.put(SaleAssociate.NAME, name);
+
+        SaleAssociate saleAssociate = new SaleAssociateOperations().createSaleAssociate(item);
+        assertNotNull(saleAssociate.getKey());
+        assertEquals(name, saleAssociate.getName());
     }
 
     @Test

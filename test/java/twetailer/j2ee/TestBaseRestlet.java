@@ -2,6 +2,7 @@ package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -819,5 +821,36 @@ public class TestBaseRestlet {
 
         mockRestlet.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testGetLoggedUser() throws Exception {
+        final OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        assertEquals(user, new BaseRestlet() {
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException { return null; }
+            @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException { }
+            @Override protected Logger getLogger() { return null; }
+            @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException { return null; }
+            @Override protected JsonArray selectResources(JsonObject parameters) throws DataSourceException, ClientException { return null; }
+            @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException { return null; }
+
+        }.getLoggedUser(mockRequest));
     }
 }

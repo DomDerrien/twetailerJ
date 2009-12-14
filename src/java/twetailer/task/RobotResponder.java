@@ -55,7 +55,14 @@ public class RobotResponder {
         }
     }
 
+    public final static String ROBOT_DEMO_HASH_TAG = "demo";
+
     public static void processDemand(PersistenceManager pm, Long demandKey) throws DataSourceException {
+        //
+        // TODO: add the robot sale associate key into the setting table
+        // TODO: always load the robot from that key
+        // TODO: try to put the key in memcached
+        //
         List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.NAME, ROBOT_NAME, 1);
         if (0 < saleAssociates.size()) {
             List<Location> locations = locationOperations.getLocations(pm, ROBOT_POSTAL_CODE, ROBOT_COUNTRY_CODE);
@@ -70,6 +77,7 @@ public class RobotResponder {
                 proposal.setPrice(0.01D);
                 proposal.setQuantity(100L);
                 proposal.setSource(Source.simulated);
+                proposal.addHashTag(ROBOT_DEMO_HASH_TAG);
                 proposal.setState(State.published);
                 proposal.setStoreKey(stores.get(0).getKey());
                 proposal.setTotal(1.15D);

@@ -1112,7 +1112,7 @@ public class TestDemandCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
         command.put(Demand.QUANTITY, 123L);
         command.put(Command.HASH_TAG, new GenericJsonArray());
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid hash tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid hash tag
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -1170,7 +1170,7 @@ public class TestDemandCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
         command.put(Demand.QUANTITY, 123L);
         command.put(Command.HASH_TAG, new GenericJsonArray());
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid hash tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid hash tag
         command.getJsonArray(Command.HASH_TAG).add("test"); // One invalid hash tag
 
         // RawCommand mock
@@ -1229,8 +1229,8 @@ public class TestDemandCommandProcessor {
         command.put(Demand.REFERENCE, demandKey);
         command.put(Demand.QUANTITY, 123L);
         command.put(Command.HASH_TAG, new GenericJsonArray());
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid hash tag
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid hash tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid hash tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid hash tag
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);

@@ -15,6 +15,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandProcessor;
+import twetailer.task.RobotResponder;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
@@ -141,13 +142,13 @@ public class DemandCommandProcessor {
             if (hashTags.size() != 0) {
                 String serializedHashTags = "";
                 String hashTag = hashTags.getString(0);
-                if (hashTags.size() == 1 && !"demo".equals(hashTag)) {
+                if (hashTags.size() == 1 && !RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
                     serializedHashTags = hashTag;
                 }
                 else { // if (1 < hashTags.size()) {
                     for(int i = 0; i < hashTags.size(); ++i) {
                         hashTag = hashTags.getString(i);
-                        if (!"demo".equals(hashTag)) {
+                        if (!RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
                             serializedHashTags += " " + hashTag;
                         }
                     }

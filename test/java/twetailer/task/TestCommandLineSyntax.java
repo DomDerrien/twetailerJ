@@ -1144,6 +1144,6 @@ public class TestCommandLineSyntax {
         );
 
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
-        assertEquals("demo", data.getJsonArray(Command.HASH_TAG).getString(1));
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAG).getString(1));
     }
 }

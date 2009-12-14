@@ -28,6 +28,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
+import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
@@ -632,7 +633,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.KEY, proposalKey);
         command.put(Proposal.QUANTITY, 123L);
         command.put(Command.HASH_TAG, new GenericJsonArray());
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid tag
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -697,7 +698,7 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.KEY, proposalKey);
         command.put(Proposal.QUANTITY, 123L);
         command.put(Command.HASH_TAG, new GenericJsonArray());
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid tag
         command.getJsonArray(Command.HASH_TAG).add("test"); // One invalid tag
 
         // RawCommand mock
@@ -763,8 +764,8 @@ public class TestProposeCommandProcessor {
         command.put(Proposal.KEY, proposalKey);
         command.put(Proposal.QUANTITY, 123L);
         command.put(Command.HASH_TAG, new GenericJsonArray());
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One invalid tag
-        command.getJsonArray(Command.HASH_TAG).add("demo"); // One valid tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One invalid tag
+        command.getJsonArray(Command.HASH_TAG).add(RobotResponder.ROBOT_DEMO_HASH_TAG); // One valid tag
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);

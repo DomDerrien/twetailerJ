@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.RelyingParty;
+
 import twetailer.ClientException;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
@@ -39,6 +42,7 @@ import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonParser;
 
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
@@ -114,7 +118,7 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             log.warning("doGet().exception: " + ex);
-            ex.printStackTrace();
+            // ex.printStackTrace();
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 
@@ -122,11 +126,9 @@ public class MaezelServlet extends HttpServlet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
-        JsonObject in = new GenericJsonObject(request.getParameterMap());
         JsonObject out = new GenericJsonObject();
 
         try {
@@ -136,16 +138,25 @@ public class MaezelServlet extends HttpServlet {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
             else if ("/processVerificationCode".equals(pathInfo)) {
+                // TODO: verify Content-type = "application/x-www-form-urlencoded"
+                // JsonObject in = new GenericJsonObject(request.getParameterMap());
+
+                // TODO: verify Content-type == "application/json"
+                JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
+
+                OpenIdUser loggedUser = getLoggedUser(request);
+
                 // Custom fields
                 String topic = in.getString("topic");
                 Boolean waitForCode = in.getBoolean("waitForCode");
                 // Consumer fields
                 String language = in.getString(Consumer.LANGUAGE);
                 Locale locale = new Locale(language);
+
                 // Verification process
                 if (Consumer.EMAIL.equals(topic)) {
                     String email = in.getString(Consumer.EMAIL);
-                    long code = getCode(topic, email);
+                    long code = getCode(topic, email, loggedUser.getClaimedId());
                     if (waitForCode) {
                         // Account with an e-mail address
                         MailConnector.sendMailMessage(
@@ -157,12 +168,12 @@ public class MaezelServlet extends HttpServlet {
                         );
                     }
                     else {
-                        out.put("codeValidity", in.getString(Consumer.EMAIL + "Code").equals("" + code));
+                        out.put("codeValidity", in.getLong(Consumer.EMAIL + "Code") == code);
                     }
                 }
                 else if (Consumer.JABBER_ID.equals(topic)) {
                     String jabberId = in.getString(Consumer.JABBER_ID);
-                    long code = getCode(topic, jabberId);
+                    long code = getCode(topic, jabberId, loggedUser.getClaimedId());
                     if (waitForCode) {
                         // Account with a jabber identifier
                         JabberConnector.sendInstantMessage(
@@ -175,12 +186,12 @@ public class MaezelServlet extends HttpServlet {
                         );
                     }
                     else {
-                        out.put("codeValidity", in.getString(Consumer.JABBER_ID + "Code").equals("" + code));
+                        out.put("codeValidity", in.getLong(Consumer.JABBER_ID + "Code") == code);
                     }
                 }
                 else if (Consumer.TWITTER_ID.equals(topic)) {
                     String twitterId = in.getString(Consumer.TWITTER_ID);
-                    long code = getCode(topic, twitterId);
+                    long code = getCode(topic, twitterId, loggedUser.getClaimedId());
                     if (waitForCode) {
                         // Account with a twitter identifier
                         TwitterConnector.sendDirectMessage(
@@ -193,7 +204,7 @@ public class MaezelServlet extends HttpServlet {
                         );
                     }
                     else {
-                        out.put("codeValidity", in.getString(Consumer.TWITTER_ID + "Code").equals("" + code));
+                        out.put("codeValidity", in.getLong(Consumer.TWITTER_ID + "Code") == code);
                     }
 
                 }
@@ -209,33 +220,55 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             log.warning("doPost().exception: " + ex);
-            ex.printStackTrace();
+            // ex.printStackTrace();
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 
         out.toStream(response.getOutputStream(), false);
 
+        /*
         // FIXME: remove this trace
         MockOutputStream outS = new MockOutputStream();
         out.toStream(outS, false);
         System.err.println("******************** " + outS.getStream());
+        */
     }
 
-    protected long getCode(String topic, String identifier) {
+    /**
+     * Helper computing the verification code
+     *
+     * @param openId User's OpenID (accessible because he's logged in)
+     * @param topic To be able to choose the verification code algorithm
+     * @param identifier User's identifier for the given topic
+     * @return Unique verification code
+     */
+    protected static long getCode(String topic, String identifier, String openId) {
         long code = 0L;
         if (Consumer.EMAIL.equals(topic)) {
-            code = Math.abs(7 + identifier.hashCode() * 37);
+            code = Math.abs(7 + identifier.hashCode() * 37 - openId.hashCode() / 3);
         }
         else if (Consumer.JABBER_ID.equals(topic)) {
-            code = Math.abs(13 + identifier.hashCode() * 29);
+            code = Math.abs(13 + identifier.hashCode() * 29 - openId.hashCode() / 7);
         }
         else if (Consumer.TWITTER_ID.equals(topic)) {
-            code = Math.abs(23 + identifier.hashCode() * 17);
+            code = Math.abs(23 + identifier.hashCode() * 17 - openId.hashCode() / 5);
         }
         else {
             throw new RuntimeException("Unexpected topic: " + topic);
         }
         log.warning("Code " + code + " for " + topic + ": " + identifier);
         return code;
+    }
+
+    /**
+     * Helper made available to be able to inject a mock OpenIdUser from the unit tests
+     *
+     * @param parameters HTTP request parameters
+     * @return OpenIdUser instance extracted from the session
+     *
+     * @throws Exception If the OpendIdUser un-marshaling fails
+     */
+    protected static OpenIdUser getLoggedUser(HttpServletRequest request) throws Exception {
+        return RelyingParty.getInstance().discover(request);
     }
 }

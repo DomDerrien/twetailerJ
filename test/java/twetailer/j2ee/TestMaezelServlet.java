@@ -1,23 +1,29 @@
 package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
+import javax.servlet.MockServletInputStream;
 import javax.servlet.MockServletOutputStream;
+import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.MockHttpServletRequest;
 import javax.servlet.http.MockHttpServletResponse;
 
+import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,8 +31,7 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.connector.MockTwitterConnector;
-import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.ConsumerOperations;
+import twetailer.connector.TwitterConnector;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
@@ -34,7 +39,6 @@ import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
-import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -43,21 +47,28 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
-import twetailer.dto.Store;
 import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
 import twetailer.task.MockDemandValidator;
 import twetailer.task.MockLocationValidator;
 import twetailer.task.MockProposalProcessor;
 import twetailer.task.MockProposalValidator;
+import twetailer.task.MockRobotResponder;
 import twetailer.task.MockTweetLoader;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
+import twitter4j.Status;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.YadisDiscovery;
 import com.google.apphosting.api.MockAppEngineEnvironment;
+
+import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 public class TestMaezelServlet {
 
@@ -524,5 +535,715 @@ public class TestMaezelServlet {
 
         // Clean-up
         MockProposalProcessor.restoreOperation();
+    }
+
+    @Test
+    public void testDoGetProcessDemandForRobot() throws IOException {
+        final Long proposalKey= 12345L;
+        // Inject SaleAssociateOperations mock
+        final SaleAssociateOperations mockSaleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<SaleAssociate>();
+            }
+        };
+        MockRobotResponder.injectMocks(servlet._baseOperations);
+        MockRobotResponder.injectMocks(mockSaleAssociateOperations);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processDemandForRobot";
+            }
+            @Override
+            public String getParameter(String name) {
+                assertEquals(Proposal.KEY, name);
+                return proposalKey.toString();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockProposalProcessor.restoreOperation();
+    }
+
+    @Test
+    public void testDoPostI() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+    }
+
+    @Test
+    public void testDoPostII() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+    }
+
+    @Test
+    public void testDoPostIII() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/zzz";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testGetVerificationCodeI() throws IOException {
+        String topic = "zzz";
+        String identifier = "unit@test";
+        String openId = "http://openId";
+
+        MaezelServlet.getCode(topic, identifier, openId);
+    }
+
+    @Test
+    public void testGetVerificationCodeII() throws IOException {
+        String topic = Consumer.EMAIL;
+        String identifier = "unit@test";
+        String openId = "http://openId";
+
+        long code = MaezelServlet.getCode(topic, identifier, openId);
+
+        assertEquals(code, MaezelServlet.getCode(topic, identifier, openId));
+    }
+
+    @Test
+    public void testGetVerificationCodeIII() throws IOException {
+        String topic = Consumer.JABBER_ID;
+        String identifier = "unit@test";
+        String openId = "http://openId";
+
+        long code = MaezelServlet.getCode(topic, identifier, openId);
+
+        assertEquals(code, MaezelServlet.getCode(topic, identifier, openId));
+    }
+
+    @Test
+    public void testGetVerificationCodeIV() throws IOException {
+        String topic = Consumer.TWITTER_ID;
+        String identifier = "unit@test";
+        String openId = "http://openId";
+
+        long code = MaezelServlet.getCode(topic, identifier, openId);
+
+        assertEquals(code, MaezelServlet.getCode(topic, identifier, openId));
+    }
+
+    @Test
+    public void testGetVerificationCodeV() throws IOException {
+        String identifier = "unit@test";
+        String openId = "http://openId";
+
+        long codeEmail = MaezelServlet.getCode(Consumer.EMAIL, identifier, openId);
+        long codeJabber = MaezelServlet.getCode(Consumer.JABBER_ID, identifier, openId);
+        long codeTwitter = MaezelServlet.getCode(Consumer.TWITTER_ID, identifier, openId);
+
+        assertNotSame(codeEmail, codeJabber);
+        assertNotSame(codeEmail, codeTwitter);
+        assertNotSame(codeJabber, codeTwitter);
+    }
+
+    @Test
+    public void testWaitForVerificationCodeI() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.EMAIL;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        // No way to check what's send by e-mail...
+        // See test done for topic == Twitter
+    }
+
+    @Test
+    public void testWaitForVerificationCodeII() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.JABBER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        // No way to check what's send by IM...
+        // See test done for topic == Twitter
+    }
+
+    @Test
+    public void testWaitForVerificationCodeIII() throws IOException, TwitterException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.TWITTER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        // Expected messages
+        final long code = MaezelServlet.getCode(topic, identifier, openId);
+        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+        String msg2 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, Locale.ENGLISH);
+
+        // To inject the mock account
+        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
+        Twitter account = EasyMock.createMock(Twitter.class);
+        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andReturn(dm).once();
+        EasyMock.expect(account.sendDirectMessage(identifier, msg2)).andReturn(dm).once();
+        EasyMock.replay(account);
+        TwitterConnector.releaseTwetailerAccount(account);
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+    }
+
+    @Test
+    public void testGoodVerificationCodeI() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.EMAIL;
+        final long code = MaezelServlet.getCode(topic, identifier, openId);
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("'codeValidity':true"));
+    }
+
+    @Test
+    public void testGoodVerificationCodeII() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.JABBER_ID;
+        final long code = MaezelServlet.getCode(topic, identifier, openId);
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("'codeValidity':true"));
+    }
+
+    @Test
+    public void testGoodVerificationCodeIII() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.TWITTER_ID;
+        final long code = MaezelServlet.getCode(topic, identifier, openId);
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("'codeValidity':true"));
+    }
+
+    @Test
+    public void testBadVerificationCodeI() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.EMAIL;
+        final long code = 0;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("'codeValidity':false"));
+    }
+
+    @Test
+    public void testBadVerificationCodeII() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.JABBER_ID;
+        final long code = 0;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("'codeValidity':false"));
+    }
+
+    @Test
+    public void testBadVerificationCodeIII() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = Consumer.TWITTER_ID;
+        final long code = 0;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("'codeValidity':false"));
+    }
+
+    @Test
+    public void testBadTopic() throws IOException {
+        final String openId = "http://openId";
+        final String identifier = "unit@test";
+        final String topic = "zzz";
+        final long code = 0;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.FALSE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        ",'" + topic + "Code':" + code +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
     }
 }

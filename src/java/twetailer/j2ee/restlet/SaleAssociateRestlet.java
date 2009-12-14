@@ -39,19 +39,6 @@ public class SaleAssociateRestlet extends BaseRestlet {
         return log;
     }
 
-    private void reportExisitingSaleAssociate(List<SaleAssociate> saleAssociates, Long storeKey) throws DataSourceException {
-        if (0 < saleAssociates.size()) {
-            SaleAssociate saleAssociate = saleAssociates.get(0);
-            if (saleAssociate.getStoreKey() != storeKey) {
-                throw new DataSourceException("A Sale Associate for one or many given identifiers is already attached to the Store:" + saleAssociate.getStoreKey());
-            }
-        }
-    }
-
-    private void checkEmailUnicity() {
-
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
@@ -62,50 +49,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
                 if ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email)) {
                     PersistenceManager pm = _baseOperations.getPersistenceManager();
                     try {
-                        Long consumerKey = 0L;
-                        Long storeKey = parameters.getLong(SaleAssociate.STORE_KEY);
-                        if (parameters.containsKey(SaleAssociate.CONSUMER_KEY)) {
-                            // Get the corresponding
-                            Consumer consumer = consumerOperations.getConsumer(pm, parameters.getLong(SaleAssociate.CONSUMER_KEY));
-                            consumerKey = consumer.getKey();
-                        }
-                        else if (parameters.containsKey(SaleAssociate.TWITTER_ID)) {
-                            // Assume the sale associate candidate has already submitted an account
-                            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, parameters.getString(SaleAssociate.TWITTER_ID), 1);
-                            if (0 < consumers.size()) {
-                                consumerKey = consumers.get(0).getKey();
-                            }
-                            else {
-                                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.TWITTER_ID, parameters.getString(SaleAssociate.TWITTER_ID), 1);
-                                reportExisitingSaleAssociate(saleAssociates, storeKey);
-                            }
-                        }
-                        else if (parameters.containsKey(SaleAssociate.EMAIL)) {
-                            // Assume the sale associate candidate has already submitted an account
-                            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, parameters.getString(SaleAssociate.EMAIL), 1);
-                            if (0 < consumers.size()) {
-                                consumerKey = consumers.get(0).getKey();
-                            }
-                            else {
-                                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.EMAIL, parameters.getString(SaleAssociate.EMAIL), 1);
-                                reportExisitingSaleAssociate(saleAssociates, storeKey);
-                            }
-                        }
-                        if (consumerKey != 0L) {
-                            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                            reportExisitingSaleAssociate(saleAssociates, storeKey);
-                        }
-                        else {
-                            Consumer consumer = new Consumer();
-                            consumer.setName(parameters.getString(Consumer.NAME));
-                            consumer.setEmail(parameters.getString(Consumer.EMAIL));
-                            consumer.setTwitterId(parameters.getString(Consumer.TWITTER_ID));
-                            consumer.setLanguage(parameters.getString(Consumer.LANGUAGE));
-                            consumer = consumerOperations.createConsumer(pm, consumer);
-                            consumerKey = consumer.getKey();
-                        }
-                        parameters.put(SaleAssociate.CONSUMER_KEY, consumerKey);
-                        return saleAssociateOperations.createSaleAssociate(pm, parameters).toJson();
+                        return delegateResourceCreation(pm, parameters);
                     }
                     finally {
                         pm.close();
@@ -113,7 +57,145 @@ public class SaleAssociateRestlet extends BaseRestlet {
                 }
             }
         }
-        throw new RuntimeException("Restricted access!");
+        throw new ClientException("Restricted access!");
+    }
+
+    /**
+     * Create Consumer and SaleAssociate instances for the given parameters if
+     * it's sure there no such existing object with identical parameters.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Attribute coming from a client over HTTP
+     * @return Serialized SaleAssociate instance
+
+     * @throws DataSourceException If there is already some associate with one or many identical attributes
+     * or if the found sale associate instance is already attached to another store
+     */
+    protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) throws DataSourceException {
+        Long storeKey = parameters.getLong(SaleAssociate.STORE_KEY);
+        if (storeKey == 0L) {
+            throw new IllegalArgumentException("StoreKey for the SaleAssociate is mandatory");
+        }
+
+        Long consumerKey = parameters.containsKey(SaleAssociate.CONSUMER_KEY) ? parameters.getLong(SaleAssociate.CONSUMER_KEY) : null;
+        String email = parameters.containsKey(SaleAssociate.EMAIL) ? parameters.getString(SaleAssociate.EMAIL) : null;
+        String twitterId = parameters.containsKey(SaleAssociate.TWITTER_ID) ? parameters.getString(SaleAssociate.TWITTER_ID) : null;
+
+        SaleAssociate candidateSaleAssociate = null;
+
+        if (consumerKey != null) {
+            Consumer consumer = consumerOperations.getConsumer(pm, parameters.getLong(SaleAssociate.CONSUMER_KEY));
+            consumerKey = consumer.getKey();
+            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+            if (0 < saleAssociates.size()) {
+                SaleAssociate saleAssociate = saleAssociates.get(0);
+                if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                    throw new DataSourceException("Sale Associate already attached to another store");
+                }
+                candidateSaleAssociate = saleAssociate;
+            }
+        }
+
+        if (email != null) {
+            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, email, 1);
+            if (0 < consumers.size()) {
+                if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
+                    throw new DataSourceException("At least two different Consumer instances match the given criteria");
+                }
+                consumerKey = consumers.get(0).getKey();
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                        throw new DataSourceException("Sale Associate already attached to another store");
+                    }
+                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
+                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
+                    }
+                    candidateSaleAssociate = saleAssociate;
+                }
+            }
+            else {
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.EMAIL, email, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                        throw new DataSourceException("Sale Associate already attached to another store");
+                    }
+                    if (consumerKey != null && !consumerKey.equals(saleAssociate.getConsumerKey())) {
+                        throw new DataSourceException("Retreived Sale Associate instance attached to another Consumer than the one identified by the given criteria");
+                    }
+                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
+                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
+                    }
+                    candidateSaleAssociate = saleAssociate;
+                    consumerKey = candidateSaleAssociate.getConsumerKey();
+                }
+            }
+        }
+
+        if (twitterId != null) {
+            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, twitterId, 1);
+            if (0 < consumers.size()) {
+                if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
+                    throw new DataSourceException("At least two different Consumer instances match the given criteria");
+                }
+                consumerKey = consumers.get(0).getKey();
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                        throw new DataSourceException("Sale Associate already attached to another store");
+                    }
+                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
+                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
+                    }
+                    candidateSaleAssociate = saleAssociate;
+                }
+            }
+            else {
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.TWITTER_ID, twitterId, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                        throw new DataSourceException("Sale Associate already attached to another store");
+                    }
+                    if (consumerKey != null && !consumerKey.equals(saleAssociate.getConsumerKey())) {
+                        throw new DataSourceException("Retreived Sale Associate instance attached to another Consumer than the one identified by the given criteria");
+                    }
+                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
+                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
+                    }
+                    candidateSaleAssociate = saleAssociate;
+                    consumerKey = candidateSaleAssociate.getConsumerKey();
+                }
+            }
+        }
+
+        if (consumerKey == null) {
+            Consumer consumer = new Consumer();
+            consumer.setName(parameters.getString(Consumer.NAME));
+            consumer.setEmail(parameters.getString(Consumer.EMAIL));
+            consumer.setTwitterId(parameters.getString(Consumer.TWITTER_ID));
+            consumer.setLanguage(parameters.getString(Consumer.LANGUAGE));
+            consumer = consumerOperations.createConsumer(pm, consumer);
+            consumerKey = consumer.getKey();
+        }
+
+        if (candidateSaleAssociate == null) {
+            parameters.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+            candidateSaleAssociate = saleAssociateOperations.createSaleAssociate(pm, parameters);
+        }
+        else {
+            boolean updateRequired = false;
+            if (email != null) { candidateSaleAssociate.setEmail(email); updateRequired = true; }
+            if (twitterId != null) { candidateSaleAssociate.setTwitterId(twitterId); updateRequired = true; }
+            if (updateRequired) {
+                candidateSaleAssociate = saleAssociateOperations.updateSaleAssociate(pm, candidateSaleAssociate);
+            }
+        }
+
+        return candidateSaleAssociate.toJson();
     }
 
     @Override

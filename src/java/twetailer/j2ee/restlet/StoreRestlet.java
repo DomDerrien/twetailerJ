@@ -53,7 +53,7 @@ public class StoreRestlet extends BaseRestlet {
                 }
             }
         }
-        throw new RuntimeException("Restricted access!");
+        throw new ClientException("Restricted access!");
     }
 
     @Override
