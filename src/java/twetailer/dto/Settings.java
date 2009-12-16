@@ -111,7 +111,7 @@ public class Settings implements Serializable {
     }
 
     // Just made available for the unit tests
-    protected void setRobotSaleAssociateKey(Long robotSaleAssociateKey) {
+    public void setRobotSaleAssociateKey(Long robotSaleAssociateKey) {
         this.robotSaleAssociateKey = robotSaleAssociateKey;
     }
 

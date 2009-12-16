@@ -19,7 +19,6 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
-import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
@@ -27,7 +26,6 @@ import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
-import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -48,7 +46,6 @@ public class DemandProcessor {
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     // Setter for injection of a MockLogger at test time
@@ -156,7 +153,7 @@ public class DemandProcessor {
                                     method(Method.GET)
                         );
                         // Keep track of the notification to not ping him/her another time
-                        demand.addSaleAssociateKey(robotSaleAssociateKey);
+                        demand.addSaleAssociateKey(RobotResponder.getRobotSaleAssociateKey(pm));
                         demandOperations.updateDemand(pm, demand);
                     }
                 }
@@ -170,13 +167,6 @@ public class DemandProcessor {
         }
     }
 
-    private static Long robotSaleAssociateKey;
-
-    // Just for unit test
-    protected static void setRobotKey(Long key) {
-        robotSaleAssociateKey = key;
-    }
-
     /**
      * Helper verifying that the robot has not yet been contacted
      *
@@ -188,10 +178,7 @@ public class DemandProcessor {
      * @throws DataSourceException If the attempt to read the robot key from the data store fails
      */
     protected static boolean hasRobotAlreadyContacted(PersistenceManager pm, Demand demand) throws DataSourceException {
-        if (robotSaleAssociateKey == null) {
-            Settings settings = settingsOperations.getSettings(pm);
-            robotSaleAssociateKey = settings.getRobotSaleAssociateKey();
-        }
+        Long robotSaleAssociateKey = RobotResponder.getRobotSaleAssociateKey(pm);
         if (robotSaleAssociateKey != null) {
             return demand.getSaleAssociateKeys().contains(robotSaleAssociateKey);
         }

@@ -98,6 +98,13 @@ public class CommandProcessor {
         }
         tweet.append(prefixes.getJsonArray(Prefix.range.toString()).getString(0)).append(":").append(demand.getRange()).append(demand.getRangeUnit()).append(space);
         tweet.append(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0)).append(":").append(demand.getQuantity()).append(space);
+        if (0 < demand.getHashTags().size()) {
+            for (String tag: demand.getHashTags()) {
+                // tweet.append(prefixes.getJsonArray(Prefix.hash.toString()).getString(0)).append(":");
+                tweet.append("#");
+                tweet.append(tag).append(space);
+            }
+        }
         if (0 < demand.getCriteria().size()) {
             tweet.append(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)).append(":");
             for (String tag: demand.getCriteria()) {

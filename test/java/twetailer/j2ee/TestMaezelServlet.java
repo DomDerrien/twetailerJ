@@ -37,7 +37,6 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
-import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -45,7 +44,6 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
@@ -59,7 +57,6 @@ import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
@@ -541,14 +538,14 @@ public class TestMaezelServlet {
     public void testDoGetProcessDemandForRobot() throws IOException {
         final Long proposalKey= 12345L;
         // Inject SaleAssociateOperations mock
-        final SaleAssociateOperations mockSaleAssociateOperations = new SaleAssociateOperations() {
+        final SettingsOperations mockSettingsOperations = new SettingsOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<SaleAssociate>();
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
             }
         };
         MockRobotResponder.injectMocks(servlet._baseOperations);
-        MockRobotResponder.injectMocks(mockSaleAssociateOperations);
+        MockRobotResponder.injectMocks(mockSettingsOperations);
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {

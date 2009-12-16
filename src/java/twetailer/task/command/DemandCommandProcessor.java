@@ -96,8 +96,10 @@ public class DemandCommandProcessor {
                 latestDemand.resetKey();
                 latestDemand.resetCoreDates();
                 latestDemand.setAction(Action.demand);
-                latestDemand.resetHashTags();
-                latestDemand.resetCriteria();
+                latestDemand.resetCriteria(); // All existing tags are removed
+                latestDemand.resetHashTags(); // All existing hash tags are removed
+                latestDemand.resetProposalKeys(); // All existing proposals are removed
+                latestDemand.resetSaleAssociateKeys(); // All existing sale associates need to be recontacted again
                 latestDemand.setDefaultExpirationDate();
                 latestDemand.setState(State.opened);
             }

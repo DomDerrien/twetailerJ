@@ -72,10 +72,10 @@ public class TestDemandProcessor {
         DemandProcessor.locationOperations = DemandProcessor._baseOperations.getLocationOperations();
         DemandProcessor.proposalOperations = DemandProcessor._baseOperations.getProposalOperations();
         DemandProcessor.saleAssociateOperations = DemandProcessor._baseOperations.getSaleAssociateOperations();
-        DemandProcessor.settingsOperations = DemandProcessor._baseOperations.getSettingsOperations();
+        RobotResponder.settingsOperations = DemandProcessor._baseOperations.getSettingsOperations();
         DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
 
-        DemandProcessor.setRobotKey(null);
+        RobotResponder.setRobotKey(null);
         ((MockQueue) new MockBaseOperations().getQueue()).resetHistory();
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -1170,7 +1170,7 @@ public class TestDemandProcessor {
     @Test
     public void testProcessOneDemandForTheRobotI() throws Exception {
         final Long robotKey = 12321L;
-        DemandProcessor.settingsOperations = new SettingsOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
             @SuppressWarnings("serial")
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {
@@ -1192,7 +1192,7 @@ public class TestDemandProcessor {
     @Test
     public void testProcessOneDemandForTheRobotII() throws Exception {
         final Long robotKey = 12321L;
-        DemandProcessor.settingsOperations = new SettingsOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {
                 return new Settings();
@@ -1208,7 +1208,7 @@ public class TestDemandProcessor {
     @Test
     public void testProcessOneDemandForTheRobotIII() throws Exception {
         final Long robotKey = 12321L;
-        DemandProcessor.setRobotKey(robotKey);
+        RobotResponder.setRobotKey(robotKey);
 
         Demand demand = new Demand();
         demand.addSaleAssociateKey(robotKey);
@@ -1254,7 +1254,7 @@ public class TestDemandProcessor {
         };
 
         final Long robotKey = 12321L;
-        DemandProcessor.settingsOperations = new SettingsOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
             @SuppressWarnings("serial")
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {
@@ -1320,7 +1320,7 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.settingsOperations = new SettingsOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
             @SuppressWarnings("serial")
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {

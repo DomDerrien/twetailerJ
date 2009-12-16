@@ -12,15 +12,15 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -36,9 +36,9 @@ public class RobotResponder {
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
     protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     public static final String ROBOT_NAME = "Jack the Troll";
@@ -63,23 +63,24 @@ public class RobotResponder {
         // TODO: always load the robot from that key
         // TODO: try to put the key in memcached
         //
-        List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.NAME, ROBOT_NAME, 1);
-        if (0 < saleAssociates.size()) {
-            List<Location> locations = locationOperations.getLocations(pm, ROBOT_POSTAL_CODE, ROBOT_COUNTRY_CODE);
-            List<Store> stores = storeOperations.getStores(pm, Store.LOCATION_KEY, locations.get(0).getKey(), 1);
+        Long robotKey = getRobotSaleAssociateKey(pm);
+        if (robotKey != null) {
+            SaleAssociate robot = saleAssociateOperations.getSaleAssociate(pm, robotKey);
+            Store store = storeOperations.getStore(pm, robot.getStoreKey());
+
             Demand demand = demandOperations.getDemand(pm, demandKey, null);
             Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
             if (CommandSettings.State.published.equals(demand.getState())) {
                 // Create a new and valid proposal
                 Proposal proposal = new Proposal();
                 proposal.setDemandKey(demandKey);
-                proposal.setOwnerKey(saleAssociates.get(0).getKey());
+                proposal.setOwnerKey(robot.getKey());
                 proposal.setPrice(0.01D);
                 proposal.setQuantity(100L);
                 proposal.setSource(Source.simulated);
                 proposal.addHashTag(ROBOT_DEMO_HASH_TAG);
                 proposal.setState(State.published);
-                proposal.setStoreKey(stores.get(0).getKey());
+                proposal.setStoreKey(store.getKey());
                 proposal.setTotal(1.15D);
                 // Prepare the automated response
                 String message = LabelExtractor.get("rr_robot_automatic_proposition", consumer.getLocale());
@@ -98,5 +99,20 @@ public class RobotResponder {
                 );
             }
         }
+    }
+
+    private static Long robotSaleAssociateKey;
+
+    // Just for unit test
+    protected static void setRobotKey(Long key) {
+        robotSaleAssociateKey = key;
+    }
+
+    protected static Long getRobotSaleAssociateKey(PersistenceManager pm) throws DataSourceException {
+        if (robotSaleAssociateKey == null) {
+            Settings settings = settingsOperations.getSettings(pm);
+            robotSaleAssociateKey = settings.getRobotSaleAssociateKey();
+        }
+        return robotSaleAssociateKey;
     }
 }

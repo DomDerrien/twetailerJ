@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.jdo.PersistenceManager;
@@ -21,16 +19,16 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
@@ -64,9 +62,9 @@ public class TestRobotResponder {
         RobotResponder._baseOperations = new BaseOperations();
         RobotResponder.demandOperations = RobotResponder._baseOperations.getDemandOperations();
         RobotResponder.consumerOperations = RobotResponder._baseOperations.getConsumerOperations();
-        RobotResponder.locationOperations = RobotResponder._baseOperations.getLocationOperations();
         RobotResponder.saleAssociateOperations = RobotResponder._baseOperations.getSaleAssociateOperations();
         RobotResponder.proposalOperations = RobotResponder._baseOperations.getProposalOperations();
+        RobotResponder.settingsOperations = RobotResponder._baseOperations.getSettingsOperations();
         RobotResponder.storeOperations = RobotResponder._baseOperations.getStoreOperations();
     }
 
@@ -76,7 +74,7 @@ public class TestRobotResponder {
     }
 
     final Long demandKey = 111L;
-    final Long saleAssociateKey = 222L;
+    final Long robotKey = 2222L;
     final Long locationKey = 333L;
     final Long storeKey = 444L;
     final Long consumerKey = 555L;
@@ -84,11 +82,10 @@ public class TestRobotResponder {
 
     @Test
     public void testProcessDemandI() throws TwitterException, DataSourceException {
-        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                return saleAssociates;
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
             }
         };
 
@@ -100,42 +97,32 @@ public class TestRobotResponder {
 
     @Test
     public void testProcessDemandII() throws TwitterException, DataSourceException {
-        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                SaleAssociate saleAssociate = new SaleAssociate();
-                saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setStoreKey(storeKey);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+            public Settings getSettings(PersistenceManager pm) {
+                Settings settings = new Settings();
+                settings.setRobotSaleAssociateKey(robotKey);
+                return settings;
             }
         };
-        RobotResponder.locationOperations = new LocationOperations() {
+        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
-                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
-                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
-                Location location = new Location();
-                location.setKey(locationKey);
-                location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
-                location.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(location);
-                return locations;
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(robotKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(robotKey);
+                saleAssociate.setStoreKey(storeKey);
+                return saleAssociate;
             }
         };
         RobotResponder.storeOperations = new StoreOperations() {
             @Override
-            public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Store.LOCATION_KEY, key);
-                assertEquals(locationKey, (Long) value);
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
                 Store store = new Store();
                 store.setKey(storeKey);
                 store.setLocationKey(locationKey);
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(store);
-                return stores;
+                return store;
             }
         };
         RobotResponder.demandOperations = new DemandOperations() {
@@ -167,42 +154,32 @@ public class TestRobotResponder {
 
     @Test
     public void testProcessDemandIII() throws Exception {
-        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
+        RobotResponder.settingsOperations = new SettingsOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                SaleAssociate saleAssociate = new SaleAssociate();
-                saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setStoreKey(storeKey);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+            public Settings getSettings(PersistenceManager pm) {
+                Settings settings = new Settings();
+                settings.setRobotSaleAssociateKey(robotKey);
+                return settings;
             }
         };
-        RobotResponder.locationOperations = new LocationOperations() {
+        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
-                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
-                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
-                Location location = new Location();
-                location.setKey(locationKey);
-                location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
-                location.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(location);
-                return locations;
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(robotKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(robotKey);
+                saleAssociate.setStoreKey(storeKey);
+                return saleAssociate;
             }
         };
         RobotResponder.storeOperations = new StoreOperations() {
             @Override
-            public List<Store> getStores(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(Store.LOCATION_KEY, key);
-                assertEquals(locationKey, (Long) value);
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
                 Store store = new Store();
                 store.setKey(storeKey);
                 store.setLocationKey(locationKey);
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(store);
-                return stores;
+                return store;
             }
         };
         RobotResponder.demandOperations = new DemandOperations() {

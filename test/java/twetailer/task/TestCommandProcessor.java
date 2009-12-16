@@ -586,4 +586,18 @@ public class TestCommandProcessor {
         assertTrue(tweet.contains(phoneNumber));
         assertFalse(tweet.contains(Prefix.locale.toString()));
     }
+
+    @Test
+    public void testGenerateTweetForDemandWithHashtag() {
+        Demand demand = new Demand();
+        demand.addHashTag("one");
+        demand.addHashTag("two");
+        demand.addHashTag("three");
+
+        String tweet = CommandProcessor.generateTweet(demand, null, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains("#one"));
+        assertTrue(tweet.contains("#two"));
+        assertTrue(tweet.contains("#three"));
+    }
 }
