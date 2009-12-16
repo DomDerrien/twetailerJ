@@ -7,10 +7,10 @@
 	<classpathentry kind="lib" path="deps/lib/xml/xercesImpl-2.4.0.jar"/>
 	<classpathentry kind="lib" path="deps/lib/xml/xml-apis-1.3.02.jar"/>
 	<classpathentry kind="lib" path="deps/lib/geronimo/geronimo-servlet_2.5_spec-1.2.jar"/>
-	<classpathentry kind="lib" path="deps/lib/jdo/jdo2-api-2.3-eb.jar" sourcepath="bin/appengine-java-sdk-1.2.8/src/orm/jdo2-api-2.3-SNAPSHOT-src.zip"/>
-	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-1.0-sdk-1.2.8.jar">
+	<classpathentry kind="lib" path="deps/lib/jdo/jdo2-api-2.3-eb.jar" sourcepath="bin/appengine-java-sdk-1.3.0/src/orm/jdo2-api-2.3-SNAPSHOT-src.zip"/>
+	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-1.0-sdk-1.3.0.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.2.8/docs/javadoc/"/>
+			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.3.0/docs/javadoc/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/junit/junit-4.7.jar" sourcepath="deps/lib/junit/junit-4.7-src.jar"/>
@@ -30,9 +30,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/easymock/cglib-nodep-2.2.jar"/>
-	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-0.9.2.jar" sourcepath="deps/lib/domderrien/domderrien-0.9.2-src.jar">
+	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-0.9.3.jar" sourcepath="deps/lib/domderrien/domderrien-0.9.3-src.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-0.9.2-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-0.9.3-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar">
@@ -42,15 +42,15 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-local-runtime.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.2.8/docs/tools/javadoc/"/>
+			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.3.0/docs/tools/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-jpa-1.1.5.jar" sourcepath="bin/appengine-java-sdk-1.2.8/src/orm/datanucleus-jpa-1.1.5-src.zip"/>
-	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.3.jar" sourcepath="bin/appengine-java-sdk-1.2.8/src/orm/datanucleus-appengine-1.0.3-src.zip"/>
-	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-core-1.1.5.jar" sourcepath="bin/appengine-java-sdk-1.2.8/src/orm/datanucleus-core-1.1.5-src.zip"/>
-	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-labs-1.2.8.jar">
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-jpa-1.1.5.jar" sourcepath="bin/appengine-java-sdk-1.3.0/src/orm/datanucleus-jpa-1.1.5-src.zip"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.3.jar" sourcepath="bin/appengine-java-sdk-1.3.0/src/orm/datanucleus-appengine-1.0.3-src.zip"/>
+	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-core-1.1.5.jar" sourcepath="bin/appengine-java-sdk-1.3.0/src/orm/datanucleus-core-1.1.5-src.zip"/>
+	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-labs-1.3.0.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.2.8/docs/javadoc/"/>
+			<attribute name="javadoc_location" value="file:/D:/Workspaces/twetailerJ/bin/appengine-java-sdk-1.3.0/docs/javadoc/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/wave/wave-robot-api-20090916.jar">

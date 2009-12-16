@@ -13,7 +13,6 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
-import twetailer.task.RobotResponder;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
@@ -22,7 +21,6 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class ProposeCommandProcessor {
@@ -94,33 +92,6 @@ public class ProposeCommandProcessor {
             );
             // Get the proposalKey for the task scheduling
             proposalKey = newProposal.getKey();
-        }
-
-        // Temporary warning
-        if (command.containsKey(Command.HASH_TAG)){
-            JsonArray hashTags = command.getJsonArray(Command.HASH_TAG);
-            if (hashTags.size() != 0) {
-                String serializedHashTags = "";
-                String hashTag = hashTags.getString(0);
-                if (hashTags.size() == 1 && !RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
-                    serializedHashTags = hashTag;
-                }
-                else { // if (1 < hashTags.size()) {
-                    for(int i = 0; i < hashTags.size(); ++i) {
-                        hashTag = hashTags.getString(i);
-                        if (!RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
-                            serializedHashTags += " " + hashTag;
-                        }
-                    }
-                }
-                if (0 < serializedHashTags.length()) {
-                    communicateToSaleAssociate(
-                            rawCommand,
-                            saleAssociate,
-                            LabelExtractor.get("cp_command_propose_hashtag_warning", new Object[] { proposalKey, serializedHashTags.trim() }, consumer.getLocale())
-                    );
-                }
-            }
         }
 
         // Create a task for that proposal

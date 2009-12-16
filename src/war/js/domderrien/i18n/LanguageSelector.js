@@ -7,7 +7,7 @@
     var module = dojo.provide("domderrien.i18n.LanguageSelector");
 
     dojo.require("dojo.data.ItemFileReadStore");
-    dojo.require("dijit.form.FilteringSelect");
+    dojo.require("dijit.form.Select");
 
     /**
      * Attach a <code>FilteringSelect</code> widget to the identified
@@ -22,7 +22,7 @@
      * for the underneath HTML element <code>&lt;select/&gt;</code>.
      *
      * @param {Array} options Array of objects, each object being composed of
-     * the attributes {<code>abbreviation</code>, <code>name</code>} which
+     * the attributes {<code>label</code>, <code>value</code>} which
      * identify the language ISO code and the localized language label.
      *
      * @param {String} currentLanguageId ISO code of the language
@@ -37,20 +37,13 @@
      *
      */
     module.createSelector = function(placeHolderId, formFieldName, options, currentLanguageId, className, onChangeHandler){
-        var languageStore = new dojo.data.ItemFileReadStore({
-            data: {
-                identifier: "abbreviation",
-                label: "name",
-                items: options
-            }
-        });
-        var _selector = new dijit.form.FilteringSelect({
+        var _selector = new dijit.form.Select({
                 autoComplete: false,
                 'class': className || "",
                 id: placeHolderId,
                 // onChange: _switchLanguage, // Should be postponed to avoid automatic URL update when the initial value is set
                 name: formFieldName || placeHolderId,
-                store: languageStore
+                options: options
             },
             placeHolderId
         );

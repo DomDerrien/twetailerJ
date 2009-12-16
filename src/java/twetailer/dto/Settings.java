@@ -40,6 +40,9 @@ public class Settings implements Serializable {
 
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
 
+    @Persistent
+    private Long robotSaleAssociateKey = null;
+
     /** Default constructor */
     public Settings() {
         setName(APPLICATION_SETTINGS_ID);
@@ -100,6 +103,16 @@ public class Settings implements Serializable {
             throw new IllegalArgumentException("Cannot assign 0L or a negative value to the message identifier");
         }
         this.lastRobotDirectMessageId = lastRobotProcessDirectMessageId;
+    }
+
+
+    public Long getRobotSaleAssociateKey() {
+        return robotSaleAssociateKey;
+    }
+
+    // Just made available for the unit tests
+    protected void setRobotSaleAssociateKey(Long robotSaleAssociateKey) {
+        this.robotSaleAssociateKey = robotSaleAssociateKey;
     }
 
     public JsonObject toJson() {

@@ -130,11 +130,11 @@
     />
     <property name="firefox.browser.location"
         description="Location of the executable. Use local.build.properties to set it."
-        value="${temp.dir}${file.separator}ff"
+        value="c:\Program Files\Mozilla Firefox"
     />
     <property name="firefox.browser.executable"
         description="Location of the executable. Use local.build.properties to set it."
-        value="${firefox.browser.location}${file.separator}firefox.exe"
+        value="${firefox.browser.location}\firefox.exe"
     />
     <property name="ie.browser.executable"
         description="Location of the executable. Use local.build.properties to set it."
@@ -220,11 +220,6 @@
         <antcall target="step-jsunit-unzip" />
         <available property="jscoverage.already.expanded" file="${temp.dir}/jscoverage.exe" />
         <antcall target="step-jscoverage-unzip" />
-        <mkdir dir="${temp.dir}/ff" />
-        <available property="firefox.already.installed" file="${firefox.browser.executable}" />
-        <antcall target="step-firefox-install" />
-        <available property="firefox-profile.already.expanded" type="dir" file="${temp.dir}${file.separator}ff-profile" />
-        <antcall target="step-firefox-profile-unzip" />
         <available property="pskill.already.expanded" file="${temp.dir}/pskill.exe" />
         <antcall target="step-pskill-unzip" />
         <!-- Setup documentation environment -->
@@ -271,7 +266,7 @@
         </copy>
     </target>
 
-    <target name="test" description="compile, package, and test the application" depends="browser-start, compile, step-configuration-push">
+    <target name="test" description="compile, package, and test the application" depends="compile, step-configuration-push">
         <echo>Target: test</echo>
         <mkdir dir="docs/test-reports" />
         <mkdir dir="docs/test-reports/junit-xml" />
@@ -282,17 +277,6 @@
         <mkdir dir="docs/test-reports/jsunit-xml" />
         <mkdir dir="docs/test-reports/jsunit-html" />
         <antcall target="step-javascript-test" />
-        <antcall target="browser-stop" />
-    </target>
-
-    <target name="browser-start" description="start the configured browser" depends="step-info-get">
-        <echo>Target: browser-start</echo>
-        <antcall target="step-firefox-start" />
-    </target>
-
-    <target name="browser-stop" description="stop any configured browser instance" depends="step-info-get">
-        <echo>Target: browser-stop</echo>
-        <antcall target="step-firefox-stop" />
     </target>
 
     <!-- ================= -->
@@ -316,7 +300,7 @@
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${rwa.languageListFilename}.properties file -->
         <filelist dir="deps/lib">
-            <file name="domderrien/domderrien-0.9.2.jar" />
+            <file name="domderrien/domderrien-0.9.3.jar" />
             <file name="xml/xalan-2.7.0.jar" />
             <file name="xml/xercesImpl-2.4.0.jar" />
             <file name="xml/xml-apis-1.3.02.jar" />
@@ -327,7 +311,7 @@
     </path>
     
     <fileset id="runtime.deps" dir="deps/lib">
-        <include name="domderrien/domderrien-0.9.2.jar" />
+        <include name="domderrien/domderrien-0.9.3.jar" />
         <include name="easymock/easymock-2.5.1.jar" />
         <include name="easymock/easymockclassextension.jar" />
         <include name="easymock/cglib-nodep-2.2.jar" />
@@ -338,8 +322,8 @@
     <path id="java.compile.classpath">
         <fileset refid="runtime.deps" />
         <filelist dir="deps/lib">
-            <file name="appengine/appengine-api-1.0-sdk-1.2.8.jar" />
-            <file name="appengine/appengine-api-labs-1.2.8.jar" />
+            <file name="appengine/appengine-api-1.0-sdk-1.3.0.jar" />
+            <file name="appengine/appengine-api-labs-1.3.0.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-api-labs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
@@ -365,7 +349,7 @@
             <file name="cobertura/asm-tree-3.0.jar" />
             <file name="cobertura/jakarta-oro-2.0.8.jar" />
             <file name="cobertura/log4j-1.2.9.jar" />
-            <file name="datanucleus/datanucleus-appengine-1.0.4.final.jar" />
+            <file name="datanucleus/datanucleus-appengine-1.0.4.1.final.jar" />
             <file name="datanucleus/datanucleus-core-1.1.5.jar" />
             <file name="datanucleus/datanucleus-jpa-1.1.5.jar" />
             <file name="dyuproject/jetty-util-6.1.19.jar" />
@@ -567,23 +551,23 @@
     <target name="step-dojo-unzip" unless="dojo.already.expanded">
         <delete dir="src/war/js/dojo" includeemptydirs="true" />
         <mkdir dir="src/war/js/dojo" />
-        <unzip src="deps/tools/javascript/dojo-release-1.3.1-src.zip" dest="${temp.dir}">
+        <unzip src="deps/tools/javascript/dojo-release-1.4.0-src.zip" dest="${temp.dir}">
             <patternset>
-                <include name="dojo-release-1.3.1-src/dojo/**/*" />
-                <exclude name="dojo-release-1.3.1-src/dojo/tests/**/*" />
-                <include name="dojo-release-1.3.1-src/dijit/**/*" />
-                <exclude name="dojo-release-1.3.1-src/dijit/demos/**/*" />
-                <exclude name="dojo-release-1.3.1-src/dijit/tests/**/*" />
-                <include name="dojo-release-1.3.1-src/dojox/**/*" />
-                <exclude name="dojo-release-1.3.1-src/dojox/demos**/*" />
-                <exclude name="dojo-release-1.3.1-src/dojox/tests/**/*" />
-                <include name="dojo-release-1.3.1-src/util/**/*" />
+                <include name="dojo-release-1.4.0-src/dojo/**/*" />
+                <exclude name="dojo-release-1.4.0-src/dojo/tests/**/*" />
+                <include name="dojo-release-1.4.0-src/dijit/**/*" />
+                <exclude name="dojo-release-1.4.0-src/dijit/demos/**/*" />
+                <exclude name="dojo-release-1.4.0-src/dijit/tests/**/*" />
+                <include name="dojo-release-1.4.0-src/dojox/**/*" />
+                <exclude name="dojo-release-1.4.0-src/dojox/demos**/*" />
+                <exclude name="dojo-release-1.4.0-src/dojox/tests/**/*" />
+                <include name="dojo-release-1.4.0-src/util/**/*" />
             </patternset>
         </unzip>
-        <move file="${temp.dir}/dojo-release-1.3.1-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
-        <move file="${temp.dir}/dojo-release-1.3.1-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
-        <move file="${temp.dir}/dojo-release-1.3.1-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
-        <move file="${temp.dir}/dojo-release-1.3.1-src/util" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.4.0-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.4.0-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.4.0-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.4.0-src/util" todir="src/war/js/dojo" overwrite="yes" />
     </target>
 
     <target name="step-cobertura-unzip" unless="cobertura.already.expanded">
@@ -631,17 +615,6 @@
             </patternset>
         </unzip>
         <move file="${temp.dir}/jscoverage-0.4/jscoverage.exe" todir="${temp.dir}" overwrite="no" />
-    </target>
-
-    <target name="step-firefox-install" unless="firefox.already.installed">
-        <exec executable="${basedir}${file.separator}deps${file.separator}tools${file.separator}browsers${file.separator}Firefox Setup 2.0.0.6.exe">
-            <arg value="/S" />
-            <arg value="/D=${firefox.browser.location}" />
-        </exec>
-    </target>
-
-    <target name="step-firefox-profile-unzip" unless="firefox-profile.already.expanded">
-        <unzip src="deps/tools/browsers/ff-profile.zip" dest="${temp.dir}" />
     </target>
 
     <target name="step-pskill-unzip" unless="pskill.already.expanded">
@@ -1139,34 +1112,6 @@
         <copy file="deps/tools/testing/jsunit-results2html.xsl" tofile="docs/test-reports/jsunit-html/xml2html.xsl" />
     </target>
     
-    <target name="step-firefox-start" unless="no.firefox.start">
-        <condition property="firefox.browser.running">
-            <or>
-                <available file="${firefox.browser.user.profile.dir}\parent.lock" />
-                <available file="${temp.dir}\ff-profile\parent.lock" />
-            </or>
-        </condition>
-        <antcall target="step-firefox-start-deeper" />
-    </target>
-
-    <target name="step-firefox-start-deeper" unless="firefox.browser.running">
-        <echo>Browser running: ${firefox.browser.running}</echo>
-        <exec executable="${firefox.browser.executable}" dir="${firefox.browser.location}" spawn="true">
-            <!-- See: http://kb.mozillazine.org/Command_line_arguments -->
-            <arg value="-profile" />
-            <arg value="${temp.dir}${file.separator}ff-profile" />
-            <!-- See: http://www.hiveminds.co.uk/node/3114 -->
-            <!-- env key="MOZ_NO_REMOTE" value="1" /-->
-        </exec>
-    </target>
-
-    <target name="step-firefox-stop" unless="no.firefox.stop">
-        <exec executable="${temp.dir}${file.separator}pskill.exe">
-            <arg value="-accepteula" />
-            <arg value="firefox.exe" />
-        </exec>
-    </target>
-
     <target name="step-jscoverage-test">
         <!-- Process only the JS application code -->
         <mkdir dir="docs/test-reports/jscoverage-html" />
@@ -1217,8 +1162,8 @@
                 <include name="JSCoverageSuite.*" />
             </fileset>
         </copy>
-        <!-- Launch firefox to produce the coverage numbers -->
-        <exec executable="${default.browser.executable}" dir="${temp.dir}/ff">
+        <!-- Launch browser to produce the coverage numbers -->
+        <exec executable="${default.browser.executable}">
             <arg value="file:///${basedir}/docs/test-reports/jscoverage-html/js/jscoverage.html?url=JSCoverageSuite.html" />
         </exec>
         <!--exec executable="${default.browser.executable}" dir="${temp.dir}/ff">

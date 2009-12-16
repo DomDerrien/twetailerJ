@@ -1078,22 +1078,6 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_demand_hashtag_warning" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>
-                {0}: demand key
-                {1}: serialized list of rejected hash tags, separated by a space
-            </note>
-            <tuv xml:lang="en">
-                <seg>
-                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
-                    Other values are ignored. You can add them to the proposal tag list with "!demand ref:{0} {1}"|
-                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
-                </seg>
-            </tuv>
-        </tu>
-
         <tu tuid="cp_command_list_invalid_demand_id" datatype="Text">
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -1214,22 +1198,6 @@
             </note>
             <tuv xml:lang="en">
                 <seg>Listing your proposition for Proposition proposal:{0}... You can send "!help" for more options afterwards.</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="cp_command_propose_hashtag_warning" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>
-                {0}: proposal key
-                {1}: serialized list of rejected hash tags, separated by a space
-            </note>
-            <tuv xml:lang="en">
-                <seg>
-                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
-                    Other values are ignored. You can add them to the proposal tag list with "!propose proposal:{0} {1}"|
-                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
-                </seg>
             </tuv>
         </tu>
 
@@ -1389,6 +1357,22 @@
             </tuv>
         </tu>
 
+        <tu tuid="dv_report_hashtag_warning" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: demand key
+                {1}: serialized list of rejected hash tags, separated by a space
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
+                    Other values are ignored. You can add them to the proposal tag list with "!demand ref:{0} {1}"|
+                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                </seg>
+            </tuv>
+        </tu>
+
         <!-- ============================== -->
         <!-- Location validator definitions -->
         <!-- ============================== -->
@@ -1503,6 +1487,22 @@
             </note>
             <tuv xml:lang="en">
                 <seg>The identification of the Demand (reference:{1}) linked to your Proposition proposal:{0} is invalid.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="pv_report_hashtag_warning" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal key
+                {1}: serialized list of rejected hash tags, separated by a space
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
+                    Other values are ignored. You can add them to the proposal tag list with "!propose proposal:{0} {1}"|
+                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                </seg>
             </tuv>
         </tu>
 

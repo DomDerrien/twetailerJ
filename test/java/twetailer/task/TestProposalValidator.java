@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -18,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
@@ -26,6 +28,7 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
@@ -842,5 +845,93 @@ public class TestProposalValidator {
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testFilterHashTagsI() throws ClientException, DataSourceException {
+        Proposal proposal = new Proposal() {
+            @Override
+            public List<String> getHashTags() {
+                return null;
+            }
+        };
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertNull(proposal.getHashTags());
+    }
+
+    @Test
+    public void testFilterHashTagsII() throws ClientException, DataSourceException {
+        Proposal proposal = new Proposal();
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertNotNull(proposal.getHashTags());
+        assertEquals(0, proposal.getHashTags().size());
+    }
+
+    @Test
+    public void testFilterHashTagsIII() throws ClientException, DataSourceException {
+        Proposal proposal = new Proposal();
+        proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertEquals(1, proposal.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
+    }
+
+    @Test
+    public void testFilterHashTagsIV() throws ClientException, DataSourceException {
+        Proposal proposal = new Proposal();
+        proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertEquals(1, proposal.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
+    }
+
+    @Test
+    public void testFilterHashTagsV() throws ClientException, DataSourceException {
+        final Long proposalKey = 67890L;
+        Proposal proposal = new Proposal();
+        proposal.setKey(proposalKey);
+        proposal.setSource(Source.simulated);
+        proposal.addHashTag("test");
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertEquals(0, proposal.getHashTags().size());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testFilterHashTagsVI() throws ClientException, DataSourceException {
+        final Long proposalKey = 67890L;
+        Proposal proposal = new Proposal();
+        proposal.setKey(proposalKey);
+        proposal.setSource(Source.simulated);
+        proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        proposal.addHashTag("unit");
+        proposal.addHashTag("test");
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertEquals(1, proposal.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalKey, "unit test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testFilterHashTagsVII() throws ClientException, DataSourceException {
+        final Long proposalKey = 67890L;
+        Proposal proposal = new Proposal();
+        proposal.setKey(proposalKey);
+        proposal.setSource(Source.simulated);
+        proposal.addHashTag("unit");
+        proposal.addHashTag("test");
+        proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        assertEquals(1, proposal.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalKey, "unit test" }, Locale.ENGLISH), sentText);
     }
 }

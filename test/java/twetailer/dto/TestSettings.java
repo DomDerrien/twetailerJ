@@ -39,6 +39,7 @@ public class TestSettings {
     String name = "settings";
     Long lastProcessDirectMessageId = 67890L;
     Long lastRobotDirectMessageId = 54321L;
+    Long robotKey = 12321L;
 
     @Test
     public void testAccessors() {
@@ -48,11 +49,13 @@ public class TestSettings {
         object.setName(name);
         object.setLastProcessDirectMessageId(lastProcessDirectMessageId);
         object.setLastRobotDirectMessageId(lastRobotDirectMessageId);
+        object.setRobotSaleAssociateKey(robotKey);
 
         assertEquals(key, object.getKey());
         assertEquals(name, object.getName());
         assertEquals(lastProcessDirectMessageId, object.getLastProcessDirectMessageId());
         assertEquals(lastRobotDirectMessageId, object.getLastRobotDirectMessageId());
+        assertEquals(robotKey, object.getRobotSaleAssociateKey());
     }
 
     @Test(expected=IllegalArgumentException.class)

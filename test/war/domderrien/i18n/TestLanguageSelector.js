@@ -36,11 +36,11 @@ function tearDown() {
 
 function testCreationWithDefaultHandler() {
     // Definitions
-    var id = "testI";
+    var id = "testId";
     var name = "formField";
     var options = [
-           {abbreviation: "fr", name: "Français"},
-           {abbreviation: "en", name: "English"}
+           {value: "fr", label: "Français"},
+           {value: "en", label: "English"}
     ];
     var cssClassName = "test";
 
@@ -71,11 +71,11 @@ function testCreationWithDefaultHandler() {
 
 function testCreationWithCustomHandler() {
     // Definitions
-    var id = "testI";
+    var id = "testId";
     var name = "formField";
     var options = [
-           {abbreviation: "fr", name: "Français"},
-           {abbreviation: "en", name: "English"}
+           {value: "fr", label: "Français"},
+           {value: "en", label: "English"}
     ];
     var cssClassName = "test";
     var selectedKey = "fr";
@@ -100,7 +100,8 @@ function testCreationWithCustomHandler() {
     selector.attr("value", "en");
 
     // Verification
-    assertEquals("en", selectedKey);
+    assertEquals("en", selector.attr("value"));
+    setTimeout(function(){ assertEquals("en", selectedKey); }, 0); // Need to be delayed because the event handler call is done asynchronously!
 
     // Clean-up
     selector.destroyRecursive();

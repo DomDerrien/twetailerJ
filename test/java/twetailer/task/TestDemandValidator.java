@@ -8,9 +8,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -18,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
@@ -40,6 +43,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.google.apphosting.api.MockAppEngineEnvironment;
+
+import domderrien.i18n.LabelExtractor;
 
 public class TestDemandValidator {
 
@@ -1422,5 +1427,93 @@ public class TestDemandValidator {
         assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
+    }
+
+    @Test
+    public void testFilterHashTagsI() throws ClientException, DataSourceException {
+        Demand demand = new Demand() {
+            @Override
+            public List<String> getHashTags() {
+                return null;
+            }
+        };
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertNull(demand.getHashTags());
+    }
+
+    @Test
+    public void testFilterHashTagsII() throws ClientException, DataSourceException {
+        Demand demand = new Demand();
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertNotNull(demand.getHashTags());
+        assertEquals(0, demand.getHashTags().size());
+    }
+
+    @Test
+    public void testFilterHashTagsIII() throws ClientException, DataSourceException {
+        Demand demand = new Demand();
+        demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertEquals(1, demand.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
+    }
+
+    @Test
+    public void testFilterHashTagsIV() throws ClientException, DataSourceException {
+        Demand demand = new Demand();
+        demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertEquals(1, demand.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
+    }
+
+    @Test
+    public void testFilterHashTagsV() throws ClientException, DataSourceException {
+        final Long demandKey = 67890L;
+        Demand demand = new Demand();
+        demand.setKey(demandKey);
+        demand.setSource(Source.simulated);
+        demand.addHashTag("test");
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertEquals(0, demand.getHashTags().size());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandKey, "test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testFilterHashTagsVI() throws ClientException, DataSourceException {
+        final Long demandKey = 67890L;
+        Demand demand = new Demand();
+        demand.setKey(demandKey);
+        demand.setSource(Source.simulated);
+        demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        demand.addHashTag("unit");
+        demand.addHashTag("test");
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertEquals(1, demand.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandKey, "unit test" }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testFilterHashTagsVII() throws ClientException, DataSourceException {
+        final Long demandKey = 67890L;
+        Demand demand = new Demand();
+        demand.setKey(demandKey);
+        demand.setSource(Source.simulated);
+        demand.addHashTag("unit");
+        demand.addHashTag("test");
+        demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        assertEquals(1, demand.getHashTags().size());
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandKey, "unit test" }, Locale.ENGLISH), sentText);
     }
 }

@@ -3,6 +3,7 @@ package twetailer.task;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -72,7 +73,10 @@ public class ProposalValidator {
                 Locale locale = saleAssociate.getLocale();
                 String message = null;
 
-                if(proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
+                // Temporary filter
+                filterHashTags(pm, saleAssociate, proposal);
+
+                if (proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
                     message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposal.getKey() }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {
@@ -122,6 +126,39 @@ public class ProposalValidator {
             }
             catch (ClientException ex) {
                 log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
+            }
+        }
+    }
+
+    // Temporary method filtering out non #demo tags
+    protected static void filterHashTags(PersistenceManager pm, SaleAssociate saleAssociate, Proposal proposal) throws ClientException, DataSourceException {
+        if (proposal.getHashTags() != null) {
+            List<String> hashTags = proposal.getHashTags();
+            if (hashTags.size() != 0) {
+                String serializedHashTags = "";
+                String hashTag = hashTags.get(0);
+                if (hashTags.size() == 1 && !RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                    serializedHashTags = hashTag;
+                }
+                else { // if (1 < hashTags.size()) {
+                    for(int i = 0; i < hashTags.size(); ++i) {
+                        hashTag = hashTags.get(i);
+                        if (!RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                            serializedHashTags += " " + hashTag;
+                        }
+                    }
+                }
+                if (0 < serializedHashTags.length()) {
+                    serializedHashTags = serializedHashTags.trim();
+                    communicateToSaleAssociate(
+                            new RawCommand(proposal.getSource()),
+                            saleAssociate,
+                            LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposal.getKey(), serializedHashTags }, saleAssociate.getLocale())
+                    );
+                    for (String tag: serializedHashTags.split(" ")) {
+                        proposal.removeHashTag(tag);
+                    }
+                }
             }
         }
     }

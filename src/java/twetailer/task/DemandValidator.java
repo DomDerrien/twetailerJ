@@ -4,6 +4,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -84,7 +85,11 @@ public class DemandValidator {
                 Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
                 Locale locale = consumer.getLocale();
                 String message = null;
-                if(demand.getCriteria() == null || demand.getCriteria().size() == 0) {
+
+                // Temporary filter
+                filterHashTags(pm, consumer, demand);
+
+                if (demand.getCriteria() == null || demand.getCriteria().size() == 0) {
                     message = LabelExtractor.get("dv_report_demand_without_tag", new Object[] { demand.getKey() }, locale);
                 }
                 else if (demand.getExpirationDate() == null || demand.getExpirationDate().getTime() < nowTime) {
@@ -130,9 +135,8 @@ public class DemandValidator {
                 }
                 if (message != null) {
                     log.warning("Invalid state for the demand: " + demand.getKey() + " -- message: " + message);
-                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
                     communicateToConsumer(
-                            rawCommand,
+                            new RawCommand(demand.getSource()),
                             consumer,
                             message
                     );
@@ -156,6 +160,39 @@ public class DemandValidator {
             }
             catch (ClientException ex) {
                 log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());
+            }
+        }
+    }
+
+    // Temporary method filtering out non #demo tags
+    protected static void filterHashTags(PersistenceManager pm, Consumer consumer, Demand demand) throws ClientException, DataSourceException {
+        if (demand.getHashTags() != null) {
+            List<String> hashTags = demand.getHashTags();
+            if (hashTags.size() != 0) {
+                String serializedHashTags = "";
+                String hashTag = hashTags.get(0);
+                if (hashTags.size() == 1 && !RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                    serializedHashTags = hashTag;
+                }
+                else { // if (1 < hashTags.size()) {
+                    for(int i = 0; i < hashTags.size(); ++i) {
+                        hashTag = hashTags.get(i);
+                        if (!RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                            serializedHashTags += " " + hashTag;
+                        }
+                    }
+                }
+                if (0 < serializedHashTags.length()) {
+                    serializedHashTags = serializedHashTags.trim();
+                    communicateToConsumer(
+                            new RawCommand(demand.getSource()),
+                            consumer,
+                            LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demand.getKey(), serializedHashTags }, consumer.getLocale())
+                    );
+                    for (String tag: serializedHashTags.split(" ")) {
+                        demand.removeHashTag(tag);
+                    }
+                }
             }
         }
     }

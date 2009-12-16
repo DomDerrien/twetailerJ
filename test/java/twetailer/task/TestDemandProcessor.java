@@ -2,6 +2,7 @@ package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -29,17 +31,21 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import com.google.appengine.api.labs.taskqueue.MockQueue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestDemandProcessor {
@@ -66,7 +72,11 @@ public class TestDemandProcessor {
         DemandProcessor.locationOperations = DemandProcessor._baseOperations.getLocationOperations();
         DemandProcessor.proposalOperations = DemandProcessor._baseOperations.getProposalOperations();
         DemandProcessor.saleAssociateOperations = DemandProcessor._baseOperations.getSaleAssociateOperations();
+        DemandProcessor.settingsOperations = DemandProcessor._baseOperations.getSettingsOperations();
         DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
+
+        DemandProcessor.setRobotKey(null);
+        ((MockQueue) new MockBaseOperations().getQueue()).resetHistory();
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
     }
@@ -751,7 +761,9 @@ public class TestDemandProcessor {
             }
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                return null;
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
             }
         };
 
@@ -780,13 +792,6 @@ public class TestDemandProcessor {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(selectedSaleAssociate);
                 return saleAssociates;
-            }
-        };
-
-        DemandProcessor.proposalOperations = new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                return new ArrayList<Proposal>();
             }
         };
 
@@ -833,7 +838,9 @@ public class TestDemandProcessor {
             }
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                return null;
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
             }
         };
 
@@ -862,13 +869,6 @@ public class TestDemandProcessor {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(selectedSaleAssociate);
                 return saleAssociates;
-            }
-        };
-
-        DemandProcessor.proposalOperations = new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                return new ArrayList<Proposal>();
             }
         };
 
@@ -883,84 +883,6 @@ public class TestDemandProcessor {
     }
 
     @Test
-    public void testProcessOneDemandForTheRobot() throws Exception {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-
-        DemandProcessor.demandOperations = new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        };
-
-        DemandProcessor.locationOperations = new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                return null;
-            }
-        };
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        DemandProcessor.storeOperations = new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        };
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setName(RobotResponder.ROBOT_NAME);
-        selectedSaleAssociate.setPreferredConnection(Source.simulated);
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        DemandProcessor.proposalOperations = new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                return new ArrayList<Proposal>();
-            }
-        };
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-
-        DemandProcessor.process(demandKey);
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
-    }
-
-    @Test
     @SuppressWarnings("serial")
     public void testProcessOneDemandAlreadyProposed() throws DataSourceException {
         final Long locationKey = 12345L;
@@ -969,12 +891,14 @@ public class TestDemandProcessor {
 
         final Long demandKey = 67890L;
         final Double demandRange = 25.75D;
+        final Long saleAssociateKey = 56478L;
         final Demand consumerDemand = new Demand();
         consumerDemand.addCriterion("test");
         consumerDemand.setKey(demandKey);
         consumerDemand.setLocationKey(locationKey);
         consumerDemand.setRange(demandRange);
         consumerDemand.setState(State.published);
+        consumerDemand.addSaleAssociateKey(saleAssociateKey);
 
         DemandProcessor.demandOperations = new DemandOperations() {
             @Override
@@ -993,7 +917,9 @@ public class TestDemandProcessor {
             }
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                return null;
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
             }
         };
 
@@ -1011,7 +937,6 @@ public class TestDemandProcessor {
         };
 
         final String saleAssociateId = "Ryan";
-        final Long saleAssociateKey = 56478L;
         final SaleAssociate selectedSaleAssociate = new SaleAssociate();
         selectedSaleAssociate.setKey(saleAssociateKey);
         selectedSaleAssociate.setTwitterId(saleAssociateId);
@@ -1022,21 +947,8 @@ public class TestDemandProcessor {
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(selectedSaleAssociate);
+                System.err.println("+++++++++++ ddd +++ " + selectedSaleAssociate.getTwitterId());
                 return saleAssociates;
-            }
-        };
-
-        DemandProcessor.proposalOperations = new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                Proposal badProposal = new Proposal();
-                badProposal.setOwnerKey(saleAssociateKey + 12325L);
-                Proposal goodProposal = new Proposal();
-                goodProposal.setOwnerKey(saleAssociateKey);
-                List<Proposal> proposals = new ArrayList<Proposal>();
-                proposals.add(badProposal);
-                proposals.add(goodProposal);
-                return proposals;
             }
         };
 
@@ -1089,7 +1001,9 @@ public class TestDemandProcessor {
             }
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                return null;
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
             }
         };
 
@@ -1139,7 +1053,9 @@ public class TestDemandProcessor {
             }
             @Override
             public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                return null;
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(consumerLocation);
+                return locations;
             }
         };
 
@@ -1248,6 +1164,185 @@ public class TestDemandProcessor {
 
         DemandProcessor.batchProcess();
 
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessOneDemandForTheRobotI() throws Exception {
+        final Long robotKey = 12321L;
+        DemandProcessor.settingsOperations = new SettingsOperations() {
+            @Override
+            @SuppressWarnings("serial")
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                return new Settings() {
+                    @Override
+                    public Long getRobotSaleAssociateKey() {
+                        return robotKey;
+                    }
+                };
+            }
+        };
+
+        Demand demand = new Demand();
+        demand.addSaleAssociateKey(robotKey);
+
+        assertTrue(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), demand));
+    }
+
+    @Test
+    public void testProcessOneDemandForTheRobotII() throws Exception {
+        final Long robotKey = 12321L;
+        DemandProcessor.settingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                return new Settings();
+            }
+        };
+
+        Demand demand = new Demand();
+        demand.addSaleAssociateKey(robotKey);
+
+        assertTrue(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), demand));
+    }
+
+    @Test
+    public void testProcessOneDemandForTheRobotIII() throws Exception {
+        final Long robotKey = 12321L;
+        DemandProcessor.setRobotKey(robotKey);
+
+        Demand demand = new Demand();
+        demand.addSaleAssociateKey(robotKey);
+
+        assertTrue(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), demand));
+    }
+
+    @Test
+    public void testHasRobotAlreadyContactedI() throws Exception {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Long demandKey = 67890L;
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.addCriterion("test");
+        consumerDemand.setKey(demandKey);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setState(State.published);
+        consumerDemand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+
+        DemandProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(consumerKey);
+                return consumerDemand;
+            }
+        };
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                return new ArrayList<Location>();
+            }
+        };
+
+        final Long robotKey = 12321L;
+        DemandProcessor.settingsOperations = new SettingsOperations() {
+            @Override
+            @SuppressWarnings("serial")
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                return new Settings() {
+                    @Override
+                    public Long getRobotSaleAssociateKey() {
+                        return robotKey;
+                    }
+                };
+            }
+        };
+
+        DemandProcessor._baseOperations = new MockBaseOperations();
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+
+        DemandProcessor.process(demandKey);
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        List<TaskOptions> tasks = ((MockQueue) DemandProcessor._baseOperations.getQueue()).getHistory();
+        assertNotNull(tasks);
+        assertNotSame(0, tasks.size());
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testHasRobotAlreadyContactedII() throws Exception {
+        final Long locationKey = 12345L;
+        final Location consumerLocation = new Location();
+        consumerLocation.setKey(locationKey);
+
+        final Long robotKey = 12321L;
+
+        final Long demandKey = 67890L;
+        final Double demandRange = 25.75D;
+        final Demand consumerDemand = new Demand();
+        consumerDemand.addCriterion("test");
+        consumerDemand.setKey(demandKey);
+        consumerDemand.setLocationKey(locationKey);
+        consumerDemand.setRange(demandRange);
+        consumerDemand.setState(State.published);
+        consumerDemand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+        consumerDemand.addSaleAssociateKey(robotKey);
+
+        DemandProcessor.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(consumerKey);
+                return consumerDemand;
+            }
+        };
+
+        DemandProcessor.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return consumerLocation;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+                return new ArrayList<Location>();
+            }
+        };
+
+        DemandProcessor.settingsOperations = new SettingsOperations() {
+            @Override
+            @SuppressWarnings("serial")
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                return new Settings() {
+                    @Override
+                    public Long getRobotSaleAssociateKey() {
+                        return robotKey;
+                    }
+                };
+            }
+        };
+
+        DemandProcessor._baseOperations = new MockBaseOperations();
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+
+        DemandProcessor.process(demandKey);
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        List<TaskOptions> tasks = ((MockQueue) DemandProcessor._baseOperations.getQueue()).getHistory();
+        assertNotNull(tasks);
+        assertEquals(0, tasks.size());
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
 }
