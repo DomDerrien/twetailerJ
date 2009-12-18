@@ -2,7 +2,6 @@ package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
-import java.util.List;
 import java.util.Locale;
 
 import javax.jdo.PersistenceManager;
@@ -101,14 +100,29 @@ public class RobotResponder {
         }
     }
 
+    private static Long robotConsumerKey;
+
+    // Just for unit test
+    protected static void setRobotConsumerKey(Long key) {
+        robotConsumerKey = key;
+    }
+
+    public static Long getRobotConsumerKey(PersistenceManager pm) throws DataSourceException {
+        if (robotConsumerKey == null) {
+            Settings settings = settingsOperations.getSettings(pm);
+            robotConsumerKey = settings.getRobotConsumerKey();
+        }
+        return robotConsumerKey;
+    }
+
     private static Long robotSaleAssociateKey;
 
     // Just for unit test
-    protected static void setRobotKey(Long key) {
+    protected static void setRobotSaleAssociateKey(Long key) {
         robotSaleAssociateKey = key;
     }
 
-    protected static Long getRobotSaleAssociateKey(PersistenceManager pm) throws DataSourceException {
+    public static Long getRobotSaleAssociateKey(PersistenceManager pm) throws DataSourceException {
         if (robotSaleAssociateKey == null) {
             Settings settings = settingsOperations.getSettings(pm);
             robotSaleAssociateKey = settings.getRobotSaleAssociateKey();

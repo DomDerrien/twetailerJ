@@ -128,9 +128,8 @@ body {
     color: lightgreen;
 }
 
-#widget_languageSelector {
-	margin-top: -4px;
-	width: 10em;
+#navigation>ul>li>table.dijitSelect, #widget_languageSelector {
+	margin-top: -1px;
 }
 
 #footerZone {

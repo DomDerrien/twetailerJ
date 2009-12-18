@@ -477,10 +477,10 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    "Unexpected error while processing a request response." +
-                    "The incident is going to be reported to Twetailer analytics system.\n\n" +
-                    "You can send an e-mail to incident@twetailer.appspotmail.com if the issue is crucial to you.\n\n" +
-                    "Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues."
+                    Unexpected error while processing a request response.
+                    The incident is going to be reported to Twetailer analytics system.\n\n
+                    You can send an e-mail to incident@twetailer.appspotmail.com if the issue is crucial to you.\n\n
+                    Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues
                 </seg>
             </tuv>
         </tu>

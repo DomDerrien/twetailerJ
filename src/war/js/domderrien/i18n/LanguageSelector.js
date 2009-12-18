@@ -37,6 +37,7 @@
      *
      */
     module.createSelector = function(placeHolderId, formFieldName, options, currentLanguageId, className, onChangeHandler){
+        _currentLanguageId = currentLanguageId;
         var _selector = new dijit.form.Select({
                 autoComplete: false,
                 'class': className || "",
@@ -52,6 +53,8 @@
         return _selector;
     };
 
+    var _currentLanguageId;
+
     /**
      * Event handler attach to the selector language and which is updating the
      * page URL with the identifier of the selected language ISO code
@@ -60,15 +63,21 @@
      */
     var _switchLanguage = function() {
         // Not testable because it's going to change the window content and then will break the test environment
-        window.location.search = module._replaceLanguage(window.location.search, this.attr("value"));
+        var out = module._replaceLanguage(window.location.search, this.attr("value"));
+        if (out !== null) {
+            window.location.search = out;
+        }
     };
 
     // Just provided to be able to control the environment during the unit tests
     module._replaceLanguage = function(source, newLanguage) {
-        if (source.indexOf("lang=") == -1) {
-            return source + (source.length == 0 ? "?" : "&") + "lang=" + newLanguage;
+        if (_currentLanguageId != newLanguage) {
+            if (source.indexOf("lang=") == -1) {
+                return source + (source.length == 0 ? "?" : "&") + "lang=" + newLanguage;
+            }
+            return source.replace(/lang=((\w\w_\w\w)|(\w\w))/g, "lang=" + newLanguage);
         }
-        return source.replace(/lang=((\w\w_\w\w)|(\w\w))/g, "lang=" + newLanguage);
+        return null;
     };
 
 })(); // End of the function limiting the scope of the private variables

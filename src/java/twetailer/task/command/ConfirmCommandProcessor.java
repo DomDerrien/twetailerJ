@@ -1,20 +1,31 @@
 package twetailer.task.command;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
+import twetailer.task.RobotResponder;
+import twetailer.validator.ApplicationSettings;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class ConfirmCommandProcessor {
@@ -67,21 +78,49 @@ public class ConfirmCommandProcessor {
                                 consumer.getLocale()
                         )
                 );
-                // Inform the sale associate of the successful confirmation
-                SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
-                communicateToSaleAssociate(
-                        new RawCommand(saleAssociate.getPreferredConnection()),
-                        saleAssociate,
-                        LabelExtractor.get(
-                                "cp_command_confirm_inform_about_confirmation",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        proposal.getSerializedCriteria(),
-                                        demand.getKey()
-                                },
-                                consumer.getLocale()
-                        )
-                );
+                Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
+                if (proposal.getOwnerKey().equals(robotKey)) {
+                    // Inform the consumer about the next steps in the demo mode
+                    communicateToConsumer(
+                            rawCommand,
+                            consumer,
+                            LabelExtractor.get("cp_command_confirm_inform_about_demo_mode", consumer.getLocale())
+                    );
+
+                    // Prepare the message simulating the closing by the robot
+                    RawCommand consequence = new RawCommand();
+                    consequence.setCommand(Prefix.action + ":" + Action.close + " " + Prefix.proposal + ":" + proposal.getKey());
+                    consequence.setSource(Source.robot);
+
+                    // Persist message
+                    CommandProcessor.rawCommandOperations.createRawCommand(pm, consequence);
+
+                    // Create a task for that command
+                    Queue queue = CommandProcessor._baseOperations.getQueue();
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                                param(Command.KEY, consequence.getKey().toString()).
+                                method(Method.GET)
+                    );
+                }
+                else {
+                    // Inform the sale associate of the successful confirmation
+                    SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                    communicateToSaleAssociate(
+                            new RawCommand(saleAssociate.getPreferredConnection()),
+                            saleAssociate,
+                            LabelExtractor.get(
+                                    "cp_command_confirm_inform_about_confirmation",
+                                    new Object[] {
+                                            proposal.getKey(),
+                                            proposal.getSerializedCriteria(),
+                                            demand.getKey()
+                                    },
+                                    consumer.getLocale()
+                            )
+                    );
+                }
+
                 // Update the proposal and the demand states
                 proposal.setState(State.confirmed);
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);

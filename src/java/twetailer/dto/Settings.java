@@ -33,12 +33,10 @@ public class Settings implements Serializable {
 
     public static final String LAST_PROCESSED_DIRECT_MESSAGE_ID = "lastProcessDirectMessageId";
 
-    @Persistent
-    private Long lastRobotDirectMessageId = 1L;
-
-    public static final String LAST_ROBOT_DIRECT_MESSAGE_ID = "lastRobotDirectMessageId";
-
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
+
+    @Persistent
+    private Long robotConsumerKey = null;
 
     @Persistent
     private Long robotSaleAssociateKey = null;
@@ -91,20 +89,14 @@ public class Settings implements Serializable {
         this.lastProcessDirectMessageId = lastProcessDirectMessageId;
     }
 
-    public Long getLastRobotDirectMessageId() {
-        return lastRobotDirectMessageId;
+    public Long getRobotConsumerKey() {
+        return robotConsumerKey;
     }
 
-    public void setLastRobotDirectMessageId(Long lastRobotProcessDirectMessageId) {
-        if (lastRobotProcessDirectMessageId == null) {
-            throw new IllegalArgumentException("Cannot nullify the message identifier");
-        }
-        if (lastRobotProcessDirectMessageId < 1L) {
-            throw new IllegalArgumentException("Cannot assign 0L or a negative value to the message identifier");
-        }
-        this.lastRobotDirectMessageId = lastRobotProcessDirectMessageId;
+    // Just made available for the unit tests
+    public void setRobotConsumerKey(Long robotConsumerKey) {
+        this.robotConsumerKey = robotConsumerKey;
     }
-
 
     public Long getRobotSaleAssociateKey() {
         return robotSaleAssociateKey;
@@ -122,7 +114,6 @@ public class Settings implements Serializable {
         }
         out.put(NAME, getName());
         out.put(LAST_PROCESSED_DIRECT_MESSAGE_ID, getLastProcessDirectMessageId());
-        out.put(LAST_ROBOT_DIRECT_MESSAGE_ID, getLastRobotDirectMessageId());
         return out;
     }
 
@@ -130,6 +121,5 @@ public class Settings implements Serializable {
         if (in.containsKey(KEY)) { setKey(in.getLong(KEY)); }
         setName(in.getString(NAME));
         setLastProcessDirectMessageId(in.getLong(LAST_PROCESSED_DIRECT_MESSAGE_ID));
-        setLastRobotDirectMessageId(in.getLong(LAST_ROBOT_DIRECT_MESSAGE_ID));
     }
 }

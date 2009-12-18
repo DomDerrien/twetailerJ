@@ -103,7 +103,10 @@
                         src="/images/logo/twitter-bird-and-cart-toLeft.png"
                         title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
                     />
-                    <a href="http://www.twetailer.com/"><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
+                    <a
+                        href="http://www.twetailer.com/"
+                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
+                    ><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
                 </h1>
                 <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
             </div>
@@ -123,7 +126,7 @@
                             Enumeration<String> keys = languageList.getKeys();
                             while(keys.hasMoreElements()) {
                                 String key = keys.nextElement();
-                                %>{label:"<%= key %>",value:"<%= languageList.getString(key) %>"}<%
+                                %>{value:"<%= key %>",label:"<%= languageList.getString(key) %>"}<%
                                 if (keys.hasMoreElements()) {
                                     %>,<%
                                 }

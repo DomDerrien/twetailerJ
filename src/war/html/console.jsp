@@ -127,6 +127,7 @@
             dojo.require("dijit.form.Form");
             dojo.require("dijit.form.Button");
             dojo.require("dijit.form.TextBox");
+            dojo.require("dijit.form.NumberTextBox");
             dojo.require("dijit.form.FilteringSelect");
             dojo.require("twetailer.Console");
             dojo.require("dojo.parser");
@@ -157,7 +158,10 @@
                         src="/images/logo/twitter-bird-and-cart-toLeft.png"
                         title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
                     />
-                    <a href="http://www.twetailer.com/"><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
+                    <a
+                        href="http://www.twetailer.com/"
+                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
+                    ><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
                 </h1>
                 <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
             </div>
@@ -245,7 +249,7 @@
                                 Enumeration<String> keys = languageList.getKeys();
                                 while(keys.hasMoreElements()) {
                                     String key = keys.nextElement();
-                                    %>{abbreviation:"<%= key %>",name:"<%= languageList.getString(key) %>"}<%
+                                    %>{value:"<%= key %>",label:"<%= languageList.getString(key) %>"}<%
                                     if (keys.hasMoreElements()) {
                                         %>,<%
                                     }
@@ -261,7 +265,7 @@
                         <div>
                             <label for="consumerEmail"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_email", locale) %></label><br/>
                             <input dojoType="dijit.form.TextBox" id="consumerEmail" name="<%= Consumer.EMAIL %>" style="width:30em;" type="text" value="<%= email %>" />
-                            <input dojoType="dijit.form.TextBox" id="consumerEmailCode" name="<%= Consumer.EMAIL %>Code" style="width:10em;display:none;" type="text" />
+                            <input dojoType="dijit.form.NumberTextBox" id="consumerEmailCode" name="<%= Consumer.EMAIL %>Code" style="width:10em;display:none;" type="text" />
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconVerify"
@@ -273,7 +277,7 @@
                         <div>
                             <label for="consumerJabberId"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_jabber", locale) %></label><br/>
                             <input dojoType="dijit.form.TextBox" id="consumerJabberId" name="<%= Consumer.JABBER_ID %>" style="width:30em;" type="text" value="<%= jabberId %>" />
-                            <input dojoType="dijit.form.TextBox" id="consumerJabberIdCode" name="<%= Consumer.JABBER_ID %>Code" style="width:10em;display:none;" type="text" />
+                            <input dojoType="dijit.form.NumberTextBox" id="consumerJabberIdCode" name="<%= Consumer.JABBER_ID %>Code" style="width:10em;display:none;" type="text" />
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconVerify"
@@ -285,7 +289,7 @@
                         <div>
                             <label for="consumerTwitterId"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_twitter", locale) %></label><br/>
                             <input dojoType="dijit.form.TextBox" id="consumerTwitterId" name="<%= Consumer.TWITTER_ID %>" style="width:30em;" type="text" value="<%= twitterId %>" />
-                            <input dojoType="dijit.form.TextBox" id="consumerTwitterIdCode" name="<%= Consumer.TWITTER_ID %>Code" style="width:10em;display:none;" type="text" />
+                            <input dojoType="dijit.form.NumberTextBox" id="consumerTwitterIdCode" name="<%= Consumer.TWITTER_ID %>Code" style="width:10em;display:none;" type="text" />
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconVerify"

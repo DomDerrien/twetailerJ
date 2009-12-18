@@ -934,6 +934,19 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_command_confirm_inform_about_demo_mode" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    Information:|
+                    If this were not a #demo, then you would proceed to the store and pick up your product.|
+                    At that point either you, or, the Sales Associate, would issue the !close command and the other would be prompted to do the same.|
+                    Now the robot is going to close the demand to simulate the delivery and for you to experience the full transaction cycle.
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>

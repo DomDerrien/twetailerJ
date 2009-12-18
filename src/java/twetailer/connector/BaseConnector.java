@@ -16,6 +16,7 @@ public class BaseConnector {
 
     public enum Source {
         simulated,
+        robot,
         twitter,
         jabber,
         facebook,

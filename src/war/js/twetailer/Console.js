@@ -7,6 +7,7 @@
     module._labelExtractor = null; // Made accessible only for test purposes
     var  _masterBundleName = "master",
         _consoleBundleName = "console",
+        _getLabel,
         _consumer;
 
     /**
@@ -19,6 +20,7 @@
         // Get the localized resource bundle
         domderrien.i18n.LabelExtractor.init("twetailer", _masterBundleName, locale);
         module._labelExtractor = domderrien.i18n.LabelExtractor.init("twetailer", _consoleBundleName, locale);
+        _getLabel = module._labelExtractor.getFrom;
 
         // TODO:
         // - hide the sale associate link if the consumer is not a sale associate
@@ -33,7 +35,7 @@
      * @private
      */
     module._reportClientError = function(message, ioArgs) {
-        alert(module._labelExtractor.getFrom("console", "error_client_side_communication_failed"));
+        alert(_getLabel("console", "error_client_side_communication_failed"));
         // alert(message + "\nurl: " + ioArgs.url);
         // dojo.analytics.addData("ClientError", "[" + message + "][" + ioArgs.url + "]");
     };
@@ -88,14 +90,18 @@
         var codeField = dijit.byId(fieldId + "Code");
         var codeNode = codeField.domNode;
         var waitForCode = dojo.style(codeNode, "display") == "none";
-        dojo.style(codeNode, "display", "inline");
+        dojo.style(codeNode, "display", "");
         // Prepare the data to be sent
         var data = dojo.formToObject("consumerInformation");
         data.topic = topic;
         data.waitForCode = waitForCode;
+        data.emailCode = isNaN(parseInt(data.emailCode)) ? 0 : parseInt(data.emailCode);
+        data.jabberIdCode = isNaN(parseInt(data.jabberIdCode)) ? 0 : parseInt(data.jabberIdCode);
+        data.twitterIdCode = isNaN(parseInt(data.twitterIdCode)) ? 0 : parseInt(data.twitterIdCode);
         // Send the request
         dojo.xhrPost({
-            content: data,
+            headers: { "content-type": "application/json" },
+            postData: dojo.toJson(data),
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
@@ -111,8 +117,8 @@
                         );
                     }
                     else {
-                        var mechanism = _labelExtractor.getFrom(_consoleBundleName, "consumer_info_verification_alert_" + topic);
-                        var message = _labelExtractor.getFrom(_consoleBundleName, "consumer_info_verification_alert", [mechanism, value]);
+                        var mechanism = _getLabel(_consoleBundleName, "consumer_info_verification_alert_" + topic);
+                        var message = _getLabel(_consoleBundleName, "consumer_info_verification_alert", [mechanism, value]);
                         alert(message);
                     }
                 }
@@ -128,9 +134,13 @@
     module.updateConsumerInformation = function() {
         // Prepare the data to be sent
         var data = dojo.formToObject("consumerInformation");
+        data.emailCode = isNaN(parseInt(data.emailCode)) ? 0 : parseInt(data.emailCode);
+        data.jabberIdCode = isNaN(parseInt(data.jabberIdCode)) ? 0 : parseInt(data.jabberIdCode);
+        data.twitterIdCode = isNaN(parseInt(data.twitterIdCode)) ? 0 : parseInt(data.twitterIdCode);
         // Send the request
         dojo.xhrPut({
-            content: data,
+            headers: { "content-type": "application/json" },
+            putData: dojo.toJson(data),
             handleAs: "json",
             load: function(response, ioArgs) {
                 alert(response.success);

@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javamocks.io.MockOutputStream;
-
+import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.RelyingParty;
 
 import twetailer.ClientException;
 import twetailer.connector.JabberConnector;
@@ -22,6 +18,7 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -37,6 +34,10 @@ import twetailer.task.ProposalProcessor;
 import twetailer.task.ProposalValidator;
 import twetailer.task.RobotResponder;
 import twetailer.task.TweetLoader;
+
+import com.dyuproject.openid.OpenIdUser;
+import com.dyuproject.openid.RelyingParty;
+
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
@@ -71,6 +72,19 @@ public class MaezelServlet extends HttpServlet {
             log.warning("Path Info: " + pathInfo);
 
             if (pathInfo == null || pathInfo.length() == 0) {
+            }
+            else if ("/setupRobotCoordinates".equals(pathInfo)) {
+                PersistenceManager pm = _baseOperations.getPersistenceManager();
+                try {
+                    SettingsOperations ops = _baseOperations.getSettingsOperations();
+                    Settings settings = ops.getSettings(pm);
+                    settings.setRobotConsumerKey(Long.parseLong(request.getParameter("consumerKey")));
+                    settings.setRobotSaleAssociateKey(Long.parseLong(request.getParameter("saleAssociateKey")));
+                    ops.updateSettings(settings);
+                }
+                finally {
+                    pm.close();
+                }
             }
             else if ("/loadTweets".equals(pathInfo)) {
                 Long newSinceId = TweetLoader.loadDirectMessages();
@@ -220,7 +234,7 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             log.warning("doPost().exception: " + ex);
-            // ex.printStackTrace();
+            ex.printStackTrace();
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
         }
 

@@ -264,6 +264,10 @@ public class CommandProcessor {
             consumer.setName(rawCommand.getEmitterId());
             return consumer;
         }
+        if (Source.robot.equals(rawCommand.getSource())) {
+            Long robotKey = RobotResponder.getRobotConsumerKey(pm);
+            return consumerOperations.getConsumer(pm, robotKey);
+        }
         List<Consumer> consumers = null;
         if (Source.twitter.equals(rawCommand.getSource())) {
             consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, rawCommand.getEmitterId(), 1);

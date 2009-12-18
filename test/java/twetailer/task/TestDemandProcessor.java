@@ -75,7 +75,7 @@ public class TestDemandProcessor {
         RobotResponder.settingsOperations = DemandProcessor._baseOperations.getSettingsOperations();
         DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
 
-        RobotResponder.setRobotKey(null);
+        RobotResponder.setRobotSaleAssociateKey(null);
         ((MockQueue) new MockBaseOperations().getQueue()).resetHistory();
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -1208,7 +1208,7 @@ public class TestDemandProcessor {
     @Test
     public void testProcessOneDemandForTheRobotIII() throws Exception {
         final Long robotKey = 12321L;
-        RobotResponder.setRobotKey(robotKey);
+        RobotResponder.setRobotSaleAssociateKey(robotKey);
 
         Demand demand = new Demand();
         demand.addSaleAssociateKey(robotKey);

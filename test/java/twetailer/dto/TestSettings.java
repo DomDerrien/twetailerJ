@@ -38,7 +38,6 @@ public class TestSettings {
     Long key = 12345L;
     String name = "settings";
     Long lastProcessDirectMessageId = 67890L;
-    Long lastRobotDirectMessageId = 54321L;
     Long robotKey = 12321L;
 
     @Test
@@ -48,13 +47,11 @@ public class TestSettings {
         object.setKey(key);
         object.setName(name);
         object.setLastProcessDirectMessageId(lastProcessDirectMessageId);
-        object.setLastRobotDirectMessageId(lastRobotDirectMessageId);
         object.setRobotSaleAssociateKey(robotKey);
 
         assertEquals(key, object.getKey());
         assertEquals(name, object.getName());
         assertEquals(lastProcessDirectMessageId, object.getLastProcessDirectMessageId());
-        assertEquals(lastRobotDirectMessageId, object.getLastRobotDirectMessageId());
         assertEquals(robotKey, object.getRobotSaleAssociateKey());
     }
 
@@ -78,21 +75,6 @@ public class TestSettings {
         new Settings().setLastProcessDirectMessageId(-32L);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetLastRobotDirectMessageIdI() {
-        new Settings().setLastRobotDirectMessageId(null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetLastRobotDirectMessageIdII() {
-        new Settings().setLastRobotDirectMessageId(0L);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetLastRobotDirectMessageIdIII() {
-        new Settings().setLastRobotDirectMessageId(-3243L);
-    }
-
     @Test
     public void testJsonCommandsI() {
         Settings object = new Settings();
@@ -100,14 +82,12 @@ public class TestSettings {
         object.setKey(key);
         object.setName(name);
         object.setLastProcessDirectMessageId(lastProcessDirectMessageId);
-        object.setLastRobotDirectMessageId(lastRobotDirectMessageId);
 
         Settings clone = new Settings(object.toJson());
 
         assertEquals(key, clone.getKey());
         assertEquals(name, clone.getName());
         assertEquals(lastProcessDirectMessageId, clone.getLastProcessDirectMessageId());
-        assertEquals(lastRobotDirectMessageId, clone.getLastRobotDirectMessageId());
     }
 
     @Test
