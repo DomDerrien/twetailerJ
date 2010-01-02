@@ -31,8 +31,6 @@
     %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
         @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
         @import "/css/console.css";
     </style><%
     }
@@ -40,8 +38,6 @@
     %><style type="text/css">
         @import "/js/dojo/dojo/resources/dojo.css";
         @import "/js/dojo/dijit/themes/tundra/tundra.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
         @import "/css/console.css";
     </style><%
     } // endif (useCDN)
