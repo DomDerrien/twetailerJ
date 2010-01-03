@@ -1,76 +1,1304 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
-<header creationtool="developers" creationtoolversion="1.0"
-datatype="PlainText" segtype="paragraph" adminlang="en" srclang="Français"
-o-tmf="RichWebApps">
-</header>
-<body>
-<!-- =================== -->
-<!-- Default definitions -->
-<!-- =================== -->
-<tu tuid="bundle_language" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Français</seg></tuv></tu>
-<tu tuid="unit_test_sample" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>N/A</seg></tuv></tu>
-<!-- ======================= -->
-<!-- Core engine definitions -->
-<!-- ======================= -->
-<tu tuid="command_state_open" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>nouvelle</seg></tuv></tu>
-<tu tuid="command_state_published" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>publiée</seg></tuv></tu>
-<tu tuid="command_state_forwarded" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>transmise</seg></tuv></tu>
-<tu tuid="command_state_proposed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>proposée</seg></tuv></tu>
-<tu tuid="command_state_confirmed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>confirmée</seg></tuv></tu>
-<tu tuid="command_state_closed" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>fermée</seg></tuv></tu>
-<tu tuid="command_state_canceled" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>annulée</seg></tuv></tu>
-<!-- ================================ -->
-<!-- Command line related definitions -->
-<!-- ================================ -->
-<tu tuid="cmdLine_prefix_action" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>action,commande,!</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_expiration" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>expiration,expire</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_help" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>aide,?</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_locale" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>lieu,localization</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_price" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>prixunitaire,prixunité,prixubite,coûtunitaire,coutunitaire</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_proposal" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>proposition</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_quantity" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>quantité,qté,quantite,qte</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_reference" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>référence,reference,identifiant</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_range" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>distance,rayon</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_state" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>état,etat</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_store" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>magasin,boutique</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_tags" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>mots-clés,</seg></tuv></tu>
-<tu tuid="cmdLine_prefix_total" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>total,coûttotal,couttotal</seg></tuv></tu>
-<tu tuid="cmdLine_action_cancel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>annuler,détruire,detruire</seg></tuv></tu>
-<tu tuid="cmdLine_action_close" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>fermer</seg></tuv></tu>
-<tu tuid="cmdLine_action_confirm" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>confirmer</seg></tuv></tu>
-<tu tuid="cmdLine_action_decline" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>décliner,decliner</seg></tuv></tu>
-<tu tuid="cmdLine_action_demand" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>demander</seg></tuv></tu>
-<tu tuid="cmdLine_action_help" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>aide,?</seg></tuv></tu>
-<tu tuid="cmdLine_action_list" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>lister,afficher</seg></tuv></tu>
-<tu tuid="cmdLine_action_propose" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>proposer</seg></tuv></tu>
-<tu tuid="cmdLine_action_supply" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>fournir</seg></tuv></tu>
-<tu tuid="cmdLine_action_wish" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>vœux,voeux</seg></tuv></tu>
-<tu tuid="cmdLine_action_www" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>www,web</seg></tuv></tu>
-<!-- =========================== -->
-<!-- Twitter adapter definitions -->
-<!-- =========================== -->
-<tu tuid="ta_messageToNonFollower" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>@{0} Vous devez suivre @twetailer et envoyez vos requêtes confidentiellement par Messages Directs.</seg></tuv></tu>
-<tu tuid="ta_acknowledgeIncompleteDemandCreated" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>La nouvelle demande référence:{1} doit être localisée. Soumettez le message "!aide sujet:demande" pour plus de détails.</seg></tuv></tu>
-<tu tuid="ta_acknowledgeDemandCreated" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>La demande référence:{1} vient d'être crée et va être publication. Utilisez cette référence pour mettre à jour votre demande.</seg></tuv></tu>
-<tu tuid="ta_responseToListCommandForNoResult" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>Vous n'avez pas de demande active.</seg></tuv></tu>
-<tu tuid="ta_responseToSpecificListCommandForNoResult" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>Aucune demande ne correspond à la référence:{0}.</seg></tuv></tu>
-<tu tuid="ta_introductionToResponseToListCommandWithManyResults" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="en"><seg>Ce message est suivi par {0} autre(s), un par demande active.</seg></tuv></tu>
-<!-- =================== -->
-<!-- Console definitions -->
-<!-- =================== -->
-<tu tuid="ui_page_redirection_message" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Redirection...<br/>Cliquer <a href="{0}">ici</a> pour forcer la redirection.</seg></tuv></tu>
-<tu tuid="ui_application_name" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Console de Twetailer</seg></tuv></tu>
-<tu tuid="ui_splash_screen_message" datatype="Text"><prop type="x-tier">dojotk</prop><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>S'il vous plaît, patientez pendant que la console se construit...</seg></tuv></tu>
-<tu tuid="ui_global_command_login" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Connexion</seg></tuv></tu>
-<tu tuid="ui_global_command_logout" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Déconnexion</seg></tuv></tu>
-<tu tuid="ui_global_command_help" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Aide</seg></tuv></tu>
-<tu tuid="ui_login_form_pane_title" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Point de vérification de l'identité</seg></tuv></tu>
-<tu tuid="ui_login_form_pane_message" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Vous n'êtes pas connecté.</seg></tuv></tu>
-<tu tuid="ui_login_form_pane_username_label" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Courriel</seg></tuv></tu>
-<tu tuid="ui_login_form_pane_password_label" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Mot de passe</seg></tuv></tu>
-<tu tuid="ui_login_form_pane_administrative_state_label" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Authentification en tant qu'administrateur</seg></tuv></tu>
-<tu tuid="ui_login_form_pane_actionlabel" datatype="Text"><prop type="x-tier">javarb</prop><tuv xml:lang="fr"><seg>Se connecter</seg></tuv></tu>
-</body>
+    <header creationtool="domderrien.i18n" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="domderrien"
+    ></header>
+    <body>
+        <tu tuid="bundle_language" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Français</seg>
+            </tuv>
+        </tu>
+        <tu tuid="unit_test_sample" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>N/A</seg>
+            </tuv>
+        </tu>
+        <tu tuid="product_name" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>!twetailer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="product_ascii_logo" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>&lt;(^v^)&gt;</seg>
+            </tuv>
+        </tu>
+        <tu tuid="product_mantra" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Another Social Economy</seg>
+            </tuv>
+        </tu>
+        <tu tuid="product_copyright" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg> 2009 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
+            </tuv>
+        </tu>
+        <tu tuid="display_name_pattern" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>{0} {1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_opened" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>opened</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_invalid" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>invalid</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_published" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>published</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_confirmed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>confirmed</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_closed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>closed</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_cancelled" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>cancelled</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_declined" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>declined</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_state_markedForDeletion" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>markedForDeletion</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>action,command,!</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_address" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>address</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_expiration" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>expiration,expires</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_hash" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>hashtag,#</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_help" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>help,?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_locale" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>locale,location,postalCode,zipCode</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_name" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>name</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_phoneNumber" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>phoneNumber</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_price" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>price,cost</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_proposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>proposal,proposalKey,pk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_quantity" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>quantity,qty</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_reference" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>reference,identifier,id,demandKey,dk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_range" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>range,rng,distance</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>state</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_store" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>store,storeKey,sk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_tags" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>tags,keywords,keys</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_total" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>totalCost,tc</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_cancel" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>cancel</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_close" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>close</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_confirm" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>confirm</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_decline" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>decline</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_delete" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>delete</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>demand</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_help" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>help,?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>list</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_propose" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>propose</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_supply" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>supply</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_wish" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>wish</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_www" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>www,web,url</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    140, 24906,
+                    AKA, Amazon, Attribute,
+                    Backup,
+                    Command-line, Consumer, CRUD,
+                    Demand-crud,
+                    Fee, Flag, Flagged, Founders, Free, Friend, Fulfil,
+                    IM, List-demands-private, List-demands-public, List-proposal, List-store, List-tag,
+                    MI,
+                    Note,
+                    Object,
+                    Rate, Register, Register-link, Register-retailer, Register-salesassociate, Register-store, Reserve, Reserved, Retailer,
+                    Salesassociate, Sentiment, Settle, Settled, State-flow,
+                    Twitter
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_140" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>140</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_24906" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>24906,40075</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_AKA" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>aka,also known as</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Amazon" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>amazon</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Attribute" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>attribute</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Backup" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>backup</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Command-line" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>command-line</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Consumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>consumer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_CRUD" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>crud</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Demand-crud" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>demand-crud</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Fee" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>fee</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Flag" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>flag,problem</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Flagged" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>flagged</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Founders" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>founders,founder</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Free" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>free</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Friend" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>friend</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Fulfil" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>fulfil</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_IM" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>im</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_List-demands-private" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>list-demands-private</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_List-demands-public" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>list-demands-public</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_List-proposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>list-proposal</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_List-store" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>list-store</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_List-tag" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>list-tag</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_MI" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>MI</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Note" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>note</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Object" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>object</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Rate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>rate</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Register" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>register</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Register-link" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>register</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Register_retailer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>register</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Register-saleassociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>register</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Register-store" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>register</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Reserve" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>reserve</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Reserved" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>reserved</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Retailer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>retailer,banner</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Salesassociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>salesassociate,agent,sa</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Sentiment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>sentiment,emo</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Settle" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>settle</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Settled" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>settled</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_State-flow" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>state-flow</seg>
+            </tuv>
+        </tu>
+        <tu tuid="help_keyword_equivalents_Twitter" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>twitter</seg>
+            </tuv>
+        </tu>
+        <tu tuid="tl_inform_dm_sender_no_more_a_follower" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like requesting help with "d twetailer ?"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_unexpected_error" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The System encountered an unexpected error! {1}|
+                    If your issue cannot be fixed with another message, please report the error with the incident identifier: 323-{0}.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_parser_unsupported_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Action {0} is not recognized by the System. Send '!help action' for the list of available actions.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_parser_reserved_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Action {0} is not allowed by your profile. Send '!help {0}' for the list of available actions.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_missing_demand_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Cancel command requires a Demand Reference. Send '!help cancel' for more information.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_invalid_demand_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Demand identifier specified with the Cancel Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_invalid_demand_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Cancel Command has no effect of the Demand reference:{0} being in the state:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_invalid_proposal_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Cancel Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_invalid_proposal_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Cancel Command has no effect of the Proposal reference:{0} being in the state:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_invalid_demand_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Demand identifier specified with the Close Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_invalid_demand_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Close Command has no effect of the Demand reference:{0} being in the state:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_acknowledge_demand_closing" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Thank you for closing Demand reference:{0}. Twetailer will update everyone's Ratings shortly. |
+                    Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
+                    Regards, The Twetailer Community.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_demand_closed_proposal_to_close" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Demand reference:{0} has been closed by the Consumer. |
+                    In order to improve your Twetailer Rating, please remember to finalize your Proposal by sending ... |
+                    "d twetailer !close proposal:{1}", or, "d twetailer !flag proposal:{1} note:[enter your issue here]"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_invalid_proposal_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Close Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_invalid_proposal_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Close Command has no effect of the Proposal reference:{0} being in the state:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_acknowledge_proposal_closing" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Thank you for closing Proposal:{0}. Twetailer will update everyone's Ratings shortly. |
+                    Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
+                    Regards, The Twetailer Community.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_proposal_closed_demand_to_close" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Proposal:{0} has been closed by the Retailer. |
+                    In order to improve your Twetailer Rating, please remember to finalize your Demand by sending ... |
+                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_close_invalid_parameters" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Only Proposals or Demands can be closed. Check '!help close' for more information.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_invalid_proposal_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_invalid_state_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Demand reference:{1} is not in a state ({2}) that allows the Proposition proposal:{0} confirmation.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_acknowledge_confirmation" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
+                    Store:{3}, {4} will be notified and asked to keep you Demand, marked with ref:{1}, on the side for you. |
+                    Send "d twetailer !list store:{3}" for more details |
+                    In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
+                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_inform_about_confirmation" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Confirming Proposal:{0} Tags:{1} |
+                    Please prepare product:{2} by marking it with Demand ref:{2} and placing it on the side.|
+                    In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
+                    "d twetailer !close ref:{2}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_inform_about_demo_mode" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Information:|
+                    If this were not a #demo, then you would proceed to the store and pick up your product.|
+                    At that point either you, or, the Sales Associate, would issue the !close command and the other would be prompted to do the same.|
+                    Now the robot is going to close the demand to simulate the delivery and for you to experience the full transaction cycle.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_invalid_proposal_id" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_decline_acknowledge_proposal_closing" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Now that Proposal:{0} has been declined, you won't be notified about any related updates.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_decline_invalid_proposal_id" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Decline Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_decline_invalid_parameters" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Only Proposals or Demands can be declined. Check '!help decline' for more information.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_invalid_demand_state" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The Delete action can only be applied to Demands in the state:cancelled. Your Demand reference:{0} is in the state:{1}.|
+                    Please cancel the proposition first with '!cancel reference:{0}'. Check '!help delete' for more information.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_acknowledge_demand_markedForDeletion" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>That Demand reference:{0} has been marked for deletion. It will be garbage collected in a near future. In the meanwhile, it is no more accessible.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_invalid_demand_id" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Delete Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_invalid_proposal_state" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The Delete action can only be applied to Proposals in the state:cancelled. Your Proposal:{0} is in the state:{1}.|
+                    Please cancel the proposition first with '!cancel proposal:{0}'. Check '!help delete' for more information.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_acknowledge_proposal_markedForDeletion" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>That Proposal:{0} has been marked for deletion. It will be garbage collected in a near future. In the meanwhile, it is no more accessible.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_invalid_proposal_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition identifier specified with the Delete Command is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_delete_invalid_parameters" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Only Proposals or Demands can be deleted. Check '!help delete' for more information.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_demand_acknowledge_creation" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The following listing will confirm your Demand Reference:{0}... You can send "!help" for more options afterwards.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The identifier specified with the Demand Command is invalid. Your proposed update did not happen.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_demand_non_modifiable_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Demand reference:{0} is not in a modifiable state ({1}). Your proposed update did not happen.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_invalid_demand_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You have no Demand matching the specified identifier.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_invalid_proposal_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You have no Proposition matching the specified identifier.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_invalid_store_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You have no Store matching the specified identifier.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_no_active_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>No Active Demand can be listed.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_demand_series_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>This message is followed by {0} other(s) - one per Active Demand...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_store_missing_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The Locale information is missing in your command.|
+                    Please provide a valid Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_store_with_new_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You've just submitted a locale:{0} {1} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_no_store_in_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>No Store found {2}{3} around locale:{0} {1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_store_series_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>This message is followed by {0} other(s) - one per Store...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_propose_invalid_proposal_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The identifier specified with the Propose Command is invalid. Your sumbitted update did not happen.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_propose_non_modifiable_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposition proposal:{0} is not in a modifiable state ({1}). Your submitted update did not happen.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_propose_acknowledge_creation" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Listing your proposition for Proposition proposal:{0}... You can send "!help" for more options afterwards.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_supply_empty_tag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your tag list is now empty. You cannot receive notifications about demands in your area anymore.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_supply_updated_1_tag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your tag list contains 1 keyword: {0}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_supply_updated_n_tag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your tag list contains {1} keywords: {0}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_demand_without_tag" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Demand reference:{0} should have at least one Tag.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_expiration_in_past" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Demand reference:{0} should have its Expiration date in the future.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_range_km_too_small" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Range ({1}km) for the Demand reference:{0} is too small. It should be greater than {2}km.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_range_km_too_big" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Range ({1} km) for the Demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_range_mi_too_small" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Range ({1} mi) for the Demand reference:{0} is too small. It should be greater than {2} miles.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_range_mi_too_big" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Range ({1} mi) for the Demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_quantity_zero" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Demand reference:{0} should concern at least one item.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_missing_locale" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Please update the Demand reference:{0} with your Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_invalid_locale" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The Locale "{1} {2}" given Demand reference:{0} cannot be resolved.|
+                    Please provide a valid Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_unable_to_get_locale_information" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_hashtag_warning" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
+                    Other values are ignored. You can add them to the proposal tag list with "!demand ref:{0} {1}"|
+                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="lv_report_invalid_locale" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The Locale given for the Command "{0}" cannot be resolved.|
+                    Please provide a valid Locale(postal/zip code and country)"
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="dp_inform_saleAssociate_about_demand_one_item" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>I have Demand ref:{0}, for tags:{1} which expires:{2}. If you have matching supply, please complete and send the following proposal ...  |
+                "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]" </seg>
+            </tuv>
+        </tu>
+        <tu tuid="dp_inform_saleAssociate_about_demand_many_items" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}.
+                    If you have matching supply, please complete and send the following proposal ...|
+                    "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]"
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_proposal_without_tag" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Proposition proposal:{0} should have at least one Tag.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_quantity_zero" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Proposition proposal:{0} should concern at least one item.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_missing_price_and_total" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Proposition proposal:{0} should have a unit retail Price and the Total cost which includes all taxes and service fees.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_missing_demand_reference" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Proposition proposal:{0} should reference a Demand (with reference:[id]).</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_invalid_demand_reference" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The identification of the Demand (reference:{1}) linked to your Proposition proposal:{0} is invalid.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_hashtag_warning" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
+                    Other values are ignored. You can add them to the proposal tag list with "!propose proposal:{0} {1}"|
+                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="pp_inform_consumer_about_proposal_with_price_and_total_cost" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
+                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} total:{7}{9} |
+                Send "d twetailer !list store:{5}" for more details |
+                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pp_inform_consumer_about_proposal_with_price_only" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
+                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} |
+                Send "d twetailer !list store:{5}" for more details |
+                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pp_inform_consumer_about_proposal_with_total_cost_only" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
+                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} total:{7}{8} |
+                Send "d twetailer !list store:{5}" for more details |
+                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pp_inform_saleAssociate_demand_not_published_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your Proposition proposal:{0} cannot be attached to the Demand reference:{1} because it is not in the correct State! (actual Demand State: {2}).</seg>
+            </tuv>
+        </tu>
+        <tu tuid="mc_mail_subject_response_default" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Twetailer notification</seg>
+            </tuv>
+        </tu>
+        <tu tuid="mc_mail_subject_response_prefix" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Re: </seg>
+            </tuv>
+        </tu>
+        <tu tuid="rr_robot_automatic_proposition" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="country_CA" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Canada</seg>
+            </tuv>
+        </tu>
+        <tu tuid="country_FR" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>France</seg>
+            </tuv>
+        </tu>
+        <tu tuid="country_SP" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Spain</seg>
+            </tuv>
+        </tu>
+        <tu tuid="country_UK" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>United Kingdom</seg>
+            </tuv>
+        </tu>
+        <tu tuid="country_US" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>United States of America</seg>
+            </tuv>
+        </tu>
+    </body>
 </tmx>

@@ -55,6 +55,7 @@
         <!-- =================== -->
 
         <tu tuid="bundle_language" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -69,6 +70,7 @@
         </tu>
 
         <tu tuid="unit_test_sample" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -87,6 +89,7 @@
         <!-- ================== -->
 
         <tu tuid="product_name" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>Name of the entire application</note>
@@ -96,6 +99,7 @@
         </tu>
 
         <tu tuid="product_ascii_logo" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
@@ -104,6 +108,7 @@
         </tu>
 
         <tu tuid="product_mantra" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>Lusanga mantra</note>
@@ -113,6 +118,7 @@
         </tu>
 
         <tu tuid="product_copyright" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
@@ -121,6 +127,7 @@
         </tu>
 
         <tu tuid="display_name_pattern" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -138,6 +145,7 @@
         <!-- ======================= -->
 
         <tu tuid="cl_state_opened" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have</note>
             <tuv xml:lang="en">
@@ -146,6 +154,7 @@
         </tu>
 
         <tu tuid="cl_state_invalid" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have</note>
             <tuv xml:lang="en">
@@ -154,6 +163,7 @@
         </tu>
 
         <tu tuid="cl_state_published" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have</note>
             <tuv xml:lang="en">
@@ -162,6 +172,7 @@
         </tu>
 
         <tu tuid="cl_state_confirmed" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have</note>
             <tuv xml:lang="en">
@@ -170,6 +181,7 @@
         </tu>
 
         <tu tuid="cl_state_closed" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have</note>
             <tuv xml:lang="en">
@@ -178,6 +190,7 @@
         </tu>
 
         <tu tuid="cl_state_cancelled" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
             <tuv xml:lang="en">
@@ -186,6 +199,7 @@
         </tu>
 
         <tu tuid="cl_state_declined" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
             <tuv xml:lang="en">
@@ -194,6 +208,7 @@
         </tu>
 
         <tu tuid="cl_state_markedForDeletion" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
             <tuv xml:lang="en">
@@ -206,6 +221,7 @@
         <!-- ================================ -->
 
         <tu tuid="cl_prefix_action" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -214,6 +230,7 @@
         </tu>
 
         <tu tuid="cl_prefix_address" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the address attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -222,6 +239,7 @@
         </tu>
 
         <tu tuid="cl_prefix_expiration" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -230,6 +248,7 @@
         </tu>
 
         <tu tuid="cl_prefix_hash" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the hash attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -238,6 +257,7 @@
         </tu>
 
         <tu tuid="cl_prefix_help" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -246,6 +266,7 @@
         </tu>
 
         <tu tuid="cl_prefix_locale" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -254,6 +275,7 @@
         </tu>
 
         <tu tuid="cl_prefix_name" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the name attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -262,6 +284,7 @@
         </tu>
 
         <tu tuid="cl_prefix_phoneNumber" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the phoneNumber attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -270,6 +293,7 @@
         </tu>
 
         <tu tuid="cl_prefix_price" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the price attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -278,6 +302,7 @@
         </tu>
 
         <tu tuid="cl_prefix_proposal" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the proposal attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -286,6 +311,7 @@
         </tu>
 
         <tu tuid="cl_prefix_quantity" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -294,6 +320,7 @@
         </tu>
 
         <tu tuid="cl_prefix_reference" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -302,6 +329,7 @@
         </tu>
 
         <tu tuid="cl_prefix_range" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the range attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -310,6 +338,7 @@
         </tu>
 
         <tu tuid="cl_prefix_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the state attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -318,6 +347,7 @@
         </tu>
 
         <tu tuid="cl_prefix_store" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the store attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -326,6 +356,7 @@
         </tu>
 
         <tu tuid="cl_prefix_tags" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 For the command line arguments, accepted labels for the tags attribute.|
@@ -338,6 +369,7 @@
         </tu>
 
         <tu tuid="cl_prefix_total" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the total attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -346,6 +378,7 @@
         </tu>
 
         <tu tuid="cl_action_cancel" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -354,6 +387,7 @@
         </tu>
 
         <tu tuid="cl_action_close" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -362,6 +396,7 @@
         </tu>
 
         <tu tuid="cl_action_confirm" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -370,6 +405,7 @@
         </tu>
 
         <tu tuid="cl_action_decline" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -378,6 +414,7 @@
         </tu>
 
         <tu tuid="cl_action_delete" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -386,6 +423,7 @@
         </tu>
 
         <tu tuid="cl_action_demand" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -394,6 +432,7 @@
         </tu>
 
         <tu tuid="cl_action_help" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -402,6 +441,7 @@
         </tu>
 
         <tu tuid="cl_action_list" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -410,6 +450,7 @@
         </tu>
 
         <tu tuid="cl_action_propose" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -418,6 +459,7 @@
         </tu>
 
         <tu tuid="cl_action_supply" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -426,6 +468,7 @@
         </tu>
 
         <tu tuid="cl_action_wish" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -434,6 +477,7 @@
         </tu>
 
         <tu tuid="cl_action_www" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
@@ -446,6 +490,7 @@
         <!-- =================== -->
 
         <tu tuid="help_keyword_list" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 This is the master list of help keywords.|
@@ -473,206 +518,247 @@
         </tu>
 
         <tu tuid="help_keyword_equivalents_140" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>140</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_24906" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>24906,40075</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_AKA" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>aka,also known as</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Amazon" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>amazon</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Attribute" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>attribute</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Backup" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>backup</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Command-line" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>command-line</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Consumer" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>consumer</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_CRUD" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>crud</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Demand-crud" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>demand-crud</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Fee" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>fee</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Flag" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>flag,problem</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Flagged" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>flagged</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Founders" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>founders,founder</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Free" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>free</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Friend" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>friend</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Fulfil" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>fulfil</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_IM" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>im</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_List-demands-private" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>list-demands-private</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_List-demands-public" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>list-demands-public</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_List-proposal" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>list-proposal</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_List-store" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>list-store</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_List-tag" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>list-tag</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_MI" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>MI</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Note" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>note</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Object" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>object</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Rate" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>rate</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Register" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>register</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Register-link" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>register</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Register_retailer" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>register</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Register-saleassociate" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>register</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Register-store" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>register</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Reserve" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>reserve</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Reserved" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>reserved</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Retailer" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>retailer,banner</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Salesassociate" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>salesassociate,agent,sa</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Sentiment" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>sentiment,emo</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Settle" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>settle</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Settled" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>settled</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_State-flow" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>state-flow</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Twitter" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>twitter</seg></tuv>
         </tu>
@@ -682,6 +768,7 @@
         <!-- ======================== -->
 
         <tu tuid="tl_inform_dm_sender_no_more_a_follower" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 For the Twitter adapter, message sent to non followers.|
@@ -697,6 +784,7 @@
         <!-- ============================= -->
 
         <tu tuid="cp_unexpected_error" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
                 Report an unexpected error while processing the raw command.|
                 {0}: raw command key|
@@ -711,6 +799,7 @@
         </tu>
 
         <tu tuid="cp_command_parser_unsupported_action" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Error message generated when the given action is not recognized.|
@@ -722,6 +811,7 @@
         </tu>
 
         <tu tuid="cp_command_parser_reserved_action" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Error message generated when the given action is not allowed by the user's profile.|
@@ -733,6 +823,7 @@
         </tu>
 
         <tu tuid="cp_command_cancel_missing_demand_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -741,6 +832,7 @@
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_demand_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -749,6 +841,7 @@
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_demand_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key|
@@ -760,6 +853,7 @@
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -768,6 +862,7 @@
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_proposal_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -779,6 +874,7 @@
         </tu>
 
         <tu tuid="cp_command_close_invalid_demand_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -787,6 +883,7 @@
         </tu>
 
         <tu tuid="cp_command_close_invalid_demand_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key|
@@ -798,6 +895,7 @@
         </tu>
 
         <tu tuid="cp_command_close_acknowledge_demand_closing" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -811,6 +909,7 @@
         </tu>
 
         <tu tuid="cp_command_close_demand_closed_proposal_to_close" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key|
@@ -825,6 +924,7 @@
         </tu>
 
         <tu tuid="cp_command_close_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -833,6 +933,7 @@
         </tu>
 
         <tu tuid="cp_command_close_invalid_proposal_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -844,6 +945,7 @@
         </tu>
 
         <tu tuid="cp_command_close_acknowledge_proposal_closing" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -858,6 +960,7 @@
         </tu>
 
         <tu tuid="cp_command_close_proposal_closed_demand_to_close" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -872,6 +975,7 @@
         </tu>
 
         <tu tuid="cp_command_close_invalid_parameters" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -880,6 +984,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -888,6 +993,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_state_demand" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -900,6 +1006,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_acknowledge_confirmation" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -919,6 +1026,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_inform_about_confirmation" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -935,6 +1043,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_inform_about_demo_mode" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
@@ -948,6 +1057,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -957,6 +1067,7 @@
         </tu>
 
         <tu tuid="cp_command_decline_acknowledge_proposal_closing" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -968,6 +1079,7 @@
         </tu>
 
         <tu tuid="cp_command_decline_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -977,6 +1089,7 @@
         </tu>
 
         <tu tuid="cp_command_decline_invalid_parameters" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -986,6 +1099,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_demand_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1001,6 +1115,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_acknowledge_demand_markedForDeletion" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1012,6 +1127,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_demand_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -1021,6 +1137,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_proposal_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1036,6 +1153,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_acknowledge_proposal_markedForDeletion" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -1046,6 +1164,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1054,6 +1173,7 @@
         </tu>
 
         <tu tuid="cp_command_delete_invalid_parameters" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1062,6 +1182,7 @@
         </tu>
 
         <tu tuid="cp_command_demand_acknowledge_creation" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
@@ -1073,6 +1194,7 @@
         </tu>
 
         <tu tuid="cp_command_demand_invalid_demand_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1081,6 +1203,7 @@
         </tu>
 
         <tu tuid="cp_command_demand_non_modifiable_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -1092,6 +1215,7 @@
         </tu>
 
         <tu tuid="cp_command_list_invalid_demand_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1100,6 +1224,7 @@
         </tu>
 
         <tu tuid="cp_command_list_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1108,6 +1233,7 @@
         </tu>
 
         <tu tuid="cp_command_list_invalid_store_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1116,6 +1242,7 @@
         </tu>
 
         <tu tuid="cp_command_list_no_active_demand" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Message informing that no result can be displayed for the !list command.</note>
             <tuv xml:lang="en">
@@ -1124,6 +1251,7 @@
         </tu>
 
         <tu tuid="cp_command_list_demand_series_introduction" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list command.|
@@ -1135,6 +1263,7 @@
         </tu>
 
         <tu tuid="cp_command_list_store_missing_location" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that location information is missing for the !list store:* command.
@@ -1148,6 +1277,7 @@
         </tu>
 
         <tu tuid="cp_command_list_store_with_new_location" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.
@@ -1160,6 +1290,7 @@
         </tu>
 
         <tu tuid="cp_command_list_no_store_in_location" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.
@@ -1174,6 +1305,7 @@
         </tu>
 
         <tu tuid="cp_command_list_store_series_introduction" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list store:* command.|
@@ -1185,6 +1317,7 @@
         </tu>
 
         <tu tuid="cp_command_propose_invalid_proposal_id" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1193,6 +1326,7 @@
         </tu>
 
         <tu tuid="cp_command_propose_non_modifiable_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -1204,6 +1338,7 @@
         </tu>
 
         <tu tuid="cp_command_propose_acknowledge_creation" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
@@ -1215,6 +1350,7 @@
         </tu>
 
         <tu tuid="cp_command_supply_empty_tag_list" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
@@ -1223,6 +1359,7 @@
         </tu>
 
         <tu tuid="cp_command_supply_updated_1_tag_list" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: unique tag
@@ -1233,6 +1370,7 @@
         </tu>
 
         <tu tuid="cp_command_supply_updated_n_tag_list" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: list of tags, separated by a blank space
@@ -1248,6 +1386,7 @@
         <!-- ============================ -->
 
         <tu tuid="dv_report_demand_without_tag" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the demand should have at least one tag.|
@@ -1259,6 +1398,7 @@
         </tu>
 
         <tu tuid="dv_report_expiration_in_past" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the expiration date should be in the future.|
@@ -1270,6 +1410,7 @@
         </tu>
 
         <tu tuid="dv_report_range_km_too_small" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too small.|
@@ -1283,6 +1424,7 @@
         </tu>
 
         <tu tuid="dv_report_range_km_too_big" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too big.|
@@ -1296,6 +1438,7 @@
         </tu>
 
         <tu tuid="dv_report_range_mi_too_small" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too small.|
@@ -1309,6 +1452,7 @@
         </tu>
 
         <tu tuid="dv_report_range_mi_too_big" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too big.|
@@ -1322,6 +1466,7 @@
         </tu>
 
         <tu tuid="dv_report_quantity_zero" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the quantity cannot be 0.|
@@ -1333,6 +1478,7 @@
         </tu>
 
         <tu tuid="dv_report_missing_locale" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is missing.|
@@ -1344,6 +1490,7 @@
         </tu>
 
         <tu tuid="dv_report_invalid_locale" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
@@ -1360,6 +1507,7 @@
         </tu>
 
         <tu tuid="dv_report_unable_to_get_locale_information" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the information for the locale cannot be retrieved.|
@@ -1371,6 +1519,7 @@
         </tu>
 
         <tu tuid="dv_report_hashtag_warning" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1391,6 +1540,7 @@
         <!-- ============================== -->
 
         <tu tuid="lv_report_invalid_locale" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
@@ -1409,6 +1559,7 @@
         <!-- ====================================== -->
 
         <tu tuid="dp_inform_saleAssociate_about_demand_one_item" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
@@ -1424,6 +1575,7 @@
         </tu>
 
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
@@ -1447,6 +1599,7 @@
         <!-- ============================== -->
 
         <tu tuid="pv_report_proposal_without_tag" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the proposal should have at least one tag.|
@@ -1458,6 +1611,7 @@
         </tu>
 
         <tu tuid="pv_report_quantity_zero" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the quantity cannot be 0.|
@@ -1469,6 +1623,7 @@
         </tu>
 
         <tu tuid="pv_report_missing_price_and_total" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate a unit price or the total price is required.|
@@ -1481,6 +1636,7 @@
         </tu>
 
         <tu tuid="pv_report_missing_demand_reference" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the demand reference is missing.|
@@ -1492,6 +1648,7 @@
         </tu>
 
         <tu tuid="pv_report_invalid_demand_reference" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate that the given reference is invalid.|
@@ -1504,6 +1661,7 @@
         </tu>
 
         <tu tuid="pv_report_hashtag_warning" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1524,6 +1682,7 @@
         <!-- ======================================== -->
 
         <tu tuid="pp_inform_consumer_about_proposal_with_price_and_total_cost" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
@@ -1547,6 +1706,7 @@
         </tu>
 
         <tu tuid="pp_inform_consumer_about_proposal_with_price_only" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
@@ -1569,6 +1729,7 @@
         </tu>
 
         <tu tuid="pp_inform_consumer_about_proposal_with_total_cost_only" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
@@ -1591,6 +1752,7 @@
         </tu>
 
         <tu tuid="pp_inform_saleAssociate_demand_not_published_state" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate his proposal cannot be submitted to the demand.|
@@ -1608,6 +1770,7 @@
         <!-- ========================== -->
 
         <tu tuid="mc_mail_subject_response_default" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Default subject for e-mail sent to end-users</note>
             <tuv xml:lang="en">
@@ -1616,6 +1779,7 @@
         </tu>
 
         <tu tuid="mc_mail_subject_response_prefix" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Prefix put in front of e-mail subject when replying to an end-user message</note>
             <tuv xml:lang="en">
@@ -1628,6 +1792,7 @@
         <!-- ========================= -->
 
         <tu tuid="rr_robot_automatic_proposition" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message generated automatically to demand located with postal code "H0H0H0".|
@@ -1644,24 +1809,35 @@
         <!-- ============= -->
 
         <tu tuid="country_CA" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en"><seg>Canada</seg></tuv>
         </tu>
 
         <tu tuid="country_FR" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en"><seg>France</seg></tuv>
         </tu>
 
+        <tu tuid="country_SP" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>Spain</seg></tuv>
+        </tu>
+
         <tu tuid="country_UK" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en"><seg>United Kingdom</seg></tuv>
         </tu>
 
         <tu tuid="country_US" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en"><seg>United States of America</seg></tuv>

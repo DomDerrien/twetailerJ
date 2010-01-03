@@ -12,6 +12,7 @@
         <!-- =================== -->
 
         <tu tuid="bundle_language" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -30,6 +31,7 @@
         <!-- ================== -->
 
         <tu tuid="ui_page_redirection_message" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message printed in redirection page|
@@ -41,6 +43,7 @@
         </tu>
 
         <tu tuid="ui_application_name" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Name of the entire application</note>
             <tuv xml:lang="en">
@@ -49,6 +52,7 @@
         </tu>
 
         <tu tuid="ui_splash_screen_message" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Message printed while the application dependencies are loaded, while the console is being built</note>
             <tuv xml:lang="en">
@@ -57,6 +61,7 @@
         </tu>
 
         <tu tuid="update_button" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Update</seg>
@@ -64,6 +69,7 @@
         </tu>
 
         <tu tuid="verify_button" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Verify</seg>
@@ -75,6 +81,7 @@
         <!-- ================ -->
 
         <tu tuid="navigation_consumer" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Consumer</seg>
@@ -82,6 +89,7 @@
         </tu>
 
         <tu tuid="navigation_sale_associate" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Sale Associate</seg>
@@ -89,6 +97,7 @@
         </tu>
 
         <tu tuid="navigation_about" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>About</seg>
@@ -96,6 +105,7 @@
         </tu>
 
         <tu tuid="navigation_sign_out" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Sign Out</seg>
@@ -103,6 +113,7 @@
         </tu>
 
         <tu tuid="navigation_language_selector" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Language Selector</seg>
@@ -114,6 +125,7 @@
         <!-- ========= -->
 
         <tu tuid="login_introduction_message" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
@@ -125,6 +137,7 @@
         </tu>
 
         <tu tuid="login_open_id_label" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Your OpenID identifier:</seg>
@@ -132,6 +145,7 @@
         </tu>
 
         <tu tuid="login_sign_in_button" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Sign In with OpenID</seg>
@@ -139,6 +153,7 @@
         </tu>
 
         <tu tuid="login_provider_list_message" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>OpenID Provider Shortcuts:</seg>
@@ -146,51 +161,61 @@
         </tu>
 
         <tu tuid="login_provider_shortcut_google" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Google</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_google" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Google</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_yahoo" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Yahoo!</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_myspace" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with MySpace</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_aol" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with AOL</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_wordpress" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Wordpress</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_blogger" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Blogger</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_chimp" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Chi.mp</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_myopenid" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with myOpenID</seg></tuv>
         </tu>
 
         <tu tuid="login_dialog_custom_info_prefix" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Text place in front of the input field that is going to receive the user's input for his custom OpenID identifier.
@@ -201,6 +226,7 @@
         </tu>
 
         <tu tuid="login_dialog_custom_info_suffix" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Text place after the input field that is going to receive the user's input for his custom OpenID identifier.
@@ -211,6 +237,7 @@
         </tu>
 
         <tu tuid="login_dialog_close_button" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Close</seg></tuv>
         </tu>
@@ -220,6 +247,7 @@
         <!-- ========= -->
 
         <tu tuid="about_text" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
@@ -236,6 +264,7 @@
         </tu>
 
         <tu tuid="about_powered_by_appengine" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Powered by Google App Engine</seg>
@@ -247,6 +276,7 @@
         <!-- ============= -->
 
         <tu tuid="navigation_consumer_createDemand" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Create a Demand</seg>
@@ -254,6 +284,7 @@
         </tu>
 
         <tu tuid="navigation_consumer_listDemand" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>List your Demands</seg>
@@ -261,6 +292,7 @@
         </tu>
 
         <tu tuid="navigation_consumer_listProposal" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>List your Proposals</seg>
@@ -268,6 +300,7 @@
         </tu>
 
         <tu tuid="navigation_consumer_profile" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Your Profile</seg>
@@ -275,6 +308,7 @@
         </tu>
 
         <tu tuid="navigation_saleAssociate_listDemand" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>List Received Demands</seg>
@@ -282,6 +316,7 @@
         </tu>
 
         <tu tuid="navigation_saleAssociate_listProposal" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>List your Proposals</seg>
@@ -289,6 +324,7 @@
         </tu>
 
         <tu tuid="navigation_saleAssociate_profile" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Your Profile</seg>
@@ -296,6 +332,7 @@
         </tu>
 
         <tu tuid="navigation_needHelp" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Need Help?</seg>
@@ -307,81 +344,97 @@
         <!-- ========================= -->
 
         <tu tuid="consumer_info_first_field_group" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Personal Identification</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_second_field_group" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Third-Party Access Points</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_openid" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>OpenID</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_openid" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Hint: as reported by your OpenID provider.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_name" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Name</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_name" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg></seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_country" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Country</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_country" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg></seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_language" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Language</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_language" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg></seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_email" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>E-mail address</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_email" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Hint: to attach messages exchanged with &lt;a href="mailto:maezel@twetailer.appspotmail.com"&gt;maezel@twetailer.appspotmail.com&lt;/a&gt; with your account.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_jabber" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Jabber/XMPP Identifier</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_jabber" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://twetailer.appspot.com"&gt;twetailer.appspot.com&lt;/a&gt; with your account.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_twitter" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Twitter Name</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_hint_twitter" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
@@ -392,6 +445,7 @@
         </tu>
 
         <tu tuid="consumer_info_verification_notification_title" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Confirmation code for the Twetailer registration process</seg>
@@ -399,6 +453,7 @@
         </tu>
 
         <tu tuid="consumer_info_verification_notification_body" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
@@ -414,6 +469,7 @@
         </tu>
 
         <tu tuid="consumer_info_verification_alert" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
                 Information message for the screen screen at step 4, displayed when all given (and valid) identifiers match one existing account.
@@ -433,6 +489,7 @@
         </tu>
 
         <tu tuid="consumer_info_verification_alert_email" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
                 Information message for the screen screen at step 4, mechanism for sending confirmation codes.
@@ -444,6 +501,7 @@
         </tu>
 
         <tu tuid="consumer_info_verification_alert_jabberId" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
                 Information message for the screen screen at step 4, mechanism for sending confirmation codes.
@@ -455,6 +513,7 @@
         </tu>
 
         <tu tuid="consumer_info_verification_alert_twitterId" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
                 Information message for the screen screen at step 4, mechanism for sending confirmation codes.
@@ -470,6 +529,7 @@
         <!-- ============== -->
 
         <tu tuid="error_client_side_communication_failed" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
                 Generic error message presented to the Console user when there's

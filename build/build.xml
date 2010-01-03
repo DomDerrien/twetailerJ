@@ -235,6 +235,7 @@
         <mkdir dir="src/war/WEB-INF/classes" />
         <antcall target="step-java-compile" />
         <!-- Process TMXs -->
+        <antcall target="step-tmx-generate" />
         <antcall target="step-tmx-convert" />
         <!-- Verify Java coding rules -->
         <!-- TODO: run verification tool -->
@@ -246,6 +247,7 @@
         <antcall target="step-javadoc-produce" />
         <antcall target="step-jsdoc-produce" />
         <antcall target="step-tmxdoc-produce" />
+        <antcall target="step-tmxtranslator-produce" />
         <!-- Produce the JARs -->
         <antcall target="step-package-jar" />
         <!-- Generate timestamp or use static one -->
@@ -300,7 +302,7 @@
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${rwa.languageListFilename}.properties file -->
         <filelist dir="deps/lib">
-            <file name="domderrien/domderrien-0.9.3.jar" />
+            <file name="domderrien/domderrien-1.0.1.jar" />
             <file name="xml/xalan-2.7.0.jar" />
             <file name="xml/xercesImpl-2.4.0.jar" />
             <file name="xml/xml-apis-1.3.02.jar" />
@@ -311,7 +313,7 @@
     </path>
     
     <fileset id="runtime.deps" dir="deps/lib">
-        <include name="domderrien/domderrien-0.9.3.jar" />
+        <include name="domderrien/domderrien-1.0.1.jar" />
         <include name="easymock/easymock-2.5.1.jar" />
         <include name="easymock/easymockclassextension.jar" />
         <include name="easymock/cglib-nodep-2.2.jar" />
@@ -658,6 +660,37 @@
         >
             <classpath refid="java.compile.classpath" />
         </javac>
+    </target>
+
+    <target name="step-tmx-generate">
+        <mkdir dir="${temp.dir}/resources" />
+        <java classname="domderrien.build.TMXGenerator" fork="true" failonerror="true">
+            <classpath refid="tmxconverter.classpath" />
+            <classpath location="${temp.dir}/resources" />
+            <jvmarg value="-Dfile.encoding=UTF-8" />
+            <arg value="-filenameBase" />
+            <arg value="${rwa.masterLocalizedLabelBaseFilename}" />
+            <arg value="-directoryName" />
+            <arg value="${basedir}\src\resources" />
+        </java>
+        <java classname="domderrien.build.TMXGenerator" fork="true" failonerror="true">
+            <classpath refid="tmxconverter.classpath" />
+            <classpath location="${temp.dir}/resources" />
+            <jvmarg value="-Dfile.encoding=UTF-8" />
+            <arg value="-filenameBase" />
+            <arg value="${rwa.secondLocalizedLabelBaseFilename}" />
+            <arg value="-directoryName" />
+            <arg value="${basedir}\src\resources" />
+        </java>
+        <java classname="domderrien.build.TMXGenerator" fork="true" failonerror="true">
+            <classpath refid="tmxconverter.classpath" />
+            <classpath location="${temp.dir}/resources" />
+            <jvmarg value="-Dfile.encoding=UTF-8" />
+            <arg value="-filenameBase" />
+            <arg value="${rwa.thirdLocalizedLabelBaseFilename}" />
+            <arg value="-directoryName" />
+            <arg value="${basedir}\src\resources" />
+        </java>
     </target>
 
     <target name="step-tmx-convert">
@@ -1212,6 +1245,18 @@
             extension=".html"
             includes="*.tmx"
             style="src/resources/tmx2html.xsl"
+        >
+            <xmlcatalog refid="tmx.dtd" />
+        </xslt>
+    </target>
+
+    <target name="step-tmxtranslator-produce">
+        <xslt
+            basedir="src/resources"
+            destdir="docs/generated-doc"
+            extension=".l10n.html"
+            includes="*_??.tmx"
+            style="src/resources/tmx2l10n.xsl"
         >
             <xmlcatalog refid="tmx.dtd" />
         </xslt>
