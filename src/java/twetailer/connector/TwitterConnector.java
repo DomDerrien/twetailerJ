@@ -13,15 +13,11 @@ import twitter4j.TwitterException;
 public class TwitterConnector {
     private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
-    private static String twetailerScreenName = "twetailer";
-    private static String twetailerPassword = "ec0n0m1cs";
+    public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
+    private static final String TWETAILER_TWITTER_PASSWORD = "ec0n0m1cs";
 
-    private static String robotScreenName = "jacktroll";
-    private static String robotPassword = "twetailer@robot1";
-
-    public static String getTwetailerScreenName() {
-        return twetailerScreenName;
-    }
+    // private static String robotScreenName = "jacktroll";
+    // private static String robotPassword = "twetailer@robot1";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 
@@ -39,7 +35,7 @@ public class TwitterConnector {
     public synchronized static Twitter getTwetailerAccount() {
         int size = _twetailerAccounts.size();
         if (size == 0) {
-            return new Twitter(twetailerScreenName, twetailerPassword);
+            return new Twitter(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
         }
         return _twetailerAccounts.remove(size - 1);
     }
@@ -54,38 +50,11 @@ public class TwitterConnector {
         _twetailerAccounts.add(account);
     }
 
-    private static List<Twitter> _robotAccounts = new ArrayList<Twitter>();
-
-    /**
-     * Accessor provided for unit tests
-     * @return Twitter account controller
-     *
-     * @see TwitterUtils#releaseRobotAccount(Twitter)
-     */
-    public synchronized static Twitter getRobotAccount() {
-        int size = _robotAccounts.size();
-        if (size == 0) {
-            return new Twitter(robotScreenName, robotPassword);
-        }
-        return _robotAccounts.remove(size - 1);
-    }
-
-
-    /**
-     * Allow to return the Twitter account object to the pool
-     *
-     * @see TwitterUtils#getRobotAccount(Twitter)
-     */
-    public static void releaseRobotAccount(Twitter account) {
-        _robotAccounts.add(account);
-    }
-
     /**
      * Accessor provided for the unit tests
      */
     protected static void resetAccountLists() {
         _twetailerAccounts.clear();
-        _robotAccounts.clear();
     }
 
     /**

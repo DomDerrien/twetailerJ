@@ -4,9 +4,10 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import com.google.appengine.api.datastore.Text;
-
 import twetailer.connector.BaseConnector.Source;
+import twetailer.task.TweetLoader;
+
+import com.google.appengine.api.datastore.Text;
 
 /**
  * @author Dom Derrien
@@ -48,6 +49,12 @@ public class RawCommand extends Entity {
     }
 
     public void setCommand(String text) {
+        if (text != null) {
+            text = text.trim();
+            if (text.startsWith(TweetLoader.HARMFULL_D_TWETAILER_PREFIX)) {
+                text = text.substring(TweetLoader.HARMFULL_D_TWETAILER_PREFIX.length()).trim();
+            }
+        }
         command = text;
     }
 

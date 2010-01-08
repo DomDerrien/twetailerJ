@@ -23,6 +23,8 @@
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
 
+    // useCDN = false; // To be included for runs in offline mode ++ begin/end
+
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
@@ -274,7 +276,7 @@
     <script type="text/javascript">
     var registration = new Object();
     registration.createLocation = function() {
-        dojo.xhrPut({
+        dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.formToJson("locationInformation"),
             handleAs: "json",
@@ -293,7 +295,7 @@
     registration.createStore = function() {
         var data = dojo.formToObject("storeInformation");
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
-        dojo.xhrPut({
+        dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.toJson(data),
             handleAs: "json",
@@ -349,7 +351,7 @@
     registration.createSaleAssociate = function() {
         var data = dojo.formToObject("saleAssociateInformation");
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
-        dojo.xhrPut({
+        dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.toJson(data),
             handleAs: "json",

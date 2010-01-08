@@ -69,6 +69,8 @@ public class TweetLoader {
         }
     }
 
+    public static final String HARMFULL_D_TWETAILER_PREFIX = "d " + TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME;
+
     /**
      * Extract commands from the pending Direct Messages and save them into the command table
      *
@@ -89,7 +91,7 @@ public class TweetLoader {
             messages = TwitterConnector.getDirectMessages(sinceId);
         }
         catch(TwitterException ex) {
-            log.info("Cannot get the Direct Messages (DM) for the account " + TwitterConnector.getTwetailerScreenName());
+            log.info("Cannot get the Direct Messages (DM) for the account " + TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME);
         }
 
         List<RawCommand> extractedCommands = new ArrayList<RawCommand>();

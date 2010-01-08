@@ -388,7 +388,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Info: pour associer à votre compte les messages instantannés que vous enverrez à &lt;a href="xmpp://twetailer.appspot.com"&gt;twetailer.appspot.com&lt;/a&gt;.</seg>
+                <seg>Info: pour associer à votre compte les messages instantannés que vous enverrez à &lt;a href="xmpp://twetailer@appspot.com"&gt;twetailer@appspot.com&lt;/a&gt;.</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_label_twitter" dataType="text">

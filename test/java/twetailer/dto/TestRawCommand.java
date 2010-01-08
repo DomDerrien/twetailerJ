@@ -74,4 +74,41 @@ public class TestRawCommand {
         RawCommand object = new RawCommand();
         object.setSource((Source) null);
     }
+
+    @Test
+    public void testSetCommand() {
+        RawCommand object = new RawCommand();
+        object.setCommand(null);
+    }
+
+    @Test
+    public void testExclusionOfDTwetailer() {
+        RawCommand command = new RawCommand();
+        String given, expected;
+
+        expected = "d";
+        given = expected;
+        command.setCommand(given);
+        assertEquals(expected, command.getCommand());
+
+        expected = "d test";
+        given = expected;
+        command.setCommand(given);
+        assertEquals(expected, command.getCommand());
+
+        expected = "";
+        given = "d twetailer " + expected;
+        command.setCommand(given);
+        assertEquals(expected, command.getCommand());
+
+        expected = "";
+        given = "   d twetailer   " + expected;
+        command.setCommand(given);
+        assertEquals(expected, command.getCommand());
+
+        expected = "wii console";
+        given = "   d twetailer   " + expected;
+        command.setCommand(given);
+        assertEquals(expected, command.getCommand());
+    }
 }

@@ -32,11 +32,6 @@ public class TestTwitterConnector {
     }
 
     @Test
-    public void testAccessorsI() {
-        TwitterConnector.getTwetailerScreenName();
-    }
-
-    @Test
     public void testTwetailerAccountDistributorI() {
         Twitter first = TwitterConnector.getTwetailerAccount();
         Twitter second = TwitterConnector.getTwetailerAccount();
@@ -46,20 +41,6 @@ public class TestTwitterConnector {
         TwitterConnector.releaseTwetailerAccount(first);
 
         Twitter third = TwitterConnector.getTwetailerAccount();
-
-        assertEquals(first, third);
-    }
-
-    @Test
-    public void testTwetailerAccountDistributorII() {
-        Twitter first = TwitterConnector.getRobotAccount();
-        Twitter second = TwitterConnector.getRobotAccount();
-
-        assertNotSame(first, second);
-
-        TwitterConnector.releaseRobotAccount(first);
-
-        Twitter third = TwitterConnector.getRobotAccount();
 
         assertEquals(first, third);
     }

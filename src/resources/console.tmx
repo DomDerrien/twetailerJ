@@ -440,7 +440,7 @@
         <tu tuid="consumer_info_hint_jabber" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://twetailer.appspot.com"&gt;twetailer.appspot.com&lt;/a&gt; with your account.</seg></tuv>
+            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://twetailer@appspot.com"&gt;twetailer@appspot.com&lt;/a&gt; with your account.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_twitter" datatype="Text">
