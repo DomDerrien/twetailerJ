@@ -1,5 +1,6 @@
 package twetailer.dao;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,29 @@ public class DemandOperations extends BaseOperations {
         List<Demand> demands = (List<Demand>) queryObj.execute(value);
         demands.size(); // FIXME: remove workaround for a bug in DataNucleus
         return demands;
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param attribute Name of the demand attribute used a the search criteria
+     * @param value Pattern for the search attribute
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of demand identifiers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getDemandKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
+        value = prepareQuery(queryObj, attribute, value, limit);
+        getLogger().warning("Select demand(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Long> demandKeys = (List<Long>) queryObj.execute(value);
+        demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return demandKeys;
     }
 
     /**

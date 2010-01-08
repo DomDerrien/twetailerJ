@@ -337,4 +337,31 @@ public class TestDemandOperations {
         assertEquals(1, selection.size());
         assertEquals(object.getKey(), selection.get(0).getKey());
     }
+
+    @Test
+    public void testGetKeysI() throws DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        DemandOperations ops = new DemandOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+        };
+        Demand object = new Demand();
+        object.setOwnerKey(111L);
+        object = ops.createDemand(pm, object); // Gives the PersistenceManager so it won't be closed
+
+        List<Long> selection = ops.getDemandKeys(pm, Command.OWNER_KEY, 111L, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetKeysII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        List<Long> selection = new DemandOperations().getDemandKeys(pm, Command.OWNER_KEY, 111L, 0);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
 }

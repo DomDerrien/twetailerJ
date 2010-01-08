@@ -93,7 +93,7 @@ public class ConfirmCommandProcessor {
                     consequence.setSource(Source.robot);
 
                     // Persist message
-                    CommandProcessor.rawCommandOperations.createRawCommand(pm, consequence);
+                    consequence = CommandProcessor.rawCommandOperations.createRawCommand(pm, consequence);
 
                     // Create a task for that command
                     Queue queue = CommandProcessor._baseOperations.getQueue();

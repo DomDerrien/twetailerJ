@@ -3,6 +3,7 @@ package twetailer.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
@@ -221,5 +222,28 @@ public class TestRobotResponder {
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testGetRobotConsumerKey() throws DataSourceException {
+        final Long robotKey = 12345L;
+        final Settings settings = new Settings();
+        settings.setRobotConsumerKey(robotKey);
+        RobotResponder.settingsOperations = new SettingsOperations() {
+            boolean alreadyCalled = false;
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                if (alreadyCalled) {
+                    fail("Should have been called only once");
+                }
+                alreadyCalled = true;
+                assertNull(pm);
+                return settings;
+            }
+        };
+        RobotResponder.setRobotConsumerKey(null); // To be sure to have a fresh behavior
+        assertEquals(robotKey, RobotResponder.getRobotConsumerKey(null));
+        assertEquals(robotKey, RobotResponder.getRobotConsumerKey(null));
+        assertEquals(robotKey, RobotResponder.getRobotConsumerKey(null));
     }
 }

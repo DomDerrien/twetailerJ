@@ -143,7 +143,7 @@
                                  <%= LabelExtractor.get(ResourceFileId.third, "login_introduction_message", locale) %>
                             </div>
                             <br/>
-                            <form action="/control/login" dojoType="dijit.form.Form" method="post">
+                            <form action="/control/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
                                 <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
                                 <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;" type="text" /></center>
                                 <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>

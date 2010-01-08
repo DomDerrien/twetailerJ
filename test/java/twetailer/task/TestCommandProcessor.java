@@ -253,6 +253,26 @@ public class TestCommandProcessor {
         assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
     }
 
+    @Test
+    public void testRetrieveConsumerVIII() throws DataSourceException {
+        final Long robotKey = 12345L;
+        RobotResponder.setRobotConsumerKey(robotKey);
+
+        final Consumer consumer = new Consumer();
+        consumer.setKey(robotKey);
+        CommandProcessor.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(robotKey, key);
+                return consumer;
+            }
+        };
+
+        RawCommand rawCommand = new RawCommand(Source.robot);
+
+        assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
+    }
+
     @Test(expected=DataSourceException.class)
     public void testProcessRawCommandWithNoMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Mock RawCommandOperations

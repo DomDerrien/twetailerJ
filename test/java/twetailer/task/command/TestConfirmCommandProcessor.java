@@ -21,6 +21,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -29,15 +30,23 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
+import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
+
+import com.google.appengine.api.labs.taskqueue.MockQueue;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.apphosting.api.MockAppEngineEnvironment;
+
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestConfirmCommandProcessor {
+
+    static MockAppEngineEnvironment appEnv;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -47,11 +56,15 @@ public class TestConfirmCommandProcessor {
     @Before
     public void setUp() throws Exception {
         new TestCommandProcessor().setUp();
+
+        appEnv = new MockAppEngineEnvironment();
+        appEnv.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         new TestCommandProcessor().tearDown();
+        appEnv.tearDown();
     }
 
     @Test
@@ -128,7 +141,7 @@ public class TestConfirmCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        CommandProcessor.processCommand(appEnv.getPersistenceManager(), new Consumer(), rawCommand, command);
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText); // Informs the consumer
@@ -275,5 +288,74 @@ public class TestConfirmCommandProcessor {
         assertTrue(sentText.contains(proposalKey.toString()));
         assertTrue(sentText.contains(demandKey.toString()));
         assertTrue(sentText.contains(State.invalid.toString()));
+    }
+
+    @Test
+    public void testConfirmCommandByRobot() throws DataSourceException, ClientException {
+        final Long proposalKey = 4444L;
+        final Long demandKey = 5555L;
+        final Long saleAssociateKey = 12345L;
+        final Long storeKey = 7777L;
+
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setState(State.published);
+                proposal.setStoreKey(storeKey);
+                return proposal;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.addCriterion("test");
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.published);
+                return demand;
+            }
+        };
+        // DemandOperations mock
+        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand command) {
+                assertEquals(Source.robot, command.getSource());
+                command.setKey(67890L);
+                return command;
+            }
+        };
+        // CommandProcessor mock
+        final MockQueue queue = new MockQueue();
+        CommandProcessor._baseOperations = new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                return queue;
+            }
+        };
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.confirm.toString());
+        command.put(Proposal.PROPOSAL_KEY, proposalKey);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        RobotResponder.setRobotSaleAssociateKey(saleAssociateKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        assertEquals(1, queue.getHistory().size());
     }
 }

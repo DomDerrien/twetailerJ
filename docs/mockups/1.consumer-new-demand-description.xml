@@ -1,0 +1,335 @@
+<mockup version="1.0" skin="sketch" measuredW="890" measuredH="662" mockupW="800" mockupH="600">
+  <controls>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::TitleWindow" x="80" y="52" w="800" h="600" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Twetailer%20Console%20for%20Consumers</text>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="17" controlTypeID="com.balsamiq.mockups::TabBar" x="80" y="74" w="800" h="553" measuredW="548" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Your%20Demands%2C%20New%20Demand%2C%20Your%20Proposals%2C%20Your%20Profile%2C%20Need%20Help%3F</text>
+        <selectedIndex>1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="122" y="178" w="715" h="394" measuredW="200" measuredH="194" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Description%0ALocation%2C%20Range%0AExpiration%0ASummary</text>
+        <selectedIndex>3</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::Label" x="129" y="128" w="-1" h="-1" measuredW="149" measuredH="25" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Demand%20Creation%20Steps</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::ButtonBar" x="631" y="124" w="-1" h="-1" measuredW="207" measuredH="31" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Previous%2C%20Next%2C%20Finish</text>
+        <selectedIndex>-1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="21" controlTypeID="com.balsamiq.mockups::Label" x="245" y="312" w="-1" h="-1" measuredW="47" measuredH="25" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Range%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::Label" x="245" y="351" w="-1" h="-1" measuredW="119" measuredH="25" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Expiration%27s%20date%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::TextInput" x="374" y="309" w="43" h="-1" measuredW="29" measuredH="29" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>25</text>
+      </controlProperties>
+    </control>
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::DateChooser" x="374" y="349" w="-1" h="-1" measuredW="129" measuredH="29" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Feb%204%2C%202010</text>
+      </controlProperties>
+    </control>
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::ComboBox" x="425" y="310" w="-1" h="-1" measuredW="49" measuredH="25" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Km</text>
+      </controlProperties>
+    </control>
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::Label" x="245" y="193" w="-1" h="-1" measuredW="42" measuredH="25" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Tags%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="27" controlTypeID="com.balsamiq.mockups::TextInput" x="245" y="218" w="573" h="-1" measuredW="84" measuredH="29" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wii%20console</text>
+      </controlProperties>
+    </control>
+    <control controlID="28" controlTypeID="com.balsamiq.mockups::Label" x="245" y="277" w="-1" h="-1" measuredW="82" measuredH="25" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Postal%20code%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="29" controlTypeID="com.balsamiq.mockups::TextInput" x="374" y="274" w="100" h="-1" measuredW="73" measuredH="29" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>H3C%202N6</text>
+      </controlProperties>
+    </control>
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::Label" x="580" y="277" w="-1" h="-1" measuredW="59" measuredH="25" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Country%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="31" controlTypeID="com.balsamiq.mockups::ComboBox" x="672" y="275" w="-1" h="-1" measuredW="77" measuredH="25" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Canada</text>
+      </controlProperties>
+    </control>
+    <control controlID="32" controlTypeID="com.balsamiq.mockups::Button" x="472" y="514" w="-1" h="-1" measuredW="118" measuredH="28" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Create%20Demand</text>
+      </controlProperties>
+    </control>
+    <control controlID="33" controlTypeID="com.balsamiq.mockups::TitleWindow" x="80" y="52" w="800" h="600" measuredW="450" measuredH="400" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Twetailer%20Console%20for%20Consumers</text>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::TabBar" x="80" y="74" w="800" h="553" measuredW="548" measuredH="100" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Your%20Demands%2C%20New%20Demand%2C%20Your%20Proposals%2C%20Your%20Profile%2C%20Need%20Help%3F</text>
+        <selectedIndex>1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="35" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="125" y="167" w="715" h="394" measuredW="200" measuredH="194" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Description%0ALocation%2C%20Range%0AExpiration%0ASummary</text>
+        <selectedIndex>0</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="36" controlTypeID="com.balsamiq.mockups::TextInput" x="244" y="205" w="566" h="-1" measuredW="35" measuredH="29" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wii</text>
+      </controlProperties>
+    </control>
+    <control controlID="37" controlTypeID="com.balsamiq.mockups::Label" x="243" y="176" w="-1" h="-1" measuredW="42" measuredH="25" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Tags%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::Label" x="244" y="254" w="-1" h="-1" measuredW="111" measuredH="25" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Similar%20Demands%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="39" controlTypeID="com.balsamiq.mockups::DataGrid" x="244" y="288" w="581" h="206" measuredW="587" measuredH="106" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%28%29%2CTags%2C%20Location%2C%20Total%20Qty%2C%20Still%20Open%20Qty%2C%20Success%20Rate%0A%28%29%2CWii%20console%2C%20%3Caround%20your%20area%3E%2C%2025%2C%2012%2C%2033%25%0A%28%29%2CMario%20Kart%20Wii%2C%20%3Caround%20your%20area%3E%2C%2010%2C%203%2C%2070%25%0A%28%29%2CWii%20Fit%2C%20%3Caround%20your%20area%3E%2C%207%2C%202%2C%2066%25</text>
+        <hLines>false</hLines>
+        <vLines>true</vLines>
+        <rowHeight>26</rowHeight>
+        <verticalScrollbar>false</verticalScrollbar>
+      </controlProperties>
+    </control>
+    <control controlID="40" controlTypeID="com.balsamiq.mockups::Button" x="737" y="253" w="-1" h="-1" measuredW="73" measuredH="28" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Refresh</text>
+      </controlProperties>
+    </control>
+    <control controlID="41" controlTypeID="com.balsamiq.mockups::CheckBox" x="571" y="252" w="151" h="27" measuredW="151" measuredH="22" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Limited%20to%20your%20area</text>
+        <state>selected</state>
+      </controlProperties>
+    </control>
+    <control controlID="42" controlTypeID="com.balsamiq.mockups::Button" x="244" y="509" w="-1" h="-1" measuredW="384" measuredH="28" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Report%20Tags%20of%20the%20selected%20list%20entry%20as%20your%20keywords</text>
+      </controlProperties>
+    </control>
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="129" y="128" w="-1" h="-1" measuredW="149" measuredH="25" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Demand%20Creation%20Steps</text>
+      </controlProperties>
+    </control>
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::ButtonBar" x="631" y="124" w="-1" h="-1" measuredW="207" measuredH="31" zOrder="28" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Previous%2C%20Next%2C%20Finish</text>
+      </controlProperties>
+    </control>
+    <control controlID="45" controlTypeID="com.balsamiq.mockups::TitleWindow" x="80" y="52" w="800" h="600" measuredW="450" measuredH="400" zOrder="29" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Twetailer%20Console%20for%20Consumers</text>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::TabBar" x="80" y="74" w="800" h="553" measuredW="548" measuredH="100" zOrder="30" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Your%20Demands%2C%20New%20Demand%2C%20Your%20Proposals%2C%20Your%20Profile%2C%20Need%20Help%3F</text>
+        <selectedIndex>1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="47" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="122" y="167" w="715" h="394" measuredW="200" measuredH="194" zOrder="31" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Description%0ALocation%2C%20Range%0AExpiration%0ASummary</text>
+        <selectedIndex>1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::TextInput" x="244" y="205" w="97" h="-1" measuredW="67" measuredH="29" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>H3C2N6</text>
+      </controlProperties>
+    </control>
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::Label" x="243" y="176" w="-1" h="-1" measuredW="77" measuredH="25" zOrder="33" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Postal%20Code</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::Label" x="129" y="128" w="-1" h="-1" measuredW="149" measuredH="25" zOrder="34" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Demand%20Creation%20Steps</text>
+      </controlProperties>
+    </control>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::ButtonBar" x="631" y="124" w="-1" h="-1" measuredW="207" measuredH="31" zOrder="35" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Previous%2C%20Next%2C%20Finish</text>
+        <selectedIndex>-1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="52" controlTypeID="com.balsamiq.mockups::ComboBox" x="244" y="293" w="-1" h="-1" measuredW="77" measuredH="25" zOrder="36" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Canada</text>
+      </controlProperties>
+    </control>
+    <control controlID="53" controlTypeID="com.balsamiq.mockups::Label" x="244" y="264" w="-1" h="-1" measuredW="53" measuredH="25" zOrder="37" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Country</text>
+      </controlProperties>
+    </control>
+    <control controlID="54" controlTypeID="com.balsamiq.mockups::Canvas" x="437" y="196" w="378" h="327" measuredW="100" measuredH="70" zOrder="38" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>1</backgroundAlpha>
+      </controlProperties>
+    </control>
+    <control controlID="55" controlTypeID="com.balsamiq.mockups::Map" x="445" y="205" w="363" h="311" measuredW="252" measuredH="222" zOrder="39" locked="false" isInGroup="-1"/>
+    <control controlID="56" controlTypeID="com.balsamiq.mockups::Canvas" x="384" y="196" w="53" h="327" measuredW="100" measuredH="70" zOrder="40" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>1</backgroundAlpha>
+      </controlProperties>
+    </control>
+    <control controlID="57" controlTypeID="com.balsamiq.mockups::VSlider" x="405" y="262" w="-1" h="86" measuredW="11" measuredH="33" zOrder="41" locked="false" isInGroup="-1"/>
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::CallOut" x="516" y="249" w="-1" h="-1" measuredW="115" measuredH="40" zOrder="42" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Here%20you%20are%21</text>
+      </controlProperties>
+    </control>
+    <control controlID="59" controlTypeID="com.balsamiq.mockups::RedX" x="603" y="296" w="13" h="18" measuredW="240" measuredH="104" zOrder="43" locked="false" isInGroup="-1"/>
+    <control controlID="60" controlTypeID="com.balsamiq.mockups::RoundButton" x="394" y="226" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="44" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>GeoLocationIcon%7Csmall</icon>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="61" controlTypeID="com.balsamiq.mockups::HSlider" x="244" y="388" w="106" h="-1" measuredW="33" measuredH="11" zOrder="45" locked="false" isInGroup="-1">
+      <controlProperties>
+        <value>53</value>
+      </controlProperties>
+    </control>
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Label" x="244" y="349" w="-1" h="-1" measuredW="41" measuredH="25" zOrder="46" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Range</text>
+      </controlProperties>
+    </control>
+    <control controlID="63" controlTypeID="com.balsamiq.mockups::Label" x="244" y="374" w="-1" h="-1" measuredW="22" measuredH="25" zOrder="47" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>10</text>
+      </controlProperties>
+    </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Label" x="315" y="373" w="-1" h="-1" measuredW="30" measuredH="25" zOrder="48" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>100</text>
+      </controlProperties>
+    </control>
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::ComboBox" x="305" y="348" w="-1" h="-1" measuredW="49" measuredH="25" zOrder="49" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Km</text>
+      </controlProperties>
+    </control>
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::Canvas" x="501" y="223" w="216" h="209" measuredW="100" measuredH="70" zOrder="50" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>15790322</color>
+        <borderColor>13576743</borderColor>
+        <backgroundAlpha>0</backgroundAlpha>
+      </controlProperties>
+    </control>
+    <control controlID="67" controlTypeID="com.balsamiq.mockups::TitleWindow" x="80" y="52" w="800" h="600" measuredW="450" measuredH="400" zOrder="51" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Twetailer%20Console%20for%20Consumers</text>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="68" controlTypeID="com.balsamiq.mockups::TabBar" x="80" y="74" w="800" h="553" measuredW="548" measuredH="100" zOrder="52" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Your%20Demands%2C%20New%20Demand%2C%20Your%20Proposals%2C%20Your%20Profile%2C%20Need%20Help%3F</text>
+        <selectedIndex>1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="69" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="125" y="167" w="715" h="394" measuredW="200" measuredH="194" zOrder="53" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Description%0ALocation%2C%20Range%0AExpiration%0ASummary</text>
+        <selectedIndex>0</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="70" controlTypeID="com.balsamiq.mockups::TextInput" x="244" y="205" w="566" h="-1" measuredW="35" measuredH="29" zOrder="54" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wii</text>
+      </controlProperties>
+    </control>
+    <control controlID="71" controlTypeID="com.balsamiq.mockups::Label" x="243" y="176" w="-1" h="-1" measuredW="42" measuredH="25" zOrder="55" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Tags%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="244" y="254" w="-1" h="-1" measuredW="111" measuredH="25" zOrder="56" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Similar%20Demands%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::DataGrid" x="244" y="288" w="581" h="206" measuredW="636" measuredH="132" zOrder="57" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%28%29%2CTags%2C%20Location%2C%20Total%20Qty%2C%20Still%20Open%20Qty%2C%20Success%20Rate%0A%28%29%2CWii%20console%2C%20%3Caround%20your%20area%3E%2C%2025%2C%2012%2C%2033%25%0A%28%29%2CMario%20Kart%20Wii%2C%20%3Caround%20your%20area%3E%2C%2010%2C%203%2C%2070%25%0A%28%29%2CWii%20Fit%2C%20%3Caround%20your%20area%3E%2C%207%2C%202%2C%2066%25%0A%28%29%2CWii%20Wireless%20Keyboard%2C%20%3Caround%20your%20area%3E%2C1%2C0%2C0%25</text>
+        <hLines>false</hLines>
+        <vLines>true</vLines>
+        <rowHeight>26</rowHeight>
+        <verticalScrollbar>false</verticalScrollbar>
+      </controlProperties>
+    </control>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Button" x="737" y="253" w="-1" h="-1" measuredW="73" measuredH="28" zOrder="58" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Refresh</text>
+      </controlProperties>
+    </control>
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::CheckBox" x="571" y="252" w="151" h="27" measuredW="151" measuredH="22" zOrder="59" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Limited%20to%20your%20area</text>
+        <state>selected</state>
+      </controlProperties>
+    </control>
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="244" y="509" w="-1" h="-1" measuredW="384" measuredH="28" zOrder="60" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Report%20Tags%20of%20the%20selected%20list%20entry%20as%20your%20keywords</text>
+      </controlProperties>
+    </control>
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::Label" x="129" y="128" w="-1" h="-1" measuredW="149" measuredH="25" zOrder="61" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Demand%20Creation%20Steps</text>
+      </controlProperties>
+    </control>
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::ButtonBar" x="631" y="124" w="-1" h="-1" measuredW="207" measuredH="31" zOrder="62" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Previous%2C%20Next%2C%20Finish</text>
+        <selectedIndex>-1</selectedIndex>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

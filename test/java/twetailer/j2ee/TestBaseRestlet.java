@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
@@ -58,10 +58,6 @@ public class TestBaseRestlet {
         }
         protected void setLogger(Logger logger) {
             _logger = logger;
-        }
-        @Override
-        protected OpenIdUser getLoggedUser(HttpServletRequest request) {
-            return user;
         }
         @Override
         protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
@@ -187,6 +183,14 @@ public class TestBaseRestlet {
                 return "/current";
             }
             @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
             public Map<String, ?> getParameterMap() {
                 return in;
             }
@@ -232,6 +236,14 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -329,7 +341,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPostI() throws IOException {
+    public void testdoPutI() throws IOException {
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -354,7 +366,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
 
-        mockRestlet.doPost(mockRequest, mockResponse);
+        mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
         assertTrue(stream.contains("exceptionMessage"));
@@ -364,7 +376,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPostII() throws IOException {
+    public void testdoPutII() throws IOException {
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -389,7 +401,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
 
-        mockRestlet.doPost(mockRequest, mockResponse);
+        mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
         assertTrue(stream.contains("exceptionMessage"));
@@ -400,7 +412,7 @@ public class TestBaseRestlet {
 
     @Test
     @SuppressWarnings("serial")
-    public void testDoPostIII() throws IOException {
+    public void testdoPutIII() throws IOException {
         final String uid = "uid1212";
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -415,6 +427,14 @@ public class TestBaseRestlet {
             @Override
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -436,7 +456,7 @@ public class TestBaseRestlet {
             }
         };
 
-        mockRestlet.doPost(mockRequest, mockResponse);
+        mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("resource"));
         assertTrue(stream.contains("{"));
         assertTrue(stream.contains("id"));
@@ -447,7 +467,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPostIV() throws IOException {
+    public void testdoPutIV() throws IOException {
         final String uid = "<!uid1212:>";
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -473,7 +493,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
 
-        mockRestlet.doPost(mockRequest, mockResponse);
+        mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
         assertTrue(stream.contains("exceptionMessage"));
@@ -483,7 +503,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPostV() throws IOException {
+    public void testdoPutV() throws IOException {
         final String uid = "<!uid1212:>";
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -515,13 +535,13 @@ public class TestBaseRestlet {
             }
         });
 
-        mockRestlet.doPost(mockRequest, mockResponse);
+        mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
     }
 
     @Test
     @SuppressWarnings("serial")
-    public void testDoPutI() throws IOException {
+    public void testdoPostI() throws IOException {
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -536,6 +556,14 @@ public class TestBaseRestlet {
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -556,7 +584,7 @@ public class TestBaseRestlet {
             }
         };
 
-        mockRestlet.doPut(mockRequest, mockResponse);
+        mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("resource"));
         assertTrue(stream.contains("{"));
         assertTrue(stream.contains("id"));
@@ -568,7 +596,7 @@ public class TestBaseRestlet {
 
     @Test
     @SuppressWarnings("serial")
-    public void testDoPutII() throws IOException {
+    public void testdoPostII() throws IOException {
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -583,6 +611,14 @@ public class TestBaseRestlet {
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -603,7 +639,7 @@ public class TestBaseRestlet {
             }
         };
 
-        mockRestlet.doPut(mockRequest, mockResponse);
+        mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("resource"));
         assertTrue(stream.contains("{"));
         assertTrue(stream.contains("id"));
@@ -614,7 +650,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPutIII() throws IOException {
+    public void testdoPostIII() throws IOException {
         final String uid = "uid1212";
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -640,7 +676,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
 
-        mockRestlet.doPut(mockRequest, mockResponse);
+        mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
         assertTrue(stream.contains("true"));
         assertTrue(stream.contains("exceptionMessage"));
@@ -650,7 +686,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPutIV() throws IOException {
+    public void testdoPostIV() throws IOException {
         final String uid = "<!uid1212:>";
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -682,7 +718,7 @@ public class TestBaseRestlet {
             }
         });
 
-        mockRestlet.doPut(mockRequest, mockResponse);
+        mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
     }
 
@@ -746,6 +782,14 @@ public class TestBaseRestlet {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -824,7 +868,6 @@ public class TestBaseRestlet {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testGetLoggedUser() throws Exception {
         final OpenIdUser user = OpenIdUser.populate(
                 "http://www.yahoo.com",
@@ -843,14 +886,195 @@ public class TestBaseRestlet {
             }
         };
 
-        assertEquals(user, new BaseRestlet() {
-            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException { return null; }
-            @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException { }
-            @Override protected Logger getLogger() { return null; }
-            @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException { return null; }
-            @Override protected JsonArray selectResources(JsonObject parameters) throws DataSourceException, ClientException { return null; }
-            @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException { return null; }
+        assertEquals(user, BaseRestlet.getLoggedUser(mockRequest));
+    }
 
-        }.getLoggedUser(mockRequest));
+    @Test
+    public void testInjectMockOpenUserI() {
+        final Long consumerKey = 12345L;
+        final String openId = "http://unit.test";
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                if ("debugConsumerKey".equals(name)) {
+                    return consumerKey.toString();
+                }
+                if ("debugConsumerOpenId".equals(name)) {
+                    return openId;
+                }
+                fail("Parameter access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public void setAttribute(String name, Object value) {
+                assertEquals(OpenIdUser.ATTR_NAME, name);
+                OpenIdUser user = (OpenIdUser) value;
+                assertEquals(openId, user.getClaimedId());
+                assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+            }
+        };
+
+        BaseRestlet.injectMockOpenUser(mockRequest);
+    }
+
+    @Test
+    public void testInjectMockOpenUserII() {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                if ("debugConsumerKey".equals(name)) {
+                    return null;
+                }
+                if ("debugConsumerOpenId".equals(name)) {
+                    return null;
+                }
+                fail("Parameter access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public void setAttribute(String name, Object value) {
+                assertEquals(OpenIdUser.ATTR_NAME, name);
+                OpenIdUser user = (OpenIdUser) value;
+                assertEquals("http://open.id", user.getClaimedId());
+                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+            }
+        };
+
+        BaseRestlet.injectMockOpenUser(mockRequest);
+    }
+
+    @Test
+    public void testGetLoggedUserWithInjection() throws Exception {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                if ("debugConsumerKey".equals(name)) {
+                    return null;
+                }
+                if ("debugConsumerOpenId".equals(name)) {
+                    return null;
+                }
+                fail("Parameter access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+            @Override
+            public void setAttribute(String name, Object value) {
+                assertEquals(OpenIdUser.ATTR_NAME, name);
+                OpenIdUser user = (OpenIdUser) value;
+                assertEquals("http://open.id", user.getClaimedId());
+                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+            }
+        };
+
+        BaseRestlet.getLoggedUser(mockRequest);
+    }
+
+    @Test
+    public void testDoGetFailingInDebugMode() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPostFailingInDebugMode() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPutFailingInDebugMode() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doPut(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoDeleteFailingInDebugMode() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getParameter(String name) {
+                if ("debugMode".equals(name)) {
+                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                }
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doDelete(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
     }
 }

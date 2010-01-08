@@ -60,6 +60,22 @@
             </tuv>
         </tu>
 
+        <tu tuid="clear_button" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Clear</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="reset_button" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Reset</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="update_button" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -158,12 +174,6 @@
             <tuv xml:lang="en">
                 <seg>OpenID Provider Shortcuts:</seg>
             </tuv>
-        </tu>
-
-        <tu tuid="login_provider_shortcut_google" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>Sign in with Google</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_google" datatype="Text">
@@ -415,6 +425,12 @@
             <tuv xml:lang="en"><seg>Hint: to attach messages exchanged with &lt;a href="mailto:maezel@twetailer.appspotmail.com"&gt;maezel@twetailer.appspotmail.com&lt;/a&gt; with your account.</seg></tuv>
         </tu>
 
+        <tu tuid="consumer_info_invalid_email_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Invalid e-mail address</seg></tuv>
+        </tu>
+
         <tu tuid="consumer_info_label_jabber" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -442,6 +458,12 @@
                     Note: you need to &lt;b&gt;follow @twetailer&lt;/b&gt; on Twitter in order to be able to get direct messages from us.
                 </seg>
             </tuv>
+        </tu>
+
+        <tu tuid="consumer_info_invalid_twitter_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Invalid Twitter identifier.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_verification_notification_title" datatype="Text">
@@ -481,9 +503,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                        A verification code has been sent {0} to: {1}. Please, report
-                        it in the input field below to be able to complete
-                        the registration process.
+                    A verification code has been sent {0} to: {1}. Please, report
+                    it in the input field below to be able to complete
+                    the registration process.
                 </seg>
             </tuv>
         </tu>
@@ -540,7 +562,7 @@
                     Unexpected error while processing a request response.
                     The incident is going to be reported to Twetailer analytics system.\n\n
                     You can send an e-mail to incident@twetailer.appspotmail.com if the issue is crucial to you.\n\n
-                    Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues
+                    Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues.
                 </seg>
             </tuv>
         </tu>

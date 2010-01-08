@@ -118,7 +118,7 @@ public class RobotResponder {
     private static Long robotSaleAssociateKey;
 
     // Just for unit test
-    protected static void setRobotSaleAssociateKey(Long key) {
+    public static void setRobotSaleAssociateKey(Long key) {
         robotSaleAssociateKey = key;
     }
 

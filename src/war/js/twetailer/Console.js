@@ -8,7 +8,10 @@
     var  _masterBundleName = "master",
         _consoleBundleName = "console",
         _getLabel,
-        _consumer;
+        _consumer,
+        _debugMode = null,
+        _debugCK,
+        _debugCOI;
 
     /**
      * Module initializer
@@ -21,6 +24,12 @@
         domderrien.i18n.LabelExtractor.init("twetailer", _masterBundleName, locale);
         module._labelExtractor = domderrien.i18n.LabelExtractor.init("twetailer", _consoleBundleName, locale);
         _getLabel = module._labelExtractor.getFrom;
+
+        // Get debug parameters
+        var requestParameters = dojo.queryToObject(window.location.search.slice(1));
+        _debugMode = requestParameters["debugMode"];
+        _debugCK = requestParameters["debugConsumerKey"];
+        _debugCOI = requestParameters["debugConsumerOpenId"];
 
         // TODO:
         // - hide the sale associate link if the consumer is not a sale associate
@@ -35,8 +44,10 @@
      * @private
      */
     module._reportClientError = function(message, ioArgs) {
+        if (_debugMode != null) {
+            console.log("Client error message: " + message + "\nurl: " + ioArgs.url);
+        }
         alert(_getLabel("console", "error_client_side_communication_failed"));
-        // alert(message + "\nurl: " + ioArgs.url);
         // dojo.analytics.addData("ClientError", "[" + message + "][" + ioArgs.url + "]");
     };
 
@@ -49,10 +60,13 @@
      * @private
      */
     module._reportServerError = function(response, ioArgs) {
-        message = "Unexpected failure while communicating over the URL: " + ioArgs.url + ".\n";
+        if (_debugMode != null) {
+            console.log("Server error message: " + message + "\nurl: " + ioArgs.url);
+        }
+        var message = "Unexpected failure while communicating over the URL: " + ioArgs.url + ".\n";
         if (response != null) {
             if (response.isException === true) {
-                message += response.message;
+                message = response.exceptionMessage; // Replace the local message by the one generated server-side
             }
             else if (response.status !== null) {
                 switch(response.status) {
@@ -80,16 +94,23 @@
      * @param {String} fieldId Identifier of the field containing the user name for the third-party provider
      */
     module.verifyConsumerCode = function(topic, fieldId) {
-        // Check for the update
-        var field = dijit.byId(fieldId);
-        var value = dojo.trim(field.attr("value"));
-        if (value == "" && _consumer[topic] == null || value == _consumer[topic]) {
-            return;
-        }
         // Prepare the code field
         var codeField = dijit.byId(fieldId + "Code");
         var codeNode = codeField.domNode;
         var waitForCode = dojo.style(codeNode, "display") == "none";
+        // Check for the update
+        var field = dijit.byId(fieldId);
+        var value = dojo.trim(field.attr("value"));
+        if (value == "" && _consumer[topic] == null || value == _consumer[topic]) {
+            if (!waitForCode) {
+                dojo.style(codeNode, "display", "none");
+            }
+            return;
+        }
+        if (value == "") {
+            module.resetConsumerCode(topic, fieldId);
+            return;
+        }
         dojo.style(codeNode, "display", "");
         // Prepare the data to be sent
         var data = dojo.formToObject("consumerInformation");
@@ -106,7 +127,7 @@
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     if (response.codeValidity === true) {
-                        dijit.byId(fieldId + "Button").attr("disabled", true);
+                        dijit.byId(fieldId + "VerifyButton").attr("disabled", true);
                         var handle = dojo.connect(
                                 field,
                                 "onKeyPress",
@@ -127,8 +148,32 @@
                 }
             },
             error: module._reportClientError,
-            url: "/API/maezel/processVerificationCode"
+            url: "/API/maezel/processVerificationCode" + (_debugMode == null ? "" : "?debugMode=" + _debugMode + "&debugConsumerKey=" + _debugCK + "&debugConsumerOpenId=" + _debugCOI)
         });
+    };
+
+    module.resetConsumerCode = function(topic, fieldId) {
+        // Reset the value
+        var field = dijit.byId(fieldId);
+        field.attr("value", "");
+        // Prepare the code field
+        var codeField = dijit.byId(fieldId + "Code");
+        if (_consumer[topic] == null || _consumer[topic] == "") {
+            codeField.attr("value", "");
+        }
+        else {
+            codeField.attr("value", 9999999999);
+        }
+        dojo.style(codeField.domNode, "display", "none");
+        // Block the Verify & Reset buttons
+        dijit.byId(fieldId + "VerifyButton").attr("disabled", true);
+        dijit.byId(fieldId + "ResetButton").attr("disabled", true);
+    };
+
+    module.controlVerifyButtonState = function(topic, fieldId) {
+        // Enable the Verify button only if the value if different from the current one
+        dijit.byId(fieldId + "VerifyButton").attr("disabled", dijit.byId(fieldId).attr("value") == _consumer[topic]);
+        dijit.byId(fieldId + "Code").attr("value", null);
     };
 
     module.updateConsumerInformation = function() {
@@ -143,11 +188,37 @@
             putData: dojo.toJson(data),
             handleAs: "json",
             load: function(response, ioArgs) {
-                alert(response.success);
+                var form = document.forms["consumerInformation"];
+                if (response !== null && response.success) {
+                    // Replace the _consumer instance with the updated copy
+                    _consumer = response.resource;
+                }
+                _setFormElementValue(form, _consumer);
             },
             error: module._reportClientError,
-            url: "/API/Consumer/" + _consumer.key
+            url: "/API/Consumer/" + _consumer.key + (_debugMode == null ? "" : "?debugMode=" + _debugMode + "&debugConsumerKey=" + _debugCK + "&debugConsumerOpenId=" + _debugCOI)
         });
     };
+
+    var _setFormElementValue = function(form, object) {
+        for(var attr in object) {
+            var field = form.elements[attr];
+            if (field != null) {
+                // field.value = response.resource[attr];
+                var widget = dijit.getEnclosingWidget(field);
+                widget.attr("value", object[attr]);
+                var id = widget.attr("id");
+                var button = dijit.byId(id + "VerifyButton");
+                if (button != null) {
+                    button.attr("disabled", true);
+                }
+                var code = dijit.byId(id + "Code");
+                if (code != null) {
+                    dojo.style(code.domNode, "display", "none");
+                    code.attr("value", null);
+                }
+            }
+        }
+    }
 
 })(); // End of the function limiting the scope of the private variables

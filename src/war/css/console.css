@@ -156,16 +156,40 @@ body {
     width:18px;
 }
 
+.silkIconCancel {
+    background-image:url(../images/cancel.png);
+}
+
+.silkIconDemand {
+    background-image:url(../images/page_white_go.png);
+}
+
+.silkIconDemandList {
+    background-image:url(../images/page_white_go_list.png);
+}
+
+.silkIconHelp {
+    background-image:url(../images/help.png);
+}
+
+.silkIconProposal {
+    background-image:url(../images/page_white_come.png);
+}
+
+.silkIconProposalList {
+    background-image:url(../images/page_white_come_list.png);
+}
+
 .silkIconUpdate {
     background-image:url(../images/page_white_edit.png);
 }
 
-.silkIconVerify {
-    background-image:url(../images/tick.png);
+.silkIconProfile {
+    background-image:url(../images/user.png);
 }
 
-.silkIconCancel {
-    background-image:url(../images/cancel.png);
+.silkIconVerify {
+    background-image:url(../images/tick.png);
 }
 
 /**

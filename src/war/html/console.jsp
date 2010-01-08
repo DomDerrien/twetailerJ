@@ -18,12 +18,15 @@
     import="twetailer.dao.ConsumerOperations"
     import="twetailer.dao.LocationOperations"
     import="twetailer.j2ee.LoginServlet"
+    import="twetailer.j2ee.BaseRestlet"
     import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+
+    // useCDN = false; // To be included for runs in offline mode ++ begin/end
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -35,8 +38,8 @@
     LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
     // Consumer attributes
-    OpenIdUser user = RelyingParty.getInstance().discover(request); // null; // FIXME:
-    Long consumerKey = (Long) user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID); // 336L; // FIXME:
+    OpenIdUser user = BaseRestlet.getLoggedUser(request);
+    Long consumerKey = (Long) user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
     Consumer consumer = consumerOperations.getConsumer(consumerKey);
     String openId = consumer.getOpenID() == null ? "" : consumer.getOpenID();
     String name = consumer.getName() == null ? "" : consumer.getName();
@@ -128,6 +131,7 @@
             dojo.require("dijit.form.Button");
             dojo.require("dijit.form.TextBox");
             dojo.require("dijit.form.NumberTextBox");
+            dojo.require("dijit.form.ValidationTextBox");
             dojo.require("dijit.form.FilteringSelect");
             dojo.require("twetailer.Console");
             dojo.require("dojo.parser");
@@ -185,17 +189,14 @@
             <script type="dojo/connect" event="selectChild">
             switch(this.selectedChildWidget.id) {
             case "consumerProfilePane":
-                var consumerNameField = dijit.byId("consumerName");
-                var handle1 = dojo.connect(consumerNameField, "onChange", function() { dijit.byId("consumerInfoUpdateButton").attr("disabled", false); dojo.disconnect(handle1); });
-                var handle2 = dojo.connect(dijit.byId("consumerCountry"), "onChange", function() { dijit.byId("consumerInfoUpdateButton").attr("disabled", false); dojo.disconnect(handle2); });
-                var handle3 = dojo.connect(dijit.byId("consumerLanguage"), "onChange", function() { dijit.byId("consumerInfoUpdateButton").attr("disabled", false); dojo.disconnect(handle3); });
-                consumerNameField.focus();
+                dijit.byId("consumerName").focus();
                 break;
             }
-        </script>
+            </script>
             <div
                 dojoType="dijit.layout.ContentPane"
                 id="consumerCreateDemandPane"
+                iconClass="silkIcon silkIconDemand"
                 selected="true"
                 title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer_createDemand", locale) %>"
             >
@@ -203,18 +204,21 @@
             <div
                 dojoType="dijit.layout.ContentPane"
                 id="consumerListDemandPane"
+                iconClass="silkIcon silkIconDemandList"
                 title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer_listDemand", locale) %>"
             >
             </div>
             <div
                 dojoType="dijit.layout.ContentPane"
                 id="consumerListProposalPane"
+                iconClass="silkIcon silkIconProposalList"
                 title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer_listProposal", locale) %>"
             >
             </div>
             <div
                 dojoType="dijit.layout.ContentPane"
                 id="consumerProfilePane"
+                iconClass="silkIcon silkIconProfile"
                 title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer_profile", locale) %>"
             >
                 <form id="consumerInformation" onsubmit="return false;">
@@ -264,38 +268,91 @@
                         <legend><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_second_field_group", locale) %></legend>
                         <div>
                             <label for="consumerEmail"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_email", locale) %></label><br/>
-                            <input dojoType="dijit.form.TextBox" id="consumerEmail" name="<%= Consumer.EMAIL %>" style="width:30em;" type="text" value="<%= email %>" />
-                            <input dojoType="dijit.form.NumberTextBox" id="consumerEmailCode" name="<%= Consumer.EMAIL %>Code" style="width:10em;display:none;" type="text" />
+                            <input
+                                dojoType="dijit.form.ValidationTextBox"
+                                id="consumerEmail"
+                                invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "consumer_info_invalid_email_message", locale) %>"
+                                name="<%= Consumer.EMAIL %>"
+                                onkeyup="twetailer.Console.controlVerifyButtonState('<%= Consumer.EMAIL %>','consumerEmail');"
+                                regExp="[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
+                                style="width:30em;"
+                                type="text"
+                                value="<%= email %>"
+                            />
                             <button
+                                disabled="true"
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconVerify"
-                                id="consumerEmailButton"
+                                id="consumerEmailVerifyButton"
                                 onclick="twetailer.Console.verifyConsumerCode('<%= Consumer.EMAIL %>','consumerEmail');"
-                            ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button><br/>
+                            ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button>
+                            <input dojoType="dijit.form.NumberTextBox" id="consumerEmailCode" name="<%= Consumer.EMAIL %>Code" style="width:10em;display:none;" type="text" />
+                            <button
+                                disabled="<%= (email == null || "".equals(email)) ? "true" : "false" %>"
+                                dojoType="dijit.form.Button"
+                                iconClass="silkIcon silkIconCancel"
+                                id="consumerEmailResetButton"
+                                onclick="twetailer.Console.resetConsumerCode('<%= Consumer.EMAIL %>','consumerEmail');"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "clear_button", locale) %></button><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_email", locale) %></span>
                         </div>
                         <div>
                             <label for="consumerJabberId"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_jabber", locale) %></label><br/>
-                            <input dojoType="dijit.form.TextBox" id="consumerJabberId" name="<%= Consumer.JABBER_ID %>" style="width:30em;" type="text" value="<%= jabberId %>" />
-                            <input dojoType="dijit.form.NumberTextBox" id="consumerJabberIdCode" name="<%= Consumer.JABBER_ID %>Code" style="width:10em;display:none;" type="text" />
+                            <input
+                                dojoType="dijit.form.TextBox"
+                                id="consumerJabberId"
+                                name="<%= Consumer.JABBER_ID %>"
+                                onkeyup="twetailer.Console.controlVerifyButtonState('<%= Consumer.JABBER_ID %>','consumerJabberId');"
+                                style="width:30em;"
+                                type="text"
+                                value="<%= jabberId %>"
+                            />
                             <button
+                                disabled="true"
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconVerify"
-                                id="consumerJabberIdButton"
+                                id="consumerJabberIdVerifyButton"
                                 onclick="twetailer.Console.verifyConsumerCode('<%= Consumer.JABBER_ID %>','consumerJabberId');"
-                            ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button><br/>
+                            ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button>
+                            <input dojoType="dijit.form.NumberTextBox" id="consumerJabberIdCode" name="<%= Consumer.JABBER_ID %>Code" style="width:10em;display:none;" type="text" />
+                            <button
+                                disabled="<%= (jabberId == null || "".equals(jabberId)) ? "true" : "false" %>"
+                                dojoType="dijit.form.Button"
+                                iconClass="silkIcon silkIconCancel"
+                                id="consumerJabberIdResetButton"
+                                onclick="twetailer.Console.resetConsumerCode('<%= Consumer.JABBER_ID %>','consumerJabberId');"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "clear_button", locale) %></button><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_jabber", locale) %></span>
                         </div>
                         <div>
                             <label for="consumerTwitterId"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_twitter", locale) %></label><br/>
-                            <input dojoType="dijit.form.TextBox" id="consumerTwitterId" name="<%= Consumer.TWITTER_ID %>" style="width:30em;" type="text" value="<%= twitterId %>" />
-                            <input dojoType="dijit.form.NumberTextBox" id="consumerTwitterIdCode" name="<%= Consumer.TWITTER_ID %>Code" style="width:10em;display:none;" type="text" />
+                            <input
+                                dojoType="dijit.form.ValidationTextBox"
+                                id="consumerTwitterId"
+                                invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "consumer_info_invalid_twitter_message", locale) %>"
+                                name="<%= Consumer.TWITTER_ID %>"
+                                onkeyup="twetailer.Console.controlVerifyButtonState('<%= Consumer.TWITTER_ID %>','consumerTwitterId');"
+                                regExp="[A-Za-z0-9_]+"
+                                style="width:30em;"
+                                trim="true"
+                                type="text"
+                                value="<%= twitterId %>"
+                            />
                             <button
+                                disabled="true"
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconVerify"
-                                id="consumerTwitterIdButton"
+                                id="consumerTwitterIdVerifyButton"
                                 onclick="twetailer.Console.verifyConsumerCode('<%= Consumer.TWITTER_ID %>','consumerTwitterId');"
-                            ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button><br/>
+                            ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button>
+                            <input dojoType="dijit.form.NumberTextBox" id="consumerTwitterIdCode" name="<%= Consumer.TWITTER_ID %>Code" style="width:10em;display:none;" type="text" />
+                            <button
+                                disabled="<%= (twitterId == null || "".equals(twitterId)) ? "true" : "false" %>"
+                                dojoType="dijit.form.Button"
+                                iconClass="silkIcon silkIconCancel"
+                                id="consumerTwitterIdResetButton"
+                                onclick="twetailer.Console.resetConsumerCode('<%= Consumer.TWITTER_ID %>','consumerTwitterId');"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "clear_button", locale) %></button><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_twitter", locale) %></span>
                         </div>
                     </fieldset>
@@ -303,6 +360,7 @@
                         <button
                             dojoType="dijit.form.Button"
                             iconClass="silkIcon silkIconUpdate"
+                            id="consumerInfoUpdateButton"
                             onclick="twetailer.Console.updateConsumerInformation();"
                         ><%= LabelExtractor.get(ResourceFileId.third, "update_button", locale) %></button>
                     </div>
@@ -330,6 +388,7 @@
             -->
             <div
                 dojoType="dijit.layout.ContentPane"
+                iconClass="silkIcon silkIconHelp"
                 title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_needHelp", locale) %>"
             >
             </div>

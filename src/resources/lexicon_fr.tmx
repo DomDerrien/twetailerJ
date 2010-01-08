@@ -11,7 +11,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>English</seg>
+                <seg>Français</seg>
             </tuv>
         </tu>
         <tu tuid="_introduction_" dataType="text">

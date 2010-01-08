@@ -1,6 +1,8 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -14,10 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.validator.ApplicationSettings;
+import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.RelyingParty;
+import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -109,9 +112,74 @@ public abstract class BaseRestlet extends HttpServlet {
      *
      * @throws Exception If the OpendIdUser un-marshaling fails
      */
-    protected OpenIdUser getLoggedUser(HttpServletRequest request) throws Exception {
-        // return ServletUtils.getLoggedUser();
+    public static OpenIdUser getLoggedUser(HttpServletRequest request) throws Exception {
+        if (debugModeDetected(request)) {
+            injectMockOpenUser(request);
+        }
         return RelyingParty.getInstance().discover(request);
+    }
+
+    /**
+     * Study the request parameter list and checks if there a recognized debug mode switch
+     *
+     * @param parameters HTTP request parameters
+     * @return <code>true</code> if the debug mode is detected, <code>false</code> otherwise.
+     */
+    protected static boolean debugModeDetected(HttpServletRequest request) {
+        return CommandProcessor.DEBUG_INFO_SWITCH.equals(request.getParameter("debugMode"));
+    }
+
+    /**
+     * Inject in the request a mock OpenUser instance built with values found among the request parameters
+     * with fallback on default values
+     *
+     * @param parameters HTTP request parameters
+     */
+    protected static void injectMockOpenUser(HttpServletRequest request) {
+        // Get the consumer information
+        String proposeConsumerKey = request.getParameter("debugConsumerKey");
+        Long consumerKey = proposeConsumerKey == null ? 1L : Long.valueOf(proposeConsumerKey);
+        String proposedOpenId = request.getParameter("debugConsumerOpenId");
+        String openId = proposedOpenId == null ? "http://open.id" : proposedOpenId;
+
+        // Inject the data in an OpenIdUser and inject this one in the request
+        injectMockOpenUser(request, openId, consumerKey);
+    }
+
+    /**
+     * Inject in the request a mock OpenUser instance built with values found among the request parameters
+     * with fallback on default values
+     *
+     * @param parameters HTTP request parameters
+     */
+    protected static void injectMockOpenUser(HttpServletRequest request, String openId, Long consumerKey) {
+        // Create fake user
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        user.fromJSON(json);
+
+        // Inject a defined Consumer key
+        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+
+        // Inject the result in the request
+        injectMockOpenUser(request, user);
+    }
+
+    /**
+     * Inject in the request a mock OpenUser instance built with values found among the request parameters
+     * with fallback on default values
+     *
+     * @param parameters HTTP request parameters
+     */
+    protected static void injectMockOpenUser(HttpServletRequest request, OpenIdUser user) {
+        // Save the fake user as the request attribute
+        request.setAttribute(OpenIdUser.ATTR_NAME, user);
     }
 
     @Override
@@ -154,7 +222,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             getLogger().warning("doGet().exception: " + ex);
-            if (getLogger().getLevel() == Level.FINEST) {
+            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
             out = new JsonException("UNEXPECTED_EXCEPTION",
@@ -166,6 +234,43 @@ public abstract class BaseRestlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ServletUtils.configureHttpParameters(request, response);
+
+        JsonObject out = new GenericJsonObject();
+
+        try {
+            // TODO: verify Content-type == "application/json"
+            JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
+
+            OpenIdUser loggedUser = getLoggedUser(request);
+
+            String pathInfo = request.getPathInfo();
+            getLogger().finer("Path Info: " + pathInfo);
+
+            if (pathInfo == null || pathInfo.length() == 0) {
+                // Create the resource
+                out.put("resource", createResource(in, loggedUser));
+            }
+            else {
+                throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+            }
+
+            out.put("success", true);
+        }
+        catch (Exception ex) {
+            getLogger().warning("doPost().exception: " + ex);
+            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
+                ex.printStackTrace();
+            }
+            out = new JsonException("UNEXPECTED_EXCEPTION",
+                    "Unexpected exception during BaseRESTServlet.doPost() operation", ex);
+        }
+
+        out.toStream(response.getOutputStream(), false);
+    }
+
+    @Override
+    public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
         JsonObject out = new GenericJsonObject();
@@ -197,45 +302,8 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
-            getLogger().warning("doPost().exception: " + ex);
-            if (getLogger().getLevel() == Level.FINEST) {
-                ex.printStackTrace();
-            }
-            out = new JsonException("UNEXPECTED_EXCEPTION",
-                    "Unexpected exception during BaseRESTServlet.doPost() operation", ex);
-        }
-
-        out.toStream(response.getOutputStream(), false);
-    }
-
-    @Override
-    public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ServletUtils.configureHttpParameters(request, response);
-
-        JsonObject out = new GenericJsonObject();
-
-        try {
-            // TODO: verify Content-type == "application/json"
-            JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
-
-            OpenIdUser loggedUser = getLoggedUser(request);
-
-            String pathInfo = request.getPathInfo();
-            getLogger().finer("Path Info: " + pathInfo);
-
-            if (pathInfo == null || pathInfo.length() == 0) {
-                // Create the resource
-                out.put("resource", createResource(in, loggedUser));
-            }
-            else {
-                throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
-            }
-
-            out.put("success", true);
-        }
-        catch (Exception ex) {
             getLogger().warning("doPut().exception: " + ex);
-            if (getLogger().getLevel() == Level.FINEST) {
+            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
             out = new JsonException("UNEXPECTED_EXCEPTION",
@@ -275,7 +343,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             getLogger().warning("doDelete().exception: " + ex);
-            if (getLogger().getLevel() == Level.FINEST) {
+            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
             out = new JsonException("UNEXPECTED_EXCEPTION",

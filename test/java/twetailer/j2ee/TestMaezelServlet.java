@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
@@ -88,6 +89,7 @@ public class TestMaezelServlet {
 
     @After
     public void tearDown() throws Exception {
+        servlet.settingsOperations = new SettingsOperations();
         mockAppEngineEnvironment.tearDown();
     }
 
@@ -632,18 +634,18 @@ public class TestMaezelServlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testGetVerificationCodeI() throws IOException {
+    public void testGetVerificationCodeI() throws IOException, ClientException {
         String topic = "zzz";
-        String identifier = "unit@test";
+        String identifier = "unit@test.ca";
         String openId = "http://openId";
 
         MaezelServlet.getCode(topic, identifier, openId);
     }
 
     @Test
-    public void testGetVerificationCodeII() throws IOException {
+    public void testGetVerificationCodeII() throws IOException, ClientException {
         String topic = Consumer.EMAIL;
-        String identifier = "unit@test";
+        String identifier = "unit@test.ca";
         String openId = "http://openId";
 
         long code = MaezelServlet.getCode(topic, identifier, openId);
@@ -652,9 +654,9 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testGetVerificationCodeIII() throws IOException {
+    public void testGetVerificationCodeIII() throws IOException, ClientException {
         String topic = Consumer.JABBER_ID;
-        String identifier = "unit@test";
+        String identifier = "unit@test.ca";
         String openId = "http://openId";
 
         long code = MaezelServlet.getCode(topic, identifier, openId);
@@ -663,9 +665,9 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testGetVerificationCodeIV() throws IOException {
+    public void testGetVerificationCodeIV() throws IOException, ClientException {
         String topic = Consumer.TWITTER_ID;
-        String identifier = "unit@test";
+        String identifier = "unit_test_ca";
         String openId = "http://openId";
 
         long code = MaezelServlet.getCode(topic, identifier, openId);
@@ -674,13 +676,14 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testGetVerificationCodeV() throws IOException {
-        String identifier = "unit@test";
+    public void testGetVerificationCodeV() throws IOException, ClientException {
+        String identifier1 = "unit@test.ca";
+        String identifier2 = "unit_test_ca";
         String openId = "http://openId";
 
-        long codeEmail = MaezelServlet.getCode(Consumer.EMAIL, identifier, openId);
-        long codeJabber = MaezelServlet.getCode(Consumer.JABBER_ID, identifier, openId);
-        long codeTwitter = MaezelServlet.getCode(Consumer.TWITTER_ID, identifier, openId);
+        long codeEmail = MaezelServlet.getCode(Consumer.EMAIL, identifier1, openId);
+        long codeJabber = MaezelServlet.getCode(Consumer.JABBER_ID, identifier1, openId);
+        long codeTwitter = MaezelServlet.getCode(Consumer.TWITTER_ID, identifier2, openId);
 
         assertNotSame(codeEmail, codeJabber);
         assertNotSame(codeEmail, codeTwitter);
@@ -688,9 +691,37 @@ public class TestMaezelServlet {
     }
 
     @Test
+    public void testGetVerificationCodeVI() throws IOException, ClientException {
+        String openId = "http://openId";
+
+        long codeNull = MaezelServlet.getCode("Not important", null, openId);
+        long codeEmpty = MaezelServlet.getCode("Not important", "", openId);
+
+        assertNotSame(9999999999L, codeNull);
+        assertNotSame(9999999999L, codeEmpty);
+        assertNotSame(codeNull, codeEmpty);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testGetVerificationCodeVII() throws IOException, ClientException {
+        String identifier = "invalid e-mail address";
+        String openId = "http://openId";
+
+        MaezelServlet.getCode(Consumer.EMAIL, identifier, openId);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testGetVerificationCodeVIII() throws IOException, ClientException {
+        String identifier = "@invalid +Twitter+ identifier (format)";
+        String openId = "http://openId";
+
+        MaezelServlet.getCode(Consumer.TWITTER_ID, identifier, openId);
+    }
+
+    @Test
     public void testWaitForVerificationCodeI() throws IOException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = Consumer.EMAIL;
 
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -744,7 +775,7 @@ public class TestMaezelServlet {
     @Test
     public void testWaitForVerificationCodeII() throws IOException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = Consumer.JABBER_ID;
 
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -796,9 +827,9 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testWaitForVerificationCodeIII() throws IOException, TwitterException {
+    public void testWaitForVerificationCodeIII() throws IOException, TwitterException, ClientException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit_test_ca";
         final String topic = Consumer.TWITTER_ID;
 
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -861,9 +892,9 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testGoodVerificationCodeI() throws IOException {
+    public void testGoodVerificationCodeI() throws IOException, ClientException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = Consumer.EMAIL;
         final long code = MaezelServlet.getCode(topic, identifier, openId);
 
@@ -916,9 +947,9 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testGoodVerificationCodeII() throws IOException {
+    public void testGoodVerificationCodeII() throws IOException, ClientException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = Consumer.JABBER_ID;
         final long code = MaezelServlet.getCode(topic, identifier, openId);
 
@@ -971,9 +1002,9 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testGoodVerificationCodeIII() throws IOException {
+    public void testGoodVerificationCodeIII() throws IOException, ClientException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit_test_ca";
         final String topic = Consumer.TWITTER_ID;
         final long code = MaezelServlet.getCode(topic, identifier, openId);
 
@@ -1028,7 +1059,7 @@ public class TestMaezelServlet {
     @Test
     public void testBadVerificationCodeI() throws IOException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = Consumer.EMAIL;
         final long code = 0;
 
@@ -1083,7 +1114,7 @@ public class TestMaezelServlet {
     @Test
     public void testBadVerificationCodeII() throws IOException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = Consumer.JABBER_ID;
         final long code = 0;
 
@@ -1138,7 +1169,7 @@ public class TestMaezelServlet {
     @Test
     public void testBadVerificationCodeIII() throws IOException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit_test_ca";
         final String topic = Consumer.TWITTER_ID;
         final long code = 0;
 
@@ -1193,7 +1224,7 @@ public class TestMaezelServlet {
     @Test
     public void testBadTopic() throws IOException {
         final String openId = "http://openId";
-        final String identifier = "unit@test";
+        final String identifier = "unit@test.ca";
         final String topic = "zzz";
         final long code = 0;
 
@@ -1242,5 +1273,118 @@ public class TestMaezelServlet {
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDoGetSetupRobotCoordinates() throws IOException {
+        final Long consumerKey = 12321L;
+        final Long saleAssociateKey = 45654L;
+        final Settings settings = new Settings();
+
+        // Prepare mock SettingsOperations
+        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                return settings;
+            }
+            @Override
+            public Settings updateSettings(PersistenceManager pm, Settings updatedSettings) {
+                assertEquals(settings, updatedSettings);
+                assertEquals(consumerKey, updatedSettings.getRobotConsumerKey());
+                assertEquals(saleAssociateKey, updatedSettings.getRobotSaleAssociateKey());
+                return updatedSettings;
+            }
+        };
+        servlet.settingsOperations = mockSettingsOperations;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/setupRobotCoordinates";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("consumerKey".equals(name)) {
+                    return consumerKey.toString();
+                }
+                if ("saleAssociateKey".equals(name)) {
+                    return saleAssociateKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDoGetConsolidateConsumerAccounts() throws IOException {
+        final Long consumerKey = 12321L;
+        final Long demandKey = 45654L;
+        final Demand demand = new Demand();
+        demand.setKey(demandKey);
+
+        // Prepare mock DemandOperations
+        DemandOperations mockDemandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand updatedDemand) {
+                assertEquals(demand, updatedDemand);
+                assertEquals(consumerKey, updatedDemand.getOwnerKey());
+                return updatedDemand;
+            }
+        };
+        servlet.demandOperations = mockDemandOperations;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/consolidateConsumerAccounts";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("ownerKey".equals(name)) {
+                    return consumerKey.toString();
+                }
+                if ("key".equals(name)) {
+                    return demandKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockCommandProcessor.restoreOperations();
     }
 }

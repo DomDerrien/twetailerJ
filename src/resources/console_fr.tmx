@@ -11,7 +11,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>English</seg>
+                <seg>Français</seg>
             </tuv>
         </tu>
         <tu tuid="ui_page_redirection_message" dataType="text">
@@ -25,63 +25,77 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twetailer Console</seg>
+                <seg>Console Twetailer</seg>
             </tuv>
         </tu>
         <tu tuid="ui_splash_screen_message" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Please, wait while the Console is being built...</seg>
+                <seg>S'il vous plaît, patientez le temps que la console se construise...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="clear_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Effacer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="reset_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Remise-à-zéro</seg>
             </tuv>
         </tu>
         <tu tuid="update_button" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Update</seg>
+                <seg>Mise-à-jour</seg>
             </tuv>
         </tu>
         <tu tuid="verify_button" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Verify</seg>
+                <seg>Verifier</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Consumer</seg>
+                <seg>Consommateur</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_sale_associate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sale Associate</seg>
+                <seg>Vendeur</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_about" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>About</seg>
+                <seg>À propos</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_sign_out" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign Out</seg>
+                <seg>Déconnexion</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_language_selector" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Language Selector</seg>
+                <seg>Sélecteur de langage</seg>
             </tuv>
         </tu>
         <tu tuid="login_introduction_message" dataType="text">
@@ -89,9 +103,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    In order to use the Twetailer console, you <u>need to be authenticated first</u>.
+                    In order to use the Twetailer console, you &lt;u&gt;need to be authenticated first&lt;/u&gt;.
                     To eliminate the management of yet another set of credentials, Twetailer relies on OpenID.
-                    Consult <a href="http://openid.net/" target="_blank">OpendId.net</a> website for more information on that technology.
+                    Consult &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; website for more information on that technology.
                 </seg>
             </tuv>
         </tu>
@@ -99,91 +113,84 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Your OpenID identifier:</seg>
+                <seg>Votre identifiant OpenID:</seg>
             </tuv>
         </tu>
         <tu tuid="login_sign_in_button" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign In with OpenID</seg>
+                <seg>Connecter avec OpenID</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_list_message" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>OpenID Provider Shortcuts:</seg>
+                <seg>Raccourcis de fournisseurs OpenID:</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_google" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with Google</seg>
-            </tuv>
-        </tu>
-        <tu tuid="login_provider_shortcut_google" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Sign in with Google</seg>
+                <seg>Identifiez-vous avec Google</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_yahoo" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with Yahoo!</seg>
+                <seg>Identifiez-vous avec Yahoo!</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_myspace" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with MySpace</seg>
+                <seg>Identifiez-vous avec MySpace</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_aol" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with AOL</seg>
+                <seg>Identifiez-vous avec AOL</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_wordpress" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with Wordpress</seg>
+                <seg>Identifiez-vous avec Wordpress</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_blogger" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with Blogger</seg>
+                <seg>Identifiez-vous avec Blogger</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_chimp" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with Chi.mp</seg>
+                <seg>Identifiez-vous avec Chi.mp</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_shortcut_myopenid" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sign in with myOpenID</seg>
+                <seg>Identifiez-vous avec myOpenID</seg>
             </tuv>
         </tu>
         <tu tuid="login_dialog_custom_info_prefix" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Enter the missing part of the OpenID:</seg>
+                <seg>Donnez l'élément manquant de votre identifiant OpenID:</seg>
             </tuv>
         </tu>
         <tu tuid="login_dialog_custom_info_suffix" dataType="text">
@@ -197,7 +204,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Close</seg>
+                <seg>Fermer</seg>
             </tuv>
         </tu>
         <tu tuid="about_text" dataType="text">
@@ -205,14 +212,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>
-                    Twetailer is a creation of Steven Milstein and Dom Derrien.
-                    Twetailer is operated by Milstein &amp; Associates inc.
-                    </p>
-                    <p>
-                    For more information, you can join the Twetailer
-                    community at <a href="http://twetailer.cyn.in/">twetailer.cyn.in</a>.
-                    </p>
+                    &lt;p&gt;
+                    Twetailer est une création de Steven Milstein et Dom Derrien.
+                    Twetailer est mise en œuvre par Milstein &amp; Associates inc.
+                    &lt;/p&gt;
+                    &lt;p&gt;
+                    Pour de plus amples renseignement, vous pouvez joindre la
+                    communauté de Twetailer à: &lt;a href="http://twetailer.cyn.in/"&gt;twetailer.cyn.in&lt;/a&gt;.
+                    &lt;/p&gt;
                 </seg>
             </tuv>
         </tu>
@@ -220,77 +227,77 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Powered by Google App Engine</seg>
+                <seg>Réalisé avec Google App Engine</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer_createDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Create a Demand</seg>
+                <seg>Créer une demande</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer_listDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>List your Demands</seg>
+                <seg>Voir vos demandes</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer_listProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>List your Proposals</seg>
+                <seg>Voir vos propositions</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer_profile" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Your Profile</seg>
+                <seg>Votre profil</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_saleAssociate_listDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>List Received Demands</seg>
+                <seg>Voir les demandes reçues</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_saleAssociate_listProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>List your Proposals</seg>
+                <seg>Voir vos propositions</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_saleAssociate_profile" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Your Profile</seg>
+                <seg>Votre profil</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_needHelp" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Need Help?</seg>
+                <seg>Besoin d'aide?</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_first_field_group" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Personal Identification</seg>
+                <seg>Identification personnelle</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_second_field_group" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Third-Party Access Points</seg>
+                <seg>Points d'accès tiers</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_label_openid" dataType="text">
@@ -304,14 +311,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Hint: as reported by your OpenID provider.</seg>
+                <seg>Info: identifiant tel que rapporté par votre fournisseur OpenID.</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_label_name" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Name</seg>
+                <seg>Nom</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_hint_name" dataType="text">
@@ -325,7 +332,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Country</seg>
+                <seg>Pays</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_hint_country" dataType="text">
@@ -339,7 +346,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Language</seg>
+                <seg>Langage</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_hint_language" dataType="text">
@@ -353,35 +360,42 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>E-mail address</seg>
+                <seg>Adresse de courriel</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_hint_email" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Hint: to attach messages exchanged with <a href="mailto:maezel@twetailer.appspotmail.com">maezel@twetailer.appspotmail.com</a> with your account.</seg>
+                <seg>Info: pour associer à votre compte les courriers électroniques que vous enverrez à &lt;a href="mailto:maezel@twetailer.appspotmail.com"&gt;maezel@twetailer.appspotmail.com&lt;/a&gt;.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="consumer_info_invalid_email_message" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Adresse de courriel invalide</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_label_jabber" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Jabber/XMPP Identifier</seg>
+                <seg>Identifiant Jabber/XMPP</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_hint_jabber" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Hint: to attach instant messages exchanged with <a href="xmpp://twetailer.appspot.com">twetailer.appspot.com</a> with your account.</seg>
+                <seg>Info: pour associer à votre compte les messages instantannés que vous enverrez à &lt;a href="xmpp://twetailer.appspot.com"&gt;twetailer.appspot.com&lt;/a&gt;.</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_label_twitter" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twitter Name</seg>
+                <seg>Nom Twitter</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_hint_twitter" dataType="text">
@@ -389,16 +403,23 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Hint: to attach direct messages exchanged with <a href="http://twitter.com/twetailer" target="_blank">twitter.com/twetailer</a> with your account.<br/>
-                    Note: you need to <b>follow @twetailer</b> on Twitter in order to be able to get direct messages from us.
+                    Info: pour associer à votre compte les messages directs que vous enverrez à &lt;a href="http://twitter.com/twetailer" target="_blank"&gt;twitter.com/twetailer&lt;/a&gt;.&lt;br/&gt;
+                    Note: vous devez &lt;b&gt;suivre @twetailer&lt;/b&gt; sur Twitter pour que la communication par messages directs soit possibles (nécessaire pour des raisons de discretion).
                 </seg>
+            </tuv>
+        </tu>
+        <tu tuid="consumer_info_invalid_twitter_message" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Identifiant Twitter invalid.</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_verification_notification_title" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Confirmation code for the Twetailer registration process</seg>
+                <seg>Code de confirmation pour le processus d'enregistrement de Twetailer</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_verification_notification_body" dataType="text">
@@ -406,13 +427,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Here is the confirmation code: {0}.
-                    You have to reported it into the Welcome page for new Twetailer users.|
+                    Voici le code de confirmation: {0}.
+                    Vous devez reporter ce code dans la page «&nbsp;Votre profil&nbsp;» de la console Web de Twetailer.|
                     |
-                    Thanks for shopping with Twetailer.|
+                    Merci de magasiner avec Twetailer.|
                     |
-                    If you did not initiate this notification, it's possible someone miss-associates his account and yours.
-                    If you think someone tries to spoof your account, forward this message to abusive-notification@twetailer.appspot.com.
+                    Si vous n'avez pas demandé ce code de confirmation, il est possible que quelqu'un s'est trompé en assignant votre compte au sien.
+                    Si vous pensez que quelqu'un essaye de détourner votre compte, transmettez ce message à abusive-notification@twetailer.appspot.com.
                 </seg>
             </tuv>
         </tu>
@@ -421,9 +442,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                        A verification code has been sent {0} to: {1}. Please, report
-                        it in the input field below to be able to complete
-                        the registration process.
+                    Un code de vérification a été envoyé {0} à: {1}. S'il vous plaît,
+                    reporter le code dans le champ de saisie attenant pour complèter le
+                    processus d'enregistrement.
                 </seg>
             </tuv>
         </tu>
@@ -431,21 +452,21 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>by e-mail</seg>
+                <seg>par courriel</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_verification_alert_jabberId" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>by an instant message</seg>
+                <seg>par un message instantannée</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_verification_alert_twitterId" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>by Twitter direct message</seg>
+                <seg>par un message direct de Twitter</seg>
             </tuv>
         </tu>
         <tu tuid="error_client_side_communication_failed" dataType="text">
@@ -453,10 +474,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Unexpected error while processing a request response.
-                    The incident is going to be reported to Twetailer analytics system.\n\n
-                    You can send an e-mail to incident@twetailer.appspotmail.com if the issue is crucial to you.\n\n
-                    Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues
+                    Il s'est produit une erreur imprévue durant le
+                    processus de votre demande de traitement. Cet incident
+                    va être rapporter au système d'analyse de fautes de
+                    Twetailer.\n\n
+                    Vous pouvez aussi envoyez un courriel à
+                    incident@twetailer.appspotmail.com si le problème est bloquant pour vous.\n\n
+                    Suivez nos communications sur Twitter (@twetailer) pour le suivi des défaillances critiques.
                 </seg>
             </tuv>
         </tu>
