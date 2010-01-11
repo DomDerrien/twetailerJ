@@ -6,6 +6,7 @@ import static twetailer.connector.BaseConnector.communicateToConsumer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -31,6 +32,8 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
 public class ListCommandProcessor {
+    private static Logger log = Logger.getLogger(ListCommandProcessor.class.getName());
+
     public static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
         //
         // Used by actors to:
@@ -127,6 +130,8 @@ public class ListCommandProcessor {
                                 )
                         );
                         Queue queue = CommandProcessor._baseOperations.getQueue();
+                        log.warning("Preparing the task: /maezel/validateLocation?key=" + rawCommand.getKey().toString() +
+                                "&postalCode=" + postalCode + "&countryCode=" + countryCode + "&consukerKey=" + consumer.getKey().toString());
                         queue.add(
                                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateLocation").
                                     param(Location.POSTAL_CODE, postalCode).

@@ -27,7 +27,6 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.LabelExtractor;
 
 public class ProposalValidator {
-
     private static Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
@@ -113,6 +112,7 @@ public class ProposalValidator {
 
                     // Create a task for that proposal
                     Queue queue = _baseOperations.getQueue();
+                    log.warning("Preparing the task: /maezel/processPublishedProposal?key=" + proposalKey.toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).

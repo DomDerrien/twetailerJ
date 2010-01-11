@@ -4,6 +4,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -26,6 +27,8 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
 public class DemandCommandProcessor {
+    private static Logger log = Logger.getLogger(DemandCommandProcessor.class.getName());
+
     public static void processDemandCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
         //
         // Used by a consumer to:
@@ -139,6 +142,7 @@ public class DemandCommandProcessor {
         // Create a task for that demand
         if (demandKey != 0L) {
             Queue queue = CommandProcessor._baseOperations.getQueue();
+            log.warning("Preparing the task: /maezel/validateOpenDemand?key=" + demandKey.toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
                         param(Demand.KEY, demandKey.toString()).

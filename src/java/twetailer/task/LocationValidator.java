@@ -115,6 +115,7 @@ public class LocationValidator {
         }
         // Create a task to re-process the raw command
         Queue queue = _baseOperations.getQueue();
+        log.warning("Preparing the task: /maezel/processCommand?key=" + commandKey.toString());
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                     param(Command.KEY, commandKey.toString()).

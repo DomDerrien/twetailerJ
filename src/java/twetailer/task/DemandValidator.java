@@ -147,6 +147,7 @@ public class DemandValidator {
 
                     // Create a task for that demand
                     Queue queue = _baseOperations.getQueue();
+                    log.warning("Preparing the task: /maezel/processPublishedDemand?key=" + demandKey.toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
                                 param(Demand.KEY, demandKey.toString()).

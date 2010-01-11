@@ -28,7 +28,6 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
 public class ProposalProcessor {
-
     private static Logger log = Logger.getLogger(ProposalProcessor.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();

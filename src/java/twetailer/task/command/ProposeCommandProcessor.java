@@ -3,6 +3,8 @@ package twetailer.task.command;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.logging.Logger;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -13,6 +15,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
+import twetailer.task.ProposalValidator;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
@@ -24,6 +27,8 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
 public class ProposeCommandProcessor {
+    private static Logger log = Logger.getLogger(ProposeCommandProcessor.class.getName());
+
     public static void processProposeCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
         // Used by a sale associate to:
@@ -97,6 +102,7 @@ public class ProposeCommandProcessor {
         // Create a task for that proposal
         if (proposalKey != 0L) {
             Queue queue = CommandProcessor._baseOperations.getQueue();
+            log.warning("Preparing the task: /maezel/validateOpenProposal?key=" + proposalKey.toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
                         param(Proposal.KEY, proposalKey.toString()).

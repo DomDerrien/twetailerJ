@@ -78,6 +78,7 @@ public class DemandProcessor {
                 Queue queue = _baseOperations.getQueue();
                 for (Demand demand: demands) {
                     // Create a task for that demand
+                    log.warning("Preparing the task: /maezel/processPublishedDemand?key=" + demand.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
                                 param(Demand.KEY, demand.getKey().toString()).
@@ -147,6 +148,7 @@ public class DemandProcessor {
                     if (!hasRobotAlreadyContacted(pm, demand)) {
                         // Schedule a task to transmit the proposal to the demand owner
                         Queue queue = _baseOperations.getQueue();
+                        log.warning("Preparing the task: /maezel/processDemandForRobot?key=" + demand.getKey().toString());
                         queue.add(
                                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
                                     param(Demand.KEY, demand.getKey().toString()).

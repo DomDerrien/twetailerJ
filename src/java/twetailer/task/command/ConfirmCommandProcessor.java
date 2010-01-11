@@ -4,10 +4,9 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
-import javax.jdo.PersistenceManager;
+import java.util.logging.Logger;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -24,11 +23,16 @@ import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
+
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class ConfirmCommandProcessor {
+    private static Logger log = Logger.getLogger(ConfirmCommandProcessor.class.getName());
+
     public static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
         //
         // Used by the consumer to accept a proposal
@@ -97,6 +101,7 @@ public class ConfirmCommandProcessor {
 
                     // Create a task for that command
                     Queue queue = CommandProcessor._baseOperations.getQueue();
+                    log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                                 param(Command.KEY, consequence.getKey().toString()).

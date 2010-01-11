@@ -3,6 +3,7 @@ package twetailer.task;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -31,6 +32,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.LabelExtractor;
 
 public class RobotResponder {
+    private static Logger log = Logger.getLogger(RobotResponder.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
@@ -91,6 +93,7 @@ public class RobotResponder {
                 proposal = proposalOperations.createProposal(pm, proposal);
                 // Schedule a task to transmit the proposal to the demand owner
                 Queue queue = _baseOperations.getQueue();
+                log.warning("Preparing the task: /maezel/processPublishedProposal?key=" + proposal.getKey().toString());
                 queue.add(
                         url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                             param(Proposal.KEY, proposal.getKey().toString()).
