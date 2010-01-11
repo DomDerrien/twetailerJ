@@ -78,12 +78,13 @@ public abstract class BaseRestlet extends HttpServlet {
      * Select the resources with the given search criteria passed as request parameters
      *
      * @param parameters HTTP request parameters
+     * @param loggedUser System identity of the logged user
      * @return ready to be serialized list of object list
      *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonArray selectResources(JsonObject parameters) throws DataSourceException, ClientException;
+    abstract protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException;
 
     /**
      * Update the identified resource with the given attributes
@@ -200,7 +201,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
             if (pathInfo == null || pathInfo.length() == 0) {
                 // Get selected resources
-                out.put("resources", selectResources(in));
+                out.put("resources", selectResources(in, loggedUser));
             }
             else if ("/current".equals(pathInfo)) {
                 // Get current resource

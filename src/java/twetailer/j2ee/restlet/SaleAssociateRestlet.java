@@ -79,6 +79,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
 
         Long consumerKey = parameters.containsKey(SaleAssociate.CONSUMER_KEY) ? parameters.getLong(SaleAssociate.CONSUMER_KEY) : null;
         String email = parameters.containsKey(SaleAssociate.EMAIL) ? parameters.getString(SaleAssociate.EMAIL) : null;
+        String jabberId = parameters.containsKey(SaleAssociate.JABBER_ID) ? parameters.getString(SaleAssociate.JABBER_ID) : null;
         String twitterId = parameters.containsKey(SaleAssociate.TWITTER_ID) ? parameters.getString(SaleAssociate.TWITTER_ID) : null;
 
         SaleAssociate candidateSaleAssociate = null;
@@ -117,6 +118,44 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
             else {
                 List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.EMAIL, email, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                        throw new DataSourceException("Sale Associate already attached to another store");
+                    }
+                    if (consumerKey != null && !consumerKey.equals(saleAssociate.getConsumerKey())) {
+                        throw new DataSourceException("Retreived Sale Associate instance attached to another Consumer than the one identified by the given criteria");
+                    }
+                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
+                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
+                    }
+                    candidateSaleAssociate = saleAssociate;
+                    consumerKey = candidateSaleAssociate.getConsumerKey();
+                }
+            }
+        }
+
+        if (jabberId != null) {
+            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, jabberId, 1);
+            if (0 < consumers.size()) {
+                if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
+                    throw new DataSourceException("At least two different Consumer instances match the given criteria");
+                }
+                consumerKey = consumers.get(0).getKey();
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                        throw new DataSourceException("Sale Associate already attached to another store");
+                    }
+                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
+                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
+                    }
+                    candidateSaleAssociate = saleAssociate;
+                }
+            }
+            else {
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.JABBER_ID, jabberId, 1);
                 if (0 < saleAssociates.size()) {
                     SaleAssociate saleAssociate = saleAssociates.get(0);
                     if (!saleAssociate.getStoreKey().equals(storeKey)) {

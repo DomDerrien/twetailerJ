@@ -71,7 +71,7 @@ public class TestBaseRestlet {
             return null;
         }
         @Override
-        protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+        protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
             return null;
         }
         @Override
@@ -125,7 +125,7 @@ public class TestBaseRestlet {
         final JsonArray resources = new GenericJsonArray();
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
                 assertEquals(in, parameters.getMap());
                 return resources;
             }
@@ -161,7 +161,7 @@ public class TestBaseRestlet {
         final JsonArray resources = new GenericJsonArray();
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
                 assertEquals(in, parameters.getMap());
                 return resources;
             }

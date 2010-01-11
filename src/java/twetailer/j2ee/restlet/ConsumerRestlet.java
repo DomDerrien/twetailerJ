@@ -2,8 +2,8 @@ package twetailer.j2ee.restlet;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -24,6 +24,7 @@ import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
@@ -70,18 +71,49 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters) throws DataSourceException{
-        // Get search criteria
-        String queryAttribute = parameters.getString("qA");
-        String queryValue = parameters.getString("qV");
-        if (queryAttribute == null || queryAttribute.length() == 0) {
-            queryAttribute = Consumer.EMAIL;
-            if (queryValue == null) {
-                queryValue = parameters.getString("q");
+    @SuppressWarnings("unchecked")
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException{
+        if (loggedUser.getAttribute("info") != null) {
+            Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
+            if (info.get("email") != null) {
+                String email = info.get("email");
+                if ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email)) {
+                    PersistenceManager pm = _baseOperations.getPersistenceManager();
+                    try {
+                        return delegateResourceSelection(pm, parameters);
+                    }
+                    finally {
+                        pm.close();
+                    }
+                }
             }
-        } // FIXME: verify the specified attribute name belongs to a list of authorized attributes
-        // Select and return the corresponding consumers
-        return JsonUtils.toJson(consumerOperations.getConsumers(queryAttribute, queryValue, 0));
+        }
+        throw new ClientException("Restricted access!");
+    }
+
+    /**
+     * Retrieve the Consumer instances based on the specified criteria.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Attribute coming from a client over HTTP
+     * @return Serialized list of the Consumer instances matching the given criteria
+
+     * @throws DataSourceException If the query to the back-end fails
+     */
+    protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException{
+        if (parameters.containsKey(Consumer.EMAIL)) {
+            // Expects only one Consumer record matching the given e-mail address
+            return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.EMAIL, parameters.getString(Consumer.EMAIL), 1));
+        }
+        if (parameters.containsKey(Consumer.JABBER_ID)) {
+            // Expects only one Consumer record matching the given Jabber/XMPP identifier
+            return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.JABBER_ID, parameters.getString(Consumer.JABBER_ID), 1));
+        }
+        if (parameters.containsKey(Consumer.TWITTER_ID)) {
+            // Expects only one Consumer record matching the given Twitter name
+            return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, parameters.getString(Consumer.TWITTER_ID), 1));
+        }
+        return new GenericJsonArray();
     }
 
     @Override
@@ -201,6 +233,7 @@ public class ConsumerRestlet extends BaseRestlet {
                     List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherConsumer.getKey(), 1);
                     Queue queue = _baseOperations.getQueue();
                     for (Long demandKey: demandKeys) {
+                        log.warning("Preparing the task: /maezel/consolidateConsumerAccounts?key=" + demandKey.toString() + "&ownerKey=" + consumerKey.toString());
                         queue.add(
                                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateConsumerAccounts").
                                 param(Demand.KEY, demandKey.toString()).
