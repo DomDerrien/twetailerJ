@@ -1,7 +1,6 @@
 package twetailer.connector;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.Properties;
@@ -48,6 +47,18 @@ public class MailConnector {
         return mailMessage;
     }
 
+    public static InternetAddress twetailer;
+    static {
+        twetailer = new InternetAddress();
+        twetailer.setAddress(ApplicationSettings.get().getProductEmail());
+        try {
+            twetailer.setPersonal(ApplicationSettings.get().getProductName(), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            // Too bad! The recipient will only see the e-mail address
+        }
+    }
+
     /**
      * Use the Google App Engine API to send an mail message to the identified e-mail address
      *
@@ -61,7 +72,6 @@ public class MailConnector {
      * @throws UnsupportedEncodingException if the e-mail address is invalid
      */
     public static void sendMailMessage(String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
-        InternetAddress twetailer = new InternetAddress(ApplicationSettings.get().getProductEmail(), ApplicationSettings.get().getProductName(), "UTF-8");
         InternetAddress recipient = new InternetAddress(receiverId, recipientName, "UTF-8");
 
         Properties properties = new Properties();
@@ -92,7 +102,7 @@ public class MailConnector {
      *
      * @throws MessagingException If the submitted text is not accepted
      */
-    protected static void setContentAsPlainTextAndHtml(MimeMessage message, String content) throws MessagingException {
+    public static void setContentAsPlainTextAndHtml(MimeMessage message, String content) throws MessagingException {
         MimeBodyPart textPart = new MimeBodyPart();
         MimeBodyPart htmlPart = new MimeBodyPart();
 

@@ -51,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg> 2009 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
+                <seg>Droits réservés &copy; 2009-2010 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
             </tuv>
         </tu>
         <tu tuid="display_name_pattern" dataType="text">

@@ -52,7 +52,7 @@ public class TweetLoader {
      * @throws TwitterException
      * @throws DataSourceException
      */
-    public static Long loadDirectMessages() throws TwitterException, DataSourceException {
+    public static Long loadDirectMessages() {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
             Settings settings = settingsOperations.getSettings(pm);
@@ -64,9 +64,16 @@ public class TweetLoader {
             }
             return lastId;
         }
+        catch(DataSourceException ex) {
+            ex.printStackTrace();
+        }
+        catch (TwitterException ex) {
+            ex.printStackTrace();
+        }
         finally {
             pm.close();
         }
+        return -1L;
     }
 
     public static final String HARMFULL_D_TWETAILER_PREFIX = "d " + TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME;
@@ -104,25 +111,30 @@ public class TweetLoader {
             DirectMessage dm = messages.get(idx);
             long dmId = dm.getId();
             String message = dm.getText();
+            log.warning("DM id: " + dmId);
+            log.warning("DM content: " + message);
 
             // Get Twetailer account and verify the user is a follower
             twitter4j.User sender = dm.getSender();
             String senderScreenName = sender.getScreenName();
             if (!nonFollowerIds.containsKey(senderScreenName)) {
                 Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
+                log.warning("DM emitter: " + consumer.getTwitterId());
                 Locale senderLocale = consumer.getLocale();
                 if (!sender.isFollowing()) {
+                    log.warning("Emitter" + consumer.getTwitterId() + " not following Twetailer");
                     TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_inform_dm_sender_no_more_a_follower", new Object[] { senderScreenName }, senderLocale));
                     nonFollowerIds.put(senderScreenName, Boolean.TRUE);
                 }
-                else {
+                // else {
                     RawCommand rawCommand = new RawCommand(Source.twitter);
                     rawCommand.setEmitterId(consumer.getTwitterId());
                     rawCommand.setMessageId(dmId);
                     rawCommand.setCommand(message);
 
                     extractedCommands.add(rawCommand);
-                }
+                    log.warning("DM added to the queue for the RawCommand creation");
+                // }
             }
             if (lastId < dmId) {
                 lastId = dmId;
@@ -132,13 +144,16 @@ public class TweetLoader {
         // Create a task per command
         for(RawCommand rawCommand: extractedCommands) {
             rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
+            log.warning("RawCommand created: " + rawCommand.getKey().toString());
 
             Queue queue = _baseOperations.getQueue();
+            log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );
+            log.warning("Job add to the task queue");
         }
 
         return Long.valueOf(lastId);

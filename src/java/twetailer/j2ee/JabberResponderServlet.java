@@ -3,6 +3,7 @@ package twetailer.j2ee;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import com.google.appengine.api.xmpp.Message;
 
 @SuppressWarnings("serial")
 public class JabberResponderServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger(JabberResponderServlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
     protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
@@ -48,6 +50,7 @@ public class JabberResponderServlet extends HttpServlet {
 
         // Create a task for that command
         Queue queue = _baseOperations.getQueue();
+        log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                     param(Command.KEY, rawCommand.getKey().toString()).

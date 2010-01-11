@@ -4,6 +4,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -31,6 +32,7 @@ import domderrien.i18n.LabelExtractor;
 
 @SuppressWarnings("serial")
 public class MailResponderServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger(MailResponderServlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
     protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
@@ -44,6 +46,8 @@ public class MailResponderServlet extends HttpServlet {
         RawCommand rawCommand = new RawCommand(Source.mail);
 
         try {
+            log.warning("Path Info: " + request.getPathInfo());
+            
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
             if (mailMessage.getFrom() == null) {
@@ -58,6 +62,8 @@ public class MailResponderServlet extends HttpServlet {
             rawCommand.setSubject(mailMessage.getSubject());
             String command = MailConnector.getText(mailMessage);
             rawCommand.setCommand(command);
+
+            log.warning("Message to be sent to: " + consumer.getEmail() + " with the subject: " + mailMessage.getSubject());
         }
         catch (MessagingException ex) {
             rawCommand.setErrorMessage("Error while parsing the mail message -- ex: " + ex.getMessage());
@@ -89,6 +95,7 @@ public class MailResponderServlet extends HttpServlet {
         else {
             // Create a task for that command
             Queue queue = _baseOperations.getQueue();
+            log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).

@@ -122,7 +122,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Copyright &copy; 2009 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
+                <seg>Copyright &copy; 2009-2010 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
             </tuv>
         </tu>
 
@@ -1018,7 +1018,7 @@
             <tuv xml:lang="en">
                 <seg>
                     Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
-                    Store:{3}, {4} will be notified and asked to keep you Demand, marked with ref:{1}, on the side for you. |
+                    Store:{3}, {4} will be notified and asked to keep your Demand, marked with ref:{1}, on the side for you. |
                     Send "d twetailer !list store:{3}" for more details |
                     In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
                     "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>

@@ -46,19 +46,27 @@
         <delete file="src/war/WEB-INF/lib/geronimo*.jar" />
         <delete file="src/war/WEB-INF/lib/jdo2*.jar" />
         <delete file="src/war/WEB-INF/lib/domderrien*.jar" />
+        <delete file="src/war/WEB-INF/lib/dyuproject*.jar" />
+        <delete file="src/war/WEB-INF/lib/jetty*.jar" />
         <delete file="src/war/WEB-INF/lib/twitter4j*.jar" />
         <delete files="src/war/WEB-INF/lib/json*.jar" />
         <delete files="src/war/WEB-INF/lib/wave*.jar" />
     </target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
+    	<!-- This customized ant file is required to be able to not instrument (DataNucleus) the test code for the App Engine server to run -->
+    	<copy todir="${appengine.sdk.dir}/config/user" file="deps/lib/appengine/ant-macros.xml" overwrite="true" />
+    	<!-- Copy the App Engine files -->
         <copy todir="src/war/WEB-INF/lib" flatten="true">
             <fileset dir="${appengine.sdk.dir}/lib/user">
                 <include name="**/*.jar" />
             </fileset>
         </copy>
+    	<!-- Copy the Twetailer dependencies -->
         <copy file="deps/lib/domderrien/domderrien-1.0.1.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/dyuproject/dyuproject-*-1.1.6.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/dyuproject/jetty-util-6.1.19.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/json.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/jsonrpc.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/wave-robot-api-20090916.jar" todir="src/war/WEB-INF/lib" />
