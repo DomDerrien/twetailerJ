@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -22,9 +23,7 @@ import javax.servlet.http.MockHttpServletRequest;
 import javax.servlet.http.MockHttpServletResponse;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -39,12 +38,6 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestBaseRestlet {
-
-    static final OpenIdUser user = OpenIdUser.populate(
-            "http://www.yahoo.com",
-            YadisDiscovery.IDENTIFIER_SELECT,
-            LoginServlet.YAHOO_OPENID_SERVER_URL
-    );
 
     @SuppressWarnings("serial")
     class MockBaseRestlet extends BaseRestlet {
@@ -80,16 +73,46 @@ public class TestBaseRestlet {
         }
     }
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static final String LOGGED_USER_OPEN_ID = "http://unit.test";
+    public static final Long LOGGED_USER_CONSUMER_KEY = 12345L;
+
+    public static OpenIdUser setupOpenIdUser() {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+
+        //  {
+        //      a: "claimId",
+        //      b: "identity",
+        //      c: "assocHandle",
+        //      d: associationData,
+        //      e: "openIdServer",
+        //      f: "openIdDelegate",
+        //      g: attributes,
+        //      h: "identifier"
+        //  }
+        Map<String, Object> json = new HashMap<String, Object>();
+
+        json.put("a", LOGGED_USER_OPEN_ID);
+
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", new HashMap<String, String>());
+        json.put("g", attributes);
+
+        user.fromJSON(json);
+
+        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, LOGGED_USER_CONSUMER_KEY);
+
+        return user;
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    OpenIdUser user;
 
     @Before
     public void setUp() throws Exception {
+        user = setupOpenIdUser();
     }
 
     @After
@@ -869,12 +892,6 @@ public class TestBaseRestlet {
 
     @Test
     public void testGetLoggedUser() throws Exception {
-        final OpenIdUser user = OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
-
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public Object getAttribute(String name) {
@@ -1076,5 +1093,37 @@ public class TestBaseRestlet {
         new MockBaseRestlet().doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testIsAPrivilegedUserI() {
+        assertFalse(BaseRestlet.isAPrivilegedUser(user));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIsAPrivilegedUserII() {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "steven.milstein@gmail.com");
+        assertTrue(BaseRestlet.isAPrivilegedUser(user));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIsAPrivilegedUserIII() {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        assertTrue(BaseRestlet.isAPrivilegedUser(user));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIsAPrivilegedUserIV() {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "toto.rigado@lorient.fr");
+        assertFalse(BaseRestlet.isAPrivilegedUser(user));
+    }
+
+    @Test
+    public void testIsAPrivilegedUserV() {
+        user.setAttribute("info", null);
+        assertFalse(BaseRestlet.isAPrivilegedUser(user));
     }
 }

@@ -49,14 +49,35 @@ public class MailConnector {
 
     public static InternetAddress twetailer;
     static {
-        twetailer = new InternetAddress();
-        twetailer.setAddress(ApplicationSettings.get().getProductEmail());
+        twetailer = prepareInternetAddress(
+                "UTF-8",
+                ApplicationSettings.get().getProductName(),
+                ApplicationSettings.get().getProductEmail()
+        );
+    }
+
+    /**
+     * Helper setting up an InternetAddress instance with the given parameters
+     *
+     * @param name Display name of the e-mail address
+     * @param email E-mail address
+     * @return address Fetched InternetAddress instance
+     */
+    protected static InternetAddress prepareInternetAddress(String charsetEncoding, String name, String email) {
+        InternetAddress address = new InternetAddress();
+        address.setAddress(email);
         try {
-            twetailer.setPersonal(ApplicationSettings.get().getProductName(), "UTF-8");
+            address.setPersonal(name, charsetEncoding);
         }
         catch (UnsupportedEncodingException e) {
             // Too bad! The recipient will only see the e-mail address
+
+            // Note for the testers:
+            //   Don't know how to generate a UnsupportedEncodingException by just
+            //   injecting a corrupted UTF-8 sequence and/or a wrong character set
+
         }
+        return address;
     }
 
     /**

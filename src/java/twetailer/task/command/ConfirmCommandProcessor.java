@@ -101,7 +101,7 @@ public class ConfirmCommandProcessor {
 
                     // Create a task for that command
                     Queue queue = CommandProcessor._baseOperations.getQueue();
-                    log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
+                    log.warning("Preparing the task: /maezel/processCommand?key=" + consequence.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                                 param(Command.KEY, consequence.getKey().toString()).

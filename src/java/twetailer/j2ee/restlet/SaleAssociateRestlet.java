@@ -1,7 +1,6 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -40,21 +39,14 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (loggedUser.getAttribute("info") != null) {
-            Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
-            if (info.get("email") != null) {
-                String email = info.get("email");
-                if ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email)) {
-                    PersistenceManager pm = _baseOperations.getPersistenceManager();
-                    try {
-                        return delegateResourceCreation(pm, parameters);
-                    }
-                    finally {
-                        pm.close();
-                    }
-                }
+        if (isAPrivilegedUser(loggedUser)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                return delegateResourceCreation(pm, parameters);
+            }
+            finally {
+                pm.close();
             }
         }
         throw new ClientException("Restricted access!");
@@ -248,10 +240,32 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        if (isAPrivilegedUser(loggedUser)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                return delegateResourceSelection(pm, parameters);
+            }
+            finally {
+                pm.close();
+            }
+        }
+        throw new ClientException("Restricted access!");
+    }
+
+    /**
+     * Retrieve the Consumer instances based on the specified criteria.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Attribute coming from a client over HTTP
+     * @return Serialized list of the Consumer instances matching the given criteria
+
+     * @throws DataSourceException If the query to the back-end fails
+     */
+    protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException{
         if (parameters.containsKey(SaleAssociate.STORE_KEY)) {
             Long storeKey = parameters.getLong(SaleAssociate.STORE_KEY);
-            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(SaleAssociate.STORE_KEY, storeKey, 100);
+            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.STORE_KEY, storeKey, 100);
             return JsonUtils.toJson(saleAssociates);
         }
 

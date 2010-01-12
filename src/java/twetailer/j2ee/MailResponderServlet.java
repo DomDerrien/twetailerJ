@@ -47,7 +47,7 @@ public class MailResponderServlet extends HttpServlet {
 
         try {
             log.warning("Path Info: " + request.getPathInfo());
-            
+
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
             if (mailMessage.getFrom() == null) {

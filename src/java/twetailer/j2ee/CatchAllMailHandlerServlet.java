@@ -25,7 +25,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             log.warning("Path Info: " + request.getPathInfo());
-            
+
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
 
@@ -33,7 +33,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             String subject = mailMessage.getSubject();
             String body = MailConnector.getText(mailMessage);
 
-            composeAndPostMailMessage((0 < from.length ? "unknown" : from[0].toString()), subject, body);
+            composeAndPostMailMessage((from == null || from.length == 0 ? "unknown" : from[0].toString()), subject, body);
         }
         catch (MessagingException ex) {
             // Too bad! Should we tweet the issue?

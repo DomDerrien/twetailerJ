@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,26 +26,18 @@ import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
-import twetailer.j2ee.LoginServlet;
+import twetailer.j2ee.TestBaseRestlet;
 import twetailer.validator.LocaleValidator;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestStoreRestlet {
 
-    static final String OPEN_ID = "http://unit.test";
-    static final Long CONSUMER_KEY = 12345L;
-
-    static final OpenIdUser user = OpenIdUser.populate(
-            "http://www.yahoo.com",
-            YadisDiscovery.IDENTIFIER_SELECT,
-            LoginServlet.YAHOO_OPENID_SERVER_URL
-    );
     StoreRestlet ops;
+    static OpenIdUser user;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -55,18 +46,8 @@ public class TestStoreRestlet {
 
     @Before
     public void setUp() throws Exception {
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", OPEN_ID);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", new HashMap<String, String>());
-        Map<String, String> info = new HashMap<String, String>();
-        attributes.put("info", info);
-        json.put("g", attributes);
-        user.fromJSON(json);
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY);
-
         ops = new StoreRestlet();
+        user = TestBaseRestlet.setupOpenIdUser();
     }
 
     @After
@@ -181,7 +162,7 @@ public class TestStoreRestlet {
 
     @Test(expected=RuntimeException.class)
     public void testSelectResourcesI() throws DataSourceException {
-        ops.selectResources(new GenericJsonObject());
+        ops.selectResources(new GenericJsonObject(), null);
     }
 
     @Test
@@ -216,7 +197,7 @@ public class TestStoreRestlet {
                 return stores;
             }
         };
-        ops.selectResources(input);
+        ops.selectResources(input, null);
     }
 
     @Test
@@ -258,7 +239,7 @@ public class TestStoreRestlet {
                 return stores;
             }
         };
-        ops.selectResources(input);
+        ops.selectResources(input, null);
     }
 
     @Test(expected=RuntimeException.class)

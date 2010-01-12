@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,26 +24,18 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
-import twetailer.j2ee.LoginServlet;
+import twetailer.j2ee.TestBaseRestlet;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestSaleAssociateRestlet {
 
-    static final String OPEN_ID = "http://unit.test";
-    static final Long CONSUMER_KEY = 12345L;
-
-    static final OpenIdUser user = OpenIdUser.populate(
-            "http://www.yahoo.com",
-            YadisDiscovery.IDENTIFIER_SELECT,
-            LoginServlet.YAHOO_OPENID_SERVER_URL
-    );
-
     SaleAssociateRestlet ops;
+    static OpenIdUser user;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -53,18 +44,8 @@ public class TestSaleAssociateRestlet {
 
     @Before
     public void setUp() throws Exception {
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", OPEN_ID);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", new HashMap<String, String>());
-        Map<String, String> info = new HashMap<String, String>();
-        attributes.put("info", info);
-        json.put("g", attributes);
-        user.fromJSON(json);
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY);
-
         ops = new SaleAssociateRestlet();
+        user = TestBaseRestlet.setupOpenIdUser();
     }
 
     @After
@@ -621,7 +602,6 @@ public class TestSaleAssociateRestlet {
         // One email for one consumer not matching the given consumerKey
         //
         final Long storeKey = 12345L;
-        final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
         final String email = "unit@test";
@@ -1283,7 +1263,6 @@ public class TestSaleAssociateRestlet {
         // One twitterId for one consumer not matching the given consumerKey
         //
         final Long storeKey = 12345L;
-        final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
         final String twitterId = "unit@test";
@@ -1625,7 +1604,7 @@ public class TestSaleAssociateRestlet {
 
     @Test(expected=RuntimeException.class)
     public void testSelectResourcesI() throws DataSourceException {
-        ops.selectResources(new GenericJsonObject());
+        ops.delegateResourceSelection(new MockPersistenceManager(), new GenericJsonObject());
     }
 
     @Test
@@ -1643,11 +1622,707 @@ public class TestSaleAssociateRestlet {
                 return saleAssociates;
             }
         };
-        ops.selectResources(data);
+        ops.delegateResourceSelection(new MockPersistenceManager(), data);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testSelectResourcesIII() throws DataSourceException, ClientException {
+        ops.selectResources(new GenericJsonObject(), user);
+    }
+
+    @Test(expected=RuntimeException.class)
+    @SuppressWarnings("unchecked")
+    public void testSelectResourcesIV() throws DataSourceException, ClientException {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        JsonObject parameters = new GenericJsonObject(); // STORE_KEY is missing
+        ops.selectResources(parameters, user);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectResourcesV() throws DataSourceException, ClientException {
+        final Long saleAssociateKey = 12345L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(SaleAssociate.STORE_KEY, saleAssociateKey);
+
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.STORE_KEY, key);
+                assertEquals(saleAssociateKey, (Long) value);
+                return new ArrayList<SaleAssociate>();
+            }
+        };
+
+        JsonArray resources = ops.selectResources(parameters, user);
+        assertEquals(0, resources.size());
     }
 
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException {
         ops.updateResource(new GenericJsonObject(), "resourceId", user);
+    }
+
+    @Test
+    public void testDelegageResourceCreationXXX() throws DataSourceException, ClientException {
+        //
+        // One jabberId for no consumer and no sale associate
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, Consumer consumer) {
+                assertNull(consumer.getKey());
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
+                assertEquals(consumerKey.longValue(), parameters.getLong(SaleAssociate.CONSUMER_KEY));
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                return saleAssociate;
+            }
+        };
+
+        JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
+        assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXXXI() throws DataSourceException, ClientException {
+        //
+        // One jabberId for no consumer but one sale associate for another store
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, Consumer consumer) {
+                assertNull(consumer.getKey());
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setStoreKey(1L);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
+                assertEquals(consumerKey.longValue(), parameters.getLong(SaleAssociate.CONSUMER_KEY));
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                return saleAssociate;
+            }
+        };
+
+        ops.delegateResourceCreation(new MockPersistenceManager(), data);
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXXXII() throws DataSourceException, ClientException {
+        //
+        // One jabberId for no consumer but one sale associate for this store but not attached to a Consumer matching the given consumerKey
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                if (SaleAssociate.CONSUMER_KEY.equals(key)) {
+                    assertEquals(consumerKey, (Long) value);
+                }
+                if (SaleAssociate.JABBER_ID.equals(key)) {
+                    assertEquals(jabberId, (String) value);
+                }
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(SaleAssociate.CONSUMER_KEY.equals(key) ? consumerKey : 1L);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        ops.delegateResourceCreation(new MockPersistenceManager(), data);
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXXXIII() throws DataSourceException, ClientException {
+        //
+        // One jabberId for no consumer but one sale associate for this store but not matching the one attached to the given consumerKey
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                if (SaleAssociate.CONSUMER_KEY.equals(key)) {
+                    assertEquals(consumerKey, (Long) value);
+                }
+                if (SaleAssociate.JABBER_ID.equals(key)) {
+                    assertEquals(jabberId, (String) value);
+                }
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(SaleAssociate.CONSUMER_KEY.equals(key) ? saleAssociateKey : 1L);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        ops.delegateResourceCreation(new MockPersistenceManager(), data);
+    }
+
+    @Test
+    public void testDelegageResourceCreationXXXIV() throws DataSourceException, ClientException {
+        //
+        // One jabberId for no consumer but one sale associate for this store
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                assertEquals(saleAssociateKey, saleAssociate.getKey());
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                assertEquals(storeKey, saleAssociate.getStoreKey());
+                assertEquals(jabberId, saleAssociate.getJabberId());
+                return saleAssociate;
+            }
+        };
+
+        JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
+        assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
+    }
+
+    @Test
+    public void testDelegageResourceCreationXXXV() throws DataSourceException, ClientException {
+        //
+        // One jabberId for no consumer but one sale associate for this store
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                if (SaleAssociate.CONSUMER_KEY.equals(key)) {
+                    assertEquals(consumerKey, (Long) value);
+                }
+                if (SaleAssociate.JABBER_ID.equals(key)) {
+                    assertEquals(jabberId, (String) value);
+                }
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                assertEquals(saleAssociateKey, saleAssociate.getKey());
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                assertEquals(storeKey, saleAssociate.getStoreKey());
+                assertEquals(jabberId, saleAssociate.getJabberId());
+                return saleAssociate;
+            }
+        };
+
+        JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
+        assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXXXVI() throws DataSourceException, ClientException {
+        //
+        // One jabberId for one consumer not matching the given consumerKey
+        //
+        final Long storeKey = 12345L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                Consumer consumer = new Consumer();
+                consumer.setKey(1L);
+                consumer.setJabberId(jabberId);
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                return saleAssociates;
+            }
+        };
+
+        ops.delegateResourceCreation(new MockPersistenceManager(), data);
+    }
+
+    @Test
+    public void testDelegageResourceCreationXXXVII() throws DataSourceException, ClientException {
+        //
+        // One jabberId for one consumer not yet associate
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setJabberId(jabberId);
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                if (SaleAssociate.CONSUMER_KEY.equals(key)) {
+                    assertEquals(consumerKey, (Long) value);
+                }
+                if (SaleAssociate.JABBER_ID.equals(key)) {
+                    assertEquals(jabberId, (String) value);
+                }
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
+                assertEquals(consumerKey.longValue(), parameters.getLong(SaleAssociate.CONSUMER_KEY));
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                return saleAssociate;
+            }
+        };
+
+        JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
+        assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXXXVIII() throws DataSourceException, ClientException {
+        //
+        // One jabberId for one consumer already associate with another store
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                // consumer.setKey(1L);
+                consumer.setJabberId(jabberId);
+                // consumer.setjabberId(jabberId);
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(1L);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        ops.delegateResourceCreation(new MockPersistenceManager(), data);
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXXXIX() throws DataSourceException, ClientException {
+        //
+        // One jabberId for one consumer already associate but with another than the one associate with the given consumerKey
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                // consumer.setKey(1L);
+                consumer.setJabberId(jabberId);
+                // consumer.setjabberId(jabberId);
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            boolean getSaleAssociatesCalled = false;
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(getSaleAssociatesCalled ? saleAssociateKey : 1L);
+                getSaleAssociatesCalled = true;
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+        };
+
+        ops.delegateResourceCreation(new MockPersistenceManager(), data);
+    }
+
+    @Test
+    // @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXC() throws DataSourceException, ClientException {
+        //
+        // One jabberId for one consumer already associate correctly
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setJabberId(jabberId);
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                assertEquals(saleAssociateKey, saleAssociate.getKey());
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                assertEquals(storeKey, saleAssociate.getStoreKey());
+                assertEquals(jabberId, saleAssociate.getJabberId());
+                return saleAssociate;
+            }
+        };
+
+        JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
+        assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
+    }
+
+    @Test
+    // @Test(expected=DataSourceException.class)
+    public void testDelegageResourceCreationXCI() throws DataSourceException, ClientException {
+        //
+        // One jabberId for one consumer already associate correctly, as previously retrieved
+        //
+        final Long storeKey = 12345L;
+        final Long saleAssociateKey = 54321L;
+
+        final Long consumerKey = 67890L;
+        final String jabberId = "unit@test";
+
+        JsonObject data = new GenericJsonObject();
+        data.put(SaleAssociate.STORE_KEY, storeKey);
+        data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
+        data.put(SaleAssociate.JABBER_ID, jabberId);
+
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setJabberId(jabberId);
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                saleAssociates.add(saleAssociate);
+                return saleAssociates;
+            }
+            @Override
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                assertEquals(saleAssociateKey, saleAssociate.getKey());
+                assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                assertEquals(storeKey, saleAssociate.getStoreKey());
+                assertEquals(jabberId, saleAssociate.getJabberId());
+                return saleAssociate;
+            }
+        };
+
+        JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
+        assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
     }
 }

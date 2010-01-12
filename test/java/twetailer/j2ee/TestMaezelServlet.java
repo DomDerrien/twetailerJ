@@ -889,6 +889,8 @@ public class TestMaezelServlet {
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
+
+        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test

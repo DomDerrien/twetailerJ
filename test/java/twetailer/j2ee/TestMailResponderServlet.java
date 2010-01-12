@@ -17,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.TestMailConnector;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
@@ -54,8 +53,9 @@ public class TestMailResponderServlet {
     public void testDoPostI() throws IOException {
         final String from = "test-emitter@appspot.com";
         final String name = "Mr Emitter";
+        final String subject = "Not important!";
         final String message = "wii console Mario Kart"; // FIXME: -- àéüôç";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, name, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, name, subject, message);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {

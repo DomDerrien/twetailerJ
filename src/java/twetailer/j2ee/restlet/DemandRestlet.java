@@ -49,7 +49,7 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 

@@ -93,13 +93,7 @@ public class TweetLoader {
         long lastId = sinceId;
 
         // Get the list of direct messages
-        List<DirectMessage> messages = null;
-        try {
-            messages = TwitterConnector.getDirectMessages(sinceId);
-        }
-        catch(TwitterException ex) {
-            log.info("Cannot get the Direct Messages (DM) for the account " + TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME);
-        }
+        List<DirectMessage> messages = TwitterConnector.getDirectMessages(sinceId);
 
         List<RawCommand> extractedCommands = new ArrayList<RawCommand>();
         Map<String, Boolean> nonFollowerIds = new HashMap<String, Boolean>();

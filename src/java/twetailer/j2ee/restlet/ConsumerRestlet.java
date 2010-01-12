@@ -3,7 +3,6 @@ package twetailer.j2ee.restlet;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -71,21 +70,14 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException{
-        if (loggedUser.getAttribute("info") != null) {
-            Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
-            if (info.get("email") != null) {
-                String email = info.get("email");
-                if ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email)) {
-                    PersistenceManager pm = _baseOperations.getPersistenceManager();
-                    try {
-                        return delegateResourceSelection(pm, parameters);
-                    }
-                    finally {
-                        pm.close();
-                    }
-                }
+        if (isAPrivilegedUser(loggedUser)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                return delegateResourceSelection(pm, parameters);
+            }
+            finally {
+                pm.close();
             }
         }
         throw new ClientException("Restricted access!");

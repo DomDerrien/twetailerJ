@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.mail.MessagingException;
@@ -17,6 +19,7 @@ import javax.servlet.http.MockHttpServletRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.apphosting.api.MockAppEngineEnvironment;
@@ -83,15 +86,25 @@ public class TestMailConnector {
         assertEquals(0, stream.getNotProcessedContents().length());
     }
 
-    public static MockServletInputStream prepareTextStream(String from, String name, String message) {
+    public static MockServletInputStream prepareTextStream(String from, String name, String subject, String message) {
         MockServletInputStream stream = new MockServletInputStream();
         stream.setData(
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
-                "From: " + name + "<" + from + ">\n" +
+                (
+                        from == null && name == null ?
+                                ""  :
+                                from == null ?
+                                        "From:\n"  :
+                                        "From: " + name + "<" + from + ">\n"
+                ) +
                 "To: Twetailer <maezel@twetailer.appspotmail.com>\n" +
                 "Cc: unit@test.net\n" +
-                "Subject: Twetailer\n" +
+                (
+                        subject == null ?
+                                "" :
+                                "Subject: " + subject + "\n"
+                ) +
                 "Content-Type: text/plain; charset=UTF-8\n" +
                 "\n" +
                 message
@@ -103,8 +116,9 @@ public class TestMailConnector {
     public void testGetMailMessageI() throws IOException, MessagingException {
         final String from = "test-emitter@appspot.com";
         final String name = "Mr Emitter";
-        final String message = "wii console Mario Kart"; // FIXME: -- àéüôç
-        final MockServletInputStream stream = prepareTextStream(from, name, message);
+        final String subject = "Not important!";
+        final String message = "wii console Mario Kart"; // FIXME: -- àéüôç";
+        final MockServletInputStream stream = prepareTextStream(from, name, subject, message);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -472,7 +486,7 @@ public class TestMailConnector {
                 "testId",
                 "testName",
                 LabelExtractor.get("mc_mail_subject_response_prefix", Locale.ENGLISH) + "subject",
-                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
     }
@@ -483,7 +497,7 @@ public class TestMailConnector {
                 "testId",
                 "testName",
                 "subject",
-                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
     }
@@ -494,7 +508,7 @@ public class TestMailConnector {
                 "testId",
                 "testName",
                 "",
-                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
     }
@@ -505,8 +519,39 @@ public class TestMailConnector {
                 "testId",
                 "testName",
                 null,
-                "******************\n******************\ntest exhaustif pour voir où estl \nla faute...\n******************\n******************",
+                "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
+    }
+
+    @Test
+    public void testPrepareInternetAddressI() {
+        String name = "name";
+        String email = "unit@test.ca";
+
+        InternetAddress test = MailConnector.prepareInternetAddress("UTF-8", name, email);
+
+        assertEquals(name, test.getPersonal());
+        assertEquals(email, test.getAddress());
+    }
+
+    @Test
+    @Ignore
+    public void testPrepareInternetAddressII() {
+        String name = "Last with a UTF-8 sequence: ễ";
+        byte[] nameBytes = name.getBytes();
+        byte[] corruptedNameBytes = Arrays.copyOf(nameBytes, nameBytes.length + 1);
+        corruptedNameBytes[corruptedNameBytes.length - 1] = corruptedNameBytes[corruptedNameBytes.length - 2];
+        String corruptedName = new String(corruptedNameBytes);
+        Charset.forName("dddd");
+        String email = "unit@test.ca";
+
+        InternetAddress test = MailConnector.prepareInternetAddress("iso-latin-1", corruptedName, email);
+
+        // Don't know how to generate a UnsupportedEncodingException by just
+        // injecting a corrupted UTF-8 sequence and/or a wrong character set
+
+        assertEquals("", test.getPersonal());
+        assertEquals(email, test.getAddress());
     }
 }

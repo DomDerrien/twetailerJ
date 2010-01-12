@@ -1,7 +1,6 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -42,16 +41,9 @@ public class StoreRestlet extends BaseRestlet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (loggedUser.getAttribute("info") != null) {
-            Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
-            if (info.get("email") != null) {
-                String email = info.get("email");
-                if ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email)) {
-                    return storeOperations.createStore(parameters).toJson();
-                }
-            }
+        if (isAPrivilegedUser(loggedUser)) {
+            return storeOperations.createStore(parameters).toJson();
         }
         throw new ClientException("Restricted access!");
     }
@@ -67,7 +59,7 @@ public class StoreRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters) throws DataSourceException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
         if (parameters.containsKey(Store.LOCATION_KEY)) {
             Long locationKey = parameters.getLong(Store.LOCATION_KEY);
             Double range = !parameters.containsKey(Demand.RANGE) ? 25.0D : parameters.getDouble(Demand.RANGE);

@@ -3,15 +3,16 @@ package twetailer.j2ee.restlet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jdo.PersistenceManager;
-
 import javamocks.util.logging.MockLogger;
+
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,17 +24,17 @@ import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.MaezelServlet;
+import twetailer.j2ee.TestBaseRestlet;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -41,28 +42,8 @@ import domderrien.jsontools.JsonObject;
 
 public class TestConsumerRestlet {
 
-    static final String OPEN_ID = "http://unit.test";
-    static final Long CONSUMER_KEY = 12345L;
-
-    static final OpenIdUser user = OpenIdUser.populate(
-            "http://www.yahoo.com",
-            YadisDiscovery.IDENTIFIER_SELECT,
-            LoginServlet.YAHOO_OPENID_SERVER_URL
-    );
-    static {
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", OPEN_ID);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", new HashMap<String, String>());
-        Map<String, String> info = new HashMap<String, String>();
-        attributes.put("info", info);
-        json.put("g", attributes);
-        user.fromJSON(json);
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY);
-    }
-
     ConsumerRestlet ops;
+    OpenIdUser user;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -72,6 +53,7 @@ public class TestConsumerRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new ConsumerRestlet();
+        user = TestBaseRestlet.setupOpenIdUser();
     }
 
     @After
@@ -116,108 +98,116 @@ public class TestConsumerRestlet {
         ops.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
-                assertEquals(CONSUMER_KEY, key);
+                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, key);
                 Consumer temp = new Consumer();
-                temp.setKey(CONSUMER_KEY);
+                temp.setKey(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY);
                 return temp;
             }
         };
         JsonObject resource = ops.getResource(null, "current", user);
-        assertEquals(CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
+        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
     }
 
-    /** FIXME!
     @Test
-    public void testSelectResourcesI() throws DataSourceException {
+    public void testDelegateResourcesSelectionI() throws DataSourceException {
         final String email = "d.d@d.dom";
         JsonObject parameters = new GenericJsonObject();
-        parameters.put("qA", Consumer.EMAIL);
-        parameters.put("qV", email);
+        parameters.put(Consumer.EMAIL, email);
         final Long resourceId = 12345L;
         ops.consumerOperations = new ConsumerOperations() {
             @Override
-            public List<Consumer> getConsumers(String key, Object value, int index) {
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
-                assertTrue(value instanceof String);
                 assertEquals(email, (String) value);
-                Consumer temp = new Consumer();
-                temp.setKey(resourceId);
-                temp.setEmail(email);
-                List<Consumer> temps = new ArrayList<Consumer>();
-                temps.add(temp);
-                return temps;
+                Consumer consumer = new Consumer();
+                consumer.setKey(resourceId);
+                consumer.setEmail(email);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                consumers.add(consumer);
+                return consumers;
             }
         };
-        JsonArray resources = ops.selectResources(parameters);
+        JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
     }
 
     @Test
-    public void testSelectResourcesII() throws DataSourceException {
-        final String email = "d.d@d.dom";
+    public void testDelegateResourcesSelectionII() throws DataSourceException {
+        final String jabberId = "d.d@d.dom";
         JsonObject parameters = new GenericJsonObject();
-        parameters.put("q", email);
+        parameters.put(Consumer.JABBER_ID, jabberId);
         final Long resourceId = 12345L;
         ops.consumerOperations = new ConsumerOperations() {
             @Override
-            public List<Consumer> getConsumers(String key, Object value, int index) {
-                assertEquals(Consumer.EMAIL, key);
-                assertTrue(value instanceof String);
-                assertEquals(email, (String) value);
-                Consumer temp = new Consumer();
-                temp.setKey(resourceId);
-                temp.setEmail(email);
-                List<Consumer> temps = new ArrayList<Consumer>();
-                temps.add(temp);
-                return temps;
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
+                assertEquals(Consumer.JABBER_ID, key);
+                assertEquals(jabberId, (String) value);
+                Consumer consumer = new Consumer();
+                consumer.setKey(resourceId);
+                consumer.setEmail(jabberId);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                consumers.add(consumer);
+                return consumers;
             }
         };
-        JsonArray resources = ops.selectResources(parameters);
+        JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
     }
 
     @Test
-    public void testSelectResourcesIII() throws DataSourceException {
-        final String email = "d.d@d.dom";
+    public void testDelegateResourcesSelectionIII() throws DataSourceException {
+        final String twitterId = "d_d";
         JsonObject parameters = new GenericJsonObject();
-        parameters.put("qA", ""); // To fall back on "qA = Consumer.EMAIL"
-        parameters.put("qV", email);
+        parameters.put(Consumer.TWITTER_ID, twitterId);
         final Long resourceId = 12345L;
         ops.consumerOperations = new ConsumerOperations() {
             @Override
-            public List<Consumer> getConsumers(String key, Object value, int index) {
-                assertEquals(Consumer.EMAIL, key);
-                assertTrue(value instanceof String);
-                assertEquals(email, (String) value);
-                Consumer temp = new Consumer();
-                temp.setKey(resourceId);
-                temp.setEmail(email);
-                List<Consumer> temps = new ArrayList<Consumer>();
-                temps.add(temp);
-                return temps;
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
+                assertEquals(Consumer.TWITTER_ID, key);
+                assertEquals(twitterId, (String) value);
+                Consumer consumer = new Consumer();
+                consumer.setKey(resourceId);
+                consumer.setEmail(twitterId);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                consumers.add(consumer);
+                return consumers;
             }
         };
-        JsonArray resources = ops.selectResources(parameters);
+        JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testSelectResourcesv() throws DataSourceException {
-        final String email = "d.d@d.dom";
+    @Test
+    public void testDelegateResourcesSelectionIV() throws DataSourceException {
         JsonObject parameters = new GenericJsonObject();
-        parameters.put("q", email);
         ops.consumerOperations = new ConsumerOperations() {
             @Override
-            public List<Consumer> getConsumers(String key, Object value, int index) throws DataSourceException {
-                throw new DataSourceException("Done in purpose");
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
+                fail("Call not expected!");
+                return null;
             }
         };
-        ops.selectResources(parameters);
+        JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
+        assertEquals(0, resources.size());
     }
-    **/
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectResourcesI() throws DataSourceException, ClientException {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        JsonObject parameters = new GenericJsonObject();
+        JsonArray resources = ops.selectResources(parameters, user);
+        assertEquals(0, resources.size());
+    }
+
+    @Test(expected=ClientException.class)
+    public void testSelectResourcesII() throws DataSourceException, ClientException {
+        JsonObject parameters = new GenericJsonObject();
+        ops.selectResources(parameters, user);
+    }
 
     @Test
     public void testFilterOutInvalidValueI() throws DataSourceException {
@@ -326,6 +316,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
         };
+        ops._baseOperations = new MockBaseOperations();
         ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
@@ -359,6 +350,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
+        ops._baseOperations = new MockBaseOperations();
         ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
@@ -392,6 +384,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
+        ops._baseOperations = new MockBaseOperations();
         ops.scheduleConsolidationTasks(Consumer.JABBER_ID, jabberId, 0L);
     }
 
@@ -425,6 +418,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
+        ops._baseOperations = new MockBaseOperations();
         ops.scheduleConsolidationTasks(Consumer.TWITTER_ID, twitterId, 0L);
     }
 
@@ -476,6 +470,7 @@ public class TestConsumerRestlet {
     public void testUpdateResourceI() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
         user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        ops._baseOperations = new MockBaseOperations();
         ops.updateResource(null, "0", user);
     }
 
@@ -492,6 +487,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         };
+        ops._baseOperations = new MockBaseOperations();
         ops.updateResource(null, consumerKey.toString(), user);
     }
 
@@ -514,6 +510,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         };
+        ops._baseOperations = new MockBaseOperations();
         ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
@@ -546,7 +543,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        };
-        ops.updateResource(parameters, consumerKey.toString(), user);
+       ops._baseOperations = new MockBaseOperations();
+       ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
     @Test
@@ -578,7 +576,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        };
-        ops.updateResource(parameters, consumerKey.toString(), user);
+       ops._baseOperations = new MockBaseOperations();
+       ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
     @Test
@@ -610,6 +609,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        };
-        ops.updateResource(parameters, consumerKey.toString(), user);
+       ops._baseOperations = new MockBaseOperations();
+       ops.updateResource(parameters, consumerKey.toString(), user);
     }
 }

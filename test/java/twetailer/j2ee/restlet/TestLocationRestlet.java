@@ -1,14 +1,7 @@
 package twetailer.j2ee.restlet;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javamocks.util.logging.MockLogger;
 
 import org.junit.After;
@@ -18,45 +11,19 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dto.Consumer;
-import twetailer.dto.Entity;
 import twetailer.dto.Location;
-import twetailer.j2ee.LoginServlet;
+import twetailer.j2ee.TestBaseRestlet;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestLocationRestlet {
 
-    static final String OPEN_ID = "http://unit.test";
-    static final Long CONSUMER_KEY = 12345L;
-
-    static final OpenIdUser user = OpenIdUser.populate(
-            "http://www.yahoo.com",
-            YadisDiscovery.IDENTIFIER_SELECT,
-            LoginServlet.YAHOO_OPENID_SERVER_URL
-    );
-    static {
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", OPEN_ID);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", new HashMap<String, String>());
-        Map<String, String> info = new HashMap<String, String>();
-        attributes.put("info", info);
-        json.put("g", attributes);
-        user.fromJSON(json);
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY);
-    }
-
     LocationRestlet ops;
+    static OpenIdUser user;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -66,6 +33,7 @@ public class TestLocationRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new LocationRestlet();
+        user = TestBaseRestlet.setupOpenIdUser();
     }
 
     @After
@@ -102,7 +70,7 @@ public class TestLocationRestlet {
 
     @Test(expected=RuntimeException.class)
     public void testSelectResources() throws DataSourceException {
-        ops.selectResources(new GenericJsonObject());
+        ops.selectResources(new GenericJsonObject(), null);
     }
 
     @Test(expected=RuntimeException.class)

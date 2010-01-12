@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jdo.PersistenceManager;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -121,6 +122,24 @@ public abstract class BaseRestlet extends HttpServlet {
     }
 
     /**
+     * Helper returning <code>true if the logged user is one with top privileges
+     *
+     * @param loggedUser authenticated user descriptor
+     * @return <code>true</code> if the user has top privileges
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean isAPrivilegedUser(OpenIdUser loggedUser) {
+        if (loggedUser.getAttribute("info") != null) {
+            Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
+            if (info.get("email") != null) {
+                String email = info.get("email");
+                return ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email));
+            }
+        }
+        return false;
+    }
+
+    /**
      * Study the request parameter list and checks if there a recognized debug mode switch
      *
      * @param parameters HTTP request parameters
@@ -152,6 +171,8 @@ public abstract class BaseRestlet extends HttpServlet {
      * with fallback on default values
      *
      * @param parameters HTTP request parameters
+     * @param openId openId of the user to fake
+     * @param consumerKey Key of the Consumer instance to attach to the fake user
      */
     protected static void injectMockOpenUser(HttpServletRequest request, String openId, Long consumerKey) {
         // Create fake user
@@ -160,6 +181,21 @@ public abstract class BaseRestlet extends HttpServlet {
                 YadisDiscovery.IDENTIFIER_SELECT,
                 LoginServlet.YAHOO_OPENID_SERVER_URL
         );
+
+        // Inject the result in the request
+        injectMockOpenUser(request, user, openId, consumerKey);
+    }
+
+    /**
+     * Inject in the request a mock OpenUser instance built with values found among the request parameters
+     * with fallback on default values
+     *
+     * @param parameters HTTP request parameters
+     * @param user Basic fake user record
+     * @param openId openId of the user to fake
+     * @param consumerKey Key of the Consumer instance to attach to the fake user
+     */
+    protected static void injectMockOpenUser(HttpServletRequest request, OpenIdUser user, String openId, Long consumerKey) {
         Map<String, Object> json = new HashMap<String, Object>();
         // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
         json.put("a", openId);
@@ -177,6 +213,7 @@ public abstract class BaseRestlet extends HttpServlet {
      * with fallback on default values
      *
      * @param parameters HTTP request parameters
+     * @param user Fetched fake user record
      */
     protected static void injectMockOpenUser(HttpServletRequest request, OpenIdUser user) {
         // Save the fake user as the request attribute
