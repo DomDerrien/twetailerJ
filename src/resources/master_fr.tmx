@@ -43,7 +43,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Another Social Economy</seg>
+                <seg>L'économie sociale différente</seg>
             </tuv>
         </tu>
         <tu tuid="product_copyright" dataType="text">
@@ -66,70 +66,70 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>opened</seg>
+                <seg>ouvert</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_invalid" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>invalid</seg>
+                <seg>invalide</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_published" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>published</seg>
+                <seg>publié</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_confirmed" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>confirmed</seg>
+                <seg>confirmé</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_closed" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>closed</seg>
+                <seg>fermé</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_cancelled" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>cancelled</seg>
+                <seg>annulé</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_declined" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>declined</seg>
+                <seg>décliné</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_markedForDeletion" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>markedForDeletion</seg>
+                <seg>marquéPourEffacement</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_action" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>action,command,!</seg>
+                <seg>action,commande,!</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_address" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>address</seg>
+                <seg>adresse</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_expiration" dataType="text">
@@ -150,168 +150,168 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>help,?</seg>
+                <seg>aide,?</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_locale" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>locale,location,postalCode,zipCode</seg>
+                <seg>localité,localite,localisation,codePostal</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_name" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>name</seg>
+                <seg>nom</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_phoneNumber" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>phoneNumber</seg>
+                <seg>numéroTéléphone,numeroTelephone</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_price" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>price,cost</seg>
+                <seg>prix,coût,cout</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>proposal,proposalKey,pk</seg>
+                <seg>proposition,cléProposition,cleProposition,cp</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_quantity" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>quantity,qty</seg>
+                <seg>quantité,quantite,qté,qte</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_reference" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>reference,identifier,id,demandKey,dk</seg>
+                <seg>référence,reference,identifiant,id,cléDemand,cleDemand,cd</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_range" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>range,rng,distance</seg>
+                <seg>distance</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>state</seg>
+                <seg>état,etat</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_store" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>store,storeKey,sk</seg>
+                <seg>magasin,cléMagasin,cleMagasin,cm</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_tags" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>tags,keywords,keys</seg>
+                <seg>motsClé,motCles</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_total" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>totalCost,tc</seg>
+                <seg>coûtTotal,coutTotal,ttc</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_cancel" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>cancel</seg>
+                <seg>annuler</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_close" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>close</seg>
+                <seg>fermer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_confirm" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>confirm</seg>
+                <seg>confirmer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_decline" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>decline</seg>
+                <seg>décliner,decliner</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_delete" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>delete</seg>
+                <seg>effacer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>demand</seg>
+                <seg>demande</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_help" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>help,?</seg>
+                <seg>aide,?</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_list" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>list</seg>
+                <seg>lister</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_propose" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>propose</seg>
+                <seg>proposer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_supply" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>supply</seg>
+                <seg>fournir</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_wish" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>wish</seg>
+                <seg>souhaiter</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_www" dataType="text">
@@ -803,7 +803,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     Confirming Proposal:{0} Tags:{1} |
-                    Please prepare product:{2} by marking it with Demand ref:{2} and placing it on the side.|
+                    Please prepare proposed:{2} by marking it with Demand ref:{2} and placing it on the side.|
                     In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
                     "d twetailer !close ref:{2}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
             </tuv>
@@ -1141,7 +1141,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>I have Demand ref:{0}, for tags:{1} which expires:{2}. If you have matching supply, please complete and send the following proposal ...  |
-                "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]" </seg>
+                "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]" </seg>
             </tuv>
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" dataType="text">
@@ -1151,7 +1151,7 @@
                 <seg>
                     I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}.
                     If you have matching supply, please complete and send the following proposal ...|
-                    "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]"
+                    "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]"
                 </seg>
             </tuv>
         </tu>
@@ -1207,7 +1207,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} total:{7}{9} |
+                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} price:{7}{8} total:{7}{9} |
                 Send "d twetailer !list store:{5}" for more details |
                 Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
@@ -1217,7 +1217,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} |
+                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} price:{7}{8} |
                 Send "d twetailer !list store:{5}" for more details |
                 Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
@@ -1227,7 +1227,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} total:{7}{8} |
+                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} total:{7}{8} |
                 Send "d twetailer !list store:{5}" for more details |
                 Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
@@ -1243,7 +1243,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twetailer notification</seg>
+                <seg>Notification de Twetailer</seg>
             </tuv>
         </tu>
         <tu tuid="mc_mail_subject_response_prefix" dataType="text">
@@ -1257,7 +1257,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
+                <seg>(pas important car c'est une réponse automatisée ;). Merci de magaziner avec Twetailer</seg>
             </tuv>
         </tu>
         <tu tuid="country_CA" dataType="text">
@@ -1281,7 +1281,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Spain</seg>
+                <seg>Espagne</seg>
             </tuv>
         </tu>
         <tu tuid="country_UK" dataType="text">
@@ -1289,7 +1289,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>United Kingdom</seg>
+                <seg>Royaume Uni</seg>
             </tuv>
         </tu>
         <tu tuid="country_US" dataType="text">
@@ -1297,7 +1297,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>United States of America</seg>
+                <seg>États-Unis d'Amérique</seg>
             </tuv>
         </tu>
     </body>

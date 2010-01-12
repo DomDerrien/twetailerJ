@@ -1036,7 +1036,7 @@
             <tuv xml:lang="en">
                 <seg>
                     Confirming Proposal:{0} Tags:{1} |
-                    Please prepare product:{2} by marking it with Demand ref:{2} and placing it on the side.|
+                    Please prepare proposed:{2} by marking it with Demand ref:{2} and placing it on the side.|
                     In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
                     "d twetailer !close ref:{2}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
             </tuv>
@@ -1570,7 +1570,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>I have Demand ref:{0}, for tags:{1} which expires:{2}. If you have matching supply, please complete and send the following proposal ...  |
-                "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]" </seg>
+                "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]" </seg>
             </tuv>
         </tu>
 
@@ -1589,7 +1589,7 @@
                 <seg>
                     I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}.
                     If you have matching supply, please complete and send the following proposal ...|
-                    "d twetailer !propose ref:{0} product:[enter full product name here] price:[enter retail price here]"
+                    "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]"
                 </seg>
             </tuv>
         </tu>
@@ -1687,7 +1687,7 @@
             <note>
                 Inform a consumer about a new proposal.|
                 {0}: proposal key|
-                {1}: proposal product|
+                {1}: proposal tags|
                 {2}: demand key|
                 {3}: demand tags|
                 {4}: demand expiration date|
@@ -1699,7 +1699,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} total:{7}{9} |
+                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} price:{7}{8} total:{7}{9} |
                 Send "d twetailer !list store:{5}" for more details |
                 Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
@@ -1711,7 +1711,7 @@
             <note>
                 Inform a consumer about a new proposal.|
                 {0}: proposal key|
-                {1}: proposal product|
+                {1}: proposal tags|
                 {2}: demand key|
                 {3}: demand tags|
                 {4}: demand expiration date|
@@ -1722,7 +1722,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} price:{7}{8} |
+                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} price:{7}{8} |
                 Send "d twetailer !list store:{5}" for more details |
                 Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
@@ -1734,7 +1734,7 @@
             <note>
                 Inform a consumer about a new proposal.|
                 {0}: proposal key|
-                {1}: proposal product|
+                {1}: proposal tags|
                 {2}: demand key|
                 {3}: demand tags|
                 {4}: demand expiration date|
@@ -1745,7 +1745,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} product:{1} total:{7}{8} |
+                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} total:{7}{8} |
                 Send "d twetailer !list store:{5}" for more details |
                 Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
             </tuv>
