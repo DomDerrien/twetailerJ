@@ -805,7 +805,7 @@
                     Confirming Proposal:{0} Tags:{1} |
                     Please prepare proposed:{2} by marking it with Demand ref:{2} and placing it on the side.|
                     In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
-                    "d twetailer !close ref:{2}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
+                    "d twetailer !close prop:{0}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_inform_about_demo_mode" dataType="text">

@@ -65,8 +65,9 @@
     	<!-- Copy the Twetailer dependencies -->
         <copy file="deps/lib/domderrien/domderrien-1.0.1.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
-        <copy file="deps/lib/dyuproject/dyuproject-*-1.1.6.jar" todir="src/war/WEB-INF/lib" />
-        <copy file="deps/lib/dyuproject/jetty-util-6.1.19.jar" todir="src/war/WEB-INF/lib" />
+        <copy todir="src/war/WEB-INF/lib">
+        	<fileset dir="deps/lib/dyuproject" />
+    	</copy>
         <copy file="deps/lib/wave/json.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/jsonrpc.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/wave-robot-api-20090916.jar" todir="src/war/WEB-INF/lib" />
