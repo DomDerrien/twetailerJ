@@ -787,7 +787,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>State-flow (glossary): State-Flow: Opened / Invalid -> Published -> Proposed -> Confirmed -> Reserved (fee) -> Fulfilled (Fee) -> Settled (Fee) -> Closed / Flagged. See also: opened, invalid, published, proposed, confirmed, reserved, fee, free, fulfilled, settled, closed, flagged. |
+                <seg>State-flow (glossary): State-Flow: Opened / Invalid -&gt; Published -&gt; Proposed -&gt; Confirmed -&gt; Reserved (fee) -&gt; Fulfilled (Fee) -&gt; Settled (Fee) -&gt; Closed / Flagged. See also: opened, invalid, published, proposed, confirmed, reserved, fee, free, fulfilled, settled, closed, flagged. |
                 State-flow (see also): state, attribute |
                 State-flow (since): v0.0</seg>
             </tuv>
