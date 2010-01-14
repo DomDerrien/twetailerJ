@@ -4,6 +4,8 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -43,6 +45,7 @@ public class ConfirmCommandProcessor {
         //
         Proposal proposal = null;
         Demand demand = null;
+        List<String> messages = new ArrayList<String>();
         try {
             // If there's no PROPOSAL_KEY attribute, it's going to generate an exception as the desired side-effect
             proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
@@ -50,25 +53,25 @@ public class ConfirmCommandProcessor {
             demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), consumer.getKey());
         }
         catch(Exception ex) {
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale())
-            );
+            messages.add(LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale()));
         }
         if (demand != null) {
             if (!State.published.equals(demand.getState())) {
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposal.getKey(), demand.getKey(), demand.getState().toString() }, consumer.getLocale())
+                messages.add(
+                        LabelExtractor.get(
+                                "cp_command_confirm_invalid_state_demand",
+                                new Object[] {
+                                        proposal.getKey(),
+                                        demand.getKey(),
+                                        demand.getState().toString()
+                                },
+                                consumer.getLocale()
+                        )
                 );
             }
             else {
                 // Inform the consumer of the successful confirmation
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
+                messages.add(
                         LabelExtractor.get(
                                 "cp_command_confirm_acknowledge_confirmation",
                                 new Object[] {
@@ -85,11 +88,7 @@ public class ConfirmCommandProcessor {
                 Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
                 if (proposal.getOwnerKey().equals(robotKey)) {
                     // Inform the consumer about the next steps in the demo mode
-                    communicateToConsumer(
-                            rawCommand,
-                            consumer,
-                            LabelExtractor.get("cp_command_confirm_inform_about_demo_mode", consumer.getLocale())
-                    );
+                    messages.add(LabelExtractor.get("cp_command_confirm_inform_about_demo_mode", consumer.getLocale()));
 
                     // Prepare the message simulating the closing by the robot
                     RawCommand consequence = new RawCommand();
@@ -114,7 +113,7 @@ public class ConfirmCommandProcessor {
                     communicateToSaleAssociate(
                             new RawCommand(saleAssociate.getPreferredConnection()),
                             saleAssociate,
-                            LabelExtractor.get(
+                            new String[] { LabelExtractor.get(
                                     "cp_command_confirm_inform_about_confirmation",
                                     new Object[] {
                                             proposal.getKey(),
@@ -122,7 +121,7 @@ public class ConfirmCommandProcessor {
                                             demand.getKey()
                                     },
                                     consumer.getLocale()
-                            )
+                            )}
                     );
                 }
 
@@ -133,5 +132,11 @@ public class ConfirmCommandProcessor {
                 demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
             }
         }
+
+        communicateToConsumer(
+                rawCommand,
+                consumer,
+                messages.toArray(new String[0])
+        );
     }
 }

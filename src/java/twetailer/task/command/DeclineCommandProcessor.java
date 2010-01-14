@@ -23,13 +23,15 @@ public class DeclineCommandProcessor {
         //
         // Used by a consumer to refuse a proposal or by a sale associate to refuse a demand
         //
+        String message = null;
         if (command.containsKey(Demand.REFERENCE)) {
             SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.decline);
             communicateToSaleAssociate(
                     rawCommand,
                     saleAssociate,
-                    "Not yet implemented!" // FIXME: decides what it means for sale associates
+                    new String[] { "Not yet implemented!" } // FIXME: decides what it means for sale associates
             );
+            return;
         }
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             try {
@@ -40,26 +42,19 @@ public class DeclineCommandProcessor {
                 // Update the proposal state
                 proposal.setState(State.declined);
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale())
-                );
+                message = LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale());
             }
             catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_decline_invalid_proposal_id", consumer.getLocale())
-                );
+                message = LabelExtractor.get("cp_command_decline_invalid_proposal_id", consumer.getLocale());
             }
         }
         else {
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    LabelExtractor.get("cp_command_decline_invalid_parameters", consumer.getLocale())
-            );
+            message = LabelExtractor.get("cp_command_decline_invalid_parameters", consumer.getLocale());
         }
+        communicateToConsumer(
+                rawCommand,
+                consumer,
+                new String[] { message }
+        );
     }
 }

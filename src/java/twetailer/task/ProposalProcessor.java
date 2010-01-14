@@ -135,7 +135,7 @@ public class ProposalProcessor {
                     communicateToConsumer(
                             rawCommand,
                             consumer,
-                            message
+                            new String[] { message }
                     );
                     demand.addProposalKey(proposalKey);
                     demand = demandOperations.updateDemand(pm, demand);
@@ -153,7 +153,7 @@ public class ProposalProcessor {
                             saleAssociate.getLocale()
                     );
                     RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, proposal.getRawCommandId());
-                    communicateToSaleAssociate(rawCommand, saleAssociate, message);
+                    communicateToSaleAssociate(rawCommand, saleAssociate, new String[] { message });
                 }
             }
             catch (DataSourceException ex) {

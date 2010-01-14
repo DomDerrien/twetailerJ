@@ -236,7 +236,7 @@ public class CommandProcessor {
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH)
+                    new String[] { LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH) }
             );
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
@@ -383,7 +383,7 @@ public class CommandProcessor {
                 communicateToConsumer(
                         rawCommand,
                         consumer,
-                        LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, locale)
+                        new String[] { LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, locale) }
                 );
             }
         }
@@ -391,7 +391,7 @@ public class CommandProcessor {
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, locale)
+                    new String[] { LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, locale) }
             );
         }
     }

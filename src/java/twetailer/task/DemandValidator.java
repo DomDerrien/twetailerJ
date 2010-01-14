@@ -138,7 +138,7 @@ public class DemandValidator {
                     communicateToConsumer(
                             new RawCommand(demand.getSource()),
                             consumer,
-                            message
+                            new String[] { message }
                     );
                     demand.setState(CommandSettings.State.invalid);
                 }
@@ -188,7 +188,7 @@ public class DemandValidator {
                     communicateToConsumer(
                             new RawCommand(demand.getSource()),
                             consumer,
-                            LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demand.getKey(), serializedHashTags }, consumer.getLocale())
+                            new String[] { LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demand.getKey(), serializedHashTags }, consumer.getLocale()) }
                     );
                     for (String tag: serializedHashTags.split(" ")) {
                         demand.removeHashTag(tag);

@@ -52,7 +52,7 @@ public class HelpCommandProcessor {
         if (keyword.length() == 0) {
             communicateToEmitter(
                     rawCommand,
-                    LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale),
+                    new String[] { LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale) },
                     locale
             );
             return;
@@ -124,7 +124,7 @@ public class HelpCommandProcessor {
         // getCache().put(keyword + locale.toString(), message);
         communicateToEmitter(
                 rawCommand,
-                message,
+                new String[] { message },
                 locale
         );
     }

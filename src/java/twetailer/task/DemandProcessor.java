@@ -128,7 +128,8 @@ public class DemandProcessor {
                     communicateToSaleAssociate(
                             new RawCommand(saleAssociate.getPreferredConnection()),
                             saleAssociate,
-                            LabelExtractor.get(
+                            new String[] {
+                                LabelExtractor.get(
                                     demand.getQuantity() == 1 ? "dp_inform_saleAssociate_about_demand_one_item" : "dp_inform_saleAssociate_about_demand_many_items",
                                     new Object[] {
                                         demand.getKey(),
@@ -137,7 +138,8 @@ public class DemandProcessor {
                                         demand.getQuantity()
                                     },
                                     saleAssociate.getLocale()
-                            )
+                                )
+                            }
                     );
                     // Keep track of the notification to not ping him/her another time
                     demand.addSaleAssociateKey(saleAssociate.getKey());

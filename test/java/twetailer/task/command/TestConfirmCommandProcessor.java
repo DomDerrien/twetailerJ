@@ -144,15 +144,15 @@ public class TestConfirmCommandProcessor {
         CommandProcessor.processCommand(appEnv.getPersistenceManager(), new Consumer(), rawCommand, command);
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText); // Informs the saleAssociate
+        assertTrue(sentText.contains(proposalKey.toString()));
+        assertTrue(sentText.contains(demandKey.toString()));
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText); // Informs the consumer
         assertTrue(sentText.contains(proposalKey.toString()));
         assertTrue(sentText.contains(demandKey.toString()));
         assertTrue(sentText.contains(storeKey.toString()));
         assertTrue(sentText.contains("test"));
-        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText); // Informs the saleAssociate
-        assertTrue(sentText.contains(proposalKey.toString()));
-        assertTrue(sentText.contains(demandKey.toString()));
     }
 
     @Test

@@ -103,7 +103,7 @@ public class ProposalValidator {
                     communicateToSaleAssociate(
                             new RawCommand(proposal.getSource()),
                             saleAssociate,
-                            message
+                            new String[] { message }
                     );
                     proposal.setState(CommandSettings.State.invalid);
                 }
@@ -153,7 +153,7 @@ public class ProposalValidator {
                     communicateToSaleAssociate(
                             new RawCommand(proposal.getSource()),
                             saleAssociate,
-                            LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposal.getKey(), serializedHashTags }, saleAssociate.getLocale())
+                            new String[] { LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposal.getKey(), serializedHashTags }, saleAssociate.getLocale()) }
                     );
                     for (String tag: serializedHashTags.split(" ")) {
                         proposal.removeHashTag(tag);

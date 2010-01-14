@@ -94,11 +94,13 @@ public class LocationValidator {
                     communicateToConsumer(
                             rawCommand,
                             consumer,
-                            LabelExtractor.get(
-                                    "lv_report_invalid_locale",
-                                    new Object[] { rawCommand.getCommand() },
-                                    locale
-                            )
+                            new String[] {
+                                    LabelExtractor.get(
+                                        "lv_report_invalid_locale",
+                                        new Object[] { rawCommand.getCommand() },
+                                        locale
+                                    )
+                            }
                         );
                     }
                     catch (ClientException ex) {

@@ -1,6 +1,7 @@
 package twetailer.connector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -32,13 +33,13 @@ public class BaseConnector {
      * Send the specified message to the RawCommand emitter, using the same communication channel
      *
      * @param rawCommand Command as received by the system, from an IM, in a tweet, an e-mail, etc.
-     * @param message Message to send back
+     * @param messages Array of messages to send back
      * @param locale recipient's locale
      *
      * @throws ClientException If the communication fails
      */
-    public static void communicateToEmitter(RawCommand rawCommand, String message, Locale locale) throws ClientException {
-        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), null, rawCommand.getSubject(), message, locale);
+    public static void communicateToEmitter(RawCommand rawCommand, String[] messages, Locale locale) throws ClientException {
+        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), null, rawCommand.getSubject(), messages, locale);
     }
 
     /**
@@ -47,11 +48,11 @@ public class BaseConnector {
      *
      * @param rawCommand Message triggering this response
      * @param consumer targeted user
-     * @param message Message to send back
+     * @param messages Array of messages to send back
      *
      * @throws ClientException If all communication attempts fail
      */
-    public static void communicateToConsumer(RawCommand rawCommand, Consumer consumer, String message) throws ClientException {
+    public static void communicateToConsumer(RawCommand rawCommand, Consumer consumer, String[] messages) throws ClientException {
         // TODO: implement the fallback mechanism
         Source source = rawCommand.getSource();
         String userId =
@@ -61,7 +62,7 @@ public class BaseConnector {
                         null;
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, userId, userName, rawCommand.getSubject(), message, consumer.getLocale());
+            communicateToUser(source, userId, userName, rawCommand.getSubject(), messages, consumer.getLocale());
         }
     }
 
@@ -71,11 +72,11 @@ public class BaseConnector {
      *
      * @param rawCommand Message triggering this response
      * @param saleAssociate targeted user
-     * @param message Message to send back
+     * @param messages Array of messages to send back
      *
      * @throws ClientException If all communication attempts fail
      */
-    public static void communicateToSaleAssociate(RawCommand rawCommand, SaleAssociate saleAssociate, String message) throws ClientException {
+    public static void communicateToSaleAssociate(RawCommand rawCommand, SaleAssociate saleAssociate, String[] messages) throws ClientException {
         // TODO: implement the fallback mechanism
         Source source = rawCommand.getSource();
         String userId =
@@ -85,7 +86,7 @@ public class BaseConnector {
                         null;
         String userName = saleAssociate.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, userId, userName, rawCommand.getSubject(), message, saleAssociate.getLocale());
+            communicateToUser(source, userId, userName, rawCommand.getSubject(), messages, saleAssociate.getLocale());
         }
     }
 
@@ -100,20 +101,24 @@ public class BaseConnector {
      * @param userId User identifier (can be Jabber ID, Twitter screen name, etc.)
      * @param userName User display name
      * @param subject TODO
-     * @param message Message to send back
+     * @param messages Array of messages to send back
      * @param locale recipient's locale
      * @throws ClientException If all communication attempts fail
      */
-    protected static void communicateToUser(Source source, String userId, String userName, String subject, String message, Locale locale) throws ClientException {
-        log.warning("Communicating with " + userId + " (medium: " + (source == null ? "null" : source.toString()) + ") -- message: " + message);
+    protected static void communicateToUser(Source source, String userId, String userName, String subject, String[] messages, Locale locale) throws ClientException {
+        log.warning("Communicating with " + userId + " (medium: " + (source == null ? "null" : source.toString()) + ") -- message: " + Arrays.toString(messages));
         if (Source.simulated.equals(source)) {
-            lastCommunications.add(message);
+            for (String message: messages) {
+                lastCommunications.add(message);
+            }
         }
         else if (Source.twitter.equals(source)) {
             try {
-                List<String> messageParts = checkMessageLength(message, 140);
-                for (String part: messageParts) {
-                    TwitterConnector.sendDirectMessage(userId, part);
+                for (String message: messages) {
+                    List<String> messageParts = checkMessageLength(message, 140);
+                    for (String part: messageParts) {
+                        TwitterConnector.sendDirectMessage(userId, part);
+                    }
                 }
             }
             catch (TwitterException ex) {
@@ -121,14 +126,23 @@ public class BaseConnector {
             }
         }
         else if (Source.jabber.equals(source)) {
-            List<String> messageParts = checkMessageLength(message, 512);
-            for (String part: messageParts) {
-                JabberConnector.sendInstantMessage(userId, part);
+            for (String message: messages) {
+                List<String> messageParts = checkMessageLength(message, 512);
+                for (String part: messageParts) {
+                    JabberConnector.sendInstantMessage(userId, part);
+                }
             }
         }
         else if (Source.mail.equals(source)) {
             try {
-                MailConnector.sendMailMessage(userId, userName, subject, message, locale);
+                StringBuilder mailMessage = new StringBuilder();
+                for (String message: messages) {
+                    List<String> messageParts = checkMessageLength(message, 8192);
+                    for (String part: messageParts) {
+                        mailMessage.append(part).append(MESSAGE_SEPARATOR);
+                    }
+                }
+                MailConnector.sendMailMessage(userId, userName, subject, mailMessage.toString(), locale);
             }
             catch(Exception ex) {
                 throw new ClientException("Cannot communicate by E-mail to the consumer: " + userId, ex);
@@ -141,6 +155,8 @@ public class BaseConnector {
             throw new ClientException("Provider " + source + " not yet supported");
         }
     }
+
+    public final static String MESSAGE_SEPARATOR = "\n";
 
     /** Provided only for test purpose, when communication are done with <code>Source.simulated</code> */
     public static void resetLastCommunicationInSimulatedMode() {

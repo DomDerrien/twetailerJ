@@ -78,10 +78,13 @@ public class MailResponderServlet extends HttpServlet {
                     BaseConnector.communicateToConsumer(
                             rawCommand,
                             consumer,
-                            LabelExtractor.get(
-                                    "cp_unexpected_error",
-                                    new Object[] { rawCommand.getKey(), rawCommand.getErrorMessage()},
-                                    Locale.ENGLISH)
+                            new String[] {
+                                    LabelExtractor.get(
+                                            "cp_unexpected_error",
+                                            new Object[] { rawCommand.getKey(), rawCommand.getErrorMessage()},
+                                            Locale.ENGLISH
+                                    )
+                            }
                     );
                 }
                 catch (ClientException e) {

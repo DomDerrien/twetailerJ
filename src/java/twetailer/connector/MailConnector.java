@@ -128,7 +128,7 @@ public class MailConnector {
         MimeBodyPart htmlPart = new MimeBodyPart();
 
         textPart.setContent(content, "text/plain; charset=UTF-8");
-        htmlPart.setContent(content, "text/html; charset=UTF-8");
+        htmlPart.setContent(content.replaceAll(BaseConnector.MESSAGE_SEPARATOR, "<br/>"), "text/html; charset=UTF-8");
 
         MimeMultipart multipart = new MimeMultipart("alternative");
         multipart.addBodyPart(textPart);

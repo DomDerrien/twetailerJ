@@ -2,7 +2,9 @@ package twetailer.task.command;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
+import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,25 +57,23 @@ public class ListCommandProcessor {
             // }
             // 1.2 Get the details about the identified demand
             Demand demand = null;
+            String message = null;
             try {
                 demand = CommandProcessor.demandOperations.getDemand(pm, demandKey, consumer.getKey());
             }
             catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_list_invalid_demand_id", consumer.getLocale())
-                );
+                message = LabelExtractor.get("cp_command_list_invalid_demand_id", consumer.getLocale());
             }
             if (demand != null) {
                 // Echo back the specified demand
                 Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        CommandProcessor.generateTweet(demand, location, consumer.getLocale())
-                );
+                message = CommandProcessor.generateTweet(demand, location, consumer.getLocale());
             }
+            communicateToConsumer(
+                    rawCommand,
+                    consumer,
+                    new String[] { message }
+            );
             return;
         }
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
@@ -85,25 +85,23 @@ public class ListCommandProcessor {
             // }
             // 2.2 Get the details about the identified proposal
             Proposal proposal = null;
+            String message = null;
             SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.list);
             try {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, proposalKey, saleAssociate.getKey(), null);
             }
             catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_list_invalid_proposal_id", saleAssociate.getLocale())
-                );
+                message = LabelExtractor.get("cp_command_list_invalid_proposal_id", saleAssociate.getLocale());
             }
             if (proposal != null) {
                 // Echo back the specified proposal
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        CommandProcessor.generateTweet(proposal, saleAssociate.getLocale())
-                );
+                message = CommandProcessor.generateTweet(proposal, saleAssociate.getLocale());
             }
+            communicateToSaleAssociate(
+                    rawCommand,
+                    saleAssociate,
+                    new String[] { message }
+            );
             return;
         }
         if (command.containsKey(Store.STORE_KEY)) {
@@ -123,11 +121,11 @@ public class ListCommandProcessor {
                         communicateToConsumer(
                                 rawCommand,
                                 consumer,
-                                LabelExtractor.get(
+                                new String[] { LabelExtractor.get(
                                         "cp_command_list_store_with_new_location",
                                         new Object[] { postalCode, countryCode },
                                         consumer.getLocale()
-                                )
+                                )}
                         );
                         Queue queue = CommandProcessor._baseOperations.getQueue();
                         log.warning("Preparing the task: /maezel/validateLocation?key=" + rawCommand.getKey().toString() +
@@ -148,67 +146,64 @@ public class ListCommandProcessor {
                     communicateToConsumer(
                             rawCommand,
                             consumer,
-                            LabelExtractor.get(
+                            new String[] { LabelExtractor.get(
                                     "cp_command_list_store_missing_location",
                                     consumer.getLocale()
-                            )
+                            )}
                     );
                     return;
                 }
                 List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
                 List<Store> stores = CommandProcessor.storeOperations.getStores(pm, locations, 0);
+                List<String> messages = new ArrayList<String>();
                 if (stores.size() == 0) {
-                    communicateToConsumer(
-                            rawCommand,
-                            consumer,
+                    messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_store_in_location",
                                     new Object[] { postalCode, countryCode, range, rangeUnit },
                                     consumer.getLocale()
                             )
                     );
-                    return;
+                }
+                else {
+                    messages.add(
+                            LabelExtractor.get(
+                                    "cp_command_list_store_series_introduction",
+                                    new Object[] { stores.size() },
+                                    consumer.getLocale()
+                            )
+                    );
+                    for (Store store: stores) {
+                        Location location = CommandProcessor.locationOperations.getLocation(pm, store.getLocationKey());
+                        messages.add(CommandProcessor.generateTweet(store, location, consumer.getLocale()));
+                    }
                 }
                 communicateToConsumer(
                         rawCommand,
                         consumer,
-                        LabelExtractor.get(
-                                "cp_command_list_store_series_introduction",
-                                new Object[] { stores.size() },
-                                consumer.getLocale()
-                        )
+                        messages.toArray(new String[0])
                 );
-                for (Store store: stores) {
-                    Location location = CommandProcessor.locationOperations.getLocation(pm, store.getLocationKey());
-                    communicateToConsumer(
-                            rawCommand,
-                            consumer,
-                            CommandProcessor.generateTweet(store, location, consumer.getLocale())
-                    );
-                }
                 return;
             }
             // 3.2 Get the details about the identified store
             Store store = null;
+            String message = null;
             try {
                 store = CommandProcessor.storeOperations.getStore(pm, storeKey);
             }
             catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_list_invalid_store_id", consumer.getLocale())
-                );
+                message = LabelExtractor.get("cp_command_list_invalid_store_id", consumer.getLocale());
             }
             if (store != null) {
                 // Echo back the specified proposal
                 Location location = store.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, store.getLocationKey());
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        CommandProcessor.generateTweet(store, location, consumer.getLocale())
-                );
+                message = CommandProcessor.generateTweet(store, location, consumer.getLocale());
             }
+            communicateToConsumer(
+                    rawCommand,
+                    consumer,
+                    new String[] { message }
+            );
             return;
         }
         // 4. Get information about all active demands owned by the consumer
@@ -216,10 +211,9 @@ public class ListCommandProcessor {
         parameters.put(Command.OWNER_KEY, consumer.getKey());
         parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
         List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, 0);
+        List<String> messages = new ArrayList<String>();
         if (demands.size() == 0) {
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
+            messages.add(
                     LabelExtractor.get(
                             "cp_command_list_no_active_demand",
                             consumer.getLocale()
@@ -227,9 +221,7 @@ public class ListCommandProcessor {
             );
         }
         else {
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
+            messages.add(
                     LabelExtractor.get(
                             "cp_command_list_demand_series_introduction",
                             new Object[] { demands.size() },
@@ -238,12 +230,13 @@ public class ListCommandProcessor {
             );
             for (Demand demand: demands) {
                 Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        CommandProcessor.generateTweet(demand, location, consumer.getLocale())
-                );
+                messages.add(CommandProcessor.generateTweet(demand, location, consumer.getLocale()));
             }
         }
+        communicateToConsumer(
+                rawCommand,
+                consumer,
+                messages.toArray(new String[0])
+        );
     }
 }

@@ -53,28 +53,23 @@ public class SupplyCommandProcessor {
             CommandProcessor.saleAssociateOperations.updateSaleAssociate(pm, saleAssociate);
         }
 
+        // Echo back the updated supplied tag list
         int tagNb = saleAssociate.getCriteria() == null ? 0 : saleAssociate.getCriteria().size();
+        String message = null;
         if (tagNb == 0) {
-            communicateToSaleAssociate(
-                    rawCommand,
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_supply_empty_tag_list", saleAssociate.getLocale())
-
-            );
+            message = LabelExtractor.get("cp_command_supply_empty_tag_list", saleAssociate.getLocale());
         }
         else if (tagNb == 1) {
-            communicateToSaleAssociate(
-                    rawCommand,
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { saleAssociate.getCriteria().get(0) }, saleAssociate.getLocale())
-            );
+            message = LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { saleAssociate.getCriteria().get(0) }, saleAssociate.getLocale());
         }
         else {
-            communicateToSaleAssociate(
-                    rawCommand,
-                    saleAssociate,
-                    LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { saleAssociate.getSerializedCriteria(), tagNb }, saleAssociate.getLocale())
-            );
+            message = LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { saleAssociate.getSerializedCriteria(), tagNb }, saleAssociate.getLocale());
         }
+        communicateToSaleAssociate(
+                rawCommand,
+                saleAssociate,
+                new String[] { message }
+
+        );
     }
 }

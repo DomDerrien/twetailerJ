@@ -3,6 +3,7 @@ package twetailer.task.command;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ public class DemandCommandProcessor {
         // 2. update the identified demand
         //
         Long demandKey = 0L;
+        List<String> messages = new ArrayList<String>();
         Location newLocation = Location.hasAttributeForANewLocation(command) ? CommandProcessor.locationOperations.createLocation(pm, command) : null;
         if (command.containsKey(Demand.REFERENCE)) {
             // Extracts the new location
@@ -49,11 +51,7 @@ public class DemandCommandProcessor {
                 demand = CommandProcessor.demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
             }
             catch(Exception ex) {
-                communicateToConsumer(
-                        rawCommand,
-                        consumer,
-                        LabelExtractor.get("cp_command_demand_invalid_demand_id", consumer.getLocale())
-                );
+                messages.add(LabelExtractor.get("cp_command_demand_invalid_demand_id", consumer.getLocale()));
             }
             if (demand != null) {
                 State state = demand.getState();
@@ -65,20 +63,12 @@ public class DemandCommandProcessor {
                     demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                     // Echo back the updated demand
                     Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
-                    communicateToConsumer(
-                            rawCommand,
-                            consumer,
-                            CommandProcessor.generateTweet(demand, location, consumer.getLocale())
-                    );
+                    messages.add(CommandProcessor.generateTweet(demand, location, consumer.getLocale()));
                     // Get the demandKey for the task scheduling
                     demandKey = demand.getKey();
                 }
                 else {
-                    communicateToConsumer(
-                            rawCommand,
-                            consumer,
-                            LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale())
-                    );
+                    messages.add(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale()));
                 }
             }
         }
@@ -120,9 +110,7 @@ public class DemandCommandProcessor {
             }
             // Persist the new demand
             Demand newDemand = CommandProcessor.demandOperations.createDemand(pm, command, consumer.getKey());
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
+            messages.add(
                     LabelExtractor.get(
                             "cp_command_demand_acknowledge_creation",
                             new Object[] { newDemand.getKey() },
@@ -130,15 +118,16 @@ public class DemandCommandProcessor {
                     )
             );
             Location location = newDemand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, newDemand.getLocationKey());
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    CommandProcessor.generateTweet(newDemand, location, consumer.getLocale())
-            );
+            messages.add(CommandProcessor.generateTweet(newDemand, location, consumer.getLocale()));
             // Get the demandKey for the task scheduling
             demandKey = newDemand.getKey();
         }
 
+        communicateToConsumer(
+                rawCommand,
+                consumer,
+                messages.toArray(new String[0])
+        );
         // Create a task for that demand
         if (demandKey != 0L) {
             Queue queue = CommandProcessor._baseOperations.getQueue();
