@@ -504,7 +504,7 @@
                     AKA, Amazon, Attribute,
                     Backup,
                     Command-line, Consumer, CRUD,
-                    Demand-crud,
+                    Demand-crud, Demo,
                     Fee, Flag, Flagged, Founders, Free, Friend, Fulfil,
                     IM, List-demands-private, List-demands-public, List-proposal, List-store, List-tag,
                     MI,
@@ -575,6 +575,12 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>demand-crud</seg></tuv>
+        </tu>
+
+        <tu tuid="help_keyword_equivalents_Demo" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>demo</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Fee" datatype="Text">
@@ -784,7 +790,7 @@
         <!-- ============================= -->
 
         <tu tuid="cp_unexpected_error" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
                 Report an unexpected error while processing the raw command.|
                 {0}: raw command key|
@@ -792,8 +798,7 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>
-                    The System encountered an unexpected error! {1}|
-                    If your issue cannot be fixed with another message, please report the error with the incident identifier: 323-{0}.
+                    :-( The System encountered an unexpected error! {1}. You can resend your message, or, report incident identifier: 323-{0}.
                 </seg>
             </tuv>
         </tu>
@@ -823,93 +828,90 @@
         </tu>
 
         <tu tuid="cp_command_cancel_missing_demand_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Cancel command requires a Demand Reference. Send '!help cancel' for more information.</seg>
+               <seg>:-( If you wish to Cancel a Demand, please try again by sending !cancel ref:your-reference-number.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_demand_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Demand identifier specified with the Cancel Command is invalid.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Cancel and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_demand_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key|
                 {1}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>The Cancel Command has no effect of the Demand reference:{0} being in the state:{1}.</seg>
+                <seg>:-( You can't !cancel Demand reference:{0} in the state:{1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Cancel Command is invalid.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Cancel and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_cancel_invalid_proposal_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
                 {1}: proposal state
             </note>
             <tuv xml:lang="en">
-                <seg>The Cancel Command has no effect of the Proposal reference:{0} being in the state:{1}.</seg>
+                <seg>:-( You can't !cancel Proposal:{0} in the state:{1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_invalid_demand_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Demand identifier specified with the Close Command is invalid.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Close and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_invalid_demand_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key|
                 {1}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>The Close Command has no effect of the Demand reference:{0} being in the state:{1}.</seg>
+                <seg>:-( You can't !close Demand reference:{0} in the state:{1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_acknowledge_demand_closing" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>
-                    Thank you for closing Demand reference:{0}. Twetailer will update everyone's Ratings shortly. |
-                    Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
-                    Regards, The Twetailer Community.</seg>
+                <seg>:-) Thanks for Closing Demand reference:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_demand_closed_proposal_to_close" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key|
@@ -917,50 +919,46 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Demand reference:{0} has been closed by the Consumer. |
-                    In order to improve your Twetailer Rating, please remember to finalize your Proposal by sending ... |
-                    "d twetailer !close proposal:{1}", or, "d twetailer !flag proposal:{1} note:[enter your issue here]"</seg>
+                    FYI. Demand reference:{0} has been closed by the Consumer. |
+                    Hint: Send "!close proposal:{1}", or, "!flag proposal:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Close Command is invalid.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Close and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_invalid_proposal_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
                 {1}: proposal state
             </note>
             <tuv xml:lang="en">
-                <seg>The Close Command has no effect of the Proposal reference:{0} being in the state:{1}.</seg>
+                <seg>:-( You can't !close Proposal:{0} in the state:{1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_acknowledge_proposal_closing" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>
-                    Thank you for closing Proposal:{0}. Twetailer will update everyone's Ratings shortly. |
-                    Looking forward to the next opportunity where we can broker Consumer Demand with local Retailers' available Supply - via tweets, for f(r)ee. |
-                    Regards, The Twetailer Community.
-                </seg>
+                <seg>:-) Thanks for Closing Proposal:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_proposal_closed_demand_to_close" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -968,32 +966,34 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Proposal:{0} has been closed by the Retailer. |
-                    In order to improve your Twetailer Rating, please remember to finalize your Demand by sending ... |
-                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
+                    FYI. Proposal:{0} has been closed by the Retailer. |
+                    Hint: Send "!close ref:{1}", or, "!flag ref:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                </seg>
+
             </tuv>
         </tu>
 
         <tu tuid="cp_command_close_invalid_parameters" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Only Proposals or Demands can be closed. Check '!help close' for more information.</seg>
+                <seg>:-( You can only !close Proposals or Demands.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
             <prop type="x-version">1</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
+                <seg>duplicate tuid</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_state_demand" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -1001,7 +1001,7 @@
                 {2}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>The Demand reference:{1} is not in a state ({2}) that allows the Proposition proposal:{0} confirmation.</seg>
+                <seg>:-( You can only !confirm proposal:{0} for Demand reference:{1} when it's in state:{2}.</seg>
             </tuv>
         </tu>
 
@@ -1026,7 +1026,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_inform_about_confirmation" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -1035,72 +1035,62 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Confirming Proposal:{0} Tags:{1} |
-                    Please prepare proposed:{2} by marking it with Demand ref:{2} and placing it on the side.|
-                    In order to improve your Twetailer Rating, please remember to finalize your Proposal after the Consumer has visited your store by sending ... |
-                    "d twetailer !close prop:{0}", or, "d twetailer !flag ref:{2} note:[enter your issue here]"</seg>
+                    :-) Proposal:{0} for tags:{1} has been confirmed.|
+                    Please mark, hold for Consumer with Demand reference:{2} and then !close proposal:{0}, or, !flag ref:{2} note:your-note-here.
+                </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_confirm_inform_about_demo_mode" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    Information:|
-                    If this were not a #demo, then you would proceed to the store and pick up your product.|
-                    At that point either you, or, the Sales Associate, would issue the !close command and the other would be prompted to do the same.|
-                    Now the robot is going to close the demand to simulate the delivery and for you to experience the full transaction cycle.
+                    FYI: Demo Sales Associate will now !close your Demand
                 </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Confirm and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_decline_acknowledge_proposal_closing" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Now that Proposal:{0} has been declined, you won't be notified about any related updates.</seg>
+                <seg>:-) Proposal:{0} has been declined and further updates halted.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_decline_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Decline Command is invalid.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Decline and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_decline_invalid_parameters" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Only Proposals or Demands can be declined. Check '!help decline' for more information.</seg>
+                <seg>:-( As a Consumer, you can only !decline Proposals whereas Retailers can only !decline Demands.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_invalid_demand_state" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -1108,37 +1098,34 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Delete action can only be applied to Demands in the state:cancelled. Your Demand reference:{0} is in the state:{1}.|
-                    Please cancel the proposition first with '!cancel reference:{0}'. Check '!help delete' for more information.
+                    :-( You can only !delete Cancelled Demands. Demand reference:{0} is in the state:{1}.|
+                    If this is the Demand you intended to !delete then send '!cancel reference:{0}' and try again.
                 </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_acknowledge_demand_markedForDeletion" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>That Demand reference:{0} has been marked for deletion. It will be garbage collected in a near future. In the meanwhile, it is no more accessible.</seg>
+                <seg>:-) Demand reference:{0} has been marked for deletion and no longer accessible</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_invalid_demand_id" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Delete Command is invalid.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Delete and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_invalid_proposal_state" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -1146,132 +1133,131 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Delete action can only be applied to Proposals in the state:cancelled. Your Proposal:{0} is in the state:{1}.|
-                    Please cancel the proposition first with '!cancel proposal:{0}'. Check '!help delete' for more information.
+                    :-( You can only !delete Cancelled Proposals. Proposal:{0} is in the state:{1}.|
+                    If this is the Proposal you intended to !delete then send '!cancel proposal:{0}' and try again.
                 </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_acknowledge_proposal_markedForDeletion" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>That Proposal:{0} has been marked for deletion. It will be garbage collected in a near future. In the meanwhile, it is no more accessible.</seg>
+                <seg>:-) Proposal:{0} has been marked for deletion and no longer accessible</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The Proposition identifier specified with the Delete Command is invalid.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Delete and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_delete_invalid_parameters" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Only Proposals or Demands can be deleted. Check '!help delete' for more information.</seg>
+                <seg>:-( You can only !delete Proposals or Demands.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_demand_acknowledge_creation" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
                 {0}: dynamically generated demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The following listing will confirm your Demand Reference:{0}... You can send "!help" for more options afterwards.</seg>
+                <seg>:-) Listing Demand Reference:{0}... </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_demand_invalid_demand_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The identifier specified with the Demand Command is invalid. Your proposed update did not happen.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Delete and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_demand_non_modifiable_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
                 {1}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>The Demand reference:{0} is not in a modifiable state ({1}). Your proposed update did not happen.</seg>
+                <seg>:-( Demand reference:{0} is currently in state:{1} and can't be updated.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_invalid_demand_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>You have no Demand matching the specified identifier.</seg>
+                <seg>:-( Please verify the Demand Reference number and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>You have no Proposition matching the specified identifier.</seg>
+                <seg>:-( Please verify the Proposal number and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_invalid_store_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>You have no Store matching the specified identifier.</seg>
+                <seg>:-( Please verify the Store number and try again.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_no_active_demand" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Message informing that no result can be displayed for the !list command.</note>
             <tuv xml:lang="en">
-                <seg>No Active Demand can be listed.</seg>
+                <seg>:-) There are no active Demands to list.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_demand_series_introduction" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list command.|
                 {0}: number of messages to be sent
             </note>
             <tuv xml:lang="en">
-                <seg>This message is followed by {0} other(s) - one per Active Demand...</seg>
+                <seg>:-) Listing {0} active Demand(s)...</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_store_missing_location" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that location information is missing for the !list store:* command.
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Locale information is missing in your command.|
-                    Please provide a valid Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"
+                    :-( Please provide a valid Locale(postal/zip code and country) by updating your Demand like "ref:{0} locale:12345 us"
                 </seg>
             </tuv>
         </tu>
@@ -1290,7 +1276,7 @@
         </tu>
 
         <tu tuid="cp_command_list_no_store_in_location" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.
@@ -1300,84 +1286,85 @@
                 {3}: range unit
             </note>
             <tuv xml:lang="en">
-                <seg>No Store found {2}{3} around locale:{0} {1}.</seg>
+                <seg>:-( I can't find any Stores within {2}{3} of locale:{0} {1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_store_series_introduction" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list store:* command.|
                 {0}: number of messages to be sent
             </note>
             <tuv xml:lang="en">
-                <seg>This message is followed by {0} other(s) - one per Store...</seg>
+                <seg>:-) Listing {0} Store(s)...</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_propose_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The identifier specified with the Propose Command is invalid. Your sumbitted update did not happen.</seg>
+                <seg>:-( Please verify the Proposal number you wish to update and try again.</seg>
+
             </tuv>
         </tu>
 
         <tu tuid="cp_command_propose_non_modifiable_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
                 {1}: proposal state
             </note>
             <tuv xml:lang="en">
-                <seg>The Proposition proposal:{0} is not in a modifiable state ({1}). Your submitted update did not happen.</seg>
+                <seg>:-( Proposal:{0} is currently in state:{1} and can't be updated.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_propose_acknowledge_creation" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
                 {0}: dynamically generated proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Listing your proposition for Proposition proposal:{0}... You can send "!help" for more options afterwards.</seg>
+                <seg>:-) Listing Proposal:{0}... </seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_supply_empty_tag_list" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Your tag list is now empty. You cannot receive notifications about demands in your area anymore.</seg>
+                <seg>FYI. You are no longer supplying any tags.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_supply_updated_1_tag_list" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: unique tag
             </note>
             <tuv xml:lang="en">
-                <seg>Your tag list contains 1 keyword: {0}.</seg>
+                <seg>FYI. You are now supplying only one tag: {0}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_supply_updated_n_tag_list" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: list of tags, separated by a blank space
                 {1}: list size
             </note>
             <tuv xml:lang="en">
-                <seg>Your tag list contains {1} keywords: {0}.</seg>
+                <seg>:-) Listing {1} tags: {0}.</seg>
             </tuv>
         </tu>
 
@@ -1386,122 +1373,121 @@
         <!-- ============================ -->
 
         <tu tuid="dv_report_demand_without_tag" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the demand should have at least one tag.|
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Your Demand reference:{0} should have at least one Tag.</seg>
+                <seg>:-( Please update your Demand with at least tag by sending 'reference:{0} tags:your-tags-here'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_expiration_in_past" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the expiration date should be in the future.|
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Your Demand reference:{0} should have its Expiration date in the future.</seg>
+                <seg>:-( Please ensure your Demand's Expiration date is in the future by sending 'reference:{0} expiration:YYYYMMDD'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_range_km_too_small" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too small.|
                 {0}: demand key|
-                {1}: given distance|
-                {2}: system limit
+                {1}: system limit DOM. IS LOWER LIMIT ZERO
             </note>
             <tuv xml:lang="en">
-                <seg>The Range ({1}km) for the Demand reference:{0} is too small. It should be greater than {2}km.</seg>
+                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'reference:{0} range:your-range-and-km'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_range_km_too_big" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too big.|
                 {0}: demand key|
-                {1}: given distance|
-                {2}: system limit
+                {1}: system limit
             </note>
             <tuv xml:lang="en">
-                <seg>The Range ({1} km) for the Demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
+                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} km) by sending 'reference:{0} range:your-range-and-km'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_range_mi_too_small" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too small.|
                 {0}: demand key|
-                {1}: given distance|
-                {2}: system limit
+                {1}: system limit DOM. IS LOWER LIMIT ZERO
             </note>
             <tuv xml:lang="en">
-                <seg>The Range ({1} mi) for the Demand reference:{0} is too small. It should be greater than {2} miles.</seg>
+                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'reference:{0} range:your-range-and-km'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_range_mi_too_big" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too big.|
                 {0}: demand key|
-                {1}: given distance|
-                {2}: system limit
+                {1}: system limit
             </note>
             <tuv xml:lang="en">
                 <seg>The Range ({1} mi) for the Demand reference:{0} is too big. Twetailer offers its services only on Earth for now.</seg>
+                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} miles) by sending 'reference:{0} range:your-range-and-mi'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_quantity_zero" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the quantity cannot be 0.|
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Your Demand reference:{0} should concern at least one item.</seg>
+                <seg>:-( Please ensure your Demand's Quantity exceeds zero by sending 'reference:{0} qty:1'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_missing_locale" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is missing.|
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Please update the Demand reference:{0} with your Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"</seg>
+                <seg>:-( Please update your Demand's Locale by sending 'ref:{0} locale:your-postal/zip-code-and-country'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_invalid_locale" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
-                {0}: demand key|
-                {1}: given postal code|
-                {2}: given country code.
+                {0}: demand key
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The Locale "{1} {2}" given Demand reference:{0} cannot be resolved.|
-                    Please provide a valid Locale(postal/zip code and country) - like "ref:{0} locale:12345 us"
+                <seg>:-( Please update your Demand with a valid Locale like 'ref:{0} locale:12345 us'.</seg>
                 </seg>
             </tuv>
         </tu>
@@ -1520,7 +1506,6 @@
 
         <tu tuid="dv_report_hashtag_warning" datatype="Text">
             <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand key
@@ -1528,9 +1513,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
-                    Other values are ignored. You can add them to the proposal tag list with "!demand ref:{0} {1}"|
-                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                    :-( #demo is currently the only supported hash (#) tag. If you wish, remove the # from the rejected list and update your Demand tags by sending '!demand ref:{0} {1}"
                 </seg>
             </tuv>
         </tu>
@@ -1540,17 +1523,14 @@
         <!-- ============================== -->
 
         <tu tuid="lv_report_invalid_locale" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
                 {0}: original command.
             </note>
             <tuv xml:lang="en">
-                <seg>
-                    The Locale given for the Command "{0}" cannot be resolved.|
-                    Please provide a valid Locale(postal/zip code and country)"
-                </seg>
+                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'ref:{0} locale:12345 us'.</seg>
             </tuv>
         </tu>
 
@@ -1559,7 +1539,7 @@
         <!-- ====================================== -->
 
         <tu tuid="dp_inform_saleAssociate_about_demand_one_item" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
@@ -1569,13 +1549,14 @@
                 Future release:  total:[enter final price including all taxes and service fees]
             </note>
             <tuv xml:lang="en">
-                <seg>I have Demand ref:{0}, for tags:{1} which expires:{2}. If you have matching supply, please complete and send the following proposal ...  |
-                "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]" </seg>
+                <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} expires:{2}? If yes then send the following... |
+                     2/2 '!propose ref:{0} tags:your-description-here price:your-price-here' </seg>
             </tuv>
         </tu>
 
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
@@ -1583,7 +1564,7 @@
                 {1}: given tags, separated by a space|
                 {2}: expiration date, ISO formatted|
                 {3}: quantity|
-                Future release:  total:[enter final price including all taxes and service fees]
+                Future release:  total:[enter final price including all taxes and service fees] DOM. TO BE CONSISTENT WITH pv_report_quantity_zero I ALLOWED FOR PROPOSED QTY. IS THAT OK?
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -1591,6 +1572,8 @@
                     If you have matching supply, please complete and send the following proposal ...|
                     "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]"
                 </seg>
+                <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
+                     2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>
             </tuv>
         </tu>
 
@@ -1599,19 +1582,19 @@
         <!-- ============================== -->
 
         <tu tuid="pv_report_proposal_without_tag" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the proposal should have at least one tag.|
                 {0}: proposal key:
             </note>
             <tuv xml:lang="en">
-                <seg>Your Proposition proposal:{0} should have at least one Tag.</seg>
+                <seg>:-( Please update your Proposal with at least tag by sending 'proposal:{0} tags:your-tags-here'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="pv_report_quantity_zero" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the quantity cannot be 0.|
@@ -1619,11 +1602,12 @@
             </note>
             <tuv xml:lang="en">
                 <seg>Your Proposition proposal:{0} should concern at least one item.</seg>
+                <seg>:-( Please ensure your Proposal's Quantity exceeds zero by sending 'proposal:{0} qty:1'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="pv_report_missing_price_and_total" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate a unit price or the total price is required.|
@@ -1631,24 +1615,24 @@
                 Future release
             </note>
             <tuv xml:lang="en">
-                <seg>Your Proposition proposal:{0} should have a unit retail Price and the Total cost which includes all taxes and service fees.</seg>
+                <seg>:-( Please ensure your Proposal has a unit Price and final Total cost by sending '!propose price:unit-price total:final-cost'</seg>
             </tuv>
         </tu>
 
         <tu tuid="pv_report_missing_demand_reference" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the demand reference is missing.|
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Your Proposition proposal:{0} should reference a Demand (with reference:[id]).</seg>
+                <seg>:-( Please ensure your Proposal has a Reference number by sending '!propose ref:see-previously-sent-ref'</seg>
             </tuv>
         </tu>
 
         <tu tuid="pv_report_invalid_demand_reference" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate that the given reference is invalid.|
@@ -1656,13 +1640,12 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The identification of the Demand (reference:{1}) linked to your Proposition proposal:{0} is invalid.</seg>
+                <seg>:-( Please ensure your Proposal has the appropriate Reference number by sending '!propose ref:see-previously-sent-ref'</seg>
             </tuv>
         </tu>
 
         <tu tuid="pv_report_hashtag_warning" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key
@@ -1670,9 +1653,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
-                    Other values are ignored. You can add them to the proposal tag list with "!propose proposal:{0} {1}"|
-                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                    1/2 :-( #demo is currently the only supported hash (#) tag. |
+                    2/2 If you wish, remove the # from the rejected list and update your Proposal tags by sending '!proposal proposal:{0} {1}"
                 </seg>
             </tuv>
         </tu>
@@ -1682,7 +1664,7 @@
         <!-- ======================================== -->
 
         <tu tuid="pp_inform_consumer_about_proposal_with_price_and_total_cost" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
@@ -1698,15 +1680,16 @@
                 {9}: proposed total cost (expected to be total cost, taxes included)
             </note>
             <tuv xml:lang="en">
-                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} price:{7}{8} total:{7}{9} |
-                Send "d twetailer !list store:{5}" for more details |
-                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
+                <seg>
+                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ... |
+                    2/3 Proposal:{0} tags:{1} price:{7}{8} total:{7}{9} |
+                    3/3 From Store:{5} {6}. You can send '!confirm proposal:(0)', or, '!decline proposal:{0}'
+                </seg>
             </tuv>
         </tu>
 
         <tu tuid="pp_inform_consumer_about_proposal_with_price_only" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
@@ -1721,15 +1704,16 @@
                 {8}: proposed unit price (expected to be unit price)|
             </note>
             <tuv xml:lang="en">
-                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} price:{7}{8} |
-                Send "d twetailer !list store:{5}" for more details |
-                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
+                <seg>
+                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ... |
+                    2/3 Proposal:{0} tags:{1} price:{7}{8} |
+                    3/3 From Store:{5} {6}. You can send '!confirm proposal:(0)', or, '!decline proposal:{0}'
+                </seg>
             </tuv>
         </tu>
 
         <tu tuid="pp_inform_consumer_about_proposal_with_total_cost_only" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
@@ -1744,15 +1728,16 @@
                 {8}: proposed total cost (expected to be total cost, taxes included)
             </note>
             <tuv xml:lang="en">
-                <seg>I have a Proposal for your Demand ref:{2} with tags:{3}, expiring:{4} ... |
-                Store:{5}, name:{6} has proposed Proposal:{0} tags:{1} total:{7}{8} |
-                Send "d twetailer !list store:{5}" for more details |
-                Please reply with either "d twetailer !confirm proposal:{0}", or, "d twetailer!decline proposal:{0} "</seg>
+                <seg>
+                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ... |
+                    2/3 Proposal:{0} tags:{1} total:{7}{8} |
+                    3/3 From Store:{5} {6}. You can send '!confirm proposal:(0)', or, '!decline proposal:{0}'
+                </seg>
             </tuv>
         </tu>
 
         <tu tuid="pp_inform_saleAssociate_demand_not_published_state" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate his proposal cannot be submitted to the demand.|
@@ -1761,7 +1746,7 @@
                 {2}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>Your Proposition proposal:{0} cannot be attached to the Demand reference:{1} because it is not in the correct State! (actual Demand State: {2}).</seg>
+                <seg>:-( Your proposal:{0} can't be attached to Demand reference:{1} in state:{2}.</seg>
             </tuv>
         </tu>
 
@@ -1792,7 +1777,7 @@
         <!-- ========================= -->
 
         <tu tuid="rr_robot_automatic_proposition" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message generated automatically to demand located with postal code "H0H0H0".|
@@ -1800,7 +1785,7 @@
                 IMPORTANT: Accomodate this message to provide a natural sentence ;)
             </note>
             <tuv xml:lang="en">
-                <seg>(not important, this is an automated response ;). Thanks for shopping with Twetailer</seg>
+                <seg>(short-store-name)</seg>
             </tuv>
         </tu>
 
