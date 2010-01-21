@@ -65,7 +65,7 @@ public class DemandValidator {
 
     public static final Double RANGE_KM_MIN = Double.valueOf(5.0D);
     public static final Double RANGE_KM_MAX = Double.valueOf(40075.0D);
-    public static final Double RANGE_MI_MIN = Double.valueOf(3.0D);
+    public static final Double RANGE_MI_MIN = Double.valueOf(2.5D);
     public static final Double RANGE_MI_MAX = Double.valueOf(24906.0D);
 
     /**

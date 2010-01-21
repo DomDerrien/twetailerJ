@@ -220,6 +220,8 @@ public abstract class BaseRestlet extends HttpServlet {
         request.setAttribute(OpenIdUser.ATTR_NAME, user);
     }
 
+    private static final String ROOT = "/";
+
     @Override
     @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -236,7 +238,7 @@ public abstract class BaseRestlet extends HttpServlet {
             String pathInfo = request.getPathInfo();
             getLogger().fine("Path Info: " + pathInfo);
 
-            if (pathInfo == null || pathInfo.length() == 0) {
+            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Get selected resources
                 out.put("resources", selectResources(in, loggedUser));
             }
@@ -285,7 +287,7 @@ public abstract class BaseRestlet extends HttpServlet {
             String pathInfo = request.getPathInfo();
             getLogger().finer("Path Info: " + pathInfo);
 
-            if (pathInfo == null || pathInfo.length() == 0) {
+            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Create the resource
                 out.put("resource", createResource(in, loggedUser));
             }
@@ -322,7 +324,7 @@ public abstract class BaseRestlet extends HttpServlet {
             String pathInfo = request.getPathInfo();
             getLogger().finer("Path Info: " + pathInfo);
 
-            if (pathInfo == null || pathInfo.length() == 0) {
+            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource update");
             }
             if (Pattern.matches("/(\\w+)", pathInfo)) {
@@ -362,7 +364,7 @@ public abstract class BaseRestlet extends HttpServlet {
             String pathInfo = request.getPathInfo();
             getLogger().finer("Path Info: " + pathInfo);
 
-            if (pathInfo == null || pathInfo.length() == 0) {
+            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource deletion");
             }
             if (Pattern.matches("/(\\w+)", pathInfo)) {
