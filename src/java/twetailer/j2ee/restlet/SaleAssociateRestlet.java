@@ -89,7 +89,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
         }
 
-        if (email != null) {
+        if (email != null && 0 < email.length()) {
             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, email, 1);
             if (0 < consumers.size()) {
                 if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
@@ -127,7 +127,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
         }
 
-        if (jabberId != null) {
+        if (jabberId != null && 0 < jabberId.length()) {
             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, jabberId, 1);
             if (0 < consumers.size()) {
                 if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
@@ -165,7 +165,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
         }
 
-        if (twitterId != null) {
+        if (twitterId != null && 0 < twitterId.length()) {
             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, twitterId, 1);
             if (0 < consumers.size()) {
                 if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {

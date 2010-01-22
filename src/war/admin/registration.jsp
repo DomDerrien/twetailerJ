@@ -368,6 +368,7 @@
     registration.createSaleAssociate = function() {
         var data = dojo.formToObject("saleAssociateInformation");
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
+        data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
         dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.toJson(data),
