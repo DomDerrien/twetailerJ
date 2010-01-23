@@ -804,26 +804,26 @@
         </tu>
 
         <tu tuid="cp_command_parser_unsupported_action" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Error message generated when the given action is not recognized.|
                 {0}: action label
             </note>
             <tuv xml:lang="en">
-                <seg>The Action {0} is not recognized by the System. Send '!help action' for the list of available actions.</seg>
+                <seg>:-( Action {0} is not recognized by the System. Send '?action' for help.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_parser_reserved_action" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Error message generated when the given action is not allowed by the user's profile.|
                 {0}: action label
             </note>
             <tuv xml:lang="en">
-                <seg>The Action {0} is not allowed by your profile. Send '!help {0}' for the list of available actions.</seg>
+                <seg>:-( Action {0} is not allowed by your profile. Send '?{0}' for help.</seg>
             </tuv>
         </tu>
 
@@ -1006,7 +1006,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_acknowledge_confirmation" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -1017,11 +1017,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
-                    Store:{3}, {4} will be notified and asked to keep your Demand, marked with ref:{1}, on the side for you. |
-                    Send "d twetailer !list store:{3}" for more details |
-                    In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
-                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
+                    :-) Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
+                    Store:{3}, {4} will be asked to mark and hold Demand ref:{1} </seg>
             </tuv>
         </tu>
 
@@ -1769,8 +1766,7 @@
         <!-- ========================= -->
 
         <tu tuid="rr_robot_automatic_proposition" datatype="Text">
-            <prop type="x-version">2</prop>
-            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message generated automatically to demand located with postal code "H0H0H0".|
@@ -1778,7 +1774,7 @@
                 IMPORTANT: Accomodate this message to provide a natural sentence ;)
             </note>
             <tuv xml:lang="en">
-                <seg>(short-store-name)</seg>
+                <seg>proposed description</seg>
             </tuv>
         </tu>
 
