@@ -1,6 +1,4 @@
-<!-- Indices written at Thu, 20 Aug 2009 05:08:59 UTC -->
-
-<datastore-indexes>
+<datastore-indexes autoGenerate="false">
 
     <!-- Used 2 times in query history -->
     <datastore-index kind="Consumer" ancestor="false" source="auto">
@@ -41,6 +39,7 @@
     <!-- Used 1 time in query history -->
     <datastore-index kind="Demand" ancestor="false" source="auto">
         <property name="state" direction="asc"/>
+        <property name="modificationDate" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 

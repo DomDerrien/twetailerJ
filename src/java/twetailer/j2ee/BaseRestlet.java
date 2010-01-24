@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -8,7 +9,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.jdo.PersistenceManager;
+import javamocks.io.MockOutputStream;
+
+import javax.mail.MessagingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -227,16 +230,17 @@ public abstract class BaseRestlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
+        String pathInfo = request.getPathInfo();
+        getLogger().fine("Path Info: " + pathInfo);
+
         JsonObject out = new GenericJsonObject();
+        JsonObject in = null;
 
         try {
             // TODO: verify Content-type = "application/x-www-form-urlencoded"
-            JsonObject in = new GenericJsonObject(request.getParameterMap());
+            in = new GenericJsonObject(request.getParameterMap());
 
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            String pathInfo = request.getPathInfo();
-            getLogger().fine("Path Info: " + pathInfo);
 
             if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Get selected resources
@@ -261,12 +265,32 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
+            String message = "Unexpected exception during BaseRESTServlet.doGet() operation";
+            // Special case
+            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
+                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
+                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
+            }
+            // Prepare the exception report
             getLogger().warning("doGet().exception: " + ex);
+            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
+            // Send an e-mail to out catch-all list
+            MockOutputStream stackTrace = new MockOutputStream();
+            ex.printStackTrace(new PrintStream(stackTrace));
+            try {
+                CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                        "error-notifier",
+                        "Unexpected error caught in " + this.getClass().getName() + ".doGet()",
+                        "Path info: " + pathInfo + "\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
+                );
+            }
+            catch (MessagingException e) {
+                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
+            }
+            // Log the stack trace
             if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
-            out = new JsonException("UNEXPECTED_EXCEPTION",
-                    "Unexpected exception during BaseRESTServlet.doGet() operation", ex);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -276,16 +300,17 @@ public abstract class BaseRestlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
+        String pathInfo = request.getPathInfo();
+        getLogger().finer("Path Info: " + pathInfo);
+
         JsonObject out = new GenericJsonObject();
+        JsonObject in = null;
 
         try {
             // TODO: verify Content-type == "application/json"
-            JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
+            in = new JsonParser(request.getInputStream()).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            String pathInfo = request.getPathInfo();
-            getLogger().finer("Path Info: " + pathInfo);
 
             if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Create the resource
@@ -298,12 +323,32 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
+            String message = "Unexpected exception during BaseRESTServlet.doPost() operation";
+            // Special case
+            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
+                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
+                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
+            }
+            // Prepare the exception report
             getLogger().warning("doPost().exception: " + ex);
+            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
+            // Send an e-mail to out catch-all list
+            MockOutputStream stackTrace = new MockOutputStream();
+            ex.printStackTrace(new PrintStream(stackTrace));
+            try {
+                CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                        "error-notifier",
+                        "Unexpected error caught in " + this.getClass().getName() + ".doPost()",
+                        "Path info: " + pathInfo + "\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
+                );
+            }
+            catch (MessagingException e) {
+                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
+            }
+            // Log the stack trace
             if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
-            out = new JsonException("UNEXPECTED_EXCEPTION",
-                    "Unexpected exception during BaseRESTServlet.doPost() operation", ex);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -313,16 +358,17 @@ public abstract class BaseRestlet extends HttpServlet {
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
+        String pathInfo = request.getPathInfo();
+        getLogger().finer("Path Info: " + pathInfo);
+
         JsonObject out = new GenericJsonObject();
+        JsonObject in = null;
 
         try {
             // TODO: verify Content-type == "application/json"
-            JsonObject in = new JsonParser(request.getInputStream()).getJsonObject();
+            in = new JsonParser(request.getInputStream()).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            String pathInfo = request.getPathInfo();
-            getLogger().finer("Path Info: " + pathInfo);
 
             if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource update");
@@ -342,12 +388,32 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
+            String message = "Unexpected exception during BaseRESTServlet.doPut() operation";
+            // Special case
+            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
+                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
+                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
+            }
+            // Prepare the exception report
             getLogger().warning("doPut().exception: " + ex);
+            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
+            // Send an e-mail to out catch-all list
+            MockOutputStream stackTrace = new MockOutputStream();
+            ex.printStackTrace(new PrintStream(stackTrace));
+            try {
+                CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                        "error-notifier",
+                        "Unexpected error caught in " + this.getClass().getName() + ".doPut()",
+                        "Path info: " + pathInfo + "\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
+                );
+            }
+            catch (MessagingException e) {
+                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
+            }
+            // Log the stack trace
             if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
-            out = new JsonException("UNEXPECTED_EXCEPTION",
-                    "Unexpected exception during BaseRESTServlet.doPut() operation", ex);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -356,13 +422,13 @@ public abstract class BaseRestlet extends HttpServlet {
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        String pathInfo = request.getPathInfo();
+        getLogger().finer("Path Info: " + pathInfo);
+
         JsonObject out = new GenericJsonObject();
 
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            String pathInfo = request.getPathInfo();
-            getLogger().finer("Path Info: " + pathInfo);
 
             if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource deletion");
@@ -382,12 +448,32 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("success", true);
         }
         catch (Exception ex) {
+            String message = "Unexpected exception during BaseRESTServlet.doDelete() operation";
+            // Special case
+            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
+                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
+                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
+            }
+            // Prepare the exception report
             getLogger().warning("doDelete().exception: " + ex);
+            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
+            // Send an e-mail to out catch-all list
+            MockOutputStream stackTrace = new MockOutputStream();
+            ex.printStackTrace(new PrintStream(stackTrace));
+            try {
+                CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                        "error-notifier",
+                        "Unexpected error caught in " + this.getClass().getName() + ".doDelete()",
+                        "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
+                );
+            }
+            catch (MessagingException e) {
+                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
+            }
+            // Log the stack trace
             if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
                 ex.printStackTrace();
             }
-            out = new JsonException("UNEXPECTED_EXCEPTION",
-                    "Unexpected exception during BaseRESTServlet.doDelete() operation", ex);
         }
 
         out.toStream(response.getOutputStream(), false);

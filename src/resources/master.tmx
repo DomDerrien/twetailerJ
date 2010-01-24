@@ -982,16 +982,6 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_confirm_invalid_proposal_id" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
-            <prop type="x-tier">javarb</prop>
-            <note/>
-            <tuv xml:lang="en">
-                <seg>duplicate tuid</seg>
-            </tuv>
-        </tu>
-
         <tu tuid="cp_command_confirm_invalid_state_demand" datatype="Text">
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>

@@ -24,6 +24,7 @@ import javax.servlet.http.MockHttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -31,6 +32,7 @@ import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
+import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -108,15 +110,24 @@ public class TestBaseRestlet {
         return user;
     }
 
+    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+
     OpenIdUser user;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+    }
 
     @Before
     public void setUp() throws Exception {
         user = setupOpenIdUser();
+        mockAppEngineEnvironment.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
+        mockAppEngineEnvironment.tearDown();
     }
 
     @Test
