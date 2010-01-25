@@ -1024,6 +1024,10 @@ public class TestBaseRestlet {
                 }
                 throw new IllegalArgumentException("Done in purpose");
             }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {

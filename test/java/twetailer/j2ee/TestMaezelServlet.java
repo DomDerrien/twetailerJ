@@ -143,6 +143,10 @@ public class TestMaezelServlet {
             public String getPathInfo() {
                 return "/zzz";
             }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -242,6 +246,10 @@ public class TestMaezelServlet {
             public String getParameter(String name) {
                 assertEquals(Command.KEY, name);
                 return commandKey.toString();
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();

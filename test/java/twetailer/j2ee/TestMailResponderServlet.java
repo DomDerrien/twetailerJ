@@ -250,4 +250,28 @@ public class TestMailResponderServlet {
 
         servlet.doPost(request, null);
     }
+
+    @Test
+    public void testExtractFirstLineI() {
+        String out = "blah-blah-blah";
+        String in = out;
+
+        assertEquals(out, MailResponderServlet.extractFirstLine(in));
+    }
+
+    @Test
+    public void testExtractFirstLineII() {
+        String out = "blah-blah-blah";
+        String in = " \r\n \t " + out + " \t \r\n \t ";
+
+        assertEquals(out, MailResponderServlet.extractFirstLine(in));
+    }
+
+    @Test
+    public void testExtractFirstLineIII() {
+        String out = "blah-blah-blah";
+        String in = " \r\n \t " + out + " \t \r\n \t subsequent message part being ignored";
+
+        assertEquals(out, MailResponderServlet.extractFirstLine(in));
+    }
 }

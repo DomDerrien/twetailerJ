@@ -488,7 +488,7 @@ public class TestConsumerRestlet {
             }
         };
         ops._baseOperations = new MockBaseOperations();
-        ops.updateResource(null, consumerKey.toString(), user);
+        ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
     @Test

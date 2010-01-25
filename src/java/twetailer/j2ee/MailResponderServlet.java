@@ -61,9 +61,9 @@ public class MailResponderServlet extends HttpServlet {
             rawCommand.setEmitterId(consumer.getEmail());
             rawCommand.setSubject(mailMessage.getSubject());
             String command = MailConnector.getText(mailMessage);
-            rawCommand.setCommand(command);
+            rawCommand.setCommand(extractFirstLine(command));
 
-            log.warning("Message to be sent to: " + consumer.getEmail() + " with the subject: " + mailMessage.getSubject());
+            log.warning("Message sent by: " + consumer.getEmail() + " with the subject: " + mailMessage.getSubject() + "\nand the command: " + rawCommand.getCommand());
         }
         catch (MessagingException ex) {
             rawCommand.setErrorMessage("Error while parsing the mail message -- ex: " + ex.getMessage());
@@ -105,5 +105,37 @@ public class MailResponderServlet extends HttpServlet {
                         method(Method.GET)
             );
         }
+    }
+
+    /**
+     * Return the first line with significant characters
+     *
+     * @param in Buffer to parse
+     * @return series of significant characters
+     */
+    protected static String extractFirstLine(String in) {
+        if (in == null || in.length() == 0) {
+            return in;
+        }
+        // Trim leading separators
+        int begin = 0;
+        char cursor = in.charAt(begin);
+        while (cursor == ' ' || cursor == '\t' || cursor == '\r' || cursor == '\n') {
+            begin ++;
+            cursor = in.charAt(begin);
+        }
+        // Detect the end-of-line
+        int end = in.indexOf('\n', begin);
+        if (end == -1) {
+            end = in.length();
+        }
+        // Trim trailing separators
+        cursor = in.charAt(end - 1);
+        while (cursor == ' ' || cursor == '\t' || cursor == '\r' || cursor == '\n') {
+            end --;
+            cursor = in.charAt(end - 1);
+        }
+        // Return the short message
+        return in.substring(begin, end);
     }
 }
