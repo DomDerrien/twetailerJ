@@ -110,58 +110,61 @@ public class ConsumerRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+        // Get the logged user information
+        Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+        if (!consumerKey.toString().equals(resourceId)) {
+            throw new IllegalArgumentException("Consumer records can only be updated by the consumer themselves");
+        }
+
+        // Verify the information about the third party access providers
+        String openId = loggedUser.getClaimedId();
+        String newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
+        String newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
+        String newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
+
         PersistenceManager pm = _baseOperations.getPersistenceManager();
+        Consumer consumer;
         try {
             // Get the identified consumer
-            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-            if (!consumerKey.toString().equals(resourceId)) {
-                throw new IllegalArgumentException("Consumer records can only be updated by the consumer themselves");
-            }
-            Consumer consumer = consumerOperations.getConsumer(pm, consumerKey);
-            String openId = loggedUser.getClaimedId();
+            consumer = consumerOperations.getConsumer(pm, consumerKey);
             if (!openId.equals(consumer.getOpenID())) {
                 throw new IllegalArgumentException("Mismatch between the given OpenID and the one associated to the identified consumer");
             }
 
-            // Verify the information about the third party access providers
-            String newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
-            String newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
-            String newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
-
             // Update the consumer account
             consumer.fromJson(parameters);
+            log.warning("Merged information: " + consumer.toJson().toString());
             consumer = consumerOperations.updateConsumer(pm, consumer);
-
-
-            // Move demands to the updated account
-            if (newEmail != null || newJabberId != null || newTwitterId != null) {
-                /*
-                Warning:
-                --------
-                Cannot pass the connection to the following operations because they are
-                possibly going to affect different Consumer entities! And the JDO layer
-                will throw an exception like the following one:
-                    Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
-                    NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
-                        Found both Element {
-                          type: "Consumer"
-                          id: 425
-                        }
-                        and Element {
-                          type: "Consumer"
-                          id: 512
-                        }
-                 */
-                scheduleConsolidationTasks(Consumer.EMAIL, newEmail, consumer.getKey());
-                scheduleConsolidationTasks(Consumer.JABBER_ID, newJabberId, consumer.getKey());
-                scheduleConsolidationTasks(Consumer.TWITTER_ID, newTwitterId, consumer.getKey());
-            }
-
-            return consumer.toJson();
         }
         finally {
             pm.close();
         }
+
+        // Move demands to the updated account
+        if (newEmail != null || newJabberId != null || newTwitterId != null) {
+            /*
+            Warning:
+            --------
+            Cannot pass the connection to the following operations because they are
+            possibly going to affect different Consumer entities! And the JDO layer
+            will throw an exception like the following one:
+                Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
+                NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
+                    Found both Element {
+                      type: "Consumer"
+                      id: 425
+                    }
+                    and Element {
+                      type: "Consumer"
+                      id: 512
+                    }
+             */
+            scheduleConsolidationTasks(Consumer.EMAIL, newEmail, consumerKey);
+            scheduleConsolidationTasks(Consumer.JABBER_ID, newJabberId, consumerKey);
+            scheduleConsolidationTasks(Consumer.TWITTER_ID, newTwitterId, consumerKey);
+        }
+
+        return consumer.toJson();
     }
 
     /**
@@ -216,22 +219,24 @@ public class ConsumerRestlet extends BaseRestlet {
                 if (0 < consumers.size()) {
                     // Reset other consumer field
                     Consumer otherConsumer = consumers.get(0);
-                    if (Consumer.EMAIL.equals(topic)) { otherConsumer.setEmail("~" + otherConsumer.getEmail()); }
-                    else if (Consumer.JABBER_ID.equals(topic)) { otherConsumer.setJabberId("~" + otherConsumer.getJabberId()); }
-                    else /* if (Consumer.TWITTER_ID.equals(topic)) */ { otherConsumer.setTwitterId("~" + otherConsumer.getTwitterId()); }
-                    otherConsumer = consumerOperations.updateConsumer(pm, otherConsumer);
+                    if (!consumerKey.equals(otherConsumer.getKey())) {
+                        if (Consumer.EMAIL.equals(topic)) { otherConsumer.setEmail("~" + otherConsumer.getEmail()); }
+                        else if (Consumer.JABBER_ID.equals(topic)) { otherConsumer.setJabberId("~" + otherConsumer.getJabberId()); }
+                        else /* if (Consumer.TWITTER_ID.equals(topic)) */ { otherConsumer.setTwitterId("~" + otherConsumer.getTwitterId()); }
+                        otherConsumer = consumerOperations.updateConsumer(pm, otherConsumer);
 
-                    // Schedule tasks to migrate demands to this new consumer
-                    List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherConsumer.getKey(), 1);
-                    Queue queue = _baseOperations.getQueue();
-                    for (Long demandKey: demandKeys) {
-                        log.warning("Preparing the task: /maezel/consolidateConsumerAccounts?key=" + demandKey.toString() + "&ownerKey=" + consumerKey.toString());
-                        queue.add(
-                                url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateConsumerAccounts").
-                                param(Demand.KEY, demandKey.toString()).
-                                param(Demand.OWNER_KEY, consumerKey.toString()).
-                                method(Method.GET)
-                        );
+                        // Schedule tasks to migrate demands to this new consumer
+                        List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherConsumer.getKey(), 1);
+                        Queue queue = _baseOperations.getQueue();
+                        for (Long demandKey: demandKeys) {
+                            log.warning("Preparing the task: /maezel/consolidateConsumerAccounts?key=" + demandKey.toString() + "&ownerKey=" + consumerKey.toString());
+                            queue.add(
+                                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateConsumerAccounts").
+                                    param(Demand.KEY, demandKey.toString()).
+                                    param(Demand.OWNER_KEY, consumerKey.toString()).
+                                    method(Method.GET)
+                            );
+                        }
                     }
                 }
             }
