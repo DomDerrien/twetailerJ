@@ -39,7 +39,7 @@
     <!-- Used 1 time in query history -->
     <datastore-index kind="Demand" ancestor="false" source="auto">
         <property name="state" direction="asc"/>
-        <property name="modificationDate" direction="asc"/>
+        <property name="modificationDate" direction="desc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 

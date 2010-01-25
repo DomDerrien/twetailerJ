@@ -810,10 +810,8 @@
 
     <target name="step-configuration-clean">
         <delete file="src/war/WEB-INF/web.xml" />
-        <delete file="src/war/WEB-INF/logging.properties" />
         <delete file="src/war/WEB-INF/classes/applicationSettings.properties" />
         <delete file="src/war/WEB-INF/classes/domderrien-i18n.properties" />
-        <delete file="src/war/WEB-INF/classes/log4j.properties" />
         <delete file="src/war/WEB-INF/classes/META-INF/application.xml" />
     </target>
 
@@ -821,13 +819,6 @@
         <copy
             file="src/resources/web.xml.tmpl"
             tofile="src/war/WEB-INF/web.xml"
-            overwrite="true"
-        >
-            <filterchain refid="genericFilterChain" />
-        </copy>
-        <copy
-            file="src/resources/logging.properties.tmpl"
-            tofile="src/war/WEB-INF/logging.properties"
             overwrite="true"
         >
             <filterchain refid="genericFilterChain" />
@@ -842,13 +833,6 @@
         <copy
             file="src/resources/domderrien-i18n.properties.tmpl"
             tofile="src/war/WEB-INF/classes/domderrien-i18n.properties"
-            overwrite="true"
-        >
-            <filterchain refid="genericFilterChain" />
-        </copy>
-        <copy
-            file="src/resources/log4j.properties.tmpl"
-            tofile="src/war/WEB-INF/classes/log4j.properties"
             overwrite="true"
         >
             <filterchain refid="genericFilterChain" />
