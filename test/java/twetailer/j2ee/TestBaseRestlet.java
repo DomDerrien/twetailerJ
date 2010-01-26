@@ -32,6 +32,7 @@ import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
+import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.jsontools.GenericJsonArray;
@@ -375,6 +376,42 @@ public class TestBaseRestlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
+    public void testDoGetVII() throws IOException {
+        final Map<String, ?> in = new HashMap<String, Object>();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/";
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return in;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        final JsonArray resources = new GenericJsonArray();
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override
+            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+                assertEquals(in, parameters.getMap());
+                return resources;
+            }
+        };
+        mockRestlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("resources"));
+        assertTrue(stream.contains("[]"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("true"));
+    }
+
+    @Test
     public void testdoPutI() throws IOException {
         final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -574,6 +611,41 @@ public class TestBaseRestlet {
     }
 
     @Test
+    public void testdoPutVI() throws IOException {
+        final Map<String, ?> in = new HashMap<String, Object>();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/";
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+
+        mockRestlet.doPut(mockRequest, mockResponse);
+        assertTrue(stream.contains("isException"));
+        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("exceptionMessage"));
+        assertTrue(stream.contains("Required path info"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
     @SuppressWarnings("serial")
     public void testdoPostI() throws IOException {
         final Map<String, ?> in = new HashMap<String, Object>();
@@ -757,6 +829,61 @@ public class TestBaseRestlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
+    public void testdoPostV() throws IOException {
+        final Map<String, ?> in = new HashMap<String, Object>();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/";
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        final String uid = "uid1212";
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override
+            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+                JsonObject resource = new GenericJsonObject();
+                assertEquals(in, parameters.getMap());
+                assertEquals(user, loggedUser);
+                resource.put("id", uid);
+                return resource;
+            }
+        };
+
+        mockRestlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("resource"));
+        assertTrue(stream.contains("{"));
+        assertTrue(stream.contains("id"));
+        assertTrue(stream.contains(uid));
+        assertTrue(stream.contains("}"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("true"));
+    }
+
+    @Test
     public void testDoDeleteI() throws IOException {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -902,6 +1029,32 @@ public class TestBaseRestlet {
     }
 
     @Test
+    public void testDoDeleteVI() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+
+        mockRestlet.doDelete(mockRequest, mockResponse);
+        assertTrue(stream.contains("isException"));
+        assertTrue(stream.contains("true"));
+        assertTrue(stream.contains("exceptionMessage"));
+        assertTrue(stream.contains("Required path info"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
     public void testGetLoggedUser() throws Exception {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -1015,7 +1168,7 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoGetFailingInDebugMode() throws IOException {
+    public void testDoGetFailingInDebugModeI() throws IOException {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
@@ -1042,7 +1195,48 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPostFailingInDebugMode() throws IOException {
+    public void testDoGetFailingInDebugModeII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public Map<String, ?> getParameterMap() {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoGetFailingInDebugModeIII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public Map<String, ?> getParameterMap() {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        new MockBaseRestlet().doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPostFailingInDebugModeI() throws IOException {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
@@ -1065,7 +1259,48 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoPutFailingInDebugMode() throws IOException {
+    public void testDoPostFailingInDebugModeII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPostFailingInDebugModeIII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        new MockBaseRestlet().doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPutFailingInDebugModeI() throws IOException {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
@@ -1088,7 +1323,48 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testDoDeleteFailingInDebugMode() throws IOException {
+    public void testDoPutFailingInDebugModeII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet().doPut(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPutFailingInDebugModeIII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        new MockBaseRestlet().doPut(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoDeleteFailingInDebugModeI() throws IOException {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
@@ -1106,6 +1382,59 @@ public class TestBaseRestlet {
             }
         };
         new MockBaseRestlet().doDelete(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDoDeleteFailingInDebugModeII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        new MockBaseRestlet() {
+            @Override
+            protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        }.doDelete(mockRequest, mockResponse);
+        assertTrue(stream.contains("'isException':true"));
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDoDeleteFailingInDebugModeIII() throws IOException {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        new MockBaseRestlet() {
+            @Override
+            protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        }.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
     }

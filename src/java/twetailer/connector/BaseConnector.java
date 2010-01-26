@@ -126,11 +126,16 @@ public class BaseConnector {
             }
         }
         else if (Source.jabber.equals(source)) {
-            for (String message: messages) {
-                List<String> messageParts = checkMessageLength(message, 512);
-                for (String part: messageParts) {
-                    JabberConnector.sendInstantMessage(userId, part);
+            try {
+                for (String message: messages) {
+                    List<String> messageParts = checkMessageLength(message, 512);
+                    for (String part: messageParts) {
+                        JabberConnector.sendInstantMessage(userId, part);
+                    }
                 }
+            }
+            catch(Exception ex) {
+                throw new ClientException("Cannot communicate by IM to the consumer: " + userId, ex);
             }
         }
         else if (Source.mail.equals(source)) {

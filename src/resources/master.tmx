@@ -769,6 +769,49 @@
             <tuv xml:lang="en"><seg>twitter</seg></tuv>
         </tu>
 
+        <!-- ===================== -->
+        <!-- Global error messages -->
+        <!-- ===================== -->
+
+        <tu tuid="error_unexpected" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+                Report an unexpected error while processing the raw command.|
+                {0}: raw command key|
+                {1}: an optional information, in English only.
+            <note/>
+            <tuv xml:lang="en">
+                <seg>
+                    :-( The System encountered an unexpected error! {1}. You can resend your message, or, report incident identifier: 323-{0}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_datastore_timeout" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <note>
+                Returned to the end-user whenever there's a DatastoreTinmeoutException thrown by App Engine back-end.
+                See: http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_mail_messaging" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <note>
+                Returned to the end-user whenever there's an issue while processing his message.
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Unable to parse your e-mail. Please try communicating with maezel@twetailer.appspotmail.com from another mail reader.</seg>
+            </tuv>
+        </tu>
+
         <!-- ======================== -->
         <!-- Tweet loader definitions -->
         <!-- ======================== -->
@@ -788,20 +831,6 @@
         <!-- ============================= -->
         <!-- Command processor definitions -->
         <!-- ============================= -->
-
-        <tu tuid="cp_unexpected_error" datatype="Text">
-            <prop type="x-version">2</prop>
-            <prop type="x-tier">javarb</prop>
-                Report an unexpected error while processing the raw command.|
-                {0}: raw command key|
-                {1}: an optional information, in English only.
-            <note/>
-            <tuv xml:lang="en">
-                <seg>
-                    :-( The System encountered an unexpected error! {1}. You can resend your message, or, report incident identifier: 323-{0}.
-                </seg>
-            </tuv>
-        </tu>
 
         <tu tuid="cp_command_parser_unsupported_action" datatype="Text">
             <prop type="x-version">2</prop>
@@ -1541,7 +1570,6 @@
 
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" datatype="Text">
             <prop type="x-version">2</prop>
-            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|

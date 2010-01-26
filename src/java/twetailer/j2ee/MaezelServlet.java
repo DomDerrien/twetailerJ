@@ -256,7 +256,6 @@ public class MaezelServlet extends HttpServlet {
         log.warning("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
-        TaskOptions retryOptions = null;
         JsonObject in = null;
 
         try {
@@ -355,11 +354,6 @@ public class MaezelServlet extends HttpServlet {
             // Prepare the exception report
             log.warning("doPost().exception: " + ex);
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doPost() operation", ex);
-            // Reschedule the task if possible
-            if(ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException && retryOptions != null) {
-                log.warning("Schedule another attempt for the task: /maezel/" + pathInfo);
-                _baseOperations.getQueue().add(retryOptions.method(Method.POST));
-            }
             // Send an e-mail to out catch-all list
             MockOutputStream stackTrace = new MockOutputStream();
             ex.printStackTrace(new PrintStream(stackTrace));
