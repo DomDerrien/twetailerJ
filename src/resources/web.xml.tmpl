@@ -128,30 +128,27 @@
     <servlet>
         <servlet-name>mailresponder</servlet-name>
         <servlet-class>twetailer.j2ee.MailResponderServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>mailresponder</servlet-name>
-        <url-pattern>/_ah/mail/maezel*</url-pattern>
+        <url-pattern>/_ah/mail/maezel@twetailer.appspotmail.com</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>twitterhandler</servlet-name>
+        <servlet-name>twitterresponder</servlet-name>
         <servlet-class>twetailer.j2ee.TwitterMailNotificationHandlerServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>twitterhandler</servlet-name>
-        <url-pattern>/_ah/mail/twitter*</url-pattern>
+        <servlet-name>twitterresponder</servlet-name>
+        <url-pattern>/_ah/mail/twitter@twetailer.appspotmail.com</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>catchallmailhandler</servlet-name>
+        <servlet-name>catchallhandler</servlet-name>
         <servlet-class>twetailer.j2ee.CatchAllMailHandlerServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>catchallmailhandler</servlet-name>
+        <servlet-name>catchallhandler</servlet-name>
         <url-pattern>/_ah/mail/*</url-pattern>
     </servlet-mapping>
 

@@ -25,63 +25,75 @@ import twitter4j.TwitterException;
 public class TwitterMailNotificationHandlerServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(TwitterMailNotificationHandlerServlet.class.getName());
 
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
-    public static final String TWITTER_INTRODUCTION_MESSAGE_RATTERN = "\\(([a-zA-Z0-9_]+)\\) is now following your tweets on Twitter\\.";
     public static final String TWITTER_NOTIFICATION_SUBJECT_SUFFIX = " is now following you on Twitter!";
+    public static final String TWITTER_INTRODUCTION_MESSAGE_RATTERN = "\\(([a-zA-Z0-9_]+)\\) is now following your tweets on Twitter";
 
-    private static Pattern introductionPattern = Pattern.compile(TWITTER_INTRODUCTION_MESSAGE_RATTERN);
+    private static int lengthSubjectSuffix = TWITTER_NOTIFICATION_SUBJECT_SUFFIX.length();
+    private static Pattern introductionPattern = Pattern.compile(TWITTER_INTRODUCTION_MESSAGE_RATTERN, Pattern.MULTILINE );
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.warning("Path Info: " + request.getPathInfo());
+
+        processTwitterNotification(request, response);
+    }
+
+    protected static void processTwitterNotification(HttpServletRequest request, HttpServletResponse response) {
         try {
             log.warning("Path Info: " + request.getPathInfo());
 
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
-            log.warning("Message from: " + mailMessage.getFrom()[0]);
 
             // Check the message to persist
             boolean isAFollowingNotification = false;
             String subject = mailMessage.getSubject();
             String body = MailConnector.getText(mailMessage);
+            log.warning("Message from: " + mailMessage.getFrom()[0] + " -- subject: " + subject + " -- content: " + body);
+
             String followerName = "unknown";
-            if (subject != null) {
-                int subjectPrefixPos = subject.indexOf(TWITTER_NOTIFICATION_SUBJECT_SUFFIX);
-                if (subjectPrefixPos != -1) {
-                    followerName = subject.substring(0, subjectPrefixPos).trim();
-                    Matcher matcher = introductionPattern.matcher(body);
-                    if (matcher.find()) { // Runs the matcher once
-                        isAFollowingNotification = true;
-                        String followerScreenName = matcher.group(1).trim();
-                        PersistenceManager pm = _baseOperations.getPersistenceManager();
-                        try {
-                            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
-                            if (consumers.size() == 0) {
-                                // 1. Follow the user
-                                TwitterConnector.getTwetailerAccount().enableNotification(followerScreenName);
-                                // 2. Create his record
-                                Consumer consumer = new Consumer();
-                                consumer.setName(followerName);
-                                consumer.setTwitterId(followerScreenName);
-                                consumer = consumerOperations.createConsumer(pm, consumer);
-                                log.warning("Consumer account created for the new Twitter follower: " + followerScreenName);
-                            }
+            if (subject != null && subject.trim().endsWith(TWITTER_NOTIFICATION_SUBJECT_SUFFIX)) {
+                followerName = subject.substring(0, subject.length() - lengthSubjectSuffix).trim();
+                log.warning("Follower name: " + followerName);
+                Matcher matcher = introductionPattern.matcher(body);
+                if (matcher.find()) { // Runs the matcher once
+                    isAFollowingNotification = true;
+                    String followerScreenName = matcher.group(1).trim();
+                    log.warning("Follower screen name: " + followerScreenName);
+                    PersistenceManager pm = _baseOperations.getPersistenceManager();
+                    try {
+                        // 1. Follow the user
+                        TwitterConnector.getTwetailerAccount().enableNotification(followerScreenName);
+                        // 2. Create his record
+                        // TODO: call getConsumerKeys()
+                        List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
+                        if (consumers.size() == 0) {
+                            log.warning("Follower account to be created");
+                            Consumer consumer = new Consumer();
+                            consumer.setName(followerName);
+                            consumer.setTwitterId(followerScreenName);
+                            consumer = consumerOperations.createConsumer(pm, consumer);
+                            log.warning("Consumer account created for the new Twitter follower: " + followerScreenName);
                         }
-                        catch (TwitterException ex) {
-                            subject += "[TwitterException:" + ex.getMessage() + "]";
-                            isAFollowingNotification = false;
-                            ex.printStackTrace();
+                        else {
+                            log.warning("Follower account id: " + consumers.get(0).getKey());
                         }
-                        catch(DataSourceException ex) {
-                            subject += "[DataSourceException:" + ex.getMessage() + "]";
-                            isAFollowingNotification = false;
-                            ex.printStackTrace();
-                        }
-                        finally {
-                            pm.close();
-                        }
+                    }
+                    catch (TwitterException ex) {
+                        subject += "[TwitterException:" + ex.getMessage() + "]";
+                        isAFollowingNotification = false;
+                        ex.printStackTrace();
+                    }
+                    catch(DataSourceException ex) {
+                        subject += "[DataSourceException:" + ex.getMessage() + "]";
+                        isAFollowingNotification = false;
+                        ex.printStackTrace();
+                    }
+                    finally {
+                        pm.close();
                     }
                 }
             }
@@ -91,6 +103,9 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
             }
         }
         catch (MessagingException ex) {
+            // Nothing to do with a corrupted message...
+        }
+        catch (IOException ex) {
             // Nothing to do with a corrupted message...
         }
     }

@@ -23,9 +23,32 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            log.warning("Path Info: " + request.getPathInfo());
+        log.warning("Path Info: " + request.getPathInfo());
 
+        dispatchMailMessage(request, response);
+    }
+
+    protected void dispatchMailMessage(HttpServletRequest request, HttpServletResponse response) {
+        String pathInfo = request.getPathInfo();
+        log.warning("Path Info: " + pathInfo);
+
+        if ("/twitter@twetailer.appspotmail.com".equals(pathInfo)) {
+            log.warning("Forwarding to: TwitterMailNotificationHandlerServlet.processTwitterNotification()");
+            TwitterMailNotificationHandlerServlet.processTwitterNotification(request, response);
+            return;
+        }
+
+        if ("/maezel@twetailer.appspotmail.com".equals(pathInfo)) {
+            log.warning("Forwarding to: MailResponderServlet.processMailedRequest()");
+            MailResponderServlet.processMailedRequest(request, response);
+            return;
+        }
+
+        forwardUnexpectedMailMessage(request, response);
+    }
+
+    protected void forwardUnexpectedMailMessage(HttpServletRequest request, HttpServletResponse response) {
+        try {
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
 
@@ -36,6 +59,11 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             composeAndPostMailMessage((from == null || from.length == 0 ? "unknown" : from[0].toString()), subject, body);
         }
         catch (MessagingException ex) {
+            // Too bad! Should we tweet the issue?
+            // Dom: I don't think so because e-mail is probably the most robust communication mechanism (with native auto-retry, for example)
+            log.severe("Error while processing e-mail from");
+        }
+        catch (IOException ex) {
             // Too bad! Should we tweet the issue?
             // Dom: I don't think so because e-mail is probably the most robust communication mechanism (with native auto-retry, for example)
             log.severe("Error while processing e-mail from");
@@ -64,8 +92,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
         MimeMessage messageToForward = new MimeMessage(session);
         messageToForward.setFrom(MailConnector.twetailer);
-        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("dominique.derrien@gmail.com"));
-        // messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("steven.milstein@gmail.com"));
+        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("catch-all@twetailer.com"));
         messageToForward.setSubject("Fwd: (" + from + ") " + subject);
         MailConnector.setContentAsPlainTextAndHtml(messageToForward, body);
         Transport.send(messageToForward);
