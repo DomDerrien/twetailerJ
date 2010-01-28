@@ -913,9 +913,9 @@
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number you wish to Delete and try again.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Update and try again.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_non_modifiable_state" dataType="text">
@@ -1134,11 +1134,8 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>
-                    I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}.
-                    If you have matching supply, please complete and send the following proposal ...|
-                    "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]"
-                </seg>
+                <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
+                     2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_proposal_without_tag" dataType="text">

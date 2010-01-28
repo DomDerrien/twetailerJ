@@ -4,7 +4,9 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -37,14 +39,16 @@ public class DemandCommandProcessor {
         // 1. create a new demand
         // 2. update the identified demand
         //
-        Long demandKey = 0L;
         List<String> messages = new ArrayList<String>();
-        Location newLocation = Location.hasAttributeForANewLocation(command) ? CommandProcessor.locationOperations.createLocation(pm, command) : null;
+
+        // Extracts and process the given location information
+        if (Location.hasAttributeForANewLocation(command)) {
+            Location newLocation = CommandProcessor.locationOperations.createLocation(pm, command);
+            command.put(Demand.LOCATION_KEY, newLocation.getKey());
+        }
+
+        Long demandKey = 0L;
         if (command.containsKey(Demand.REFERENCE)) {
-            // Extracts the new location
-            if (newLocation != null) {
-                command.put(Demand.LOCATION_KEY, newLocation.getKey());
-            }
             // Update the demand attributes
             Demand demand = null;
             try {
@@ -73,41 +77,22 @@ public class DemandCommandProcessor {
             }
         }
         else {
-            // Extracts the new location
-            Long newLocationKey = consumer.getLocationKey();
-            if (newLocation != null) {
-                newLocationKey = newLocation.getKey();
-            }
-            // Get the latest demand or the default one
-            List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, Command.OWNER_KEY, consumer.getKey(), 1);
-            Demand latestDemand = null;
+            // Inherit from the latest demand if any
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put(Command.OWNER_KEY, consumer.getKey());
+            parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
+            List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, 0);
             if (0 < demands.size()) {
-                latestDemand = demands.get(0);
-                // Transfer the demand into a new object
-                latestDemand = new Demand(latestDemand.toJson()); // To avoid attempts to persist the object
-                // Reset sensitive fields
-                latestDemand.resetKey();
-                latestDemand.resetCoreDates();
-                latestDemand.setAction(Action.demand);
-                latestDemand.resetCriteria(); // All existing tags are removed
-                latestDemand.resetHashTags(); // All existing hash tags are removed
-                latestDemand.resetProposalKeys(); // All existing proposals are removed
-                latestDemand.resetSaleAssociateKeys(); // All existing sale associates need to be recontacted again
-                latestDemand.setDefaultExpirationDate();
-                latestDemand.setState(State.opened);
+                if (!command.containsKey(Demand.LOCATION_KEY)) { command.put(Demand.LOCATION_KEY, demands.get(0).getLocationKey()); }
+                if (!command.containsKey(Demand.RANGE))        { command.put(Demand.RANGE, demands.get(0).getRange()); }
+                if (!command.containsKey(Demand.RANGE_UNIT))   { command.put(Demand.RANGE_UNIT, demands.get(0).getRangeUnit()); }
             }
-            else {
-                latestDemand = new Demand();
-                // Set fields with default values
-                latestDemand.setAction(Action.demand);
+            if (!command.containsKey(Demand.LOCATION_KEY)) {
+                command.put(Demand.LOCATION_KEY, consumer.getLocationKey());
             }
-            latestDemand.setSource(rawCommand.getSource());
-            latestDemand.setRawCommandId(rawCommand.getKey());
-            // Update of the latest command (can be the default one) with the just extracted parameters
-            command = latestDemand.fromJson(command).toJson();
-            if (newLocationKey != null && !newLocationKey.equals(command.getLong(Demand.LOCATION_KEY))) {
-                command.put(Demand.LOCATION_KEY, newLocationKey);
-            }
+            // Transmit rawCommand information
+            command.put(Command.SOURCE, rawCommand.getSource().toString());
+            command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
             // Persist the new demand
             Demand newDemand = CommandProcessor.demandOperations.createDemand(pm, command, consumer.getKey());
             messages.add(

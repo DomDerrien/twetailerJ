@@ -1197,11 +1197,11 @@
         </tu>
 
         <tu tuid="cp_command_demand_invalid_demand_id" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Demand Reference number you wish to Delete and try again.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Update and try again.</seg>
             </tuv>
         </tu>
 
