@@ -3,30 +3,39 @@ package twetailer.task;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javamocks.io.MockOutputStream;
+
 import javax.jdo.PersistenceManager;
+import javax.mail.MessagingException;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
+import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.j2ee.CatchAllMailHandlerServlet;
+import twetailer.j2ee.MaezelServlet;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
@@ -36,12 +45,14 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonObject;
 
 public class DemandProcessor {
 
     private static Logger log = Logger.getLogger(DemandProcessor.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
@@ -120,11 +131,12 @@ public class DemandProcessor {
     public static void process(PersistenceManager pm, Long demandKey) throws DataSourceException {
         Demand demand = demandOperations.getDemand(pm, demandKey, null);
         if (CommandSettings.State.published.equals(demand.getState())) {
-            try {
-                // Try to contact regular sale associates
-                List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand);
-                for(SaleAssociate saleAssociate: saleAssociates) {
-                    // Communicate with the sale associate
+            Consumer owner = consumerOperations.getConsumer(pm, demand.getOwnerKey());
+            // Try to contact regular sale associates
+            List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
+            for(SaleAssociate saleAssociate: saleAssociates) {
+                // Communicate with the sale associate
+                try {
                     communicateToSaleAssociate(
                             new RawCommand(saleAssociate.getPreferredConnection()),
                             saleAssociate,
@@ -143,31 +155,47 @@ public class DemandProcessor {
                     );
                     // Keep track of the notification to not ping him/her another time
                     demand.addSaleAssociateKey(saleAssociate.getKey());
-                    demandOperations.updateDemand(pm, demand);
                 }
-                // Special treatment for demand with a tag #demo
-                if (demand.getHashTags().contains(RobotResponder.ROBOT_DEMO_HASH_TAG)) {
-                    if (!hasRobotAlreadyContacted(pm, demand)) {
-                        // Schedule a task to transmit the proposal to the demand owner
-                        Queue queue = _baseOperations.getQueue();
-                        log.warning("Preparing the task: /maezel/processDemandForRobot?key=" + demand.getKey().toString());
-                        queue.add(
-                                url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
-                                    param(Demand.KEY, demand.getKey().toString()).
-                                    method(Method.GET)
+                catch (ClientException ex) {
+                    // Report the error
+                    log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
+                    // Send an e-mail to out catch-all list
+                    MockOutputStream stackTrace = new MockOutputStream();
+                    ex.printStackTrace(new PrintStream(stackTrace));
+                    try {
+                        CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                                "error-notifier",
+                                "Unexpected error caught in " + DemandProcessor.class.getName(),
+                                "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saleAssociate.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
                         );
-                        // Keep track of the notification to not ping him/her another time
-                        demand.addSaleAssociateKey(RobotResponder.getRobotSaleAssociateKey(pm));
-                        demandOperations.updateDemand(pm, demand);
+                    }
+                    catch (MessagingException e) {
+                        log.severe("Failure while trying to report an unexpected by e-mail!");
                     }
                 }
             }
-            catch (DataSourceException ex) {
-                log.warning("Cannot get information retaled to demand: " + demand.getKey() + " -- ex: " + ex.getMessage());
+
+            // Special treatment for demand with a tag #demo
+            if (demand.getHashTags().contains(RobotResponder.ROBOT_DEMO_HASH_TAG)) {
+                if (!hasRobotAlreadyContacted(pm, demand)) {
+                    // Schedule a task to transmit the proposal to the demand owner
+                    Queue queue = _baseOperations.getQueue();
+                    log.warning("Preparing the task: /maezel/processDemandForRobot?key=" + demand.getKey().toString());
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
+                                param(Demand.KEY, demand.getKey().toString()).
+                                method(Method.GET)
+                    );
+                    // Keep track of the notification to not ping him/her another time
+                    demand.addSaleAssociateKey(RobotResponder.getRobotSaleAssociateKey(pm));
+                }
             }
-            catch (ClientException ex) {
-                log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
-            }
+
+            // Push the updated demand into the datastore
+            demandOperations.updateDemand(pm, demand);
+            //
+            // TODO: evaluate the possibility to echo to the consumer the number of contacted Sale Associates
+            //
         }
     }
 
@@ -194,11 +222,12 @@ public class DemandProcessor {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demand Consumer demand to consider
+     * @param owner Demand owner
      * @return List of sale associates listening for the demand tags, within the area specified by the consumer
      *
      * @throws DataSourceException If the data manipulation fails
      */
-    protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand) throws DataSourceException {
+    protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand, Consumer owner) throws DataSourceException {
         List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
         // Get the stores around the demanded location
         Location location = locationOperations.getLocation(pm, demand.getLocationKey());
@@ -220,11 +249,12 @@ public class DemandProcessor {
             return selectedSaleAssociates;
         }
         // Verifies that the sale associates supply the demanded tags and that he/she has not been yet contacted
+        Locale locale = owner.getLocale();
         for (SaleAssociate saleAssociate: saleAssociates) {
             if (demand.getSaleAssociateKeys() == null || !demand.getSaleAssociateKeys().contains(saleAssociate.getKey())) {
                 long score = 0;
                 for (String tag: demand.getCriteria()) {
-                    if (saleAssociate.getCriteria() != null && saleAssociate.getCriteria().contains(tag)) {
+                    if (saleAssociate.getCriteria() != null && saleAssociate.getCriteria().contains(tag.toLowerCase(locale))) {
                         ++ score;
                         break; // TODO: check if it's useful to continue counting
                     }

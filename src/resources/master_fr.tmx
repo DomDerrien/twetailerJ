@@ -636,14 +636,7 @@
                 <seg>twitter</seg>
             </tuv>
         </tu>
-        <tu tuid="tl_inform_dm_sender_no_more_a_follower" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like requesting help with "d twetailer ?"</seg>
-            </tuv>
-        </tu>
-        <tu tuid="cp_unexpected_error" dataType="text">
+        <tu tuid="error_unexpected" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
@@ -652,18 +645,41 @@
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_parser_unsupported_action" dataType="text">
+        <tu tuid="error_datastore_timeout" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="error_mail_messaging" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Unable to parse your e-mail. Please try communicating with maezel@twetailer.appspotmail.com from another mail reader.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="tl_inform_dm_sender_no_more_a_follower" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>The Action {0} is not recognized by the System. Send '!help action' for the list of available actions.</seg>
+                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like requesting help with "d twetailer ?"</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_parser_unsupported_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Action {0} is not recognized by the System. Send '?action' for help.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_parser_reserved_action" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>The Action {0} is not allowed by your profile. Send '!help {0}' for the list of available actions.</seg>
+                <seg>:-( Action {0} is not allowed by your profile. Send '?{0}' for help.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_cancel_missing_demand_id" dataType="text">
@@ -770,14 +786,6 @@
                 <seg>:-( You can only !close Proposals or Demands.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_confirm_invalid_proposal_id" dataType="text">
-            <prop type="x-for-review">Steven</prop>
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>The Proposition identifier specified with the Confirm Command is invalid.</seg>
-            </tuv>
-        </tu>
         <tu tuid="cp_command_confirm_invalid_state_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
@@ -787,14 +795,11 @@
         </tu>
         <tu tuid="cp_command_confirm_acknowledge_confirmation" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
-                    Store:{3}, {4} will be notified and asked to keep you Demand, marked with ref:{1}, on the side for you. |
-                    Send "d twetailer !list store:{3}" for more details |
-                    In order to improve your Twetailer Rating, please remember to finalize your Demand after visiting the store by sending ... |
-                    "d twetailer !close ref:{1}", or, "d twetailer !flag ref:{1} note:[enter your issue here]"</seg>
+                    :-) Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
+                    Store:{3}, {4} will be asked to mark and hold Demand ref:{1} </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_inform_about_confirmation" dataType="text">
@@ -908,9 +913,9 @@
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number you wish to Delete and try again.</seg>
+                <seg>:-( Please verify the Demand Reference number you wish to Update and try again.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_non_modifiable_state" dataType="text">
@@ -1126,15 +1131,11 @@
             </tuv>
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" dataType="text">
-            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>
-                    I have Demand ref:{0}, for tags:{1}, quantity:{3} which expires:{2}.
-                    If you have matching supply, please complete and send the following proposal ...|
-                    "d twetailer !propose ref:{0} tags:[enter proposal description here] price:[enter retail price here]"
-                </seg>
+                <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
+                     2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_proposal_without_tag" dataType="text">
@@ -1237,11 +1238,10 @@
             </tuv>
         </tu>
         <tu tuid="rr_robot_automatic_proposition" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>(short-store-name)</seg>
+                <seg>proposed description</seg>
             </tuv>
         </tu>
         <tu tuid="country_CA" dataType="text">

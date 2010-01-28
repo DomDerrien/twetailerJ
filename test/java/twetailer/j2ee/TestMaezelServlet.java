@@ -31,8 +31,10 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.JabberConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
@@ -46,6 +48,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.task.CommandProcessor;
 import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
 import twetailer.task.MockDemandValidator;
@@ -63,6 +66,8 @@ import twitter4j.TwitterException;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
+import com.google.appengine.api.datastore.DatastoreTimeoutException;
+import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.i18n.LabelExtractor;
@@ -91,6 +96,7 @@ public class TestMaezelServlet {
     public void tearDown() throws Exception {
         servlet.settingsOperations = new SettingsOperations();
         mockAppEngineEnvironment.tearDown();
+        JabberConnector.injectMockXMPPService(null);
     }
 
     @Test
@@ -142,6 +148,10 @@ public class TestMaezelServlet {
             @Override
             public String getPathInfo() {
                 return "/zzz";
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -242,6 +252,10 @@ public class TestMaezelServlet {
             public String getParameter(String name) {
                 assertEquals(Command.KEY, name);
                 return commandKey.toString();
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -577,6 +591,104 @@ public class TestMaezelServlet {
     }
 
     @Test
+    public void testDoGetProcessCommandWithDatastoreTimeoutExceptionI() throws IOException {
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processCommand";
+            }
+            @Override
+            public String getParameter(String name) {
+                return "12345";
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        CommandProcessor._baseOperations = new MockBaseOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                throw new DatastoreTimeoutException("Done in purpose!");
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        CommandProcessor._baseOperations = new BaseOperations();
+    }
+
+    @Test
+    public void testDoGetProcessCommandWithDatastoreTimeoutExceptionII() throws IOException {
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processCommand";
+            }
+            @Override
+            public String getParameter(String name) {
+                throw new DatastoreTimeoutException("Done in purpose!");
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoGetProcessCommandWithDatastoreTimeoutExceptionIII() throws IOException {
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processCommand";
+            }
+            @Override
+            public String getParameter(String name) {
+                throw new DatastoreTimeoutException("Done in purpose!");
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
     public void testDoPostI() throws IOException {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -629,6 +741,66 @@ public class TestMaezelServlet {
                 return stream;
             }
         };
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPostProcessCommandWithDatastoreTimeoutExceptionI() throws IOException {
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public String getParameter(String name) {
+                return "12345";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                throw new IllegalArgumentException("Done in purpose!");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+    }
+
+    @Test
+    public void testDoPostProcessCommandWithDatastoreTimeoutExceptionII() throws IOException {
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public String getParameter(String name) {
+                return "12345";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                throw new IllegalArgumentException("Done in purpose!");
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
     }
@@ -773,7 +945,7 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testWaitForVerificationCodeII() throws IOException {
+    public void testWaitForVerificationCodeII() throws IOException, ClientException {
         final String openId = "http://openId";
         final String identifier = "unit@test.ca";
         final String topic = Consumer.JABBER_ID;
@@ -820,10 +992,15 @@ public class TestMaezelServlet {
             }
         };
 
+        MockXMPPService mock = new MockXMPPService();
+        mock.setPresence(identifier, true);
+        JabberConnector.injectMockXMPPService(mock);
+
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
-        // No way to check what's send by IM...
-        // See test done for topic == Twitter
+
+        String sentMessage = mock.getLastSentMessage().getBody();
+        assertTrue(sentMessage.contains(String.valueOf(MaezelServlet.getCode(topic, identifier, openId))));
     }
 
     @Test
@@ -1278,7 +1455,6 @@ public class TestMaezelServlet {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testDoGetSetupRobotCoordinates() throws IOException {
         final Long consumerKey = 12321L;
         final Long saleAssociateKey = 45654L;
@@ -1334,7 +1510,6 @@ public class TestMaezelServlet {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testDoGetConsolidateConsumerAccounts() throws IOException {
         final Long consumerKey = 12321L;
         final Long demandKey = 45654L;

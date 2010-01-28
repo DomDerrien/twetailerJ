@@ -63,7 +63,7 @@
             </fileset>
         </copy>
     	<!-- Copy the Twetailer dependencies -->
-        <copy file="deps/lib/domderrien/domderrien-1.0.2.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/domderrien/domderrien-1.0.3.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
         <copy todir="src/war/WEB-INF/lib">
         	<fileset dir="deps/lib/dyuproject" />
@@ -107,8 +107,11 @@
     <target name="step-configuration-clean">
         <delete file="src/war/WEB-INF/appengine-web.xml" />
         <delete file="src/war/WEB-INF/cron.xml" />
-        <delete file="src/war/WEB-INF/queue.xml" />
+        <delete file="src/war/WEB-INF/datastore-indexes.xml" />
         <delete file="src/war/WEB-INF/classes/META-INF/jdoconfig.xml" />
+        <delete file="src/war/WEB-INF/classes/log4j.properties" />
+        <delete file="src/war/WEB-INF/logging.properties" />
+        <delete file="src/war/WEB-INF/queue.xml" />
         <delete file="src/war/_wave/capabilities.xml" />
     </target>
 
@@ -120,27 +123,12 @@
         >
             <filterchain refid="genericFilterChain" />
         </copy>
-        <copy
-            file="src/resources/cron.xml.tmpl"
-            tofile="src/war/WEB-INF/cron.xml"
-            overwrite="true"
-        >
-            <filterchain refid="genericFilterChain" />
-        </copy>
-        <copy
-            file="src/resources/queue.xml.tmpl"
-            tofile="src/war/WEB-INF/queue.xml"
-            overwrite="true"
-        >
-            <filterchain refid="genericFilterChain" />
-        </copy>
-        <copy 
-            file="src/resources/jdoconfig.xml.tmpl"
-            tofile="src/war/WEB-INF/classes/META-INF/jdoconfig.xml"
-            overwrite="true"
-        >
-            <filterchain refid="genericFilterChain" />
-        </copy>
+        <copy file="src/resources/cron.xml"              todir="src/war/WEB-INF/"                  overwrite="true" />
+        <copy file="src/resources/datastore-indexes.xml" todir="src/war/WEB-INF/"                  overwrite="true" />
+        <copy file="src/resources/jdoconfig.xml"         todir="src/war/WEB-INF/classes/META-INF/" overwrite="true" />
+        <copy file="src/resources/log4j.properties"      todir="src/war/WEB-INF/classes/"          overwrite="true" />
+        <copy file="src/resources/logging.properties"    todir="src/war/WEB-INF/"                  overwrite="true" />
+        <copy file="src/resources/queue.xml"             todir="src/war/WEB-INF/"                  overwrite="true" />
         <copy
             file="src/resources/capabilities.xml.tmpl"
             tofile="src/war/_wave/capabilities.xml"

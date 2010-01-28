@@ -37,11 +37,26 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             // Too bad! Should we tweet the issue?
+            // Dom: I don't think so because e-mail is probably the most robust communication mechanism (with native auto-retry, for example)
             log.severe("Error while processing e-mail from");
         }
     }
 
+    /**
+     * Send the specified message to the recipients of the "catch-all" list
+     *
+     * @param from Message initiator
+     * @param subject Message subject
+     * @param body Message content
+     *
+     * @throws MessagingException If the message sending fails
+     */
     public static void composeAndPostMailMessage(String from, String subject, String body) throws MessagingException {
+        if (foolMessagePost) {
+            foolMessagePost = false;
+            throw new MessagingException("Done in purpose!");
+        }
+
         log.warning("Message to be sent to: " + from + " with the subject: " + subject);
 
         Properties properties = new Properties();
@@ -51,8 +66,17 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         messageToForward.setFrom(MailConnector.twetailer);
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("dominique.derrien@gmail.com"));
         // messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("steven.milstein@gmail.com"));
-        messageToForward.setSubject("FW: (" + from + ")" + subject);
+        messageToForward.setSubject("Fwd: (" + from + ") " + subject);
         MailConnector.setContentAsPlainTextAndHtml(messageToForward, body);
         Transport.send(messageToForward);
+    }
+
+    private static boolean foolMessagePost = false;
+
+    /**
+     * Made available for unit tests
+     */
+    public static void foolNextMessagePost() {
+        foolMessagePost = true;
     }
 }

@@ -142,6 +142,7 @@ public class SaleAssociate extends Entity {
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
+        criterion = criterion.toLowerCase(getLocale());
         if (!criteria.contains(criterion)) {
             criteria.add(criterion);
         }
@@ -158,6 +159,7 @@ public class SaleAssociate extends Entity {
         if (criteria == null) {
             return;
         }
+        criterion = criterion.toLowerCase(getLocale());
         criteria.remove(criterion);
     }
 
@@ -173,7 +175,10 @@ public class SaleAssociate extends Entity {
         if (criteria == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
         }
-        this.criteria = criteria;
+        this.criteria = null;
+        for (String criterion: criteria) {
+            addCriterion(criterion);
+        }
     }
 
     public String getEmail() {

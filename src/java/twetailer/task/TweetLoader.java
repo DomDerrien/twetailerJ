@@ -105,8 +105,7 @@ public class TweetLoader {
             DirectMessage dm = messages.get(idx);
             long dmId = dm.getId();
             String message = dm.getText();
-            log.warning("DM id: " + dmId);
-            log.warning("DM content: " + message);
+            log.warning("DM id: " + dmId + " -- DM content: " + message);
 
             // Get Twetailer account and verify the user is a follower
             twitter4j.User sender = dm.getSender();

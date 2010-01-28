@@ -306,7 +306,7 @@ public class TestConsumerRestlet {
     }
 
     @Test
-    public void testScheduleConsolidationTasksII() throws DataSourceException, ClientException {
+    public void testScheduleConsolidationTasksIIa() throws DataSourceException, ClientException {
         final String email = "unit@test.ca";
         ops.consumerOperations = new ConsumerOperations() {
             @Override
@@ -314,6 +314,35 @@ public class TestConsumerRestlet {
                 assertEquals(Consumer.EMAIL, key);
                 assertEquals(email, (String) value);
                 return new ArrayList<Consumer>();
+            }
+        };
+        ops._baseOperations = new MockBaseOperations();
+        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
+    }
+
+    @Test
+    public void testScheduleConsolidationTasksIIb() throws DataSourceException, ClientException {
+        final Long consumerKey = 67890L;
+        final String email = "unit@test.ca";
+        final Consumer consumer = new Consumer();
+        consumer.setEmail(email);
+        consumer.setKey(consumerKey);
+        ops.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
+                assertEquals(Consumer.EMAIL, key);
+                assertEquals(email, (String) value);
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                consumers.add(consumer);
+                return consumers;
+            }
+        };
+        ops.demandOperations = new DemandOperations() {
+            @Override
+            public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
+                assertEquals(Demand.OWNER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                return new ArrayList<Long>();
             }
         };
         ops._baseOperations = new MockBaseOperations();
@@ -351,7 +380,7 @@ public class TestConsumerRestlet {
             }
         };
         ops._baseOperations = new MockBaseOperations();
-        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
+        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, consumerKey);
     }
 
     @Test
@@ -488,7 +517,7 @@ public class TestConsumerRestlet {
             }
         };
         ops._baseOperations = new MockBaseOperations();
-        ops.updateResource(null, consumerKey.toString(), user);
+        ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
     @Test

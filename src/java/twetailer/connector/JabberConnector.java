@@ -1,12 +1,17 @@
 package twetailer.connector;
 
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import twetailer.ClientException;
+
 import com.google.appengine.api.xmpp.JID;
 import com.google.appengine.api.xmpp.Message;
 import com.google.appengine.api.xmpp.MessageBuilder;
+import com.google.appengine.api.xmpp.MockXMPPService;
+import com.google.appengine.api.xmpp.SendResponse;
 import com.google.appengine.api.xmpp.XMPPService;
 import com.google.appengine.api.xmpp.XMPPServiceFactory;
 
@@ -31,11 +36,40 @@ public class JabberConnector {
      *
      * @param receiverId Identifier of the instant message recipient
      * @param message Message to send
+     *
+     * @throws ClientException If it's not possible to communicate with the receiver
      */
-    public static void sendInstantMessage(String receiverId, String message) {
-        Message instantMessage = new MessageBuilder().withRecipientJids(new JID(receiverId)).withBody(message).build();
+    public static void sendInstantMessage(String receiverId, String message) throws ClientException {
+        XMPPService xmpp = getXMPPService();
+        JID jabberId = new JID(receiverId);
+        Message instantMessage = new MessageBuilder().withRecipientJids(jabberId).withBody(message).build();
 
-        XMPPService xmpp = XMPPServiceFactory.getXMPPService();
-        xmpp.sendMessage(instantMessage);
+        if (xmpp.getPresence(jabberId).isAvailable()) {
+            SendResponse status = xmpp.sendMessage(instantMessage);
+            if (!SendResponse.Status.SUCCESS.equals(status.getStatusMap().get(jabberId))) {
+                // TODO: Report error!
+                throw new ClientException("Need to report an error while sending an IM to " + receiverId + " -- status: " + status.getStatusMap().get(jabberId));
+            }
+        }
+        else {
+            // TODO: Report error!
+            throw new ClientException("Need to report the IM recipient " + receiverId + " is not listening!");
+        }
+    }
+
+    private static XMPPService mockService;
+
+    /**
+     * Made available only for test purposes
+     */
+    public static void injectMockXMPPService(MockXMPPService mock) {
+        mockService = mock;
+    }
+
+    protected static XMPPService getXMPPService() {
+        if (mockService != null) {
+            return mockService;
+        }
+        return XMPPServiceFactory.getXMPPService();
     }
 }

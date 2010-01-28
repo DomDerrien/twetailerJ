@@ -318,7 +318,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("error_unexpected", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -360,7 +360,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("error_unexpected", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -402,7 +402,7 @@ public class TestCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_unexpected_error", new Object[] { commandKey, CommandProcessor.getDebugInfo(exception) }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("error_unexpected", new Object[] { commandKey, CommandProcessor.getDebugInfo(exception) }, Locale.ENGLISH), sentText);
     }
 
     @Test

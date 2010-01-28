@@ -236,7 +236,7 @@ public class CommandProcessor {
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    new String[] { LabelExtractor.get("cp_unexpected_error", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH) }
+                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH) }
             );
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
