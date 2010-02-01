@@ -20,7 +20,6 @@ import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
-import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -83,11 +82,12 @@ public class DemandCommandProcessor {
             parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
             List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, 0);
             if (0 < demands.size()) {
-                if (!command.containsKey(Demand.LOCATION_KEY)) { command.put(Demand.LOCATION_KEY, demands.get(0).getLocationKey()); }
-                if (!command.containsKey(Demand.RANGE))        { command.put(Demand.RANGE, demands.get(0).getRange()); }
-                if (!command.containsKey(Demand.RANGE_UNIT))   { command.put(Demand.RANGE_UNIT, demands.get(0).getRangeUnit()); }
+                Demand previousDemand = demands.get(0);
+                if (!command.containsKey(Demand.LOCATION_KEY)) { command.put(Demand.LOCATION_KEY, previousDemand.getLocationKey()); }
+                if (!command.containsKey(Demand.RANGE))        { command.put(Demand.RANGE, previousDemand.getRange()); }
+                if (!command.containsKey(Demand.RANGE_UNIT))   { command.put(Demand.RANGE_UNIT, previousDemand.getRangeUnit()); }
             }
-            if (!command.containsKey(Demand.LOCATION_KEY)) {
+            if (!command.containsKey(Demand.LOCATION_KEY) && consumer.getLocationKey() != null) {
                 command.put(Demand.LOCATION_KEY, consumer.getLocationKey());
             }
             // Transmit rawCommand information
@@ -111,7 +111,7 @@ public class DemandCommandProcessor {
         communicateToConsumer(
                 rawCommand,
                 consumer,
-                messages.toArray(new String[0])
+                messages.toArray(new String[messages.size()])
         );
         // Create a task for that demand
         if (demandKey != 0L) {
