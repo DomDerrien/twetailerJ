@@ -500,11 +500,12 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
+                    #Demo,
                     140, 24906,
                     AKA, Amazon, Attribute,
                     Backup,
                     Command-line, Consumer, CRUD,
-                    Demand-crud, Demo,
+                    Demand-crud,
                     Fee, Flag, Flagged, Founders, Free, Friend, Fulfil,
                     Hash,
                     IM, List-demands-private, List-demands-public, List-proposal, List-store, List-tag,
@@ -578,10 +579,10 @@
             <tuv xml:lang="en"><seg>demand-crud</seg></tuv>
         </tu>
 
-        <tu tuid="help_keyword_equivalents_Demo" datatype="Text">
+        <tu tuid="help_keyword_equivalents_#Demo" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>demo</seg></tuv>
+            <tuv xml:lang="en"><seg>#demo</seg></tuv>
         </tu>
 
         <tu tuid="help_keyword_equivalents_Fee" datatype="Text">

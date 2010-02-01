@@ -326,6 +326,7 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
+                    #Demo,
                     140, 24906,
                     AKA, Amazon, Attribute,
                     Backup,
@@ -413,11 +414,11 @@
                 <seg>demand-crud</seg>
             </tuv>
         </tu>
-        <tu tuid="help_keyword_equivalents_Demo" dataType="text">
+        <tu tuid="help_keyword_equivalents_#Demo" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>demo</seg>
+                <seg>#demo</seg>
             </tuv>
         </tu>
         <tu tuid="help_keyword_equivalents_Fee" dataType="text">
