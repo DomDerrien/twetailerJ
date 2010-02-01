@@ -23,6 +23,19 @@
                 Twetailer (since): v0.0</seg>
             </tuv>
         </tu>
+        <tu tuid="#Demo" dataType="text">
+            <prop type="x-for-review">Dom</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>#Demo (story): As Twetailer, I want to provide both Consumers and Retailers an end-to-end Demand demo, so they can better experience Twetailer. |
+                #Demo (usage): Include #demo in your Demand Tags and Twetailer will automatically Propose and eventually Close the Demand. |
+                #Demo (rules): Reserved keyword |
+                #Demo (see also): hash |
+                #Demo (AKA): hashtag, # |
+                #Demo (since): v0.0</seg>
+            </tuv>
+        </tu>
         <tu tuid="140" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -43,7 +56,7 @@
         </tu>
         <tu tuid="Action" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>Action (story): As a user of Twetailer, I want to be able to interact with the system via brief Command-line actions, so I can create, read, update, delete (CRUD) and process transactions |
                 Action (usage): Send "![action]". Example: Send "!list" |
@@ -52,15 +65,11 @@
             </tuv>
         </tu>
         <tu tuid="Address" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Address (story):  |
-                Address (usage):  |
-                Address (rules):  |
-                Address (see also): attribute |
-                Address (AKA):  |
+                <seg>Address (story): As a Sales Associate, I want to provide my Store's address so Consumers can pick-up their goods. |
+                Address (usage): Street number, name and possibly store number.  |
                 Address (since): v0.0</seg>
             </tuv>
         </tu>
@@ -333,13 +342,12 @@
             </tuv>
         </tu>
         <tu tuid="Hash" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Hash (story):  |
-                Hash (usage):  |
-                Hash (rules):  |
+                <seg>Hash (story): As Twetailer, I want to provide both Consumers and Retailers a structured set of tags, so they can better describe their respective Demand and Supply. |
+                Hash (usage): #demo is currently the only supported hash tag which notifies Twetailer to automatically propose to the Demand. |
+                Hash (rules): Reserved keyword |
                 Hash (see also): attribute |
                 Hash (AKA): hashtag, # |
                 Hash (since): v0.0</seg>
@@ -477,15 +485,12 @@
             </tuv>
         </tu>
         <tu tuid="Name" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Name (story):  |
-                Name (usage):  |
-                Name (rules):  |
-                Name (see also): attribute |
-                Name (AKA):  |
+                <seg>Name (story): As a Sales Associate, I want to provide my Store's name, so Consumers can know who I am. |
+                Name (usage): Name of Store. |
+                Name (rules): Legal, or, registered name of Store.  |
                 Name (since): v0.0</seg>
             </tuv>
         </tu>
@@ -520,15 +525,12 @@
             </tuv>
         </tu>
         <tu tuid="Phonenumber" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Phonenumber (story):  |
-                Phonenumber (usage):  |
-                Phonenumber (rules):  |
-                Phonenumber (see also): attribute |
-                Phonenumber (AKA):  |
+                <seg>Phonenumber (story): As a Sales Associate, I want to provide my Store's telephone number, so Consumers can call if they need any more information. |
+                Phonenumber (usage): Country code, area code and telephone number. |
+                Phonenumber (rules): Must be a registered business phone number.  |
                 Phonenumber (since): v0.0</seg>
             </tuv>
         </tu>
@@ -536,11 +538,10 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Price (story):  |
-                Price (usage):  |
-                Price (rules):  |
-                Price (see also): attribute |
-                Price (AKA):  |
+                <seg>Price (story): As a Sales Associate, I want to provide the listed retail price of the product I'm proposing, so Consumers can better evaluate their decision to purchase it from me. |
+                Price (usage): Price and currency. |
+                Price (rules): Must be the same retail price listed in the Store. |
+                Price (see also): total |
                 Price (since): v0.0</seg>
             </tuv>
         </tu>
@@ -836,11 +837,11 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Total (story):  |
-                Total (usage):  |
-                Total (rules):  |
-                Total (see also): attribute |
-                Total (AKA):  |
+                <seg>Total (story): As a Sales Associate, I want to provide the total cost - including all extra charges, such as taxes, service fees, etc. for the product I'm proposing, so Consumers can better evaluate their decision to purchase it from me. |
+                Total (usage): Total cost and currency. |
+                Total (rules): This is the final price the Consumer will ultimately pay.  |
+                Total (see also): price |
+                Total (AKA): totalcost |
                 Total (since): Future release</seg>
             </tuv>
         </tu>
