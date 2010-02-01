@@ -987,7 +987,6 @@ public class TestDemandProcessor {
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(selectedSaleAssociate);
-                System.err.println("+++++++++++ ddd +++ " + selectedSaleAssociate.getTwitterId());
                 return saleAssociates;
             }
         };

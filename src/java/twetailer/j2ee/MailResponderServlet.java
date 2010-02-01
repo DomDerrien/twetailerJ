@@ -4,6 +4,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -16,9 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import twetailer.ClientException;
-import twetailer.connector.BaseConnector;
-import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
@@ -35,18 +33,23 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.JsonException;
 
 @SuppressWarnings("serial")
 public class MailResponderServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MailResponderServlet.class.getName());
 
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.warning("Path Info: " + request.getPathInfo());
+
+        processMailedRequest(request, response);
+    }
+
+    protected static void processMailedRequest(HttpServletRequest request, HttpServletResponse response) {
         Consumer consumer = null;
         String name = null;
         String email = null;
@@ -59,8 +62,6 @@ public class MailResponderServlet extends HttpServlet {
         RawCommand rawCommand = new RawCommand(Source.mail);
 
         try {
-            log.warning("Path Info: " + request.getPathInfo());
-
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
             if (mailMessage.getFrom() == null) {
@@ -140,12 +141,15 @@ public class MailResponderServlet extends HttpServlet {
                             new Locale(language)
                     );
                 }
-                catch (MessagingException e) {
+                catch (UnsupportedEncodingException e) {
                     // Ignored because we can't do much now
 
                     // Note for the testers:
-                    //   Don't know how to generate a MessagingException by just
+                    //   Don't know how to generate a UnsupportedEncodingException by just
                     //   injecting a corrupted UTF-8 sequence and/or a wrong character set
+                }
+                catch (MessagingException e) {
+                    // Ignored because we can't do much now
                 }
             }
         }
@@ -158,7 +162,7 @@ public class MailResponderServlet extends HttpServlet {
             try {
                 CatchAllMailHandlerServlet.composeAndPostMailMessage(
                         "error-notifier",
-                        "Unexpected error caught in " + this.getClass().getName() + ".doPost()",
+                        "Unexpected error caught in " + MailResponderServlet.class.getName() + ".doPost()",
                         "Mail sender: " + name + "<" + email + ">" + "\nMail subject: " + subject + "\nMail filtered content: " + command + "\n\n--\n\n" + stackTrace.toString()
                 );
             }

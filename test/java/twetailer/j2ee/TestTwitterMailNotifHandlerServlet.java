@@ -21,6 +21,7 @@ import org.junit.Test;
 import twetailer.DataSourceException;
 import twetailer.connector.TestMailConnector;
 import twetailer.connector.TwitterConnector;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
@@ -46,6 +47,8 @@ public class TestTwitterMailNotifHandlerServlet {
     @After
     public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
+        TwitterMailNotificationHandlerServlet._baseOperations = new BaseOperations();
+        TwitterMailNotificationHandlerServlet.consumerOperations = TwitterMailNotificationHandlerServlet._baseOperations.getConsumerOperations();
     }
 
     @Test
@@ -55,7 +58,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
@@ -76,7 +79,7 @@ public class TestTwitterMailNotifHandlerServlet {
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
         final Long consumerKey = 8888L;
-        servlet.consumerOperations = new ConsumerOperations() {
+        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -91,7 +94,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 return consumer;
             }
         };
-        servlet._baseOperations = new MockBaseOperations();
+        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
 
         servlet.doPost(request, null);
 
@@ -105,7 +108,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
@@ -126,7 +129,7 @@ public class TestTwitterMailNotifHandlerServlet {
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
         final Long consumerKey = 8888L;
-        servlet.consumerOperations = new ConsumerOperations() {
+        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -144,7 +147,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 return consumer;
             }
         };
-        servlet._baseOperations = new MockBaseOperations();
+        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
 
         servlet.doPost(request, null);
 
@@ -158,7 +161,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
@@ -178,7 +181,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
-        servlet.consumerOperations = new ConsumerOperations() {
+        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -191,7 +194,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 return consumer;
             }
         };
-        servlet._baseOperations = new MockBaseOperations();
+        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
 
         servlet.doPost(request, null);
 
@@ -205,7 +208,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
@@ -225,7 +228,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
-        servlet.consumerOperations = new ConsumerOperations() {
+        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -238,7 +241,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 return consumer;
             }
         };
-        servlet._baseOperations = new MockBaseOperations();
+        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
 
         servlet.doPost(request, null);
 
@@ -252,7 +255,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
@@ -275,7 +278,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = followerName + " is now a magic Twitter user!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
@@ -298,7 +301,7 @@ public class TestTwitterMailNotifHandlerServlet {
         //
         final String followerName = "Test Twitter";
         final String followerScreenName = "Test_Twitter";
-        final String from = "twitter-follow-twetailer@postmaster.twitter.com";
+        final String from = "twitter@postmaster.twitter.com";
         final String twitterName = "Twitter";
         final String subject = null;
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
