@@ -576,7 +576,7 @@ public class TestDemandCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
-        
+
         // App Engine Environment mock
         MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
 

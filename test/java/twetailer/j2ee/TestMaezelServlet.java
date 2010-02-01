@@ -447,8 +447,14 @@ public class TestMaezelServlet {
             }
             @Override
             public String getParameter(String name) {
-                assertEquals(Demand.KEY, name);
-                return demandKey.toString();
+                if(Demand.KEY.equals(name)) {
+                    return demandKey.toString();
+                }
+                if("cronJob".equals(name)) {
+                    return "true";
+                }
+                fail("Call not expected for: " + name);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();

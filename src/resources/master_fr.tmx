@@ -1138,6 +1138,22 @@
                      2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>
             </tuv>
         </tu>
+        <tu tuid="dp_inform_consumer_about_no_store" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. 1/2 I currently don't have any Stores supplying those tags but will keep checking until the expiration date.|
+                2/2 Please ask any potential Stores you may visit to register with Twetailer so we may improve our service in your community.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dp_inform_consumer_about_new_sale_associates_contacted" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. 1/2 {2} additional Sales Associates have been notified of your Demand ref:{0}, for a total of {1}.|
+                2/2 I'll continue checking until the expiration date.</seg>
+            </tuv>
+        </tu>
         <tu tuid="pv_report_proposal_without_tag" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>

@@ -31,6 +31,7 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
@@ -38,6 +39,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
@@ -78,6 +80,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = DemandProcessor._baseOperations.getSaleAssociateOperations();
         RobotResponder.settingsOperations = DemandProcessor._baseOperations.getSettingsOperations();
         DemandProcessor.storeOperations = DemandProcessor._baseOperations.getStoreOperations();
+        DemandProcessor.rawCommandOperations = DemandProcessor._baseOperations.getRawCommandOperations();
 
         RobotResponder.setRobotSaleAssociateKey(null);
         ((MockQueue) new MockBaseOperations().getQueue()).resetHistory();
@@ -104,7 +107,7 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
@@ -811,14 +814,27 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
+
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
         assertTrue(sentText.contains(consumerDemand.getKey().toString()));
         assertTrue(sentText.contains("test"));
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
     }
 
     @Test
@@ -900,14 +916,27 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
+
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
         assertTrue(sentText.contains(consumerDemand.getKey().toString()));
         assertTrue(sentText.contains("test"));
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
     }
 
     @Test
@@ -1002,7 +1031,7 @@ public class TestDemandProcessor {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
@@ -1065,7 +1094,7 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
         TwitterConnector.getTwetailerAccount();
@@ -1164,7 +1193,16 @@ public class TestDemandProcessor {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
+
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
@@ -1266,7 +1304,16 @@ public class TestDemandProcessor {
 
         CatchAllMailHandlerServlet.foolNextMessagePost(); // To generate a MessagingException while trying to send an e-mail
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
+
+        DemandProcessor.process(demandKey, true);
 
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
 
@@ -1306,7 +1353,7 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.process(demandKey, true);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
@@ -1460,9 +1507,23 @@ public class TestDemandProcessor {
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
 
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        DemandProcessor.process(demandKey, true);
+
+        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+
         List<TaskOptions> tasks = ((MockQueue) DemandProcessor._baseOperations.getQueue()).getHistory();
         assertNotNull(tasks);
         assertNotSame(0, tasks.size());
@@ -1538,7 +1599,7 @@ public class TestDemandProcessor {
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
-        DemandProcessor.process(demandKey);
+        DemandProcessor.process(demandKey, true);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         List<TaskOptions> tasks = ((MockQueue) DemandProcessor._baseOperations.getQueue()).getHistory();
