@@ -1266,14 +1266,14 @@
         </tu>
 
         <tu tuid="cp_command_list_store_missing_location" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that location information is missing for the !list store:* command.
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country) by updating your Demand like "ref:{0} locale:12345 us"
+                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Demand like "ref:{0} locale:12345 us"
                 </seg>
             </tuv>
         </tu>
@@ -1481,19 +1481,19 @@
         </tu>
 
         <tu tuid="dv_report_missing_locale" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is missing.|
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand's Locale by sending 'ref:{0} locale:your-postal/zip-code-and-country'.</seg>
+                <seg>:-( Please update your Demand's Locale by sending 'ref:{0} locale:your-postal/zip-code-and-country(us,ca)', like 'ref:{0} locale:12345 us'</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_invalid_locale" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
@@ -1502,19 +1502,19 @@
                 {2}: given country code.
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand with a valid Locale like 'ref:{0} locale:12345 us'.</seg>
+                <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'ref:{0} locale:12345 us'.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dv_report_unable_to_get_locale_information" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the information for the locale cannot be retrieved.|
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country).</seg>
+                <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country - like 'us', or, 'ca').</seg>
             </tuv>
         </tu>
 
@@ -1537,14 +1537,14 @@
         <!-- ============================== -->
 
         <tu tuid="lv_report_invalid_locale" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
                 {0}: original command.
             </note>
             <tuv xml:lang="en">
-                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'ref:{0} locale:12345 us'.</seg>
+                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'ref:{0} locale:12345 us', or, 'ref:{0} locale:h0h 0h0 ca' </seg>
             </tuv>
         </tu>
 
