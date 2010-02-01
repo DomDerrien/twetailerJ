@@ -46,6 +46,20 @@
         <!-- Numerics            -->
         <!-- =================== -->
 
+        <tu tuid="#Demo" dataType="text">
+            <prop type="x-for-review">Dom</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>#Demo (story): As Twetailer, I want to provide both Consumers and Retailers an end-to-end Demand demo, so they can better experience Twetailer. |
+                #Demo (usage): Include #demo in your Demand Tags and Twetailer will automatically Propose and eventually Close the Demand. |
+                #Demo (rules): Reserved keyword |
+                #Demo (see also): hash |
+                #Demo (AKA): hashtag, # |
+                #Demo (since): v0.0</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="140" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -86,15 +100,11 @@
 
         <tu tuid="Address" datatype="Text">
             <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'address'</note>
             <tuv xml:lang="en">
-                <seg>Address (story):  |
-                Address (usage):  |
-                Address (rules):  |
-                Address (see also): attribute |
-                Address (AKA):  |
+                <seg>Address (story): As a Sales Associate, I want to provide my Store's address so Consumers can pick-up their goods. |
+                Address (usage): Street number, name and possibly store number.  |
                 Address (since): v0.0</seg>
             </tuv>
         </tu>
@@ -451,13 +461,12 @@
 
         <tu tuid="Hash" datatype="Text">
             <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'address'</note>
             <tuv xml:lang="en">
-                <seg>Hash (story):  |
-                Hash (usage):  |
-                Hash (rules):  |
+                <seg>Hash (story): As Twetailer, I want to provide both Consumers and Retailers a structured set of tags, so they can better describe their respective Demand and Supply. |
+                Hash (usage): #demo is currently the only supported hash tag which notifies Twetailer to automatically propose to the Demand. |
+                Hash (rules): Reserved keyword |
                 Hash (see also): attribute |
                 Hash (AKA): hashtag, # |
                 Hash (since): v0.0</seg>
@@ -645,15 +654,12 @@
 
         <tu tuid="Name" datatype="Text">
             <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'address'</note>
             <tuv xml:lang="en">
-                <seg>Name (story):  |
-                Name (usage):  |
-                Name (rules):  |
-                Name (see also): attribute |
-                Name (AKA):  |
+                <seg>Name (story): As a Sales Associate, I want to provide my Store's name, so Consumers can know who I am. |
+                Name (usage): Name of Store. |
+                Name (rules): Legal, or, registered name of Store.  |
                 Name (since): v0.0</seg>
             </tuv>
         </tu>
@@ -704,15 +710,12 @@
 
         <tu tuid="Phonenumber" datatype="Text">
             <prop type="x-version">1</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'address'</note>
             <tuv xml:lang="en">
-                <seg>Phonenumber (story):  |
-                Phonenumber (usage):  |
-                Phonenumber (rules):  |
-                Phonenumber (see also): attribute |
-                Phonenumber (AKA):  |
+                <seg>Phonenumber (story): As a Sales Associate, I want to provide my Store's telephone number, so Consumers can call if they need any more information. |
+                Phonenumber (usage): Country code, area code and telephone number. |
+                Phonenumber (rules): Must be a registered business phone number.  |
                 Phonenumber (since): v0.0</seg>
             </tuv>
         </tu>

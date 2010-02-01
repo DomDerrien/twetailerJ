@@ -323,7 +323,7 @@
         </tu>
         <tu tuid="help_keyword_list" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
                     140, 24906,
@@ -332,6 +332,7 @@
                     Command-line, Consumer, CRUD,
                     Demand-crud,
                     Fee, Flag, Flagged, Founders, Free, Friend, Fulfil,
+                    Hash,
                     IM, List-demands-private, List-demands-public, List-proposal, List-store, List-tag,
                     MI,
                     Note,
@@ -647,18 +648,16 @@
         </tu>
         <tu tuid="error_datastore_timeout" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.</seg>
+                <seg>:-( Busy, busy, busy... Sorry, but could you please retry your request in few minutes?</seg>
             </tuv>
         </tu>
         <tu tuid="error_mail_messaging" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Unable to parse your e-mail. Please try communicating with maezel@twetailer.appspotmail.com from another mail reader.</seg>
+                <seg>:-( Sorry, but I can't understand your e-mail message. Can you please try sending again from a different email application?</seg>
             </tuv>
         </tu>
         <tu tuid="tl_inform_dm_sender_no_more_a_follower" dataType="text">
@@ -908,7 +907,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing Demand Reference:{0}... </seg>
+                <seg>:-) Listing newly created Demand Reference:{0}... </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
@@ -1006,9 +1005,9 @@
         </tu>
         <tu tuid="cp_command_propose_acknowledge_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing Proposal:{0}... </seg>
+                <seg>:-) Listing newly created Proposal:{0}... </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_supply_empty_tag_list" dataType="text">

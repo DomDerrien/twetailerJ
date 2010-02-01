@@ -490,7 +490,7 @@
         <!-- =================== -->
 
         <tu tuid="help_keyword_list" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 This is the master list of help keywords.|
@@ -506,6 +506,7 @@
                     Command-line, Consumer, CRUD,
                     Demand-crud, Demo,
                     Fee, Flag, Flagged, Founders, Free, Friend, Fulfil,
+                    Hash,
                     IM, List-demands-private, List-demands-public, List-proposal, List-store, List-tag,
                     MI,
                     Note,
@@ -790,25 +791,23 @@
         <tu tuid="error_datastore_timeout" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <note>
                 Returned to the end-user whenever there's a DatastoreTinmeoutException thrown by App Engine back-end.
                 See: http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.</seg>
+                <seg>:-( Busy, busy, busy... Sorry, but could you please retry your request in few minutes?</seg>
             </tuv>
         </tu>
 
         <tu tuid="error_mail_messaging" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <note>
                 Returned to the end-user whenever there's an issue while processing his message.
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Unable to parse your e-mail. Please try communicating with maezel@twetailer.appspotmail.com from another mail reader.</seg>
+                <seg>:-( Sorry, but I can't understand your e-mail message. Can you please try sending again from a different email application?</seg>
             </tuv>
         </tu>
 
@@ -1185,14 +1184,14 @@
         </tu>
 
         <tu tuid="cp_command_demand_acknowledge_creation" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
                 {0}: dynamically generated demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing Demand Reference:{0}... </seg>
+                <seg>:-) Listing newly created Demand Reference:{0}... </seg>
             </tuv>
         </tu>
 
@@ -1341,14 +1340,14 @@
         </tu>
 
         <tu tuid="cp_command_propose_acknowledge_creation" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
                 {0}: dynamically generated proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing Proposal:{0}... </seg>
+                <seg>:-) Listing newly created Proposal:{0}... </seg>
             </tuv>
         </tu>
 
@@ -1553,14 +1552,14 @@
         <!-- ====================================== -->
 
         <tu tuid="dp_inform_saleAssociate_about_demand_one_item" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
                 {0}: demand key|
                 {1}: given tags, separated by a space|
                 {2}: expiration date, ISO formatted|
-                Future release:  total:[enter final price including all taxes and service fees]
+                Future release:  total:enter-final-price-including-all-taxes-and-service-fees
             </note>
             <tuv xml:lang="en">
                 <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} expires:{2}? If yes then send the following... |
@@ -1569,7 +1568,7 @@
         </tu>
 
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
@@ -1577,7 +1576,7 @@
                 {1}: given tags, separated by a space|
                 {2}: expiration date, ISO formatted|
                 {3}: quantity|
-                Future release:  total:[enter final price including all taxes and service fees] DOM. TO BE CONSISTENT WITH pv_report_quantity_zero I ALLOWED FOR PROPOSED QTY. IS THAT OK?
+                Future release:  total:enter-final-price-including-all-taxes-and-service-fees
             </note>
             <tuv xml:lang="en">
                 <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
