@@ -5,18 +5,20 @@ import static twetailer.connector.BaseConnector.communicateToEmitter;
 import java.text.Collator;
 import java.util.Locale;
 
-import twetailer.ClientException;
-import twetailer.DataSourceException;
-import twetailer.dto.RawCommand;
-import twetailer.task.CommandLineParser;
-import twetailer.validator.CommandSettings;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.Prefix;
-import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
+
+import twetailer.ClientException;
+import twetailer.DataSourceException;
+import twetailer.dto.RawCommand;
+import twetailer.task.CommandLineParser;
+import twetailer.task.CommandProcessor;
+import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.Prefix;
+import twetailer.validator.CommandSettings.State;
 
 public class HelpCommandProcessor {
     /**
@@ -57,13 +59,10 @@ public class HelpCommandProcessor {
             );
             return;
         }
-        String message = null;
-        // TODO: lookup into the cache to see if the given keyword has already been resolved
-        // if (getCache().containsKey(keyword + locale.toString()) {
-        //     message = (String) getCache().get(keyword + locale.toString());
-        // }
+        // Try to load the message from the cache
+        String message = (String) CommandProcessor.settingsOperations.getFromCache(keyword + locale.toString());
         // Check if the keyword is a prefix
-        if (true) { // if (message == null) {
+        if (message == null) {
             JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
             for (Prefix prefix: Prefix.values()) {
                 if (CommandSettings.isEquivalentTo(prefixes, prefix.toString(), keyword, collator)) {
@@ -121,7 +120,7 @@ public class HelpCommandProcessor {
             message = LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale);
         }
         // TODO: save the match into the cache for future queries
-        // getCache().put(keyword + locale.toString(), message);
+        CommandProcessor.settingsOperations.setInCache(keyword + locale.toString(), message);
         communicateToEmitter(
                 rawCommand,
                 new String[] { message },

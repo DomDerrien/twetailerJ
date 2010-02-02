@@ -56,7 +56,7 @@
         </tu>
         <tu tuid="Action" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Action (story): As a user of Twetailer, I want to be able to interact with the system via brief Command-line actions, so I can create, read, update, delete (CRUD) and process transactions |
                 Action (usage): Send "![action]". Example: Send "!list" |

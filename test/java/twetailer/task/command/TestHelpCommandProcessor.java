@@ -21,6 +21,7 @@ import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -67,7 +68,56 @@ public class TestHelpCommandProcessor {
     }
 
     @Test
+    public void testProcessRawCommandWithDataFromCache() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final String data = "test";
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return data;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                assertEquals(data, (String) value);
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
+        // Mock RawCommandOperations
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(0L, key.longValue());
+                RawCommand rawCommand = new RawCommand(Source.simulated);
+                rawCommand.setCommand("? squizzzzzzy");
+                return rawCommand;
+            }
+        };
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
+
+        CommandProcessor.processRawCommands(0L);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(data, sentText);
+    }
+
+    @Test
     public void testProcessRawCommandWithPrefixI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -89,6 +139,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithPrefixII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -110,6 +173,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithPrefixIII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -131,6 +207,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithPrefixIV() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -152,6 +241,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithActionI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -173,6 +275,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithStateI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -198,6 +313,19 @@ public class TestHelpCommandProcessor {
     public void testProcessRawCommandWithRegisteredHelpKeywordI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final String helpKeyword = "deposit-test";
         final String helpKeywordEquivalent = "prepay-test";
+
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
 
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
@@ -229,6 +357,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessCommandHelpI() throws TwitterException, DataSourceException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.NEED_HELP, ""); // No keyword, just the help system call
@@ -245,6 +386,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessCommandHelpII() throws TwitterException, DataSourceException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, Action.help.toString()); // No keyword, just the help system call
@@ -261,6 +415,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessCommandHelpIII() throws TwitterException, DataSourceException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.NEED_HELP, "\t : zzz"); // No keyword, just the help system call
@@ -277,6 +444,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessCommandHelpIV() throws TwitterException, DataSourceException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.NEED_HELP, "zzz:"); // No keyword, just the help system call
@@ -293,6 +473,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessCommandHelpV() throws TwitterException, DataSourceException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.NEED_HELP, "zzz\t"); // No keyword, just the help system call
@@ -309,6 +502,19 @@ public class TestHelpCommandProcessor {
 
     @Test
     public void testProcessCommandHelpVI() throws TwitterException, DataSourceException, ClientException {
+        // SettingsOperations mock
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Object getFromCache(String key) {
+                return null;
+            }
+            @Override
+            public Object setInCache(String key, Object value) {
+                return value;
+            }
+        };
+        CommandProcessor.settingsOperations = ops;
+
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.NEED_HELP, "zzz "); // No keyword, just the help system call
