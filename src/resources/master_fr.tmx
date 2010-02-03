@@ -1092,9 +1092,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>
                 <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'ref:{0} locale:12345 us'.</seg>
-                </seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_unable_to_get_locale_information" dataType="text">
