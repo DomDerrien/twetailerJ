@@ -34,7 +34,6 @@ public class BaseOperations {
     }
 
     private static PersistenceManagerFactory pmfInstance = null;
-    private static PersistenceManagerFactory originalPmfInstance = null;
 
     /**
      * Singleton accessor

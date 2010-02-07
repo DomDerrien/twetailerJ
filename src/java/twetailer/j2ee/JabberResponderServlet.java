@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import twetailer.ClientException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.JabberConnector;
-import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;

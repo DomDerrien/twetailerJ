@@ -38,6 +38,7 @@ public class TestLocationRestlet {
 
     @After
     public void tearDown() throws Exception {
+        LocationRestlet.locationOperations = new LocationOperations();
     }
 
     @Test
@@ -49,7 +50,7 @@ public class TestLocationRestlet {
 
     @Test
     public void testCreateResource() throws DataSourceException, ClientException {
-        ops.locationOperations = new LocationOperations() {
+        LocationRestlet.locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(JsonObject location) {
                 return new Location();
