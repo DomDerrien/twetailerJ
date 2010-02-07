@@ -97,7 +97,8 @@ public class RobotResponder {
                 queue.add(
                         url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                             param(Proposal.KEY, proposal.getKey().toString()).
-                            method(Method.GET)
+                            method(Method.GET).
+                            countdownMillis(30*1000)
                 );
             }
         }
