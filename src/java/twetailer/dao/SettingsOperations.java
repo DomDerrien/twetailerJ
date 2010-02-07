@@ -45,14 +45,14 @@ public class SettingsOperations extends BaseOperations {
      * @see SettingsOperations#getSettings(PersistenceManager)
      */
     public Settings getSettings(boolean checkCache) throws DataSourceException {
+        if (checkCache) {
+            Settings settings = getSettingsFromCache();
+            if (settings != null) {
+                return settings;
+            }
+        }
         PersistenceManager pm = getPersistenceManager();
         try {
-            if (checkCache) {
-                Settings settings = getSettingsFromCache();
-                if (settings != null) {
-                    return settings;
-                }
-            }
             return getSettings(pm);
         }
         finally {
@@ -77,11 +77,37 @@ public class SettingsOperations extends BaseOperations {
      * @return Cached settings if any
      */
     public Settings getSettingsFromCache() {
+        return (Settings) getFromCache(Settings.APPLICATION_SETTINGS_ID);
+    }
+
+    /**
+     * Return the settings object that have been saved into the cache
+     *
+     * @param entryId identifier of the cached data
+     * @return Cached settings if any
+     */
+    public Object getFromCache(String entryId) {
         try {
-            return (Settings) getCache().get(Settings.APPLICATION_SETTINGS_ID);
+            return getCache().get(entryId);
         }
         catch(CacheException ex) {}
         return null;
+    }
+
+    /**
+     * Update the cache with the given value
+     *
+     * @param entryId identifier of the cached data
+     * @param object data to store
+     * @return Proposed data, for operation chaining
+     */
+    @SuppressWarnings("unchecked")
+    public Object setInCache(String entryId, Object data) {
+        try {
+            getCache().put(entryId, data);
+        }
+        catch(CacheException ex) {}
+        return data;
     }
 
     /**

@@ -58,6 +58,12 @@ public class TestConsumerRestlet {
 
     @After
     public void tearDown() throws Exception {
+        ConsumerRestlet.demandRestlet = new DemandRestlet();
+
+        ConsumerRestlet._baseOperations = new BaseOperations();
+        ConsumerRestlet.consumerOperations = ConsumerRestlet._baseOperations.getConsumerOperations();
+        ConsumerRestlet.demandOperations = ConsumerRestlet._baseOperations.getDemandOperations();
+        ConsumerRestlet.proposalOperations = ConsumerRestlet._baseOperations.getProposalOperations();
     }
 
     @Test
@@ -72,15 +78,10 @@ public class TestConsumerRestlet {
         ops.createResource(new GenericJsonObject(), user);
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testDeleteResource() throws DataSourceException {
-        ops.deleteResource("resourceId", user);
-    }
-
     @Test
     public void testGetResourceI() throws DataSourceException {
         final Long resourceId = 12345L;
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
                 assertEquals(resourceId, key);
@@ -95,7 +96,7 @@ public class TestConsumerRestlet {
 
     @Test
     public void testGetResourceII() throws DataSourceException {
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
                 assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, key);
@@ -114,7 +115,7 @@ public class TestConsumerRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.EMAIL, email);
         final Long resourceId = 12345L;
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -138,7 +139,7 @@ public class TestConsumerRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.JABBER_ID, jabberId);
         final Long resourceId = 12345L;
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.JABBER_ID, key);
@@ -162,7 +163,7 @@ public class TestConsumerRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.TWITTER_ID, twitterId);
         final Long resourceId = 12345L;
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -183,7 +184,7 @@ public class TestConsumerRestlet {
     @Test
     public void testDelegateResourcesSelectionIV() throws DataSourceException {
         JsonObject parameters = new GenericJsonObject();
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 fail("Call not expected!");
@@ -209,6 +210,19 @@ public class TestConsumerRestlet {
         ops.selectResources(parameters, user);
     }
 
+    @Test(expected=RuntimeException.class)
+    @SuppressWarnings({ "serial", "unchecked" })
+    public void testSelectResourcesIII() throws DataSourceException, ClientException {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        JsonObject parameters = new GenericJsonObject();
+        new ConsumerRestlet() {
+            @Override
+            protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        }.selectResources(parameters, user);
+    }
+
     @Test
     public void testFilterOutInvalidValueI() throws DataSourceException {
         String topic = "zzz";
@@ -217,7 +231,7 @@ public class TestConsumerRestlet {
         // No attribute
         // No validation code
 
-        String attribute = ops.filterOutInvalidValue(parameters, topic, openId);
+        String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
         assertNull(attribute);
     }
@@ -230,7 +244,7 @@ public class TestConsumerRestlet {
         parameters.put(topic, "yyy");
         // No validation code
 
-        String attribute = ops.filterOutInvalidValue(parameters, topic, openId);
+        String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
         assertNull(attribute);
     }
@@ -243,7 +257,7 @@ public class TestConsumerRestlet {
         // No attribute
         parameters.put(topic + "Code", 0L); // Value not important
 
-        String attribute = ops.filterOutInvalidValue(parameters, topic, openId);
+        String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
         assertNull(attribute);
     }
@@ -257,7 +271,7 @@ public class TestConsumerRestlet {
         parameters.put(topic, value);
         parameters.put(topic + "Code", 0L); // invalid code
 
-        String attribute = ops.filterOutInvalidValue(parameters, topic, openId);
+        String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
         assertNull(attribute);
     }
@@ -271,7 +285,7 @@ public class TestConsumerRestlet {
         parameters.put(topic, value);
         parameters.put(topic + "Code", 0L); // invalid code
 
-        String attribute = ops.filterOutInvalidValue(parameters, topic, openId);
+        String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
         assertNull(attribute);
     }
@@ -285,30 +299,45 @@ public class TestConsumerRestlet {
         parameters.put(topic, value);
         parameters.put(topic + "Code", MaezelServlet.getCode(topic, value, openId)); // valid code
 
-        String attribute = ops.filterOutInvalidValue(parameters, topic, openId);
+        String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
         assertEquals(value, attribute);
     }
 
     @Test
     public void testScheduleConsolidationTasksIa() throws DataSourceException, ClientException {
-        ops.scheduleConsolidationTasks("<don't care>", null, 0L);
+        ConsumerRestlet.scheduleConsolidationTasks("<don't care>", null, 0L);
     }
 
     @Test
     public void testScheduleConsolidationTasksIb() throws DataSourceException, ClientException {
-        ops.scheduleConsolidationTasks("<don't care>", "", 0L);
+        ConsumerRestlet.scheduleConsolidationTasks("<don't care>", "", 0L);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testScheduleConsolidationTasksIc() throws DataSourceException, ClientException {
-        ops.scheduleConsolidationTasks("<don't care>", "zzz", 0L);
+        ConsumerRestlet.scheduleConsolidationTasks("<don't care>", "zzz", 0L);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testScheduleConsolidationTasksII() throws DataSourceException, ClientException {
+        final String email = "unit@test.ca";
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
+                assertEquals(Consumer.EMAIL, key);
+                assertEquals(email, (String) value);
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
     @Test
     public void testScheduleConsolidationTasksIIa() throws DataSourceException, ClientException {
         final String email = "unit@test.ca";
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -316,8 +345,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
         };
-        ops._baseOperations = new MockBaseOperations();
-        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
     @Test
@@ -327,7 +356,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setEmail(email);
         consumer.setKey(consumerKey);
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -337,7 +366,7 @@ public class TestConsumerRestlet {
                 return consumers;
             }
         };
-        ops.demandOperations = new DemandOperations() {
+        ConsumerRestlet.demandOperations = new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -345,8 +374,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
-        ops._baseOperations = new MockBaseOperations();
-        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
     @Test
@@ -356,7 +385,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setEmail(email);
         consumer.setKey(consumerKey);
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -371,7 +400,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         };
-        ops.demandOperations = new DemandOperations() {
+        ConsumerRestlet.demandOperations = new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -379,8 +408,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
-        ops._baseOperations = new MockBaseOperations();
-        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, consumerKey);
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, consumerKey);
     }
 
     @Test
@@ -390,7 +419,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setJabberId(jabberId);
         consumer.setKey(consumerKey);
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.JABBER_ID, key);
@@ -405,7 +434,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         };
-        ops.demandOperations = new DemandOperations() {
+        ConsumerRestlet.demandOperations = new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -413,8 +442,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
-        ops._baseOperations = new MockBaseOperations();
-        ops.scheduleConsolidationTasks(Consumer.JABBER_ID, jabberId, 0L);
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.JABBER_ID, jabberId, 0L);
     }
 
     @Test
@@ -424,7 +453,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setTwitterId(twitterId);
         consumer.setKey(consumerKey);
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -439,7 +468,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         };
-        ops.demandOperations = new DemandOperations() {
+        ConsumerRestlet.demandOperations = new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -447,8 +476,8 @@ public class TestConsumerRestlet {
                 return new ArrayList<Long>();
             }
         };
-        ops._baseOperations = new MockBaseOperations();
-        ops.scheduleConsolidationTasks(Consumer.TWITTER_ID, twitterId, 0L);
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.TWITTER_ID, twitterId, 0L);
     }
 
     @Test
@@ -458,7 +487,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setEmail(email);
         consumer.setKey(consumerKey);
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -474,7 +503,7 @@ public class TestConsumerRestlet {
             }
         };
         final Long demandKey = 12345L;;
-        ops.demandOperations = new DemandOperations() {
+        ConsumerRestlet.demandOperations = new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -485,13 +514,13 @@ public class TestConsumerRestlet {
             }
         };
         final MockQueue queue = new MockQueue();
-        ops._baseOperations = new BaseOperations() {
+        ConsumerRestlet._baseOperations = new BaseOperations() {
             @Override
             public Queue getQueue() {
                 return queue;
             }
         };
-        ops.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
+        ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
         assertEquals(1, queue.getHistory().size());
     }
 
@@ -499,7 +528,7 @@ public class TestConsumerRestlet {
     public void testUpdateResourceI() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
         user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
-        ops._baseOperations = new MockBaseOperations();
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
         ops.updateResource(null, "0", user);
     }
 
@@ -509,14 +538,14 @@ public class TestConsumerRestlet {
         user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
                 return consumer;
             }
         };
-        ops._baseOperations = new MockBaseOperations();
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
         ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
@@ -527,7 +556,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -539,7 +568,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         };
-        ops._baseOperations = new MockBaseOperations();
+        ConsumerRestlet._baseOperations = new MockBaseOperations();
         ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
@@ -554,7 +583,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -572,7 +601,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        };
-       ops._baseOperations = new MockBaseOperations();
+       ConsumerRestlet._baseOperations = new MockBaseOperations();
        ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
@@ -587,7 +616,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -605,7 +634,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        };
-       ops._baseOperations = new MockBaseOperations();
+       ConsumerRestlet._baseOperations = new MockBaseOperations();
        ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
@@ -620,7 +649,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ops.consumerOperations = new ConsumerOperations() {
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -638,7 +667,116 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        };
-       ops._baseOperations = new MockBaseOperations();
+       ConsumerRestlet._baseOperations = new MockBaseOperations();
        ops.updateResource(parameters, consumerKey.toString(), user);
+    }
+
+    @Test(expected=ClientException.class)
+    public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
+        ops.deleteResource("resourceId", user);
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testDeleteResourceI() throws DataSourceException, ClientException {
+        final Long consumerKey = 12345L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new ConsumerRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+            }
+        }.deleteResource(consumerKey.toString(), user);
+    }
+
+    @Test(expected=RuntimeException.class)
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testDeleteResourceII() throws DataSourceException, ClientException {
+        final Long consumerKey = 12345L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new ConsumerRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        }.deleteResource(consumerKey.toString(), user);
+    }
+
+    @Test
+    public void testDelegateDeletionResourceI() throws DataSourceException, ClientException {
+        //
+        // Consumer without Demands
+        //
+        final Long consumerKey = 12345L;
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(consumerKey, consumer.getKey());
+            }
+        };
+        ConsumerRestlet.demandOperations = new DemandOperations() {
+            @Override
+            public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(Demand.OWNER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<Long> demandKeys = new ArrayList<Long>();
+                return demandKeys;
+            }
+        };
+
+        ops.delegateResourceDeletion(new MockPersistenceManager(), consumerKey);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelegateDeletionResourceII() throws DataSourceException, ClientException {
+        //
+        // Consumer with Demands, themselves without Proposals
+        //
+        final Long consumerKey = 12345L;
+        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(consumerKey, consumer.getKey());
+            }
+        };
+        final Long demandKey1 = 2222L;
+        final Long demandKey2 = 3333L;
+        ConsumerRestlet.demandOperations = new DemandOperations() {
+            @Override
+            public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(Demand.OWNER_KEY, key);
+                assertEquals(consumerKey, (Long) value);
+                List<Long> demandKeys = new ArrayList<Long>();
+                demandKeys.add(demandKey1);
+                demandKeys.add(demandKey2);
+                return demandKeys;
+            }
+        };
+        ConsumerRestlet.demandRestlet = new DemandRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long dKey, Long cKey, boolean stopRecursion) throws DataSourceException{
+                assertTrue(dKey == demandKey1 || dKey == demandKey2);
+                assertEquals(consumerKey, cKey);
+                assertEquals(false, stopRecursion);
+            }
+        };
+
+        ops.delegateResourceDeletion(new MockPersistenceManager(), consumerKey);
     }
 }

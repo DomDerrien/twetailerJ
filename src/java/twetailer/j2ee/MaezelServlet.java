@@ -162,12 +162,13 @@ public class MaezelServlet extends HttpServlet {
             else if ("/processPublishedDemand".equals(pathInfo)) {
                 // Get parameters
                 Long demandId = Long.parseLong(request.getParameter(Demand.KEY));
+                boolean cronJob = "true".equals(request.getParameter("cronJob"));
                 // Prepare the options for the task to be posted if this one fails because of a timeout
                 retryOptions =
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel" + pathInfo).
                     param(Demand.KEY, demandId.toString());
                 // Process the command itself
-                DemandProcessor.process(demandId);
+                DemandProcessor.process(demandId, cronJob);
             }
             else if ("/processPublishedDemands".equals(pathInfo)) {
                 //

@@ -518,6 +518,9 @@ public class TestDemandCommandProcessor {
     public void testProcessFirstNewDemandIII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
+        final String postalCode = "H0H0H0";
+        final String countryCode = "CA";
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -545,8 +548,96 @@ public class TestDemandCommandProcessor {
         final LocationOperations locationOperations = new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
+                fail("Call not expected!");
+                return null;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
                 Location location = new Location();
                 location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                return location;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+        consumer.setLocationKey(locationKey);
+
+        // App Engine Environment mock
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+
+        appEnv.setUp();
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        appEnv.tearDown();
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+        assertTrue(sentText.contains(postalCode));
+        assertTrue(sentText.contains(countryCode));
+    }
+
+    @Test
+    public void testProcessFirstNewDemandIV() throws Exception {
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final String postalCode = "H0H0H0";
+        final String countryCode = "CA";
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+                return new ArrayList<Demand>();
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(State.opened, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                assertEquals(locationKey.longValue(), command.getLong(Demand.LOCATION_KEY));
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                return location;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
                 return location;
             }
         };
@@ -572,6 +663,8 @@ public class TestDemandCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
+        assertTrue(sentText.contains(postalCode));
+        assertTrue(sentText.contains(countryCode));
     }
 
     @Test

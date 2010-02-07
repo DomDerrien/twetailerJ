@@ -11,10 +11,12 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
-import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -22,13 +24,14 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
-public class DemandRestlet extends BaseRestlet {
+public class ProposalRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(DemandRestlet.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -42,7 +45,19 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        return demandOperations.createDemand(parameters, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)).toJson();
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            // Get the sale associate
+            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+            if (0 < saleAssociates.size()) {
+                return proposalOperations.createProposal(pm, parameters, saleAssociates.get(0)).toJson();
+            }
+            throw new ClientException("Current user is not a Sale Associate!");
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Override
@@ -50,8 +65,14 @@ public class DemandRestlet extends BaseRestlet {
         if (isAPrivilegedUser(loggedUser)) {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
-                Long demandKey = Long.valueOf(resourceId);
-                delegateResourceDeletion(pm, demandKey, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID), false);
+                Long proposalKey = Long.valueOf(resourceId);
+                // Get the sale associate
+                Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (0 < saleAssociates.size()) {
+                    SaleAssociate saleAssociate = saleAssociates.get(0);
+                    delegateResourceDeletion(pm, proposalKey, saleAssociate, false);
+                }
                 return;
             }
             finally {
@@ -62,11 +83,11 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     /**
-     * Delete the Demand instances based on the specified criteria.
+     * Delete the Proposal instances based on the specified criteria.
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param demandKey Identifier of the resource to delete
-     * @param consumerKey Identifier of the demand owner
+     * @param proposalKey Identifier of the resource to delete
+     * @param saleAssociate Resource owner
      * @param stopRecursion Should be <code>false</code> if the associated Proposals need to be affected too
      * @return Serialized list of the Consumer instances matching the given criteria
 
@@ -74,16 +95,20 @@ public class DemandRestlet extends BaseRestlet {
      *
      * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
      */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long demandKey, Long consumerKey, boolean stopRecursion) throws DataSourceException{
-        // Delete consumer's demands
-        demandOperations.deleteDemand(pm, demandKey, consumerKey);
-        if (!stopRecursion) {
-            // Clean-up the attached proposals
-            List<Proposal> proposals = proposalOperations.getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
-            for (Proposal proposal: proposals) {
-                proposal.setState(State.cancelled);
-                proposal.setDemandKey(null); // To cut the link
-                proposalOperations.updateProposal(pm, proposal);
+    protected void delegateResourceDeletion(PersistenceManager pm, Long proposalKey, SaleAssociate saleAssociate, boolean stopRecursion) throws DataSourceException{
+        // Delete consumer's proposals
+        Proposal proposal = proposalOperations.getProposal(pm, proposalKey, saleAssociate.getKey(), null);
+        proposalOperations.deleteProposal(pm, proposal);
+        if (!stopRecursion && proposal.getDemandKey() != null) {
+            // Clean-up the attached demand
+            try {
+                Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), saleAssociate.getConsumerKey());
+                demand.removeProposalKey(proposalKey);
+                demandOperations.updateDemand(pm, demand);
+            }
+            catch(DataSourceException ex) {
+                // Demand not accessible, that's fine.
+                // Worse case, the orphan objects will be collected later
             }
         }
     }

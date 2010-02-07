@@ -102,6 +102,25 @@ public class TestSettingsOperations {
     }
 
     @Test
+    public void testSetInCacheI() throws DataSourceException {
+        Long data = 12345L;
+        new SettingsOperations().setInCache("test", data);
+        assertEquals(data, new SettingsOperations().getFromCache("test"));
+    }
+
+    @Test
+    public void testSetInCacheII() throws DataSourceException {
+        Long data = 12345L;
+        new SettingsOperations() {
+            @Override
+            protected Cache getCache() throws CacheException {
+                throw new CacheException("done in purpose");
+            }
+        }.setInCache("test", data);
+        assertNull(new SettingsOperations().getFromCache("test"));
+    }
+
+    @Test
     public void testUpdateSettingsI() throws DataSourceException {
         // Retrieve default settings and update one field
         SettingsOperations ops = new SettingsOperations();

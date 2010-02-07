@@ -100,6 +100,17 @@ public class TestRawCommandOperations {
         new RawCommandOperations().getRawCommand(888L);
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testUpdateWithFailureI() throws DataSourceException {
+        RawCommandOperations ops = new RawCommandOperations() {
+            @Override
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.updateRawCommand(new RawCommand());
+    }
+
     @Test
     public void testUpdate() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -121,5 +132,47 @@ public class TestRawCommandOperations {
         assertNull(object.getEmitterId());
         assertEquals("error", object.getErrorMessage());
         assertTrue(pm.isClosed());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testDeleteWithFailureI() throws DataSourceException {
+        RawCommandOperations ops = new RawCommandOperations() {
+            @Override
+            public void deleteRawCommand(PersistenceManager pm, Long key) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.deleteRawCommand(12345L);
+    }
+
+    @Test
+    public void testDeleteI() throws DataSourceException {
+        final Long rawCommandKey = 54657L;
+        RawCommandOperations ops = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                return rawCommand;
+            }
+            @Override
+            public void deleteRawCommand(PersistenceManager pm, RawCommand item) {
+                assertEquals(rawCommandKey, item.getKey());
+            }
+        };
+        ops.deleteRawCommand(rawCommandKey);
+    }
+
+    @Test
+    public void testDeleteII() throws DataSourceException {
+        final String tag = "tag";
+        RawCommand toBeCreated = new RawCommand();
+        toBeCreated.setCommand(tag);
+        RawCommandOperations ops = new RawCommandOperations();
+        RawCommand justCreated = ops.createRawCommand(toBeCreated);
+        assertNotNull(justCreated.getKey());
+        assertEquals(tag, justCreated.getCommand());
+        ops.deleteRawCommand(justCreated.getKey());
     }
 }

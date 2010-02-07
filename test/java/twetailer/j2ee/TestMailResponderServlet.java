@@ -49,6 +49,10 @@ public class TestMailResponderServlet {
     @After
     public void tearDown() throws Exception {
         mockAppEngineEnvironment.tearDown();
+
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = MailResponderServlet._baseOperations.getRawCommandOperations();
+        MailResponderServlet.consumerOperations = MailResponderServlet._baseOperations.getConsumerOperations();
     }
 
     @Test
@@ -103,12 +107,11 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
     }
 
     @Test
@@ -156,12 +159,11 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
     }
 
     public static MockServletInputStream prepareStreamWithoutMessage(String from, String name) {
@@ -224,15 +226,11 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
     }
 
     public static MockServletInputStream prepareStreamWithoutFrom(String from, String name) {
@@ -292,14 +290,11 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
     }
 
     @Test
@@ -448,12 +443,11 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
     }
 
     @Test
@@ -501,12 +495,11 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
     }
 
     @Test
@@ -566,11 +559,77 @@ public class TestMailResponderServlet {
             }
         };
 
-        MailResponderServlet servlet = new MailResponderServlet();
-        servlet._baseOperations = baseOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
-        servlet.consumerOperations = consumerOperations;
+        MailResponderServlet._baseOperations = baseOperations;
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
 
-        servlet.doPost(request, null);
+        new MailResponderServlet().doPost(request, null);
+    }
+
+    @Test
+    public void testDoPostIX() throws IOException {
+        //
+        // Unexpected exception while preparing the task for the command processing
+        // And error while communicating to "catch-all" list
+        //
+        final String from = "test-emitter@appspot.com";
+        final String name = "Mr Emitter";
+        final String subject = "Not important!";
+        final String message = "wii console Mario Kart"; // FIXME: -- àéüôç";
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, name, subject, message);
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return stream;
+            }
+        };
+
+        BaseOperations baseOperations = new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+
+        final Long rawCommandKey = 12345L;
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand createRawCommand(RawCommand rawCommand) {
+                assertEquals(from, rawCommand.getEmitterId());
+                assertEquals(message, rawCommand.getCommand());
+                assertNull(rawCommand.getErrorMessage());
+                rawCommand.setKey(rawCommandKey);
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(RawCommand rawCommand) {
+                assertEquals(rawCommandKey, rawCommand.getKey());
+                assertNotNull(rawCommand.getErrorMessage());
+                assertEquals(LabelExtractor.get("error_unexpected", new Object[] { rawCommandKey, "" }, Locale.ENGLISH), rawCommand.getErrorMessage());
+                return null;
+            }
+        };
+
+        final Long consumerKey = 56645L;
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(InternetAddress address) {
+                assertEquals(from, address.getAddress());
+                assertEquals(name, address.getPersonal());
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setName(address.getPersonal());
+                consumer.setEmail(address.getAddress());
+                return consumer;
+            }
+        };
+
+        MailResponderServlet._baseOperations = baseOperations;
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
+
+        CatchAllMailHandlerServlet.foolNextMessagePost();
+
+        new MailResponderServlet().doPost(request, null);
     }
 }

@@ -57,6 +57,17 @@ public class TestConsumerOperations {
         mockAppEngineEnvironment.tearDown();
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testGetsWithFailureI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String attribute, Object value, int limit) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.getConsumers("key", "value", 12345);
+    }
+
     @Test
     public void testGetsI() throws DataSourceException {
         final String qA = "a";
@@ -319,6 +330,92 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations();
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         ops.getConsumer(pm, 0L);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.users.User loggedUser) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureII() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, com.google.appengine.api.xmpp.JID jabberId) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createConsumer(new com.google.appengine.api.xmpp.JID("jabberId"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureIII() throws DataSourceException, TwitterException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, twitter4j.User twitterUser) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createConsumer(new twitter4j.MockTwitterUser());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureIV() throws DataSourceException, UnsupportedEncodingException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureV() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, com.dyuproject.openid.OpenIdUser user) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createConsumer(new com.dyuproject.openid.OpenIdUser());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureVI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, Consumer user) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createConsumer(new Consumer());
+    }
+
+    @Test
+    public void testCreateWithWorkedAroundFailure() throws DataSourceException, TwitterException, UnsupportedEncodingException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                throw new DataSourceException("Done in purpoe");
+            }
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, Consumer user) {
+                return null; // Not important
+            }
+        };
+        ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
+        ops.createConsumer(new com.google.appengine.api.xmpp.JID("jabberId"));
+        ops.createConsumer(new twitter4j.MockTwitterUser());
+        ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"));
+        ops.createConsumer(new com.dyuproject.openid.OpenIdUser());
+        ops.createConsumer(new Consumer());
     }
 
     @Test
@@ -831,6 +928,65 @@ public class TestConsumerOperations {
     }
 
     @Test
+    public void testCreateXIV() throws DataSourceException, UnsupportedEncodingException {
+        final String openId = "unit@test";
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                throw new DataSourceException("Done in purpose");
+            }
+        };
+
+        // Create the user once
+        Consumer consumer = new Consumer();
+        consumer.setEmail(openId);
+        consumer.setName("unit test");
+        consumer = ops.createConsumer(consumer);
+
+        // Verify there's one instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Creates the data for a user identified by its OpenID
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("email", openId);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        // Create the second user
+        ops.createConsumer(user);
+
+        // Verify there's 2 instances because the attempts to get the first one failed...
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(2, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateWithFailureI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer user) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.updateConsumer(new Consumer());
+    }
+
+    @Test
     public void testUpdateI() throws DataSourceException {
         final String twitterId = "Katelyn";
         PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -913,5 +1069,47 @@ public class TestConsumerOperations {
         String extension = "/pidgin3343243";
         String jabberId = base + extension;
         assertEquals(base, ConsumerOperations.getSimplifiedJabberId(jabberId));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testDeleteWithFailureI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public void deleteConsumer(PersistenceManager pm, Long key) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.deleteConsumer(12345L);
+    }
+
+    @Test
+    public void testDeleteI() throws DataSourceException {
+        final Long consumerKey = 54657L;
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+            @Override
+            public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(consumerKey, consumer.getKey());
+            }
+        };
+        ops.deleteConsumer(consumerKey);
+    }
+
+    @Test
+    public void testDeleteII() throws DataSourceException {
+        final String name = "name";
+        Consumer toBeCreated = new Consumer();
+        toBeCreated.setName(name);
+        ConsumerOperations ops = new ConsumerOperations();
+        Consumer justCreated = ops.createConsumer(toBeCreated);
+        assertNotNull(justCreated.getKey());
+        assertEquals(name, justCreated.getName());
+        ops.deleteConsumer(justCreated.getKey());
     }
 }

@@ -339,4 +339,19 @@ public class TestTwitterMailNotifHandlerServlet {
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
         servlet.doPost(request, null);
     }
+
+    @Test
+    public void testDoPostIX() throws IOException, TwitterException {
+        //
+        // Corrupted stream
+        //
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() throws IOException {
+                throw new IOException("Done in purpose!");
+            }
+        };
+
+        new TwitterMailNotificationHandlerServlet().doPost(request, null);
+    }
 }

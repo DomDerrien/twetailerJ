@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
     <header creationtool="domderrien.i18n" creationtoolversion="1.0"
@@ -906,7 +906,7 @@
         </tu>
         <tu tuid="cp_command_demand_acknowledge_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>:-) Listing newly created Demand Reference:{0}... </seg>
             </tuv>
@@ -1092,9 +1092,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>
                 <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'ref:{0} locale:12345 us'.</seg>
-                </seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_unable_to_get_locale_information" dataType="text">
@@ -1124,7 +1122,7 @@
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_one_item" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} expires:{2}? If yes then send the following... |
                      2/2 '!propose ref:{0} tags:your-description-here price:your-price-here' </seg>
@@ -1132,10 +1130,26 @@
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
                      2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>
+            </tuv>
+        </tu>
+        <tu tuid="dp_inform_consumer_about_no_store" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. 1/2 I currently don't have any Stores supplying those tags but will keep checking until the expiration date.|
+                2/2 Please ask any potential Stores you may visit to register with Twetailer so we may improve our service in your community.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dp_inform_consumer_about_new_sale_associates_contacted" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. 1/2 {2} additional Sales Associates have been notified of your Demand ref:{0}, for a total of {1}.|
+                2/2 I'll continue checking until the expiration date.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_proposal_without_tag" dataType="text">

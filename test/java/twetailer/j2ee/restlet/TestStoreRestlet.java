@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -21,10 +22,13 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.TestBaseRestlet;
 import twetailer.validator.LocaleValidator;
@@ -52,6 +56,12 @@ public class TestStoreRestlet {
 
     @After
     public void tearDown() throws Exception {
+        StoreRestlet.saleAssociateRestlet = new SaleAssociateRestlet();
+
+        StoreRestlet._baseOperations = new BaseOperations();
+        StoreRestlet.locationOperations = StoreRestlet._baseOperations.getLocationOperations();
+        StoreRestlet.saleAssociateOperations = StoreRestlet._baseOperations.getSaleAssociateOperations();
+        StoreRestlet.storeOperations = StoreRestlet._baseOperations.getStoreOperations();
     }
 
     @Test
@@ -63,7 +73,7 @@ public class TestStoreRestlet {
 
     @Test(expected=ClientException.class)
     public void testCreateResourceI() throws DataSourceException, ClientException {
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public Store createStore(JsonObject store) {
                 fail("Unexpected call");
@@ -75,7 +85,7 @@ public class TestStoreRestlet {
 
     @Test(expected=ClientException.class)
     public void testCreateResourceII() throws DataSourceException, ClientException {
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public Store createStore(JsonObject store) {
                 fail("Unexpected call");
@@ -89,7 +99,7 @@ public class TestStoreRestlet {
     @Test(expected=ClientException.class)
     @SuppressWarnings("unchecked")
     public void testCreateResourceIII() throws DataSourceException, ClientException {
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public Store createStore(JsonObject store) {
                 fail("Unexpected call");
@@ -103,7 +113,7 @@ public class TestStoreRestlet {
     @Test(expected=ClientException.class)
     @SuppressWarnings("unchecked")
     public void testCreateResourceIV() throws DataSourceException, ClientException {
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public Store createStore(JsonObject store) {
                 fail("Unexpected call");
@@ -118,7 +128,7 @@ public class TestStoreRestlet {
     @SuppressWarnings("unchecked")
     public void testCreateResourceV() throws DataSourceException, ClientException {
         final long storeKey = 12345L;
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public Store createStore(JsonObject store) {
                 Store resource = new Store();
@@ -136,7 +146,7 @@ public class TestStoreRestlet {
     @SuppressWarnings("unchecked")
     public void testCreateResourceVI() throws DataSourceException, ClientException {
         final long storeKey = 12345L;
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public Store createStore(JsonObject store) {
                 Store resource = new Store();
@@ -150,9 +160,111 @@ public class TestStoreRestlet {
         assertEquals(storeKey, response.getLong(Store.KEY));
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testDeleteResource() throws DataSourceException {
+    @Test(expected=ClientException.class)
+    public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
         ops.deleteResource("resourceId", user);
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testDeleteResourceI() throws DataSourceException, ClientException {
+        final Long storeKey = 12345L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new StoreRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+            }
+        }.deleteResource(storeKey.toString(), user);
+    }
+
+    @Test(expected=RuntimeException.class)
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testDeleteResourceII() throws DataSourceException, ClientException {
+        final Long storeKey = 12345L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new StoreRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        }.deleteResource(storeKey.toString(), user);
+    }
+
+    @Test
+    public void testDelegateDeletionResourceI() throws DataSourceException, ClientException {
+        //
+        // Store without Sale Associates
+        //
+        final Long storeKey = 12345L;
+        StoreRestlet.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                return store;
+            }
+            @Override
+            public void deleteStore(PersistenceManager pm, Store store) {
+                assertEquals(storeKey, store.getKey());
+            }
+        };
+        StoreRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.STORE_KEY, key);
+                assertEquals(storeKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                return saleAssociateKeys;
+            }
+        };
+
+        ops.delegateResourceDeletion(new MockPersistenceManager(), storeKey);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelegateDeletionResourceII() throws DataSourceException, ClientException {
+        //
+        // Store without Sale Associates
+        //
+        final Long storeKey = 12345L;
+        StoreRestlet.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                return store;
+            }
+            @Override
+            public void deleteStore(PersistenceManager pm, Store store) {
+                assertEquals(storeKey, store.getKey());
+            }
+        };
+        final Long saleAssociateKey1 = 2222L;
+        final Long saleAssociateKey2 = 3333L;
+        StoreRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.STORE_KEY, key);
+                assertEquals(storeKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey1);
+                saleAssociateKeys.add(saleAssociateKey2);
+                return saleAssociateKeys;
+            }
+        };
+        StoreRestlet.saleAssociateRestlet = new SaleAssociateRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long sAKey) throws DataSourceException{
+                assertTrue(sAKey == saleAssociateKey1 || sAKey == saleAssociateKey2);
+            }
+        };
+
+        ops.delegateResourceDeletion(new MockPersistenceManager(), storeKey);
     }
 
     @Test(expected=RuntimeException.class)
@@ -170,7 +282,7 @@ public class TestStoreRestlet {
         final Long locationKey = 12345L;
         JsonObject input = new GenericJsonObject();
         input.put(Store.LOCATION_KEY, locationKey);
-        ops.locationOperations = new LocationOperations() {
+        StoreRestlet.locationOperations = new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
                 assertEquals(locationKey, key);
@@ -187,7 +299,7 @@ public class TestStoreRestlet {
                 return locations;
             }
         };
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
                 assertEquals(1, locations.size());
@@ -210,7 +322,7 @@ public class TestStoreRestlet {
         input.put(Demand.RANGE, range);
         input.put(Demand.RANGE_UNIT, rangeUnit);
 
-        ops.locationOperations = new LocationOperations() {
+        StoreRestlet.locationOperations = new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
                 assertEquals(locationKey, key);
@@ -229,7 +341,7 @@ public class TestStoreRestlet {
                 return locations;
             }
         };
-        ops.storeOperations = new StoreOperations() {
+        StoreRestlet.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
                 assertEquals(1, locations.size());
@@ -237,6 +349,26 @@ public class TestStoreRestlet {
                 assertEquals(100, limit);
                 List<Store> stores = new ArrayList<Store>();
                 return stores;
+            }
+        };
+        ops.selectResources(input, null);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testSelectResourcesIV() throws DataSourceException, ClientException {
+        final Long locationKey = 12345L;
+        final Double range = 6.7890D;
+        final String rangeUnit = LocaleValidator.MILE_UNIT;
+        JsonObject input = new GenericJsonObject();
+        input.put(Store.LOCATION_KEY, locationKey);
+        input.put(Demand.RANGE, range);
+        input.put(Demand.RANGE_UNIT, rangeUnit);
+
+        StoreRestlet.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
         };
         ops.selectResources(input, null);

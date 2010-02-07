@@ -19,7 +19,6 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dto.Command;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
@@ -56,6 +55,28 @@ public class TestStoreOperations {
         Logger log2 = new StoreOperations().getLogger();
         assertNotNull(log2);
         assertEquals(log1, log2);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureI() throws DataSourceException {
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public Store createStore(PersistenceManager pm, Store item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createStore(new Store());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureII() throws ClientException {
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public Store createStore(PersistenceManager pm, Store item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createStore(new GenericJsonObject());
     }
 
     @Test
@@ -306,5 +327,74 @@ public class TestStoreOperations {
         };
 
         ops.getStores(new ArrayList<Location>(), 0);
+    }
+
+    @Test
+    public void testGetKeysI() throws DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+        };
+        Store object = new Store();
+        object.setName("name");
+        object = ops.createStore(pm, object); // Gives the PersistenceManager so it won't be closed
+
+        List<Long> selection = ops.getStoreKeys(pm, Store.NAME, "name", 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetKeysII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        List<Long> selection = new StoreOperations().getStoreKeys(pm, Store.NAME, "name", 0);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testDeleteWithFailureI() throws DataSourceException {
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public void deleteStore(PersistenceManager pm, Long key) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.deleteStore(12345L);
+    }
+
+    @Test
+    public void testDeleteI() throws DataSourceException {
+        final Long storeKey = 54657L;
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                return store;
+            }
+            @Override
+            public void deleteStore(PersistenceManager pm, Store item) {
+                assertEquals(storeKey, item.getKey());
+            }
+        };
+        ops.deleteStore(storeKey);
+    }
+
+    @Test
+    public void testDeleteII() throws DataSourceException {
+        final String name = "name";
+        Store toBeCreated = new Store();
+        toBeCreated.setName(name);
+        StoreOperations ops = new StoreOperations();
+        Store justCreated = ops.createStore(toBeCreated);
+        assertNotNull(justCreated.getKey());
+        assertEquals(name, justCreated.getName());
+        ops.deleteStore(justCreated.getKey());
     }
 }

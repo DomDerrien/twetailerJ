@@ -128,7 +128,7 @@ public class TestCommandLineSyntax {
         assertNotSame(0, CommandLineParser.localizedPatterns.size());
     }
 
-    @Test(expected=java.lang.NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void testParseNull() throws ClientException, ParseException {
         // Cannot pass a null reference
         CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), null, Locale.ENGLISH);
@@ -1146,4 +1146,5 @@ public class TestCommandLineSyntax {
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAG).getString(1));
     }
+
 }

@@ -62,9 +62,7 @@ public class TestTweetLoader {
         EasyMock.expect(dm.getSenderId()).andReturn(senderId).once();
         EasyMock.expect(dm.getSender()).andReturn(sender).once();
         EasyMock.expect(dm.getId()).andReturn(id).once();
-        if (true || message != null) {
-            EasyMock.expect(dm.getText()).andReturn(message).once();
-        }
+        EasyMock.expect(dm.getText()).andReturn(message).once();
         EasyMock.replay(dm);
         return dm;
     }
@@ -95,6 +93,18 @@ public class TestTweetLoader {
     @Test
     public void testConstructor() {
         new TweetLoader();
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testProcessBatchWithFailure() throws DataSourceException {
+        TweetLoader.settingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+
+        TweetLoader.loadDirectMessages();
     }
 
     @Test

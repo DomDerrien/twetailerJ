@@ -17,8 +17,8 @@ import domderrien.jsontools.JsonObject;
 public class LocationRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(LocationRestlet.class.getName());
 
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {

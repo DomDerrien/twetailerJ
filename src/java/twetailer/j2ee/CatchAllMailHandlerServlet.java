@@ -32,6 +32,10 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
         log.warning("Path Info: " + pathInfo);
 
+        /*************
+         * Triage proposed when I had issues specifying the filters in the web.xml fil
+         * No needed when the full servlet path is specified!
+         *
         if ("/twitter@twetailer.appspotmail.com".equals(pathInfo)) {
             log.warning("Forwarding to: TwitterMailNotificationHandlerServlet.processTwitterNotification()");
             TwitterMailNotificationHandlerServlet.processTwitterNotification(request, response);
@@ -43,6 +47,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             MailResponderServlet.processMailedRequest(request, response);
             return;
         }
+        *************/
 
         forwardUnexpectedMailMessage(request, response);
     }
@@ -58,12 +63,9 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
             composeAndPostMailMessage((from == null || from.length == 0 ? "unknown" : from[0].toString()), subject, body);
         }
-        catch (MessagingException ex) {
-            // Too bad! Should we tweet the issue?
-            // Dom: I don't think so because e-mail is probably the most robust communication mechanism (with native auto-retry, for example)
-            log.severe("Error while processing e-mail from");
-        }
-        catch (IOException ex) {
+        // catch (MessagingException ex) {
+        // catch (IOException ex) {
+        catch (Exception ex) {
             // Too bad! Should we tweet the issue?
             // Dom: I don't think so because e-mail is probably the most robust communication mechanism (with native auto-retry, for example)
             log.severe("Error while processing e-mail from");

@@ -7,12 +7,11 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import domderrien.jsontools.JsonObject;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
+import domderrien.jsontools.JsonObject;
 
 public class StoreOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(StoreOperations.class.getName());
@@ -178,6 +177,29 @@ public class StoreOperations extends BaseOperations {
     }
 
     /**
+     * Use the given pair {attribute; value} to get the corresponding Store identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param attribute Name of the Store attribute used a the search criteria
+     * @param value Pattern for the search attribute
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of Store identifiers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getStoreKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
+        value = prepareQuery(queryObj, attribute, value, limit);
+        getLogger().warning("Select store(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Long> storeKeys = (List<Long>) queryObj.execute(value);
+        storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return storeKeys;
+    }
+
+    /**
      * Use the given pair {attribute; value} to get the corresponding Store instances
      *
      * @param locations list of locations where expected stores should be retrieved
@@ -255,5 +277,52 @@ public class StoreOperations extends BaseOperations {
         getLogger().warning("Updating store with id: " + store.getKey());
         store = pm.makePersistent(store);
         return store;
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param storeKey Identifier of the store
+     *
+     * @throws DataSourceException If the store record retrieval fails
+     *
+     * @see StoreOperations#deleteStore(PersistenceManager, Long)
+     */
+    public void deleteStore(Long storeKey) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            deleteStore(pm, storeKey);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param storeKey Identifier of the store
+     *
+     * @throws DataSourceException If the store record retrieval fails
+     *
+     * @see StoreOperations#getStores(PersistenceManager, Long)
+     * @see StoreOperations#deleteStore(PersistenceManager, Store)
+     */
+    public void deleteStore(PersistenceManager pm, Long storeKey) throws DataSourceException {
+        Store store = getStore(pm, storeKey);
+        deleteStore(pm, store);
+    }
+
+    /**
+     * Delete the given demand while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param store Object to delete
+     */
+
+    public void deleteStore(PersistenceManager pm, Store store) {
+        getLogger().warning("Delete store with id: " + store.getKey());
+        pm.deletePersistent(store);
     }
 }

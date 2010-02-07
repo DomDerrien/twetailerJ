@@ -73,6 +73,18 @@ public class TestLocationValidator {
         new LocationValidator();
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testProcessWithFailure() throws DataSourceException {
+        LocationValidator.locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+
+        LocationValidator.process("postal code", "country code", 12345L, 34567L);
+    }
+
     @Test
     public void testProcessWithOneValidLocation() throws DataSourceException {
         final String postalCode = "H2N3C6";

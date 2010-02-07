@@ -119,4 +119,51 @@ public class RawCommandOperations extends BaseOperations {
         pm.makePersistent(rawCommand);
         return rawCommand;
     }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param rawCommandKey Identifier of the raw command
+     *
+     * @throws DataSourceException If the raw command record retrieval fails
+     *
+     * @see RawCommandOperations#deleteRawCommand(PersistenceManager, Long)
+     */
+    public void deleteRawCommand(Long rawCommandKey) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            deleteRawCommand(pm, rawCommandKey);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param rawCommandKey Identifier of the raw command
+     *
+     * @throws DataSourceException If the raw command record retrieval fails
+     *
+     * @see RawCommandOperations#getRawCommands(PersistenceManager, Long)
+     * @see RawCommandOperations#deleteRawCommand(PersistenceManager, RawCommand)
+     */
+    public void deleteRawCommand(PersistenceManager pm, Long rawCommandKey) throws DataSourceException {
+        RawCommand rawCommand = getRawCommand(pm, rawCommandKey);
+        deleteRawCommand(pm, rawCommand);
+    }
+
+    /**
+     * Delete the given demand while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param rawCommand Object to delete
+     */
+
+    public void deleteRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+        getLogger().warning("Delete raw command with id: " + rawCommand.getKey());
+        pm.deletePersistent(rawCommand);
+    }
 }

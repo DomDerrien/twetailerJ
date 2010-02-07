@@ -407,19 +407,27 @@ public class TestCommandProcessor {
 
     @Test
     public void testProcessRawCommandWithSimpleMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
+        final Long rawCommandKey = 1345L;
         // Mock RawCommandOperations
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                assertEquals(0L, key.longValue());
+                assertEquals(rawCommandKey, key);
                 RawCommand rawCommand = new RawCommand(Source.simulated);
+                rawCommand.setKey(key);
                 rawCommand.setCommand("? demand");
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+                assertEquals(rawCommandKey, rawCommand.getKey());
+                assertEquals("? demand", rawCommand.getCommand());
                 return rawCommand;
             }
         };
         CommandProcessor.rawCommandOperations = rawCommandOperations;
 
-        CommandProcessor.processRawCommands(0L);
+        CommandProcessor.processRawCommands(rawCommandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
     }

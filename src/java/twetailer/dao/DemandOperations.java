@@ -1,7 +1,5 @@
 package twetailer.dao;
 
-import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -12,7 +10,6 @@ import javax.jdo.Query;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Demand;
-import twetailer.dto.Entity;
 import domderrien.jsontools.JsonObject;
 
 public class DemandOperations extends BaseOperations {
@@ -303,18 +300,34 @@ public class DemandOperations extends BaseOperations {
      *
      * @throws DataSourceException If the retrieved demand does not belong to the specified user
      *
-     * @see DemandOperations#getDemands(PersistenceManager, Long, Long)
-     * @see DemandOperations#deleteDemand(PersistenceManager, Demand)
+     * @see DemandOperations#deleteDemand(PersistenceManager, Long)
      */
     public void deleteDemand(Long key, Long ownerKey) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            Demand demand = getDemand(pm, key, ownerKey);
-            deleteDemand(pm, demand);
+            deleteDemand(pm, key, ownerKey);
         }
         finally {
             pm.close();
         }
+    }
+
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param key Identifier of the demand
+     * @param ownerKey Identifier of the demand owner
+     *
+     * @throws DataSourceException If the retrieved demand does not belong to the specified user
+     *
+     * @see DemandOperations#getDemands(PersistenceManager, Long, Long)
+     * @see DemandOperations#deleteDemand(PersistenceManager, Demand)
+     */
+    public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+        Demand demand = getDemand(pm, key, ownerKey);
+        deleteDemand(pm, demand);
     }
 
     /**
