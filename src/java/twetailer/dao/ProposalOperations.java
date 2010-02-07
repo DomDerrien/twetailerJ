@@ -1,6 +1,5 @@
 package twetailer.dao;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,7 +9,6 @@ import javax.jdo.Query;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import domderrien.jsontools.JsonObject;
@@ -202,6 +200,29 @@ public class ProposalOperations extends BaseOperations {
     }
 
     /**
+     * Use the given pair {attribute; value} to get the corresponding Proposal identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param attribute Name of the proposal attribute used a the search criteria
+     * @param value Pattern for the search attribute
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of proposal identifiers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getProposalKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
+        value = prepareQuery(queryObj, attribute, value, limit);
+        getLogger().warning("Select proposal(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Long> proposalKeys = (List<Long>) queryObj.execute(value);
+        proposalKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return proposalKeys;
+    }
+
+    /**
      * Use the given pairs {attribute; value} to get the corresponding Proposal instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
@@ -253,5 +274,53 @@ public class ProposalOperations extends BaseOperations {
         getLogger().warning("Updating proposal with id: " + proposal.getKey());
         pm.makePersistent(proposal);
         return proposal;
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Proposal instance and to delete it
+     *
+     * @param key Identifier of the proposal
+     * @param ownerKey Identifier of the proposal owner
+     *
+     * @throws DataSourceException If the retrieved proposal does not belong to the specified user
+     *
+     * @see ProposalOperations#deleteProposal(PersistenceManager, Long, Long)
+     */
+    public void deleteProposal(Long key, Long ownerKey) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            deleteProposal(pm, key, ownerKey);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Proposal instance and to delete it
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param key Identifier of the proposal
+     * @param ownerKey Identifier of the proposal owner
+     *
+     * @throws DataSourceException If the retrieved proposal does not belong to the specified user
+     *
+     * @see ProposalOperations#getProposals(PersistenceManager, Long, Long, Long)
+     * @see ProposalOperations#deleteProposal(PersistenceManager, Proposal)
+     */
+    public void deleteProposal(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+        Proposal proposal = getProposal(pm, key, ownerKey, null);
+        deleteProposal(pm, proposal);
+    }
+
+    /**
+     * Delete the given proposal while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param key Identifier of the proposal
+     */
+    public void deleteProposal(PersistenceManager pm, Proposal proposal) {
+        getLogger().warning("Delete proposal with id: " + proposal.getKey());
+        pm.deletePersistent(proposal);
     }
 }

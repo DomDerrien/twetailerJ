@@ -132,6 +132,9 @@ public abstract class BaseRestlet extends HttpServlet {
      */
     @SuppressWarnings("unchecked")
     public static boolean isAPrivilegedUser(OpenIdUser loggedUser) {
+        //
+        // TODO: replace this verification by checking if the user is an administrator for App Engine?
+        //
         if (loggedUser.getAttribute("info") != null) {
             Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
             if (info.get("email") != null) {

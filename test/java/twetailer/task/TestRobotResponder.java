@@ -74,6 +74,18 @@ public class TestRobotResponder {
         new RobotResponder();
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testProcessWithFailure() throws DataSourceException {
+        RobotResponder.settingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+
+        RobotResponder.processDemand(12345L);
+    }
+
     final Long demandKey = 111L;
     final Long robotKey = 2222L;
     final Long locationKey = 333L;

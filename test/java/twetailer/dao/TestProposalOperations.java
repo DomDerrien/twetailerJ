@@ -63,6 +63,17 @@ public class TestProposalOperations {
         assertEquals(log1, log2);
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureI() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations() {
+            @Override
+            public Proposal createProposal(PersistenceManager pm, Proposal item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createProposal(new Proposal());
+    }
+
     @Test
     public void testCreateI() {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -257,6 +268,17 @@ public class TestProposalOperations {
         ops.getProposal(object.getKey(), 333L, 444L);
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testGetsWithFailureI() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, String key, Object value, int limit) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.getProposals("key", "value", 4324);
+    }
+
     @Test
     public void testGetsI() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -282,6 +304,17 @@ public class TestProposalOperations {
         List<Proposal> selection = new ProposalOperations().getProposals(Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateWithFailureI() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations() {
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.updateProposal(new Proposal());
     }
 
     @Test
@@ -431,5 +464,74 @@ public class TestProposalOperations {
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(selectedKey, selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetKeysI() throws DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        ProposalOperations ops = new ProposalOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+        };
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object = ops.createProposal(pm, object); // Gives the PersistenceManager so it won't be closed
+
+        List<Long> selection = ops.getProposalKeys(pm, Command.OWNER_KEY, 111L, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetKeysII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        List<Long> selection = new ProposalOperations().getProposalKeys(pm, Command.OWNER_KEY, 111L, 0);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testDeleteWithFailureI() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations() {
+            @Override
+            public void deleteProposal(PersistenceManager pm, Long key, Long ownerKey) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.deleteProposal(12345L, 4567L);
+    }
+
+    @Test
+    public void testDeleteI() throws DataSourceException {
+        final Long proposalKey = 54657L;
+        ProposalOperations ops = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                return proposal;
+            }
+            @Override
+            public void deleteProposal(PersistenceManager pm, Proposal proposal) {
+                assertEquals(proposalKey, proposal.getKey());
+            }
+        };
+        ops.deleteProposal(proposalKey, null);
+    }
+
+    @Test
+    public void testDeleteII() throws DataSourceException {
+        final String tag = "tag";
+        Proposal toBeCreated = new Proposal();
+        toBeCreated.addCriterion(tag);
+        ProposalOperations ops = new ProposalOperations();
+        Proposal justCreated = ops.createProposal(toBeCreated);
+        assertNotNull(justCreated.getKey());
+        assertEquals(tag, justCreated.getCriteria().get(0));
+        ops.deleteProposal(justCreated.getKey(), null);
     }
 }

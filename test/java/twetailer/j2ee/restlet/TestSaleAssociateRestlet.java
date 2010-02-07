@@ -20,9 +20,12 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
+import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.TestBaseRestlet;
 
@@ -50,6 +53,13 @@ public class TestSaleAssociateRestlet {
 
     @After
     public void tearDown() throws Exception {
+        SaleAssociateRestlet.consumerRestlet = new ConsumerRestlet();
+        SaleAssociateRestlet.proposalRestlet = new ProposalRestlet();
+
+        SaleAssociateRestlet._baseOperations = new BaseOperations();
+        SaleAssociateRestlet.consumerOperations = SaleAssociateRestlet._baseOperations.getConsumerOperations();
+        SaleAssociateRestlet.demandOperations = SaleAssociateRestlet._baseOperations.getDemandOperations();
+        SaleAssociateRestlet.proposalOperations = SaleAssociateRestlet._baseOperations.getProposalOperations();
     }
 
     @Test
@@ -101,6 +111,18 @@ public class TestSaleAssociateRestlet {
         }.createResource(null, user);
     }
 
+    @Test(expected=RuntimeException.class)
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testCreateResourceVI() throws DataSourceException, ClientException {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new SaleAssociateRestlet() {
+            @Override
+            protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        }.createResource(null, user);
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void testDelegageResourceCreation0() throws DataSourceException, ClientException {
         //
@@ -114,7 +136,7 @@ public class TestSaleAssociateRestlet {
         //
         // Everything must be created
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -122,7 +144,7 @@ public class TestSaleAssociateRestlet {
         JsonObject data = new GenericJsonObject();
         data.put(SaleAssociate.STORE_KEY, storeKey);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, Consumer consumer) {
                 assertNull(consumer.getKey());
@@ -130,7 +152,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
                 assertEquals(consumerKey.longValue(), parameters.getLong(SaleAssociate.CONSUMER_KEY));
@@ -149,7 +171,7 @@ public class TestSaleAssociateRestlet {
         //
         // One consumerKey for a consumer not yet sale associate
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -158,7 +180,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -167,7 +189,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -193,7 +215,7 @@ public class TestSaleAssociateRestlet {
         //
         // One consumerKey for a consumer already sale associate for another store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -202,7 +224,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -211,7 +233,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -233,7 +255,7 @@ public class TestSaleAssociateRestlet {
         //
         // One consumerKey for a consumer already sale associate for this store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -242,7 +264,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -251,7 +273,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -274,7 +296,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for no consumer and no sale associate
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -284,7 +306,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -299,7 +321,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -325,7 +347,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for no consumer but one sale associate for another store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -335,7 +357,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -350,7 +372,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -379,7 +401,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for no consumer but one sale associate for this store but not attached to a Consumer matching the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -390,7 +412,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -406,7 +428,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -433,7 +455,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for no consumer but one sale associate for this store but not matching the one attached to the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -444,7 +466,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -460,7 +482,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -487,7 +509,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for no consumer but one sale associate for this store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -497,7 +519,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -506,7 +528,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -538,7 +560,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for no consumer but one sale associate for this store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -549,7 +571,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -565,7 +587,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -601,7 +623,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for one consumer not matching the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
 
         final Long consumerKey = 67890L;
         final String email = "unit@test";
@@ -611,7 +633,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -631,7 +653,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -649,7 +671,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for one consumer not yet associate
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -660,7 +682,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -680,7 +702,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -710,7 +732,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for one consumer already associate with another store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -720,7 +742,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -735,7 +757,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -758,7 +780,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for one consumer already associate but with another than the one associate with the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -769,7 +791,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -791,7 +813,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             boolean getSaleAssociatesCalled = false;
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
@@ -817,7 +839,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for one consumer already associate correctly
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -827,7 +849,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -840,7 +862,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -872,7 +894,7 @@ public class TestSaleAssociateRestlet {
         //
         // One email for one consumer already associate correctly, as previously retrieved
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -883,7 +905,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -903,7 +925,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -935,7 +957,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for no consumer and no sale associate
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -945,7 +967,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -960,7 +982,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -986,7 +1008,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for no consumer but one sale associate for another store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -996,7 +1018,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1011,7 +1033,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1040,7 +1062,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for no consumer but one sale associate for this store but not attached to a Consumer matching the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1051,7 +1073,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1067,7 +1089,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1094,7 +1116,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for no consumer but one sale associate for this store but not matching the one attached to the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1105,7 +1127,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1121,7 +1143,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1148,7 +1170,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for no consumer but one sale associate for this store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1158,7 +1180,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1167,7 +1189,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1199,7 +1221,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for no consumer but one sale associate for this store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1210,7 +1232,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1226,7 +1248,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1262,7 +1284,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for one consumer not matching the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
 
         final Long consumerKey = 67890L;
         final String twitterId = "unit@test";
@@ -1272,7 +1294,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1292,7 +1314,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1310,7 +1332,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for one consumer not yet associate
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1321,7 +1343,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1341,7 +1363,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1371,7 +1393,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for one consumer already associate with another store
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1381,7 +1403,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1396,7 +1418,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1419,7 +1441,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for one consumer already associate but with another than the one associate with the given consumerKey
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1430,7 +1452,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1452,7 +1474,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             boolean getSaleAssociatesCalled = false;
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
@@ -1478,7 +1500,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for one consumer already associate correctly
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1488,7 +1510,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1501,7 +1523,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1534,7 +1556,7 @@ public class TestSaleAssociateRestlet {
         //
         // One twitterId for one consumer already associate correctly, as previously retrieved
         //
-        final Long storeKey = 12345L;
+        final Long storeKey = 11111L;
         final Long saleAssociateKey = 54321L;
 
         final Long consumerKey = 67890L;
@@ -1545,7 +1567,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1565,7 +1587,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1592,9 +1614,127 @@ public class TestSaleAssociateRestlet {
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testDeleteResource() throws DataSourceException {
+    @Test(expected=ClientException.class)
+    public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
         ops.deleteResource("resourceId", user);
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testDeleteResourceI() throws DataSourceException, ClientException {
+        final Long saleAssociateKey = 11111L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new SaleAssociateRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+            }
+        }.deleteResource(saleAssociateKey.toString(), user);
+    }
+
+    @Test(expected=RuntimeException.class)
+    @SuppressWarnings({ "unchecked", "serial" })
+    public void testDeleteResourceII() throws DataSourceException, ClientException {
+        final Long saleAssociateKey = 11111L;
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        new SaleAssociateRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        }.deleteResource(saleAssociateKey.toString(), user);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelegateDeletionResourceI() throws DataSourceException, ClientException {
+        //
+        // SaleAssociate without Proposals
+        //
+        final Long saleAssociateKey = 11111L;
+        final Long consumerKey = 2222L;
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                return saleAssociate;
+            }
+            @Override
+            public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                assertEquals(saleAssociateKey, saleAssociate.getKey());
+            }
+        };
+        SaleAssociateRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Long> getProposalKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(Proposal.OWNER_KEY, key);
+                assertEquals(saleAssociateKey, (Long) value);
+                List<Long> proposals = new ArrayList<Long>();
+                return proposals;
+            }
+        };
+        SaleAssociateRestlet.consumerRestlet = new ConsumerRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) throws DataSourceException{
+                assertEquals(consumerKey, key);
+            }
+        };
+
+        ops.delegateResourceDeletion(new MockPersistenceManager(), saleAssociateKey);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelegateDeletionResourceII() throws DataSourceException, ClientException {
+        //
+        // SaleAssociate with Proposals
+        //
+        final Long saleAssociateKey = 11111L;
+        final Long consumerKey = 22222L;
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                return saleAssociate;
+            }
+            @Override
+            public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+                assertEquals(saleAssociateKey, saleAssociate.getKey());
+            }
+        };
+        final Long proposalKey = 33333L;
+        SaleAssociateRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Long> getProposalKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(Proposal.OWNER_KEY, key);
+                assertEquals(saleAssociateKey, (Long) value);
+                List<Long> proposals = new ArrayList<Long>();
+                proposals.add(proposalKey);
+                return proposals;
+            }
+        };
+        SaleAssociateRestlet.proposalRestlet = new ProposalRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key, SaleAssociate owner, boolean stopRecursion) throws DataSourceException{
+                assertEquals(proposalKey, key);
+                assertEquals(saleAssociateKey, owner.getKey());
+            }
+        };
+        SaleAssociateRestlet.consumerRestlet = new ConsumerRestlet() {
+            @Override
+            protected void delegateResourceDeletion(PersistenceManager pm, Long key) throws DataSourceException{
+                assertEquals(consumerKey, key);
+            }
+        };
+
+        ops.delegateResourceDeletion(new MockPersistenceManager(), saleAssociateKey);
     }
 
     @Test(expected=RuntimeException.class)
@@ -1612,7 +1752,7 @@ public class TestSaleAssociateRestlet {
         final Long storeKey = 12345L;
         JsonObject data = new GenericJsonObject();
         data.put(SaleAssociate.STORE_KEY, storeKey);
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.STORE_KEY, key);
@@ -1646,7 +1786,7 @@ public class TestSaleAssociateRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(SaleAssociate.STORE_KEY, saleAssociateKey);
 
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.STORE_KEY, key);
@@ -1679,7 +1819,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1694,7 +1834,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1730,7 +1870,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1745,7 +1885,7 @@ public class TestSaleAssociateRestlet {
                 return consumer;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1785,7 +1925,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1801,7 +1941,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1839,7 +1979,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1855,7 +1995,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1892,7 +2032,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1901,7 +2041,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1944,7 +2084,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1960,7 +2100,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -2006,7 +2146,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2026,7 +2166,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2055,7 +2195,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2075,7 +2215,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -2115,7 +2255,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -2130,7 +2270,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2164,7 +2304,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2186,7 +2326,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             boolean getSaleAssociatesCalled = false;
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
@@ -2222,7 +2362,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -2235,7 +2375,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2279,7 +2419,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        ops.consumerOperations = new ConsumerOperations() {
+        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2299,7 +2439,7 @@ public class TestSaleAssociateRestlet {
                 return consumers;
             }
         };
-        ops.saleAssociateOperations = new SaleAssociateOperations() {
+        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);

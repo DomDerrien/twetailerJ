@@ -65,35 +65,35 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                     log.warning("Follower screen name: " + followerScreenName);
                     PersistenceManager pm = _baseOperations.getPersistenceManager();
                     try {
-                        // 1. Follow the user
-                        TwitterConnector.getTwetailerAccount().enableNotification(followerScreenName);
-                        // 2. Create his record
-                        // TODO: call getConsumerKeys()
-                        List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
-                        if (consumers.size() == 0) {
-                            log.warning("Follower account to be created");
-                            Consumer consumer = new Consumer();
-                            consumer.setName(followerName);
-                            consumer.setTwitterId(followerScreenName);
-                            consumer = consumerOperations.createConsumer(pm, consumer);
-                            log.warning("Consumer account created for the new Twitter follower: " + followerScreenName);
+                        try {
+                            // 1. Follow the user
+                            TwitterConnector.getTwetailerAccount().enableNotification(followerScreenName);
+                            // 2. Create his record
+                            // TODO: call getConsumerKeys()
+                            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
+                            if (consumers.size() == 0) {
+                                log.warning("Follower account to be created");
+                                Consumer consumer = new Consumer();
+                                consumer.setName(followerName);
+                                consumer.setTwitterId(followerScreenName);
+                                consumer = consumerOperations.createConsumer(pm, consumer);
+                                log.warning("Consumer account created for the new Twitter follower: " + followerScreenName);
+                            }
+                            else {
+                                log.warning("Follower account id: " + consumers.get(0).getKey());
+                            }
                         }
-                        else {
-                            log.warning("Follower account id: " + consumers.get(0).getKey());
+                        finally {
+                            pm.close();
                         }
                     }
                     catch (TwitterException ex) {
                         subject += "[TwitterException:" + ex.getMessage() + "]";
                         isAFollowingNotification = false;
-                        ex.printStackTrace();
                     }
                     catch(DataSourceException ex) {
                         subject += "[DataSourceException:" + ex.getMessage() + "]";
                         isAFollowingNotification = false;
-                        ex.printStackTrace();
-                    }
-                    finally {
-                        pm.close();
                     }
                 }
             }

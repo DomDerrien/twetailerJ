@@ -3,7 +3,6 @@ package twetailer.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,7 +21,6 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
-import twetailer.dto.Store;
 
 import com.google.appengine.api.users.User;
 import com.google.apphosting.api.MockAppEngineEnvironment;
@@ -57,6 +55,39 @@ public class TestSaleAssociateOperations {
         Logger log2 = new SaleAssociateOperations().getLogger();
         assertNotNull(log2);
         assertEquals(log1, log2);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureI() throws DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, SaleAssociate item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createSaleAssociate(new SaleAssociate());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureII() throws ClientException {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, SaleAssociate item) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createSaleAssociate(new GenericJsonObject());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureIII() {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate createSaleAssociate(PersistenceManager pm, Consumer item, Long key) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createSaleAssociate(new Consumer(), 12345L);
     }
 
     @Test
@@ -228,5 +259,74 @@ public class TestSaleAssociateOperations {
         assertNotSame(0, selected.getCriteria().size());
         assertEquals("first", selected.getCriteria().get(0));
         assertEquals("second", selected.getCriteria().get(1));
+    }
+
+    @Test
+    public void testGetKeysI() throws DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+        };
+        SaleAssociate object = new SaleAssociate();
+        object.setConsumerKey(111L);
+        object = ops.createSaleAssociate(pm, object); // Gives the PersistenceManager so it won't be closed
+
+        List<Long> selection = ops.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, 111L, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetKeysII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        List<Long> selection = new SaleAssociateOperations().getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, 111L, 0);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testDeleteWithFailureI() throws DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public void deleteSaleAssociate(PersistenceManager pm, Long key) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.deleteSaleAssociate(12345L);
+    }
+
+    @Test
+    public void testDeleteI() throws DataSourceException {
+        final Long saleAssociateKey = 54657L;
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                return saleAssociate;
+            }
+            @Override
+            public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate item) {
+                assertEquals(saleAssociateKey, item.getKey());
+            }
+        };
+        ops.deleteSaleAssociate(saleAssociateKey);
+    }
+
+    @Test
+    public void testDeleteII() throws DataSourceException {
+        final String name = "name";
+        SaleAssociate toBeCreated = new SaleAssociate();
+        toBeCreated.setName(name);
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate justCreated = ops.createSaleAssociate(toBeCreated);
+        assertNotNull(justCreated.getKey());
+        assertEquals(name, justCreated.getName());
+        ops.deleteSaleAssociate(justCreated.getKey());
     }
 }

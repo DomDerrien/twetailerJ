@@ -12,6 +12,7 @@ import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.ProposalOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.j2ee.BaseRestlet;
@@ -32,9 +33,12 @@ import domderrien.jsontools.JsonUtils;
 public class ConsumerRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(ConsumerRestlet.class.getName());
 
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected static DemandRestlet demandRestlet = new DemandRestlet();
+
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -53,8 +57,41 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        if (isAPrivilegedUser(loggedUser)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                Long consumerKey = Long.valueOf(resourceId);
+                delegateResourceDeletion(pm, consumerKey);
+                return;
+            }
+            finally {
+                pm.close();
+            }
+        }
+        throw new ClientException("Restricted access!");
+    }
+
+    /**
+     * Delete the Consumer instances based on the specified criteria.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumerKey Identifier of the resource to delete
+     * @return Serialized list of the Consumer instances matching the given criteria
+
+     * @throws DataSourceException If the query to the back-end fails
+     *
+     * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
+     */
+    protected void delegateResourceDeletion(PersistenceManager pm, Long consumerKey) throws DataSourceException{
+        // Delete the consumer account
+        Consumer consumer = consumerOperations.getConsumer(pm, consumerKey);
+        consumerOperations.deleteConsumer(pm, consumer);
+        // Delete consumer's demands
+        List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, consumerKey, 0);
+        for (Long demandKey: demandKeys) {
+            demandRestlet.delegateResourceDeletion(pm, demandKey, consumerKey, false);
+        }
     }
 
     @Override
@@ -70,7 +107,7 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException{
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         if (isAPrivilegedUser(loggedUser)) {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
@@ -92,7 +129,7 @@ public class ConsumerRestlet extends BaseRestlet {
 
      * @throws DataSourceException If the query to the back-end fails
      */
-    protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException{
+    protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException {
         if (parameters.containsKey(Consumer.EMAIL)) {
             // Expects only one Consumer record matching the given e-mail address
             return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.EMAIL, parameters.getString(Consumer.EMAIL), 1));
@@ -175,7 +212,7 @@ public class ConsumerRestlet extends BaseRestlet {
      * @param openId Identifier used to cook the validation code
      * @return A validated identifier
      */
-    protected String filterOutInvalidValue(JsonObject parameters, String topic, String openId) {
+    protected static String filterOutInvalidValue(JsonObject parameters, String topic, String openId) {
         String identifier = null;
         if (parameters.containsKey(topic) && parameters.containsKey(topic + "Code")) {
             try {
@@ -208,7 +245,7 @@ public class ConsumerRestlet extends BaseRestlet {
      *
      * @throws DataSourceException If the Consumer or Demand look-up fails
      */
-    protected void scheduleConsolidationTasks(String topic, String identifier, Long consumerKey) throws DataSourceException {
+    protected static void scheduleConsolidationTasks(String topic, String identifier, Long consumerKey) throws DataSourceException {
         if (identifier != null && !"".equals(identifier)) {
             if (!Consumer.EMAIL.equals(topic) && !Consumer.JABBER_ID.equals(topic) && !Consumer.TWITTER_ID.equals(topic)) {
                 throw new IllegalArgumentException("Not supported field identifier: " + topic);

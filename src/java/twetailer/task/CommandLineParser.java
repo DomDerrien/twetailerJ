@@ -167,220 +167,163 @@ public class CommandLineParser {
         boolean oneFieldOverriden = false;
         JsonObject command = new GenericJsonObject();
         // Help
-        try {
-            matcher = patterns.get(Prefix.help.toString()).matcher(message);
-            if (matcher.find()) { // Runs the matcher once
-                message = matcher.replaceFirst("");
-                // No need to continue parsing: grab the rest of the tweet that will be used for lookups in the TMX
-                command.put(Command.NEED_HELP, message.trim());
-                return command;
-            }
+        matcher = patterns.get(Prefix.help.toString()).matcher(message);
+        if (matcher.find()) { // Runs the matcher once
+            message = matcher.replaceFirst("");
+            // No need to continue parsing: grab the rest of the tweet that will be used for lookups in the TMX
+            command.put(Command.NEED_HELP, message.trim());
+            return command;
         }
-        catch(IllegalStateException ex) {}
         StringBuilder messageCopy = new StringBuilder(message);
         // Action
-        try {
-            matcher = patterns.get(Prefix.action.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Command.ACTION, getAction(currentGroup.toLowerCase(locale)));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.action.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Command.ACTION, getAction(currentGroup.toLowerCase(locale)));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Address
-        try {
-            matcher = patterns.get(Prefix.address.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Store.ADDRESS, getValue(currentGroup));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.address.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Store.ADDRESS, getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Expiration
-        try {
-            matcher = patterns.get(Prefix.expiration.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Demand.EXPIRATION_DATE, getDate(currentGroup));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.expiration.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.EXPIRATION_DATE, getDate(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Hash tag
-        try {
             // Moved just before the tags detection
             // Otherwise, # in a name, an address, or a phone number will be extracted
-        }
-        catch(IllegalStateException ex) {}
         // Locale
-        try {
-            matcher = patterns.get(Prefix.locale.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase(locale));
-                command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase(locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.locale.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase(locale));
+            command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase(locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Name
-        try {
-            matcher = patterns.get(Prefix.name.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Store.NAME, getValue(currentGroup));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.name.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Store.NAME, getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Phone Number
-        try {
-            matcher = patterns.get(Prefix.phoneNumber.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Store.PHONE_NUMBER, getValue(currentGroup));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.phoneNumber.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Store.PHONE_NUMBER, getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Price
-        try {
-            matcher = patterns.get(Prefix.price.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.PRICE, getDoubleValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.price.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Proposal.PRICE, getDoubleValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Proposal
-        try {
-            matcher = patterns.get(Prefix.proposal.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.PROPOSAL_KEY, getLongValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.proposal.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Proposal.PROPOSAL_KEY, getLongValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Quantity
-        try {
-            matcher = patterns.get(Prefix.quantity.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Demand.QUANTITY, getLongValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.quantity.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.QUANTITY, getLongValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Reference
-        try {
-            matcher = patterns.get(Prefix.reference.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Demand.REFERENCE, getLongValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.reference.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.REFERENCE, getLongValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Range
-        try {
-            matcher = patterns.get(Prefix.range.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase(locale));
-                command.put(Demand.RANGE, getDoubleValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.range.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase(locale));
+            command.put(Demand.RANGE, getDoubleValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Store
-        try {
-            matcher = patterns.get(Prefix.store.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Store.STORE_KEY, getLongValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.store.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Store.STORE_KEY, getLongValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Total
-        try {
-            matcher = patterns.get(Prefix.total.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Proposal.TOTAL, getDoubleValue(currentGroup, locale));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.total.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Proposal.TOTAL, getDoubleValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // Hash tag
-        try {
+        matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
+        // Loop to get all matching sequences
+        while (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            if (!command.containsKey(Command.HASH_TAG)) {
+                command.put(Command.HASH_TAG, new GenericJsonArray());
+            }
+            command.getJsonArray(Command.HASH_TAG).add(getHashTag(currentGroup.toLowerCase(locale)));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+            // Rescan the remaining sequence
             matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
-            // Loop to get all matching sequences
-            while (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                if (!command.containsKey(Command.HASH_TAG)) {
-                    command.put(Command.HASH_TAG, new GenericJsonArray());
-                }
-                command.getJsonArray(Command.HASH_TAG).add(getHashTag(currentGroup.toLowerCase(locale)));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-                // Rescan the remaining sequence
-                matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
-            }
         }
-        catch(IllegalStateException ex) {}
         // Tags
-        try {
-            matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup, null)));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
+        matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup, null)));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
         }
-        catch(IllegalStateException ex) {}
         // \-Tags
-        try {
-            matcher = patterns.get("\\-" + Prefix.tags.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                command.put(Demand.CRITERIA_REMOVE, new GenericJsonArray(getTags(currentGroup, null)));
+        matcher = patterns.get("\\-" + Prefix.tags.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.CRITERIA_REMOVE, new GenericJsonArray(getTags(currentGroup, null)));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+        }
+        // \+Tags
+        matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            if (0 < currentGroup.length()) {
+                command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup, patterns)));
                 messageCopy = extractPart(messageCopy, currentGroup);
                 oneFieldOverriden = true;
             }
         }
-        catch(IllegalStateException ex) {}
-        // \+Tags
-        try {
-            matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
-            if (matcher.find()) { // Runs the matcher once
-                String currentGroup = matcher.group(1).trim();
-                if (0 < currentGroup.length()) {
-                    command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup, patterns)));
-                    messageCopy = extractPart(messageCopy, currentGroup);
-                    oneFieldOverriden = true;
-                }
-            }
-        }
-        catch(IllegalStateException ex) {}
 
         if (!oneFieldOverriden) {
             throw new ClientException("No query field has been correctly extracted");

@@ -4,7 +4,6 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -23,7 +22,6 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
-import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
@@ -50,7 +48,6 @@ public class MailResponderServlet extends HttpServlet {
     }
 
     protected static void processMailedRequest(HttpServletRequest request, HttpServletResponse response) {
-        Consumer consumer = null;
         String name = null;
         String email = null;
         String subject = null;
@@ -86,7 +83,7 @@ public class MailResponderServlet extends HttpServlet {
             log.warning("Message sent by: " + email + " with the subject: " + subject + "\nWith the command: " + command);
 
             // Creation only occurs if the corresponding Consumer instance is not retrieved
-            consumer = consumerOperations.createConsumer(address);
+            consumerOperations.createConsumer(address);
 
             // Persist message
             rawCommandOperations.createRawCommand(rawCommand);
@@ -141,15 +138,14 @@ public class MailResponderServlet extends HttpServlet {
                             new Locale(language)
                     );
                 }
-                catch (UnsupportedEncodingException e) {
+                // catch (MessagingException e) {
+                // catch (UnsupportedEncodingException e) {
+                catch (Exception e) {
                     // Ignored because we can't do much now
 
                     // Note for the testers:
                     //   Don't know how to generate a UnsupportedEncodingException by just
                     //   injecting a corrupted UTF-8 sequence and/or a wrong character set
-                }
-                catch (MessagingException e) {
-                    // Ignored because we can't do much now
                 }
             }
         }

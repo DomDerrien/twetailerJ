@@ -1461,7 +1461,7 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetSetupRobotCoordinates() throws IOException {
+    public void testDoGetSetupRobotCoordinatesI() throws IOException {
         final Long consumerKey = 12321L;
         final Long saleAssociateKey = 45654L;
         final Settings settings = new Settings();
@@ -1516,7 +1516,65 @@ public class TestMaezelServlet {
     }
 
     @Test
-    public void testDoGetConsolidateConsumerAccounts() throws IOException {
+    public void testDoGetSetupRobotCoordinatesII() throws IOException {
+        final Long consumerKey = 12321L;
+        final Long saleAssociateKey = 45654L;
+
+        // Prepare mock SettingsOperations
+        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+            @Override
+            public Settings updateSettings(PersistenceManager pm, Settings updatedSettings) {
+                fail("Call not expected");
+                return null;
+            }
+        };
+        servlet.settingsOperations = mockSettingsOperations;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/setupRobotCoordinates";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("consumerKey".equals(name)) {
+                    return consumerKey.toString();
+                }
+                if ("saleAssociateKey".equals(name)) {
+                    return saleAssociateKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        CatchAllMailHandlerServlet.foolNextMessagePost();
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        // Clean-up
+        MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetConsolidateConsumerAccountsI() throws IOException {
         final Long consumerKey = 12321L;
         final Long demandKey = 45654L;
         final Demand demand = new Demand();
@@ -1566,6 +1624,64 @@ public class TestMaezelServlet {
 
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+        MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetConsolidateConsumerAccountsII() throws IOException {
+        final Long consumerKey = 12321L;
+        final Long demandKey = 45654L;
+        final Demand demand = new Demand();
+        demand.setKey(demandKey);
+
+        // Prepare mock DemandOperations
+        DemandOperations mockDemandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand updatedDemand) {
+                fail("Call not expected");
+                return null;
+            }
+        };
+        servlet.demandOperations = mockDemandOperations;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/consolidateConsumerAccounts";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("ownerKey".equals(name)) {
+                    return consumerKey.toString();
+                }
+                if ("key".equals(name)) {
+                    return demandKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
 
         // Clean-up
         MockCommandProcessor.restoreOperations();

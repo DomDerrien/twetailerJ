@@ -9,9 +9,11 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.validator.LocaleValidator;
@@ -26,9 +28,12 @@ import domderrien.jsontools.JsonUtils;
 public class StoreRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(StoreRestlet.class.getName());
 
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
+    protected static SaleAssociateRestlet saleAssociateRestlet = new SaleAssociateRestlet();
+
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+    protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -49,8 +54,41 @@ public class StoreRestlet extends BaseRestlet {
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        if (isAPrivilegedUser(loggedUser)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                Long storeKey = Long.valueOf(resourceId);
+                delegateResourceDeletion(pm, storeKey);
+                return;
+            }
+            finally {
+                pm.close();
+            }
+        }
+        throw new ClientException("Restricted access!");
+    }
+
+    /**
+     * Delete the Store instances based on the specified criteria.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param storeKey Identifier of the resource to delete
+     * @return Serialized list of the Store instances matching the given criteria
+
+     * @throws DataSourceException If the query to the back-end fails
+     *
+     * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
+     */
+    protected void delegateResourceDeletion(PersistenceManager pm, Long storeKey) throws DataSourceException{
+        // Delete the store account
+        Store store = storeOperations.getStore(pm, storeKey);
+        storeOperations.deleteStore(pm, store);
+        // Delete attached sale associates
+        List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.STORE_KEY, storeKey, 0);
+        for (Long key: saleAssociateKeys) {
+            saleAssociateRestlet.delegateResourceDeletion(pm, key);
+        }
     }
 
     @Override

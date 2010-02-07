@@ -1,5 +1,6 @@
 package twetailer.j2ee.restlet;
 
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,8 +10,11 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
+import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 
@@ -24,9 +28,14 @@ import domderrien.jsontools.JsonUtils;
 public class SaleAssociateRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(SaleAssociateRestlet.class.getName());
 
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+    protected static ConsumerRestlet consumerRestlet = new ConsumerRestlet();
+    protected static ProposalRestlet proposalRestlet = new ProposalRestlet();
+
+    protected static BaseOperations _baseOperations = new BaseOperations();
+    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -230,8 +239,45 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        if (isAPrivilegedUser(loggedUser)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                Long saleAssociateKey = Long.valueOf(resourceId);
+                delegateResourceDeletion(pm, saleAssociateKey);
+                return;
+            }
+            finally {
+                pm.close();
+            }
+        }
+        throw new ClientException("Restricted access!");
+    }
+
+    /**
+     * Delete the SaleAssociate instances based on the specified criteria.
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param saleAssociateKey Identifier of the resource to delete
+     * @return Serialized list of the Consumer instances matching the given criteria
+
+     * @throws DataSourceException If the query to the back-end fails
+     *
+     * @see ConsumerRestlet#delegateResourceDeletion(PersistenceManager, Long)
+     * @see StoreRestlet#delegateResourceDeletion(PersistenceManager, Long)
+     */
+    protected void delegateResourceDeletion(PersistenceManager pm, Long saleAssociateKey) throws DataSourceException{
+        // Delete the sale associate account
+        SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, saleAssociateKey);
+        saleAssociateOperations.deleteSaleAssociate(pm, saleAssociate);
+        // Delete sale associate's proposals
+        List<Long> proposalKeys = proposalOperations.getProposalKeys(pm, Proposal.OWNER_KEY, saleAssociateKey, 0);
+        for (Long proposalKey: proposalKeys) {
+            proposalRestlet.delegateResourceDeletion(pm, proposalKey, saleAssociate, false);
+        }
+        // Delete the attached consumer
+        Long consumerKey = saleAssociate.getConsumerKey();
+        consumerRestlet.delegateResourceDeletion(pm, consumerKey);
     }
 
     @Override
@@ -254,11 +300,11 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     /**
-     * Retrieve the Consumer instances based on the specified criteria.
+     * Retrieve the SaleAssociate instances based on the specified criteria.
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Attribute coming from a client over HTTP
-     * @return Serialized list of the Consumer instances matching the given criteria
+     * @return Serialized list of the SaleAssociate instances matching the given criteria
 
      * @throws DataSourceException If the query to the back-end fails
      */

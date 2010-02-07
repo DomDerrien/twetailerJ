@@ -452,4 +452,51 @@ public class ConsumerOperations extends BaseOperations {
         pm.makePersistent(consumer);
         return consumer;
     }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param consumerKey Identifier of the consumer
+     *
+     * @throws DataSourceException If the consumer record retrieval fails
+     *
+     * @see ConsumerOperations#deleteConsumer(PersistenceManager, Long)
+     */
+    public void deleteConsumer(Long consumerKey) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            deleteConsumer(pm, consumerKey);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumerKey Identifier of the consumer
+     *
+     * @throws DataSourceException If the consumer record retrieval fails
+     *
+     * @see ConsumerOperations#getConsumers(PersistenceManager, Long)
+     * @see ConsumerOperations#deleteConsumer(PersistenceManager, Consumer)
+     */
+    public void deleteConsumer(PersistenceManager pm, Long consumerKey) throws DataSourceException {
+        Consumer consumer = getConsumer(pm, consumerKey);
+        deleteConsumer(pm, consumer);
+    }
+
+    /**
+     * Delete the given demand while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumer Object to delete
+     */
+
+    public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
+        getLogger().warning("Delete consumer with id: " + consumer.getKey());
+        pm.deletePersistent(consumer);
+    }
 }

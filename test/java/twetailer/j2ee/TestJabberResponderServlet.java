@@ -418,4 +418,79 @@ public class TestJabberResponderServlet {
 
         assertNull(mock.getLastSentMessage());
     }
+
+    @Test
+    public void testDoPostVII() throws IOException {
+        //
+        // Exception while posting the task to the queue
+        // And another exception while communicate with BaseConnector
+        // And another exception while sending the error report to "catch-all" list
+        //
+        final String jabberId = "test-emitter@appspot.com";
+        final String message = "wii console Mario Kart";
+        final String boundary = "B";
+        final MockServletInputStream stream = new MockServletInputStream();
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public String getContentType() {
+                return "multipart/form-data; boundary=" + boundary;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                TestJabberConnector.prepareStream(stream, boundary, jabberId, message);
+                return stream;
+            }
+        };
+
+        BaseOperations baseOperations = new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+        };
+
+        final Long consumerKey = 56645L;
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(JID address) {
+                assertEquals(jabberId, address.getId());
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setJabberId(jabberId);
+                return consumer;
+            }
+        };
+
+        final Long rawCommandKey = 12345L;
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand createRawCommand(RawCommand rawCommand) {
+                assertEquals(jabberId, rawCommand.getEmitterId());
+                assertEquals(message, rawCommand.getCommand());
+                rawCommand.setKey(rawCommandKey);
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(RawCommand rawCommand) {
+                assertEquals(rawCommandKey, rawCommand.getKey());
+                rawCommand.setSource(Source.jabber); // Redirection because the MockXMPPService allows to generate an exception during the communication
+                return rawCommand;
+            }
+        };
+
+        JabberResponderServlet servlet = new JabberResponderServlet();
+        servlet._baseOperations = baseOperations;
+        servlet.consumerOperations = consumerOperations;
+        servlet.rawCommandOperations = rawCommandOperations;
+
+        MockXMPPService mock = new MockXMPPService();
+        mock.setPresence(jabberId, false);
+        JabberConnector.injectMockXMPPService(mock);
+
+        CatchAllMailHandlerServlet.foolNextMessagePost();
+
+        servlet.doPost(request, null);
+
+        assertNull(mock.getLastSentMessage());
+    }
 }

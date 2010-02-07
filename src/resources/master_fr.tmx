@@ -416,7 +416,7 @@
         </tu>
         <tu tuid="help_keyword_equivalents_#Demo" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>#demo</seg>
             </tuv>
@@ -906,7 +906,7 @@
         </tu>
         <tu tuid="cp_command_demand_acknowledge_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>:-) Listing newly created Demand Reference:{0}... </seg>
             </tuv>
@@ -1122,7 +1122,7 @@
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_one_item" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} expires:{2}? If yes then send the following... |
                      2/2 '!propose ref:{0} tags:your-description-here price:your-price-here' </seg>
@@ -1130,7 +1130,7 @@
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
                      2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>

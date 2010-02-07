@@ -6,12 +6,12 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import domderrien.jsontools.JsonObject;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
+import domderrien.jsontools.JsonObject;
 
 public class SaleAssociateOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(SaleAssociateOperations.class.getName());
@@ -104,6 +104,22 @@ public class SaleAssociateOperations extends BaseOperations {
 
         // Persist the account
         return createSaleAssociate(pm, saleAssociate);
+    }
+
+    /**
+     * Create the SaleAssociate instance with the given parameters
+     *
+     * @param saleAssociate Resource to persist
+     * @return Just created resource
+     */
+    public SaleAssociate createSaleAssociate(SaleAssociate saleAssociate) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createSaleAssociate(pm, saleAssociate);
+        }
+        finally {
+            pm.close();
+        }
     }
 
     /**
@@ -208,6 +224,29 @@ public class SaleAssociateOperations extends BaseOperations {
     }
 
     /**
+     * Use the given pair {attribute; value} to get the corresponding SaleAssociate identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param attribute Name of the SaleAssociate attribute used a the search criteria
+     * @param value Pattern for the search attribute
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of SaleAssociate identifiers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getSaleAssociateKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
+        value = prepareQuery(queryObj, attribute, value, limit);
+        getLogger().warning("Select sale associate(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Long> saleAssociateKeys = (List<Long>) queryObj.execute(value);
+        saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return saleAssociateKeys;
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param saleAssociate Resource to update
@@ -237,5 +276,52 @@ public class SaleAssociateOperations extends BaseOperations {
         getLogger().warning("Updating sale associate with id: " + saleAssociate.getKey());
         saleAssociate = pm.makePersistent(saleAssociate);
         return saleAssociate;
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param saleAssociateKey Identifier of the sale associate
+     *
+     * @throws DataSourceException If the sale associate record retrieval fails
+     *
+     * @see SaleAssociateOperations#deleteSaleAssociate(PersistenceManager, Long)
+     */
+    public void deleteSaleAssociate(Long saleAssociateKey) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            deleteSaleAssociate(pm, saleAssociateKey);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param saleAssociateKey Identifier of the sale associate
+     *
+     * @throws DataSourceException If the sale associate record retrieval fails
+     *
+     * @see SaleAssociateOperations#getSaleAssociates(PersistenceManager, Long)
+     * @see SaleAssociateOperations#deleteSaleAssociate(PersistenceManager, SaleAssociate)
+     */
+    public void deleteSaleAssociate(PersistenceManager pm, Long saleAssociateKey) throws DataSourceException {
+        SaleAssociate saleAssociate = getSaleAssociate(pm, saleAssociateKey);
+        deleteSaleAssociate(pm, saleAssociate);
+    }
+
+    /**
+     * Delete the given demand while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param saleAssociate Object to delete
+     */
+
+    public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+        getLogger().warning("Delete sale associate with id: " + saleAssociate.getKey());
+        pm.deletePersistent(saleAssociate);
     }
 }

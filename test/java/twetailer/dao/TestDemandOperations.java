@@ -61,6 +61,17 @@ public class TestDemandOperations {
         assertEquals(log1, log2);
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testCreateWithFailureI() throws DataSourceException {
+        DemandOperations ops = new DemandOperations() {
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.createDemand(new Demand());
+    }
+
     @Test
     public void testCreateI() {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -171,6 +182,17 @@ public class TestDemandOperations {
         ops.getDemand(888L, 111L);
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testGetsWithFailureI() throws DataSourceException {
+        DemandOperations ops = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, String key, Object value, int limit) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.getDemands("key", "value", 4324);
+    }
+
     @Test
     public void testGetsI() throws ClientException, DataSourceException {
         final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
@@ -196,6 +218,28 @@ public class TestDemandOperations {
         List<Demand> selection = new DemandOperations().getDemands(Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateWithFailureI() throws DataSourceException {
+        DemandOperations ops = new DemandOperations() {
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.updateDemand(new Demand());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testUpdateWithFailureII() throws DataSourceException {
+        DemandOperations ops = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.updateDemand(new GenericJsonObject(), 543543543L);
     }
 
     @Test
@@ -239,6 +283,17 @@ public class TestDemandOperations {
         assertNotNull(updated);
         assertEquals(object.getKey(), updated.getKey());
         assertTrue(pm.isClosed());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testDeleteWithFailureI() throws DataSourceException {
+        DemandOperations ops = new DemandOperations() {
+            @Override
+            public void deleteDemand(PersistenceManager pm, Long key, Long owner) {
+                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
+            }
+        };
+        ops.deleteDemand(53543L, 76767L);
     }
 
     @Test
