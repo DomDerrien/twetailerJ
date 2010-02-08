@@ -41,6 +41,7 @@ import twetailer.task.ProposalValidator;
 import twetailer.task.RobotResponder;
 import twetailer.task.TweetLoader;
 import twetailer.validator.ApplicationSettings;
+import twitter4j.TwitterException;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.labs.taskqueue.TaskOptions;
@@ -259,6 +260,8 @@ public class MaezelServlet extends HttpServlet {
         JsonObject out = new GenericJsonObject();
         JsonObject in = null;
 
+        Locale locale = Locale.ENGLISH;
+
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
@@ -281,7 +284,7 @@ public class MaezelServlet extends HttpServlet {
                 Boolean waitForCode = in.getBoolean("waitForCode");
                 // Consumer fields
                 String language = in.getString(Consumer.LANGUAGE);
-                Locale locale = new Locale(language);
+                locale = new Locale(language);
 
                 // Verification process
                 if (Consumer.EMAIL.equals(topic)) {
@@ -350,6 +353,19 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(ClientException ex) {
             out = new JsonException("CLIENT_EXCEPTION", ex.getMessage(), ex);
+        }
+        catch(TwitterException ex) {
+            if (ex.getStatusCode() == 403) { // 403: Forbidden
+                if (ex.getMessage().contains("<error>You cannot send messages to users who are not following you.</error>")) {
+                    out = new JsonException("TWITTER_USER_NOT_FOLLOWER", LabelExtractor.get("error_server_side_twetailer_not_followed", locale), ex);
+                }
+                else {
+                    out = new JsonException("TWITTER_FAILURE", LabelExtractor.get("error_server_side_twitter_not_responding", locale), ex);
+                }
+            }
+            else {
+                out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doPost() operation", ex);
+            }
         }
         catch(Exception ex) {
             // Prepare the exception report
