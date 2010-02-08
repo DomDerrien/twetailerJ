@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://twitter.com/sign-in" />
+<title>twitter-sign-in</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">sign-in</td></tr>
+</thead><tbody>
+<tr>
+	<td>echo</td>
+	<td>twitter-sign-in testing ....</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Twitter</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//td[@id='content']/div/h2</td>
+	<td>Sign in to Twitter</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username_or_email</td>
+	<td>katelynconsumer</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>consumer0001</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>signin_submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//form[@id='status_update_form']/fieldset/div[1]/h3/label</td>
+	<td>exact:What’s happening?</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>twitter-sign-in complete.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
