@@ -22,6 +22,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
@@ -74,6 +75,7 @@ public class ProposalProcessor {
         if (State.published.equals(proposal.getState())) {
             try {
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), null);
+                Store store = storeOperations.getStore(pm, proposal.getStoreKey());
                 if (State.published.equals(demand.getState())) {
                     Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
                     Double totalCost = proposal.getTotal();
@@ -89,7 +91,7 @@ public class ProposalProcessor {
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        "\\[Not yet implemented\\]",      // {6}: store name
+                                        store.getName(),                  // {6}: store name
                                         "\\$",                            // {7}: currency symbol
                                         price                             // {8}: price
                                 },
@@ -106,7 +108,7 @@ public class ProposalProcessor {
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        "\\[Not yet implemented\\]",      // {6}: store name
+                                        store.getName(),                  // {6}: store name
                                         "\\$",                            // {7}: currency symbol
                                         totalCost                         // {8}: total
                                 },
@@ -123,7 +125,7 @@ public class ProposalProcessor {
                                         demand.getSerializedCriteria(),   // {3}: demand tags
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        "\\[Not yet implemented\\]",      // {6}: store name
+                                        store.getName(),                  // {6}: store name
                                         "\\$",                            // {7}: currency symbol
                                         price,                            // {8}: price
                                         totalCost                         // {9}: total

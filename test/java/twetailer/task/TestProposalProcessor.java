@@ -29,11 +29,13 @@ import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
@@ -163,6 +165,18 @@ public class TestProposalProcessor {
             }
         };
 
+        final String name = "sgrognegneu";
+        ProposalProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
+
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -175,7 +189,7 @@ public class TestProposalProcessor {
                         demand.getSerializedCriteria(),
                         demand.getExpirationDate(),
                         proposal.getStoreKey(),
-                        "\\[Not yet implemented\\]",
+                        name,
                         currency,
                         total
                 },
@@ -261,6 +275,18 @@ public class TestProposalProcessor {
             }
         };
 
+        final String name = "sgrognegneu";
+        ProposalProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
+
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -273,7 +299,7 @@ public class TestProposalProcessor {
                         demand.getSerializedCriteria(),
                         demand.getExpirationDate(),
                         proposal.getStoreKey(),
-                        "\\[Not yet implemented\\]",
+                        name,
                         currency,
                         total
                 },
@@ -359,6 +385,18 @@ public class TestProposalProcessor {
             }
         };
 
+        final String name = "sgrognegneu";
+        ProposalProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
+
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -371,7 +409,7 @@ public class TestProposalProcessor {
                         demand.getSerializedCriteria(),
                         demand.getExpirationDate(),
                         proposal.getStoreKey(),
-                        "\\[Not yet implemented\\]",
+                        name,
                         currency,
                         price
                 },
@@ -457,6 +495,18 @@ public class TestProposalProcessor {
             }
         };
 
+        final String name = "sgrognegneu";
+        ProposalProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
+
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -469,7 +519,7 @@ public class TestProposalProcessor {
                         demand.getSerializedCriteria(),
                         demand.getExpirationDate(),
                         proposal.getStoreKey(),
-                        "\\[Not yet implemented\\]",
+                        name,
                         currency,
                         price
                 },
@@ -555,6 +605,18 @@ public class TestProposalProcessor {
             }
         };
 
+        final String name = "sgrognegneu";
+        ProposalProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
+
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -567,7 +629,7 @@ public class TestProposalProcessor {
                         demand.getSerializedCriteria(),
                         demand.getExpirationDate(),
                         proposal.getStoreKey(),
-                        "\\[Not yet implemented\\]",
+                        name,
                         currency,
                         price,
                         total
@@ -723,6 +785,18 @@ public class TestProposalProcessor {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
+            }
+        };
+
+        final String name = "sgrognegneu";
+        ProposalProcessor.storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
             }
         };
 
