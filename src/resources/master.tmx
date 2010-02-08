@@ -580,7 +580,7 @@
         </tu>
 
         <tu tuid="help_keyword_equivalents_#Demo" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>#demo</seg></tuv>
         </tu>
@@ -1571,9 +1571,19 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_tweet_demand" datatype="Text">
+        <tu tuid="cp_tweet_proposals_part" datatype="Text">
             <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: list of proposal keys separated by a space</note>
+            <tuv xml:lang="en">
+                <seg>proposal:[{0}]</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_demand" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
@@ -1588,15 +1598,16 @@
                 {6}: quantity
                 {7}: tags
                 {8}: hashtags
+                {9}: proposal keys
             </note>
             <tuv xml:lang="en">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}</seg>
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_tweet_proposal" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
@@ -1620,7 +1631,7 @@
 
         <tu tuid="cp_tweet_store" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space

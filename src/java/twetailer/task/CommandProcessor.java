@@ -93,6 +93,7 @@ public class CommandProcessor {
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
         String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
         String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
+        String proposals = demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
         // Compose the final message
         return LabelExtractor.get(
                 "cp_tweet_demand",
@@ -105,7 +106,8 @@ public class CommandProcessor {
                         range,
                         quantity,
                         tags,
-                        hashtags
+                        hashtags,
+                        proposals
                 },
                 locale
         ).trim();

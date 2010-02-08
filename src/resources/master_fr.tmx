@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
     <header creationtool="domderrien.i18n" creationtoolversion="1.0"
@@ -1176,28 +1176,36 @@
                 <seg>phone:{0}</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_tweet_demand" dataType="text">
+        <tu tuid="cp_tweet_proposals_part" dataType="text">
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}</seg>
+                <seg>proposal:[{0}]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_tweet_demand" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposal" dataType="text">
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}</seg>
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store" dataType="text">
             <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
+                <seg>{0}{1}{2}{3}{4}</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_demand_without_tag" dataType="text">

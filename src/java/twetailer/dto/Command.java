@@ -93,7 +93,7 @@ public class Command extends Entity {
     }
 
     public String getSerializedHashTags() {
-        return getSerializedHashTags(hashTags);
+        return getSerializedTags(HASH, hashTags);
     }
 
     public List<String> getHashTags() {
@@ -227,25 +227,24 @@ public class Command extends Entity {
     public final static String SPACE = " ";
     public final static String HASH = "#";
 
-    public static String getSerializedTags(List<String> keywords) {
-        if (keywords.size() == 0) {
-            return EMPTY_STRING;
-        }
-        StringBuilder out = new StringBuilder();
-        for(String criterion: keywords) {
-            out.append(criterion).append(SPACE);
-        }
-        out.setLength(out.length() - 1); // To remove the trailing space
-        return out.toString();
+    public static String getSerializedTags(List<?> keywords) {
+        return getSerializedTags(null, keywords);
     }
 
-    public static String getSerializedHashTags(List<String> keywords) {
+    public static String getSerializedTags(String prefix, List<?> keywords) {
         if (keywords.size() == 0) {
             return EMPTY_STRING;
         }
         StringBuilder out = new StringBuilder();
-        for(String criterion: keywords) {
-            out.append(HASH).append(criterion).append(SPACE);
+        if (prefix == null) {
+            for(Object keyword: keywords) {
+                out.append(keyword.toString()).append(SPACE);
+            }
+        }
+        else {
+            for(Object keyword: keywords) {
+                out.append(prefix).append(keyword.toString()).append(SPACE);
+            }
         }
         out.setLength(out.length() - 1); // To remove the trailing space
         return out.toString();
