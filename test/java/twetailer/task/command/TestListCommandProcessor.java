@@ -297,6 +297,8 @@ public class TestListCommandProcessor {
         final Long proposalKey = 2222L;
         final Long consumerKey = 3333L;
         final Long saleAssociateKey = 4444L;
+        final Long storeKey = 55555L;
+        final String name = "sgrognegneu";
 
         // ProposalOperations mock
         final ProposalOperations proposalOperations = new ProposalOperations() {
@@ -318,16 +320,29 @@ public class TestListCommandProcessor {
                 assertEquals(consumerKey, (Long) value);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setStoreKey(storeKey);
                 saleAssociate.setConsumerKey(consumerKey);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
         };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        CommandProcessor.storeOperations = storeOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();

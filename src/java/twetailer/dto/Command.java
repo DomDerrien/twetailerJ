@@ -93,7 +93,7 @@ public class Command extends Entity {
     }
 
     public String getSerializedHashTags() {
-        return Demand.getSerializedCriteria(hashTags);
+        return getSerializedHashTags(hashTags);
     }
 
     public List<String> getHashTags() {
@@ -221,5 +221,33 @@ public class Command extends Entity {
         if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
         return this;
+    }
+
+    public final static String EMPTY_STRING = "";
+    public final static String SPACE = " ";
+    public final static String HASH = "#";
+
+    public static String getSerializedTags(List<String> keywords) {
+        if (keywords.size() == 0) {
+            return EMPTY_STRING;
+        }
+        StringBuilder out = new StringBuilder();
+        for(String criterion: keywords) {
+            out.append(criterion).append(SPACE);
+        }
+        out.setLength(out.length() - 1); // To remove the trailing space
+        return out.toString();
+    }
+
+    public static String getSerializedHashTags(List<String> keywords) {
+        if (keywords.size() == 0) {
+            return EMPTY_STRING;
+        }
+        StringBuilder out = new StringBuilder();
+        for(String criterion: keywords) {
+            out.append(HASH).append(criterion).append(SPACE);
+        }
+        out.setLength(out.length() - 1); // To remove the trailing space
+        return out.toString();
     }
 }

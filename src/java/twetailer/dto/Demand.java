@@ -100,7 +100,7 @@ public class Demand extends Command {
     }
 
     public String getSerializedCriteria() {
-        return getSerializedCriteria(criteria);
+        return getSerializedTags(criteria);
     }
 
     public List<String> getCriteria() {
@@ -387,19 +387,5 @@ public class Demand extends Command {
                 }
             }
         }
-    }
-
-    public final static String EMPTY_STRING = "";
-
-    public static String getSerializedCriteria(List<String> criteria) {
-        if (criteria.size() == 0) {
-            return EMPTY_STRING;
-        }
-        StringBuilder out = new StringBuilder();
-        for(String criterion: criteria) {
-            out.append(criterion).append(" ");
-        }
-        out.setLength(out.length() - 1); // To remove the trailing space
-        return out.toString();
     }
 }

@@ -13,6 +13,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.CommandSettings.Action;
@@ -94,7 +95,8 @@ public class CancelCommandProcessor {
                 proposal.setState(State.cancelled);
                 // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
-                message = CommandProcessor.generateTweet(proposal, saleAssociate.getLocale());
+                Store store = CommandProcessor.storeOperations.getStore(pm, saleAssociate.getStoreKey());
+                message = CommandProcessor.generateTweet(proposal, store, saleAssociate.getLocale());
                 if (!State.declined.equals(previousState)) {
                     proposal.getState();
                     // FIXME: inform the consumer who owns the attached demand about the cancellation

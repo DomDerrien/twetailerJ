@@ -16,6 +16,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
@@ -39,6 +40,7 @@ public class ProposeCommandProcessor {
         //
         Long proposalKey = 0L;
         SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.propose);
+        Store store = CommandProcessor.storeOperations.getStore(pm, saleAssociate.getStoreKey());
         List<String> messages = new ArrayList<String>();
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             // Update the proposal attributes
@@ -47,7 +49,7 @@ public class ProposeCommandProcessor {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, saleAssociate.getStoreKey());
             }
             catch(Exception ex) {
-                messages.add(LabelExtractor.get("cp_command_propose_invalid_proposal_id", consumer.getLocale()));
+                messages.add(LabelExtractor.get("cp_command_propose_invalid_proposal_id", saleAssociate.getLocale()));
             }
             if (proposal != null) {
                 State state = proposal.getState();
@@ -56,12 +58,12 @@ public class ProposeCommandProcessor {
                     proposal.setState(State.opened); // Will force the re-validation of the entire proposal
                     proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                     // Echo back the updated proposal
-                    messages.add(CommandProcessor.generateTweet(proposal, consumer.getLocale()));
+                    messages.add(CommandProcessor.generateTweet(proposal, store, saleAssociate.getLocale()));
                     // Get the proposalKey for the task scheduling
                     proposalKey = proposal.getKey();
                 }
                 else {
-                    messages.add(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposal.getKey(), state }, consumer.getLocale()));
+                    messages.add(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposal.getKey(), state }, saleAssociate.getLocale()));
                 }
             }
         }
@@ -75,10 +77,10 @@ public class ProposeCommandProcessor {
                     LabelExtractor.get(
                             "cp_command_propose_acknowledge_creation",
                             new Object[] { newProposal.getKey() },
-                            consumer.getLocale()
+                            saleAssociate.getLocale()
                     )
             );
-            messages.add(CommandProcessor.generateTweet(newProposal, consumer.getLocale()));
+            messages.add(CommandProcessor.generateTweet(newProposal, store, saleAssociate.getLocale()));
             // Get the proposalKey for the task scheduling
             proposalKey = newProposal.getKey();
         }

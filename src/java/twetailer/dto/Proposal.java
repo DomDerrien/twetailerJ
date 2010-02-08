@@ -83,7 +83,7 @@ public class Proposal extends Command {
     }
 
     public String getSerializedCriteria() {
-        return Demand.getSerializedCriteria(criteria);
+        return getSerializedTags(criteria);
     }
 
     public List<String> getCriteria() {

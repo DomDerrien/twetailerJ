@@ -57,6 +57,9 @@ public class TestCommandLineSyntax {
             else if (Prefix.hash.equals(prefix)) {
                 equivalents.add("#");
             }
+            if (Prefix.expiration.equals(prefix)) {
+                equivalents.add("expires");
+            }
             prefixes.put(prefix.toString(), equivalents);
         }
         CommandLineParser.localizedPrefixes.put(Locale.ENGLISH, prefixes);
@@ -736,7 +739,7 @@ public class TestCommandLineSyntax {
         JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0) + ":2025-01-01"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + ":2025-01-01"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
@@ -755,13 +758,16 @@ public class TestCommandLineSyntax {
         proposal.setDemandKey(12345L);
         proposal.setPrice(25.99D);
         proposal.setQuantity(3L);
-        proposal.setStoreKey(67890L);
         proposal.setState(State.published);
         proposal.setTotal(35.33D);
 
+        Store store = new Store();
+        store.setKey(67890L);
+        store.setName("sgrognegneu");
+
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(proposal, locale);
+        String response = CommandProcessor.generateTweet(proposal, store, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
@@ -773,6 +779,7 @@ public class TestCommandLineSyntax {
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + ":67890"));
+        assertTrue(response.contains("sgrognegneu"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":35.33"));
     }
@@ -786,6 +793,7 @@ public class TestCommandLineSyntax {
         demand.setRange(4.0D);
         demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
         demand.setState(State.published);
+        demand.addHashTag("demo");
 
         Locale locale = Locale.ENGLISH;
 
@@ -797,11 +805,12 @@ public class TestCommandLineSyntax {
         JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0) + ":2025-01-01"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + ":2025-01-01"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)));
+        assertTrue(response.contains("#demo"));
     }
 
     @Test
@@ -828,12 +837,14 @@ public class TestCommandLineSyntax {
         proposal.setPrice(25.99D);
         proposal.setQuantity(3L);
         proposal.setState(State.published);
-        proposal.setStoreKey(67890L);
         proposal.setTotal(35.33D);
+        proposal.addHashTag("demo");
+
+        Store store = null;
 
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(proposal, locale);
+        String response = CommandProcessor.generateTweet(proposal, store, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
@@ -844,9 +855,9 @@ public class TestCommandLineSyntax {
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + ":67890"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":35.33"));
+        assertTrue(response.contains("#demo"));
     }
 
     @Test

@@ -95,7 +95,8 @@ public class ListCommandProcessor {
             }
             if (proposal != null) {
                 // Echo back the specified proposal
-                message = CommandProcessor.generateTweet(proposal, saleAssociate.getLocale());
+                Store store = CommandProcessor.storeOperations.getStore(pm, saleAssociate.getStoreKey());
+                message = CommandProcessor.generateTweet(proposal, store, saleAssociate.getLocale());
             }
             communicateToSaleAssociate(
                     rawCommand,
