@@ -199,13 +199,20 @@ public class TestCommand {
     }
 
     @Test
-    public void testGetSerialized() {
+    public void testGetSerializedHashTagsI() {
+        Command command = new Command();
+
+        assertEquals("", command.getSerializedHashTags());
+    }
+
+    @Test
+    public void testGetSerializedHashTagsII() {
         Command command = new Command();
         command.addHashTag("one");
         command.addHashTag("two");
         command.addHashTag("three");
 
-        assertEquals("one two three", command.getSerializedHashTags());
+        assertEquals("#one #two #three", command.getSerializedHashTags());
     }
 
     @Test

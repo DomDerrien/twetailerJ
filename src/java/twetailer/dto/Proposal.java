@@ -7,14 +7,12 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
-
-import twetailer.connector.BaseConnector.Source;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Proposal extends Command {
@@ -85,7 +83,7 @@ public class Proposal extends Command {
     }
 
     public String getSerializedCriteria() {
-        return Demand.getSerializedCriteria(criteria);
+        return getSerializedTags(criteria);
     }
 
     public List<String> getCriteria() {

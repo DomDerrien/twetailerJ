@@ -25,6 +25,7 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -32,6 +33,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
@@ -205,6 +207,8 @@ public class TestCancelCommandProcessor {
         final Long consumerKey = 2222L;
         final Long saleAssociateKey = 3333L;
         final Long proposalKey = 5555L;
+        final Long storeKey = 66666L;
+        final String name = "sgrognegneu";
 
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
@@ -214,6 +218,7 @@ public class TestCancelCommandProcessor {
                 assertEquals(consumerKey, (Long) value);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setStoreKey(storeKey);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
@@ -234,10 +239,22 @@ public class TestCancelCommandProcessor {
                 return proposal;
             }
         };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
+            }
+        };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        CommandProcessor.storeOperations = storeOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -692,6 +709,8 @@ public class TestCancelCommandProcessor {
         final State state = State.declined;
         final Long consumerKey = 3333L;
         final Long saleAssociateKey = 4444L;
+        final Long storeKey = 55555L;
+        final String name = "sgrognegneu";
 
         // ProposalOperations mock
         final ProposalOperations proposalOperations = new ProposalOperations() {
@@ -716,15 +735,28 @@ public class TestCancelCommandProcessor {
                 assertEquals(consumerKey, (Long) value);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setStoreKey(storeKey);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(name);
+                return store;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        CommandProcessor.storeOperations = storeOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();

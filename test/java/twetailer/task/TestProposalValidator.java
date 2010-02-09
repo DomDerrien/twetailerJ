@@ -28,7 +28,6 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
-import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
@@ -811,7 +810,6 @@ public class TestProposalValidator {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testProcessXIV() throws DataSourceException {
         //
         // Error while informing about the error

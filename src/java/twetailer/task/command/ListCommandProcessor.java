@@ -14,6 +14,7 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -85,23 +86,57 @@ public class ListCommandProcessor {
             // }
             // 2.2 Get the details about the identified proposal
             Proposal proposal = null;
+            SaleAssociate saleAssociate = null;
             String message = null;
-            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.list);
             try {
-                proposal = CommandProcessor.proposalOperations.getProposal(pm, proposalKey, saleAssociate.getKey(), null);
+                // Try to get the proposal
+                proposal = CommandProcessor.proposalOperations.getProposal(pm, proposalKey, null, null);
             }
             catch(Exception ex) {
-                message = LabelExtractor.get("cp_command_list_invalid_proposal_id", saleAssociate.getLocale());
+                message = LabelExtractor.get("cp_command_list_invalid_proposal_id", consumer.getLocale());
+            }
+            boolean checkIfConsumerOwnsDemand = false;
+            try {
+                // Try to get the proposal owner
+                saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.list);
+                if (proposal != null && !saleAssociate.getKey().equals(proposal.getOwnerKey())) {
+                    checkIfConsumerOwnsDemand = true;
+                }
+            }
+            catch(ReservedOperationException ex) {
+                checkIfConsumerOwnsDemand = true;
+            }
+            if (checkIfConsumerOwnsDemand) {
+                if (proposal != null) {
+                    // Try to get the associated demand -- will fail if the querying consumer does own the demand
+                    try {
+                        CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), consumer.getKey());
+                    }
+                    catch(Exception nestedEx) {
+                        message = LabelExtractor.get("cp_command_list_invalid_proposal_id", consumer.getLocale());
+                        proposal = null;
+                    }
+                }
             }
             if (proposal != null) {
                 // Echo back the specified proposal
-                message = CommandProcessor.generateTweet(proposal, saleAssociate.getLocale());
+                Store store = CommandProcessor.storeOperations.getStore(pm, proposal.getStoreKey());
+                message = CommandProcessor.generateTweet(proposal, store, saleAssociate == null ? consumer.getLocale() : saleAssociate.getLocale());
             }
-            communicateToSaleAssociate(
-                    rawCommand,
-                    saleAssociate,
-                    new String[] { message }
-            );
+            if (saleAssociate != null) {
+                communicateToSaleAssociate(
+                        rawCommand,
+                        saleAssociate,
+                        new String[] { message }
+                );
+            }
+            else {
+                communicateToConsumer(
+                        rawCommand,
+                        consumer,
+                        new String[] { message }
+                );
+            }
             return;
         }
         if (command.containsKey(Store.STORE_KEY)) {

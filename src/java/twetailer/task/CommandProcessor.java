@@ -83,73 +83,74 @@ public class CommandProcessor {
      */
     public static String generateTweet(Demand demand, Location location, Locale locale) {
         final String space = " ";
-        StringBuilder tweet = new StringBuilder();
-        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        JsonObject actions = CommandLineParser.localizedActions.get(locale);
-        tweet.append(prefixes.getJsonArray(Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(demand.getAction().toString()).getString(0)).append(space);
-        if (demand.getKey() != null) {
-            tweet.append(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)).append(":").append(demand.getKey()).append(space);
-        }
-        JsonObject states = CommandLineParser.localizedStates.get(locale);
-        tweet.append(prefixes.getJsonArray(Prefix.state.toString()).getString(0)).append(":").append(states.getString(demand.getState().toString())).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.expiration.toString()).getString(0)).append(":").append(DateUtils.dateToYMD(demand.getExpirationDate())).append(space);
-        if (location != null && location.getPostalCode() != null) { // && location.getCountryCode() != null) { // CountryCode always set!
-            tweet.append(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
-        }
-        tweet.append(prefixes.getJsonArray(Prefix.range.toString()).getString(0)).append(":").append(demand.getRange()).append(demand.getRangeUnit()).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0)).append(":").append(demand.getQuantity()).append(space);
-        if (0 < demand.getHashTags().size()) {
-            for (String tag: demand.getHashTags()) {
-                // tweet.append(prefixes.getJsonArray(Prefix.hash.toString()).getString(0)).append(":");
-                tweet.append("#");
-                tweet.append(tag).append(space);
-            }
-        }
-        if (0 < demand.getCriteria().size()) {
-            tweet.append(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)).append(":");
-            for (String tag: demand.getCriteria()) {
-                tweet.append(tag).append(space);
-            }
-        }
-        return tweet.toString();
+        // Get the labels for each demand attributes
+        String action = LabelExtractor.get("cp_tweet_demand_action_part", locale) + space;
+        String reference = demand.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
+        String state = LabelExtractor.get("cp_tweet_state_part", new Object[] { demand.getState() }, locale) + space;
+        String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { DateUtils.dateToYMD(demand.getExpirationDate()) }, locale) + space;
+        String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get("cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
+        String range = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange(), demand.getRangeUnit() }, locale) + space;
+        String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
+        String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
+        String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
+        String proposals = demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
+        // Compose the final message
+        return LabelExtractor.get(
+                "cp_tweet_demand",
+                new Object[] {
+                        action,
+                        reference,
+                        state,
+                        expiration,
+                        coordinates,
+                        range,
+                        quantity,
+                        tags,
+                        hashtags,
+                        proposals
+                },
+                locale
+        ).trim();
     }
 
     /**
      * Prepare a message to be submit a user
      *
      * @param proposal Proposal to process
+     * @param store Store where the Sale Associate who created the proposal works
      * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
      */
-    public static String generateTweet(Proposal proposal, Locale locale) {
-        //
-        // TODO: use the storeKey to send the store information?
-        // TODO: with the demand containing a list of proposal keys, use of the proposal key index in that table as a proposal key equivalent
-        //
+    public static String generateTweet(Proposal proposal, Store store, Locale locale) {
         final String space = " ";
-        StringBuilder tweet = new StringBuilder();
-        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        JsonObject actions = CommandLineParser.localizedActions.get(locale);
-        tweet.append(prefixes.getJsonArray(Prefix.action.toString()).getString(0)).append(":").append(actions.getJsonArray(proposal.getAction().toString()).getString(0)).append(space);
-        if (proposal.getKey() != null) {
-            tweet.append(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)).append(":").append(proposal.getKey()).append(space);
-        }
-        if (proposal.getDemandKey() != null) {
-            tweet.append(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)).append(":").append(proposal.getDemandKey()).append(space);
-        }
-        JsonObject states = CommandLineParser.localizedStates.get(locale);
-        tweet.append(prefixes.getJsonArray(Prefix.state.toString()).getString(0)).append(":").append(states.getString(proposal.getState().toString())).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.store.toString()).getString(0)).append(":").append(proposal.getStoreKey()).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0)).append(":").append(proposal.getQuantity()).append(space);
-        if (0 < proposal.getCriteria().size()) {
-            tweet.append(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)).append(":");
-            for (String tag: proposal.getCriteria()) {
-                tweet.append(tag).append(space);
-            }
-        }
-        tweet.append(prefixes.getJsonArray(Prefix.price.toString()).getString(0)).append(":").append(proposal.getPrice()).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.total.toString()).getString(0)).append(":").append(proposal.getTotal()).append(space);
-        return tweet.toString();
+        // Get the labels for each proposal attributes
+        String action = LabelExtractor.get("cp_tweet_propose_action_part", locale) + space;
+        String reference = proposal.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
+        String demand = proposal.getDemandKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
+        String state = LabelExtractor.get("cp_tweet_state_part", new Object[] { proposal.getState() }, locale) + space;
+        String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
+        String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
+        String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
+        String price = LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice() }, locale) + space;
+        String total = LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal() }, locale) + space;
+        String pickup = store == null ? "" : (LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale) + space);
+        // Compose the final message
+        return LabelExtractor.get(
+                "cp_tweet_proposal",
+                new Object[] {
+                        action,
+                        reference,
+                        demand,
+                        state,
+                        quantity,
+                        tags,
+                        hashtags,
+                        price,
+                        total,
+                        pickup
+                },
+                locale
+        ).trim();
     }
 
     /**
@@ -162,18 +163,24 @@ public class CommandProcessor {
      */
     public static String generateTweet(Store store, Location location, Locale locale) {
         final String space = " ";
-        StringBuilder tweet = new StringBuilder();
-        JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        tweet.append(prefixes.getJsonArray(Prefix.store.toString()).getString(0)).append(":").append(store.getKey().toString()).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.name.toString()).getString(0)).append(":").append(store.getName()).append(space);
-        tweet.append(prefixes.getJsonArray(Prefix.address.toString()).getString(0)).append(":").append(store.getAddress()).append(space);
-        if (store.getPhoneNumber() != null) {
-            tweet.append(prefixes.getJsonArray(Prefix.phoneNumber.toString()).getString(0)).append(":").append(store.getPhoneNumber()).append(space);
-        }
-        if (location != null && location.getPostalCode() != null) { // && location.getCountryCode() != null) { // CountryCode always set!
-            tweet.append(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)).append(":").append(location.getPostalCode()).append(space).append(location.getCountryCode()).append(space);
-        }
-        return tweet.toString();
+        // Get the labels for each store attributes
+        String reference = store.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_store_reference_part", new Object[] { store.getKey() }, locale) + space);
+        String name = store.getName() == null ? "" : (LabelExtractor.get("cp_tweet_name_part", new Object[] { store.getName() }, locale) + space);
+        String address = store.getAddress() == null ? "" : (LabelExtractor.get("cp_tweet_address_part", new Object[] { store.getAddress() }, locale) + space);
+        String phone = store.getPhoneNumber() == null ? "" : (LabelExtractor.get("cp_tweet_phone_part", new Object[] { store.getPhoneNumber() }, locale) + space);
+        String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get("cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
+        // Compose the final message
+        return LabelExtractor.get(
+                "cp_tweet_store",
+                new Object[] {
+                        reference,
+                        name,
+                        address,
+                        coordinates,
+                        phone
+                },
+                locale
+        ).trim();
     }
 
     /**

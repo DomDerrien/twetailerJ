@@ -287,8 +287,8 @@
                                 onclick="twetailer.Console.verifyConsumerCode('<%= Consumer.EMAIL %>','consumerEmail');"
                             ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button>
                             <input dojoType="dijit.form.NumberTextBox" id="consumerEmailCode" name="<%= Consumer.EMAIL %>Code" style="width:10em;display:none;" type="text" />
-                            <button
-                                disabled="<%= (email == null || "".equals(email)) ? "true" : "false" %>"
+                            <button<% if (email == null || "".equals(email)) { %>
+                                disabled="true"<% } %>
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconCancel"
                                 id="consumerEmailResetButton"
@@ -315,8 +315,8 @@
                                 onclick="twetailer.Console.verifyConsumerCode('<%= Consumer.JABBER_ID %>','consumerJabberId');"
                             ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button>
                             <input dojoType="dijit.form.NumberTextBox" id="consumerJabberIdCode" name="<%= Consumer.JABBER_ID %>Code" style="width:10em;display:none;" type="text" />
-                            <button
-                                disabled="<%= (jabberId == null || "".equals(jabberId)) ? "true" : "false" %>"
+                            <button<% if (jabberId == null || "".equals(jabberId)) { %>
+                                disabled="true"<% } %>
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconCancel"
                                 id="consumerJabberIdResetButton"
@@ -346,8 +346,8 @@
                                 onclick="twetailer.Console.verifyConsumerCode('<%= Consumer.TWITTER_ID %>','consumerTwitterId');"
                             ><%= LabelExtractor.get(ResourceFileId.third, "verify_button", locale) %></button>
                             <input dojoType="dijit.form.NumberTextBox" id="consumerTwitterIdCode" name="<%= Consumer.TWITTER_ID %>Code" style="width:10em;display:none;" type="text" />
-                            <button
-                                disabled="<%= (twitterId == null || "".equals(twitterId)) ? "true" : "false" %>"
+                            <button<% if (twitterId == null || "".equals(twitterId)) { %>
+                                disabled="true"<% } %>
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconCancel"
                                 id="consumerTwitterIdResetButton"

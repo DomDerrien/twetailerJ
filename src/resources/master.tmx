@@ -580,7 +580,7 @@
         </tu>
 
         <tu tuid="help_keyword_equivalents_#Demo" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>#demo</seg></tuv>
         </tu>
@@ -1381,6 +1381,270 @@
             </note>
             <tuv xml:lang="en">
                 <seg>:-) Listing {1} tags: {0}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_demand_action_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>!demand</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_propose_action_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>!propose</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_demand_reference_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand reference</note>
+            <tuv xml:lang="en">
+                <seg>reference:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_proposal_reference_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: proposal reference</note>
+            <tuv xml:lang="en">
+                <seg>proposal:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_store_reference_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: store reference</note>
+            <tuv xml:lang="en">
+                <seg>store:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_state_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand state</note>
+            <tuv xml:lang="en">
+                <seg>state:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_expiration_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand expiration date</note>
+            <tuv xml:lang="en">
+                <seg>expires:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_locale_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: postal code
+                {1}: country code
+            </note>
+            <tuv xml:lang="en">
+                <seg>locale:{0} {1}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_range_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: range (digits)
+                {1}: range unit (km or mi)
+            </note>
+            <tuv xml:lang="en">
+                <seg>range:{0}{1}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_quantity_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand quantity</note>
+            <tuv xml:lang="en">
+                <seg>quantity:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_tags_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: serialized demand tags (separated by a space)</note>
+            <tuv xml:lang="en">
+                <seg>tags:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_hashtags_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: serialized demand hashtags (separated by a space)</note>
+            <tuv xml:lang="en">
+                <seg>{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_price_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: proposal unit price</note>
+            <tuv xml:lang="en">
+                <seg>price:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_total_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: proposal total cost</note>
+            <tuv xml:lang="en">
+                <seg>total:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_store_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: store key
+                {1}: store name
+            </note>
+            <tuv xml:lang="en">
+                <seg>store:{0} [{1}]</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_name_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: store name</note>
+            <tuv xml:lang="en">
+                <seg>name:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_address_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: store address</note>
+            <tuv xml:lang="en">
+                <seg>address:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_phone_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: store phone number</note>
+            <tuv xml:lang="en">
+                <seg>phone:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_proposals_part" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: list of proposal keys separated by a space</note>
+            <tuv xml:lang="en">
+                <seg>proposal:[{0}]</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_demand" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: action
+                {1}: demand reference
+                {2}: state
+                {3}: expiration
+                {4}: locale (postal and country codes)
+                {5}: range
+                {6}: quantity
+                {7}: tags
+                {8}: hashtags
+                {9}: proposal keys
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_proposal" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: action
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: state
+                {4}: quantity
+                {5}: tags
+                {6}: hashtags
+                {7}: unit price
+                {8}: range
+                {9}: short store identifier
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_store" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: store reference
+                {1}: name
+                {2}: address
+                {3}: locale (postal and country codes)
+                {4}: phone number
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}</seg>
             </tuv>
         </tu>
 

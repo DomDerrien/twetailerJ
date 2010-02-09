@@ -112,7 +112,7 @@ public class TestCommandProcessor {
         CommandProcessor.rawCommandOperations = CommandProcessor._baseOperations.getRawCommandOperations();
         CommandProcessor.saleAssociateOperations = CommandProcessor._baseOperations.getSaleAssociateOperations();
         CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
-        // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
+        CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
         CommandLineParser.localizedPrefixes = new HashMap<Locale, JsonObject>();
         CommandLineParser.localizedActions = new HashMap<Locale, JsonObject>();
@@ -558,7 +558,6 @@ public class TestCommandProcessor {
     @Test
     public void testGenerateTweetForStoreII() {
         Store store = new Store();
-        store.setKey(12345L);
         String name = "Grumb LLC inc.";
         store.setName(name);
         store.setAddress("432 Lane W, Montreal, Qc, Canada");
@@ -566,9 +565,10 @@ public class TestCommandProcessor {
         store.setPhoneNumber(phoneNumber);
 
         String tweet = CommandProcessor.generateTweet(store, null, Locale.ENGLISH);
+
         assertNotSame(0, tweet.length());
         assertTrue(tweet.contains(name));
-        assertTrue(tweet.contains(Prefix.phoneNumber.toString()));
+        assertTrue(tweet.contains("phone")); // Prefix.phoneNumber.toString()));
         assertTrue(tweet.contains(phoneNumber));
         assertFalse(tweet.contains(Prefix.locale.toString()));
     }

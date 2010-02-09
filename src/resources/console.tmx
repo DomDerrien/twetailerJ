@@ -566,5 +566,23 @@
                 </seg>
             </tuv>
         </tu>
+
+        <tu tuid="error_server_side_twitter_not_responding" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Twetailer experiences issues while trying to communicate over Twitter. Please try when Twitter server is back online.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_server_side_twetailer_not_followed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Twetailer cannot send direct messages to users who are not following it. You must follow @twetailer in order to use it from Twitter.</seg>
+            </tuv>
+        </tu>
     </body>
 </tmx>
