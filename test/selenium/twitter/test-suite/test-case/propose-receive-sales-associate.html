@@ -4,61 +4,46 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://twitter.com" />
-<title>demand-create-receive</title>
+<title>propose-receive-sales-associate</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">demand-create-receive</td></tr>
+<tr><td rowspan="1" colspan="3">propose-receive-sales-associate</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>demand-create-receive testing ....</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertText</td>
-	<td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li/span[2]/span[2]</td>
-	<td>*${timeMS}</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>asserted: *${timeMS}</td>
+	<td>propose-receive-sales-associate testing ....</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertText</td>
 	<td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li[2]/span[2]/span[2]</td>
-	<td>regexp:Listing newly created Demand Reference:[0-9]{5}</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>asserted: Listing newly created Demand Reference:[0-9]{5}</td>
-	<td></td>
+	<td>regexp:!propose proposal:[0-9]{5} reference:${ref} state:opened quantity:1 tags:propose-send-sales-associate ${timeMS} price:100.0 total:0.0</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li[2]/span[2]/span[2]</td>
-	<td>confirmCreate</td>
+	<td>listing</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>${confirmCreate}</td>
+	<td>${listing}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>storeEval</td>
-	<td>storedVars[&quot;confirmCreate&quot;].match(/\d+/)</td>
-	<td>ref</td>
+	<td>storedVars[&quot;listing&quot;].match(/\d+/)</td>
+	<td>proposal</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>created ref:${ref}</td>
+	<td>created proposal:${proposal}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>demand-create-receive complete.</td>
+	<td>propose-receive-sales-associate complete.</td>
 	<td></td>
 </tr>
 

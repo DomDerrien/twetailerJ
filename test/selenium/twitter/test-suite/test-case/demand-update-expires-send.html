@@ -4,31 +4,41 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>demand-update-range-receive</title>
+<title>demand-update-expires-send</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">demand-update-range-receive</td></tr>
+<tr><td rowspan="1" colspan="3">demand-update-expires-send</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>demand-update-range-receive testing ...</td>
+	<td>demand-update-expires-send testing ...</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>*reference:${ref}*range:${rangeReceive}</td>
+	<td>select</td>
+	<td>direct_message_user_id</td>
+	<td>label=twetailer</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>text</td>
+	<td>ref:${ref} expires:${expiresSend}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>typed: ref:${ref} expires:${expiresSend}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>dm-submit</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>asserted: *reference:${ref}*range:${rangeReceive}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>demand-update-range-receive complete.</td>
+	<td>demand-update-expires-send complete.</td>
 	<td></td>
 </tr>
 

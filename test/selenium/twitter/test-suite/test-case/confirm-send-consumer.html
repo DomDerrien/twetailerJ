@@ -4,16 +4,16 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>demand-update-expiration-send</title>
+<title>confirm-send-consumer</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">demand-update-expiration-send</td></tr>
+<tr><td rowspan="1" colspan="3">confirm-send-consumer</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>demand-update-expiration-send testing ...</td>
+	<td>confirm-send-consumer testing ...</td>
 	<td></td>
 </tr>
 <tr>
@@ -24,11 +24,11 @@
 <tr>
 	<td>type</td>
 	<td>text</td>
-	<td>ref:${ref} expiration:${expiresSend}</td>
+	<td>!confirm proposal:${proposal}</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>typed: ref:${ref} expiration:${expiresSend}</td>
+	<td>typed: !confirm proposal:${proposal}</td>
 	<td></td>
 </tr>
 <tr>
@@ -38,7 +38,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>demand-update-expiration-send complete.</td>
+	<td>confirm-send-consumer complete.</td>
 	<td></td>
 </tr>
 

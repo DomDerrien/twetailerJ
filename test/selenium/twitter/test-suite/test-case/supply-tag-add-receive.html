@@ -3,32 +3,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="" />
-<title>demand-update-expiration-receive</title>
+<link rel="selenium.base" href="http://twitter.com" />
+<title>supply-tag-add-receive</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">demand-update-expiration-receive</td></tr>
+<tr><td rowspan="1" colspan="3">supply-tag-add-receive</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>demand-update-expiration-receive testing ...</td>
+	<td>supply-tag-add-receive testing ....</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>*reference:${ref}*expiration:${expiresReceive}</td>
+	<td>*${timeMS}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>asserted: *reference:${ref}*expiration:${expiresReceive}</td>
+	<td>asserted: *${timeMS}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>regexp:Listing [0-9]{1,5} tags:</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>demand-update-expiration-receive complete.</td>
+	<td>asserted: Listing [0-9]{1,5} tags:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>supply-tag-add-receive complete.</td>
 	<td></td>
 </tr>
 
