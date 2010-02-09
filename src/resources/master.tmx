@@ -1385,7 +1385,6 @@
         </tu>
 
         <tu tuid="cp_tweet_demand_action_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
@@ -1394,7 +1393,6 @@
         </tu>
 
         <tu tuid="cp_tweet_propose_action_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
@@ -1403,7 +1401,6 @@
         </tu>
 
         <tu tuid="cp_tweet_demand_reference_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: demand reference</note>
@@ -1413,7 +1410,6 @@
         </tu>
 
         <tu tuid="cp_tweet_proposal_reference_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: proposal reference</note>
@@ -1423,7 +1419,6 @@
         </tu>
 
         <tu tuid="cp_tweet_store_reference_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: store reference</note>
@@ -1433,7 +1428,6 @@
         </tu>
 
         <tu tuid="cp_tweet_state_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: demand state</note>
@@ -1443,7 +1437,6 @@
         </tu>
 
         <tu tuid="cp_tweet_expiration_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: demand expiration date</note>
@@ -1453,7 +1446,6 @@
         </tu>
 
         <tu tuid="cp_tweet_locale_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1466,7 +1458,6 @@
         </tu>
 
         <tu tuid="cp_tweet_range_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1479,7 +1470,6 @@
         </tu>
 
         <tu tuid="cp_tweet_quantity_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: demand quantity</note>
@@ -1489,7 +1479,6 @@
         </tu>
 
         <tu tuid="cp_tweet_tags_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: serialized demand tags (separated by a space)</note>
@@ -1499,7 +1488,6 @@
         </tu>
 
         <tu tuid="cp_tweet_hashtags_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: serialized demand hashtags (separated by a space)</note>
@@ -1509,7 +1497,6 @@
         </tu>
 
         <tu tuid="cp_tweet_price_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: proposal unit price</note>
@@ -1519,7 +1506,6 @@
         </tu>
 
         <tu tuid="cp_tweet_total_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: proposal total cost</note>
@@ -1529,7 +1515,6 @@
         </tu>
 
         <tu tuid="cp_tweet_store_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1542,7 +1527,6 @@
         </tu>
 
         <tu tuid="cp_tweet_name_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: store name</note>
@@ -1552,7 +1536,6 @@
         </tu>
 
         <tu tuid="cp_tweet_address_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: store address</note>
@@ -1562,7 +1545,6 @@
         </tu>
 
         <tu tuid="cp_tweet_phone_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: store phone number</note>
@@ -1572,7 +1554,6 @@
         </tu>
 
         <tu tuid="cp_tweet_proposals_part" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>{0}: list of proposal keys separated by a space</note>
@@ -1582,7 +1563,6 @@
         </tu>
 
         <tu tuid="cp_tweet_demand" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1606,7 +1586,6 @@
         </tu>
 
         <tu tuid="cp_tweet_proposal" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1630,7 +1609,6 @@
         </tu>
 
         <tu tuid="cp_tweet_store" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
