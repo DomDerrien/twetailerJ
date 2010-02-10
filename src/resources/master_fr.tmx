@@ -953,87 +953,91 @@
                 <seg>:-) There are no active Demands to list.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_list_demand_series_introduction" dataType="text">
+        <tu tuid="cp_command_list_personal_demand_series_introduction" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} active Demand(s)...</seg>
+                <seg>:-) Listing {0} personal active Demand(s)...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_with_new_location" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>You've just submitted a locale:{0} {1} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
+                <seg>You've just submitted a {0} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_demand_missing_location" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Demand like "ref:{0} locale:12345 us"
-                </seg>
+                <seg>:-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your command for "!list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_demand_in_location" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find any Demands within {2}{3} of locale:{0} {1}.</seg>
+                <seg>:-( I can't find any active Demands within {1} of {2}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_demand_series_introduction" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} active Demand(s)...</seg>
+                <seg>:-) Listing {0} active Demand(s) for {2} of {1}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_proposal_missing_location" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Proposal like "ref:{0} locale:12345 us"
-                </seg>
+                <seg>:-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your command for "!list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_proposal_in_location" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find any Proposals within {2}{3} of locale:{0} {1}.</seg>
+                <seg>:-( I can't find any active Proposals within {1} of {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_proposal_series_introduction" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} Proposal(s)...</seg>
+                <seg>:-) Listing {0} active Demand(s) for {2} of {1}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_missing_location" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Demand like "ref:{0} locale:12345 us"
-                </seg>
+                <seg>:-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your command for "!list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_store_in_location" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find any Stores within {2}{3} of locale:{0} {1}.</seg>
+                <seg>:-( I can't find any Stores within {1} of {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_series_introduction" dataType="text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">6</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} Store(s)...</seg>
+                <seg>:-) Listing {0} active Store(s) for {2} of {1}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_propose_invalid_proposal_id" dataType="text">

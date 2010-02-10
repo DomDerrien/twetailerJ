@@ -1253,156 +1253,155 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_list_demand_series_introduction" datatype="Text">
-            <prop type="x-version">2</prop>
+        <tu tuid="cp_command_list_personal_demand_series_introduction" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message introducing the series of messages to be sent in response to a !list command.|
+                Message introducing the series of messages, owned by the consumer requesting the list, to be sent in response to a !list command.|
                 {0}: number of messages to be sent
+                Attention: it's not the same message as "cp_command_list_demand_series_introduction", because all active demands, whereever they are located, will be listed
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {0} active Demand(s)...</seg>
+                <seg>:-) Listing {0} personal active Demand(s)...</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_with_new_location" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.
-                {0}: postal code
-                {1}: country code
+                {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
             </note>
             <tuv xml:lang="en">
-                <seg>You've just submitted a locale:{0} {1} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
+                <seg>You've just submitted a {0} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_demand_missing_location" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that location information is missing for the !list demand:* command.
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') with the command "!list reference:* locale:12345 us"
-                </seg>
+                <seg>:-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your command for "!list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_no_demand_in_location" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list demand:* command.
-                {0}: postal code
-                {1}: country code
-                {2}: range
-                {3}: range unit
+                {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
+                {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( I can't find any active Demands within {2}{3} of locale:{0} {1}.</seg>
+                <seg>:-( I can't find any active Demands within {1} of {2}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_demand_series_introduction" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list demand:* command.|
                 {0}: number of messages to be sent
+                {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
+                {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {0} Demand(s)...</seg>
+                <seg>:-) Listing {0} active Demand(s) for {2} of {1}...</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_proposal_missing_location" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that location information is missing for the !list proposal:* command.
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') with the command "!list proposal:* locale:12345 us"
-                </seg>
+                <seg>:-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your command for "!list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_no_proposal_in_location" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list proposal:* command.
-                {0}: postal code
-                {1}: country code
-                {2}: range
-                {3}: range unit
+                {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
+                {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( I can't find any active Proposals within {2}{3} of locale:{0} {1}.</seg>
+                <seg>:-( I can't find any active Proposals within {1} of {0}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_proposal_series_introduction" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list proposal:* command.|
                 {0}: number of messages to be sent
+                {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
+                {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {0} Proposal(s)...</seg>
+                <seg>:-) Listing {0} active Demand(s) for {2} of {1}...</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_store_missing_location" datatype="Text">
             <prop type="x-for-review">Steven</prop>
-            <prop type="x-version">3</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that location information is missing for the !list store:* command.
+                {0}: store reference part as defined by the entry "cp_tweet_store_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') with the command "!list store:* locale:12345 us"
-                </seg>
+                <seg>:-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your command for "!list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_no_store_in_location" datatype="Text">
-            <prop type="x-version">3</prop>
+            <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.
-                {0}: postal code
-                {1}: country code
-                {2}: range
-                {3}: range unit
+                {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
+                {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( I can't find any Stores within {2}{3} of locale:{0} {1}.</seg>
+                <seg>:-( I can't find any Stores within {1} of {0}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_list_store_series_introduction" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">6</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list store:* command.|
                 {0}: number of messages to be sent
+                {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
+                {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {0} Store(s)...</seg>
+                <seg>:-) Listing {0} active Store(s) for {2} of {1}...</seg>
             </tuv>
         </tu>
 

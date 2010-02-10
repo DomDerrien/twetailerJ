@@ -55,7 +55,12 @@ public class ListCommandProcessor {
                 // 1.1 List all demands in the specified area
                 Double range = command.containsKey(Demand.RANGE) ? command.getDouble(Demand.RANGE) : LocaleValidator.DEFAULT_RANGE;
                 String rangeUnit = command.containsKey(Demand.RANGE_UNIT) ? command.getString(Demand.RANGE_UNIT) : LocaleValidator.DEFAULT_RANGE_UNIT;
-                Location consumerLocation = getLocation(pm, consumer, rawCommand, command, "cp_command_list_demand_missing_location");
+                String messageForMissingLocation = LabelExtractor.get(
+                        "cp_command_list_demand_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_demand_reference_part", new Object[] { "*" }, consumer.getLocale() ) },
+                        consumer.getLocale()
+                );
+                Location consumerLocation = getLocation(pm, consumer, rawCommand, command, messageForMissingLocation);
                 if (consumerLocation == null) {
                     return;
                 }
@@ -66,7 +71,10 @@ public class ListCommandProcessor {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_demand_in_location",
-                                    new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode(), range, rangeUnit },
+                                    new Object[] {
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                    },
                                     consumer.getLocale()
                             )
                     );
@@ -75,7 +83,11 @@ public class ListCommandProcessor {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_demand_series_introduction",
-                                    new Object[] { demands.size() },
+                                    new Object[] {
+                                            demands.size(),
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                    },
                                     consumer.getLocale()
                             )
                     );
@@ -119,7 +131,12 @@ public class ListCommandProcessor {
                 // 2.1 List all proposals in the specified area
                 Double range = command.containsKey(Demand.RANGE) ? command.getDouble(Demand.RANGE) : LocaleValidator.DEFAULT_RANGE;
                 String rangeUnit = command.containsKey(Demand.RANGE_UNIT) ? command.getString(Demand.RANGE_UNIT) : LocaleValidator.DEFAULT_RANGE_UNIT;
-                Location consumerLocation = getLocation(pm, consumer, rawCommand, command, "cp_command_list_proposal_missing_location");
+                String messageForMissingLocation = LabelExtractor.get(
+                        "cp_command_list_proposal_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_proposal_reference_part", new Object[] { "*" }, consumer.getLocale() ) },
+                        consumer.getLocale()
+                );
+                Location consumerLocation = getLocation(pm, consumer, rawCommand, command, messageForMissingLocation);
                 if (consumerLocation == null) {
                     return;
                 }
@@ -130,7 +147,10 @@ public class ListCommandProcessor {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_proposal_in_location",
-                                    new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode(), range, rangeUnit },
+                                    new Object[] {
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                    },
                                     consumer.getLocale()
                             )
                     );
@@ -139,7 +159,11 @@ public class ListCommandProcessor {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_proposal_series_introduction",
-                                    new Object[] { proposals.size() },
+                                    new Object[] {
+                                            proposals.size(),
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                    },
                                     consumer.getLocale()
                             )
                     );
@@ -217,7 +241,12 @@ public class ListCommandProcessor {
                 // 3.1 List all stores in the specified area
                 Double range = command.containsKey(Demand.RANGE) ? command.getDouble(Demand.RANGE) : LocaleValidator.DEFAULT_RANGE;
                 String rangeUnit = command.containsKey(Demand.RANGE_UNIT) ? command.getString(Demand.RANGE_UNIT) : LocaleValidator.DEFAULT_RANGE_UNIT;
-                Location consumerLocation = getLocation(pm, consumer, rawCommand, command, "cp_command_list_store_missing_location");
+                String messageForMissingLocation = LabelExtractor.get(
+                        "cp_command_list_store_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_store_reference_part", new Object[] { "*" }, consumer.getLocale() ) },
+                        consumer.getLocale()
+                );
+                Location consumerLocation = getLocation(pm, consumer, rawCommand, command, messageForMissingLocation);
                 if (consumerLocation == null) {
                     return;
                 }
@@ -228,7 +257,10 @@ public class ListCommandProcessor {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_store_in_location",
-                                    new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode(), range, rangeUnit },
+                                    new Object[] {
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                    },
                                     consumer.getLocale()
                             )
                     );
@@ -237,7 +269,11 @@ public class ListCommandProcessor {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_store_series_introduction",
-                                    new Object[] { stores.size() },
+                                    new Object[] {
+                                            stores.size(),
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                    },
                                     consumer.getLocale()
                             )
                     );
@@ -291,7 +327,7 @@ public class ListCommandProcessor {
         else {
             messages.add(
                     LabelExtractor.get(
-                            "cp_command_list_demand_series_introduction",
+                            "cp_command_list_personal_demand_series_introduction",
                             new Object[] { demands.size() },
                             consumer.getLocale()
                     )
@@ -314,10 +350,9 @@ public class ListCommandProcessor {
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    new String[] { LabelExtractor.get(
-                            messageKeyForMissingLocationInformation,
-                            consumer.getLocale()
-                    )}
+                    new String[] {
+                            messageKeyForMissingLocationInformation
+                    }
             );
             return null;
         }
@@ -331,7 +366,9 @@ public class ListCommandProcessor {
                     consumer,
                     new String[] { LabelExtractor.get(
                             "cp_command_list_with_new_location",
-                            new Object[] { postalCode, countryCode },
+                            new Object[] {
+                                    LabelExtractor.get("cp_tweet_locale_part", new Object[] { postalCode, countryCode }, consumer.getLocale() )
+                            },
                             consumer.getLocale()
                     )}
             );
