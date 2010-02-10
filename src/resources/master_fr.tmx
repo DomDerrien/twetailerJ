@@ -960,7 +960,14 @@
                 <seg>:-) Listing {0} active Demand(s)...</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_list_store_missing_location" dataType="text">
+        <tu tuid="cp_command_list_with_new_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You've just submitted a locale:{0} {1} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_demand_missing_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
@@ -969,11 +976,50 @@
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_list_store_with_new_location" dataType="text">
+        <tu tuid="cp_command_list_no_demand_in_location" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>You've just submitted a locale:{0} {1} the system does not know yet. After some verifications, Twetailer will contact you shortly.</seg>
+                <seg>:-( I can't find any Demands within {2}{3} of locale:{0} {1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_demand_series_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-) Listing {0} active Demand(s)...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_proposal_missing_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">3</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Proposal like "ref:{0} locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_no_proposal_in_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( I can't find any Proposals within {2}{3} of locale:{0} {1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_proposal_series_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-) Listing {0} Proposal(s)...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_list_store_missing_location" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">3</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Demand like "ref:{0} locale:12345 us"
+                </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_store_in_location" dataType="text">
@@ -1033,7 +1079,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand_action_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1041,7 +1086,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_propose_action_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1049,7 +1093,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand_reference_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1057,7 +1100,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposal_reference_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1065,7 +1107,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store_reference_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1073,7 +1114,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_state_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1081,7 +1121,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_expiration_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1089,7 +1128,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_locale_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1097,7 +1135,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_range_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1105,7 +1142,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_quantity_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1113,7 +1149,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_tags_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1121,7 +1156,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_hashtags_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1129,7 +1163,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_price_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1137,7 +1170,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_total_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1145,7 +1177,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1153,7 +1184,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_name_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1161,7 +1191,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_address_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1169,7 +1198,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_phone_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1177,7 +1205,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposals_part" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1185,7 +1212,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
@@ -1193,7 +1219,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposal" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
@@ -1201,7 +1226,6 @@
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store" dataType="text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">

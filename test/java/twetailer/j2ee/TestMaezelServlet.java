@@ -1077,6 +1077,214 @@ public class TestMaezelServlet {
     }
 
     @Test
+    public void testWaitForVerificationCodeIV() throws IOException, TwitterException, ClientException {
+        final String openId = "http://openId";
+        final String identifier = "unit_test_ca";
+        final String topic = Consumer.TWITTER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        // Expected messages
+        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+
+        // To inject the mock account
+        Twitter account = EasyMock.createMock(Twitter.class);
+        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andThrow(new TwitterException("Done in purpose!"));
+        EasyMock.replay(account);
+        TwitterConnector.releaseTwetailerAccount(account);
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testWaitForVerificationCodeV() throws IOException, TwitterException, ClientException {
+        final String openId = "http://openId";
+        final String identifier = "unit_test_ca";
+        final String topic = Consumer.TWITTER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        // Exception to inject
+        TwitterException injectedException = new TwitterException("blah-blah-blah.") {
+            @Override
+            public int getStatusCode() {
+                return 403;
+            }
+        };
+
+        // Expected messages
+        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+
+        // To inject the mock account
+        Twitter account = EasyMock.createMock(Twitter.class);
+        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andThrow(injectedException);
+        EasyMock.replay(account);
+        TwitterConnector.releaseTwetailerAccount(account);
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+    }
+
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testWaitForVerificationCodeVI() throws IOException, TwitterException, ClientException {
+        final String openId = "http://openId";
+        final String identifier = "unit_test_ca";
+        final String topic = Consumer.TWITTER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        // Exception to inject
+        TwitterException injectedException = new TwitterException("blah-blah-blah. <error>You cannot send messages to users who are not following you.</error>") {
+            @Override
+            public int getStatusCode() {
+                return 403;
+            }
+        };
+
+        // Expected messages
+        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+
+        // To inject the mock account
+        Twitter account = EasyMock.createMock(Twitter.class);
+        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andThrow(injectedException);
+        EasyMock.replay(account);
+        TwitterConnector.releaseTwetailerAccount(account);
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+    }
+
+    @Test
     public void testGoodVerificationCodeI() throws IOException, ClientException {
         final String openId = "http://openId";
         final String identifier = "unit@test.ca";

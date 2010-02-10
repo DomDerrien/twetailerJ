@@ -731,7 +731,7 @@ public class TestCommandLineSyntax {
 
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(demand, location, locale);
+        String response = CommandProcessor.generateTweet(demand, location, false, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
@@ -767,7 +767,7 @@ public class TestCommandLineSyntax {
 
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(proposal, store, locale);
+        String response = CommandProcessor.generateTweet(proposal, store, false, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
@@ -797,7 +797,7 @@ public class TestCommandLineSyntax {
 
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(demand, null, locale);
+        String response = CommandProcessor.generateTweet(demand, null, false, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
@@ -822,7 +822,7 @@ public class TestCommandLineSyntax {
 
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(demand, location, locale);
+        String response = CommandProcessor.generateTweet(demand, location, false, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());
@@ -844,7 +844,7 @@ public class TestCommandLineSyntax {
 
         Locale locale = Locale.ENGLISH;
 
-        String response = CommandProcessor.generateTweet(proposal, store, locale);
+        String response = CommandProcessor.generateTweet(proposal, store, false, locale);
 
         assertNotNull(response);
         assertNotSame(0, response.length());

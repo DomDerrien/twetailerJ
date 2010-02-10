@@ -21,11 +21,13 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
@@ -65,15 +67,18 @@ public class TestProposeCommandProcessor {
         final Long proposalKey = 5555L;
         final Long saleAssociateKey =  6666L;
         final Long storeKey = 7777L;
+        final Long locationKey = 8888L;
 
         // ProposalOperations mock
         final ProposalOperations proposalOperations = new ProposalOperations() {
             @Override
             public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) {
                 assertEquals(consumerKey, saleAssociate.getConsumerKey());
+                assertEquals(locationKey.longValue(), parameters.getLong(Command.LOCATION_KEY));
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
+                proposal.setLocationKey(locationKey);
                 return proposal;
             }
         };
@@ -87,15 +92,28 @@ public class TestProposeCommandProcessor {
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setLocationKey(locationKey);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setLocationKey(locationKey);
+                return store;
             }
         };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.proposalOperations = proposalOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        CommandProcessor.storeOperations = storeOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();

@@ -2,6 +2,7 @@ package twetailer.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -210,6 +211,9 @@ public class TestStoreOperations {
 
     @Test
     public void testGetsExtendedI() throws DataSourceException {
+        //
+        // Get all stores from one location
+        //
         Location where = new Location();
         where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
         where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
@@ -234,12 +238,17 @@ public class TestStoreOperations {
         List<Store> selection = ops.getStores(places, 0);
         assertNotNull(selection);
         assertEquals(2, selection.size());
+        assertTrue (selection.get(0).getKey().equals(first.getKey()) && selection.get(1).getKey().equals(second.getKey()) ||
+                selection.get(1).getKey().equals(first.getKey()) && selection.get(0).getKey().equals(second.getKey()));
         // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
-        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometines first is returned first...
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometimes first is returned first...
     }
 
     @Test
     public void testGetsExtendedII() throws DataSourceException {
+        //
+        // Get just one store from one location
+        //
         Location where = new Location();
         where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
         where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
@@ -266,11 +275,14 @@ public class TestStoreOperations {
         assertNotNull(selection);
         assertEquals(1, selection.size());
         // assertEquals(first.getKey(), selection.get(0).getKey()); // Should be second because of ordered by descending date
-        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometines first is returned first...
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometimes first is returned first...
     }
 
     @Test
     public void testGetsExtendedIII() throws DataSourceException {
+        //
+        // Get limited number of stores from many locations
+        //
         LocationOperations lOps = new LocationOperations();
         StoreOperations sOps = new StoreOperations();
 

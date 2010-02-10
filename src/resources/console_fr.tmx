@@ -488,14 +488,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twetailer experiences issues while trying to communicate over Twitter. Please try when Twitter server is back online.</seg>
+                <seg>Twetailer éprouve des difficultés à communiquer avec Twitter. S'il vous plaît, réessayer quand Twitter sera de nouveau fonctionel.</seg>
             </tuv>
         </tu>
         <tu tuid="error_server_side_twetailer_not_followed" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twetailer cannot send direct messages to users who are not following it. You must follow @twetailer in order to use it from Twitter.</seg>
+                <seg>Twetailer ne peut pas envoyer de messages directs aux usagers qui ne le suivent pas! Veuillez suivre @twetailer (http://twitter.com/twetailer) pour utiliser le système depuis Twitter.</seg>
             </tuv>
         </tu>
     </body>

@@ -53,7 +53,7 @@ public class CancelCommandProcessor {
                 // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
                 demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                 Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
-                message = CommandProcessor.generateTweet(demand, location, consumer.getLocale());
+                message = CommandProcessor.generateTweet(demand, location, false, consumer.getLocale());
                 if (State.published.equals(previousState)) {
                     demand.getState();
                     // FIXME: cancel also attached proposals
@@ -96,7 +96,7 @@ public class CancelCommandProcessor {
                 // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                 Store store = CommandProcessor.storeOperations.getStore(pm, saleAssociate.getStoreKey());
-                message = CommandProcessor.generateTweet(proposal, store, saleAssociate.getLocale());
+                message = CommandProcessor.generateTweet(proposal, store, false, saleAssociate.getLocale());
                 if (!State.declined.equals(previousState)) {
                     proposal.getState();
                     // FIXME: inform the consumer who owns the attached demand about the cancellation

@@ -64,7 +64,7 @@ public class StoreOperations extends BaseOperations {
      * @param store Resource to persist
      * @return Just created resource
      *
-     * @see StoresServlet#createStore(PersistenceManager, Store)
+     * @see StoreOperations#createStore(PersistenceManager, Store)
      */
     public Store createStore(Store store) {
         PersistenceManager pm = getPersistenceManager();
@@ -141,7 +141,7 @@ public class StoreOperations extends BaseOperations {
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
-     * @see StoresServlet#getStores(PersistenceManager, String, Object)
+     * @see StoreOperations#getStores(PersistenceManager, String, Object)
      */
     public List<Store> getStores(String attribute, Object value, int limit) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
@@ -208,7 +208,7 @@ public class StoreOperations extends BaseOperations {
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
-     * @see StoresServlet#getStores(PersistenceManager, String, Object)
+     * @see StoreOperations#getStores(PersistenceManager, String, Object)
      */
     public List<Store> getStores(List<Location> locations, int limit) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();

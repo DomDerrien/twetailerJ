@@ -351,9 +351,6 @@ public class MaezelServlet extends HttpServlet {
 
             out.put("success", true);
         }
-        catch(ClientException ex) {
-            out = new JsonException("CLIENT_EXCEPTION", ex.getMessage(), ex);
-        }
         catch(TwitterException ex) {
             if (ex.getStatusCode() == 403) { // 403: Forbidden
                 if (ex.getMessage().contains("<error>You cannot send messages to users who are not following you.</error>")) {
@@ -366,6 +363,9 @@ public class MaezelServlet extends HttpServlet {
             else {
                 out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doPost() operation", ex);
             }
+        }
+        catch(ClientException ex) {
+            out = new JsonException("CLIENT_EXCEPTION", ex.getMessage(), ex);
         }
         catch(Exception ex) {
             // Prepare the exception report

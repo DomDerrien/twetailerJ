@@ -1265,20 +1265,8 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_list_store_missing_location" datatype="Text">
-            <prop type="x-version">3</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>
-                Message informing that location information is missing for the !list store:* command.
-            </note>
-            <tuv xml:lang="en">
-                <seg>
-                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') by updating your Demand like "ref:{0} locale:12345 us"
-                </seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="cp_command_list_store_with_new_location" datatype="Text">
+        <tu tuid="cp_command_list_with_new_location" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1291,8 +1279,108 @@
             </tuv>
         </tu>
 
-        <tu tuid="cp_command_list_no_store_in_location" datatype="Text">
+        <tu tuid="cp_command_list_demand_missing_location" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that location information is missing for the !list demand:* command.
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') with the command "!list reference:* locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_no_demand_in_location" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that no result can be displayed for the !list demand:* command.
+                {0}: postal code
+                {1}: country code
+                {2}: range
+                {3}: range unit
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( I can't find any active Demands within {2}{3} of locale:{0} {1}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_demand_series_introduction" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message introducing the series of messages to be sent in response to a !list demand:* command.|
+                {0}: number of messages to be sent
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-) Listing {0} Demand(s)...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_proposal_missing_location" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that location information is missing for the !list proposal:* command.
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') with the command "!list proposal:* locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_no_proposal_in_location" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that no result can be displayed for the !list proposal:* command.
+                {0}: postal code
+                {1}: country code
+                {2}: range
+                {3}: range unit
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( I can't find any active Proposals within {2}{3} of locale:{0} {1}.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_proposal_series_introduction" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message introducing the series of messages to be sent in response to a !list proposal:* command.|
+                {0}: number of messages to be sent
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-) Listing {0} Proposal(s)...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_store_missing_location" datatype="Text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing that location information is missing for the !list store:* command.
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-( Please provide a valid Locale(postal/zip code and country - like 'us', or 'ca') with the command "!list store:* locale:12345 us"
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_no_store_in_location" datatype="Text">
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.

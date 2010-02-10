@@ -188,7 +188,7 @@ public class SaleAssociateOperations extends BaseOperations {
      *
      * @throws DataSourceException If given value cannot matched a data sale associate type
      *
-     * @see SaleAssociatesServlet#getSaleAssociates(PersistenceManager, String, Object)
+     * @see SaleAssociatesOperations#getSaleAssociates(PersistenceManager, String, Object)
      */
     public List<SaleAssociate> getSaleAssociates(String attribute, Object value, int limit) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();

@@ -36,11 +36,6 @@ public class Demand extends Command {
     public static final String EXPIRATION_DATE = "expirationDate";
 
     @Persistent
-    private Long locationKey;
-
-    public final static String LOCATION_KEY = Location.LOCATION_KEY;
-
-    @Persistent
     private List<Long> proposalKeys = new ArrayList<Long>();
 
     public static final String PROPOSAL_KEYS = "proposalKeys";
@@ -169,14 +164,6 @@ public class Demand extends Command {
         this.expirationDate = limit.getTime();
     }
 
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        this.locationKey = locationKey;
-    }
-
     public List<Long> getProposalKeys() {
         return proposalKeys;
     }
@@ -293,7 +280,6 @@ public class Demand extends Command {
             out.put(CRITERIA, jsonArray);
         }
         out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
-        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getProposalKeys() != null && 0 < getProposalKeys().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(Long key: getProposalKeys()) {
@@ -347,7 +333,6 @@ public class Demand extends Command {
                 setExpirationDate(DEFAULT_EXPIRATION_DELAY); // Default to an expiration 30 days in the future
             }
         }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(PROPOSAL_KEYS)) {
             resetProposalKeys();
             JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);

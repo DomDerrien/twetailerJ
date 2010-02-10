@@ -38,6 +38,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
@@ -622,10 +623,60 @@ public class TestCommandProcessor {
         demand.addHashTag("two");
         demand.addHashTag("three");
 
-        String tweet = CommandProcessor.generateTweet(demand, null, Locale.ENGLISH);
+        String tweet = CommandProcessor.generateTweet(demand, null, false, Locale.ENGLISH);
         assertNotSame(0, tweet.length());
         assertTrue(tweet.contains("#one"));
         assertTrue(tweet.contains("#two"));
         assertTrue(tweet.contains("#three"));
+    }
+
+    @Test
+    public void testGenerateTweetForAnonimizedDemand() {
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+        demand.addProposalKey(23456L);
+        demand.addProposalKey(34567L);
+
+        String tweet = CommandProcessor.generateTweet(demand, null, true, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertFalse(tweet.contains("12345"));
+        assertFalse(tweet.contains("23456"));
+        assertFalse(tweet.contains("34567"));
+    }
+
+    @Test
+    public void testGenerateTweetForAnonimizedProposal() {
+        Proposal demand = new Proposal();
+        demand.setKey(12345L);
+        demand.setDemandKey(23456L);
+
+        String tweet = CommandProcessor.generateTweet(demand, null, true, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertFalse(tweet.contains("12345"));
+        assertFalse(tweet.contains("23456"));
+    }
+
+    @Test
+    public void testGenerateTweetForDemandI() {
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+
+        String tweet = CommandProcessor.generateTweet(demand, null, false, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains("12345"));
+    }
+
+    @Test
+    public void testGenerateTweetForDemandII() {
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+        demand.addProposalKey(23456L);
+        demand.addProposalKey(34567L);
+
+        String tweet = CommandProcessor.generateTweet(demand, null, false, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains("12345"));
+        assertTrue(tweet.contains("23456"));
+        assertTrue(tweet.contains("34567"));
     }
 }

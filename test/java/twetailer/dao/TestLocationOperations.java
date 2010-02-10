@@ -345,135 +345,188 @@ public class TestLocationOperations {
 
     @Test
     public void testGetsExtendedI() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        LocationOperations ops = new LocationOperations();
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return mockAppEngineEnvironment.getPersistenceManager();
+            }
+        };
 
         Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
         source = ops.createLocation(source);
 
         Location target = new Location();
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         target.setLatitude(45.5D);
         target.setLongitude(-27.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, 0);
-        pm.close();
-        assertNotNull(selection);
-        assertEquals(1, selection.size());
-        assertEquals(target.getKey(), selection.get(0).getKey());
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, 0);
+            assertNotNull(selection);
+            assertEquals(1, selection.size());
+            assertEquals(target.getKey(), selection.get(0).getKey());
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Test
     public void testGetsExtendedII() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
 
         Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
         source = ops.createLocation(source);
 
         Location target = new Location();
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         target.setLatitude(45.5D);
         target.setLongitude(-27.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 52.0D, LocaleValidator.MILE_UNIT, 50);
-        pm.close();
-        assertNotNull(selection);
-        assertEquals(1, selection.size());
-        assertEquals(target.getKey(), selection.get(0).getKey());
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 52.2D, LocaleValidator.MILE_UNIT, 0);
+            assertNotNull(selection);
+            assertEquals(1, selection.size());
+            assertEquals(target.getKey(), selection.get(0).getKey());
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Test
     public void testGetsExtendedIII() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
 
         Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
         source = ops.createLocation(source);
 
         Location target = new Location();
         target.setLatitude(0.0D);
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         target.setLongitude(-27.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
-        pm.close();
-        assertNotNull(selection);
-        assertEquals(0, selection.size());
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            assertNotNull(selection);
+            assertEquals(0, selection.size());
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Test
     public void testGetsExtendedIV() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
 
         Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
         source = ops.createLocation(source);
 
         Location target = new Location();
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         target.setLatitude(45.0D);
         target.setLongitude(-55.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
-        pm.close();
-        assertNotNull(selection);
-        assertEquals(0, selection.size());
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            assertNotNull(selection);
+            assertEquals(0, selection.size());
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Test
     public void testGetsExtendedV() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
 
         Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
         source = ops.createLocation(source);
 
         Location target = new Location();
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         target.setLatitude(45.0D);
         target.setLongitude(10.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
-        pm.close();
-        assertNotNull(selection);
-        assertEquals(0, selection.size());
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            assertNotNull(selection);
+            assertEquals(0, selection.size());
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Test
     public void testGetsExtendedVI() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
         LocationOperations ops = new LocationOperations();
 
         Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(90.0D);
         source.setLongitude(-27.5D);
         source = ops.createLocation(source);
 
         Location target = new Location();
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         target.setLatitude(45.0D);
         target.setLongitude(10.0D);
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
-        pm.close();
-        assertNotNull(selection);
-        assertEquals(0, selection.size());
+        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            assertNotNull(selection);
+            assertEquals(0, selection.size());
+        }
+        finally {
+            pm.close();
+        }
     }
 }

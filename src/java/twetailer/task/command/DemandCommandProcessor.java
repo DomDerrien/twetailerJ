@@ -66,7 +66,7 @@ public class DemandCommandProcessor {
                     demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                     // Echo back the updated demand
                     Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
-                    messages.add(CommandProcessor.generateTweet(demand, location, consumer.getLocale()));
+                    messages.add(CommandProcessor.generateTweet(demand, location, false, consumer.getLocale()));
                     // Get the demandKey for the task scheduling
                     demandKey = demand.getKey();
                 }
@@ -103,7 +103,7 @@ public class DemandCommandProcessor {
                     )
             );
             Location location = newDemand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, newDemand.getLocationKey());
-            messages.add(CommandProcessor.generateTweet(newDemand, location, consumer.getLocale()));
+            messages.add(CommandProcessor.generateTweet(newDemand, location, false, consumer.getLocale()));
             // Get the demandKey for the task scheduling
             demandKey = newDemand.getKey();
         }

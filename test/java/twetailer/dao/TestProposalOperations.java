@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,11 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
+import twetailer.dto.Demand;
+import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.task.RobotResponder;
 import twetailer.validator.CommandSettings;
 
 import com.google.apphosting.api.MockAppEngineEnvironment;
@@ -533,5 +537,156 @@ public class TestProposalOperations {
         assertNotNull(justCreated.getKey());
         assertEquals(tag, justCreated.getCriteria().get(0));
         ops.deleteProposal(justCreated.getKey(), null);
+    }
+
+    @Test
+    public void testGetsAroundLocationI() throws DataSourceException {
+        //
+        // Get all demands from one location
+        //
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        ProposalOperations ops = new ProposalOperations();
+
+        final Long ownerKey = 45678L;
+        final Long storeKey = 78901L;
+        Proposal first = new Proposal();
+        first.setLocationKey(where.getKey());
+        first.setOwnerKey(ownerKey);
+        first.setStoreKey(storeKey);
+        first = ops.createProposal(first);
+
+        Proposal second = new Proposal();
+        second.setLocationKey(where.getKey());
+        second.setOwnerKey(ownerKey);
+        second.setStoreKey(storeKey);
+        second = ops.createProposal(second);
+
+        first = ops.getProposal(first.getKey(), null, null);
+        second = ops.getProposal(second.getKey(), null, null);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+
+        List<Proposal> selection = ops.getProposals(places, 0);
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
+        assertTrue (selection.get(0).getKey().equals(first.getKey()) && selection.get(1).getKey().equals(second.getKey()) ||
+                selection.get(1).getKey().equals(first.getKey()) && selection.get(0).getKey().equals(second.getKey()));
+        // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometines first is returned first...
+    }
+
+    @Test
+    public void testGetsAroundLocationII() throws DataSourceException {
+        //
+        // Get just one demand from one location
+        //
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        ProposalOperations ops = new ProposalOperations();
+
+        final Long ownerKey = 45678L;
+        final Long storeKey = 78901L;
+        Proposal first = new Proposal();
+        first.setLocationKey(where.getKey());
+        first.setOwnerKey(ownerKey);
+        first.setStoreKey(storeKey);
+        first = ops.createProposal(first);
+
+        Proposal second = new Proposal();
+        second.setLocationKey(where.getKey());
+        second.setOwnerKey(ownerKey);
+        second.setStoreKey(storeKey);
+        second = ops.createProposal(second);
+
+        first = ops.getProposal(first.getKey(), null, null);
+        second = ops.getProposal(second.getKey(), null, null);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+
+        List<Proposal> selection = ops.getProposals(places, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertTrue (selection.get(0).getKey().equals(first.getKey()) ||
+                selection.get(0).getKey().equals(second.getKey()));
+        // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometines first is returned first...
+    }
+
+    @Test
+    public void testGetsAroundLocationIII() throws DataSourceException {
+        //
+        // Get limited number of demands from many locations
+        //
+        LocationOperations lOps = new LocationOperations();
+        ProposalOperations sOps = new ProposalOperations();
+
+        Location lFirst = new Location();
+        lFirst.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        lFirst.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        lFirst = lOps.createLocation(lFirst);
+
+        final Long ownerKey = 45678L;
+        final Long storeKey = 78901L;
+        Proposal sFirst = new Proposal();
+        sFirst.setLocationKey(lFirst.getKey());
+        sFirst.setOwnerKey(ownerKey);
+        sFirst.setStoreKey(storeKey);
+        sFirst = sOps.createProposal(sFirst);
+
+        Location lSecond = new Location();
+        lSecond.setPostalCode("H1H1H1");
+        lSecond.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        lSecond = lOps.createLocation(lSecond);
+
+        Proposal sSecond = new Proposal();
+        sSecond.setLocationKey(lSecond.getKey());
+        sSecond.setOwnerKey(ownerKey);
+        sSecond.setStoreKey(storeKey);
+        sOps.createProposal(sSecond);
+
+        Proposal sThird = new Proposal();
+        sThird.setLocationKey(lSecond.getKey());
+        sThird.setOwnerKey(ownerKey);
+        sThird.setStoreKey(storeKey);
+        sOps.createProposal(sThird);
+
+        sFirst = sOps.getProposal(sFirst.getKey(), null, null);
+        sSecond = sOps.getProposal(sSecond.getKey(), null, null);
+        sThird = sOps.getProposal(sThird.getKey(), null, null);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(lFirst);
+        places.add(lSecond);
+
+        List<Proposal> selection = sOps.getProposals(places, 2); // Should cut to 2 items
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
+        assertEquals(sFirst.getKey(), selection.get(0).getKey());
+        // No more test because it appears sometimes sSecond comes back, sometimes sThird comes back
+        // FIXME: re-insert the test for sSecond in the returned list when we're sure the issue related ordering on inherited attribute is fixed.
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testGetsAroundLocationIV() throws DataSourceException {
+        //
+        // Get demands fails
+        //
+        ProposalOperations sOps = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                throw new RuntimeException("Done in purpose!");
+            }
+        };
+
+        sOps.getProposals((List<Location>) null, 0);
     }
 }

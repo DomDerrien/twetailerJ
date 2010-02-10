@@ -21,7 +21,7 @@ public class RawCommandOperations extends BaseOperations {
      * @param rawCommand Resource to persist
      * @return Just created resource
      *
-     * @see RawCommandsServlet#createRawCommand(PersistenceManager, RawCommand)
+     * @see RawCommandsOperations#createRawCommand(PersistenceManager, RawCommand)
      */
     public RawCommand createRawCommand(RawCommand rawCommand) {
         PersistenceManager pm = getPersistenceManager();

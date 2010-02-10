@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,9 @@ import twetailer.DataSourceException;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.Location;
+import twetailer.dto.Store;
+import twetailer.task.RobotResponder;
 import twetailer.validator.CommandSettings;
 
 import com.google.apphosting.api.MockAppEngineEnvironment;
@@ -418,5 +422,146 @@ public class TestDemandOperations {
         List<Long> selection = new DemandOperations().getDemandKeys(pm, Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());
+    }
+
+    @Test
+    public void testGetsAroundLocationI() throws DataSourceException {
+        //
+        // Get all demands from one location
+        //
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        DemandOperations ops = new DemandOperations();
+
+        final Long ownerKey = 45678L;
+        Demand first = new Demand();
+        first.setLocationKey(where.getKey());
+        first.setOwnerKey(ownerKey);
+        first = ops.createDemand(first);
+
+        Demand second = new Demand();
+        second.setLocationKey(where.getKey());
+        second.setOwnerKey(ownerKey);
+        second = ops.createDemand(second);
+
+        first = ops.getDemand(first.getKey(), null);
+        second = ops.getDemand(second.getKey(), null);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+
+        List<Demand> selection = ops.getDemands(places, 0);
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
+        assertTrue (selection.get(0).getKey().equals(first.getKey()) && selection.get(1).getKey().equals(second.getKey()) ||
+                selection.get(1).getKey().equals(first.getKey()) && selection.get(0).getKey().equals(second.getKey()));
+        // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometines first is returned first...
+    }
+
+    @Test
+    public void testGetsAroundLocationII() throws DataSourceException {
+        //
+        // Get just one demand from one location
+        //
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        DemandOperations ops = new DemandOperations();
+
+        final Long ownerKey = 45678L;
+        Demand first = new Demand();
+        first.setLocationKey(where.getKey());
+        first.setOwnerKey(ownerKey);
+        first = ops.createDemand(first);
+
+        Demand second = new Demand();
+        second.setLocationKey(where.getKey());
+        second.setOwnerKey(ownerKey);
+        second = ops.createDemand(second);
+
+        first = ops.getDemand(first.getKey(), null);
+        second = ops.getDemand(second.getKey(), null);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+
+        List<Demand> selection = ops.getDemands(places, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertTrue (selection.get(0).getKey().equals(first.getKey()) ||
+                selection.get(0).getKey().equals(second.getKey()));
+        // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometines first is returned first...
+    }
+
+    @Test
+    public void testGetsAroundLocationIII() throws DataSourceException {
+        //
+        // Get limited number of demands from many locations
+        //
+        LocationOperations lOps = new LocationOperations();
+        DemandOperations sOps = new DemandOperations();
+
+        Location lFirst = new Location();
+        lFirst.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        lFirst.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        lFirst = lOps.createLocation(lFirst);
+
+        final Long ownerKey = 45678L;
+        Demand sFirst = new Demand();
+        sFirst.setLocationKey(lFirst.getKey());
+        sFirst.setOwnerKey(ownerKey);
+        sFirst = sOps.createDemand(sFirst);
+
+        Location lSecond = new Location();
+        lSecond.setPostalCode("H1H1H1");
+        lSecond.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        lSecond = lOps.createLocation(lSecond);
+
+        Demand sSecond = new Demand();
+        sSecond.setLocationKey(lSecond.getKey());
+        sSecond.setOwnerKey(ownerKey);
+        sOps.createDemand(sSecond);
+
+        Demand sThird = new Demand();
+        sThird.setLocationKey(lSecond.getKey());
+        sThird.setOwnerKey(ownerKey);
+        sOps.createDemand(sThird);
+
+        sFirst = sOps.getDemand(sFirst.getKey(), null);
+        sSecond = sOps.getDemand(sSecond.getKey(), null);
+        sThird = sOps.getDemand(sThird.getKey(), null);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(lFirst);
+        places.add(lSecond);
+
+        List<Demand> selection = sOps.getDemands(places, 2); // Should cut to 2 items
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
+        assertEquals(sFirst.getKey(), selection.get(0).getKey());
+        // No more test because it appears sometimes sSecond comes back, sometimes sThird comes back
+        // FIXME: re-insert the test for sSecond in the returned list when we're sure the issue related ordering on inherited attribute is fixed.
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testGetsAroundLocationIV() throws DataSourceException {
+        //
+        // Get demands fails
+        //
+        DemandOperations sOps = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                throw new RuntimeException("Done in purpose!");
+            }
+        };
+
+        sOps.getDemands((List<Location>) null, 0);
     }
 }

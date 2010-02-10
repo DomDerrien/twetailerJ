@@ -12,44 +12,44 @@
 <tr><td rowspan="1" colspan="3">propose-receive-consumer</td></tr>
 </thead><tbody>
 <tr>
-	<td>echo</td>
-	<td>propose-receive-consumer testing ....</td>
-	<td></td>
+    <td>echo</td>
+    <td>propose-receive-consumer testing ....</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>1/3 Re: Demand ref:${ref} tags:demand-create ${timeMS}</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>1/3 Re: Demand ref:${ref} tags:demand-create ${timeMS}</td>
+    <td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>asserted: 1/3 Re: Demand ref:${ref} tags:demand-create ${timeMS}</td>
-	<td></td>
+    <td>echo</td>
+    <td>asserted: 1/3 Re: Demand ref:${ref} tags:demand-create ${timeMS}</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>2/3 Proposal:${proposal} tags:propose-send-sales-associate ${timeMS} price:$100.0</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>2/3 Proposal:${proposal} tags:propose-send-sales-associate ${timeMS} price:$100.0</td>
+    <td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>asserted: 2/3 Proposal:${proposal} tags:propose-send-sales-associate ${timeMS} price:$100.0</td>
-	<td></td>
+    <td>echo</td>
+    <td>asserted: 2/3 Proposal:${proposal} tags:propose-send-sales-associate ${timeMS} price:$100.0</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>3/3 *'!confirm proposal:${proposal}', or, '!decline proposal:${proposal}'</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>3/3 *'!confirm proposal:${proposal}', or, '!decline proposal:${proposal}'</td>
+    <td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>asserted: 3/3 *'!confirm proposal:${proposal}', or, '!decline proposal:${proposal}'</td>
-	<td></td>
+    <td>echo</td>
+    <td>asserted: 3/3 *'!confirm proposal:${proposal}', or, '!decline proposal:${proposal}'</td>
+    <td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>propose-receive-consumer complete.</td>
-	<td></td>
+    <td>echo</td>
+    <td>propose-receive-consumer complete.</td>
+    <td></td>
 </tr>
 
 </tbody></table>

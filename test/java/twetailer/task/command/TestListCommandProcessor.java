@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -645,156 +646,6 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void testProcessCommandListAnyStoreII() throws TwitterException, DataSourceException, ClientException {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, Action.list.toString());
-        command.put(Store.STORE_KEY, Long.valueOf(-1L));
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-
-        // RawCommand mock
-        RawCommand rawCommand = new RawCommand(Source.simulated);
-
-        // Consumer mock
-        Consumer consumer = new Consumer();
-
-        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_store_missing_location", Locale.ENGLISH), sentText);
-    }
-
-    @Test
-    public void testProcessCommandListAnyStoreIII() throws TwitterException, DataSourceException, ClientException {
-        final String postalCode = RobotResponder.ROBOT_POSTAL_CODE;
-        final String countryCode = RobotResponder.ROBOT_COUNTRY_CODE;
-        final Double range = LocaleValidator.DEFAULT_RANGE;
-        final String rangeUnit = LocaleValidator.DEFAULT_RANGE_UNIT;
-        final Long locationKey = 12345L;
-        final Long storeKey = 67890L;
-
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, Action.list.toString());
-        command.put(Store.STORE_KEY, Long.valueOf(-1L));
-        command.put(Location.POSTAL_CODE, postalCode);
-        command.put(Location.COUNTRY_CODE, countryCode);
-        command.put(Demand.RANGE, range);
-        command.put(Demand.RANGE_UNIT, rangeUnit);
-
-        // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                Store store = new Store();
-                store.setKey(storeKey);
-                store.setLocationKey(locationKey);
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(store);
-                return stores;
-            }
-        };
-        // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, String pCode, String cCode) {
-                assertEquals(postalCode, pCode);
-                assertEquals(countryCode, cCode);
-                Location location = new Location();
-                location.setPostalCode(postalCode);
-                location.setCountryCode(countryCode);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(location);
-                return locations;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location center, Double range, String rangeUnit, int limit) {
-                return new ArrayList<Location>();
-            }
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) {
-                assertEquals(locationKey, key);
-                Location location = new Location();
-                location.setKey(locationKey);
-                location.setPostalCode(postalCode);
-                location.setCountryCode(countryCode);
-                return location;
-            }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.storeOperations = storeOperations;
-        CommandProcessor.locationOperations = locationOperations;
-
-        // RawCommand mock
-        RawCommand rawCommand = new RawCommand(Source.simulated);
-
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
-
-        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
-        assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_store_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
-        sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(storeKey.toString()));
-        assertTrue(sentText.contains(postalCode));
-        assertTrue(sentText.contains(countryCode));
-    }
-
-    @Test
-    public void testProcessCommandListAnyStoreIV() throws Exception {
-        final String postalCode = RobotResponder.ROBOT_POSTAL_CODE;
-        final String countryCode = RobotResponder.ROBOT_COUNTRY_CODE;
-        final Double range = LocaleValidator.DEFAULT_RANGE;
-        final String rangeUnit = LocaleValidator.DEFAULT_RANGE_UNIT;
-
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, Action.list.toString());
-        command.put(Store.STORE_KEY, Long.valueOf(-1L));
-        command.put(Location.POSTAL_CODE, postalCode);
-        command.put(Location.COUNTRY_CODE, countryCode);
-        command.put(Demand.RANGE, range);
-        command.put(Demand.RANGE_UNIT, rangeUnit);
-
-        // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, String pCode, String cCode) {
-                assertEquals(postalCode, pCode);
-                assertEquals(countryCode, cCode);
-                List<Location> locations = new ArrayList<Location>();
-                return locations;
-            }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.locationOperations = locationOperations;
-
-        // RawCommand mock
-        final Long rawCommandKey = 12345L;
-        RawCommand rawCommand = new RawCommand(Source.simulated);
-        rawCommand.setKey(rawCommandKey);
-
-        // Consumer mock
-        final Long consumerKey = 12345L;
-        Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
-        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
-
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_store_with_new_location", new Object[] { postalCode, countryCode }, Locale.ENGLISH), sentText);
-    }
-
-    @Test
     public void testListProposalByConsumerI() throws DataSourceException, ClientException {
         final Long proposalKey = 2222L;
         final Long consumerKey = 3333L;
@@ -1023,5 +874,661 @@ public class TestListCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_list_invalid_proposal_id", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testGetLocationI() throws DataSourceException, ClientException {
+        final Long consumerKey = 12345L;
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        Location retreived = ListCommandProcessor.getLocation(
+                new MockPersistenceManager(),
+                consumer,
+                new RawCommand(Source.simulated),
+                new GenericJsonObject(),
+                "cp_command_list_demand_missing_location"
+        );
+
+        assertNull(retreived);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_demand_missing_location", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void tesstGetLocationII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                return new ArrayList<Location>();
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+        appEnv.setUp();
+        Location retreived = ListCommandProcessor.getLocation(new MockPersistenceManager(), consumer, rawCommand, command, "not important");
+        appEnv.tearDown();
+
+        assertNull(retreived);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_with_new_location", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void tesstGetLocationIII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        Location retreived = ListCommandProcessor.getLocation(new MockPersistenceManager(), consumer, rawCommand, command, "not important");
+
+        assertEquals(locationKey, retreived.getKey());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNull(sentText);
+    }
+
+    @Test
+    public void tesstListDemandInAreaI() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Demand.REFERENCE, -1);
+        command.put(Demand.RANGE, 3.14159);
+        command.put(Demand.RANGE_UNIT, LocaleValidator.KILOMETER_UNIT);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_demand_missing_location", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void tesstListDemandInAreaII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getDemands() below verifies the array has a zero size
+                return locations;
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                List<Demand> demands = new ArrayList<Demand>();
+                return demands;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Demand.REFERENCE, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_demand_in_location",
+                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+    }
+
+    @Test
+    public void tesstListDemandInAreaIII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long demandKey = 45678L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getDemands() below verifies the array has a zero size
+                return locations;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return new Location();
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Demand.REFERENCE, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                         "cp_command_list_demand_series_introduction",
+                         new Object[] { 1L },
+                         consumer.getLocale()
+                 ),
+                 sentText
+         );
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertFalse(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void tesstListProposalInAreaI() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, -1);
+        command.put(Demand.RANGE, 3.14159);
+        command.put(Demand.RANGE_UNIT, LocaleValidator.KILOMETER_UNIT);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_proposal_missing_location", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void tesstListProposalInAreaII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getProposals() below verifies the array has a zero size
+                return locations;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                List<Proposal> proposals = new ArrayList<Proposal>();
+                return proposals;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_proposal_in_location",
+                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+    }
+
+    @Test
+    public void tesstListProposalInAreaIII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long proposalKey = 45678L;
+        final Long storeKey = 56789L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getProposals() below verifies the array has a zero size
+                return locations;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setStoreKey(storeKey);
+                List<Proposal> proposals = new ArrayList<Proposal>();
+                proposals.add(proposal);
+                return proposals;
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(storeKey, key);
+                return new Store();
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.storeOperations = storeOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                         "cp_command_list_proposal_series_introduction",
+                         new Object[] { 1L },
+                         consumer.getLocale()
+                 ),
+                 sentText
+         );
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertFalse(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void tesstListStoreInAreaI() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Store.STORE_KEY, -1);
+        command.put(Demand.RANGE, 3.14159);
+        command.put(Demand.RANGE_UNIT, LocaleValidator.KILOMETER_UNIT);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_store_missing_location", Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void tesstListStoreInAreaII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getStores() below verifies the array has a zero size
+                return locations;
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                List<Store> stores = new ArrayList<Store>();
+                return stores;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.storeOperations = storeOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Store.STORE_KEY, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_store_in_location",
+                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+    }
+
+    @Test
+    public void tesstListStoreInAreaIII() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long storeKey = 45678L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getStores() below verifies the array has a zero size
+                return locations;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return new Location();
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setLocationKey(locationKey);
+                List<Store> stores = new ArrayList<Store>();
+                stores.add(store);
+                return stores;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.storeOperations = storeOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Store.STORE_KEY, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                         "cp_command_list_store_series_introduction",
+                         new Object[] { 1L },
+                         consumer.getLocale()
+                 ),
+                 sentText
+         );
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(storeKey.toString())); // Not anonymized
     }
 }

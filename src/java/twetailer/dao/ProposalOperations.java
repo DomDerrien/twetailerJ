@@ -1,5 +1,7 @@
 package twetailer.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -9,8 +11,10 @@ import javax.jdo.Query;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.task.CommandProcessor;
 import domderrien.jsontools.JsonObject;
 
 public class ProposalOperations extends BaseOperations {
@@ -242,6 +246,59 @@ public class ProposalOperations extends BaseOperations {
         List<Proposal> proposals = (List<Proposal>) query.executeWithArray(values);
         proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
         return proposals;
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Proposal instances
+     *
+     * @param locations list of locations where expected proposals should be retrieved
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of proposals matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     *
+     * @see ProposalOperations#getProposals(PersistenceManager, String, Object)
+     */
+    public List<Proposal> getProposals(List<Location> locations, int limit) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return getProposals(pm, locations, limit);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Proposal instances while leaving the given persistence manager open for future updates
+     *
+     * Note that this command only return Proposal not canceled, not marked-for-deletion, not closed (see Proposal.stateCmdList attribute and Proposal.setState() method).
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param locations list of locations where expected proposals should be retrieved
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of proposals matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+        List<Proposal> selection = new ArrayList<Proposal>();
+        for (Location location: locations) {
+            // Select the corresponding resources
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put(Proposal.LOCATION_KEY, location.getKey());
+            parameters.put(Proposal.STATE_COMMAND_LIST, Boolean.TRUE);
+            List<Proposal> proposals = CommandProcessor.proposalOperations.getProposals(pm, parameters, limit);
+            // Copy into the list to be returned
+            selection.addAll(proposals);
+            if (limit != 0) {
+                if (limit <= selection.size()) {
+                    break;
+                }
+                limit = limit - selection.size();
+            }
+        }
+        return selection;
     }
 
     /**

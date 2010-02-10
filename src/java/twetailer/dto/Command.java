@@ -27,6 +27,11 @@ public class Command extends Entity {
     public static final String ACTION = "action";
 
     @Persistent
+    private Long locationKey;
+
+    public final static String LOCATION_KEY = Location.LOCATION_KEY;
+
+    @Persistent
     private List<String> hashTags = new ArrayList<String>();
 
     public static final String HASH_TAG = "hasTag";
@@ -90,6 +95,14 @@ public class Command extends Entity {
 
     public void setAction(String action) {
         setAction(Action.valueOf(action));
+    }
+
+    public Long getLocationKey() {
+        return locationKey;
+    }
+
+    public void setLocationKey(Long locationKey) {
+        this.locationKey = locationKey;
     }
 
     public String getSerializedHashTags() {
@@ -179,6 +192,7 @@ public class Command extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getHashTags() != null && 0 < getHashTags().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String hashTag: getHashTags()) {
@@ -196,6 +210,7 @@ public class Command extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(HASH_TAG)) {
             JsonArray jsonArray = in.getJsonArray(HASH_TAG);
             resetHashTags();

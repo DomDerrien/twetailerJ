@@ -78,14 +78,15 @@ public class CommandProcessor {
      *
      * @param demand Demand to process
      * @param location Place where the demand is attached to
+     * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
      * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
      */
-    public static String generateTweet(Demand demand, Location location, Locale locale) {
+    public static String generateTweet(Demand demand, Location location, boolean anonymized, Locale locale) {
         final String space = " ";
         // Get the labels for each demand attributes
         String action = LabelExtractor.get("cp_tweet_demand_action_part", locale) + space;
-        String reference = demand.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
+        String reference = anonymized || demand.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
         String state = LabelExtractor.get("cp_tweet_state_part", new Object[] { demand.getState() }, locale) + space;
         String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { DateUtils.dateToYMD(demand.getExpirationDate()) }, locale) + space;
         String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get("cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
@@ -93,7 +94,7 @@ public class CommandProcessor {
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
         String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
         String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
-        String proposals = demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
+        String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
         // Compose the final message
         return LabelExtractor.get(
                 "cp_tweet_demand",
@@ -118,15 +119,16 @@ public class CommandProcessor {
      *
      * @param proposal Proposal to process
      * @param store Store where the Sale Associate who created the proposal works
+     * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
      * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
      */
-    public static String generateTweet(Proposal proposal, Store store, Locale locale) {
+    public static String generateTweet(Proposal proposal, Store store, boolean anonymized, Locale locale) {
         final String space = " ";
         // Get the labels for each proposal attributes
         String action = LabelExtractor.get("cp_tweet_propose_action_part", locale) + space;
-        String reference = proposal.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
-        String demand = proposal.getDemandKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
+        String reference = anonymized || proposal.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
+        String demand = anonymized || proposal.getDemandKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
         String state = LabelExtractor.get("cp_tweet_state_part", new Object[] { proposal.getState() }, locale) + space;
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
         String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);

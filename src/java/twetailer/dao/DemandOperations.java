@@ -1,5 +1,7 @@
 package twetailer.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,6 +12,8 @@ import javax.jdo.Query;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Demand;
+import twetailer.dto.Location;
+import twetailer.task.CommandProcessor;
 import domderrien.jsontools.JsonObject;
 
 public class DemandOperations extends BaseOperations {
@@ -234,6 +238,59 @@ public class DemandOperations extends BaseOperations {
         List<Demand> demands = (List<Demand>) query.executeWithArray(values);
         demands.size(); // FIXME: remove workaround for a bug in DataNucleus
         return demands;
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instances
+     *
+     * @param locations list of locations where expected demands should be retrieved
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of demands matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     *
+     * @see DemandOperations#getDemands(PersistenceManager, String, Object)
+     */
+    public List<Demand> getDemands(List<Location> locations, int limit) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return getDemands(pm, locations, limit);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Demand instances while leaving the given persistence manager open for future updates
+     *
+     * Note that this command only return Demand not canceled, not marked-for-deletion, not closed (see Demand.stateCmdList attribute and Demand.setState() method).
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param locations list of locations where expected demands should be retrieved
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of demands matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+        List<Demand> selection = new ArrayList<Demand>();
+        for (Location location: locations) {
+            // Select the corresponding resources
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put(Demand.LOCATION_KEY, location.getKey());
+            parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
+            List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, limit);
+            // Copy into the list to be returned
+            selection.addAll(demands);
+            if (limit != 0) {
+                if (limit <= selection.size()) {
+                    break;
+                }
+                limit = limit - selection.size();
+            }
+        }
+        return selection;
     }
 
     /**

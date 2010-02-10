@@ -58,7 +58,7 @@ public class ProposeCommandProcessor {
                     proposal.setState(State.opened); // Will force the re-validation of the entire proposal
                     proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                     // Echo back the updated proposal
-                    messages.add(CommandProcessor.generateTweet(proposal, store, saleAssociate.getLocale()));
+                    messages.add(CommandProcessor.generateTweet(proposal, store, false, saleAssociate.getLocale()));
                     // Get the proposalKey for the task scheduling
                     proposalKey = proposal.getKey();
                 }
@@ -71,6 +71,7 @@ public class ProposeCommandProcessor {
             // Get the proposal attributes
             command.put(Command.SOURCE, rawCommand.getSource().toString());
             command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
+            command.put(Command.LOCATION_KEY, store.getLocationKey());
             // Persist the new proposal
             Proposal newProposal = CommandProcessor.proposalOperations.createProposal(pm, command, saleAssociate);
             messages.add(
@@ -80,7 +81,7 @@ public class ProposeCommandProcessor {
                             saleAssociate.getLocale()
                     )
             );
-            messages.add(CommandProcessor.generateTweet(newProposal, store, saleAssociate.getLocale()));
+            messages.add(CommandProcessor.generateTweet(newProposal, store, false, saleAssociate.getLocale()));
             // Get the proposalKey for the task scheduling
             proposalKey = newProposal.getKey();
         }

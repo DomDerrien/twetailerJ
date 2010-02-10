@@ -163,7 +163,7 @@ public class LocationOperations extends BaseOperations {
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
-     * @see LocationsServlet#getLocations(PersistenceManager, String, Object)
+     * @see LocationsOperations#getLocations(PersistenceManager, String, Object)
      */
     public List<Location> getLocations(String attribute, Object value, int limit) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
@@ -288,35 +288,37 @@ public class LocationOperations extends BaseOperations {
          * // Prepare the query
          * Query query = pm.newQuery(Location.class);
          * query.setFilter(
+         *         Location.COUNTRY_CODE + " == givenCountryCode && " +
          *         Location.LATITUDE + " > bottomLatitude && " +
          *         Location.LATITUDE + " < topLatitude && " +
          *         Location.LONGITUDE + " > leftLongitude && " +
          *         Location.LONGITUDE + " < rightLongitude && " +
          *         Location.HAS_STORE + " == hasStoreRegistered"
          * );
-         * query.declareParameters("Double topLatitude, Double bottomLatitude, Double leftLongitude, Double rightLongitude, Boolean hasStoreRegistered");
+         * query.declareParameters("String givenCountryCode, Double topLatitude, Double bottomLatitude, Double leftLongitude, Double rightLongitude, Boolean hasStoreRegistered");
          * if (0 < limit) {
          *     query.setRange(0, limit);
          * }
          *
          * // Execute the query
-         * List<Location> locations = (List<Location>) query.executeWithArray(topLatitude, bottomLatitude, leftLongitude, rightLongitude, location.hasStore());
+         * List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), topLatitude, bottomLatitude, leftLongitude, rightLongitude, location.hasStore());
          ****************************************************************************************************************/
         // Prepare the query
         Query query = pm.newQuery(Location.class);
         query.setFilter(
+                Location.COUNTRY_CODE + " == givenCountryCode && " +
                 Location.HAS_STORE + " == hasStoreRegistered && " +
                 Location.LATITUDE + " > bottomLatitude && " +
                 Location.LATITUDE + " < topLatitude"
         );
-        query.declareParameters("Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
+        query.declareParameters("String givenCountryCode, Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
         if (0 < limit) {
             query.setRange(0, limit);
         }
         getLogger().warning("Select location(s) with: " + query.toString());
 
         // Execute the query
-        List<Location> locations = (List<Location>) query.executeWithArray(Boolean.TRUE, topLatitude, bottomLatitude);
+        List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.TRUE, topLatitude, bottomLatitude);
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
 
         List<Location> selection = new ArrayList<Location>();
