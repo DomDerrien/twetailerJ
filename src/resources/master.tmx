@@ -1042,7 +1042,7 @@
         </tu>
 
         <tu tuid="cp_command_confirm_inform_about_confirmation" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal key|
@@ -1052,7 +1052,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Proposal:{0} for tags:{1} has been confirmed.|
-                    Please mark, hold for Consumer with Demand reference:{2} and then !close proposal:{0}, or, !flag ref:{2} note:your-note-here.
+                    Please mark, hold for Consumer with Demand reference:{2} and then !close proposal:{0}, or, !flag proposal:{0} note:your-note-here.
                 </seg>
             </tuv>
         </tu>
