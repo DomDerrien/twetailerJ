@@ -67,6 +67,20 @@ public class ListCommandProcessor {
                 List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
                 List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
+                if (command.containsKey(Demand.CRITERIA)) {
+                    List<Demand> filteredDemands = new ArrayList<Demand>();
+                    for (Demand demand: demands) {
+                        int idx = command.getJsonArray(Demand.CRITERIA).size();
+                        while (0 < idx) {
+                            -- idx;
+                            if (demand.getCriteria().contains(command.getJsonArray(Demand.CRITERIA).getString(idx))) {
+                                filteredDemands.add(demand);
+                                break;
+                            }
+                        }
+                    }
+                    demands = filteredDemands;
+                }
                 if (demands.size() == 0) {
                     messages.add(
                             LabelExtractor.get(
@@ -143,6 +157,20 @@ public class ListCommandProcessor {
                 List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
                 List<Proposal> proposals = CommandProcessor.proposalOperations.getProposals(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
+                if (command.containsKey(Proposal.CRITERIA)) {
+                    List<Proposal> filteredProposals = new ArrayList<Proposal>();
+                    for (Proposal proposal: proposals) {
+                        int idx = command.getJsonArray(Proposal.CRITERIA).size();
+                        while (0 < idx) {
+                            -- idx;
+                            if (proposal.getCriteria().contains(command.getJsonArray(Proposal.CRITERIA).getString(idx))) {
+                                filteredProposals.add(proposal);
+                                break;
+                            }
+                        }
+                    }
+                    proposals = filteredProposals;
+                }
                 if (proposals.size() == 0) {
                     messages.add(
                             LabelExtractor.get(
@@ -253,6 +281,22 @@ public class ListCommandProcessor {
                 List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
                 List<Store> stores = CommandProcessor.storeOperations.getStores(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
+                /****
+                if (command.containsKey(Store.CRITERIA)) {
+                    List<Store> filteredStores = new ArrayList<Store>();
+                    for (Store store: stores) {
+                        int idx = command.getJsonArray(Store.CRITERIA).size();
+                        while (0 < idx) {
+                            -- idx;
+                            if (store.getCriteria().contains(command.getJsonArray(Store.CRITERIA).getString(idx))) {
+                                filteredStores.add(store);
+                                break;
+                            }
+                        }
+                    }
+                    stores = filteredStores;
+                }
+                *****/
                 if (stores.size() == 0) {
                     messages.add(
                             LabelExtractor.get(
