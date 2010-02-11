@@ -130,7 +130,7 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_personal_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
         sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
@@ -179,7 +179,7 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_personal_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
         sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
@@ -642,7 +642,33 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_no_store_in_location", new Object[] { postalCode, countryCode, range, rangeUnit }, Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_store_in_location",
+                        new Object[] {
+                                LabelExtractor.get( "cp_tweet_locale_part", new Object[] { postalCode, countryCode }, Locale.ENGLISH),
+                                LabelExtractor.get( "cp_tweet_range_part", new Object[] { range, rangeUnit }, Locale.ENGLISH)
+                        },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+        /*
+        final Long consumerKey = 12345L;
+        final Long locationKey = 43542L;
+
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setLocationKey(locationKey);
+                return consumer;
+            }
+        };
+        ***************/
     }
 
     @Test
@@ -889,14 +915,14 @@ public class TestListCommandProcessor {
                 consumer,
                 new RawCommand(Source.simulated),
                 new GenericJsonObject(),
-                "cp_command_list_demand_missing_location"
+                "Not important!"
         );
 
         assertNull(retreived);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("Not important!", Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -928,7 +954,7 @@ public class TestListCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
+        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment(); // For the Queue setup
         appEnv.setUp();
         Location retreived = ListCommandProcessor.getLocation(new MockPersistenceManager(), consumer, rawCommand, command, "not important");
         appEnv.tearDown();
@@ -937,7 +963,13 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_with_new_location", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_with_new_location",
+                        new Object[] { LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
@@ -985,6 +1017,43 @@ public class TestListCommandProcessor {
     }
 
     @Test
+    public void testGetLocationIV() throws DataSourceException, ClientException {
+        final Long consumerKey = 12345L;
+        final Long locationKey = 23456L;
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+        consumer.setLocationKey(locationKey);
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+
+        Location retreived = ListCommandProcessor.getLocation(
+                new MockPersistenceManager(),
+                consumer,
+                new RawCommand(Source.simulated),
+                new GenericJsonObject(),
+                "Not important!"
+        );
+
+        assertNotNull(retreived);
+        assertEquals(locationKey, retreived.getKey());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNull(sentText);
+    }
+
+    @Test
     public void tesstListDemandInAreaI() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
@@ -1008,7 +1077,13 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_demand_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_demand_reference_part", new Object[] { "*" }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
@@ -1074,7 +1149,10 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                         "cp_command_list_no_demand_in_location",
-                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
                         Locale.ENGLISH
                 ),
                 sentText
@@ -1154,8 +1232,12 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                          "cp_command_list_demand_series_introduction",
-                         new Object[] { 1L },
-                         consumer.getLocale()
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
                  ),
                  sentText
          );
@@ -1189,7 +1271,13 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_proposal_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_proposal_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_proposal_reference_part", new Object[] { "*" }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
@@ -1255,7 +1343,10 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                         "cp_command_list_no_proposal_in_location",
-                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
                         Locale.ENGLISH
                 ),
                 sentText
@@ -1340,8 +1431,12 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                          "cp_command_list_proposal_series_introduction",
-                         new Object[] { 1L },
-                         consumer.getLocale()
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
                  ),
                  sentText
          );
@@ -1375,7 +1470,13 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_store_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_store_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_store_reference_part", new Object[] { "*" }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
@@ -1441,7 +1542,10 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                         "cp_command_list_no_store_in_location",
-                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
                         Locale.ENGLISH
                 ),
                 sentText
@@ -1521,8 +1625,12 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                          "cp_command_list_store_series_introduction",
-                         new Object[] { 1L },
-                         consumer.getLocale()
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
                  ),
                  sentText
          );

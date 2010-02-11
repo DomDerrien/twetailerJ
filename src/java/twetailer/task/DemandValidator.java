@@ -117,6 +117,11 @@ public class DemandValidator {
                     }
                     else {
                         try {
+                            //
+                            // At this step, it should be possible to call delegate the locale validation
+                            // as done in ListCommandProcess.getLocation()
+                            // ** It might be overkill to create 2 additional tasks if everything can be done here **
+                            //
                             Location location = locationOperations.getLocation(pm, locationKey);
                             if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                 location = LocaleValidator.getGeoCoordinates(location);
@@ -126,6 +131,11 @@ public class DemandValidator {
                                 else {
                                     location = locationOperations.updateLocation(pm, location);
                                 }
+                            }
+                            // Save the location key as the latest reference used by the consumer
+                            if (message == null && consumer.getAutomaticLocaleUpdate() && !location.getKey().equals(consumer.getLocationKey())) {
+                                consumer.setLocationKey(location.getKey());
+                                consumerOperations.updateConsumer(pm, consumer);
                             }
                         }
                         catch (DataSourceException ex) {

@@ -42,6 +42,11 @@ public class Consumer extends Entity {
 
     public final static String ADDRESS = "address";
 
+    @Persistent
+    private Boolean automaticLocaleUpdate = Boolean.TRUE;
+
+    public final static String AUTOMATIC_LOCALE_UPDATE = "automaticLocaleUpdate";
+
     // Shortcut
     public final static String CONSUMER_KEY = "consumerKey";
 
@@ -106,6 +111,14 @@ public class Consumer extends Entity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Boolean getAutomaticLocaleUpdate() {
+        return automaticLocaleUpdate;
+    }
+
+    public void setAutomaticLocaleUpdate(Boolean automaticLocaleUpdate) {
+        this.automaticLocaleUpdate = automaticLocaleUpdate;
     }
 
     public String getEmail() {
@@ -179,6 +192,7 @@ public class Consumer extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
+        out.put(AUTOMATIC_LOCALE_UPDATE, getAutomaticLocaleUpdate());
         out.put(EMAIL, getEmail());
         out.put(JABBER_ID, getJabberId());
         out.put(LANGUAGE, getLanguage());
@@ -193,6 +207,7 @@ public class Consumer extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
+        if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
