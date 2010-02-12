@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
 
+import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -22,6 +23,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
+import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
@@ -51,7 +53,7 @@ public class MailResponderServlet extends HttpServlet {
         String name = null;
         String email = null;
         String subject = null;
-        String language = LocaleValidator.DEFAULT_LANGUAGE;
+        String language = null;
         Exception exception = null;
         String command = null;
 
@@ -82,11 +84,20 @@ public class MailResponderServlet extends HttpServlet {
 
             log.warning("Message sent by: " + email + " with the subject: " + subject + "\nWith the command: " + command);
 
-            // Creation only occurs if the corresponding Consumer instance is not retrieved
-            consumerOperations.createConsumer(address);
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                // Creation only occurs if the corresponding Consumer instance is not retrieved
+                Consumer consumer = consumerOperations.createConsumer(pm, address);
+                if (language == null) {
+                    language = consumer.getLanguage();
+                }
 
-            // Persist message
-            rawCommandOperations.createRawCommand(rawCommand);
+                // Persist message
+                rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
+            }
+            finally {
+                pm.close();
+            }
 
             // Create a task for to process that new command
             Queue queue = _baseOperations.getQueue();
