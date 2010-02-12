@@ -267,7 +267,7 @@ public class Demand extends Command {
     }
 
     public Boolean getStateCmdList() {
-        return stateCmdList;
+        return stateCmdList == null ? Boolean.TRUE : stateCmdList;
     }
 
     public JsonObject toJson() {

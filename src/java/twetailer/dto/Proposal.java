@@ -155,7 +155,7 @@ public class Proposal extends Command {
     }
 
     public Boolean getStateCmdList() {
-        return stateCmdList;
+        return stateCmdList == null ? Boolean.TRUE : stateCmdList;
     }
 
     public Long getStoreKey() {

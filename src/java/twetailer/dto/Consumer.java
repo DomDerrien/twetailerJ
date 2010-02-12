@@ -114,7 +114,7 @@ public class Consumer extends Entity {
     }
 
     public Boolean getAutomaticLocaleUpdate() {
-        return automaticLocaleUpdate;
+        return automaticLocaleUpdate == null ? Boolean.FALSE : automaticLocaleUpdate;
     }
 
     public void setAutomaticLocaleUpdate(Boolean automaticLocaleUpdate) {
