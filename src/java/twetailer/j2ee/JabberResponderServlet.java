@@ -44,6 +44,11 @@ public class JabberResponderServlet extends HttpServlet {
     protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Consumer consumer = null;

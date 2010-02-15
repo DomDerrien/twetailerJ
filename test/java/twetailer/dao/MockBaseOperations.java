@@ -7,17 +7,29 @@ import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.labs.taskqueue.Queue;
 
 public class MockBaseOperations extends BaseOperations {
-    private static PersistenceManager pm = new MockPersistenceManager();
+
+    PersistenceManager lastPersistenceManager;
 
     @Override
     public PersistenceManager getPersistenceManager() {
-        return pm;
+        // lastPersistenceManager = new MockPersistenceManagerFactory().getPersistenceManager(); // Too much time consuming!
+        lastPersistenceManager = new MockPersistenceManager();
+        return lastPersistenceManager;
     }
 
-    private static Queue q = new MockQueue();
+    public PersistenceManager getPreviousPersistenceManager() {
+        return lastPersistenceManager;
+    }
+
+    Queue lastQueue;
 
     @Override
     public Queue getQueue() {
-        return q;
+        lastQueue = new MockQueue();
+        return lastQueue;
+    }
+
+    public Queue getPreviousQueue() {
+        return lastQueue;
     }
 };

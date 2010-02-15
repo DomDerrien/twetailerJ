@@ -365,6 +365,12 @@ public class TestConsumerRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(consumerKey, consumer.getKey());
+                assertEquals("~" + email, consumer.getEmail());
+                return consumer;
+            }
         };
         ConsumerRestlet.demandOperations = new DemandOperations() {
             @Override
@@ -396,6 +402,7 @@ public class TestConsumerRestlet {
             }
             @Override
             public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(consumerKey, consumer.getKey());
                 assertEquals("~" + email, consumer.getEmail());
                 return consumer;
             }

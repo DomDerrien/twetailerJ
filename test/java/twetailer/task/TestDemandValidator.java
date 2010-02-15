@@ -43,7 +43,8 @@ import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
@@ -53,17 +54,18 @@ public class TestDemandValidator {
     final String consumerTwitterId = "Katelyn";
     final Source source = Source.simulated;
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         DemandValidator.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
 
         // ConsumerOperations mock
         ConsumerOperations consumerOperations = new ConsumerOperations() {
@@ -88,7 +90,8 @@ public class TestDemandValidator {
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
+
         DemandValidator._baseOperations = new BaseOperations();
         DemandValidator.consumerOperations = DemandValidator._baseOperations.getConsumerOperations();
         DemandValidator.demandOperations = DemandValidator._baseOperations.getDemandOperations();
@@ -118,7 +121,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process(demandKey);
 
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -145,7 +148,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -199,7 +202,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -253,7 +256,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -309,7 +312,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -365,7 +368,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -423,7 +426,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -481,7 +484,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -539,7 +542,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -597,7 +600,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -655,7 +658,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -713,7 +716,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -772,7 +775,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -831,7 +834,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -890,7 +893,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -954,7 +957,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1014,7 +1017,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1102,7 +1105,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1196,7 +1199,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1290,7 +1293,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1384,7 +1387,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1476,7 +1479,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1547,7 +1550,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1598,7 +1601,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1649,7 +1652,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }

@@ -42,6 +42,11 @@ public class MailResponderServlet extends HttpServlet {
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.warning("Path Info: " + request.getPathInfo());
@@ -73,7 +78,7 @@ public class MailResponderServlet extends HttpServlet {
             email = address.getAddress();
             subject = mailMessage.getSubject();
             if (mailMessage.getContentLanguage() != null) {
-                language = mailMessage.getContentLanguage()[0];
+                language = LocaleValidator.checkLanguage(mailMessage.getContentLanguage()[0]);
             }
 
             // Fill up the message to persist
@@ -110,11 +115,11 @@ public class MailResponderServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             exception = ex;
-            rawCommand.setErrorMessage(LabelExtractor.get("error_mail_messaging", new Locale(language)));
+            rawCommand.setErrorMessage(LabelExtractor.get("error_mail_messaging", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (DatastoreTimeoutException ex) {
             exception = ex;
-            rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", new Locale(language)));
+            rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (Exception ex) {
             exception = ex;
@@ -125,7 +130,7 @@ public class MailResponderServlet extends HttpServlet {
                                     rawCommand.getKey() == null ? 0L : rawCommand.getKey(),
                                     "" // No contextual information exposed, they'll in the mail message to the "catch-all" list
                             },
-                            new Locale(language)
+                            language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)
                     )
             );
         }
@@ -146,7 +151,7 @@ public class MailResponderServlet extends HttpServlet {
                             name,
                             subject,
                             rawCommand.getErrorMessage(),
-                            new Locale(language)
+                            language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)
                     );
                 }
                 // catch (MessagingException e) {

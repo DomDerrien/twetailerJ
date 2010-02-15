@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -24,29 +26,30 @@ import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import twetailer.validator.LocaleValidator;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestLocationOperations {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
@@ -60,7 +63,7 @@ public class TestLocationOperations {
 
     @Test
     public void testCreateI() throws ClientException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -79,7 +82,7 @@ public class TestLocationOperations {
 
     @Test
     public void testCreateII() throws ClientException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -98,7 +101,7 @@ public class TestLocationOperations {
 
     @Test(expected=IllegalArgumentException.class)
     public void testCreateIII() throws ClientException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -166,7 +169,7 @@ public class TestLocationOperations {
 
     @Test(expected=RuntimeException.class)
     public void testCreateIX() throws ClientException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -187,7 +190,7 @@ public class TestLocationOperations {
 
     @Test
     public void testCreateX() throws ClientException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -210,7 +213,7 @@ public class TestLocationOperations {
 
     @Test
     public void testGetI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -248,7 +251,7 @@ public class TestLocationOperations {
 
     @Test
     public void testGetsI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -276,7 +279,7 @@ public class TestLocationOperations {
 
     @Test(expected=RuntimeException.class)
     public void testGetsIII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -305,7 +308,7 @@ public class TestLocationOperations {
      */
     @Test
     public void testUpdateI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -328,7 +331,7 @@ public class TestLocationOperations {
 
     @Test(expected=RuntimeException.class)
     public void testUpdateII() throws ClientException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -348,7 +351,7 @@ public class TestLocationOperations {
         LocationOperations ops = new LocationOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -367,7 +370,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
             List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, 0);
             assertNotNull(selection);
@@ -398,7 +401,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
             List<Location> selection = ops.getLocations(pm, source, 52.2D, LocaleValidator.MILE_UNIT, 0);
             assertNotNull(selection);
@@ -429,7 +432,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
             List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
             assertNotNull(selection);
@@ -459,7 +462,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
             List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
             assertNotNull(selection);
@@ -489,7 +492,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
             List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
             assertNotNull(selection);
@@ -519,7 +522,7 @@ public class TestLocationOperations {
         target.setHasStore(Boolean.TRUE);
         target = ops.createLocation(target);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
             List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
             assertNotNull(selection);

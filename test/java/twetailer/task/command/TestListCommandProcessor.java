@@ -956,10 +956,7 @@ public class TestListCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment(); // For the Queue setup
-        appEnv.setUp();
         Location retreived = ListCommandProcessor.getLocation(new MockPersistenceManager(), consumer, rawCommand, command, "not important");
-        appEnv.tearDown();
 
         assertNull(retreived);
 

@@ -37,29 +37,32 @@ import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
 public class TestLocationValidator {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        LocationValidator.setLogger(new MockLogger("unit-test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        LocationValidator.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
         LocationValidator._baseOperations = new MockBaseOperations();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
+
         LocationValidator._baseOperations = new BaseOperations();
         LocationValidator.locationOperations = LocationValidator._baseOperations.getLocationOperations();
         LocationValidator.rawCommandOperations = LocationValidator._baseOperations.getRawCommandOperations();
