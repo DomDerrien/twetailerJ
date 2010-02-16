@@ -1,6 +1,7 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -172,5 +173,17 @@ public class TestEntity {
         object.fromJson(new JsonParser("{'" + Entity.CREATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
 
         assertEquals(date, object.getCreationDate()); // Corrupted date did not alter the original date
+    }
+
+    @Test
+    public void testGetMarkedForDeletion() {
+        Entity entity = new Entity();
+        assertFalse(entity.getMarkedForDeletion());
+        entity.setMarkedForDeletion(null);
+        assertFalse(entity.getMarkedForDeletion());
+        entity.setMarkedForDeletion(false);
+        assertFalse(entity.getMarkedForDeletion());
+        entity.setMarkedForDeletion(true);
+        assertTrue(entity.getMarkedForDeletion());
     }
 }

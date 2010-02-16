@@ -1,5 +1,7 @@
 package twetailer.dto;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -141,5 +143,17 @@ public class TestConsumer {
         parameters.put(Consumer.CONSUMER_KEY, key);
 
         assertEquals(key, new Consumer(parameters).getKey());
+    }
+
+    @Test
+    public void testGetAutomaticLocaleUpdate() {
+        Consumer consumer = new Consumer();
+        assertTrue(consumer.getAutomaticLocaleUpdate());
+        consumer.setAutomaticLocaleUpdate(null);
+        assertFalse(consumer.getAutomaticLocaleUpdate());
+        consumer.setAutomaticLocaleUpdate(false);
+        assertFalse(consumer.getAutomaticLocaleUpdate());
+        consumer.setAutomaticLocaleUpdate(true);
+        assertTrue(consumer.getAutomaticLocaleUpdate());
     }
 }

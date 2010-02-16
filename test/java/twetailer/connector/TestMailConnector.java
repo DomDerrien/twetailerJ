@@ -62,6 +62,8 @@ public class TestMailConnector {
                 "From: " + name + "<" + from + ">\n" +
                 "To: Twetailer <maezel@twetailer.appspotmail.com>\n" +
                 "Cc: unit@test.net\n" +
+                "Content-Language: en\n" +
+                "Accept-Language: en, fr\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: text/plain; charset=UTF-8\n" +
                 "\n"

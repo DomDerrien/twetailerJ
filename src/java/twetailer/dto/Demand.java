@@ -270,6 +270,10 @@ public class Demand extends Command {
         return stateCmdList == null ? Boolean.TRUE : stateCmdList;
     }
 
+    protected void setStateCmdList(Boolean  stateCmdList) {
+        this.stateCmdList = stateCmdList;
+    }
+
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getCriteria() != null && 0 < getCriteria().size()) {

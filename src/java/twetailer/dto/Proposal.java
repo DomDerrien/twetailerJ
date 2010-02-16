@@ -158,6 +158,10 @@ public class Proposal extends Command {
         return stateCmdList == null ? Boolean.TRUE : stateCmdList;
     }
 
+    protected void setStateCmdList(Boolean  stateCmdList) {
+        this.stateCmdList = stateCmdList;
+    }
+
     public Long getStoreKey() {
         return storeKey;
     }

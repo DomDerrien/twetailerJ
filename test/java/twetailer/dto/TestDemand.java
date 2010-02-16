@@ -435,4 +435,16 @@ public class TestDemand {
 
         assertEquals("one two three", demand.getSerializedCriteria());
     }
+
+    @Test
+    public void testGetStateCmdList() {
+        Demand demand = new Demand();
+        assertTrue(demand.getStateCmdList());
+        demand.setStateCmdList(null);
+        assertTrue(demand.getStateCmdList());
+        demand.setStateCmdList(false);
+        assertFalse(demand.getStateCmdList());
+        demand.setStateCmdList(true);
+        assertTrue(demand.getStateCmdList());
+    }
 }

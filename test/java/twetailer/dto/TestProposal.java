@@ -298,4 +298,16 @@ public class TestProposal {
 
         assertEquals("one two three", proposal.getSerializedCriteria());
     }
+
+    @Test
+    public void testGetStateCmdList() {
+        Proposal proposal = new Proposal();
+        assertTrue(proposal.getStateCmdList());
+        proposal.setStateCmdList(null);
+        assertTrue(proposal.getStateCmdList());
+        proposal.setStateCmdList(false);
+        assertFalse(proposal.getStateCmdList());
+        proposal.setStateCmdList(true);
+        assertTrue(proposal.getStateCmdList());
+    }
 }

@@ -1,8 +1,10 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -235,5 +237,17 @@ public class TestSaleAssociate {
         saleAssociate.addCriterion("three");
 
         assertEquals("one two three", saleAssociate.getSerializedCriteria());
+    }
+
+    @Test
+    public void testGetIsStoreAdmin() {
+        SaleAssociate saleAssociate = new SaleAssociate();
+        assertFalse(saleAssociate.getIsStoreAdmin());
+        saleAssociate.setIsStoreAdmin(null);
+        assertFalse(saleAssociate.getIsStoreAdmin());
+        saleAssociate.setIsStoreAdmin(false);
+        assertFalse(saleAssociate.getIsStoreAdmin());
+        saleAssociate.setIsStoreAdmin(true);
+        assertTrue(saleAssociate.getIsStoreAdmin());
     }
 }
