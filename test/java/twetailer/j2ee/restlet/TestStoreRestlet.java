@@ -75,7 +75,7 @@ public class TestStoreRestlet {
     public void testCreateResourceI() throws DataSourceException, ClientException {
         StoreRestlet.storeOperations = new StoreOperations() {
             @Override
-            public Store createStore(JsonObject store) {
+            public Store createStore(PersistenceManager pm, JsonObject store) {
                 fail("Unexpected call");
                 return null;
             }
@@ -87,7 +87,7 @@ public class TestStoreRestlet {
     public void testCreateResourceII() throws DataSourceException, ClientException {
         StoreRestlet.storeOperations = new StoreOperations() {
             @Override
-            public Store createStore(JsonObject store) {
+            public Store createStore(PersistenceManager pm, JsonObject store) {
                 fail("Unexpected call");
                 return null;
             }
@@ -101,7 +101,7 @@ public class TestStoreRestlet {
     public void testCreateResourceIII() throws DataSourceException, ClientException {
         StoreRestlet.storeOperations = new StoreOperations() {
             @Override
-            public Store createStore(JsonObject store) {
+            public Store createStore(PersistenceManager pm, JsonObject store) {
                 fail("Unexpected call");
                 return null;
             }
@@ -115,7 +115,7 @@ public class TestStoreRestlet {
     public void testCreateResourceIV() throws DataSourceException, ClientException {
         StoreRestlet.storeOperations = new StoreOperations() {
             @Override
-            public Store createStore(JsonObject store) {
+            public Store createStore(PersistenceManager pm, JsonObject store) {
                 fail("Unexpected call");
                 return null;
             }
@@ -127,37 +127,97 @@ public class TestStoreRestlet {
     @Test
     @SuppressWarnings("unchecked")
     public void testCreateResourceV() throws DataSourceException, ClientException {
-        final long storeKey = 12345L;
+        final Long storeKey = 12345L;
+        final Long locationKey = 23456L;
         StoreRestlet.storeOperations = new StoreOperations() {
             @Override
-            public Store createStore(JsonObject store) {
+            public Store createStore(PersistenceManager pm, JsonObject store) {
                 Store resource = new Store();
                 resource.setKey(storeKey);
+                resource.setLocationKey(locationKey);
+                return resource;
+            }
+        };
+        StoreRestlet.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                resource.setHasStore(true);
                 return resource;
             }
         };
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         JsonObject response = ops.createResource(null, user);
         assertNotNull(response);
-        assertEquals(storeKey, response.getLong(Store.KEY));
+        assertEquals(storeKey.longValue(), response.getLong(Store.KEY));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testCreateResourceVI() throws DataSourceException, ClientException {
-        final long storeKey = 12345L;
+        final Long storeKey = 12345L;
+        final Long locationKey = 23456L;
         StoreRestlet.storeOperations = new StoreOperations() {
             @Override
-            public Store createStore(JsonObject store) {
+            public Store createStore(PersistenceManager pm, JsonObject store) {
                 Store resource = new Store();
                 resource.setKey(storeKey);
+                resource.setLocationKey(locationKey);
+                return resource;
+            }
+        };
+        StoreRestlet.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                resource.setHasStore(true);
                 return resource;
             }
         };
         ((Map<String, String>) user.getAttribute("info")).put("email", "steven.milstein@gmail.com");
         JsonObject response = ops.createResource(null, user);
         assertNotNull(response);
-        assertEquals(storeKey, response.getLong(Store.KEY));
+        assertEquals(storeKey.longValue(), response.getLong(Store.KEY));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testCreateResourceVII() throws DataSourceException, ClientException {
+        final Long storeKey = 12345L;
+        final Long locationKey = 23456L;
+        StoreRestlet.storeOperations = new StoreOperations() {
+            @Override
+            public Store createStore(PersistenceManager pm, JsonObject store) {
+                Store resource = new Store();
+                resource.setKey(storeKey);
+                resource.setLocationKey(locationKey);
+                return resource;
+            }
+        };
+        StoreRestlet.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                resource.setHasStore(false);
+                return resource;
+            }
+            @Override
+            public Location updateLocation(PersistenceManager pm, Location location) {
+                assertEquals(locationKey, location.getKey());
+                assertTrue(location.hasStore());
+                return location;
+            }
+        };
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        JsonObject response = ops.createResource(null, user);
+        assertNotNull(response);
+        assertEquals(storeKey.longValue(), response.getLong(Store.KEY));
     }
 
     @Test(expected=ClientException.class)
@@ -291,7 +351,7 @@ public class TestStoreRestlet {
                 return location;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(locationKey, location.getKey());
                 assertEquals(100, limit);
                 List<Location> locations = new ArrayList<Location>();
@@ -331,7 +391,7 @@ public class TestStoreRestlet {
                 return location;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double givenRange, String givenRangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double givenRange, String givenRangeUnit, boolean withStore, int limit) {
                 assertEquals(locationKey, location.getKey());
                 assertEquals(range, givenRange);
                 assertEquals(rangeUnit, givenRangeUnit);

@@ -7,7 +7,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,9 +46,6 @@ import twetailer.task.TestCommandProcessor;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
-
-import com.google.apphosting.api.MockAppEngineEnvironment;
-
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -628,7 +627,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location center, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location center, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -1106,7 +1105,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getDemands() below verifies the array has a zero size
@@ -1180,7 +1179,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getDemands() below verifies the array has a zero size
@@ -1268,7 +1267,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getDemands() below verifies the array has a zero size
@@ -1307,7 +1306,7 @@ public class TestListCommandProcessor {
         command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
         JsonArray tags = new GenericJsonArray();
         tags.add("wii");
-        command.put(Demand.CRITERIA, tags);
+        command.put(Demand.CRITERIA_ADD, tags);
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -1356,7 +1355,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getDemands() below verifies the array has a zero size
@@ -1482,7 +1481,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getProposals() below verifies the array has a zero size
@@ -1557,7 +1556,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getProposals() below verifies the array has a zero size
@@ -1650,7 +1649,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getProposals() below verifies the array has a zero size
@@ -1693,7 +1692,7 @@ public class TestListCommandProcessor {
         command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
         JsonArray tags = new GenericJsonArray();
         tags.add("wii");
-        command.put(Proposal.CRITERIA, tags);
+        command.put(Proposal.CRITERIA_ADD, tags);
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -1743,7 +1742,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getProposals() below verifies the array has a zero size
@@ -1873,7 +1872,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getStores() below verifies the array has a zero size
@@ -1947,7 +1946,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getStores() below verifies the array has a zero size
@@ -2011,5 +2010,86 @@ public class TestListCommandProcessor {
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(storeKey.toString())); // Not anonymized
+    }
+
+    private static Collator getCollator() {
+        return ListCommandProcessor.getCollator(Locale.ENGLISH);
+    }
+
+    @Test
+    public void testCheckIfIncludedI() {
+        //
+        // No match
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "two", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "three"});
+
+        assertFalse(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedII() {
+        //
+        // One keyword matches exactly
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "two", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "two", "three"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedIII() {
+        //
+        // Two keyword match exactly
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "two", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "two", "three", "four"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedIV() {
+        //
+        // One keyword start matches
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "tw*", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "two", "three"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedV() {
+        //
+        // One keyword start matches, with accented characters and mixed cases
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "cérÉAL*"});
+        List<String> criteria = Arrays.asList(new String[] { "cereals"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedVI() {
+        //
+        // One keyword start matches, with accented characters and mixed cases
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "cérÉALe*"});
+        List<String> criteria = Arrays.asList(new String[] { "cereals"});
+
+        assertFalse(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedVII() {
+        //
+        // One keyword start matches, with accented characters and mixed cases
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "cérÉAL*"});
+        List<String> criteria = Arrays.asList(new String[] { "cer"});
+
+        assertFalse(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
     }
 }

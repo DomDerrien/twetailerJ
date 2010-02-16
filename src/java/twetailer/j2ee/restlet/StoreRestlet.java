@@ -48,7 +48,19 @@ public class StoreRestlet extends BaseRestlet {
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         if (isAPrivilegedUser(loggedUser)) {
-            return storeOperations.createStore(parameters).toJson();
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                Store store = storeOperations.createStore(pm, parameters);
+                Location location = locationOperations.getLocation(pm, store.getLocationKey());
+                if (Boolean.FALSE.equals(location.hasStore())) {
+                    location.setHasStore(Boolean.TRUE);
+                    locationOperations.updateLocation(pm, location);
+                }
+                return store.toJson();
+            }
+            finally {
+                pm.close();
+            }
         }
         throw new ClientException("Restricted access!");
     }
@@ -105,7 +117,7 @@ public class StoreRestlet extends BaseRestlet {
 
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
-                List<Location> locations = locationOperations.getLocations(pm, locationOperations.getLocation(pm, locationKey), range, rangeUnit, 100);
+                List<Location> locations = locationOperations.getLocations(pm, locationOperations.getLocation(pm, locationKey), range, rangeUnit, true, 100);
                 List<Store> stores = storeOperations.getStores(locations, 100);
                 return JsonUtils.toJson(stores);
             }

@@ -287,7 +287,7 @@ public class DemandProcessor {
         List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
         // Get the stores around the demanded location
         Location location = locationOperations.getLocation(pm, demand.getLocationKey());
-        List<Location> locations = locationOperations.getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), 0);
+        List<Location> locations = locationOperations.getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), true, 0);
         if (locations.size() == 0) {
             return selectedSaleAssociates;
         }

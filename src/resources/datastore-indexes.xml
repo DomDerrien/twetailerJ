@@ -3,22 +3,22 @@
     <!--
      Consumer
       -->
-    <datastore-index kind="Consumer" ancestor="false" source="auto">
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
         <property name="email" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Consumer" ancestor="false" source="auto">
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
         <property name="jabberId" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Consumer" ancestor="false" source="auto">
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
         <property name="openID" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Consumer" ancestor="false" source="auto">
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
         <property name="twitterId" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
@@ -26,30 +26,30 @@
     <!--
      Demand
       -->
-    <datastore-index kind="Demand" ancestor="false" source="auto">
+    <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="ownerKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Demand" ancestor="false" source="auto">
+    <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="ownerKey" direction="asc"/>
         <property name="stateCmdList" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Demand" ancestor="false" source="auto">
+    <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="state" direction="asc"/>
         <property name="modificationDate" direction="desc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Demand" ancestor="false" source="auto">
+    <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="proposalKeys" direction="asc"/>
         <property name="state" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Demand" ancestor="false" source="auto">
+    <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="locationKey" direction="asc"/>
         <property name="stateCmdList" direction="asc"/>
         <property name="creationDate" direction="desc"/>
@@ -58,18 +58,18 @@
     <!--
      Location
       -->
-    <datastore-index kind="Location" ancestor="false" source="auto">
+    <datastore-index kind="Location" ancestor="false" source="manual">
         <property name="countryCode" direction="asc"/>
         <property name="postalCode" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Location" ancestor="false" source="auto">
-        <property name="hasStore" direction="asc"/>
+    <datastore-index kind="Location" ancestor="false" source="manual">
+        <property name="countryCode" direction="asc"/>
         <property name="latitude" direction="asc"/>
     </datastore-index>
 
-    <datastore-index kind="Location" ancestor="false" source="auto">
+    <datastore-index kind="Location" ancestor="false" source="manual">
         <property name="countryCode" direction="asc"/>
         <property name="hasStore" direction="asc"/>
         <property name="latitude" direction="asc"/>
@@ -78,18 +78,18 @@
     <!--
      Proposal
       -->
-    <datastore-index kind="Proposal" ancestor="false" source="auto">
+    <datastore-index kind="Proposal" ancestor="false" source="manual">
         <property name="demandKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Proposal" ancestor="false" source="auto">
+    <datastore-index kind="Proposal" ancestor="false" source="manual">
         <property name="demandKey" direction="asc"/>
         <property name="state" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="Proposal" ancestor="false" source="auto">
+    <datastore-index kind="Proposal" ancestor="false" source="manual">
         <property name="locationKey" direction="asc"/>
         <property name="stateCmdList" direction="asc"/>
         <property name="creationDate" direction="desc"/>
@@ -98,20 +98,35 @@
     <!--
      Sale Associate
       -->
-    <datastore-index kind="SaleAssociate" ancestor="false" source="auto">
+    <datastore-index kind="SaleAssociate" ancestor="false" source="manual">
         <property name="consumerKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
-    <datastore-index kind="SaleAssociate" ancestor="false" source="auto">
+    <datastore-index kind="SaleAssociate" ancestor="false" source="manual">
         <property name="storeKey" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="SaleAssociate" ancestor="false" source="manual">
+        <property name="email" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="SaleAssociate" ancestor="false" source="manual">
+        <property name="jabberId" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="SaleAssociate" ancestor="false" source="manual">
+        <property name="twitterId" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
     <!--
      Store
       -->
-    <datastore-index kind="Store" ancestor="false" source="auto">
+    <datastore-index kind="Store" ancestor="false" source="manual">
         <property name="locationKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>

@@ -136,7 +136,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -167,7 +167,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -211,7 +211,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -272,7 +272,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -342,7 +342,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -407,7 +407,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -477,7 +477,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -552,7 +552,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -624,7 +624,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -693,7 +693,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
@@ -785,7 +785,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -897,7 +897,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1010,7 +1010,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1108,7 +1108,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1212,7 +1212,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1307,7 +1307,7 @@ public class TestDemandProcessor {
                 throw new DataSourceException("done in purpose");
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1371,7 +1371,7 @@ public class TestDemandProcessor {
                 return null;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1480,7 +1480,7 @@ public class TestDemandProcessor {
                 return null;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1723,7 +1723,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -1814,7 +1814,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -1961,7 +1961,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -2036,7 +2036,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };

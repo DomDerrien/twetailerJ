@@ -4,9 +4,12 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.io.UnsupportedEncodingException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -64,19 +67,18 @@ public class ListCommandProcessor {
                 if (consumerLocation == null) {
                     return;
                 }
-                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
+                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, false, 0);
                 List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
-                if (command.containsKey(Demand.CRITERIA)) {
+                if (command.containsKey(Demand.CRITERIA) || command.containsKey(Demand.CRITERIA_ADD)) {
+                    // Check each demand
+                    Collator collator = getCollator(consumer.getLocale());
                     List<Demand> filteredDemands = new ArrayList<Demand>();
+                    List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
                     for (Demand demand: demands) {
-                        int idx = command.getJsonArray(Demand.CRITERIA).size();
-                        while (0 < idx) {
-                            -- idx;
-                            if (demand.getCriteria().contains(command.getJsonArray(Demand.CRITERIA).getString(idx))) {
-                                filteredDemands.add(demand);
-                                break;
-                            }
+                        // Check each given filter
+                        if (checkIfIncluded(collator, tags, demand.getCriteria())) {
+                            filteredDemands.add(demand);
                         }
                     }
                     demands = filteredDemands;
@@ -154,19 +156,18 @@ public class ListCommandProcessor {
                 if (consumerLocation == null) {
                     return;
                 }
-                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
+                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, true, 0);
                 List<Proposal> proposals = CommandProcessor.proposalOperations.getProposals(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
-                if (command.containsKey(Proposal.CRITERIA)) {
+                if (command.containsKey(Proposal.CRITERIA) || command.containsKey(Proposal.CRITERIA_ADD)) {
+                    // Check each proposal
+                    Collator collator = getCollator(consumer.getLocale());
                     List<Proposal> filteredProposals = new ArrayList<Proposal>();
+                    List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
                     for (Proposal proposal: proposals) {
-                        int idx = command.getJsonArray(Proposal.CRITERIA).size();
-                        while (0 < idx) {
-                            -- idx;
-                            if (proposal.getCriteria().contains(command.getJsonArray(Proposal.CRITERIA).getString(idx))) {
-                                filteredProposals.add(proposal);
-                                break;
-                            }
+                        // Check each given filter
+                        if (checkIfIncluded(collator, tags, proposal.getCriteria())) {
+                            filteredProposals.add(proposal);
                         }
                     }
                     proposals = filteredProposals;
@@ -278,20 +279,19 @@ public class ListCommandProcessor {
                 if (consumerLocation == null) {
                     return;
                 }
-                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
+                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, true, 0);
                 List<Store> stores = CommandProcessor.storeOperations.getStores(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
                 /****
-                if (command.containsKey(Store.CRITERIA)) {
+                if (command.containsKey(Store.CRITERIA) || command.containsKey(Store.CRITERIA_ADD)) {
+                    // Check each store
+                    Collator collator = getCollator(consumer.getLocale());
                     List<Store> filteredStores = new ArrayList<Store>();
+                    List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
                     for (Store store: stores) {
-                        int idx = command.getJsonArray(Store.CRITERIA).size();
-                        while (0 < idx) {
-                            -- idx;
-                            if (store.getCriteria().contains(command.getJsonArray(Store.CRITERIA).getString(idx))) {
-                                filteredStores.add(store);
-                                break;
-                            }
+                        // Check each given filter
+                        if (checkIfIncluded(collator, tags, proposal.getCriteria())) {
+                            filteredStores.add(store);
                         }
                     }
                     stores = filteredStores;
@@ -436,5 +436,55 @@ public class ListCommandProcessor {
                 }
         );
         return null;
+    }
+
+    /**
+     * Create a Collator instance for the given locale information.
+     * This object can be used for locale dependent comparisons.
+     *
+     * @param locale Consumer's locale
+     * @return Collator instance
+     */
+    protected static Collator getCollator(Locale locale) {
+        //
+        // TODO: cache the value by user's locale
+        //
+        Collator collator = Collator.getInstance(locale);
+        collator.setStrength(Collator.PRIMARY);
+        return collator;
+    }
+
+    /**
+     * Return <code>true</code> if one of the given criterion matches one of the given tags.
+     * If a tag ends with a star (*), each criterion is only compared to the corresponding version.
+     *
+     * @param collator Java object used for the locale dependent comparisons
+     * @param tags List of filters (can end with a star) to compare to the criteria
+     * @param criteria List of criteria to compare to the tags
+     * @return <code>true</code> if one criterion matches one tag, <code>false</code> otherwise
+     */
+    protected static boolean checkIfIncluded(Collator collator, List<Object> tags, List<String> criteria) {
+        for(Object tag: tags) {
+            if (((String) tag).endsWith("*")) {
+                // Compare the filter to the beginning of each demand criteria
+                String truncatedTag = LocaleValidator.toUnicode((String) tag);
+                int usefulLength = truncatedTag.length() - 1;
+                truncatedTag = truncatedTag.substring(0, usefulLength);
+                for (String criterion: criteria) {
+                    if (truncatedTag.length() <= criterion.length() && collator.compare(criterion.substring(0, usefulLength), truncatedTag) == 0) {
+                        return true;
+                    }
+                }
+            }
+            else {
+                // Compare the filter to each demand criteria
+                for (String criterion: criteria) {
+                    if (collator.compare(criterion, (String) tag) == 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -372,7 +372,7 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, 0);
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, true, 0);
             assertNotNull(selection);
             assertEquals(1, selection.size());
             assertEquals(target.getKey(), selection.get(0).getKey());
@@ -403,7 +403,7 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 52.2D, LocaleValidator.MILE_UNIT, 0);
+            List<Location> selection = ops.getLocations(pm, source, 52.2D, LocaleValidator.MILE_UNIT, true, 0);
             assertNotNull(selection);
             assertEquals(1, selection.size());
             assertEquals(target.getKey(), selection.get(0).getKey());
@@ -434,7 +434,7 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, true, 50);
             assertNotNull(selection);
             assertEquals(0, selection.size());
         }
@@ -464,7 +464,7 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, true, 50);
             assertNotNull(selection);
             assertEquals(0, selection.size());
         }
@@ -494,7 +494,7 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, true, 50);
             assertNotNull(selection);
             assertEquals(0, selection.size());
         }
@@ -524,9 +524,46 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, 50);
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.MILE_UNIT, true, 50);
             assertNotNull(selection);
             assertEquals(0, selection.size());
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Test
+    public void testGetsExtendedVII() throws DataSourceException {
+        LocationOperations ops = new LocationOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+        };
+
+        Location source = new Location();
+        source.setPostalCode("H8P3R8");
+        source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        source.setLatitude(45.0D);
+        source.setLongitude(-27.5D);
+        source = ops.createLocation(source);
+
+        Location target = new Location();
+        target.setPostalCode("H8P3R0");
+        target.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        target.setLatitude(45.5D);
+        target.setLongitude(-27.0D);
+        target.setHasStore(Boolean.TRUE);
+        target = ops.createLocation(target);
+
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
+        try {
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, false, 0);
+            assertNotNull(selection);
+            assertEquals(2, selection.size());
+            assertTrue(source.getKey().equals(selection.get(0).getKey()) || source.getKey().equals(selection.get(1).getKey()));
+            assertTrue(target.getKey().equals(selection.get(0).getKey()) || target.getKey().equals(selection.get(1).getKey()));
         }
         finally {
             pm.close();
