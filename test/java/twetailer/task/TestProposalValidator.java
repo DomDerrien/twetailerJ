@@ -34,7 +34,8 @@ import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
@@ -44,17 +45,18 @@ public class TestProposalValidator {
     final Source source = Source.simulated;
     final State state = State.opened;
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         ProposalValidator.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
 
         // SaleAssociateOperations mock
         SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
@@ -78,7 +80,8 @@ public class TestProposalValidator {
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
+
         ProposalValidator._baseOperations = new BaseOperations();
         ProposalValidator.saleAssociateOperations = ProposalValidator._baseOperations.getSaleAssociateOperations();
         ProposalValidator.proposalOperations = ProposalValidator._baseOperations.getProposalOperations();
@@ -107,7 +110,7 @@ public class TestProposalValidator {
         // Process the test case
         ProposalValidator.process(proposalKey);
 
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -141,7 +144,7 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -186,7 +189,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -231,7 +234,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -277,7 +280,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -323,7 +326,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -372,7 +375,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -421,7 +424,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -470,7 +473,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -519,7 +522,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -565,7 +568,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -611,7 +614,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -661,7 +664,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -718,7 +721,7 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposalKey, demandKey }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -774,7 +777,7 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -806,7 +809,7 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -842,7 +845,7 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(ProposalValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test

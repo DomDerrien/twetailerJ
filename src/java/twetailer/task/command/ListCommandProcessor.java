@@ -4,9 +4,12 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.io.UnsupportedEncodingException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -41,12 +44,12 @@ public class ListCommandProcessor {
         //
         // Used by actors to:
         //
-        // 1.1 // Not yet defined
-        // 1.2 Get the details about the identified demand
-        // 2.1 // Not yet defined
-        // 2.2 Get the details about the identified proposal
-        // 3.1 Get information about all store around the given location
-        // 3.2 Get the details about the identified store
+        // 1.1 Get all demands (anonymized, not limited to the consumer's ones)
+        // 1.2 Get the details about the identified demand (restricted to the demand owner)
+        // 2.1 Get all proposals  (anonymized, not limited to the sale associate's ones)
+        // 2.2 Get the details about the identified proposal (restricted to the proposal owner, or the attached demand owner)
+        // 3.1 Get all stores (fully documented, no limitation)
+        // 3.2 Get the details about the identified store (fully documented)
         // 4. Get information about all active demands owned by the consumer
         //
         if (command.containsKey(Demand.REFERENCE)) {
@@ -57,23 +60,36 @@ public class ListCommandProcessor {
                 String rangeUnit = command.containsKey(Demand.RANGE_UNIT) ? command.getString(Demand.RANGE_UNIT) : LocaleValidator.DEFAULT_RANGE_UNIT;
                 String messageForMissingLocation = LabelExtractor.get(
                         "cp_command_list_demand_missing_location",
-                        new Object[] { LabelExtractor.get( "cp_tweet_demand_reference_part", new Object[] { "*" }, consumer.getLocale() ) },
+                        new Object[] { LabelExtractor.get( "cp_tweet_demand_reference_part", new Object[] { "*" }, consumer.getLocale()) },
                         consumer.getLocale()
                 );
                 Location consumerLocation = getLocation(pm, consumer, rawCommand, command, messageForMissingLocation);
                 if (consumerLocation == null) {
                     return;
                 }
-                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
+                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, false, 0);
                 List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
+                if (command.containsKey(Demand.CRITERIA) || command.containsKey(Demand.CRITERIA_ADD)) {
+                    // Check each demand
+                    Collator collator = getCollator(consumer.getLocale());
+                    List<Demand> filteredDemands = new ArrayList<Demand>();
+                    List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
+                    for (Demand demand: demands) {
+                        // Check each given filter
+                        if (checkIfIncluded(collator, tags, demand.getCriteria())) {
+                            filteredDemands.add(demand);
+                        }
+                    }
+                    demands = filteredDemands;
+                }
                 if (demands.size() == 0) {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_demand_in_location",
                                     new Object[] {
-                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
-                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale()),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale())
                                     },
                                     consumer.getLocale()
                             )
@@ -85,8 +101,8 @@ public class ListCommandProcessor {
                                     "cp_command_list_demand_series_introduction",
                                     new Object[] {
                                             demands.size(),
-                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
-                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale()),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale())
                                     },
                                     consumer.getLocale()
                             )
@@ -133,23 +149,36 @@ public class ListCommandProcessor {
                 String rangeUnit = command.containsKey(Demand.RANGE_UNIT) ? command.getString(Demand.RANGE_UNIT) : LocaleValidator.DEFAULT_RANGE_UNIT;
                 String messageForMissingLocation = LabelExtractor.get(
                         "cp_command_list_proposal_missing_location",
-                        new Object[] { LabelExtractor.get( "cp_tweet_proposal_reference_part", new Object[] { "*" }, consumer.getLocale() ) },
+                        new Object[] { LabelExtractor.get( "cp_tweet_proposal_reference_part", new Object[] { "*" }, consumer.getLocale()) },
                         consumer.getLocale()
                 );
                 Location consumerLocation = getLocation(pm, consumer, rawCommand, command, messageForMissingLocation);
                 if (consumerLocation == null) {
                     return;
                 }
-                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
+                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, true, 0);
                 List<Proposal> proposals = CommandProcessor.proposalOperations.getProposals(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
+                if (command.containsKey(Proposal.CRITERIA) || command.containsKey(Proposal.CRITERIA_ADD)) {
+                    // Check each proposal
+                    Collator collator = getCollator(consumer.getLocale());
+                    List<Proposal> filteredProposals = new ArrayList<Proposal>();
+                    List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
+                    for (Proposal proposal: proposals) {
+                        // Check each given filter
+                        if (checkIfIncluded(collator, tags, proposal.getCriteria())) {
+                            filteredProposals.add(proposal);
+                        }
+                    }
+                    proposals = filteredProposals;
+                }
                 if (proposals.size() == 0) {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_proposal_in_location",
                                     new Object[] {
-                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
-                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale()),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale())
                                     },
                                     consumer.getLocale()
                             )
@@ -161,8 +190,8 @@ public class ListCommandProcessor {
                                     "cp_command_list_proposal_series_introduction",
                                     new Object[] {
                                             proposals.size(),
-                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
-                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale()),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale())
                                     },
                                     consumer.getLocale()
                             )
@@ -243,23 +272,38 @@ public class ListCommandProcessor {
                 String rangeUnit = command.containsKey(Demand.RANGE_UNIT) ? command.getString(Demand.RANGE_UNIT) : LocaleValidator.DEFAULT_RANGE_UNIT;
                 String messageForMissingLocation = LabelExtractor.get(
                         "cp_command_list_store_missing_location",
-                        new Object[] { LabelExtractor.get( "cp_tweet_store_reference_part", new Object[] { "*" }, consumer.getLocale() ) },
+                        new Object[] { LabelExtractor.get( "cp_tweet_store_reference_part", new Object[] { "*" }, consumer.getLocale()) },
                         consumer.getLocale()
                 );
                 Location consumerLocation = getLocation(pm, consumer, rawCommand, command, messageForMissingLocation);
                 if (consumerLocation == null) {
                     return;
                 }
-                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, 0);
+                List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, consumerLocation, range, rangeUnit, true, 0);
                 List<Store> stores = CommandProcessor.storeOperations.getStores(pm, locations, 0);
                 List<String> messages = new ArrayList<String>();
+                /****
+                if (command.containsKey(Store.CRITERIA) || command.containsKey(Store.CRITERIA_ADD)) {
+                    // Check each store
+                    Collator collator = getCollator(consumer.getLocale());
+                    List<Store> filteredStores = new ArrayList<Store>();
+                    List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
+                    for (Store store: stores) {
+                        // Check each given filter
+                        if (checkIfIncluded(collator, tags, proposal.getCriteria())) {
+                            filteredStores.add(store);
+                        }
+                    }
+                    stores = filteredStores;
+                }
+                *****/
                 if (stores.size() == 0) {
                     messages.add(
                             LabelExtractor.get(
                                     "cp_command_list_no_store_in_location",
                                     new Object[] {
-                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
-                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale()),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale())
                                     },
                                     consumer.getLocale()
                             )
@@ -271,8 +315,8 @@ public class ListCommandProcessor {
                                     "cp_command_list_store_series_introduction",
                                     new Object[] {
                                             stores.size(),
-                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale() ),
-                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale() )
+                                            LabelExtractor.get("cp_tweet_locale_part", new Object[] { consumerLocation.getPostalCode(), consumerLocation.getCountryCode() }, consumer.getLocale()),
+                                            LabelExtractor.get("cp_tweet_range_part", new Object[] { range, rangeUnit }, consumer.getLocale())
                                     },
                                     consumer.getLocale()
                             )
@@ -345,29 +389,23 @@ public class ListCommandProcessor {
     }
 
     protected static Location getLocation(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, String messageKeyForMissingLocationInformation) throws DataSourceException, ClientException {
-        // Report an error if the Locale information is missing
-        if (!command.containsKey(Location.POSTAL_CODE)) {
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    new String[] {
-                            messageKeyForMissingLocationInformation
-                    }
-            );
-            return null;
-        }
-        // Try to load the Locale information
-        String postalCode = command.getString(Location.POSTAL_CODE);
-        String countryCode = command.getString(Location.COUNTRY_CODE);
-        List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, postalCode, countryCode);
-        if (locations.size() == 0) {
+        // Use the given parameters
+        if (command.containsKey(Location.POSTAL_CODE)) {
+            // Try to load the Locale information
+            String postalCode = command.getString(Location.POSTAL_CODE);
+            String countryCode = command.getString(Location.COUNTRY_CODE);
+            List<Location> locations = CommandProcessor.locationOperations.getLocations(pm, postalCode, countryCode);
+            if (0 < locations.size()) {
+                return locations.get(0);
+            }
+            // Report to the end-user that the locale is unknown and delegate the resolution to the LocationValidator.process()
             communicateToConsumer(
                     rawCommand,
                     consumer,
                     new String[] { LabelExtractor.get(
                             "cp_command_list_with_new_location",
                             new Object[] {
-                                    LabelExtractor.get("cp_tweet_locale_part", new Object[] { postalCode, countryCode }, consumer.getLocale() )
+                                    LabelExtractor.get("cp_tweet_locale_part", new Object[] { postalCode, countryCode }, consumer.getLocale())
                             },
                             consumer.getLocale()
                     )}
@@ -385,6 +423,68 @@ public class ListCommandProcessor {
             );
             return null;
         }
-        return locations.get(0);
+        // Use the consumer locationKey
+        if (consumer.getLocationKey() != null) {
+            return CommandProcessor.locationOperations.getLocation(pm, consumer.getLocationKey());
+        }
+        // Report an error if the Locale information is missing
+        communicateToConsumer(
+                rawCommand,
+                consumer,
+                new String[] {
+                        messageKeyForMissingLocationInformation
+                }
+        );
+        return null;
+    }
+
+    /**
+     * Create a Collator instance for the given locale information.
+     * This object can be used for locale dependent comparisons.
+     *
+     * @param locale Consumer's locale
+     * @return Collator instance
+     */
+    protected static Collator getCollator(Locale locale) {
+        //
+        // TODO: cache the value by user's locale
+        //
+        Collator collator = Collator.getInstance(locale);
+        collator.setStrength(Collator.PRIMARY);
+        return collator;
+    }
+
+    /**
+     * Return <code>true</code> if one of the given criterion matches one of the given tags.
+     * If a tag ends with a star (*), each criterion is only compared to the corresponding version.
+     *
+     * @param collator Java object used for the locale dependent comparisons
+     * @param tags List of filters (can end with a star) to compare to the criteria
+     * @param criteria List of criteria to compare to the tags
+     * @return <code>true</code> if one criterion matches one tag, <code>false</code> otherwise
+     */
+    protected static boolean checkIfIncluded(Collator collator, List<Object> tags, List<String> criteria) {
+        for(Object tag: tags) {
+            if (((String) tag).endsWith("*")) {
+                // Compare the filter to the beginning of each demand criteria
+                String truncatedTag = LocaleValidator.toUnicode((String) tag);
+                int usefulLength = truncatedTag.length() - 1;
+                truncatedTag = truncatedTag.substring(0, usefulLength);
+                for (String criterion: criteria) {
+                    if (truncatedTag.length() <= criterion.length() && collator.compare(criterion.substring(0, usefulLength), truncatedTag) == 0) {
+                        return true;
+                    }
+                }
+            }
+            else {
+                // Compare the filter to each demand criteria
+                for (String criterion: criteria) {
+                    if (collator.compare(criterion, (String) tag) == 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

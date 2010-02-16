@@ -109,12 +109,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -165,12 +160,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -221,12 +211,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -260,12 +245,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -318,12 +298,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -373,12 +348,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -440,12 +410,7 @@ public class TestDemandCommandProcessor {
         RawCommand rawCommand = new RawCommand(Source.simulated);
         command.put(Location.POSTAL_CODE, "zzz");
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -502,12 +467,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -577,12 +537,7 @@ public class TestDemandCommandProcessor {
         consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -653,12 +608,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -723,12 +673,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -792,12 +737,7 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -865,12 +805,7 @@ public class TestDemandCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setLocationKey(locationKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -941,12 +876,7 @@ public class TestDemandCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setLocationKey(locationKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1001,12 +931,7 @@ public class TestDemandCommandProcessor {
         consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1055,12 +980,7 @@ public class TestDemandCommandProcessor {
         consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,35 +43,37 @@ import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
 public class TestDemandValidator {
 
-    final Long OwnerKey = 54321L;
+    final Long ownerKey = 54321L;
     final String consumerTwitterId = "Katelyn";
     final Source source = Source.simulated;
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         DemandValidator.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
 
         // ConsumerOperations mock
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
-                assertEquals(OwnerKey, key);
+                assertEquals(ownerKey, key);
                 Consumer consumer = new Consumer();
-                consumer.setKey(OwnerKey);
+                consumer.setKey(ownerKey);
                 consumer.setTwitterId(consumerTwitterId);
                 consumer.setLanguage(LocaleValidator.DEFAULT_LANGUAGE);
                 return consumer;
@@ -87,7 +90,8 @@ public class TestDemandValidator {
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
+
         DemandValidator._baseOperations = new BaseOperations();
         DemandValidator.consumerOperations = DemandValidator._baseOperations.getConsumerOperations();
         DemandValidator.demandOperations = DemandValidator._baseOperations.getDemandOperations();
@@ -117,7 +121,7 @@ public class TestDemandValidator {
         // Process the test case
         DemandValidator.process(demandKey);
 
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -144,7 +148,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -153,7 +157,7 @@ public class TestDemandValidator {
         // Invalid criteria
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -180,7 +184,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 return demand;
@@ -198,7 +202,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -207,7 +211,7 @@ public class TestDemandValidator {
         // Invalid criteria
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -234,7 +238,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 return demand;
@@ -252,7 +256,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -262,7 +266,7 @@ public class TestDemandValidator {
         // Invalid expiration date
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -289,7 +293,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -308,7 +312,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -318,7 +322,7 @@ public class TestDemandValidator {
         // Invalid expiration date
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -345,7 +349,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -364,7 +368,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -375,7 +379,7 @@ public class TestDemandValidator {
         // Invalid range
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -402,7 +406,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -422,7 +426,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -433,7 +437,7 @@ public class TestDemandValidator {
         // Invalid range
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -460,7 +464,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -480,7 +484,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -491,7 +495,7 @@ public class TestDemandValidator {
         // Invalid range
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -518,7 +522,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -538,7 +542,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -549,7 +553,7 @@ public class TestDemandValidator {
         // Invalid range
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -576,7 +580,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -596,7 +600,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -607,7 +611,7 @@ public class TestDemandValidator {
         // Invalid range
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -634,7 +638,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -654,7 +658,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -665,7 +669,7 @@ public class TestDemandValidator {
         // Invalid range
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -692,7 +696,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -712,7 +716,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -724,7 +728,7 @@ public class TestDemandValidator {
         // Invalid quantity
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -751,7 +755,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -771,7 +775,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -783,7 +787,7 @@ public class TestDemandValidator {
         // Invalid quantity
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -810,7 +814,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -830,7 +834,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -842,7 +846,7 @@ public class TestDemandValidator {
         // Invalid quantity
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -869,7 +873,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -889,7 +893,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -902,7 +906,7 @@ public class TestDemandValidator {
         // Invalid location key
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -933,7 +937,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -953,7 +957,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -966,7 +970,7 @@ public class TestDemandValidator {
         // Invalid location key
         //
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -993,7 +997,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -1013,7 +1017,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1053,7 +1057,7 @@ public class TestDemandValidator {
             }
         };
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1080,7 +1084,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -1101,7 +1105,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1122,6 +1126,7 @@ public class TestDemandValidator {
             public Location getLocation(PersistenceManager pm, Long key) {
                 assertEquals(locationKey, key);
                 Location location = new Location();
+                location.setKey(locationKey);
                 location.setLatitude(0.0D);
                 location.setLongitude(Location.INVALID_COORDINATE);
                 location.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
@@ -1130,7 +1135,7 @@ public class TestDemandValidator {
             }
         };
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1140,6 +1145,23 @@ public class TestDemandValidator {
                 rawCommand.setKey(rawCommandKey);
                 rawCommand.setSource(source);
                 return rawCommand;
+            }
+        };
+
+        // ConsumerOperations mock
+        DemandValidator.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(ownerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(ownerKey);
+                return consumer;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(ownerKey, consumer.getKey());
+                assertEquals(locationKey, consumer.getLocationKey());
+                return consumer;
             }
         };
 
@@ -1157,7 +1179,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -1177,11 +1199,199 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXV() throws DataSourceException {
+    public void testProcessXVa() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid expiration date
+        // Valid range
+        // Valid quantity
+        // Valid location key
+        // Valid location coordinates => consumer don't want automatic locale update
+        //
+
+        // LocationOperations mock
+        final Long locationKey = 54321L;
+        DemandValidator.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setLatitude(0.0D);
+                location.setLongitude(0.0D);
+                return location;
+            }
+        };
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // ConsumerOperations mock
+        DemandValidator.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(ownerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(ownerKey);
+                consumer.setAutomaticLocaleUpdate(Boolean.FALSE);
+                return consumer;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(ownerKey, consumer.getKey());
+                assertEquals(locationKey, consumer.getLocationKey());
+                fail("Call not expected!");
+                return consumer;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Long getLocationKey() {
+                        return locationKey;
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
+                demand.setLocationKey(locationKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.published, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessXVb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid expiration date
+        // Valid range
+        // Valid quantity
+        // Valid location key
+        // Valid location coordinates => consumer not updated because already located there
+        //
+
+        // LocationOperations mock
+        final Long locationKey = 54321L;
+        DemandValidator.locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setLatitude(0.0D);
+                location.setLongitude(0.0D);
+                return location;
+            }
+        };
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // ConsumerOperations mock
+        DemandValidator.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(ownerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(ownerKey);
+                consumer.setLocationKey(locationKey);
+                return consumer;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(ownerKey, consumer.getKey());
+                assertEquals(locationKey, consumer.getLocationKey());
+                fail("Call not expected!");
+                return consumer;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Long getLocationKey() {
+                        return locationKey;
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
+                demand.setLocationKey(locationKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.published, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessXVc() throws DataSourceException {
         //
         // Valid criteria
         // Valid expiration date
@@ -1198,13 +1408,14 @@ public class TestDemandValidator {
             public Location getLocation(PersistenceManager pm, Long key) {
                 assertEquals(locationKey, key);
                 Location location = new Location();
+                location.setKey(locationKey);
                 location.setLatitude(0.0D);
                 location.setLongitude(0.0D);
                 return location;
             }
         };
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1214,6 +1425,23 @@ public class TestDemandValidator {
                 rawCommand.setKey(rawCommandKey);
                 rawCommand.setSource(source);
                 return rawCommand;
+            }
+        };
+
+        // ConsumerOperations mock
+        DemandValidator.consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(ownerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(ownerKey);
+                return consumer;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(ownerKey, consumer.getKey());
+                assertEquals(locationKey, consumer.getLocationKey());
+                return consumer;
             }
         };
 
@@ -1231,7 +1459,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -1251,7 +1479,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1274,7 +1502,7 @@ public class TestDemandValidator {
             }
         };
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1301,7 +1529,7 @@ public class TestDemandValidator {
                     }
                 };
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
@@ -1322,7 +1550,7 @@ public class TestDemandValidator {
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1335,12 +1563,12 @@ public class TestDemandValidator {
         DemandValidator.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
-                assertEquals(OwnerKey, key);
+                assertEquals(ownerKey, key);
                 throw new DataSourceException("done in purpose");
             }
         };
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1362,7 +1590,7 @@ public class TestDemandValidator {
                 assertNull(cKey);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 return demand;
@@ -1373,7 +1601,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1391,7 +1619,7 @@ public class TestDemandValidator {
         };
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        // RawCommandOperation mock
+        // RawCommandOperations mock
         final Long rawCommandKey = 111L;
         DemandValidator.rawCommandOperations = new RawCommandOperations() {
             @Override
@@ -1413,7 +1641,7 @@ public class TestDemandValidator {
                 assertNull(cKey);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setOwnerKey(OwnerKey);
+                demand.setOwnerKey(ownerKey);
                 demand.setSource(Source.twitter);
                 demand.setRawCommandId(rawCommandKey);
                 return demand;
@@ -1424,7 +1652,7 @@ public class TestDemandValidator {
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandValidator._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }

@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.MockHttpServletRequest;
@@ -20,26 +22,28 @@ import twetailer.ClientException;
 import com.google.appengine.api.xmpp.Message;
 import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.appengine.api.xmpp.SendResponse;
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 public class TestJabberConnector {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        BaseConnector.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         JabberConnector.injectMockXMPPService(null);
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test

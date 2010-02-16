@@ -38,15 +38,12 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestConfirmCommandProcessor {
-
-    static MockAppEngineEnvironment appEnv;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -56,15 +53,11 @@ public class TestConfirmCommandProcessor {
     @Before
     public void setUp() throws Exception {
         new TestCommandProcessor().setUp();
-
-        appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         new TestCommandProcessor().tearDown();
-        appEnv.tearDown();
     }
 
     @Test
@@ -141,7 +134,7 @@ public class TestConfirmCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(appEnv.getPersistenceManager(), new Consumer(), rawCommand, command);
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText); // Informs the saleAssociate

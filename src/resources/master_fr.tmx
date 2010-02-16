@@ -1024,11 +1024,10 @@
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_series_introduction" dataType="text">
-            <prop type="x-for-review">Dom</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">7</prop>
+            <prop type="x-version">8</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} active Store(s) within {2} of {1}...</seg>
+                <seg>:-) Listing {0} Store(s) within {2} of {1}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_propose_invalid_proposal_id" dataType="text">

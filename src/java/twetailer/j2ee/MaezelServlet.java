@@ -66,9 +66,9 @@ public class MaezelServlet extends HttpServlet {
     protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
     protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
     }
 
     @SuppressWarnings("unchecked")

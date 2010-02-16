@@ -32,9 +32,6 @@ import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
-
-import com.google.apphosting.api.MockAppEngineEnvironment;
-
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
@@ -126,12 +123,7 @@ public class TestProposeCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -197,12 +189,7 @@ public class TestProposeCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -268,12 +255,7 @@ public class TestProposeCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -339,12 +321,7 @@ public class TestProposeCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -404,12 +381,7 @@ public class TestProposeCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -462,12 +434,7 @@ public class TestProposeCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        // App Engine Environment mock
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-
-        appEnv.setUp();
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
-        appEnv.tearDown();
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);

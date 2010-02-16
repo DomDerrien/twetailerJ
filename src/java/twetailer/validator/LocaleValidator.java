@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -28,6 +29,12 @@ public class LocaleValidator {
         log = mock;
     }
 
+    /**
+     * Use 3rd party service to resolve the geo-coordinates of the given location
+     *
+     * @param command Parameters as received by the REST API
+     * @return Pair of coordinates {latitude, longitude}
+     */
     public static void getGeoCoordinates(JsonObject command) {
         String postalCode = command.getString(Location.POSTAL_CODE);
         String countryCode = command.getString(Location.COUNTRY_CODE);
@@ -36,6 +43,12 @@ public class LocaleValidator {
         command.put(Location.LONGITUDE, coordinates[1]);
     }
 
+    /**
+     * Use 3rd party service to resolve the geo-coordinates of the given location
+     *
+     * @param location Information as received from the datastore
+     * @return Pair of coordinates {latitude, longitude}
+     */
     public static Location getGeoCoordinates(Location location) {
         Double[] coordinates = getGeoCoordinates(location.getPostalCode(), location.getCountryCode());
         location.setLatitude(coordinates[0]);
@@ -43,6 +56,13 @@ public class LocaleValidator {
         return location;
     }
 
+    /**
+     * Use 3rd party service to resolve the geo-coordinates of the given location
+     *
+     * @param postalCode Postal code
+     * @param countryCode Code of the country to consider
+     * @return Pair of coordinates {latitude, longitude}
+     */
     protected static Double[] getGeoCoordinates(String postalCode, String countryCode) {
         Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
         log.warning("Try to resolve: " + postalCode + " " + countryCode);
@@ -148,10 +168,20 @@ public class LocaleValidator {
 
     private static InputStream testValidatorStream;
 
+    /** Just for unit test purposes */
     public static void setValidatorStream(InputStream stream) {
         testValidatorStream = stream;
     }
 
+    /**
+     * Contact 3rd party services to get information about the specified location
+     *
+     * @param postalCode Postal code
+     * @param countryCode Code of the country to consider
+     * @return Live input stream with information on the related location
+     *
+     * @throws IOException If the 3rd party service is not available or if there's no 3rd party service for the specified country
+     */
     protected static InputStream getValidatorStream(String postalCode, String countryCode) throws IOException {
         if (testValidatorStream != null) {
             return testValidatorStream;
@@ -171,10 +201,15 @@ public class LocaleValidator {
     private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
     private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
 
+    /**
+     * Verify that the given language is supported by the system
+     *
+     * @param language Language defined with the ISO 2-letters format
+     * @return The given language if it's valid or the default one
+     *
+     * @see LocaleValidator#getLocale(String)
+     */
     public static String checkLanguage(String language) {
-        //
-        // It's expected that the language code respected the ISO 2-letters format
-        //
         if (language != null) {
             language = language.substring(0, 2);
         }
@@ -183,10 +218,15 @@ public class LocaleValidator {
         return DEFAULT_LANGUAGE; // Default language
     }
 
+    /**
+     * Get the Locale instance matching the validated language
+     *
+     * @param language Language defined with the ISO 2-letters format
+     * @return The Locale instance matching the given language if this one is valid, or the default one
+     *
+     * @see LocaleValidator#checkLanguage(String)
+     */
     public static Locale getLocale(String language) {
-        //
-        // It's expected that the language code respected the ISO 2-letters format
-        //
         if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return Locale.FRENCH; }
         else if (ENGLISH_LANGUAGE.equalsIgnoreCase(language)) { return Locale.ENGLISH; }
         return DEFAULT_LOCALE; // Default language
@@ -194,6 +234,12 @@ public class LocaleValidator {
 
     public static final String DEFAULT_COUNTRY_CODE = Locale.US.getCountry();
 
+    /**
+     * Verify that the given country code is supported by the system
+     *
+     * @param countryCode Country code to validate
+     * @return The given country code if it's valid or the default one
+     */
     public static String checkCountryCode(String countryCode) {
         //
         // It's expected that the country code respected the ISO 2-letters format
@@ -203,11 +249,36 @@ public class LocaleValidator {
         return DEFAULT_COUNTRY_CODE; // Default country code
     }
 
+    /**
+     * Verify that the given unit is supported by the system
+     *
+     * @param rangeUnit Unit to validate
+     * @return The given unit if it's valid or the default one
+     */
     public static String checkRangeUnit(String rangeUnit) {
         if (LocaleValidator.MILE_UNIT.equalsIgnoreCase(rangeUnit) || LocaleValidator.ALTERNATE_MILE_UNIT.equalsIgnoreCase(rangeUnit)) {
             return LocaleValidator.MILE_UNIT;
         }
         if (LocaleValidator.KILOMETER_UNIT.equalsIgnoreCase(rangeUnit)) { return LocaleValidator.KILOMETER_UNIT; }
         return LocaleValidator.DEFAULT_RANGE_UNIT; // Default range unit
+    }
+
+    /**
+     * Transform the UTF-8 string in its Unicode counterpart
+     *
+     * @param utf8Str Original string
+     * @return Converted string if there's no error, the original value otherwise
+     */
+    public static String toUnicode(String utf8Str) {
+        String out = utf8Str;
+        try {
+            out = new String(utf8Str.getBytes(), "UTF8");
+        }
+        catch (UnsupportedEncodingException e) {
+            // Note for the testers:
+            //   UnsupportedEncodingException can be generated if the character set would be invalid (instead of "UTF8")
+            //   Not a possible use case here...
+        }
+        return out;
     }
 }

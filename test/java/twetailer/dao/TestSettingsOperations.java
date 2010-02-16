@@ -11,6 +11,8 @@ import javamocks.util.logging.MockLogger;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -22,26 +24,27 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Settings;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 public class TestSettingsOperations {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
@@ -67,7 +70,7 @@ public class TestSettingsOperations {
 
     @Test(expected=RuntimeException.class)
     public void testGetSettingsII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SettingsOperations ops = new SettingsOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -141,7 +144,7 @@ public class TestSettingsOperations {
 
     @Test(expected=RuntimeException.class)
     public void testUpdateSettingsII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SettingsOperations ops = new SettingsOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {

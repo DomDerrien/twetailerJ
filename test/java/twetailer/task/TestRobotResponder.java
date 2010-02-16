@@ -34,23 +34,26 @@ import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
 public class TestRobotResponder {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        // RobotResponder.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
         // Install the mocks
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
         RobotResponder._baseOperations = new MockBaseOperations();
 
         // Be sure to start with a clean message stack
@@ -59,7 +62,8 @@ public class TestRobotResponder {
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
+
         RobotResponder._baseOperations = new BaseOperations();
         RobotResponder.demandOperations = RobotResponder._baseOperations.getDemandOperations();
         RobotResponder.consumerOperations = RobotResponder._baseOperations.getConsumerOperations();
@@ -105,7 +109,7 @@ public class TestRobotResponder {
         RobotResponder.processDemand(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) RobotResponder._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -162,7 +166,7 @@ public class TestRobotResponder {
         RobotResponder.processDemand(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) RobotResponder._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -233,7 +237,7 @@ public class TestRobotResponder {
         RobotResponder.processDemand(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(RobotResponder._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) RobotResponder._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test

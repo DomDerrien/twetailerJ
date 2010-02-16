@@ -1382,8 +1382,7 @@
         </tu>
 
         <tu tuid="cp_command_list_store_series_introduction" datatype="Text">
-            <prop type="x-for-review">Dom</prop>
-            <prop type="x-version">7</prop>
+            <prop type="x-version">8</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list store:* command.|

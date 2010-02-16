@@ -2,12 +2,14 @@ package twetailer.task.command;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,11 +46,10 @@ import twetailer.task.TestCommandProcessor;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
-
-import com.google.apphosting.api.MockAppEngineEnvironment;
-
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestListCommandProcessor {
@@ -130,7 +131,7 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_personal_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
         sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
@@ -179,7 +180,7 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1); // First message of the series with the introduction
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_list_personal_demand_series_introduction", new Object[] { 1 }, Locale.ENGLISH), sentText);
         sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0); // Last message with the demand details
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
@@ -626,7 +627,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location center, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location center, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -642,7 +643,33 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_no_store_in_location", new Object[] { postalCode, countryCode, range, rangeUnit }, Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_store_in_location",
+                        new Object[] {
+                                LabelExtractor.get( "cp_tweet_locale_part", new Object[] { postalCode, countryCode }, Locale.ENGLISH),
+                                LabelExtractor.get( "cp_tweet_range_part", new Object[] { range, rangeUnit }, Locale.ENGLISH)
+                        },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+        /*
+        final Long consumerKey = 12345L;
+        final Long locationKey = 43542L;
+
+        // ConsumerOperations mock
+        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setLocationKey(locationKey);
+                return consumer;
+            }
+        };
+        ***************/
     }
 
     @Test
@@ -889,18 +916,18 @@ public class TestListCommandProcessor {
                 consumer,
                 new RawCommand(Source.simulated),
                 new GenericJsonObject(),
-                "cp_command_list_demand_missing_location"
+                "Not important!"
         );
 
         assertNull(retreived);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("Not important!", Locale.ENGLISH), sentText);
     }
 
     @Test
-    public void tesstGetLocationII() throws Exception {
+    public void testGetLocationII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
 
@@ -928,20 +955,23 @@ public class TestListCommandProcessor {
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
 
-        MockAppEngineEnvironment appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
         Location retreived = ListCommandProcessor.getLocation(new MockPersistenceManager(), consumer, rawCommand, command, "not important");
-        appEnv.tearDown();
 
         assertNull(retreived);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_with_new_location", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_with_new_location",
+                        new Object[] { LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
-    public void tesstGetLocationIII() throws Exception {
+    public void testGetLocationIII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -985,7 +1015,44 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void tesstListDemandInAreaI() throws Exception {
+    public void testGetLocationIV() throws DataSourceException, ClientException {
+        final Long consumerKey = 12345L;
+        final Long locationKey = 23456L;
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+        consumer.setLocationKey(locationKey);
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+
+        Location retreived = ListCommandProcessor.getLocation(
+                new MockPersistenceManager(),
+                consumer,
+                new RawCommand(Source.simulated),
+                new GenericJsonObject(),
+                "Not important!"
+        );
+
+        assertNotNull(retreived);
+        assertEquals(locationKey, retreived.getKey());
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNull(sentText);
+    }
+
+    @Test
+    public void testListDemandInAreaI() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
 
@@ -1008,11 +1075,17 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_demand_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_demand_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_demand_reference_part", new Object[] { "*" }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
-    public void tesstListDemandInAreaII() throws Exception {
+    public void testListDemandInAreaII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -1032,7 +1105,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getDemands() below verifies the array has a zero size
@@ -1074,7 +1147,10 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                         "cp_command_list_no_demand_in_location",
-                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
                         Locale.ENGLISH
                 ),
                 sentText
@@ -1082,7 +1158,7 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void tesstListDemandInAreaIII() throws Exception {
+    public void testListDemandInAreaIII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -1103,7 +1179,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getDemands() below verifies the array has a zero size
@@ -1154,8 +1230,12 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                          "cp_command_list_demand_series_introduction",
-                         new Object[] { 1L },
-                         consumer.getLocale()
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
                  ),
                  sentText
          );
@@ -1166,7 +1246,189 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void tesstListProposalInAreaI() throws Exception {
+    public void testListDemandInAreaIV() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long demandKey = 45678L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getDemands() below verifies the array has a zero size
+                return locations;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return new Location();
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                demand.addCriterion("Not");
+                demand.addCriterion("Important");
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Demand.REFERENCE, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+        JsonArray tags = new GenericJsonArray();
+        tags.add("wii");
+        command.put(Demand.CRITERIA_ADD, tags);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_demand_in_location",
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+    }
+
+    @Test
+    public void testListDemandInAreaV() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long demandKey = 45678L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getDemands() below verifies the array has a zero size
+                return locations;
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(locationKey, key);
+                return new Location();
+            }
+        };
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                demand.addCriterion("console");
+                demand.addCriterion("wii");
+                demand.addCriterion("remote");
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.demandOperations = demandOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Demand.REFERENCE, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+        JsonArray tags = new GenericJsonArray();
+        tags.add("wii");
+        command.put(Demand.CRITERIA, tags);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                         "cp_command_list_demand_series_introduction",
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
+                 ),
+                 sentText
+         );
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertFalse(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testListProposalInAreaI() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
 
@@ -1189,11 +1451,17 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_proposal_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_proposal_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_proposal_reference_part", new Object[] { "*" }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
-    public void tesstListProposalInAreaII() throws Exception {
+    public void testListProposalInAreaII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -1213,7 +1481,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getProposals() below verifies the array has a zero size
@@ -1255,7 +1523,10 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                         "cp_command_list_no_proposal_in_location",
-                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
                         Locale.ENGLISH
                 ),
                 sentText
@@ -1263,7 +1534,7 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void tesstListProposalInAreaIII() throws Exception {
+    public void testListProposalInAreaIII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -1285,7 +1556,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getProposals() below verifies the array has a zero size
@@ -1340,8 +1611,12 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                          "cp_command_list_proposal_series_introduction",
-                         new Object[] { 1L },
-                         consumer.getLocale()
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
                  ),
                  sentText
          );
@@ -1352,7 +1627,199 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void tesstListStoreInAreaI() throws Exception {
+    public void testListProposalInAreaIV() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long proposalKey = 45678L;
+        final Long storeKey = 56789L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getProposals() below verifies the array has a zero size
+                return locations;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setStoreKey(storeKey);
+                proposal.addCriterion("Not");
+                proposal.addCriterion("Important");
+                List<Proposal> proposals = new ArrayList<Proposal>();
+                proposals.add(proposal);
+                return proposals;
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(storeKey, key);
+                return new Store();
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.storeOperations = storeOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+        JsonArray tags = new GenericJsonArray();
+        tags.add("wii");
+        command.put(Proposal.CRITERIA_ADD, tags);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_no_proposal_in_location",
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
+                        Locale.ENGLISH
+                ),
+                sentText
+        );
+    }
+
+    @Test
+    public void testListProposalInAreaV() throws Exception {
+        final Long consumerKey = 12345L;
+        final Long rawCommandKey = 23456L;
+        final Long locationKey = 34567L;
+        final Long proposalKey = 45678L;
+        final Long storeKey = 56789L;
+
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
+                assertEquals(RobotResponder.ROBOT_POSTAL_CODE, postalCode);
+                assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, countryCode);
+                Location location = new Location();
+                location.setKey(locationKey);
+                location.setPostalCode(postalCode);
+                location.setCountryCode(countryCode);
+                List<Location> locations = new ArrayList<Location>();
+                locations.add(location);
+                return locations;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                List<Location> locations = new ArrayList<Location>();
+                // Data returned not important, getProposals() below verifies the array has a zero size
+                return locations;
+            }
+        };
+        // ProposalOperations mock
+        final ProposalOperations proposalOperations = new ProposalOperations() {
+            @Override
+            public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+                assertNotNull(locations);
+                assertEquals(0, locations.size());
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setStoreKey(storeKey);
+                proposal.addCriterion("console");
+                proposal.addCriterion("wii");
+                proposal.addCriterion("remote");
+                List<Proposal> proposals = new ArrayList<Proposal>();
+                proposals.add(proposal);
+                return proposals;
+            }
+        };
+        // StoreOperations mock
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
+                assertEquals(storeKey, key);
+                return new Store();
+            }
+        };
+        CommandProcessor.locationOperations = locationOperations;
+        CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.storeOperations = storeOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.list.toString());
+        command.put(Proposal.PROPOSAL_KEY, -1);
+        command.put(Location.POSTAL_CODE, RobotResponder.ROBOT_POSTAL_CODE);
+        command.put(Location.COUNTRY_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+        JsonArray tags = new GenericJsonArray();
+        tags.add("wii");
+        command.put(Proposal.CRITERIA, tags);
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+        rawCommand.setKey(rawCommandKey);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
+
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
+        assertEquals(
+                LabelExtractor.get(
+                         "cp_command_list_proposal_series_introduction",
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
+                 ),
+                 sentText
+         );
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertFalse(sentText.contains(proposalKey.toString()));
+    }
+
+    @Test
+    public void testListStoreInAreaI() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
 
@@ -1375,11 +1842,17 @@ public class TestListCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_list_store_missing_location", Locale.ENGLISH), sentText);
+        assertEquals(
+                LabelExtractor.get(
+                        "cp_command_list_store_missing_location",
+                        new Object[] { LabelExtractor.get( "cp_tweet_store_reference_part", new Object[] { "*" }, Locale.ENGLISH) },
+                        Locale.ENGLISH),
+                sentText
+        );
     }
 
     @Test
-    public void tesstListStoreInAreaII() throws Exception {
+    public void testListStoreInAreaII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -1399,7 +1872,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getStores() below verifies the array has a zero size
@@ -1441,7 +1914,10 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                         "cp_command_list_no_store_in_location",
-                        new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT },
+                        new Object[] {
+                                LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                        },
                         Locale.ENGLISH
                 ),
                 sentText
@@ -1449,7 +1925,7 @@ public class TestListCommandProcessor {
     }
 
     @Test
-    public void tesstListStoreInAreaIII() throws Exception {
+    public void testListStoreInAreaIII() throws Exception {
         final Long consumerKey = 12345L;
         final Long rawCommandKey = 23456L;
         final Long locationKey = 34567L;
@@ -1470,7 +1946,7 @@ public class TestListCommandProcessor {
                 return locations;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
                 assertEquals(locationKey, location.getKey());
                 List<Location> locations = new ArrayList<Location>();
                 // Data returned not important, getStores() below verifies the array has a zero size
@@ -1521,8 +1997,12 @@ public class TestListCommandProcessor {
         assertEquals(
                 LabelExtractor.get(
                          "cp_command_list_store_series_introduction",
-                         new Object[] { 1L },
-                         consumer.getLocale()
+                         new Object[] {
+                                 1,
+                                 LabelExtractor.get("cp_tweet_locale_part", new Object[] { RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE }, Locale.ENGLISH),
+                                 LabelExtractor.get("cp_tweet_range_part", new Object[] { LocaleValidator.DEFAULT_RANGE, LocaleValidator.DEFAULT_RANGE_UNIT }, Locale.ENGLISH)
+                         },
+                         Locale.ENGLISH
                  ),
                  sentText
          );
@@ -1530,5 +2010,86 @@ public class TestListCommandProcessor {
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(storeKey.toString())); // Not anonymized
+    }
+
+    private static Collator getCollator() {
+        return ListCommandProcessor.getCollator(Locale.ENGLISH);
+    }
+
+    @Test
+    public void testCheckIfIncludedI() {
+        //
+        // No match
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "two", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "three"});
+
+        assertFalse(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedII() {
+        //
+        // One keyword matches exactly
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "two", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "two", "three"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedIII() {
+        //
+        // Two keyword match exactly
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "two", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "two", "three", "four"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedIV() {
+        //
+        // One keyword start matches
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "tw*", "four"});
+        List<String> criteria = Arrays.asList(new String[] { "one", "two", "three"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedV() {
+        //
+        // One keyword start matches, with accented characters and mixed cases
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "cérÉAL*"});
+        List<String> criteria = Arrays.asList(new String[] { "cereals"});
+
+        assertTrue(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedVI() {
+        //
+        // One keyword start matches, with accented characters and mixed cases
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "cérÉALe*"});
+        List<String> criteria = Arrays.asList(new String[] { "cereals"});
+
+        assertFalse(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
+    }
+
+    @Test
+    public void testCheckIfIncludedVII() {
+        //
+        // One keyword start matches, with accented characters and mixed cases
+        //
+        List<Object> tags = Arrays.asList(new Object[] { "cérÉAL*"});
+        List<String> criteria = Arrays.asList(new String[] { "cer"});
+
+        assertFalse(ListCommandProcessor.checkIfIncluded(getCollator(), tags, criteria));
     }
 }

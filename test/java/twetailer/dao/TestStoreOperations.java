@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -24,29 +26,30 @@ import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestStoreOperations {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
@@ -88,7 +91,7 @@ public class TestStoreOperations {
 
     @Test(expected=RuntimeException.class)
     public void testCreateII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         StoreOperations ops = new StoreOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -155,7 +158,7 @@ public class TestStoreOperations {
 
     @Test(expected=RuntimeException.class)
     public void testGetsII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         StoreOperations ops = new StoreOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -175,7 +178,7 @@ public class TestStoreOperations {
         Store item = new Store();
         item.setLocationKey(12345L);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         StoreOperations ops = new StoreOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -194,7 +197,7 @@ public class TestStoreOperations {
 
     @Test(expected=RuntimeException.class)
     public void testUpdateII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         StoreOperations ops = new StoreOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -326,7 +329,7 @@ public class TestStoreOperations {
 
     @Test(expected=RuntimeException.class)
     public void testGetsExtendedIV() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         StoreOperations ops = new StoreOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -343,7 +346,7 @@ public class TestStoreOperations {
 
     @Test
     public void testGetKeysI() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         StoreOperations ops = new StoreOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -362,7 +365,7 @@ public class TestStoreOperations {
 
     @Test
     public void testGetKeysII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         List<Long> selection = new StoreOperations().getStoreKeys(pm, Store.NAME, "name", 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());

@@ -1,6 +1,7 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -13,7 +14,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonException;
@@ -21,21 +23,21 @@ import domderrien.jsontools.JsonParser;
 
 public class TestEntity {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
@@ -171,5 +173,17 @@ public class TestEntity {
         object.fromJson(new JsonParser("{'" + Entity.CREATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
 
         assertEquals(date, object.getCreationDate()); // Corrupted date did not alter the original date
+    }
+
+    @Test
+    public void testGetMarkedForDeletion() {
+        Entity entity = new Entity();
+        assertFalse(entity.getMarkedForDeletion());
+        entity.setMarkedForDeletion(null);
+        assertFalse(entity.getMarkedForDeletion());
+        entity.setMarkedForDeletion(false);
+        assertFalse(entity.getMarkedForDeletion());
+        entity.setMarkedForDeletion(true);
+        assertTrue(entity.getMarkedForDeletion());
     }
 }

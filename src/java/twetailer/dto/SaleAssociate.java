@@ -198,7 +198,7 @@ public class SaleAssociate extends Entity {
     }
 
     public Boolean getIsStoreAdmin() {
-        return isStoreAdmin;
+        return isStoreAdmin == null ? Boolean.FALSE : isStoreAdmin;
     }
 
     public void setIsStoreAdmin(Boolean isStoreAdmin) {

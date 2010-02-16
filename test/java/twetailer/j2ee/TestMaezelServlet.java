@@ -68,7 +68,8 @@ import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.xmpp.MockXMPPService;
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -77,25 +78,25 @@ public class TestMaezelServlet {
 
     MaezelServlet servlet;
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         MaezelServlet.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
         servlet = new MaezelServlet();
         servlet._baseOperations = new MockBaseOperations();
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         servlet.settingsOperations = new SettingsOperations();
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
         JabberConnector.injectMockXMPPService(null);
     }
 

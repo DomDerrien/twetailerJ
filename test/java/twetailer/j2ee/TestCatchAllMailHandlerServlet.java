@@ -2,6 +2,8 @@ package twetailer.j2ee;
 
 import java.io.IOException;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.mail.MessagingException;
 import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
@@ -14,25 +16,27 @@ import org.junit.Test;
 
 import twetailer.connector.TestMailConnector;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 public class TestCatchAllMailHandlerServlet {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        CatchAllMailHandlerServlet.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
