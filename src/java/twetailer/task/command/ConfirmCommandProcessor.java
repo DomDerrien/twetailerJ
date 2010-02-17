@@ -19,6 +19,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.RobotResponder;
 import twetailer.validator.ApplicationSettings;
@@ -70,6 +71,7 @@ public class ConfirmCommandProcessor {
                 );
             }
             else {
+                Store store = CommandProcessor.storeOperations.getStore(pm, proposal.getStoreKey());
                 // Inform the consumer of the successful confirmation
                 messages.add(
                         LabelExtractor.get(
@@ -79,8 +81,7 @@ public class ConfirmCommandProcessor {
                                         demand.getKey(),
                                         demand.getSerializedCriteria(),
                                         proposal.getStoreKey(),
-                                        // TODO: Add the lookup to the store table to get the store name
-                                        "\\[Not yet implemented\\]" // store.getName()
+                                        store.getName()
                                 },
                                 consumer.getLocale()
                         )
