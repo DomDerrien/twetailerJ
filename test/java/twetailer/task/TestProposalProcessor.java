@@ -99,7 +99,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -209,7 +209,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -319,7 +319,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = null;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -429,7 +429,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 0.0D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -539,7 +539,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 37.95D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);

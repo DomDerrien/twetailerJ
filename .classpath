@@ -30,9 +30,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/easymock/cglib-nodep-2.2.jar"/>
-	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-1.0.5.jar" sourcepath="deps/lib/domderrien/domderrien-1.0.5-src.jar">
+	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-1.0.6.jar" sourcepath="deps/lib/domderrien/domderrien-1.0.6-src.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-1.0.5-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-1.0.6-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar"/>

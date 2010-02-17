@@ -247,7 +247,7 @@ public class Command extends Entity {
     }
 
     public static String getSerializedTags(String prefix, List<?> keywords) {
-        if (keywords.size() == 0) {
+        if (keywords == null || keywords.size() == 0) {
             return EMPTY_STRING;
         }
         StringBuilder out = new StringBuilder();

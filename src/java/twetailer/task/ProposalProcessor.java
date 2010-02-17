@@ -92,7 +92,7 @@ public class ProposalProcessor {
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
                                         store.getName(),                  // {6}: store name
-                                        "\\$",                            // {7}: currency symbol
+                                        "$",                              // {7}: currency symbol
                                         price                             // {8}: price
                                 },
                                 consumer.getLocale()
@@ -109,7 +109,7 @@ public class ProposalProcessor {
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
                                         store.getName(),                  // {6}: store name
-                                        "\\$",                            // {7}: currency symbol
+                                        "$",                              // {7}: currency symbol
                                         totalCost                         // {8}: total
                                 },
                                 consumer.getLocale()
@@ -126,7 +126,7 @@ public class ProposalProcessor {
                                         demand.getExpirationDate(),       // {4}: demand expiration date
                                         proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
                                         store.getName(),                  // {6}: store name
-                                        "\\$",                            // {7}: currency symbol
+                                        "$",                              // {7}: currency symbol
                                         price,                            // {8}: price
                                         totalCost                         // {9}: total
                                 },
