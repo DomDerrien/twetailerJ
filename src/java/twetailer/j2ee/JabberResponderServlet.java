@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
 
+import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,11 @@ public class JabberResponderServlet extends HttpServlet {
     protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Consumer consumer = null;
@@ -69,12 +75,18 @@ public class JabberResponderServlet extends HttpServlet {
 
             log.warning("Instant message sent by: " + jabberId + "\nWith the command: " + command);
 
-            // Creation only occurs if the corresponding Consumer instance is not retrieved
-            consumer = consumerOperations.createConsumer(address);
-            language = consumer.getLanguage();
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                // Creation only occurs if the corresponding Consumer instance is not retrieved
+                consumer = consumerOperations.createConsumer(address);
+                language = consumer.getLanguage();
 
-            // Persist message
-            rawCommandOperations.createRawCommand(rawCommand);
+                // Persist message
+                rawCommand = rawCommandOperations.createRawCommand(rawCommand);
+            }
+            finally {
+                pm.close();
+            }
 
             // Create a task for to process that new command
             Queue queue = _baseOperations.getQueue();

@@ -23,12 +23,14 @@ import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
@@ -38,15 +40,12 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestConfirmCommandProcessor {
-
-    static MockAppEngineEnvironment appEnv;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -56,15 +55,11 @@ public class TestConfirmCommandProcessor {
     @Before
     public void setUp() throws Exception {
         new TestCommandProcessor().setUp();
-
-        appEnv = new MockAppEngineEnvironment();
-        appEnv.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         new TestCommandProcessor().tearDown();
-        appEnv.tearDown();
     }
 
     @Test
@@ -127,11 +122,24 @@ public class TestConfirmCommandProcessor {
                 return saleAssociate;
             }
         };
+        // StoreOperations mock
+        final String storeName = "store name";
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(storeName);
+                return store;
+            }
+        };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        CommandProcessor.storeOperations = storeOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -141,7 +149,7 @@ public class TestConfirmCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(appEnv.getPersistenceManager(), new Consumer(), rawCommand, command);
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText); // Informs the saleAssociate
@@ -152,6 +160,7 @@ public class TestConfirmCommandProcessor {
         assertTrue(sentText.contains(proposalKey.toString()));
         assertTrue(sentText.contains(demandKey.toString()));
         assertTrue(sentText.contains(storeKey.toString()));
+        assertTrue(sentText.contains(storeName));
         assertTrue(sentText.contains("test"));
     }
 
@@ -333,6 +342,18 @@ public class TestConfirmCommandProcessor {
                 return command;
             }
         };
+        // StoreOperations mock
+        final String storeName = "store name";
+        final StoreOperations storeOperations = new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                store.setName(storeName);
+                return store;
+            }
+        };
         // CommandProcessor mock
         final MockQueue queue = new MockQueue();
         CommandProcessor._baseOperations = new MockBaseOperations() {
@@ -344,6 +365,7 @@ public class TestConfirmCommandProcessor {
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
         CommandProcessor.rawCommandOperations = rawCommandOperations;
+        CommandProcessor.storeOperations = storeOperations;
 
         // Command mock
         JsonObject command = new GenericJsonObject();

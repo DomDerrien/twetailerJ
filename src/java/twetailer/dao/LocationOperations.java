@@ -253,13 +253,14 @@ public class LocationOperations extends BaseOperations {
      * @param location place where to start the search
      * @param range distance around the location
      * @param rangeUnit unit of the distance around the search
+     * @param withStore if <code>true</code>, only locations with at least a store will be returned, otherwise there's no limitation
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of locations matching the given criteria
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
     @SuppressWarnings("unchecked")
-    public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) throws DataSourceException {
+    public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
         // The vertical gap is consistent between parallels
         if (LocaleValidator.MILE_UNIT.equals(rangeUnit)) {
             range = range * 1.8;
@@ -307,7 +308,7 @@ public class LocationOperations extends BaseOperations {
         Query query = pm.newQuery(Location.class);
         query.setFilter(
                 Location.COUNTRY_CODE + " == givenCountryCode && " +
-                Location.HAS_STORE + " == hasStoreRegistered && " +
+                (withStore ? Location.HAS_STORE + " == hasStoreRegistered && " : "") +
                 Location.LATITUDE + " > bottomLatitude && " +
                 Location.LATITUDE + " < topLatitude"
         );

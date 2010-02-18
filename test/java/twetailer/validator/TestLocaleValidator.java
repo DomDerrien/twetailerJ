@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javamocks.io.MockInputStream;
@@ -275,5 +277,13 @@ public class TestLocaleValidator {
     @Test
     public void testCheckCountryCodeIV() {
         assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, LocaleValidator.checkCountryCode("zzz"));
+    }
+
+    @Test
+    public void testToUnicode() throws UnsupportedEncodingException {
+        String utf8Str = "àéôüÇ¿€"; // First characters represented on 2 bits, only the Euro sign on
+        String unicodeStr = LocaleValidator.toUnicode(utf8Str);
+        assertEquals(2 * 6 + 3, utf8Str.length());
+        assertEquals(6 + 1, unicodeStr.length());
     }
 }

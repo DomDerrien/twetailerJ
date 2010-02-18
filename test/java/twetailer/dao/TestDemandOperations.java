@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -27,33 +29,33 @@ import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
-import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
 import twetailer.validator.CommandSettings;
 
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestDemandOperations {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
@@ -78,7 +80,7 @@ public class TestDemandOperations {
 
     @Test
     public void testCreateI() {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -131,7 +133,7 @@ public class TestDemandOperations {
 
     @Test
     public void testGetI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -199,7 +201,7 @@ public class TestDemandOperations {
 
     @Test
     public void testGetsI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -248,7 +250,7 @@ public class TestDemandOperations {
 
     @Test
     public void testUpdateI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -268,7 +270,7 @@ public class TestDemandOperations {
 
     @Test
     public void testUpdateII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -302,7 +304,7 @@ public class TestDemandOperations {
 
     @Test
     public void testDeleteI() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -399,7 +401,7 @@ public class TestDemandOperations {
 
     @Test
     public void testGetKeysI() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         DemandOperations ops = new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -418,7 +420,7 @@ public class TestDemandOperations {
 
     @Test
     public void testGetKeysII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         List<Long> selection = new DemandOperations().getDemandKeys(pm, Command.OWNER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());

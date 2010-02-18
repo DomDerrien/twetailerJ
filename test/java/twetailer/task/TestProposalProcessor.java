@@ -88,7 +88,7 @@ public class TestProposalProcessor {
 
         ProposalProcessor.process(proposalKey);
 
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -198,7 +198,7 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -209,7 +209,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -308,7 +308,7 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -319,7 +319,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = null;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -418,7 +418,7 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -429,7 +429,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 0.0D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -528,7 +528,7 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -539,7 +539,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 37.95D;
-        final String currency = "\\$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -639,7 +639,7 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -673,7 +673,7 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -714,7 +714,7 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -777,6 +777,11 @@ public class TestProposalProcessor {
                 assertNull(cKey);
                 return demand;
             }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                return demand;
+            }
         };
 
         final Consumer consumer = new Consumer();
@@ -810,7 +815,7 @@ public class TestProposalProcessor {
 
         ProposalProcessor.process(proposalKey);
 
-        assertTrue(ProposalProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }

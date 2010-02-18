@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
 
+import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -22,6 +23,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
+import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
@@ -40,6 +42,11 @@ public class MailResponderServlet extends HttpServlet {
     protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.warning("Path Info: " + request.getPathInfo());
@@ -51,7 +58,7 @@ public class MailResponderServlet extends HttpServlet {
         String name = null;
         String email = null;
         String subject = null;
-        String language = LocaleValidator.DEFAULT_LANGUAGE;
+        String language = null;
         Exception exception = null;
         String command = null;
 
@@ -71,7 +78,7 @@ public class MailResponderServlet extends HttpServlet {
             email = address.getAddress();
             subject = mailMessage.getSubject();
             if (mailMessage.getContentLanguage() != null) {
-                language = mailMessage.getContentLanguage()[0];
+                language = LocaleValidator.checkLanguage(mailMessage.getContentLanguage()[0]);
             }
 
             // Fill up the message to persist
@@ -82,11 +89,20 @@ public class MailResponderServlet extends HttpServlet {
 
             log.warning("Message sent by: " + email + " with the subject: " + subject + "\nWith the command: " + command);
 
-            // Creation only occurs if the corresponding Consumer instance is not retrieved
-            consumerOperations.createConsumer(address);
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                // Creation only occurs if the corresponding Consumer instance is not retrieved
+                Consumer consumer = consumerOperations.createConsumer(pm, address);
+                if (language == null) {
+                    language = consumer.getLanguage();
+                }
 
-            // Persist message
-            rawCommandOperations.createRawCommand(rawCommand);
+                // Persist message
+                rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
+            }
+            finally {
+                pm.close();
+            }
 
             // Create a task for to process that new command
             Queue queue = _baseOperations.getQueue();
@@ -99,11 +115,11 @@ public class MailResponderServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             exception = ex;
-            rawCommand.setErrorMessage(LabelExtractor.get("error_mail_messaging", new Locale(language)));
+            rawCommand.setErrorMessage(LabelExtractor.get("error_mail_messaging", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (DatastoreTimeoutException ex) {
             exception = ex;
-            rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", new Locale(language)));
+            rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (Exception ex) {
             exception = ex;
@@ -114,7 +130,7 @@ public class MailResponderServlet extends HttpServlet {
                                     rawCommand.getKey() == null ? 0L : rawCommand.getKey(),
                                     "" // No contextual information exposed, they'll in the mail message to the "catch-all" list
                             },
-                            new Locale(language)
+                            language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)
                     )
             );
         }
@@ -135,7 +151,7 @@ public class MailResponderServlet extends HttpServlet {
                             name,
                             subject,
                             rawCommand.getErrorMessage(),
-                            new Locale(language)
+                            language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)
                     );
                 }
                 // catch (MessagingException e) {

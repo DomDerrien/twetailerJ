@@ -1,8 +1,8 @@
 package twetailer.task;
 
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -52,29 +52,33 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions;
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
 public class TestDemandProcessor {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         DemandProcessor.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
+
         DemandProcessor._baseOperations = new MockBaseOperations();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
+
         DemandProcessor._baseOperations = new BaseOperations();
         DemandProcessor.consumerOperations = DemandProcessor._baseOperations.getConsumerOperations();
         DemandProcessor.demandOperations = DemandProcessor._baseOperations.getDemandOperations();
@@ -86,7 +90,6 @@ public class TestDemandProcessor {
         DemandProcessor.rawCommandOperations = DemandProcessor._baseOperations.getRawCommandOperations();
 
         RobotResponder.setRobotSaleAssociateKey(null);
-        ((MockQueue) new MockBaseOperations().getQueue()).resetHistory();
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
     }
@@ -112,7 +115,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -133,8 +136,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 return new ArrayList<Location>();
@@ -164,8 +167,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -177,7 +180,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -208,8 +211,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -225,7 +228,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -238,7 +241,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 return new ArrayList<SaleAssociate>();
@@ -269,8 +272,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -286,7 +289,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -306,7 +309,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -339,8 +342,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -356,7 +359,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -371,7 +374,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -404,8 +407,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -421,7 +424,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -437,7 +440,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -474,8 +477,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -491,7 +494,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -510,7 +513,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -549,8 +552,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -566,7 +569,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -582,7 +585,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -621,8 +624,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -638,7 +641,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -654,7 +657,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -690,8 +693,8 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(location, consumerLocation);
                 assertEquals(demandRange, range);
                 List<Location> locations = new ArrayList<Location>();
@@ -707,7 +710,7 @@ public class TestDemandProcessor {
         DemandProcessor.storeOperations = new StoreOperations() {
             @Override
             public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertNotNull(locations);
                 assertEquals(1, locations.size());
                 assertEquals(consumerLocation, locations.get(0));
@@ -724,7 +727,7 @@ public class TestDemandProcessor {
         DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(DemandProcessor._baseOperations.getPersistenceManager(), pm);
+                assertEquals(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager(), pm);
                 assertEquals(SaleAssociate.STORE_KEY, key);
                 assertEquals(storeKey, (Long) value);
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
@@ -782,7 +785,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -828,7 +831,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
@@ -880,6 +883,11 @@ public class TestDemandProcessor {
                 assertNull(consumerKey);
                 return consumerDemand;
             }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                return demand;
+            }
         };
 
         DemandProcessor.locationOperations = new LocationOperations() {
@@ -889,7 +897,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -935,7 +943,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
@@ -988,6 +996,11 @@ public class TestDemandProcessor {
                 assertNull(consumerKey);
                 return consumerDemand;
             }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                return demand;
+            }
         };
 
         DemandProcessor.locationOperations = new LocationOperations() {
@@ -997,7 +1010,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1043,7 +1056,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, false);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -1095,7 +1108,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1141,7 +1154,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
@@ -1199,7 +1212,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1247,7 +1260,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -1294,7 +1307,7 @@ public class TestDemandProcessor {
                 throw new DataSourceException("done in purpose");
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1310,7 +1323,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
         TwitterConnector.getTwetailerAccount();
     }
 
@@ -1358,7 +1371,7 @@ public class TestDemandProcessor {
                 return null;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1418,7 +1431,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -1467,7 +1480,7 @@ public class TestDemandProcessor {
                 return null;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 List<Location> locations = new ArrayList<Location>();
                 locations.add(consumerLocation);
                 return locations;
@@ -1529,7 +1542,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -1570,7 +1583,7 @@ public class TestDemandProcessor {
         DemandProcessor.process(demandKey, true);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test(expected=RuntimeException.class)
@@ -1596,7 +1609,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.batchProcess();
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1614,7 +1627,7 @@ public class TestDemandProcessor {
 
         DemandProcessor.batchProcess();
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1710,7 +1723,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -1729,8 +1742,6 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor._baseOperations = new MockBaseOperations();
-
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
         DemandProcessor.rawCommandOperations = new RawCommandOperations() {
@@ -1744,16 +1755,16 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
 
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
 
-        List<TaskOptions> tasks = ((MockQueue) DemandProcessor._baseOperations.getQueue()).getHistory();
+        List<TaskOptions> tasks = ((MockQueue) ((MockBaseOperations) DemandProcessor._baseOperations).getPreviousQueue()).getHistory();
         assertNotNull(tasks);
         assertNotSame(0, tasks.size());
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1803,7 +1814,7 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
@@ -1821,17 +1832,16 @@ public class TestDemandProcessor {
             }
         };
 
-        DemandProcessor._baseOperations = new MockBaseOperations();
-
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
         DemandProcessor.process(demandKey, true);
+
+        assertTrue(((MockBaseOperations) DemandProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         List<TaskOptions> tasks = ((MockQueue) DemandProcessor._baseOperations.getQueue()).getHistory();
         assertNotNull(tasks);
         assertEquals(0, tasks.size());
-        assertTrue(DemandProcessor._baseOperations.getPersistenceManager().isClosed());
     }
 
     @Test
@@ -1951,12 +1961,10 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
-
-        DemandProcessor._baseOperations = new MockBaseOperations();
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
@@ -2028,12 +2036,10 @@ public class TestDemandProcessor {
                 return consumerLocation;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, int limit) {
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
                 return new ArrayList<Location>();
             }
         };
-
-        DemandProcessor._baseOperations = new MockBaseOperations();
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 

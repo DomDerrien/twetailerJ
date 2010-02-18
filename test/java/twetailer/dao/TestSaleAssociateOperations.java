@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -23,29 +25,30 @@ import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
 
 import com.google.appengine.api.users.User;
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class TestSaleAssociateOperations {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test
@@ -102,7 +105,7 @@ public class TestSaleAssociateOperations {
 
     @Test(expected=RuntimeException.class)
     public void testCreateII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -171,7 +174,7 @@ public class TestSaleAssociateOperations {
 
     @Test(expected=RuntimeException.class)
     public void testGetsII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -191,7 +194,7 @@ public class TestSaleAssociateOperations {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
         consumer.setTwitterId("Ryan");
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -210,7 +213,7 @@ public class TestSaleAssociateOperations {
 
     @Test(expected=RuntimeException.class)
     public void testUpdateII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -232,7 +235,7 @@ public class TestSaleAssociateOperations {
         SaleAssociateOperations ops = new SaleAssociateOperations();
         SaleAssociate item = ops.createSaleAssociate(consumer, 111L);
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
 
         SaleAssociate selected = ops.getSaleAssociate(pm, item.getKey());
         assertNotNull(selected);
@@ -263,7 +266,7 @@ public class TestSaleAssociateOperations {
 
     @Test
     public void testGetKeysI() throws DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -282,7 +285,7 @@ public class TestSaleAssociateOperations {
 
     @Test
     public void testGetKeysII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         List<Long> selection = new SaleAssociateOperations().getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, 111L, 0);
         assertNotNull(selection);
         assertEquals(0, selection.size());

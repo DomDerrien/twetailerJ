@@ -25,6 +25,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
@@ -55,13 +58,18 @@ import domderrien.jsontools.JsonObject;
 
 public class TestCommandProcessor {
 
+    private static LocalServiceTestHelper  helper;
+
     @BeforeClass
     public static void setUpBeforeClass() {
         CommandProcessor.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
+        helper.setUp();
+
         // Simplified list of prefixes
         CommandLineParser.localizedPrefixes.clear();
         JsonObject prefixes = new GenericJsonObject();
@@ -103,6 +111,8 @@ public class TestCommandProcessor {
 
     @After
     public void tearDown() throws Exception {
+        helper.tearDown();
+
         BaseConnector.resetLastCommunicationInSimulatedMode();
 
         CommandProcessor._baseOperations = new BaseOperations();

@@ -1267,14 +1267,14 @@
         </tu>
 
         <tu tuid="cp_command_list_with_new_location" datatype="Text">
-            <prop type="x-version">3</prop>
+            <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing that no result can be displayed for the !list store:* command.
                 {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
             </note>
             <tuv xml:lang="en">
-                <seg>You've just submitted {0} which the system does not know yet. Twetailer will attempt to validate it & will contact you shortly.</seg>
+                <seg>You've just submitted {0} which the system does not know yet. Twetailer will attempt to validate it &amp; will contact you shortly.</seg>
             </tuv>
         </tu>
 
@@ -1382,18 +1382,16 @@
         </tu>
 
         <tu tuid="cp_command_list_store_series_introduction" datatype="Text">
-            <prop type="x-for-review">Dom</prop>
-            <prop type="x-version">7</prop>
+            <prop type="x-version">8</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-            	Dom, do Stores have states like "active"? If not, then please delete it from the message
                 Message introducing the series of messages to be sent in response to a !list store:* command.|
                 {0}: number of messages to be sent
                 {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {0} active Store(s) within {2} of {1}...</seg>
+                <seg>:-) Listing {0} Store(s) within {2} of {1}...</seg>
             </tuv>
         </tu>
 

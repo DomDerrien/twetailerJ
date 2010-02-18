@@ -15,7 +15,7 @@
 
     <property name="appengine.sdk.dir"
         description="Location of the Google App Engine SDK"
-        location="${basedir}/bin/appengine-java-sdk-1.3.0"
+        location="${basedir}/bin/appengine-java-sdk-1.3.1"
     />
 
     <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
@@ -63,7 +63,7 @@
             </fileset>
         </copy>
     	<!-- Copy the Twetailer dependencies -->
-        <copy file="deps/lib/domderrien/domderrien-1.0.4.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/domderrien/domderrien-1.0.6.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
         <copy todir="src/war/WEB-INF/lib">
         	<fileset dir="deps/lib/dyuproject" />

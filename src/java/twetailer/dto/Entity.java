@@ -111,7 +111,7 @@ public class Entity implements TransferObject {
     }
 
     public Boolean getMarkedForDeletion() {
-        return markedForDeletion;
+        return markedForDeletion == null ? Boolean.FALSE : markedForDeletion;
     }
 
     public void setMarkedForDeletion(Boolean markedForDeletion) {

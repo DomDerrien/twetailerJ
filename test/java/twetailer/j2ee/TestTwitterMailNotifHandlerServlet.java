@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.PersistenceManager;
 import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
@@ -25,28 +27,33 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
+import twetailer.task.TweetLoader;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestTwitterMailNotifHandlerServlet {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        TwitterMailNotificationHandlerServlet.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
+
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
         TwitterMailNotificationHandlerServlet._baseOperations = new BaseOperations();
         TwitterMailNotificationHandlerServlet.consumerOperations = TwitterMailNotificationHandlerServlet._baseOperations.getConsumerOperations();
     }

@@ -21,6 +21,11 @@ import twetailer.connector.MailConnector;
 public class CatchAllMailHandlerServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(CatchAllMailHandlerServlet.class.getName());
 
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.warning("Path Info: " + request.getPathInfo());

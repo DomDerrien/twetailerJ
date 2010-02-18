@@ -8,6 +8,9 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Locale;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.PersistenceManager;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
@@ -28,27 +31,29 @@ import twetailer.dto.RawCommand;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
 public class TestMailResponderServlet {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        MailResponderServlet.setLogger(new MockLogger("test", null));
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
 
         MailResponderServlet._baseOperations = new MockBaseOperations();
         MailResponderServlet.rawCommandOperations = MailResponderServlet._baseOperations.getRawCommandOperations();
@@ -80,7 +85,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
                 assertEquals(message, rawCommand.getCommand());
                 rawCommand.setKey(rawCommandKey);
@@ -96,7 +101,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -132,7 +137,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
                 assertEquals("", rawCommand.getCommand());
                 rawCommand.setKey(rawCommandKey);
@@ -148,7 +153,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -203,7 +208,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertNotNull(from, rawCommand.getEmitterId());
                 assertNull(rawCommand.getCommand());
                 assertNotNull(rawCommand.getErrorMessage());
@@ -220,7 +225,7 @@ public class TestMailResponderServlet {
 
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 fail("Call not expected");
                 return null;
             }
@@ -267,7 +272,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertNull(rawCommand.getEmitterId());
                 assertNull(rawCommand.getCommand());
                 assertNotNull(rawCommand.getErrorMessage());
@@ -284,7 +289,7 @@ public class TestMailResponderServlet {
 
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 fail("Call not expected");
                 return null;
             }
@@ -400,7 +405,7 @@ public class TestMailResponderServlet {
     }
 
     @Test
-    public void testDoPostVI() throws IOException {
+    public void testDoPostVIa() throws IOException {
         //
         // DatastoreTimeoutException while communicating with the back-end
         //
@@ -408,7 +413,7 @@ public class TestMailResponderServlet {
         final String name = "Mr Emitter";
         final String subject = "Not important!";
         final String message = "wii console Mario Kart"; // FIXME: -- àéüôç";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, name, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, name, subject, message); // This stream does NOT contain language information
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -419,7 +424,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
                 assertEquals(message, rawCommand.getCommand());
                 assertNotNull(rawCommand.getErrorMessage());
@@ -436,7 +441,55 @@ public class TestMailResponderServlet {
 
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+                assertEquals(from, address.getAddress());
+                assertEquals(name, address.getPersonal());
+                throw new DatastoreTimeoutException("Done in purpose");
+            }
+        };
+
+        MailResponderServlet._baseOperations = new MockBaseOperations();
+        MailResponderServlet.rawCommandOperations = rawCommandOperations;
+        MailResponderServlet.consumerOperations = consumerOperations;
+
+        new MailResponderServlet().doPost(request, null);
+    }
+
+    @Test
+    public void testDoPostVIb() throws IOException {
+        //
+        // DatastoreTimeoutException while communicating with the back-end
+        //
+        final String from = "test-emitter@appspot.com";
+        final String name = "Mr Emitter";
+        final MockServletInputStream stream = TestMailConnector.prepareEmptyStream(from, name); // This stream contains language information
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return stream;
+            }
+        };
+
+        final Long rawCommandKey = 12345L;
+        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
+                assertEquals(from, rawCommand.getEmitterId());
+                assertNotNull(rawCommand.getErrorMessage());
+                assertEquals(LabelExtractor.get("error_datastore_timeout", Locale.ENGLISH), rawCommand.getErrorMessage());
+                rawCommand.setKey(rawCommandKey);
+                return rawCommand;
+            }
+            @Override
+            public RawCommand updateRawCommand(RawCommand rawCommand) {
+                fail("Call not expected!");
+                return null;
+            }
+        };
+
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new DatastoreTimeoutException("Done in purpose");
@@ -470,7 +523,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
                 assertEquals(message, rawCommand.getCommand());
                 assertNotNull(rawCommand.getErrorMessage());
@@ -488,7 +541,7 @@ public class TestMailResponderServlet {
 
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new IllegalArgumentException("Done in purpose");
@@ -529,7 +582,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
                 assertEquals(message, rawCommand.getCommand());
                 assertNull(rawCommand.getErrorMessage());
@@ -537,7 +590,7 @@ public class TestMailResponderServlet {
                 return rawCommand;
             }
             @Override
-            public RawCommand updateRawCommand(RawCommand rawCommand) {
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(rawCommandKey, rawCommand.getKey());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertEquals(LabelExtractor.get("error_unexpected", new Object[] { rawCommandKey, "" }, Locale.ENGLISH), rawCommand.getErrorMessage());
@@ -548,7 +601,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -594,7 +647,7 @@ public class TestMailResponderServlet {
         final Long rawCommandKey = 12345L;
         RawCommandOperations rawCommandOperations = new RawCommandOperations() {
             @Override
-            public RawCommand createRawCommand(RawCommand rawCommand) {
+            public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
                 assertEquals(message, rawCommand.getCommand());
                 assertNull(rawCommand.getErrorMessage());
@@ -602,7 +655,7 @@ public class TestMailResponderServlet {
                 return rawCommand;
             }
             @Override
-            public RawCommand updateRawCommand(RawCommand rawCommand) {
+            public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(rawCommandKey, rawCommand.getKey());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertEquals(LabelExtractor.get("error_unexpected", new Object[] { rawCommandKey, "" }, Locale.ENGLISH), rawCommand.getErrorMessage());
@@ -613,7 +666,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         ConsumerOperations consumerOperations = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();

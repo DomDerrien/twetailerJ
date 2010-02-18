@@ -15,6 +15,7 @@ import java.util.Map;
 import javamocks.util.logging.MockLogger;
 
 import javax.jdo.MockPersistenceManager;
+import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.MockQuery;
 import javax.jdo.PersistenceManager;
 
@@ -32,29 +33,29 @@ import twitter4j.TwitterException;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.apphosting.api.MockAppEngineEnvironment;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
 
 public class TestConsumerOperations {
 
-    private static MockAppEngineEnvironment mockAppEngineEnvironment;
+    private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
     @Before
     public void setUp() throws Exception {
-        mockAppEngineEnvironment = new MockAppEngineEnvironment();
-        mockAppEngineEnvironment.setUp();
+        helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        mockAppEngineEnvironment.tearDown();
+        helper.tearDown();
     }
 
     @Test(expected=RuntimeException.class)
@@ -321,15 +322,13 @@ public class TestConsumerOperations {
     @Test(expected=IllegalArgumentException.class)
     public void testGetV() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations();
-        PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        ops.getConsumer(pm, null);
+        ops.getConsumer(new MockPersistenceManager(), null);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testGetVI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations();
-        PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
-        ops.getConsumer(pm, 0L);
+        ops.getConsumer(new MockPersistenceManager(), 0L);
     }
 
     @Test(expected=RuntimeException.class)
@@ -484,7 +483,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -521,7 +520,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -554,7 +553,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -588,7 +587,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -630,7 +629,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -674,7 +673,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -723,7 +722,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -765,7 +764,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -789,7 +788,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -836,7 +835,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -884,7 +883,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
 
@@ -933,7 +932,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
@@ -989,7 +988,7 @@ public class TestConsumerOperations {
     @Test
     public void testUpdateI() throws DataSourceException {
         final String twitterId = "Katelyn";
-        PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         ConsumerOperations ops = new ConsumerOperations();
 
         // Create the user once
@@ -1003,7 +1002,7 @@ public class TestConsumerOperations {
 
         // Close the persistence manager and open a new one for a separate query
         pm.close();
-        pm = mockAppEngineEnvironment.getPersistenceManager();
+        pm = new MockPersistenceManagerFactory().getPersistenceManager();
 
         // Search for the update instance
         List<Consumer> consumers = ops.getConsumers("email", "test", 1);
@@ -1015,7 +1014,7 @@ public class TestConsumerOperations {
     @Test
     public void testUpdateII() throws DataSourceException {
 
-        final PersistenceManager pm = mockAppEngineEnvironment.getPersistenceManager();
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
@@ -1041,7 +1040,7 @@ public class TestConsumerOperations {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
-                return mockAppEngineEnvironment.getPersistenceManager();
+                return new MockPersistenceManagerFactory().getPersistenceManager();
             }
         };
         // Create the user once
