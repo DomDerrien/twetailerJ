@@ -12,69 +12,99 @@
 <tr><td rowspan="1" colspan="3">util-setVariables</td></tr>
 </thead><tbody>
 <tr>
-    <td>echo</td>
-    <td>setVariables: testing ....</td>
-    <td></td>
+	<td>echo</td>
+	<td>setVariables: testing ....</td>
+	<td></td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;92002 &quot;</td>
-    <td>ref</td>
+	<td>storeEval</td>
+	<td>&quot;98039 &quot;</td>
+	<td>ref</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;20991231&quot;</td>
-    <td>expiresSend</td>
+	<td>storeEval</td>
+	<td>&quot;20991231&quot;</td>
+	<td>expiresSend</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;2099-12-31&quot;</td>
-    <td>expiresReceive</td>
+	<td>storeEval</td>
+	<td>&quot;2099-12-31&quot;</td>
+	<td>expiresReceive</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;h2x 1z5 ca&quot;</td>
-    <td>localeSend</td>
+	<td>storeEval</td>
+	<td>&quot;h2x 1z5 ca&quot;</td>
+	<td>localeSend</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;H2X1Z5 CA&quot;</td>
-    <td>localeReceive</td>
+	<td>storeEval</td>
+	<td>&quot;H2X1Z5 CA&quot;</td>
+	<td>localeReceive</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;50 km&quot;</td>
-    <td>rangeSend</td>
+	<td>storeEval</td>
+	<td>&quot;50 km&quot;</td>
+	<td>rangeSend</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>&quot;50.0km&quot;</td>
-    <td>rangeReceive</td>
+	<td>storeEval</td>
+	<td>&quot;50.0km&quot;</td>
+	<td>rangeReceive</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>100</td>
-    <td>qtySend</td>
+	<td>storeEval</td>
+	<td>&quot;100&quot;</td>
+	<td>qtySend</td>
 </tr>
 <tr>
-    <td>storeEval</td>
-    <td>100</td>
-    <td>qtyReceive</td>
+	<td>storeEval</td>
+	<td>&quot;100&quot;</td>
+	<td>qtyReceive</td>
 </tr>
 <tr>
-    <td>store</td>
-    <td>javascript{new Date().getTime() + &quot;ms&quot;}</td>
-    <td>timeMS</td>
+	<td>store</td>
+	<td>javascript{new Date().getTime() + &quot;ms&quot;}</td>
+	<td>timeMS</td>
 </tr>
 <tr>
-    <td>setSpeed</td>
-    <td>1000</td>
-    <td></td>
+	<td>storeEval</td>
+	<td>storedVars["timeMS"]</td>
+	<td>tags</td>
 </tr>
 <tr>
-    <td>echo</td>
-    <td>setVariables: complete.</td>
-    <td></td>
+	<td>echo</td>
+	<td>${tags}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>&quot;1000&quot;</td>
+	<td>priceSend</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>&quot;1000.0&quot;</td>
+	<td>priceReceive</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>&quot;1125&quot;</td>
+	<td>totalSend</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>&quot;1125.0&quot;</td>
+	<td>totalReceive</td>
+</tr>
+<tr>
+	<td>setSpeed</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>setVariables: complete.</td>
+	<td></td>
 </tr>
 
 </tbody></table>
