@@ -12,39 +12,39 @@
 <tr><td rowspan="1" colspan="3">propose-receive-sales-associate</td></tr>
 </thead><tbody>
 <tr>
-	<td>echo</td>
-	<td>propose-receive-sales-associate testing ....</td>
-	<td></td>
+    <td>echo</td>
+    <td>propose-receive-sales-associate testing ....</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li[2]/span[2]/span[2]</td>
-	<td>regexp:!propose proposal:[0-9]{5} reference:${ref} state:opened quantity:1 tags:propose-send-sales-associate ${tags} price:${priceReceive} total:${totalReceive}</td>
+    <td>assertText</td>
+    <td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li[2]/span[2]/span[2]</td>
+    <td>regexp:!propose proposal:[0-9]{5} reference:${ref} state:opened quantity:1 tags:propose-send-sales-associate ${tags} price:${priceReceive} total:${totalReceive}</td>
 </tr>
 <tr>
-	<td>storeText</td>
-	<td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li[2]/span[2]/span[2]</td>
-	<td>listing</td>
+    <td>storeText</td>
+    <td>//div[2]/table/tbody/tr/td/div/div[3]/ol/li[2]/span[2]/span[2]</td>
+    <td>listing</td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>${listing}</td>
-	<td></td>
+    <td>echo</td>
+    <td>${listing}</td>
+    <td></td>
 </tr>
 <tr>
-	<td>storeEval</td>
-	<td>storedVars[&quot;listing&quot;].match(/\d+/)</td>
-	<td>proposal</td>
+    <td>storeEval</td>
+    <td>storedVars[&quot;listing&quot;].match(/\d+/)</td>
+    <td>proposal</td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>created proposal:${proposal}</td>
-	<td></td>
+    <td>echo</td>
+    <td>created proposal:${proposal}</td>
+    <td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>propose-receive-sales-associate complete.</td>
-	<td></td>
+    <td>echo</td>
+    <td>propose-receive-sales-associate complete.</td>
+    <td></td>
 </tr>
 
 </tbody></table>
