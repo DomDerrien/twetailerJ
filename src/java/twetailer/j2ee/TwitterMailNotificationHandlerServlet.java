@@ -41,15 +41,11 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.warning("Path Info: " + request.getPathInfo());
-
         processTwitterNotification(request, response);
     }
 
     protected static void processTwitterNotification(HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.warning("Path Info: " + request.getPathInfo());
-
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
 
@@ -93,11 +89,11 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                         }
                     }
                     catch (TwitterException ex) {
-                        subject += "[TwitterException:" + ex.getMessage() + "]";
+                        subject += " [TwitterException: " + ex.getMessage() + "]";
                         isAFollowingNotification = false;
                     }
                     catch(DataSourceException ex) {
-                        subject += "[DataSourceException:" + ex.getMessage() + "]";
+                        subject += " [DataSourceException: " + ex.getMessage() + "]";
                         isAFollowingNotification = false;
                     }
                 }
