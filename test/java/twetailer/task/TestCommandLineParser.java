@@ -38,7 +38,7 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
-public class TestCommandLineSyntax {
+public class TestCommandLineParser {
 
     @Before
     public void setUp() throws Exception {
@@ -70,6 +70,9 @@ public class TestCommandLineSyntax {
         for (Action action: Action.values()) {
             JsonArray equivalents = new GenericJsonArray();
             equivalents.add(action.toString());
+            if (Action.www.equals(action)) {
+                equivalents.add("url");
+            }
             actions.put(action.toString(), equivalents);
         }
         CommandLineParser.localizedActions.put(Locale.ENGLISH, actions);
@@ -619,7 +622,7 @@ public class TestCommandLineSyntax {
     public void testParseActionI() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "action:demand ref:1234 " + keywords, Locale.ENGLISH);
-        assertEquals("demand", data.getString(Command.ACTION));
+        assertEquals(Action.demand.toString(), data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -628,15 +631,48 @@ public class TestCommandLineSyntax {
     }
 
     @Test
-    public void testParseActionII() throws ClientException, ParseException {
+    public void testParseActionIIa() throws ClientException, ParseException {
         String keywords = "Wii console remote control";
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "!demand ref:1234 " + keywords, Locale.ENGLISH);
-        assertEquals("demand", data.getString(Command.ACTION));
+        assertEquals(Action.demand.toString(), data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
             assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
         }
+    }
+
+    @Test
+    public void testParseActionIIb() throws ClientException, ParseException {
+        String keywords = "Wii console remote control";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand ref:1234 " + keywords, Locale.ENGLISH);
+        assertEquals(Action.demand.toString(), data.getString(Command.ACTION));
+        assertEquals(1234, data.getLong(Demand.REFERENCE));
+        String[] parts = keywords.split("\\s+");
+        for (int i = 0; i < parts.length; i ++) {
+            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
+        }
+    }
+
+    @Test
+    public void testParseActionIIc() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "list", Locale.ENGLISH);
+        assertEquals(Action.list.toString(), data.getString(Command.ACTION));
+    }
+
+    @Test
+    public void testParseActionIId() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " propose ", Locale.ENGLISH);
+        assertEquals(Action.propose.toString(), data.getString(Command.ACTION));
+    }
+
+    @Test
+    public void testParseActionIIe() throws ClientException, ParseException {
+        String url = "http://twetailer.com/";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " url " + url, Locale.ENGLISH);
+        assertEquals(Action.www.toString(), data.getString(Command.ACTION));
+        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals(url.replace(":", "_"), data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
     }
 
     @Test
@@ -1157,5 +1193,4 @@ public class TestCommandLineSyntax {
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAG).getString(1));
     }
-
 }

@@ -180,7 +180,8 @@ public class CommandSettings {
        int acceptedValueNb = acceptedValues.size();
        int acceptedValueIdx = 0;
        while (acceptedValueIdx < acceptedValueNb) {
-           if (collator.compare(acceptedValues.getString(acceptedValueIdx), actualValue) == 0) {
+           if (collator != null && collator.compare(acceptedValues.getString(acceptedValueIdx), actualValue) == 0 ||
+               collator == null && acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
            // if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
                return true;
            }

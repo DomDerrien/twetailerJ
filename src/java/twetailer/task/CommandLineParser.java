@@ -17,7 +17,10 @@ import twetailer.dto.Proposal;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
+import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
+import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -151,6 +154,8 @@ public class CommandLineParser {
         patterns.put(keywordKey, Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE));
     }
 
+    private static Pattern firstKeyword = Pattern.compile("^(\\w+)(?:$|\\s)");
+
     /**
      * Parse the given tweet with the set of given localized prefixes
      * @param patterns list of registered RegEx patterns preset for the user's locale
@@ -174,14 +179,30 @@ public class CommandLineParser {
             command.put(Command.NEED_HELP, message.trim());
             return command;
         }
-        StringBuilder messageCopy = new StringBuilder(message);
-        // Action
+        StringBuilder messageCopy = new StringBuilder(message.trim());
+        // Action - with a prefix
         matcher = patterns.get(Prefix.action.toString()).matcher(messageCopy);
         if (matcher.find()) { // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
             command.put(Command.ACTION, getAction(currentGroup.toLowerCase(locale)));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
+        }
+        // Action - as the first keyword
+        if (!command.containsKey(Command.ACTION)) {
+            matcher = firstKeyword.matcher(messageCopy);
+            if (matcher.find()) { // Runs the matcher once
+                String currentGroup = matcher.group(1).trim();
+                JsonObject actions = CommandLineParser.localizedActions.get(locale);
+                for (Action action: Action.values()) {
+                    if (CommandSettings.isEquivalentTo(actions, action.toString(), currentGroup.toLowerCase(locale), null)) {
+                        command.put(Command.ACTION, action.toString());
+                        messageCopy = extractPart(messageCopy, currentGroup);
+                        oneFieldOverriden = true;
+                        break;
+                    }
+                }
+            }
         }
         // Address
         matcher = patterns.get(Prefix.address.toString()).matcher(messageCopy);
