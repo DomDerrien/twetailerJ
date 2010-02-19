@@ -49,8 +49,6 @@ public class MailResponderServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.warning("Path Info: " + request.getPathInfo());
-
         processMailedRequest(request, response);
     }
 
