@@ -379,7 +379,7 @@ public class TestBaseConnector {
         final String message2 = "test2";
         BaseConnector.communicateToUser(Source.mail, mailAddress, null, subject, new String[] { message1, message2 }, Locale.ENGLISH);
     }
-    
+
     @Test
     public void testCheckMessageLengthVII() {
         String message = ":-) Proposal:106004 for tags:nikon d500 has been confirmed.| Please mark, hold for Consumer with Demand reference:106002 and then !close proposal:106004, or, !flag proposal:106004 note:your-note-here.";

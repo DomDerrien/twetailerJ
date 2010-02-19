@@ -299,7 +299,7 @@ public class TestCommandProcessor {
         CommandProcessor.processRawCommands(0L);
     }
 
-    @Test
+    @Test(expected=ClientException.class)
     public void testProcessRawCommandWithIncompleteMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations
@@ -332,7 +332,7 @@ public class TestCommandProcessor {
         assertEquals(LabelExtractor.get("error_unexpected", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
     }
 
-    @Test
+    @Test(expected=ClientException.class)
     public void testProcessRawCommandWithIncompleteMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations
@@ -374,7 +374,7 @@ public class TestCommandProcessor {
         assertEquals(LabelExtractor.get("error_unexpected", new Object[] { commandKey, "" }, Locale.ENGLISH), sentText);
     }
 
-    @Test
+    @Test(expected=ClientException.class)
     public void testProcessRawCommandWithIncompleteMessageIII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations

@@ -235,21 +235,17 @@ public class CommandProcessor {
         catch(Exception ex) {
             String additionalInfo = getDebugInfo(ex);
             boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
-            log.info("Error reported while processing rawCommand: " + rawCommand.getKey() + ", with the info: " + additionalInfo);
-            if (exposeInfo) {
-                MockOutputStream out = new MockOutputStream();
-                ex.printStackTrace(new PrintStream(out));
-                log.warning(out.toString());
-            }
             // Report the error to the raw command emitter
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH) }
+                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, senderLocale) }
             );
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
             rawCommand = rawCommandOperations.updateRawCommand(pm, rawCommand);
+            // Rethrow the exception so the stack trace will be sent to the catch-all list
+            throw new ClientException(LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), additionalInfo }, Locale.ENGLISH), ex);
         }
     }
 
