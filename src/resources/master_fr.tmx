@@ -1158,16 +1158,16 @@
         </tu>
         <tu tuid="cp_tweet_price_part" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>price:{0}</seg>
+                <seg>price:{1}{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_total_part" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>total:{0}</seg>
+                <seg>total:{1}{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store_part" dataType="text">
