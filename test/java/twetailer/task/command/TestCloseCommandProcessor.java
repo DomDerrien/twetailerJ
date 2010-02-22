@@ -3,6 +3,7 @@ package twetailer.task.command;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -213,6 +215,7 @@ public class TestCloseCommandProcessor {
         final State demandState = State.confirmed;
         final Long proposalKey = 6666L;
         final Long saleAssociateKey = 7777L;
+        final Long originalRawCommandId = 8888L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -241,10 +244,22 @@ public class TestCloseCommandProcessor {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
+                proposal.setRawCommandId(originalRawCommandId);
                 proposal.setSource(Source.simulated);
                 List<Proposal> proposals = new ArrayList<Proposal>();
                 proposals.add(proposal);
                 return proposals;
+            }
+        };
+        // RawCommandOperations mock
+        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(originalRawCommandId, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(saleAssociateKey);
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
             }
         };
         // SaleAssociateOperations mock
@@ -261,6 +276,7 @@ public class TestCloseCommandProcessor {
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
@@ -471,6 +487,7 @@ public class TestCloseCommandProcessor {
         final Long consumerKey = 6666L;
         final Long saleAssociateKey = 7777L;
         final Long demandKey = 888888L;
+        final Long originalRawCommandId = 999999L;
 
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
@@ -493,6 +510,7 @@ public class TestCloseCommandProcessor {
                 assertEquals(saleAssociateKey, rKey);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.simulated);
                 proposal.setState(State.confirmed);
@@ -508,18 +526,19 @@ public class TestCloseCommandProcessor {
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
-                assertTrue(parameters.containsKey(Demand.PROPOSAL_KEYS));
-                assertEquals(proposalKey, (Long) parameters.get(Demand.PROPOSAL_KEYS));
-                assertTrue(parameters.containsKey(Command.STATE));
-                assertEquals(State.confirmed.toString(), (String) parameters.get(Command.STATE));
+                fail("Call not expected");
+                return null;
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setState(State.confirmed);
                 demand.setOwnerKey(consumerKey);
+                demand.setRawCommandId(originalRawCommandId);
                 demand.setSource(Source.simulated);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
+                return demand;
             }
         };
         // ConsumerOperations mock
@@ -532,11 +551,23 @@ public class TestCloseCommandProcessor {
                 return consumer;
             }
         };
+        // RawCommandOperations mock
+        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(originalRawCommandId, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(saleAssociateKey);
+                rawCommand.setSource(Source.simulated);
+                return rawCommand;
+            }
+        };
         // CommandProcessor mock
         CommandProcessor._baseOperations = new MockBaseOperations();
         CommandProcessor.consumerOperations = consumerOperations;
         CommandProcessor.demandOperations = demandOperations;
         CommandProcessor.proposalOperations = proposalOperations;
+        CommandProcessor.rawCommandOperations = rawCommandOperations;
         CommandProcessor.saleAssociateOperations = saleAssociateOperations;
 
         // Command mock
