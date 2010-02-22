@@ -114,6 +114,21 @@ public class MaezelServlet extends HttpServlet {
                 Long newSinceId = TweetLoader.loadDirectMessages();
                 out.put(Settings.LAST_PROCESSED_DIRECT_MESSAGE_ID, newSinceId);
             }
+            else if ("/speedUpLoadTweets".equals(pathInfo)) {
+                // Get parameters
+                String givenDuration = request.getParameter("delay");
+                long duration = givenDuration == null ? 300 : Long.parseLong(givenDuration);
+                final long defaultDelay = 20;
+                // Prepare the loop to post the batch of "loadTweets" requests
+                while (0 < duration) {
+                    _baseOperations.getQueue().add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/loadTweets").
+                            countdownMillis(duration * 1000).
+                            method(Method.GET)
+                    );
+                    duration -= defaultDelay;
+                }
+            }
             else if ("/processCommand".equals(pathInfo)) {
                 // Get parameters
                 Long commandId = Long.parseLong(request.getParameter(Command.KEY));
