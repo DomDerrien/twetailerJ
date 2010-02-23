@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
 
 import twetailer.validator.ApplicationSettings;
+import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
 
 public class MailConnector {
@@ -148,11 +149,11 @@ public class MailConnector {
      */
     public static String getText(MimeMessage message) throws MessagingException, IOException {
         if (message.isMimeType("text/plain")) {
-            return (String) message.getContent();
+            return LocaleValidator.toUTF8((String) message.getContent());
             // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("text/html")) {
-            return (String) message.getContent();
+            return LocaleValidator.toUTF8((String) message.getContent());
             // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("multipart/*")) {
@@ -197,11 +198,11 @@ public class MailConnector {
     protected static String getText(Part part) throws MessagingException, IOException {
         String filename = part.getFileName();
         if (filename == null && part.isMimeType("text/plain")) {
-            return (String) part.getContent();
+            return LocaleValidator.toUTF8((String) part.getContent());
             // return convertToString((InputStream) part.getContent());
         }
         if (filename == null && part.isMimeType("text/html")) {
-            return (String) part.getContent();
+            return LocaleValidator.toUTF8((String) part.getContent());
             // return convertToString((InputStream) part.getContent());
         }
         // We don't want to go deeper because this part is probably an attachment or a reply!
@@ -230,7 +231,7 @@ public class MailConnector {
             out.append((char) character);
             character = in.read();
         }
-        return out.toString();
+        return LocaleValidator.toUTF8(out.toString());
     }
     */
 }
