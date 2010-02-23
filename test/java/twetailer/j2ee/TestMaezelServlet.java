@@ -67,6 +67,10 @@ import twitter4j.TwitterException;
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
+import com.google.appengine.api.labs.taskqueue.MockQueue;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskHandle;
+import com.google.appengine.api.labs.taskqueue.TaskOptions;
 import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -1894,5 +1898,175 @@ public class TestMaezelServlet {
 
         // Clean-up
         MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsI() throws IOException {
+        final String duration = null;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(300 / 20, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsII() throws IOException {
+        final String duration = "0";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(0, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsIII() throws IOException {
+        final String duration = "12";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(1, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsIV() throws IOException {
+        final String duration = "100";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(100 / 20, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweets() throws IOException {
+        final String duration = "1000";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(1000 / 20, queue.getHistory().size());
     }
 }

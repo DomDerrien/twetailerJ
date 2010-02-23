@@ -812,12 +812,12 @@ public class TestCommandLineParser {
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0) + ":1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":12345"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":$25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + ":67890"));
         assertTrue(response.contains("sgrognegneu"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":35.33"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":$35.33"));
     }
 
     @Test
@@ -889,10 +889,10 @@ public class TestCommandLineParser {
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":$25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":35.33"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":$35.33"));
         assertTrue(response.contains("#demo"));
     }
 

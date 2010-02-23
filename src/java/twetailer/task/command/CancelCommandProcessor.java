@@ -3,10 +3,15 @@ package twetailer.task.command;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
@@ -50,7 +55,7 @@ public class CancelCommandProcessor {
                 // Update the demand and echo back the new state
                 State previousState = demand.getState();
                 demand.setState(State.cancelled);
-                // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
+                demand.setCancelerKey(demand.getOwnerKey());
                 demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                 Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
                 message = CommandProcessor.generateTweet(demand, location, false, consumer.getLocale());
@@ -60,8 +65,31 @@ public class CancelCommandProcessor {
                     // FIXME: inform the sale associates who proposed articles about the cancellation
                 }
                 else if (State.confirmed.equals(previousState)) {
-                    demand.getState();
-                    // FIXME: inform the sale associate if the demand was in the confirmed state
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+                    parameters.put(Proposal.DEMAND_KEY, demand.getKey());
+                    parameters.put(Command.STATE, State.confirmed.toString());
+                    try {
+                        List<Proposal> proposals = CommandProcessor.proposalOperations.getProposals(pm, parameters, 1);
+                        if (0 < proposals.size()) {
+                            // Update the proposal
+                            Proposal proposal = proposals.get(0);
+                            proposal.setState(State.cancelled);
+                            proposal.setCancelerKey(consumer.getKey());
+                            proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
+                            // Inform the proposal owner
+                            SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                            RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, proposal.getRawCommandId());
+                            communicateToSaleAssociate(
+                                    originalRawCommand,
+                                    saleAssociate,
+                                    new String[] { LabelExtractor.get("cp_command_cancel_demand_canceled_proposal_to_be_canceled", new Object[] { demand.getKey(), proposal.getKey(), proposal.getSerializedCriteria() }, consumer.getLocale()) }
+                            );
+                        }
+                    }
+                    catch(Exception ex) {
+                        // Too bad, the proposal owner can be informed about the demand closing...
+                        // He/she can still see the proposal has been canceled
+                    }
                 }
             }
             communicateToConsumer(
@@ -73,7 +101,6 @@ public class CancelCommandProcessor {
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             // Get the sale associate
             SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.cancel);
-            // FIXME: allow also attached demand owner to cancel the proposal
             // Update proposal state
             Proposal proposal = null;
             String message = null;
@@ -93,14 +120,28 @@ public class CancelCommandProcessor {
                 // Update the proposal and echo back the new state
                 State previousState = proposal.getState();
                 proposal.setState(State.cancelled);
-                // FIXME: keep the cancellation code (can be: owner, direct interlocutor, associate, deal closed by me, deal closed by someone else
+                proposal.setCancelerKey(proposal.getOwnerKey());
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
                 Store store = CommandProcessor.storeOperations.getStore(pm, saleAssociate.getStoreKey());
                 message = CommandProcessor.generateTweet(proposal, store, false, saleAssociate.getLocale());
-                if (!State.declined.equals(previousState)) {
+                if (State.confirmed.equals(previousState)) {
+                    // Restore the demand in the published state
+                    Demand demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), null);
+                    demand.setState(State.published);
+                    demand.setCancelerKey(saleAssociate.getKey());
+                    demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
+                    // Inform the consumer of the state change
+                    Consumer demandOwner = CommandProcessor.consumerOperations.getConsumer(pm, demand.getOwnerKey());
+                    RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                    communicateToConsumer(
+                            originalRawCommand,
+                            demandOwner,
+                            new String[] { LabelExtractor.get("cp_command_cancel_proposal_canceled_demand_to_be_published", new Object[] { proposal.getKey(), demand.getKey(), demand.getSerializedCriteria() }, consumer.getLocale()) }
+                    );
+                }
+                else if (!State.declined.equals(previousState)) {
                     proposal.getState();
                     // FIXME: inform the consumer who owns the attached demand about the cancellation
-                    // FIXME: put the demand in the published state if the proposal was in the confirmed state
                 }
             }
             communicateToSaleAssociate(

@@ -27,6 +27,11 @@ public class Command extends Entity {
     public static final String ACTION = "action";
 
     @Persistent
+    private Long cancelerKey;
+
+    public static final String CANCELER_KEY = "cancelerKey";
+
+    @Persistent
     private Long locationKey;
 
     public final static String LOCATION_KEY = Location.LOCATION_KEY;
@@ -95,6 +100,14 @@ public class Command extends Entity {
 
     public void setAction(String action) {
         setAction(Action.valueOf(action));
+    }
+
+    public Long getCancelerKey() {
+        return cancelerKey;
+    }
+
+    public void setCancelerKey(Long cancelerKey) {
+        this.cancelerKey = cancelerKey;
     }
 
     public Long getLocationKey() {
@@ -192,6 +205,7 @@ public class Command extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
+        if (getCancelerKey() != null) { out.put(CANCELER_KEY, getCancelerKey()); }
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getHashTags() != null && 0 < getHashTags().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -210,6 +224,7 @@ public class Command extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
+        if (in.containsKey(CANCELER_KEY)) { setCancelerKey(in.getLong(CANCELER_KEY)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(HASH_TAG)) {
             JsonArray jsonArray = in.getJsonArray(HASH_TAG);

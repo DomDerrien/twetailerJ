@@ -703,6 +703,14 @@
                 <seg>:-( You can't !cancel Demand reference:{0} in the state:{1}.</seg>
             </tuv>
         </tu>
+        <tu tuid="cp_command_cancel_demand_canceled_proposal_to_be_canceled" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( The owner of the Demand {0} canceled it. Your {1} with {1} is canceled as a side-effect.</seg>
+            </tuv>
+        </tu>
         <tu tuid="cp_command_cancel_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
@@ -715,6 +723,14 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>:-( You can't !cancel Proposal:{0} in the state:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_proposal_canceled_demand_to_be_published" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( The owner of the {0} canceled it. Your Demand {1} with {1} is back in the published state, ready to be proposed again.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_invalid_demand_id" dataType="text">

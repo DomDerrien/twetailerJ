@@ -44,6 +44,7 @@ import twetailer.validator.ApplicationSettings;
 import twitter4j.TwitterException;
 
 import com.dyuproject.openid.OpenIdUser;
+import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
@@ -116,12 +117,13 @@ public class MaezelServlet extends HttpServlet {
             }
             else if ("/speedUpLoadTweets".equals(pathInfo)) {
                 // Get parameters
-                String givenDuration = request.getParameter("delay");
+                String givenDuration = request.getParameter("duration");
                 long duration = givenDuration == null ? 300 : Long.parseLong(givenDuration);
                 final long defaultDelay = 20;
                 // Prepare the loop to post the batch of "loadTweets" requests
+                Queue queue = _baseOperations.getQueue();
                 while (0 < duration) {
-                    _baseOperations.getQueue().add(
+                    queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/loadTweets").
                             countdownMillis(duration * 1000).
                             method(Method.GET)
