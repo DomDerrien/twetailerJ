@@ -289,6 +289,25 @@ public class LocaleValidator {
     }
 
     /**
+     * Transform the Unicode string in its UTF-8 counterpart
+     *
+     * @param unicodeStr Original string
+     * @return Converted string if there's no error, the original value otherwise
+     */
+    public static String toUTF8(String unicodeStr) {
+        String out = unicodeStr;
+        try {
+            out = new String(unicodeStr.getBytes("UTF-8"));
+        }
+        catch (UnsupportedEncodingException e) {
+            // Note for the testers:
+            //   UnsupportedEncodingException can be generated if the character set would be invalid (instead of "UTF8")
+            //   Not a possible use case here...
+        }
+        return out;
+    }
+
+    /**
      * Create a Collator instance for the given locale information.
      * This object can be used for locale dependent comparisons.
      *

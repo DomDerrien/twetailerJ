@@ -77,7 +77,7 @@ public class TestJabberConnector {
     @Test
     public void testGetInstantMessageI() throws IOException {
         final String jabberId = "test-emitter@appspot.com";
-        final String message = "wii console Mario Kart";
+        final String message = "wii console Mario Kart -- àéüôç";
         final String boundary = "B";
         final MockServletInputStream stream = new MockServletInputStream();
         MockHttpServletRequest request = new MockHttpServletRequest() {
