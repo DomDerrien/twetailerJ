@@ -119,7 +119,7 @@ public class TweetLoader {
                     TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_inform_dm_sender_no_more_a_follower", new Object[] { senderScreenName }, senderLocale));
                     nonFollowerIds.put(senderScreenName, Boolean.TRUE);
                 }
-                // else {
+                else {
                     RawCommand rawCommand = new RawCommand(Source.twitter);
                     rawCommand.setEmitterId(consumer.getTwitterId());
                     rawCommand.setMessageId(dmId);
@@ -127,7 +127,7 @@ public class TweetLoader {
 
                     extractedCommands.add(rawCommand);
                     log.warning("DM added to the queue for the RawCommand creation");
-                // }
+                }
             }
             if (lastId < dmId) {
                 lastId = dmId;

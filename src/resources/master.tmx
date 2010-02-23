@@ -1574,20 +1574,26 @@
         </tu>
 
         <tu tuid="cp_tweet_price_part" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
-            <note>{0}: proposal unit price</note>
+            <note>
+                {0}: proposal unit price |
+                {1}: currency symbol
+            </note>
             <tuv xml:lang="en">
-                <seg>price:{0}</seg>
+                <seg>price:{1}{0}</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_tweet_total_part" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
-            <note>{0}: proposal total cost</note>
+            <note>
+                {0}: proposal total cost |
+                {1}: currency symbol
+            </note>
             <tuv xml:lang="en">
-                <seg>total:{0}</seg>
+                <seg>total:{1}{0}</seg>
             </tuv>
         </tu>
 

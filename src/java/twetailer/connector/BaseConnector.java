@@ -187,6 +187,9 @@ public class BaseConnector {
     /** Minimal size of the messages to be sent */
     public static final int MINIMAL_MESSAGE_LENGTH = 8;
 
+    private static final char SPACE_CHAR = ' ';
+    private static final char TABULATION_CHAR = '\t';
+
     /**
      * Split the message in many parts as suggested and when the different parts are larger than the specified limit.
      *
@@ -205,9 +208,9 @@ public class BaseConnector {
             int separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR);
             while (0 < message.length()) {
                 String head = separatorIdx == -1 ? message : message.substring(0, separatorIdx);
-                if (limit <= head.length()) {
+                if (limit < head.length()) {
                     int endIdx = limit;
-                    while (head.charAt(endIdx) != ' ' && head.charAt(endIdx) != '\t') {
+                    while (head.charAt(endIdx) != SPACE_CHAR && head.charAt(endIdx) != TABULATION_CHAR) {
                         -- endIdx;
                     }
                     head = head.substring(0, endIdx);

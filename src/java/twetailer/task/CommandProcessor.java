@@ -133,8 +133,8 @@ public class CommandProcessor {
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
         String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
         String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
-        String price = LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice() }, locale) + space;
-        String total = LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal() }, locale) + space;
+        String price = LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale) + space;
+        String total = LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale) + space;
         String pickup = store == null ? "" : (LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale) + space);
         // Compose the final message
         return LabelExtractor.get(
@@ -235,21 +235,17 @@ public class CommandProcessor {
         catch(Exception ex) {
             String additionalInfo = getDebugInfo(ex);
             boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
-            log.info("Error reported while processing rawCommand: " + rawCommand.getKey() + ", with the info: " + additionalInfo);
-            if (exposeInfo) {
-                MockOutputStream out = new MockOutputStream();
-                ex.printStackTrace(new PrintStream(out));
-                log.warning(out.toString());
-            }
             // Report the error to the raw command emitter
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, Locale.ENGLISH) }
+                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, senderLocale) }
             );
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
             rawCommand = rawCommandOperations.updateRawCommand(pm, rawCommand);
+            // Rethrow the exception so the stack trace will be sent to the catch-all list
+            throw new ClientException(LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), additionalInfo }, Locale.ENGLISH), ex);
         }
     }
 
