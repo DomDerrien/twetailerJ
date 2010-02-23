@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,16 +113,40 @@ public class TestSaleAssociate {
     public void testResetCriteriaI() {
         SaleAssociate object = new SaleAssociate();
 
+        object.addCriterion(null);
+        assertEquals(0, object.getCriteria().size());
+
+        object.addCriterion("");
+        assertEquals(0, object.getCriteria().size());
+
         object.addCriterion("first");
         assertEquals(1, object.getCriteria().size());
 
         object.addCriterion("first"); // Add it twice
         assertEquals(1, object.getCriteria().size());
 
+        object.addCriterion("FiRsT"); // Add it twice, mixed case
+        assertEquals(1, object.getCriteria().size());
+
         object.addCriterion("second");
         assertEquals(2, object.getCriteria().size());
 
         object.removeCriterion("first"); // Remove first
+        assertEquals(1, object.getCriteria().size());
+
+        object.addCriterion("Troisième");
+        assertEquals(2, object.getCriteria().size());
+
+        object.addCriterion("TROISIÈME");
+        assertEquals(2, object.getCriteria().size());
+
+        object.removeCriterion("TROISIÈME"); // Remove mixed case and disparate accents
+        assertEquals(1, object.getCriteria().size());
+
+        object.removeCriterion(null);
+        assertEquals(1, object.getCriteria().size());
+
+        object.removeCriterion("");
         assertEquals(1, object.getCriteria().size());
 
         object.resetCriteria(); // Reset all
@@ -249,5 +274,17 @@ public class TestSaleAssociate {
         assertFalse(saleAssociate.getIsStoreAdmin());
         saleAssociate.setIsStoreAdmin(true);
         assertTrue(saleAssociate.getIsStoreAdmin());
+    }
+
+    @Test
+    public void testGetLocatorI() {
+        assertNotNull(new SaleAssociate().getCollator());
+    }
+
+    @Test
+    public void testGetLocatorII() {
+        SaleAssociate saleAssociate = new SaleAssociate();
+        Collator collator = saleAssociate.getCollator();
+        assertEquals(collator, saleAssociate.getCollator());
     }
 }

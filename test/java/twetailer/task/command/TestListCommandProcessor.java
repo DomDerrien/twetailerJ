@@ -2013,7 +2013,7 @@ public class TestListCommandProcessor {
     }
 
     private static Collator getCollator() {
-        return ListCommandProcessor.getCollator(Locale.ENGLISH);
+        return LocaleValidator.getCollator(Locale.ENGLISH);
     }
 
     @Test

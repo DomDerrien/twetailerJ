@@ -72,7 +72,7 @@ public class ListCommandProcessor {
                 List<String> messages = new ArrayList<String>();
                 if (command.containsKey(Demand.CRITERIA) || command.containsKey(Demand.CRITERIA_ADD)) {
                     // Check each demand
-                    Collator collator = getCollator(consumer.getLocale());
+                    Collator collator = LocaleValidator.getCollator(consumer.getLocale());
                     List<Demand> filteredDemands = new ArrayList<Demand>();
                     List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
                     for (Demand demand: demands) {
@@ -161,7 +161,7 @@ public class ListCommandProcessor {
                 List<String> messages = new ArrayList<String>();
                 if (command.containsKey(Proposal.CRITERIA) || command.containsKey(Proposal.CRITERIA_ADD)) {
                     // Check each proposal
-                    Collator collator = getCollator(consumer.getLocale());
+                    Collator collator = LocaleValidator.getCollator(consumer.getLocale());
                     List<Proposal> filteredProposals = new ArrayList<Proposal>();
                     List<Object> tags = command.containsKey(Demand.CRITERIA) ? command.getJsonArray(Demand.CRITERIA).getList() :  command.getJsonArray(Demand.CRITERIA_ADD).getList();
                     for (Proposal proposal: proposals) {
@@ -436,22 +436,6 @@ public class ListCommandProcessor {
                 }
         );
         return null;
-    }
-
-    /**
-     * Create a Collator instance for the given locale information.
-     * This object can be used for locale dependent comparisons.
-     *
-     * @param locale Consumer's locale
-     * @return Collator instance
-     */
-    protected static Collator getCollator(Locale locale) {
-        //
-        // TODO: cache the value by user's locale
-        //
-        Collator collator = Collator.getInstance(locale);
-        collator.setStrength(Collator.PRIMARY);
-        return collator;
     }
 
     /**

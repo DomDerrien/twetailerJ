@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Collator;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -280,5 +281,21 @@ public class LocaleValidator {
             //   Not a possible use case here...
         }
         return out;
+    }
+
+    /**
+     * Create a Collator instance for the given locale information.
+     * This object can be used for locale dependent comparisons.
+     *
+     * @param locale Consumer's locale
+     * @return Collator instance
+     */
+    public static Collator getCollator(Locale locale) {
+        //
+        // TODO: cache the value by user's locale
+        //
+        Collator collator = Collator.getInstance(locale);
+        collator.setStrength(Collator.PRIMARY);
+        return collator;
     }
 }

@@ -1,5 +1,6 @@
 package twetailer.dto;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,8 @@ import domderrien.jsontools.TransferObject;
 public class SaleAssociate extends Entity {
 
     /*** SaleAssociate ***/
+    private Collator collator;
+
     @Persistent
     private Long consumerKey;
 
@@ -122,6 +125,13 @@ public class SaleAssociate extends Entity {
         criteria = null;
     }
 
+    protected Collator getCollator() {
+        if (collator == null) {
+            collator = LocaleValidator.getCollator(getLocale());
+        }
+        return collator;
+    }
+
     public Long getConsumerKey() {
         return consumerKey;
     }
@@ -139,13 +149,14 @@ public class SaleAssociate extends Entity {
     }
 
     public void addCriterion(String criterion) {
+        removeCriterion(criterion);
+        if (criterion == null || criterion.length() == 0) {
+            return;
+        }
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        criterion = criterion.toLowerCase(getLocale());
-        if (!criteria.contains(criterion)) {
-            criteria.add(criterion);
-        }
+        criteria.add(criterion);
     }
 
     public void resetCriteria() {
@@ -156,11 +167,17 @@ public class SaleAssociate extends Entity {
     }
 
     public void removeCriterion(String criterion) {
-        if (criteria == null) {
+        if (criteria == null|| criterion == null || criterion.length() == 0) {
             return;
         }
-        criterion = criterion.toLowerCase(getLocale());
-        criteria.remove(criterion);
+        String normalizedCriterion = LocaleValidator.toUnicode(criterion);
+        for(String item: criteria) {
+            String normalizedItem = LocaleValidator.toUnicode(item);
+            if (getCollator().compare(normalizedCriterion, normalizedItem) == 0) {
+                criteria.remove(item);
+                break;
+            }
+        }
     }
 
     public String getSerializedCriteria() {
