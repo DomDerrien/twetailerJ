@@ -1,6 +1,7 @@
 package twetailer.validator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -284,5 +285,80 @@ public class TestLocaleValidator {
         String unicodeStr = LocaleValidator.toUnicode(utf8Str);
         assertEquals(2 * 6 + 3, utf8Str.length());
         assertEquals(6 + 1, unicodeStr.length());
+    }
+
+    @Test
+    public void testGetRegularExpressionFilterI() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                fail("Call not expected!");
+                return -1;
+            }
+        });
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("95", Locale.US.getCountry());
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
+    }
+
+    @Test
+    public void testGetRegularExpressionFilterII() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                fail("Call not expected!");
+                return -1;
+            }
+        });
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("954344343", Locale.US.getCountry());
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
+    }
+
+    @Test
+    public void testGetRegularExpressionFilterIII() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                fail("Call not expected!");
+                return -1;
+            }
+        });
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("12345-67890", Locale.US.getCountry());
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
+    }
+
+    @Test
+    public void testGetRegularExpressionFilterV() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                fail("Call not expected!");
+                return -1;
+            }
+        });
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("hhhhhh", Locale.CANADA.getCountry());
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
+    }
+
+    @Test
+    public void testGetRegularExpressionFilterVI() throws IOException {
+        LocaleValidator.setValidatorStream(new MockInputStream("") {
+            @Override
+            public int read() throws IOException {
+                fail("Call not expected!");
+                return -1;
+            }
+        });
+
+        Double[] coords = LocaleValidator.getGeoCoordinates("h1x9", Locale.CANADA.getCountry());
+        assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
+        assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
 }

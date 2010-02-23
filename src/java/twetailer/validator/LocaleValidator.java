@@ -1,5 +1,6 @@
 package twetailer.validator;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import java.net.URL;
 import java.text.Collator;
 import java.util.Locale;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
@@ -57,6 +59,9 @@ public class LocaleValidator {
         return location;
     }
 
+    protected static Pattern CANADIAN_POSTAL_CODE_PATTERN = Pattern.compile("^\\w\\d\\w(?:\\s|-)?\\d\\w\\d$", Pattern.CASE_INSENSITIVE);
+    protected static Pattern US_POSTAL_CODE_PATTERN = Pattern.compile("^\\d\\d\\d\\d\\d(?:-\\d\\d\\d\\d(?:\\d\\d)?:)?$", Pattern.CASE_INSENSITIVE);
+
     /**
      * Use 3rd party service to resolve the geo-coordinates of the given location
      *
@@ -73,7 +78,7 @@ public class LocaleValidator {
             coordinates[1] = 0.0D;
         }
         // Postal code in USA
-        else if (Locale.US.getCountry().equals(countryCode)) {
+        else if (Locale.US.getCountry().equals(countryCode) && US_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 String line = reader.readLine(); // Only one line expected
@@ -88,7 +93,7 @@ public class LocaleValidator {
             catch (IOException e) { }
         }
         // Postal code in Canada
-        else if (Locale.CANADA.getCountry().equals(countryCode)) {
+        else if (Locale.CANADA.getCountry().equals(countryCode) && CANADIAN_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 // Manual parsing

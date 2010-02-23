@@ -19,8 +19,6 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
-import domderrien.i18n.LabelExtractor;
-import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;

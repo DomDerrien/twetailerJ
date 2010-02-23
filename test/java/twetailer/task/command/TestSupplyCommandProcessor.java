@@ -297,7 +297,7 @@ public class TestSupplyCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { newTag.toLowerCase(Locale.ENGLISH) }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { newTag }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -355,10 +355,10 @@ public class TestSupplyCommandProcessor {
                 LabelExtractor.get(
                         "cp_command_supply_updated_n_tag_list",
                         new Object[] {
-                                tag1.toLowerCase(Locale.ENGLISH) + " " +
-                                tag2.toLowerCase(Locale.ENGLISH) + " " +
-                                tag3.toLowerCase(Locale.ENGLISH) + " " +
-                                newTag.toLowerCase(Locale.ENGLISH),
+                                tag1 + " " +
+                                tag2 + " " +
+                                tag3 + " " +
+                                newTag,
                                 4
                         },
                         Locale.ENGLISH
