@@ -1343,7 +1343,7 @@
         </tu>
 
         <tu tuid="cp_command_list_proposal_series_introduction" datatype="Text">
-            <prop type="x-version">7</prop>
+            <prop type="x-version">8</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message introducing the series of messages to be sent in response to a !list proposal:* command.|
@@ -1352,7 +1352,7 @@
                 {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {0} active Demand(s) within {2} of {1}...</seg>
+                <seg>:-) Listing {0} active Proposal(s) within {2} of {1}...</seg>
             </tuv>
         </tu>
 
