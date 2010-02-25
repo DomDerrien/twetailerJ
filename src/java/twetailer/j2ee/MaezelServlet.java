@@ -371,10 +371,10 @@ public class MaezelServlet extends HttpServlet {
         catch(TwitterException ex) {
             if (ex.getStatusCode() == 403) { // 403: Forbidden
                 if (ex.getMessage().contains("<error>You cannot send messages to users who are not following you.</error>")) {
-                    out = new JsonException("TWITTER_USER_NOT_FOLLOWER", LabelExtractor.get("error_server_side_twetailer_not_followed", locale), ex);
+                    out = new JsonException("TWITTER_USER_NOT_FOLLOWER", LabelExtractor.get(ResourceFileId.third, "error_server_side_twetailer_not_followed", locale), ex);
                 }
                 else {
-                    out = new JsonException("TWITTER_FAILURE", LabelExtractor.get("error_server_side_twitter_not_responding", locale), ex);
+                    out = new JsonException("TWITTER_FAILURE", LabelExtractor.get(ResourceFileId.third, "error_server_side_twitter_not_responding", locale), ex);
                 }
             }
             else {
