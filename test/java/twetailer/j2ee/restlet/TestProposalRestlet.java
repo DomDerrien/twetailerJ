@@ -318,10 +318,12 @@ public class TestProposalRestlet {
         ops.delegateResourceDeletion(new MockPersistenceManager(), proposalKey, new SaleAssociate(), false);
     }
 
+    /**
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws DataSourceException {
         ops.getResource(null, "12345", user);
     }
+    **/
 
     @Test(expected=RuntimeException.class)
     public void testSelectResources() throws DataSourceException {

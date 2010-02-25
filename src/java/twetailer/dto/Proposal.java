@@ -17,6 +17,10 @@ import domderrien.jsontools.TransferObject;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Proposal extends Command {
 
+    private String AWSCBUIURL;
+
+    public static final String AWSCBUIURL_KEY = "AWSCBUIURL";
+
     @Persistent
     private List<String> criteria = new ArrayList<String>();
 
@@ -80,6 +84,14 @@ public class Proposal extends Command {
      */
     protected void resetLists() {
         criteria = null;
+    }
+
+    public String getAWSCBUIURL() {
+        return AWSCBUIURL;
+    }
+
+    public void setAWSCBUIURL(String aWSCBUIURL) {
+        AWSCBUIURL = aWSCBUIURL;
     }
 
     public String getSerializedCriteria() {
@@ -180,6 +192,9 @@ public class Proposal extends Command {
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
+        if (AWSCBUIURL != null) {
+            out.put(AWSCBUIURL_KEY, getAWSCBUIURL());
+        }
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
@@ -198,6 +213,7 @@ public class Proposal extends Command {
 
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
+        if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
             resetCriteria();

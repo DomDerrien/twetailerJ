@@ -36,7 +36,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar"/>
-    <classpathentry kind="lib" path="deps/lib/appengine/appengine-testing.jar"/>
+	<classpathentry kind="lib" path="deps/lib/appengine/appengine-testing.jar"/>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-local-runtime.jar"/>
 	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-jpa-1.1.5.jar" sourcepath="bin/appengine-java-sdk-1.3.1/src/orm/datanucleus-jpa-1.1.5-src.zip"/>
 	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.5.final.jar" sourcepath="bin/appengine-java-sdk-1.3.1/src/orm/datanucleus-appengine-1.0.5.final-src.zip"/>
@@ -67,5 +67,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/dyuproject/jetty-util-6.1.19.jar"/>
+	<classpathentry kind="lib" path="deps/lib/amazon/amazon-fps-2008-09-17-java-library.jar" sourcepath="bin/amazon-fps-2008-09-17-java-library/src"/>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
 </classpath>

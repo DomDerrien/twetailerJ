@@ -1,6 +1,7 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -17,9 +18,13 @@ import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
+import twetailer.payment.AmazonFPS;
+import twetailer.task.CommandProcessor;
+import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
+import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
@@ -115,7 +120,46 @@ public class ProposalRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            // Try to get the proposal
+            Long proposalKey = Long.valueOf(resourceId);
+            Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
+
+            // Try to get the proposal owner
+            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+            List<Long> saleAssociates = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+            if (saleAssociates.size() == 0 || !saleAssociates.get(0).equals(proposal.getOwnerKey())) {
+                // Try to get the associated demand -- will fail if the querying consumer does own the demand
+                Demand demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), consumerKey);
+                if (State.confirmed.equals(proposal.getState())) {
+                    //
+                    // TODO: verify the store record to check if it accepts AWS FPS payment
+                    // TODO: verify that the proposal has a total cost value
+                    //
+                    // Cook the Amazon FPS Co-Branded service URL
+                    String description = LabelExtractor.get(
+                            "payment_transaction_description",
+                            new Object[] {
+                                    proposal.getSerializedCriteria(),
+                                    demand.getSerializedCriteria()
+                            },
+                            Locale.ENGLISH // FIXME: get logged user's locale
+                    );
+                    try {
+                        proposal.setAWSCBUIURL(AmazonFPS.getCoBrandedServiceUrl(consumerKey, demand.getKey(), proposalKey, description, proposal.getTotal(), "USD"));
+                    }
+                    catch (Exception ex) {
+                        throw new DataSourceException("Cannot compute the AWS FPS Co-Branded Service URL", ex);
+                    }
+                }
+            }
+
+            return proposal.toJson();
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Override

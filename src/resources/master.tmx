@@ -2213,5 +2213,19 @@
             <tuv xml:lang="en"><seg>United States of America</seg></tuv>
         </tu>
 
+        <!-- ======================== -->
+        <!-- Payment related messages -->
+        <!-- ======================== -->
+
+        <tu tuid="payment_transaction_description" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal serialized keywords without the prefix
+                {1}: demand serialized keywords without the prefix
+            </note>
+            <tuv xml:lang="en"><seg>You're going to pay for "{0}", as proposed for your demand "{1}". Thank you for shopping with Twetailer.</seg></tuv>
+        </tu>
+
     </body>
 </tmx>

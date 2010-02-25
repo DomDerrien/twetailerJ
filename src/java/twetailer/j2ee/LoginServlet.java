@@ -204,7 +204,7 @@ public class LoginServlet extends HttpServlet {
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
-    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_wetailerId";
+    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_twetailerId";
 
     protected static void attachConsumerToSession(OpenIdUser user) {
         Long consumerKey = (Long) user.getAttribute(AUTHENTICATED_USER_TWETAILER_ID);

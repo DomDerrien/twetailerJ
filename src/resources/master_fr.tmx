@@ -1508,5 +1508,12 @@
                 <seg>États-Unis d'Amérique</seg>
             </tuv>
         </tu>
+        <tu tuid="payment_transaction_description" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>You're going to pay for "{0}", as proposed for your demand "{1}". Thank you for shopping with Twetailer.</seg>
+            </tuv>
+        </tu>
     </body>
 </tmx>
