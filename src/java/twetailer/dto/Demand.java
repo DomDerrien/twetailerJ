@@ -140,9 +140,11 @@ public class Demand extends Command {
         if (expirationDate == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'expirationDate' of type Date reference");
         }
+        /** Relaxed validation because user's can give invalid dates up-front!
         if (expirationDate.getTime() < DateUtils.getNowDate().getTime()) {
             throw new IllegalArgumentException("Expiration date cannot be in the past");
         }
+        */
         this.expirationDate = expirationDate;
     }
 

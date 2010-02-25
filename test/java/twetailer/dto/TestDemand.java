@@ -210,12 +210,14 @@ public class TestDemand {
         object.setExpirationDate(null);
     }
 
+    /** Relaxed validation because user's can give invalid dates up-front!
     @Test(expected=IllegalArgumentException.class)
     public void testSetExpirationDateInPast() {
         Demand object = new Demand();
 
         object.setExpirationDate(new Date(12345L));
     }
+    */
 
     @Test
     public void testSetRangeUnit() {
