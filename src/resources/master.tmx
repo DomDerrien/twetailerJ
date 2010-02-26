@@ -1911,17 +1911,17 @@
         </tu>
 
         <tu tuid="dp_inform_consumer_about_no_store" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>Inform the consumer that twetailer has found no stores to serve his demand</note>
             <tuv xml:lang="en">
-                <seg>FYI. 1/2 I currently don't have any Stores supplying those tags but will keep checking until the expiration date.|
+                <seg>1/2 FYI. I currently don't have any Stores supplying those tags but will keep checking until the expiration date.|
                 2/2 Please ask any potential Stores you may visit to register with Twetailer so we may improve our service in your community.</seg>
             </tuv>
         </tu>
 
         <tu tuid="dp_inform_consumer_about_new_sale_associates_contacted" datatype="Text">
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that twetailer has contacted new stores.|
@@ -1930,7 +1930,7 @@
                 {2}: number of sale associates just contacted
             </note>
             <tuv xml:lang="en">
-                <seg>FYI. 1/2 {2} additional Sales Associates have been notified of your Demand ref:{0}, for a total of {1}.|
+                <seg>1/2 FYI. {2} additional Sales Associates have been notified of your Demand ref:{0}, for a total of {1}.|
                 2/2 I'll continue checking until the expiration date.</seg>
             </tuv>
         </tu>
