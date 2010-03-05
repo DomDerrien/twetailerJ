@@ -7,6 +7,8 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import com.google.appengine.api.datastore.Text;
+
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.GenericJsonArray;
@@ -17,7 +19,7 @@ import domderrien.jsontools.TransferObject;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Proposal extends Command {
 
-    private String AWSCBUIURL;
+    private Text AWSCBUIURL;
 
     public static final String AWSCBUIURL_KEY = "AWSCBUIURL";
 
@@ -87,11 +89,11 @@ public class Proposal extends Command {
     }
 
     public String getAWSCBUIURL() {
-        return AWSCBUIURL;
+        return AWSCBUIURL.getValue();
     }
 
     public void setAWSCBUIURL(String aWSCBUIURL) {
-        AWSCBUIURL = aWSCBUIURL;
+        AWSCBUIURL = new Text(aWSCBUIURL);
     }
 
     public String getSerializedCriteria() {

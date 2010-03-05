@@ -83,9 +83,9 @@ public class DemandCommandProcessor {
             List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, 0);
             if (0 < demands.size()) {
                 Demand previousDemand = demands.get(0);
-                if (!command.containsKey(Demand.LOCATION_KEY)) { command.put(Demand.LOCATION_KEY, previousDemand.getLocationKey()); }
-                if (!command.containsKey(Demand.RANGE))        { command.put(Demand.RANGE, previousDemand.getRange()); }
-                if (!command.containsKey(Demand.RANGE_UNIT))   { command.put(Demand.RANGE_UNIT, previousDemand.getRangeUnit()); }
+                if (!command.containsKey(Demand.LOCATION_KEY) && previousDemand.getLocationKey() != null) { command.put(Demand.LOCATION_KEY, previousDemand.getLocationKey()); }
+                if (!command.containsKey(Demand.RANGE) && previousDemand.getRange() != null)              { command.put(Demand.RANGE, previousDemand.getRange()); }
+                if (!command.containsKey(Demand.RANGE_UNIT) && previousDemand.getRangeUnit() != null)     { command.put(Demand.RANGE_UNIT, previousDemand.getRangeUnit()); }
             }
             if (!command.containsKey(Demand.LOCATION_KEY) && consumer.getLocationKey() != null) {
                 command.put(Demand.LOCATION_KEY, consumer.getLocationKey());

@@ -232,6 +232,19 @@ public class BaseOperations {
         return _locationOperations;
     }
 
+    private PaymentOperations _paymentOperations;
+
+    /**
+     * Factory for the PaymentOperations instance
+     * @return PaymentOperations instance
+     */
+    public PaymentOperations getPaymentOperations() {
+        if (_paymentOperations == null) {
+            _paymentOperations = new PaymentOperations();
+        }
+        return _paymentOperations;
+    }
+
     private ProductOperations _productOperations;
 
     /**

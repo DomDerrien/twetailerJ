@@ -14,6 +14,7 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
+import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
@@ -147,7 +148,8 @@ public class ProposalRestlet extends BaseRestlet {
                             Locale.ENGLISH // FIXME: get logged user's locale
                     );
                     try {
-                        proposal.setAWSCBUIURL(AmazonFPS.getCoBrandedServiceUrl(consumerKey, demand.getKey(), proposalKey, description, proposal.getTotal(), "USD"));
+                        String transactionReference = Payment.getReference(consumerKey, demand.getKey(), proposalKey);
+                        proposal.setAWSCBUIURL(AmazonFPS.getCoBrandedServiceUrl(transactionReference, description, proposal.getTotal(), "USD"));
                     }
                     catch (Exception ex) {
                         throw new DataSourceException("Cannot compute the AWS FPS Co-Branded Service URL", ex);

@@ -23,6 +23,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.PaymentOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
@@ -30,8 +31,10 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.Settings;
+import twetailer.payment.AmazonFPS;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
 import twetailer.task.DemandValidator;
@@ -43,6 +46,7 @@ import twetailer.task.TweetLoader;
 import twetailer.validator.ApplicationSettings;
 import twitter4j.TwitterException;
 
+import com.amazonaws.fps.model.TransactionStatus;
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions;
@@ -63,6 +67,7 @@ public class MaezelServlet extends HttpServlet {
     protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
+    protected PaymentOperations paymentOperations = _baseOperations.getPaymentOperations();
     protected SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
     protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
@@ -229,6 +234,55 @@ public class MaezelServlet extends HttpServlet {
                     Demand demand = demandOperations.getDemand(pm, demandKey, null);
                     demand.setOwnerKey(consumerKey);
                     demandOperations.updateDemand(pm, demand);
+                }
+                finally {
+                    pm.close();
+                }
+            }
+            else if ("/cbuiEndPoint".equals(pathInfo)) {
+                if (AmazonFPS.verifyCoBrandedServiceResponse(request.getParameterMap())) {
+                    Payment payment = new Payment();
+                    payment.setAuthorizationId(request.getParameter(AmazonFPS.TOKEN_ID));
+                    payment.setReference(request.getParameter(AmazonFPS.CALLER_REFERENCE));
+
+                    paymentOperations.createPayment(payment);
+                    out.put("payment", payment.toJson());
+
+                    // Create a task to make the payment with the received token
+                    Queue queue = _baseOperations.getQueue();
+                    log.warning("Preparing the task: /maezel/makePayment?key=" + payment.getKey().toString());
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/makePayment").
+                                param(Payment.KEY, payment.getKey().toString()).
+                                method(Method.GET)
+                    );
+                }
+                else {
+                    throw new RuntimeException("Not yet implemented!");
+                }
+            }
+            else if("/makePayment".equals(pathInfo)) {
+                Long paymentKey = Long.parseLong(request.getParameter(Payment.KEY));
+                PersistenceManager pm = _baseOperations.getPersistenceManager();
+                try {
+                    Payment payment = paymentOperations.getPayment(pm, paymentKey);
+
+                    payment = AmazonFPS.makePayRequest(payment);
+
+                    paymentOperations.updatePayment(pm, payment);
+                    out.put("payment", payment.toJson());
+
+                    if (TransactionStatus.PENDING.equals(payment.getStatus())) {
+                        // Validate the payment again in 15 minutes
+                        Queue queue = _baseOperations.getQueue();
+                        log.warning("Preparing the task: /maezel/makePayment?key=" + payment.getKey().toString());
+                        queue.add(
+                                url(ApplicationSettings.get().getServletApiPath() + "/maezel/makePayment").
+                                    param(Payment.KEY, payment.getKey().toString()).
+                                    countdownMillis(15*60*1000).
+                                    method(Method.GET)
+                        );
+                    }
                 }
                 finally {
                     pm.close();
@@ -441,5 +495,9 @@ public class MaezelServlet extends HttpServlet {
         }
         log.warning("Code " + code + " for " + topic + ": " + identifier);
         return code;
+    }
+
+    public static String getCoBrandedServiceEndPointURL() {
+        return "http://twetailer.appspot.com/API/maezel/cbuiEndPoint";
     }
 }
