@@ -2,15 +2,12 @@ package twetailer.task;
 
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
-import java.io.PrintStream;
 import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import javamocks.io.MockOutputStream;
 
 import javax.jdo.PersistenceManager;
 
@@ -42,6 +39,7 @@ import twetailer.task.command.DeclineCommandProcessor;
 import twetailer.task.command.DeleteCommandProcessor;
 import twetailer.task.command.DemandCommandProcessor;
 import twetailer.task.command.HelpCommandProcessor;
+import twetailer.task.command.LanguageCommandProcessor;
 import twetailer.task.command.ListCommandProcessor;
 import twetailer.task.command.ProposeCommandProcessor;
 import twetailer.task.command.SupplyCommandProcessor;
@@ -87,7 +85,15 @@ public class CommandProcessor {
         // Get the labels for each demand attributes
         String action = LabelExtractor.get("cp_tweet_demand_action_part", locale) + space;
         String reference = anonymized || demand.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
-        String state = LabelExtractor.get("cp_tweet_state_part", new Object[] { demand.getState() }, locale) + space;
+        String state =
+            LabelExtractor.get(
+                    "cp_tweet_state_part",
+                    new Object[] {
+                            CommandSettings.getStates(locale).getString(demand.getState().toString())
+                    },
+                    locale
+            ) +
+            space;
         String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { DateUtils.dateToYMD(demand.getExpirationDate()) }, locale) + space;
         String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get("cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
         String range = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange(), demand.getRangeUnit() }, locale) + space;
@@ -129,7 +135,15 @@ public class CommandProcessor {
         String action = LabelExtractor.get("cp_tweet_propose_action_part", locale) + space;
         String reference = anonymized || proposal.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
         String demand = anonymized || proposal.getDemandKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
-        String state = LabelExtractor.get("cp_tweet_state_part", new Object[] { proposal.getState() }, locale) + space;
+        String state =
+            LabelExtractor.get(
+                    "cp_tweet_state_part",
+                    new Object[] {
+                            CommandSettings.getStates(locale).getString(proposal.getState().toString())
+                    },
+                    locale
+            ) +
+            space;
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
         String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
         String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
@@ -340,7 +354,7 @@ public class CommandProcessor {
             );
             return;
         }
-        String action = guessAction(command);
+        String action = command.getString(Command.ACTION);
         try {
             // Alternate case of the help being asked as an action...
             if (CommandSettings.isEquivalentTo(prefixes, Prefix.help.toString(), action, collator)) {
@@ -352,36 +366,51 @@ public class CommandProcessor {
                 );
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.cancel.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.cancel.toString());
                 CancelCommandProcessor.processCancelCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.close.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.close.toString());
                 CloseCommandProcessor.processCloseCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.confirm.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.confirm.toString());
                 ConfirmCommandProcessor.processConfirmCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.decline.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.decline.toString());
                 DeclineCommandProcessor.processDeclineCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.delete.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.delete.toString());
                 DeleteCommandProcessor.processDeleteCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.demand.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.demand.toString());
                 DemandCommandProcessor.processDemandCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
+            else if (CommandSettings.isEquivalentTo(actions, Action.language.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.language.toString());
+                LanguageCommandProcessor.processLanguageCommand(pm, consumer, rawCommand, command);
+            }
             else if (CommandSettings.isEquivalentTo(actions, Action.list.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.list.toString());
                 ListCommandProcessor.processListCommand(pm, consumer, rawCommand, command, prefixes, actions);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.propose.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.propose.toString());
                 ProposeCommandProcessor.processProposeCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.supply.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.supply.toString());
                 SupplyCommandProcessor.processSupplyCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.wish.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.wish.toString());
                 WishCommandProcessor.processWishCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.www.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.www.toString());
                 WWWCommandProcessor.processWWWCommand(pm, consumer, rawCommand, command);
             }
             else {
@@ -399,31 +428,5 @@ public class CommandProcessor {
                     new String[] { LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, locale) }
             );
         }
-    }
-
-    /**
-     * Utility function extracting the action, even if the attribute is not present, by looking at all given parameters
-     * @param command Set of command attributes
-     * @return Specified or guessed action
-     */
-    protected static String guessAction(JsonObject command) {
-        String action = command.getString(Command.ACTION);
-        if (action == null) {
-            if (command.containsKey(Demand.REFERENCE)) {
-                action = command.size() == 1 ? Action.list.toString() : Action.demand.toString();
-            }
-            else if (command.containsKey(Store.STORE_KEY)) {
-                action = command.size() == 1 ? Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
-            }
-            /* TODO: implement other listing variations
-            else if (command.containsKey(Product.PRODUCT_KEY)) {
-                action = command.size() == 1 ? Action.list.toString() : null; // No possibility to create/update/delete Store instance from Twitter
-            }
-            */
-            else {
-                action = Action.demand.toString();
-            }
-        }
-        return action;
     }
 }

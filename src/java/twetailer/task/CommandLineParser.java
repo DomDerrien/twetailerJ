@@ -71,7 +71,8 @@ public class CommandLineParser {
             final String separatorFromNonDigit = "(?:\\D|$)";
             final String separatorFromNonAlpha = "(?:\\W|$)";
 
-            preparePattern(prefixes, patterns, Prefix.action, "\\s*\\w+", separatorFromNonAlpha);
+            // Read http://www.regular-expressions.info/unicode.html for explanations on \p{M} used to handle accented characters
+            preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|\\p{M}]+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.expiration, "[\\d- ]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.hash, "\\s*\\S+", separatorFromNonAlpha);
@@ -344,6 +345,10 @@ public class CommandLineParser {
             }
         }
 
+        if (!command.containsKey(Command.ACTION)) {
+            command.put(Command.ACTION, guessAction(command, CommandLineParser.localizedActions.get(locale)));
+        }
+
         if (!oneFieldOverriden) {
             throw new ClientException("No query field has been correctly extracted");
         }
@@ -556,4 +561,31 @@ public class CommandLineParser {
         return keywords.trim().split("\\s+");
     }
 
+    /**
+     * Utility function extracting the action, even if the attribute is not present, by looking at all given parameters
+     * @param command Set of command attributes
+     * @param localizedActionLabels
+     * @return Specified or guessed action
+     */
+    protected static String guessAction(JsonObject command, JsonObject localizedActionLabels) {
+        Action identifier = null;
+        if (command.containsKey(Demand.REFERENCE)) {
+            identifier = command.size() == 1 ? Action.list : Action.demand;
+        }
+        else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
+            identifier = command.size() == 1 ? Action.list : Action.propose;
+        }
+        else if (command.containsKey(Store.STORE_KEY)) {
+            identifier = command.size() == 1 ? Action.list : null; // No possibility to create/update/delete Store instance from Twitter
+        }
+        /* TODO: implement other listing variations
+        if (command.containsKey(Product.PRODUCT_KEY)) {
+            identifier = command.size() == 1 ? Action.list : null; // No possibility to create/update/delete Store instance from Twitter
+        }
+        */
+        else {
+            identifier = Action.demand;
+        }
+        return identifier == null ? null : localizedActionLabels.getJsonArray(identifier.toString()).getString(0);
+    }
 }

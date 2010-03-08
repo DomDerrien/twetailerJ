@@ -440,6 +440,18 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_action_language" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!|
+                IMPORTANT: keep the 'lg' shortcut for all translated version, so everyone has the same mechansim to go back to his/her mother tongue ;)
+            </note>
+            <tuv xml:lang="en">
+                <seg>language,lg</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_action_list" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -1240,6 +1252,46 @@
             </note>
             <tuv xml:lang="en">
                 <seg>:-( Demand reference:{0} is currently in State:{1} and can't be updated.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_language_missing_language_code" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <note>
+                {0}: current language code
+                {1}: current language name
+            </note>
+            <tuv xml:lang="en">
+                <seg>Your current language is '{0}' {1}. Update it by sending: '!lg language-code'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_language_given_value_as_current" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <note>
+                {0}: current language code
+                {1}: current language name
+            </note>
+            <tuv xml:lang="en">
+                <seg>Your language stays '{0}' {1}. Update it by sending: '!lg another-language-code'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_language_given_value_accepted" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <note>
+                {0}: current language code
+                {1}: current language name
+                {2}: previous language code
+            </note>
+            <tuv xml:lang="en">
+                <seg>Your new language is updated to '{0}' {1}. Revert it back by sending: '!lg {2}'.</seg>
             </tuv>
         </tu>
 

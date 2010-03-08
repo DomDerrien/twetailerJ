@@ -115,7 +115,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>marquéPourEffacement</seg>
+                <seg>àEffacer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_action" dataType="text">
@@ -143,7 +143,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>hashtag,#</seg>
+                <seg>metaÉtiquette,hashtag,#</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_help" dataType="text">
@@ -157,7 +157,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>localité,localite,localisation,codePostal</seg>
+                <seg>localité,localisation,codePostal</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_name" dataType="text">
@@ -171,14 +171,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>numéroTéléphone,numeroTelephone</seg>
+                <seg>numéroTéléphone,téléphone</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_price" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>prix,coût,cout</seg>
+                <seg>prixUnitaire,coût</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_proposal" dataType="text">
@@ -192,14 +192,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>quantité,quantite,qté,qte</seg>
+                <seg>quantité,qté</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_reference" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>demande,référence,reference,identifiant,id</seg>
+                <seg>demande,référence,identifiant,id</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_range" dataType="text">
@@ -213,7 +213,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>état,etat</seg>
+                <seg>état</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_store" dataType="text">
@@ -227,14 +227,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>motsClés,motsCles,motClé,motCle,description</seg>
+                <seg>motsClés,motClé,description</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_total" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>total,coûtTotal,coutTotal,ttc</seg>
+                <seg>total,coûtTotal,ttc</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_cancel" dataType="text">
@@ -262,14 +262,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>décliner,decliner</seg>
+                <seg>décliner</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_delete" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>effacer</seg>
+                <seg>effacer,détruire</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_demand" dataType="text">
@@ -284,6 +284,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>aide,?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_language" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>langue,langage,lg</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_list" dataType="text">
@@ -938,6 +945,27 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>:-( La Demande:{0} est présentemment dans l'État:{1} et ne peut être mise-à-jour.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_language_missing_language_code" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Votre langue courante est '{0}' {1}. Changez le en envoyant: '!lg code-langue'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_language_given_value_as_current" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Votre langue reste '{0}' {1}. Changez le en envoyant: '!lg autre-code-langue'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_language_given_value_accepted" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Votre nouvelle langue est '{0}' {1}. Revenez en arrière en envoyant: '!lg {2}'.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_invalid_demand_id" dataType="text">

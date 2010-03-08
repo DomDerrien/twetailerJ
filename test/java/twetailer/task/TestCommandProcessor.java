@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
@@ -25,9 +24,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
@@ -37,7 +33,6 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
-import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
@@ -49,6 +44,10 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
+
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -494,61 +493,6 @@ public class TestCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, Locale.ENGLISH), sentText);
-    }
-
-    @Test
-    public void testGuessActionI() {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-
-        assertEquals(Action.demand.toString(), CommandProcessor.guessAction(command));
-    }
-
-    @Test
-    public void testGuessActionII() {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Command.ACTION, Action.demand.toString());
-
-        assertEquals(Action.demand.toString(), CommandProcessor.guessAction(command));
-    }
-
-    @Test
-    public void testGuessActionIII() {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Demand.REFERENCE, "12345");
-
-        assertEquals(Action.list.toString(), CommandProcessor.guessAction(command));
-    }
-
-    @Test
-    public void testGuessActionIV() {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Demand.REFERENCE, "12345");
-        command.put(Demand.RANGE, "55.5");
-
-        assertEquals(Action.demand.toString(), CommandProcessor.guessAction(command));
-    }
-
-    @Test
-    public void testGuessActionV() {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Store.STORE_KEY, "12345");
-
-        assertEquals(Action.list.toString(), CommandProcessor.guessAction(command));
-    }
-
-    @Test
-    public void testGuessActionVI() {
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-        command.put(Store.STORE_KEY, "12345");
-        command.put(Store.ADDRESS, "address");
-
-        assertNull(CommandProcessor.guessAction(command)); // Cannot update Store instance from Twitter
     }
 
     @Test

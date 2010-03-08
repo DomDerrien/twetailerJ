@@ -387,7 +387,7 @@ public class TestCommandLineParser {
 
     @Test
     public void testParsePriceV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25,3243", Locale.FRENCH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25.3243", Locale.ENGLISH);
         assertEquals(25.3243, data.getDouble(Proposal.PRICE), 0.0);
     }
 
@@ -1192,5 +1192,71 @@ public class TestCommandLineParser {
 
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAG).getString(1));
+    }
+
+    @Test
+    public void testGuessActionI() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        assertEquals(Action.demand.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, "12345");
+
+        assertEquals(Action.list.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionIII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, "12345");
+        command.put(Proposal.PROPOSAL_KEY, "12345"); // Will be ignored
+        command.put(Store.STORE_KEY, "12345"); // Will be ignored
+        command.put(Demand.RANGE, "55.5");
+
+        assertEquals(Action.demand.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionIV() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Proposal.PROPOSAL_KEY, "12345");
+
+        assertEquals(Action.list.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionV() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Proposal.PROPOSAL_KEY, "12345");
+        command.put(Proposal.PRICE, "55.5");
+
+        assertEquals(Action.propose.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    public void testGuessActionVI() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Store.STORE_KEY, "12345");
+
+        assertEquals(Action.list.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionVII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Store.STORE_KEY, "12345");
+        command.put(Store.ADDRESS, "address");
+
+        assertNull(CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH))); // Cannot update Store instance from Twitter
     }
 }
