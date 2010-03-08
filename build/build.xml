@@ -14,7 +14,7 @@
 
     <property name="rwa.release"
         description="Planned release of this build"
-        value="14"
+        value="15"
     />
 
     <property name="rwa.companyName"
