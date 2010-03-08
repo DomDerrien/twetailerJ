@@ -81,9 +81,9 @@ public class MailResponderServlet extends HttpServlet {
 
             // Fill up the message to persist
             rawCommand.setEmitterId(email);
-            rawCommand.setSubject(subject);
+            rawCommand.setSubject(LocaleValidator.toUTF8(subject));
             command = extractFirstLine(MailConnector.getText(mailMessage));
-            rawCommand.setCommand(command);
+            rawCommand.setCommand(LocaleValidator.toUTF8(command));
 
             log.warning("Message sent by: " + email + " with the subject: " + subject + "\nWith the command: " + command);
 
