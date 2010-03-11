@@ -104,13 +104,13 @@ public class MailConnector {
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
         String responsePrefix = LabelExtractor.get("mc_mail_subject_response_prefix", locale);
         if (subject == null || subject.length() == 0) {
-            mailMessage.setSubject(LabelExtractor.get("mc_mail_subject_response_default", locale));
+            mailMessage.setSubject(LabelExtractor.get("mc_mail_subject_response_default", locale), "UTF-8");
         }
         else if (subject.startsWith(responsePrefix)) {
-            mailMessage.setSubject(subject);
+            mailMessage.setSubject(subject, "UTF-8");
         }
         else {
-            mailMessage.setSubject(responsePrefix + subject);
+            mailMessage.setSubject(responsePrefix + subject, "UTF-8");
         }
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);

@@ -313,7 +313,7 @@
     </path>
     
     <fileset id="runtime.deps" dir="deps/lib">
-        <include name="amazon/amazon-fps-2008-09-17-java-library.jar" />
+        <include name="amazon/amazon-fps-2008-09-17-java-library-for-gae.jar" />
         <!--include name="commons/commons-codec-1.3.jar" /-->
         <include name="domderrien/domderrien-1.0.6.jar" />
         <include name="easymock/easymock-2.5.1.jar" />
