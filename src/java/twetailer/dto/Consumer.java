@@ -126,7 +126,8 @@ public class Consumer extends Entity {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        // Normalize the email address because it's case unsensitive
+        this.email = email.toLowerCase();
     }
 
     public String getJabberId() {
@@ -134,7 +135,8 @@ public class Consumer extends Entity {
     }
 
     public void setJabberId(String jabberId) {
-        this.jabberId = jabberId;
+        // Normalize the Jabber identifier because it's case unsensitive
+        this.jabberId = jabberId.toLowerCase();
     }
 
     public String getLanguage() {
@@ -186,6 +188,7 @@ public class Consumer extends Entity {
     }
 
     public void setTwitterId(String twitterId) {
+        // Note: no normalization because the Twitter identifier is case sensitive!
         this.twitterId = twitterId;
     }
 

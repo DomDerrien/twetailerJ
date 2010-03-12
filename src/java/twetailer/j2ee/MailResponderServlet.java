@@ -80,7 +80,7 @@ public class MailResponderServlet extends HttpServlet {
             }
 
             // Fill up the message to persist
-            rawCommand.setEmitterId(email);
+            rawCommand.setEmitterId(email.toLowerCase());
             rawCommand.setSubject(subject);
             command = extractFirstLine(MailConnector.getText(mailMessage));
             rawCommand.setCommand(command);
