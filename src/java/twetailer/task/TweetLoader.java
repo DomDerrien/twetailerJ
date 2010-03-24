@@ -96,7 +96,6 @@ public class TweetLoader {
         List<DirectMessage> messages = TwitterConnector.getDirectMessages(sinceId);
 
         List<RawCommand> extractedCommands = new ArrayList<RawCommand>();
-        Map<String, Boolean> nonFollowerIds = new HashMap<String, Boolean>();
 
         // Process each messages one-by-one
         int idx = messages == null ? 0 : messages.size(); // To start by the end of the message queue
@@ -107,28 +106,19 @@ public class TweetLoader {
             String message = dm.getText();
             log.warning("DM id: " + dmId + " -- DM content: " + message);
 
-            // Get Twetailer account and verify the user is a follower
+            // Get Twetailer account
             twitter4j.User sender = dm.getSender();
-            String senderScreenName = sender.getScreenName();
-            if (!nonFollowerIds.containsKey(senderScreenName)) {
-                Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
-                log.warning("DM emitter: " + consumer.getTwitterId());
-                Locale senderLocale = consumer.getLocale();
-                if (!sender.isFollowing()) {
-                    log.warning("Emitter" + consumer.getTwitterId() + " not following Twetailer");
-                    TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_inform_dm_sender_no_more_a_follower", new Object[] { senderScreenName }, senderLocale));
-                    nonFollowerIds.put(senderScreenName, Boolean.TRUE);
-                }
-                else {
-                    RawCommand rawCommand = new RawCommand(Source.twitter);
-                    rawCommand.setEmitterId(consumer.getTwitterId());
-                    rawCommand.setMessageId(dmId);
-                    rawCommand.setCommand(message);
+            Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
 
-                    extractedCommands.add(rawCommand);
-                    log.warning("DM added to the queue for the RawCommand creation");
-                }
-            }
+            log.warning("DM emitter: " + consumer.getTwitterId());
+            RawCommand rawCommand = new RawCommand(Source.twitter);
+            rawCommand.setEmitterId(consumer.getTwitterId());
+            rawCommand.setMessageId(dmId);
+            rawCommand.setCommand(message);
+
+            extractedCommands.add(rawCommand);
+            log.warning("DM added to the queue for the RawCommand creation");
+
             if (lastId < dmId) {
                 lastId = dmId;
             }

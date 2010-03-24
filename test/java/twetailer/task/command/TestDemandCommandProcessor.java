@@ -34,6 +34,7 @@ import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
@@ -626,7 +627,11 @@ public class TestDemandCommandProcessor {
         final DemandOperations demandOperations = new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
-                Demand demand = new Demand();
+                Demand demand = new Demand() {
+                    @Override public Long getLocationKey() { return null; }
+                    @Override public Double getRange() { return null; }
+                    @Override public String getRangeUnit() { return null; }
+                };
                 demand.setKey(demandKey);
                 demand.setSource(Source.twitter); // Setup to verify it will be reset with the Source.simulated of the rawCommand
                 List<Demand> demands = new ArrayList<Demand>();

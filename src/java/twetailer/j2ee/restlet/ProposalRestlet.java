@@ -39,6 +39,8 @@ public class ProposalRestlet extends BaseRestlet {
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
 
+    protected static AmazonFPS amazonFPS = new AmazonFPS();
+
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
         log = mock;
@@ -132,7 +134,7 @@ public class ProposalRestlet extends BaseRestlet {
             List<Long> saleAssociates = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
             if (saleAssociates.size() == 0 || !saleAssociates.get(0).equals(proposal.getOwnerKey())) {
                 // Try to get the associated demand -- will fail if the querying consumer does own the demand
-                Demand demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), consumerKey);
+                Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), consumerKey);
                 if (State.confirmed.equals(proposal.getState())) {
                     //
                     // TODO: verify the store record to check if it accepts AWS FPS payment
@@ -149,7 +151,7 @@ public class ProposalRestlet extends BaseRestlet {
                     );
                     try {
                         String transactionReference = Payment.getReference(consumerKey, demand.getKey(), proposalKey);
-                        proposal.setAWSCBUIURL(AmazonFPS.getCoBrandedServiceUrl(transactionReference, description, proposal.getTotal(), "USD"));
+                        proposal.setAWSCBUIURL(amazonFPS.getCoBrandedServiceUrl(transactionReference, description, proposal.getTotal(), "USD"));
                     }
                     catch (Exception ex) {
                         throw new DataSourceException("Cannot compute the AWS FPS Co-Branded Service URL", ex);

@@ -72,6 +72,8 @@ public class MaezelServlet extends HttpServlet {
     protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
     protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
+    protected AmazonFPS amazonFPS = new AmazonFPS();
+
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
         log = mockLogger;
@@ -240,7 +242,7 @@ public class MaezelServlet extends HttpServlet {
                 }
             }
             else if ("/cbuiEndPoint".equals(pathInfo)) {
-                if (AmazonFPS.verifyCoBrandedServiceResponse(request.getParameterMap())) {
+                if (amazonFPS.verifyCoBrandedServiceResponse(request.getParameterMap())) {
                     Payment payment = new Payment();
                     payment.setAuthorizationId(request.getParameter(AmazonFPS.TOKEN_ID));
                     payment.setReference(request.getParameter(AmazonFPS.CALLER_REFERENCE));
@@ -267,7 +269,7 @@ public class MaezelServlet extends HttpServlet {
                 try {
                     Payment payment = paymentOperations.getPayment(pm, paymentKey);
 
-                    payment = AmazonFPS.makePayRequest(payment);
+                    payment = amazonFPS.makePayRequest(payment);
 
                     paymentOperations.updatePayment(pm, payment);
                     out.put("payment", payment.toJson());

@@ -6,6 +6,7 @@ import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
+import twetailer.DataSourceException;
 import twetailer.dto.Payment;
 import twetailer.j2ee.MaezelServlet;
 
@@ -27,12 +28,20 @@ public class AmazonFPS {
     public static final String CALLER_REFERENCE = "callerReference";
     public static final String TOKEN_ID = "tokenID";
 
-    public static String getCoBrandedServiceUrl(String transactionReference, String description, Double total, String currency) throws MalformedURLException, SignatureException, UnsupportedEncodingException {
-
-        String accessKey = PropertyBundle.getProperty(PropertyKeys.AWS_ACCESS_KEY);
-        String secretKey = PropertyBundle.getProperty(PropertyKeys.AWS_SECRET_KEY);
-
-        AmazonFPSSingleUsePipeline pipeline = new AmazonFPSSingleUsePipeline(accessKey, secretKey);
+    /**
+     * Cook the URL for the "Check Out" button for Amazon FPS
+     *
+     * @param transactionReference Identifier of the transaction, will be used to associate the return token with the transaction. Unicity of this identifier is really important!
+     * @param description Message to be displayed to the Amazon FPS users and that should describe the transaction to be paid.
+     * @param total Amount the Amazon FPS user is going to be charged for.
+     * @param currency Currency of the transaction, a 3-letter ISO code.
+     * @return a signed URL the !twetailer user can call once that will open the Amazon FPS login screen and give him access to the Aamzon payment platform
+     *
+     * @throws MalformedURLException If there's an issue while formatting the URL
+     * @throws SignatureException If the signature cannot be generated adequately
+     * @throws UnsupportedEncodingException If the encoding of the description or of the identifier fails
+     */
+    public String getCoBrandedServiceUrl(String transactionReference, String description, Double total, String currency) throws MalformedURLException, SignatureException, UnsupportedEncodingException {
 
         /*
          * Source: http://docs.amazonwebservices.com/AmazonFPS/latest/FPSGettingStartedGuide/gsMakingCoBrandedUIRequests.html
@@ -56,6 +65,8 @@ public class AmazonFPS {
         version             The version of the Co-Branded service API to use. This should always be set to 2009-01-09.
         */
 
+        AmazonFPSSingleUsePipeline pipeline = getAmazonURLGenerator();
+
         pipeline.setMandatoryParameters(
                 "callerReferenceSingleUse",
                 MaezelServlet.getCoBrandedServiceEndPointURL(),
@@ -72,7 +83,23 @@ public class AmazonFPS {
         return pipeline.getUrl();
     }
 
-    public static boolean verifyCoBrandedServiceResponse(Map<String, Object> requestParameters) throws SignatureException {
+    /* Made available for unit test purposes */
+    protected AmazonFPSSingleUsePipeline getAmazonURLGenerator() {
+        String accessKey = PropertyBundle.getProperty(PropertyKeys.AWS_ACCESS_KEY);
+        String secretKey = PropertyBundle.getProperty(PropertyKeys.AWS_SECRET_KEY);
+
+        return new AmazonFPSSingleUsePipeline(accessKey, secretKey);
+    }
+
+    /**
+     * Verify that the URL used to return to !twetailer has not been tampered with
+     *
+     * @param requestParameters Parameters extracted from the Http request (<code>request.getParameterMap()</code>)
+     * @return <code>true</code> if the request is correct, <code>false</code> otherwise
+     *
+     * @throws SignatureException If the signature is incorrect
+     */
+    public boolean verifyCoBrandedServiceResponse(Map<String, ?> requestParameters) throws SignatureException {
         /*
          * Sample:
          *
@@ -94,7 +121,7 @@ public class AmazonFPS {
             if (value == null) {
                 controlledParameters.put(key, null);
             }
-            if (value instanceof String[]) {
+            else if (value instanceof String[]) {
                 controlledParameters.put(key, ((String []) value)[0]);
             }
             else if (value instanceof String) {
@@ -105,36 +132,58 @@ public class AmazonFPS {
             }
         }
 
-        return new SignatureUtilsForOutbound().validateRequest(
+        return getAmazonSignatureVerifier().validateRequest(
                 controlledParameters,
                 MaezelServlet.getCoBrandedServiceEndPointURL(),
                 "GET" // HTTP GET method specified because that's the mechanism used by the co-branded service
         );
     }
 
-    public static Payment makePayRequest(Payment payment) {
+    /* Made available for unit test purposes */
+    protected SignatureUtilsForOutbound getAmazonSignatureVerifier() {
+        return new SignatureUtilsForOutbound();
+    }
+
+    /**
+     * Call the Amazon service via Http to process the given transaction token to effectively transfer money
+     *
+     * @param payment Entity containing information about the transaction, with the token received after the user accepted the transaction
+     * @return Update Payment entity with the state of the payment
+     *
+     * @throws DataSourceException If there's an issue while sending the request to Amazon or while processing its response
+     */
+    public Payment makePayRequest(Payment payment) throws DataSourceException {
         PayRequest request = new PayRequest();
 
         // senderTokenID is obtained from the Co-Branded service's return URL
         request.setSenderTokenId(payment.getAuthorizationId());
 
-        // the caller reference is a unique identifier you create for this
-        // pay request
+        // the caller reference is a unique identifier you create for this pay request
         request.setCallerReference(payment.getReference());
 
         // set the amount and type of currency
         Amount amount = new Amount();
-        amount.setCurrencyCode(CurrencyCode.USD);
+        // FIXME: need to be updated when the Payment data are loaded from the confirmed proposal!
         amount.setValue("1"); //set the transaction amount here
+        amount.setCurrencyCode(CurrencyCode.USD);
         request.setTransactionAmount(amount);
 
-        // Instantiate the AmazonFPS service, specifying your credentials
-        String accessKey = PropertyBundle.getProperty(PropertyKeys.AWS_ACCESS_KEY);
-        String secretKey = PropertyBundle.getProperty(PropertyKeys.AWS_SECRET_KEY);
-
-        AmazonFPSClient service = new AmazonFPSClient(accessKey, secretKey);
+        // FIXME: apply more tuning to the transaction
+        /*
+         * Read http://docs.amazonwebservices.com/AmazonFPS/2008-09-17/FPSMarketplaceGuide/
+         *
+        request.setCallerDescription("caller description");
+        request.setChargeFeeTo(new ChargeFeeTo());
+        request.setDescriptorPolicy(new DescriptorPolicy());
+        request.setMarketplaceFixedFee(new Amount());
+        request.setMarketplaceVariableFee(new BigDecimal());
+        request.setRecipientTokenId("recipient token id");
+        request.setSenderDescription("sender description");
+        request.setTransactionTimeoutInMins(1000);
+         */
 
         // make the pay call
+        AmazonFPSClient service = getAmazonPaymentProcessor();
         try {
             PayResponse response = service.pay(request);
             if (response.isSetPayResult()) {
@@ -153,11 +202,18 @@ public class AmazonFPS {
                 }
             }
         }
-        catch (AmazonFPSException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch (AmazonFPSException ex) {
+            throw new DataSourceException("Unexpected exception while processing the payment with AmazonFPSClient.pay()", ex);
         }
 
         return payment;
+    }
+
+    /* Made available for unit test purposes */
+    protected AmazonFPSClient getAmazonPaymentProcessor() {
+        String accessKey = PropertyBundle.getProperty(PropertyKeys.AWS_ACCESS_KEY);
+        String secretKey = PropertyBundle.getProperty(PropertyKeys.AWS_SECRET_KEY);
+
+        return new AmazonFPSClient(accessKey, secretKey);
     }
 }

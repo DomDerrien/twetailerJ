@@ -68,7 +68,8 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                     try {
                         try {
                             // 1. Follow the user
-                            TwitterConnector.getTwetailerAccount().enableNotification(followerScreenName);
+                            // TwitterConnector.getTwetailerAccount().enableNotification(followerScreenName);
+                            TwitterConnector.getTwetailerAccount().createFriendship(followerScreenName, true);
                             // 2. Create his record
                             // TODO: call getConsumerKeys()
                             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);

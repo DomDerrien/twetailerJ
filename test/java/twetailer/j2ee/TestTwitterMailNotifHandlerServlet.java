@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -14,7 +15,6 @@ import javax.servlet.MockServletInputStream;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.MockHttpServletRequest;
 
-import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,13 +27,12 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
-import twetailer.task.TweetLoader;
-import twitter4j.Twitter;
+import twitter4j.MockTwitter;
 import twitter4j.TwitterException;
+import twitter4j.User;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.apphosting.api.MockAppEngineEnvironment;
 
 public class TestTwitterMailNotifHandlerServlet {
 
@@ -59,6 +58,7 @@ public class TestTwitterMailNotifHandlerServlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoPostI() throws IOException, TwitterException {
         //
         // New follower not registered yet
@@ -78,10 +78,14 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.enableNotification(followerScreenName)).andReturn(null).once();
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public User createFriendship(String screenName, boolean follow) throws TwitterException {
+                assertEquals(followerScreenName, screenName);
+                assertTrue(follow);
+                return null; // Not important
+            }
+        });
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
@@ -109,6 +113,7 @@ public class TestTwitterMailNotifHandlerServlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoPostII() throws IOException, TwitterException {
         //
         // New follower already registered
@@ -128,10 +133,14 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.enableNotification(followerScreenName)).andReturn(null).once();
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public User createFriendship(String screenName, boolean follow) throws TwitterException {
+                assertEquals(followerScreenName, screenName);
+                assertTrue(follow);
+                return null; // Not important
+            }
+        });
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
@@ -162,6 +171,7 @@ public class TestTwitterMailNotifHandlerServlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoPostIII() throws IOException, TwitterException {
         //
         // Error while communicating with Twitter
@@ -181,10 +191,14 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.enableNotification(followerScreenName)).andThrow(new TwitterException("done in purpose!"));
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public User createFriendship(String screenName, boolean follow) throws TwitterException {
+                assertEquals(followerScreenName, screenName);
+                assertTrue(follow);
+                throw new TwitterException("done in purpose!");
+            }
+        });
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
@@ -209,6 +223,7 @@ public class TestTwitterMailNotifHandlerServlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoPostIV() throws IOException, TwitterException {
         //
         // Error while getting consumer information
@@ -228,10 +243,14 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.enableNotification(followerScreenName)).andReturn(null).once();
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public User createFriendship(String screenName, boolean follow) throws TwitterException {
+                assertEquals(followerScreenName, screenName);
+                assertTrue(follow);
+                return null; // Not important
+            }
+        });
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 

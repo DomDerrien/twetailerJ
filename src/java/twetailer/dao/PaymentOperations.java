@@ -61,6 +61,7 @@ public class PaymentOperations extends BaseOperations {
             return getPayment(pm, key);
         }
         finally {
+            Boolean.TRUE.booleanValue(); // Stupid & harmless call to prevent false alarm from Cobertura & DataNucleus
             pm.close();
         }
     }
@@ -99,10 +100,10 @@ public class PaymentOperations extends BaseOperations {
     public Payment updatePayment(Payment payment) {
         PersistenceManager pm = getPersistenceManager();
         try {
-            // Persist updated payment
             return updatePayment(pm, payment);
         }
         finally {
+            Boolean.TRUE.booleanValue(); // Stupid & harmless call to prevent false alarm from Cobertura & DataNucleus
             pm.close();
         }
     }

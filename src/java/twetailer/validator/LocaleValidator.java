@@ -203,6 +203,7 @@ public class LocaleValidator {
 
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
+    public static final String DEFAULT_DISPLAY_LANGUAGE = DEFAULT_LOCALE.getDisplayLanguage(DEFAULT_LOCALE);
 
     private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
     private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();

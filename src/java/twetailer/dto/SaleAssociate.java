@@ -203,15 +203,17 @@ public class SaleAssociate extends Entity {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        // Normalize the email address because it's case unsensitive
+        this.email = email == null ? null : email.toLowerCase();
     }
 
     public String getJabberId() {
         return jabberId;
     }
 
-    public void setJabberId(String imId) {
-        this.jabberId = imId;
+    public void setJabberId(String jabberId) {
+        // Normalize the Jabber identifier because it's case unsensitive
+        this.jabberId = jabberId == null ? null : jabberId.toLowerCase();
     }
 
     public Boolean getIsStoreAdmin() {
@@ -259,6 +261,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void setOpenID(String openID) {
+        // Note: no normalization because the OpenID identifier is case sensitive!
         this.openID = openID;
     }
 
@@ -306,6 +309,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void setTwitterId(String twitterId) {
+        // Note: no normalization because the Twitter identifier is case sensitive!
         this.twitterId = twitterId;
     }
 

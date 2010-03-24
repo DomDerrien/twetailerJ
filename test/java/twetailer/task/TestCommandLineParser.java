@@ -64,6 +64,14 @@ public class TestCommandLineParser {
         }
         CommandLineParser.localizedPrefixes.put(Locale.ENGLISH, prefixes);
 
+        // Very simplified list of prefixes in FRENCH
+        prefixes = new GenericJsonObject();
+        prefixes.put(Prefix.reference.toString(), new GenericJsonArray());
+        prefixes.getJsonArray(Prefix.reference.toString()).add("référence");
+        prefixes.put(Prefix.price.toString(), new GenericJsonArray());
+        prefixes.getJsonArray(Prefix.reference.toString()).add("prix");
+        CommandLineParser.localizedPrefixes.put(Locale.FRENCH, prefixes);
+
         // Simplified list of actions
         CommandLineParser.localizedActions.clear();
         JsonObject actions = new GenericJsonObject();
@@ -76,6 +84,12 @@ public class TestCommandLineParser {
             actions.put(action.toString(), equivalents);
         }
         CommandLineParser.localizedActions.put(Locale.ENGLISH, actions);
+
+        // Very simplified list of actions in FRENCH
+        actions = new GenericJsonObject();
+        actions.put(Action.demand.toString(), new GenericJsonArray());
+        actions.getJsonArray(Action.demand.toString()).add("demande");
+        CommandLineParser.localizedActions.put(Locale.FRENCH, actions);
 
         // Simplified list of states
         CommandLineParser.localizedStates.clear();
@@ -381,7 +395,7 @@ public class TestCommandLineParser {
 
     @Test
     public void testParsePriceIV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99€", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25,99€", Locale.FRENCH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
