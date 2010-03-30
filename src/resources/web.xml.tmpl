@@ -19,21 +19,19 @@
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>forwardUri</param-name>
-            <param-value>/html/login.jsp</param-value>
+            <param-value>/console/login.jsp</param-value>
         </init-param>
     </filter>
 
-<!-- To be excluded for runs in offline mode ++ begin -->
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
-        <url-pattern>*.jsp</url-pattern>
+        <url-pattern>/console/*</url-pattern>
     </filter-mapping>
 
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
         <url-pattern>@rwa.servletApiPath@/</url-pattern>
     </filter-mapping>
-<!-- To be excluded for runs in offline mode ++ end -->
 
     <servlet>
         <servlet-name>login</servlet-name>
@@ -181,6 +179,16 @@
         <servlet-name>waveprofile</servlet-name>
         <url-pattern>/_wave/robot/profile</url-pattern>
     </servlet-mapping>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/sep/404.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/sep/404.html</location>
+    </error-page>
 
     <security-constraint>
         <web-resource-collection>

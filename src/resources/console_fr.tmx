@@ -498,5 +498,135 @@
                 <seg>Twetailer ne peut pas envoyer de messages directs aux usagers qui ne le suivent pas! Veuillez suivre @twetailer (http://twitter.com/twetailer) pour utiliser le système depuis Twitter.</seg>
             </tuv>
         </tu>
+        <tu tuid="sep_demand_samples_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>View Demand Samples</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_samples_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Wii Console pink remote control&lt;br&gt;&lt;/br&gt;
+                    Nikon D5000 locale:95323 US range:25mi&lt;br&gt;&lt;/br&gt;
+                    Day Camp for 8 years old boy locale:H2P1C4 CA expiration:2010-08-31
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_create_invite" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>1. Prepare your Demand:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_publish_invite" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>2. Send it to &lt;span class="bang"&gt;!&lt;/span&gt;&lt;span class="tw"&gt;tw&lt;/span&gt;&lt;span class="etailer"&gt;etailer&lt;/span&gt; with:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_publish_with_Twitter" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Twitter</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_publish_with_GTalk" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>GTalk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_publish_with_EMail" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>E-mail</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_publish_with_SMS" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>SMS</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_publish_with_Console" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Twetailer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Advanced Form for first-time Users.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_tags_label" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Demand tags:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_tags_hint" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Series of keywords describing your demand, just separated by a space</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_locale_label" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Locale:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_locale_hint" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Postal code and coutry code, to generate "H1X 2C6 CA" or "94523 US".</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_quantity_label" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Quantity:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_expiration_label" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Expiration date:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_update_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Update Demand Query</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_tag_cloud_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Tag cloud of supplied keyword for: {0}</seg>
+            </tuv>
+        </tu>
     </body>
 </tmx>

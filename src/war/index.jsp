@@ -25,7 +25,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/images/favicon.ico" />
-    <meta http-equiv="refresh" content="0; URL=/html/console.jsp"/>
+    <meta http-equiv="refresh" content="0; URL=/console/"/>
     <%
     if (useCDN) {
     %><style type="text/css">
@@ -44,6 +44,6 @@
     %>
 </head>
 <body class="tundra">
-    <h3 style="text-align:center;"><%= LabelExtractor.get(ResourceFileId.third, "ui_page_redirection_message", new Object[] {"/html/console.jsp"},locale) %></h3>
+    <h3 style="text-align:center;"><%= LabelExtractor.get(ResourceFileId.third, "ui_page_redirection_message", new Object[] {"/console/"},locale) %></h3>
 </body>
 </html>

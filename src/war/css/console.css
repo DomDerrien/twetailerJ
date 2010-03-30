@@ -257,7 +257,7 @@ body {
     margin: 3px 0;
 }
 
-.consumerInformation>div>span.hint {
+.consumerInformation>div>span.hint, .demandForm>tbody>tr>td>span.hint {
     font-size: smaller;
     color: grey;
 }

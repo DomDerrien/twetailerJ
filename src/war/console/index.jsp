@@ -88,14 +88,14 @@
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/sep/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/sep/blank.html'"
         src="/js/dojo/dojo/dojo.js"
         type="text/javascript"
     ></script><%
@@ -238,7 +238,7 @@
                             <label for="consumerCountry"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_country", locale) %></label><br/>
                             <select dojoType="dijit.form.FilteringSelect" id="consumerCountry" name="<%= Location.COUNTRY_CODE %>">
                                 <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
-                                <!--option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option-->
+                                <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
                                 <!--option value="FR"><%= LabelExtractor.get(ResourceFileId.master, "country_FR", locale) %></option-->
                             </select><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_country", locale) %></span>

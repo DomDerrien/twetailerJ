@@ -8,6 +8,8 @@
     <!-- Public variables -->
     <!-- ================ -->
 
+    <property environment="env"/>
+
     <property file="${user.home}/local.build.properties"
         description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
     />
@@ -46,11 +48,11 @@
         description="Application context root for the containers"
         value="${rwa.productShortName}"
     />
-	
-	<property name="rwa.servletApiPath"
-		description="Prefix for the API access"
-		value="/API"
-	/>
+
+    <property name="rwa.servletApiPath"
+        description="Prefix for the API access"
+        value="/API"
+    />
     
     <property name="rwa.languageListFilename"
         value="languages"
@@ -364,7 +366,7 @@
             <file name="cobertura/asm-tree-3.0.jar" />
             <file name="cobertura/jakarta-oro-2.0.8.jar" />
             <file name="cobertura/log4j-1.2.9.jar" />
-    	</filelist>
+        </filelist>
     </path>
 
     <taskdef name="cobertura-instrument" classname="net.sourceforge.cobertura.ant.InstrumentTask">
@@ -425,7 +427,7 @@
             ${ant.project.name}
             ${TODAY} (${rwa.stageId})
             JVM version detected by Ant: ${ant.java.version}
-    	</echo>
+        </echo>
     </target>
 
     <target name="step-statistics-get" unless="testcase">
@@ -518,6 +520,7 @@
             tab="remove"
             tablength="4"
         />
+
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+$" />
             <substitution expression=""/>
@@ -554,6 +557,13 @@
                 includes="**/*.xml,**/.xsl,**/*.tmx,**/*.tmpl"
             />
         </replaceregexp>
+
+        <delete>
+            <fileset dir="${env.TEMP}">
+                <include name="fixctrl*"/>
+                <exclude name="replace*"/>
+            </fileset>
+        </delete>
     </target>
 
     <target name="step-dojo-unzip" unless="dojo.already.expanded">
@@ -1050,7 +1060,7 @@
             maxMemory="512M"
         >
             <sysproperty key="net.sourceforge.cobertura.datafile" file="${temp.dir}/cobertura.ser" />
-        	
+
             <classpath location="bin/instrumented" />
             <!-- Important: instrumented classes are before the original (uninstrumented) classes. -->
             <classpath location="src/war/WEB-INF/classes" />
