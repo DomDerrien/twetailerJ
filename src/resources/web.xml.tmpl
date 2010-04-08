@@ -32,15 +32,13 @@
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>forwardUri</param-name>
-            <param-value>/console/login.jsp</param-value>
+            <param-value>/jsp_includes/login.jsp</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
         <url-pattern>/console/*</url-pattern>
     </filter-mapping>
-
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
         <url-pattern>@rwa.servletApiPath@/</url-pattern>
@@ -53,7 +51,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
-        <url-pattern>/control/login</url-pattern>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -63,7 +61,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>logout</servlet-name>
-        <url-pattern>/control/logout</url-pattern>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -74,6 +72,26 @@
     <servlet-mapping>
         <servlet-name>maezel</servlet-name>
         <url-pattern>@rwa.servletApiPath@/maezel/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>console</servlet-name>
+        <jsp-file>/jsp_includes/console.jsp</jsp-file>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>console</servlet-name>
+        <url-pattern>/console/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>directory</servlet-name>
+        <servlet-class>twetailer.j2ee.DirectoryServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>directory</servlet-name>
+        <url-pattern>/directory/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -193,14 +211,23 @@
         <url-pattern>/_wave/robot/profile</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>appstats</servlet-name>
+        <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>appstats</servlet-name>
+        <url-pattern>/admin/stats/*</url-pattern>
+    </servlet-mapping>
+
     <error-page>
         <error-code>403</error-code>
-        <location>/sep/404.html</location>
+        <location>/404.html</location>
     </error-page>
 
     <error-page>
         <error-code>404</error-code>
-        <location>/sep/404.html</location>
+        <location>/404.html</location>
     </error-page>
 
     <security-constraint>
@@ -234,3 +261,4 @@
     </security-constraint>
 
 </web-app>
+

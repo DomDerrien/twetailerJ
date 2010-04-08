@@ -502,7 +502,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>View Demand Samples</seg>
+                <seg>Exemples de requêtes</seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_samples_list" dataType="text">
@@ -510,24 +510,31 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Wii Console pink remote control&lt;br&gt;&lt;/br&gt;
-                    Nikon D5000 locale:95323 US range:25mi&lt;br&gt;&lt;/br&gt;
-                    Day Camp for 8 years old boy locale:H2P1C4 CA expiration:2010-08-31
+                    Wii Console manette de jeu rose&lt;br&gt;&lt;/br&gt;
+                    Nikon D5000 localité:H1P 2X3 CA distance:25km&lt;br&gt;&lt;/br&gt;
+                    Camp de jour pour un enfant de 8 ans localité:H2P1C4 CA expiration:2010-08-31
                 </seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_demand_form_invite" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Que cherchez-vous à acheter ?</seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_create_invite" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>1. Prepare your Demand:</seg>
+                <seg>1. Décrivez votre Demande :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_publish_invite" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>2. Send it to &lt;span class="bang"&gt;!&lt;/span&gt;&lt;span class="tw"&gt;tw&lt;/span&gt;&lt;span class="etailer"&gt;etailer&lt;/span&gt; with:</seg>
+                <seg>2. Choisissez le moyen de communication :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_publish_with_Twitter" dataType="text">
@@ -548,14 +555,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>E-mail</seg>
+                <seg>Courriel</seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_publish_with_SMS" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>SMS</seg>
+                <seg>Message texte</seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_publish_with_Console" dataType="text">
@@ -569,63 +576,89 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Advanced Form for first-time Users.</seg>
+                <seg>Formulaire pour les nouveaux utilisateurs</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_tags_label" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Demand tags:</seg>
+                <seg>Mots-clés de la Demande :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_tags_hint" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Series of keywords describing your demand, just separated by a space</seg>
+                <seg>Série de mots-clés décrivant votre requête, séparés par une espace</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_locale_label" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Locale:</seg>
+                <seg>Localité :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_locale_hint" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Postal code and coutry code, to generate "H1X 2C6 CA" or "94523 US".</seg>
+                <seg>Code postal et code de pays, pour produire «&#160;H1X 2C6 CA&#160;» ou «&#160;94523 US&#160;».</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_quantity_label" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Quantity:</seg>
+                <seg>Quantité :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_expiration_label" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Expiration date:</seg>
+                <seg>Date d'expiration :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_update_button" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Update Demand Query</seg>
+                <seg>Mettre-à-jour la Demande</seg>
             </tuv>
         </tu>
         <tu tuid="sep_tag_cloud_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Tag cloud of supplied keyword for: {0}</seg>
+                <seg>Mots-clés pour la région de&#160;: &lt;a href="{1}"&gt;{0}&lt;/a&gt;</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_tag_cloud_disclaimer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg> Avettissement&#160;: La liste ci-dessus contient les mots-clés pour la région de {0}.
+                    Les détaillants peuvent ajouter et retirer des mots-clés sur les produits et services
+                    qu'ils penvent offrir à n'importe quel moment. Cette page est reconstruite chaque jour.
+                    Notez bien que les détaillants déclarent les mots-clés sans pour autant avoir les
+                    produits en stock. Ils ne vous proposeront que ce qu'ils peuvent effectivement vous livrer.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_other_locations_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Autres villes</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_other_locations_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Cette page pour {0} est reconstruite une fois par jour. Vous pouvez aussi consulter les pages pour les villes suivantes&#160;:</seg>
             </tuv>
         </tu>
     </body>

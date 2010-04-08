@@ -611,12 +611,21 @@
             </tuv>
         </tu>
 
+        <tu tuid="sep_demand_form_invite" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>What do you want to buy?</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="sep_demand_create_invite" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>1. Prepare your Demand:</seg>
+                <seg>1. Describe your request:</seg>
             </tuv>
         </tu>
 
@@ -625,7 +634,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>2. Send it to <span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span> with:</seg>
+                <seg>2. Choose your communication channel:</seg>
             </tuv>
         </tu>
 
@@ -680,7 +689,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Advanced Form for first-time Users.</seg>
+                <seg>Advanced Form for first-time Users</seg>
             </tuv>
         </tu>
 
@@ -698,7 +707,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Series of keywords describing your demand, just separated by a space</seg>
+                <seg>Series of keywords describing your request, just separated by a space</seg>
             </tuv>
         </tu>
 
@@ -752,9 +761,48 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: name of the city that the tag cloud has been generated for
+                {1}: page URL, made available as a perma-link
             </note>
             <tuv xml:lang="en">
-                <seg>Tag cloud of supplied keyword for: {0}</seg>
+                <seg>Tag cloud of supplied keywords for: <a href="{1}">{0}</a></seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_tag_cloud_disclaimer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: name of the city that the tag cloud has been generated for
+                {1}: page URL, made available as a perma-link
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    Disclaimer: Above is the list of supplied tags in the <a href="{1}">{0}</a> area. Retailers can add/remove tags about the products and
+                    services they can propose anytime. This page is refreshed once a day. Note that retailers can propose tags
+                    without having the corresponding products in stock. Retailers will propose you goods only when they can
+                    deliver them.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_other_locations_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Other Cities</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_other_locations_introduction" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: name of the city that the tag cloud has been generated for
+                {1}: page URL, made available as a perma-link
+            </note>
+            <tuv xml:lang="en">
+                <seg>This is a page for the {0} area is refreshed once a day. You can also check the pages for these other cities:</seg>
             </tuv>
         </tu>
 

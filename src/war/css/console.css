@@ -63,16 +63,16 @@ body {
     font-size: 3em;
 }
 
-#brand>h1 .bang {
+#brand>h1 .bang, .twBang {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
     color: #9966cc; /* PurpleChalk (aka Magenta 4)*/
 }
-#brand>h1 .tw {
+#brand>h1 .tw, .twTw {
     font-family: "Arial Rounded MT", arial, sans-serif;
     color: #696969; /* DimGray */
     letter-spacing: -.1em;
 }
-#brand>h1 .etailer {
+#brand>h1 .etailer, .twEtailer {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
     color: #696969; /* DimGray */
 }
