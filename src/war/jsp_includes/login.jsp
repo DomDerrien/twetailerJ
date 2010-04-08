@@ -52,87 +52,22 @@
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/sep/blank.html'"
+        djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/sep/blank.html'"
+        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="/js/dojo/dojo/dojo.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
     %>
-    <script type="text/javascript">
-    dojo.require("dijit.Dialog");
-    dojo.require("dijit.layout.BorderContainer");
-    dojo.require("dijit.layout.ContentPane");
-    dojo.require("dijit.form.Form");
-    dojo.require("dijit.form.Button");
-    dojo.require("dijit.form.TextBox");
-    dojo.require("twetailer.Console");
-    dojo.require("dojo.parser");
-    dojo.addOnLoad(function(){
-        dojo.parser.parse();
-        var userLocale = "<%= localeId %>";
-        twetailer.Console.init(userLocale, true);
-        dojo.fadeOut({
-            node: "introFlash",
-            delay: 50,
-            onEnd: function() {
-                dojo.style("introFlash", "display", "none");
-            }
-        }).play();
-        loginLogic.init();
-    });
-    </script>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
-            <div id="brand">
-                <h1>
-                    <img
-                        alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                        id="logo"
-                        src="/images/logo/twitter-bird-and-cart-toLeft.png"
-                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                    />
-                    <a
-                        href="http://www.twetailer.com/"
-                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                    ><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
-                </h1>
-                <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
-            </div>
-            <div id="navigation">
-                <ul>
-                    <!--  Normal order because they are left aligned -->
-                    <li><a name="justForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
-                    <li><a name="justForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
-                    <!--  Reverse order because they are right aligned -->
-                    <li class="subItem"><a href="#" onclick="dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
-                    <li class="subItem">
-                        <input id="languageSelector" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
-                        <script type="text/javascript">
-                        dojo.require("domderrien.i18n.LanguageSelector");
-                        dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", null, [<%
-                            ResourceBundle languageList = LocaleController.getLanguageListRB();
-                            Enumeration<String> keys = languageList.getKeys();
-                            while(keys.hasMoreElements()) {
-                                String key = keys.nextElement();
-                                %>{value:"<%= key %>",label:"<%= languageList.getString(key) %>"}<%
-                                if (keys.hasMoreElements()) {
-                                    %>,<%
-                                }
-                            }
-                            %>], "<%= localeId %>", "globalCommand", null)});
-                        </script>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <jsp:include page="/jsp_includes//banner_open.jsp"></jsp:include>
         <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
             <table style="width: 100%; height: 100%;">
                 <tr>
@@ -143,7 +78,7 @@
                                  <%= LabelExtractor.get(ResourceFileId.third, "login_introduction_message", locale) %>
                             </div>
                             <br/>
-                            <form action="/control/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
+                            <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
                                 <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
                                 <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;" type="text" /></center>
                                 <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
@@ -155,49 +90,49 @@
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/control/login?loginWith=google'"
+                                    onclick="window.location='/login?loginWith=google'"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/google.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/control/login?loginWith=yahoo'"
+                                    onclick="window.location='/login?loginWith=yahoo'"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/yahoo.ico" width="16" height="16" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://www.myspace.com/', '');"
+                                    onclick="localModule.cookOpenId('http://www.myspace.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myspace", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/myspace.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://openid.aol.com/', '');"
+                                    onclick="localModule.cookOpenId('http://openid.aol.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_aol", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/aol.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://', '.wordpress.com');"
+                                    onclick="localModule.cookOpenId('http://', '.wordpress.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_wordpress", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/wordpress.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://', '.blogspot.com');"
+                                    onclick="localModule.cookOpenId('http://', '.blogspot.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_blogger", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/blogger.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://', '.mp');"
+                                    onclick="localModule.cookOpenId('http://', '.mp');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_chimp", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/chimp.gif" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="loginLogic.cookOpenId('http://', '.myopenid.com');"
+                                    onclick="localModule.cookOpenId('http://', '.myopenid.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myopenid", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/myopenid.ico" width="16" height="16" /> </button>
                             </div>
@@ -216,23 +151,15 @@
         dojoType="dijit.Dialog"
         id="aboutPopup"
         title="About"
-        _href="about.jsp"
+        href="/jsp_includes/about.jsp"
     >
-        <%= LabelExtractor.get(ResourceFileId.third, "about_text", locale) %>
-        --<br/>
-        <img
-            alt="<%= LabelExtractor.get(ResourceFileId.third, "about_powered_by_appengine", locale) %>"
-            height="30"
-            src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif"
-            width="120"
-        />
     </div>
 
     <div
         dojoType="dijit.Dialog"
         id="openIdResolver"
         title="Additional information required"
-        execute="loginLogic.reportCookedOpenId();"
+        execute="localModule.reportCookedOpenId();"
     >
         <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_prefix", locale) %>
         <ul>
@@ -250,8 +177,34 @@
     </div>
 
     <script type="text/javascript">
-    var loginLogic = {};
-    loginLogic.init = function() {
+    dojo.addOnLoad(function(){
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("twetailer.Console");
+        dojo.require("dojo.parser");
+        dojo.addOnLoad(function(){
+            dojo.parser.parse();
+            var userLocale = "<%= localeId %>";
+            twetailer.Console.init(userLocale, true);
+            dojo.fadeOut({
+                node: "introFlash",
+                delay: 50,
+                onEnd: function() {
+                    dojo.style("introFlash", "display", "none");
+                }
+            }).play();
+            localModule.init();
+        });
+    });
+    </script>
+
+    <script type="text/javascript">
+    var localModule = {};
+    localModule.init = function() {
         dijit.byId("openid_identifier").focus();
         dojo.query("#signInButton").onclick(function(evt) {
             dojo.query(".shortcutButton").forEach(function(node, index, arr){
@@ -265,13 +218,13 @@
             }
         });
     };
-    loginLogic.cookOpenId = function(prefix, suffix) {
+    localModule.cookOpenId = function(prefix, suffix) {
         dojo.byId('openIdPrefix').innerHTML = prefix;
         dojo.byId('openIdSuffix').innerHTML = suffix;
         dijit.byId('openIdResolver').show();
         dijit.byId('openIdCustom').focus();
     };
-    loginLogic.reportCookedOpenId = function() {
+    localModule.reportCookedOpenId = function() {
         var prefix = dojo.byId('openIdPrefix').innerHTML;
         var custom = dijit.byId('openIdCustom').attr("value");
         var suffix = dojo.byId('openIdSuffix').innerHTML;
@@ -280,7 +233,7 @@
     };
     </script>
 
-    <script type="text/javascript">
+    <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);
     _gaq.push(['_trackPageview']);
@@ -290,6 +243,6 @@
         ga.setAttribute('async', 'true');
         document.documentElement.firstChild.appendChild(ga);
     })();
-    </script>
+    </script><% } %>
 </body>
 </html>
