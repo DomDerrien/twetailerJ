@@ -36,8 +36,8 @@
 <head>
     <title>Sale Associate Registration Page</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="shortcut icon" href="/images/logo/favicon.ico" />
-    <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%
     if (useCDN) {
     %><style type="text/css">

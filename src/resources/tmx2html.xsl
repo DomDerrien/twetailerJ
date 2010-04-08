@@ -6,8 +6,8 @@
 		<html>
 			<head>
 				<title>TMX representation</title>
-			    <link rel="shortcut icon" href="../../src/war/images/logo/favicon.ico" />
-			    <link rel="icon" href="../../src/war/images/logo/favicon.ico" type="image/x-icon"/>
+			    <link rel="shortcut icon" href="../../src/war/favicon.ico" />
+			    <link rel="icon" href="../../src/war/favicon.ico" type="image/x-icon"/>
 			    <style type="text/css">
 			        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/resources/dojo.css";
 			        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";

@@ -79,8 +79,8 @@ public class MaezelServlet extends HttpServlet {
         log = mockLogger;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 

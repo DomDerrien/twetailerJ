@@ -134,6 +134,15 @@ public class LoginServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         preselectOpendIdServer(request);
 
+        //
+        // FIXME:
+        //   1. Get the URL for the initial request
+        //   2. If this URL is ApplicationSettings.get().getLoginPageURL(), change it to ApplicationSettings.get().getMainPageURL()
+        //   3. Save the URL in the session
+        //   4. When the servlet is invoked again with the user being authenticated. jump to the URL saved in the session
+        //   5. Note that URL parameters should be saved and restored later
+        //
+
         RelyingParty relyingParty = getRelyingParty();
         String errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         try {

@@ -286,10 +286,10 @@
                 <seg>aide,?</seg>
             </tuv>
         </tu>
-        <tu tuid="cl_action_language" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="cl_action_language" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en">
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
                 <seg>langue,langage,lg</seg>
             </tuv>
         </tu>
@@ -947,23 +947,26 @@
                 <seg>:-( La Demande:{0} est présentemment dans l'État:{1} et ne peut être mise-à-jour.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_language_missing_language_code" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="cp_command_language_missing_language_code" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Votre langue courante est '{0}' {1}. Changez le en envoyant: '!lg code-langue'.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_language_given_value_as_current" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="cp_command_language_given_value_as_current" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Votre langue reste '{0}' {1}. Changez le en envoyant: '!lg autre-code-langue'.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_language_given_value_accepted" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="cp_command_language_given_value_accepted" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Votre nouvelle langue est '{0}' {1}. Revenez en arrière en envoyant: '!lg {2}'.</seg>
             </tuv>

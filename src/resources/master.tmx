@@ -37,12 +37,12 @@
                  return-to-line or extra spaces.
               2) Forbidden characters are : ampersand, quotes, double-quotes, less-than. and greater-than signs
                  Their unicode value MUST be used in place:
-                     - ampersand: \u0026
-                     - double quotes: \u0022 (for content going into dojotk resource bundles only)
-                     - less than: \u003c
-                     - greater than: \u003e
-                     - non break space: \u00a0
-                 Note that using th single quote is safe.
+                     - ampersand: \u0026 or &#38;
+                     - double quotes: \u0022 or &#34; (for content going into dojotk resource bundles only)
+                     - less than: \u003c or &#60;
+                     - greater than: \u003e or &#62;
+                     - non break space: \u00a0 or &#160;
+                 Note that using the single quote is safe.
               3) All messages being displayed in a Web browser, it's possible to use HTML sequences, but they MUST
                  be escaped correctly: "<b></b>" should become: "\u003cb\u003e\u003c/b\u003e". Other HTML codes
                  (like &mdash;) are safe as the corresponding UTF-8 sequence.

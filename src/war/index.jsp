@@ -23,8 +23,8 @@
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="/images/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" />
     <meta http-equiv="refresh" content="0; URL=/console/"/>
     <%
     if (useCDN) {
