@@ -86,7 +86,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
         SaleAssociate candidateSaleAssociate = null;
 
         if (consumerKey != null) {
-            Consumer consumer = consumerOperations.getConsumer(pm, parameters.getLong(SaleAssociate.CONSUMER_KEY));
+            Consumer consumer = consumerOperations.getConsumer(pm, consumerKey);
             consumerKey = consumer.getKey();
             List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
             if (0 < saleAssociates.size()) {
@@ -98,7 +98,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
         }
 
-        if (email != null) { // && 0 < email.length()) {
+        if (email != null && 0 < email.length()) {
             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, email, 1);
             if (0 < consumers.size()) {
                 if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
@@ -136,7 +136,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
         }
 
-        if (jabberId != null) { // && 0 < jabberId.length()) {
+        if (jabberId != null && 0 < jabberId.length()) {
             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, jabberId, 1);
             if (0 < consumers.size()) {
                 if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
@@ -174,7 +174,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
             }
         }
 
-        if (twitterId != null) { // && 0 < twitterId.length()) {
+        if (twitterId != null && 0 < twitterId.length()) {
             List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, twitterId, 1);
             if (0 < consumers.size()) {
                 if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
@@ -215,8 +215,9 @@ public class SaleAssociateRestlet extends BaseRestlet {
         if (consumerKey == null) {
             Consumer consumer = new Consumer();
             consumer.setName(parameters.getString(Consumer.NAME));
-            consumer.setEmail(parameters.getString(Consumer.EMAIL));
-            consumer.setTwitterId(parameters.getString(Consumer.TWITTER_ID));
+            consumer.setEmail(email);
+            consumer.setJabberId(jabberId);
+            consumer.setTwitterId(twitterId);
             consumer.setLanguage(parameters.getString(Consumer.LANGUAGE));
             consumer = consumerOperations.createConsumer(pm, consumer);
             consumerKey = consumer.getKey();
@@ -229,6 +230,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
         else {
             boolean updateRequired = false;
             if (email != null) { candidateSaleAssociate.setEmail(email); updateRequired = true; }
+            if (jabberId != null) { candidateSaleAssociate.setJabberId(jabberId); updateRequired = true; }
             if (twitterId != null) { candidateSaleAssociate.setTwitterId(twitterId); updateRequired = true; }
             if (updateRequired) {
                 candidateSaleAssociate = saleAssociateOperations.updateSaleAssociate(pm, candidateSaleAssociate);

@@ -161,7 +161,7 @@
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
                                 <select dojoType="dijit.form.FilteringSelect" name="countryCode">
                                     <option value="CA" selected="true">Canada</option>
-                                    <!--option value="US">United States of America</option-->
+                                    <option value="US">United States of America</option>
                                 </select>
                             </div>
                         </form>
@@ -368,7 +368,12 @@
     registration.createSaleAssociate = function() {
         var data = dojo.formToObject("saleAssociateInformation");
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
-        data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
+        if (data.consumerKey == null || isNaN(data.consumerKey) || data.consumerKey.length == 0) {
+            delete data.consumerKey;
+        }
+        else {
+            data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
+        }
         dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.toJson(data),
