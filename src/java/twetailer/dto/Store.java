@@ -58,7 +58,7 @@ public class Store extends Entity {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = address == null || address.length() == 0 ? null : address;
     }
 
     public String getEmail() {
@@ -66,7 +66,8 @@ public class Store extends Entity {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        // Normalize the email address because it's case insensitive
+        this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
     public Long getLocationKey() {
@@ -74,6 +75,9 @@ public class Store extends Entity {
     }
 
     public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
         this.locationKey = locationKey;
     }
 
@@ -82,7 +86,7 @@ public class Store extends Entity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null || name.length() == 0 ? null : name;
     }
 
     public String getPhoneNumber() {
@@ -90,7 +94,7 @@ public class Store extends Entity {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
     public JsonObject toJson() {

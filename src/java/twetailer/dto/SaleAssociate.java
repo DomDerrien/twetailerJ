@@ -137,6 +137,9 @@ public class SaleAssociate extends Entity {
     }
 
     public void setConsumerKey(Long consumerKey) {
+        if (consumerKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'consumerKey'");
+        }
         this.consumerKey = consumerKey;
     }
 
@@ -145,6 +148,9 @@ public class SaleAssociate extends Entity {
     }
 
     public void setCreatorKey(Long creatorKey) {
+        if (creatorKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'creatorKey'");
+        }
         this.creatorKey = creatorKey;
     }
 
@@ -204,7 +210,7 @@ public class SaleAssociate extends Entity {
 
     public void setEmail(String email) {
         // Normalize the email address because it's case unsensitive
-        this.email = email == null ? null : email.toLowerCase();
+        this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
     public String getJabberId() {
@@ -213,7 +219,7 @@ public class SaleAssociate extends Entity {
 
     public void setJabberId(String jabberId) {
         // Normalize the Jabber identifier because it's case unsensitive
-        this.jabberId = jabberId == null ? null : jabberId.toLowerCase();
+        this.jabberId = jabberId == null || jabberId.length() == 0 ? null : jabberId.toLowerCase();
     }
 
     public Boolean getIsStoreAdmin() {
@@ -241,6 +247,9 @@ public class SaleAssociate extends Entity {
     }
 
     public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
         this.locationKey = locationKey;
     }
 
@@ -253,7 +262,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null || name.length() == 0 ? null : name;
     }
 
     public String getOpenID() {
@@ -262,7 +271,7 @@ public class SaleAssociate extends Entity {
 
     public void setOpenID(String openID) {
         // Note: no normalization because the OpenID identifier is case sensitive!
-        this.openID = openID;
+        this.openID = openID == null || openID.length() == 0 ? null : openID;
     }
 
     public String getPhoneNumber() {
@@ -270,7 +279,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
     public Source getPreferredConnection() {
@@ -293,6 +302,9 @@ public class SaleAssociate extends Entity {
     }
 
     public void setStoreKey(Long storeKey) {
+        if (storeKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'storeKey'");
+        }
         this.storeKey = storeKey;
     }
 
@@ -301,11 +313,14 @@ public class SaleAssociate extends Entity {
     }
 
     public void setScore(Long score) {
+        if (score == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'score'");
+        }
         this.score = score;
     }
 
     public String getTwitterId() {
-        return twitterId;
+        return twitterId == null || twitterId.length() == 0 ? null : twitterId;
     }
 
     public void setTwitterId(String twitterId) {

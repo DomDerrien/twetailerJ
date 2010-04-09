@@ -205,6 +205,9 @@ public class Demand extends Command {
     }
 
     public void setQuantity(Long quantity) {
+        if (quantity == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'quantity'");
+        }
         this.quantity = quantity;
     }
 
@@ -213,6 +216,9 @@ public class Demand extends Command {
     }
 
     public void setRange(Double range) {
+        if (range == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'range'");
+        }
         this.range = range;
     }
 

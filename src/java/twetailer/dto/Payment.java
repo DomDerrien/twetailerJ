@@ -47,6 +47,9 @@ public class Payment extends Entity {
     }
 
     public void setAuthorizationId(String authorizationId) {
+        if (authorizationId == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'authorizationId'");
+        }
         this.authorizationId = authorizationId;
     }
 
@@ -55,6 +58,9 @@ public class Payment extends Entity {
     }
 
     public void setReference(String reference) {
+        if (reference == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'reference'");
+        }
         this.reference = reference;
     }
 
@@ -63,6 +69,9 @@ public class Payment extends Entity {
     }
 
     public void setRequestId(String requestId) {
+        if (requestId == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'requestId'");
+        }
         this.requestId = requestId;
     }
 
@@ -71,6 +80,9 @@ public class Payment extends Entity {
     }
 
     public void setTransactionId(String transactionId) {
+        if (transactionId == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'transactionId'");
+        }
         this.transactionId = transactionId;
     }
 
@@ -79,6 +91,9 @@ public class Payment extends Entity {
     }
 
     public void setStatus(TransactionStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'status'");
+        }
         this.status = status;
     }
 

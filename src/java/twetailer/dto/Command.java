@@ -107,6 +107,9 @@ public class Command extends Entity {
     }
 
     public void setCancelerKey(Long cancelerKey) {
+        if (cancelerKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'cancelerKey'");
+        }
         this.cancelerKey = cancelerKey;
     }
 
@@ -115,6 +118,9 @@ public class Command extends Entity {
     }
 
     public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
         this.locationKey = locationKey;
     }
 
@@ -161,6 +167,9 @@ public class Command extends Entity {
     }
 
     public void setOwnerKey(Long ownerKey) {
+        if (ownerKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'ownerKey'");
+        }
         this.ownerKey = ownerKey;
     }
 
@@ -169,6 +178,9 @@ public class Command extends Entity {
     }
 
     public void setRawCommandId(Long rawCommandId) {
+        if (rawCommandId == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'rawCommandId'");
+        }
         this.rawCommandId = rawCommandId;
     }
 

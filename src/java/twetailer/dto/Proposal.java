@@ -93,7 +93,7 @@ public class Proposal extends Command {
     }
 
     public void setAWSCBUIURL(String aWSCBUIURL) {
-        AWSCBUIURL = new Text(aWSCBUIURL);
+        AWSCBUIURL = AWSCBUIURL == null || aWSCBUIURL.length() == 0 ? null : new Text(aWSCBUIURL);
     }
 
     public String getSerializedCriteria() {
@@ -139,6 +139,9 @@ public class Proposal extends Command {
     }
 
     public void setDemandKey(Long demandKey) {
+        if (demandKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'demandKey'");
+        }
         this.demandKey = demandKey;
     }
 
@@ -155,6 +158,9 @@ public class Proposal extends Command {
     }
 
     public void setQuantity(Long quantity) {
+        if (quantity == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'quantity'");
+        }
         this.quantity = quantity;
     }
 
@@ -181,6 +187,9 @@ public class Proposal extends Command {
     }
 
     public void setStoreKey(Long storeKey) {
+        if (storeKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'storeKey'");
+        }
         this.storeKey = storeKey;
     }
 
