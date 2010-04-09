@@ -19,9 +19,9 @@
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
 %><html>
-	<body>
+    <body>
        <%= LabelExtractor.get(ResourceFileId.third, "about_text", locale) %>
         --<br/>
         <img alt="<%= LabelExtractor.get(ResourceFileId.third, "about_powered_by_appengine", locale) %>" height="30" src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" width="120"/>
-	</body>
+    </body>
 </html>
