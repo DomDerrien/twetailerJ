@@ -82,7 +82,7 @@ public class DemandRestlet extends BaseRestlet {
             List<Proposal> proposals = proposalOperations.getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
             for (Proposal proposal: proposals) {
                 proposal.setState(State.cancelled);
-                proposal.setDemandKey(null); // To cut the link
+                proposal.setDemandKey(0L); // To cut the link
                 proposalOperations.updateProposal(pm, proposal);
             }
         }

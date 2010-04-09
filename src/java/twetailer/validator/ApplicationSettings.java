@@ -17,13 +17,13 @@ public class ApplicationSettings {
 
     protected final static String CDN_BASE_URL_KEY = "cdnBaseURL";
 
-    protected final static String DEFAULT_LOGIN_PAGE_URL = "/console/login.jsp";
+    protected final static String DEFAULT_LOGIN_PAGE_URL = "/jsp_includes/login.jsp";
 
     public String loginPageURL = DEFAULT_LOGIN_PAGE_URL;
 
     protected final static String LOGIN_PAGE_URL_KEY = "loginPageURL";
 
-    public final static String DEFAULT_MAIN_PAGE_URL = "/console/index.jsp";
+    public final static String DEFAULT_MAIN_PAGE_URL = "/console/";
 
     private String mainPageURL = DEFAULT_MAIN_PAGE_URL;
 

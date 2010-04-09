@@ -20,7 +20,6 @@ import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.payment.AmazonFPS;
-import twetailer.task.CommandProcessor;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;

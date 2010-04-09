@@ -34,12 +34,8 @@ import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
-
-import com.google.apphosting.api.MockAppEngineEnvironment;
-
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
@@ -70,6 +66,7 @@ public class TestDemandCommandProcessor {
     public void testProcessExisitingDemandIa() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -110,7 +107,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -121,6 +122,7 @@ public class TestDemandCommandProcessor {
     public void testProcessExisitingDemandIb() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -161,7 +163,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -172,6 +178,7 @@ public class TestDemandCommandProcessor {
     public void testProcessExisitingDemandIc() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -212,7 +219,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -222,6 +233,7 @@ public class TestDemandCommandProcessor {
     @Test
     public void testProcessExisitingDemandId() throws Exception {
         final Long demandKey = 2222L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -246,7 +258,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -257,6 +273,7 @@ public class TestDemandCommandProcessor {
     public void testProcessExisitingDemandII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -299,7 +316,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -309,6 +330,7 @@ public class TestDemandCommandProcessor {
     @Test
     public void testProcessExisitingDemandIII() throws Exception {
         final Long demandKey = 2222L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -349,7 +371,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -360,6 +386,7 @@ public class TestDemandCommandProcessor {
     public void testProcessFirstNewDemandI() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -411,7 +438,11 @@ public class TestDemandCommandProcessor {
         RawCommand rawCommand = new RawCommand(Source.simulated);
         command.put(Location.POSTAL_CODE, "zzz");
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -422,6 +453,7 @@ public class TestDemandCommandProcessor {
     public void testProcessFirstNewDemandII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -468,7 +500,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -551,6 +587,7 @@ public class TestDemandCommandProcessor {
     public void testProcessFirstNewDemandIV() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
         final String postalCode = "H0H0H0";
         final String countryCode = "CA";
 
@@ -609,7 +646,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -622,6 +663,7 @@ public class TestDemandCommandProcessor {
     public void testProcessAdditionalNewDemandI() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -678,7 +720,11 @@ public class TestDemandCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -689,70 +735,7 @@ public class TestDemandCommandProcessor {
     public void testProcessAdditionalNewDemandII() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
-
-        // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
-            @Override
-            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
-                Demand demand = new Demand();
-                demand.setKey(demandKey);
-                demand.setLocationKey(locationKey);
-                demand.setSource(Source.twitter); // Setup to verify it will be reset with the Source.simulated of the rawCommand
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
-            }
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
-                assertEquals(demandKey, key);
-                Demand demand = new Demand();
-                demand.setKey(demandKey);
-                return demand;
-            }
-            @Override
-            public Demand createDemand(PersistenceManager pm, Demand demand) {
-                assertNull(demand.getKey());
-                assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
-                assertEquals(State.opened, demand.getState());
-                demand.setKey(demandKey);
-                return demand;
-            }
-        };
-        // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
-            @Override
-            public Location createLocation(PersistenceManager pm, JsonObject command) {
-                throw new IllegalArgumentException("Done in purpose");
-            }
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) {
-                Location location = new Location();
-                location.setKey(locationKey);
-                return location;
-            }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
-
-        // Command mock
-        JsonObject command = new GenericJsonObject();
-
-        // RawCommand mock
-        RawCommand rawCommand = new RawCommand(Source.simulated);
-
-        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
-
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(demandKey.toString()));
-    }
-
-    @Test
-    public void testProcessAdditionalNewDemandIII() throws Exception {
-        final Long demandKey = 2222L;
-        final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -808,6 +791,76 @@ public class TestDemandCommandProcessor {
 
         // Consumer mock
         Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
+
+        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertTrue(sentText.contains(demandKey.toString()));
+    }
+
+    @Test
+    public void testProcessAdditionalNewDemandIII() throws Exception {
+        final Long demandKey = 2222L;
+        final Long locationKey = 3333L;
+        final Long consumerKey = 34354L;
+
+        // DemandOperations mock
+        final DemandOperations demandOperations = new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setLocationKey(locationKey);
+                demand.setSource(Source.twitter); // Setup to verify it will be reset with the Source.simulated of the rawCommand
+                List<Demand> demands = new ArrayList<Demand>();
+                demands.add(demand);
+                return demands;
+            }
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                return demand;
+            }
+            @Override
+            public Demand createDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+                assertEquals(Source.simulated, demand.getSource()); // Verify the source attribute reset with the raw Command one
+                assertEquals(State.opened, demand.getState());
+                demand.setKey(demandKey);
+                return demand;
+            }
+        };
+        // LocationOperations mock
+        final LocationOperations locationOperations = new LocationOperations() {
+            @Override
+            public Location createLocation(PersistenceManager pm, JsonObject command) {
+                throw new IllegalArgumentException("Done in purpose");
+            }
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                Location location = new Location();
+                location.setKey(locationKey);
+                return location;
+            }
+        };
+        // CommandProcessor mock
+        CommandProcessor._baseOperations = new MockBaseOperations();
+        CommandProcessor.demandOperations = demandOperations;
+        CommandProcessor.locationOperations = locationOperations;
+
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        // RawCommand mock
+        RawCommand rawCommand = new RawCommand(Source.simulated);
+
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));
@@ -821,6 +874,7 @@ public class TestDemandCommandProcessor {
     public void testProcessAdditionalNewDemandIV() throws Exception {
         final Long demandKey = 2222L;
         final Long locationKey = 3333L;
+        final Long consumerKey = 54682L;
 
         // DemandOperations mock
         final DemandOperations demandOperations = new DemandOperations() {
@@ -879,6 +933,7 @@ public class TestDemandCommandProcessor {
 
         // Consumer mock
         Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
         consumer.setLocationKey(locationKey);
 
         DemandCommandProcessor.processDemandCommand(new MockPersistenceManager(), consumer, rawCommand, command, CommandLineParser.localizedPrefixes.get(Locale.ENGLISH), CommandLineParser.localizedActions.get(Locale.ENGLISH));

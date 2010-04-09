@@ -126,13 +126,13 @@ public class TestRawCommandOperations {
         RawCommand object = new RawCommand();
         object.setEmitterId("emitter");
         object = ops.createRawCommand(pm, object); // Gives the PersistenceManager so it won't be closed
-        object.setEmitterId(null);
+        object.setEmitterId("who?");
         object.setErrorMessage("error");
 
         RawCommand updated = ops.updateRawCommand(object);
         assertNotNull(updated);
         assertEquals(object.getKey(), updated.getKey());
-        assertNull(object.getEmitterId());
+        assertEquals("who?", object.getEmitterId());
         assertEquals("error", object.getErrorMessage());
         assertTrue(pm.isClosed());
     }

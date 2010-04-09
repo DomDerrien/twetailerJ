@@ -158,9 +158,9 @@ public class TestPaymentOperations {
         assertEquals(item.getKey(), retreived.getKey());
         assertEquals(item.getAuthorizationId(), retreived.getAuthorizationId());
 
-        item.setAuthorizationId(null);
+        item.setAuthorizationId("good!");
         item = ops.updatePayment(pm, item);
 
-        assertEquals(null, item.getAuthorizationId());
+        assertEquals("good!", item.getAuthorizationId());
     }
 }

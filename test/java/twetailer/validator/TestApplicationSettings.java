@@ -194,7 +194,7 @@ public class TestApplicationSettings {
     @Test
     public void testLogoURLNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[5] = new Object[] { ApplicationSettings.LOGO_URL_KEY, 12345L };
+        mRB.contents[4] = new Object[] { ApplicationSettings.LOGO_URL_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
@@ -211,7 +211,7 @@ public class TestApplicationSettings {
     @Test
     public void testProductEmailNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[6] = new Object[] { ApplicationSettings.PRODUCT_EMAIL_KEY, 12345L };
+        mRB.contents[5] = new Object[] { ApplicationSettings.PRODUCT_EMAIL_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
@@ -228,7 +228,7 @@ public class TestApplicationSettings {
     @Test
     public void testProductNameNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[7] = new Object[] { ApplicationSettings.PRODUCT_NAME_KEY, 12345L };
+        mRB.contents[6] = new Object[] { ApplicationSettings.PRODUCT_NAME_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
@@ -245,7 +245,7 @@ public class TestApplicationSettings {
     @Test
     public void testProductWebsiteNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[8] = new Object[] { ApplicationSettings.PRODUCT_WEBSITE_KEY, 12345L };
+        mRB.contents[7] = new Object[] { ApplicationSettings.PRODUCT_WEBSITE_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
@@ -262,7 +262,7 @@ public class TestApplicationSettings {
     @Test
     public void testServletApiPathNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[9] = new Object[] { ApplicationSettings.SERVLET_API_PATH_KEY, 12345L };
+        mRB.contents[8] = new Object[] { ApplicationSettings.SERVLET_API_PATH_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());

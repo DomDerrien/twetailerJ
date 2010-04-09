@@ -117,4 +117,19 @@ public class TestPayment {
         assertEquals(demandKey.longValue(), json.getLong("demandKey"));
         assertEquals(proposalKey.longValue(), json.getLong("proposalKey"));
     }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyAuthorizationIdI() {
+        new Payment().setAuthorizationId(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyAuthorizationIdII() {
+        new Payment().setAuthorizationId("");
+    }
+
+    @Test
+    public void testNullifyAuthorizationIdIII() {
+        new Payment().setAuthorizationId("good!");
+    }
 }

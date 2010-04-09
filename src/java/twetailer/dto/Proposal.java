@@ -89,11 +89,14 @@ public class Proposal extends Command {
     }
 
     public String getAWSCBUIURL() {
+        if (AWSCBUIURL == null) {
+            return null;
+        }
         return AWSCBUIURL.getValue();
     }
 
     public void setAWSCBUIURL(String aWSCBUIURL) {
-        AWSCBUIURL = AWSCBUIURL == null || aWSCBUIURL.length() == 0 ? null : new Text(aWSCBUIURL);
+        AWSCBUIURL = aWSCBUIURL == null || aWSCBUIURL.length() == 0 ? null : new Text(aWSCBUIURL);
     }
 
     public String getSerializedCriteria() {
