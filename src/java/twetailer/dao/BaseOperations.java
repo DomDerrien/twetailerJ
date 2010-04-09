@@ -11,10 +11,10 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import twetailer.DataSourceException;
+
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
-
-import twetailer.DataSourceException;
 
 public class BaseOperations {
     private static Logger _log = Logger.getLogger(BaseOperations.class.getName());
@@ -294,6 +294,19 @@ public class BaseOperations {
             _saleAssociateOperations = new SaleAssociateOperations();
         }
         return _saleAssociateOperations;
+    }
+
+    private SeedOperations _seedOperations;
+
+    /**
+     * Factory for the SeedOperations instance
+     * @return SeedOperations instance
+     */
+    public SeedOperations getSeedOperations() {
+        if (_seedOperations == null) {
+            _seedOperations = new SeedOperations();
+        }
+        return _seedOperations;
     }
 
     private SettingsOperations _settingsOperations;

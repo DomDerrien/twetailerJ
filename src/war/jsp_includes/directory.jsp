@@ -27,7 +27,7 @@
     String localeId = LocaleController.getLocaleId(request);
 
     // Get the data prepared by the servlet code
-    JsonParser dataParser = new JsonParser(LocaleValidator.toUnicode((String) session.getAttribute("data")));
+    JsonParser dataParser = new JsonParser((String) session.getAttribute("data"));
     session.setAttribute("data", null);
     JsonObject data = dataParser.getJsonObject();
     String cityName = data.getString("city_label");
@@ -187,7 +187,7 @@
                     <ul>
                         <% for(int cityIdx=0; cityIdx < citiesNearby.size(); cityIdx ++) {
                             JsonObject city = citiesNearby.getJsonObject(cityIdx);
-                        %><li><a href="<%= city.getString("url") %>"><%= city.getString("label") %></a></li><% } %>
+                        %><li><a href="/directory<%= city.getString("key") + (request.getQueryString() == null ? "" : "?" + request.getQueryString()) %>"><%= city.getString("label") %></a></li><% } %>
                     </ul>
                 </div>
             </div>
