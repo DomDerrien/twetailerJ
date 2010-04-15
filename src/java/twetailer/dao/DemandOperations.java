@@ -97,8 +97,7 @@ public class DemandOperations extends BaseOperations {
      * @return Just created resource
      */
     public Demand createDemand(PersistenceManager pm, Demand demand) {
-        pm.makePersistent(demand);
-        return demand;
+        return pm.makePersistent(demand);
     }
 
     /**
@@ -344,9 +343,7 @@ public class DemandOperations extends BaseOperations {
      * @return Updated resource
      */
     public Demand updateDemand(PersistenceManager pm, Demand demand) {
-        getLogger().warning("Updating demand with id: " + demand.getKey());
-        pm.makePersistent(demand);
-        return demand;
+        return pm.makePersistent(demand);
     }
 
     /**
@@ -394,7 +391,6 @@ public class DemandOperations extends BaseOperations {
      * @param key Identifier of the demand
      */
     public void deleteDemand(PersistenceManager pm, Demand demand) {
-        getLogger().warning("Delete demand with id: " + demand.getKey());
         pm.deletePersistent(demand);
     }
 }

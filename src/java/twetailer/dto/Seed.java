@@ -5,8 +5,6 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import twetailer.DataSourceException;
-
 import com.google.appengine.api.datastore.KeyFactory;
 
 import domderrien.jsontools.GenericJsonObject;
@@ -37,6 +35,11 @@ public class Seed implements TransferObject {
 
     public static final String LABEL = "label";
 
+    @Persistent
+    Long locationKey;
+
+    public static final String LOCATION_KEY = Location.LOCATION_KEY;
+
     public static final String QUERY_KEY = "queryKey";
 
     @Persistent
@@ -56,6 +59,10 @@ public class Seed implements TransferObject {
         setCity(city);
         setLabel(label);
         setStoreKey(storeKey);
+    }
+
+    public Seed(JsonObject in) {
+        fromJson(in);
     }
 
     public String buildQueryString() {
@@ -109,6 +116,14 @@ public class Seed implements TransferObject {
         this.label = label == null || label.length() == 0 ? null : label;
     }
 
+    public Long getLocationKey() {
+        return locationKey;
+    }
+
+    public void setLocationKey(Long locationKey) {
+        this.locationKey = locationKey;
+    }
+
     public String getRegion() {
         return region;
     }
@@ -134,6 +149,7 @@ public class Seed implements TransferObject {
         out.put(COUNTRY, getCountry());
         out.put(KEY, getKey());
         out.put(LABEL, getLabel());
+        out.put(LOCATION_KEY, getLocationKey());
         out.put(QUERY_KEY, buildQueryString());
         out.put(REGION, getRegion());
         out.put(STORE_KEY, getStoreKey());
@@ -145,6 +161,7 @@ public class Seed implements TransferObject {
         if (in.containsKey(COUNTRY)) { setCountry(in.getString(COUNTRY)); }
         if (in.containsKey(KEY)) { setKey(in.getString(KEY)); }
         if (in.containsKey(LABEL)) { setLabel(in.getString(LABEL)); }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(REGION)) { setRegion(in.getString(REGION)); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         return this;

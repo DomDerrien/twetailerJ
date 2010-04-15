@@ -101,8 +101,7 @@ public class ProposalOperations extends BaseOperations {
      * @return Just created resource
      */
     public Proposal createProposal(PersistenceManager pm, Proposal proposal) {
-        pm.makePersistent(proposal);
-        return proposal;
+        return pm.makePersistent(proposal);
     }
     /**
      * Use the given reference to get the corresponding Proposal instance for the identified sale associate
@@ -328,9 +327,7 @@ public class ProposalOperations extends BaseOperations {
      * @return Updated resource
      */
     public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
-        getLogger().warning("Updating proposal with id: " + proposal.getKey());
-        pm.makePersistent(proposal);
-        return proposal;
+        return pm.makePersistent(proposal);
     }
 
     /**

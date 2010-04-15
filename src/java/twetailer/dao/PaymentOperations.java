@@ -41,8 +41,7 @@ public class PaymentOperations extends BaseOperations {
      * @return Just created resource
      */
     public Payment createPayment(PersistenceManager pm, Payment payment) {
-        pm.makePersistent(payment);
-        return payment;
+        return pm.makePersistent(payment);
     }
 
     /**
@@ -81,8 +80,7 @@ public class PaymentOperations extends BaseOperations {
         }
         getLogger().warning("Get Payment instance with id: " + key);
         try {
-            Payment payment = pm.getObjectById(Payment.class, key);
-            return payment;
+            return pm.getObjectById(Payment.class, key);
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving payment for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -116,8 +114,6 @@ public class PaymentOperations extends BaseOperations {
      * @return Updated resource
      */
     public Payment updatePayment(PersistenceManager pm, Payment payment) {
-        getLogger().warning("Updating payment with id: " + payment.getKey());
-        payment = pm.makePersistent(payment);
-        return payment;
+        return pm.makePersistent(payment);
     }
 }

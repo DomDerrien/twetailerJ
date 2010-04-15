@@ -177,9 +177,7 @@ public class SettingsOperations extends BaseOperations {
      * @throws ClientException If the retrieved demand does not belong to the specified user
      */
     public Settings updateSettings(PersistenceManager pm, Settings update) throws DataSourceException {
-        getLogger().warning("Update application settings");
         updateSettingsInCache(update);
-        pm.makePersistent(update);
-        return update;
+        return pm.makePersistent(update);
     }
 }

@@ -365,8 +365,7 @@ public class ConsumerOperations extends BaseOperations {
         }
         getLogger().warning("Get Consumer instance with id: " + key);
         try {
-            Consumer consumer = pm.getObjectById(Consumer.class, key);
-            return consumer;
+            return pm.getObjectById(Consumer.class, key);
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -448,9 +447,7 @@ public class ConsumerOperations extends BaseOperations {
      * @return Updated resource
      */
     public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
-        getLogger().warning("Updating consumer with id: " + consumer.getKey());
-        pm.makePersistent(consumer);
-        return consumer;
+        return pm.makePersistent(consumer);
     }
 
     /**

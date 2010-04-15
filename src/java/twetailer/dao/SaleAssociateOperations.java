@@ -130,8 +130,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @return Just created resource
      */
     public SaleAssociate createSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
-        pm.makePersistent(saleAssociate);
-        return saleAssociate;
+        return pm.makePersistent(saleAssociate);
     }
 
     /**
@@ -273,9 +272,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @return Updated resource
      */
     public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
-        getLogger().warning("Updating sale associate with id: " + saleAssociate.getKey());
-        saleAssociate = pm.makePersistent(saleAssociate);
-        return saleAssociate;
+        return pm.makePersistent(saleAssociate);
     }
 
     /**

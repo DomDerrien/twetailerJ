@@ -56,8 +56,7 @@ public class SeedOperations extends BaseOperations {
         }
         // Create an entry for that new seed
         seed.setKey(seed.buildQueryString());
-        pm.makePersistent(seed);
-        return seed;
+        return pm.makePersistent(seed);
     }
 
     /**
@@ -70,9 +69,33 @@ public class SeedOperations extends BaseOperations {
      *
      * @throws DataSourceException If the retrieved location does not belong to the specified user
      *
-     * @see SeedOperations#getSeed(String)
+     * @see SeedOperations#getSeed(PersistenceManager, String, String, String)
      */
     public Seed getSeed(String country, String region, String city) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return getSeed(pm, country, region, city);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+
+    /**
+     * Use the given key to get the corresponding Seed instance
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param country Country identifier
+     * @param region Region identifier
+     * @city City name
+     * @return First location matching the given criteria or <code>null</code>
+     *
+     * @throws DataSourceException If the retrieved location does not belong to the specified user
+     *
+     * @see SeedOperations#getSeed(String)
+     */
+    public Seed getSeed(PersistenceManager pm, String country, String region, String city) throws DataSourceException {
         return getSeed(Seed.generateKey(Seed.buildQueryString(country, region, city)));
     }
 
@@ -111,8 +134,7 @@ public class SeedOperations extends BaseOperations {
         }
         getLogger().warning("Get Seed instance with id: " + key);
         try {
-            Seed seed = pm.getObjectById(Seed.class, key);
-            return seed;
+            return pm.getObjectById(Seed.class, key);
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving seed for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -146,5 +168,37 @@ public class SeedOperations extends BaseOperations {
         List<Seed> seeds = (List<Seed>) queryObj.execute();
         seeds.size(); // FIXME: remove workaround for a bug in DataNucleus
         return seeds;
+    }
+
+    /**
+     * Persist the updated Seed instance
+     *
+     * @param seed Resource to persist
+     * @return Just created resource
+     *
+     * @throws DataSourceException If the given seed that is read from the object or created from its data is invalid
+     *
+     * @see SeedOperations#updateSeed(PersistenceManager, Seed)
+     */
+    public Seed updateSeed(Seed seed) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createSeed(pm, seed);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+
+    /**
+     * Persist the updated Seed instance
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param seed Resource to persist
+     * @return Just updated resource
+     */
+    public Seed updateSeed(PersistenceManager pm, Seed seed) {
+        return pm.makePersistent(seed);
     }
 }
