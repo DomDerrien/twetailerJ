@@ -636,6 +636,7 @@
         </tu>
         <tu tuid="sep_need_non_empty_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Vous ne pouvez soumettre une demande vide. Veuillez décrire votre Demande avec au moins 3 mots-clés.</seg>
@@ -669,6 +670,13 @@
                 <seg>Localité :</seg>
             </tuv>
         </tu>
+        <tu tuid="sep_advanced_form_locale_view_map" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Voir la localité sur une carte</seg>
+            </tuv>
+        </tu>
         <tu tuid="sep_advanced_form_locale_hint" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -676,11 +684,18 @@
                 <seg>Code postal et code de pays, pour produire « H1X 2C6 CA » ou « 94523 US ».</seg>
             </tuv>
         </tu>
-        <tu tuid="sep_advanced_form_range_label" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="sep_locale_map_preview" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Distance&#160;:</seg>
+                <seg>Visualization de la localité choisie</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_range_label" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Distance :</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_quantity_label" dataType="text">
@@ -695,6 +710,27 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Date d'expiration :</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_expiration_date_format" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>dd/mm/yyyy</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_expiration_hint" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Format de la date : {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_expiration_date_invalid_message" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>La date n'est pas valide. Suivez le format : {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_update_button" dataType="text">
@@ -717,7 +753,7 @@
             <tuv xml:lang="fr">
                 <seg> Avertissement : La liste ci-dessus contient les mots-clés pour la région de {0}.
                     Les détaillants peuvent ajouter et retirer des mots-clés sur les produits et services
-                    qu'ils penvent offrir à n'importe quel moment. Cette page est reconstruite chaque jour.
+                    qu'ils peuvent offrir à n'importe quel moment. Cette page est reconstruite chaque jour.
                     Notez bien que les détaillants déclarent les mots-clés sans pour autant avoir les
                     produits en stock. Ils ne vous proposeront que ce qu'ils peuvent effectivement vous livrer.
                 </seg>
@@ -788,9 +824,9 @@
             <tuv xml:lang="fr">
                 <seg>
                     Google Talk (aussi juste appelé GTalk) est un système de messagerie instantannée
-                    reposant sur le standard &lt;a href="http://en.wikipedia.org/wiki/XMPP" target="_blank"&gt;XMPP&lt;/a&gt;.&lt;br /&gt;
-                    Vous pouvez utiliser l'outil &lt;a href="http://www.google.com/talk/index.html" target="_blank"&gt;GTalk pour Windows&lt;/a&gt;,
-                    ou un autre parmi la &lt;a href="http://www.google.com/talk/otherclients.html" target="_blank"&gt;liste des applications tiers&lt;/a&gt;
+                    reposant sur le standard &lt;a href="http://fr.wikipedia.org/wiki/Extensible_Messaging_and_Presence_Protocol" target="_blank"&gt;XMPP&lt;/a&gt;.&lt;br /&gt;
+                    Vous pouvez utiliser l'outil &lt;a href="http://www.google.com/talk/intl/fr/" target="_blank"&gt;GTalk pour Windows&lt;/a&gt;,
+                    ou un autre parmi la &lt;a href="http://www.google.com/talk/intl/fr/otherclients.html" target="_blank"&gt;liste des applications tiers&lt;/a&gt;
                     pour Windows, OSX ou Linux.
                     &lt;p&gt;
                     Les utilsateurs de téléphones mobiles ont d'autres choix :
@@ -799,7 +835,7 @@
                         &lt;li&gt;Avec les téléphones intelligents basés sur le &lt;a href="http://code.google.com/android/" target="_blank"&gt;système Android&lt;/a&gt;, GTalk est pré-installé.&lt;/li&gt;
                         &lt;li&gt;Avec les téléphones BlackBerry, il y a l'outil officiel &lt;a href="http://mobileapps.blackberry.com/devicesoftware/entry.do?code=gtalk" target="_blank"&gt;GTalk pour BlackBerry&lt;/a&gt;,&lt;/li&gt;
                         &lt;li&gt;Avec les téléphones Nokia, il est possible d'utiliser l'outil du &lt;a href="http://betalabs.nokia.com/apps/nokia-messaging-chat" target="_blank"&gt;betalabs.nokia.com&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;Enfin, les téléphones compatibles J2ME peuvent utiliser &lt;a href="http://nimbuzz.com" target="_blank"&gt;Nimbuzz&lt;/a&gt;.&lt;/li&gt;
+                        &lt;li&gt;Enfin, les téléphones compatibles J2ME peuvent utiliser &lt;a href="http://nimbuzz.com/fr/" target="_blank"&gt;Nimbuzz&lt;/a&gt;.&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;
                     Quand GTalk est installé et fonctionnne :
@@ -810,6 +846,30 @@
                     &lt;/ol&gt;
                     Bon magasinage avec Twetailer.
                 </seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_tweet_too_long_propose_email_alternative" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Le message pour cette Demande (paramètres compris) est trop longue pour Twitter.\nVoulez-vous l'envoyer par courriel ?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_email_subject" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Demande pour la région de {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_invalid_locale_message" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Impossible d'avoir les coordonnées géographiques pour « {0} {1} ». C'est probablement dû au code postal qui est invalide..</seg>
             </tuv>
         </tu>
     </body>

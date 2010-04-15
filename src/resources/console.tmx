@@ -775,6 +775,7 @@
         <tu tuid="sep_need_non_empty_demand" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
                 <seg>You cannot submit an empty Demand. Please, describe what you are looking for with a least 3 keywords.</seg>
@@ -817,12 +818,30 @@
             </tuv>
         </tu>
 
+        <tu tuid="sep_advanced_form_locale_view_map" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>View Locale on a Map</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="sep_advanced_form_locale_hint" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
                 <seg>Postal code and coutry code, to generate "H1X 2C6 CA" or "94523 US".</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_locale_map_preview" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Locale Preview</seg>
             </tuv>
         </tu>
 
@@ -850,6 +869,41 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Expiration date:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_advanced_form_expiration_date_format" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Used by the Dojo widget 'dijit.form.DateTextBox'
+                Used by the segment tuid="sep_advanced_form_expiration_hint"
+                Used by the segment tuid="sep_advanced_form_expiration_date_invalid_message"
+            </note>
+            <tuv xml:lang="en">
+                <seg>mm/dd/yyyy</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_advanced_form_expiration_hint" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: string representing the date format, as defined by segment tuid="sep_advanced_form_expiration_date_format"
+            </note>
+            <tuv xml:lang="en">
+                <seg>Date format: {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_advanced_form_expiration_date_invalid_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: string representing the date format, as defined by segment tuid="sep_advanced_form_expiration_date_format"
+            </note>
+            <tuv xml:lang="en">
+                <seg>Invalid date. Use {0} format.</seg>
             </tuv>
         </tu>
 
@@ -991,6 +1045,41 @@
                     </ol>
                     Happy shopping with Twetailer.
                 </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_tweet_too_long_propose_email_alternative" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>The message for the Demand (with its required attributes) is too long to be conveyed by Twitter.\nWould you like to send your Demand by E-Mail?</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_email_subject" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: city name
+            </note>
+            <tuv xml:lang="en">
+                <seg>Demand for {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_advanced_form_invalid_locale_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: postal code
+                {1}: country code
+            </note>
+            <tuv xml:lang="en">
+                <seg>Cannot get the geo location for {0}&#160;{1}. This is probably an invalid postal code.</seg>
             </tuv>
         </tu>
 

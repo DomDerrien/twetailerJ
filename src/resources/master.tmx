@@ -241,6 +241,7 @@
         <tu tuid="cl_prefix_expiration" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>expiration,expires</seg>
@@ -268,6 +269,7 @@
         <tu tuid="cl_prefix_locale" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the locale attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>locale,location,postalCode,zipCode</seg>
@@ -313,6 +315,7 @@
         <tu tuid="cl_prefix_quantity" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>quantity,qty</seg>
@@ -324,13 +327,14 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>reference,identifier,id,demandKey,dk</seg>
+                <seg>demand,reference,identifier,id,demandKey,dk</seg>
             </tuv>
         </tu>
 
         <tu tuid="cl_prefix_range" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the range attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>range,rng,distance</seg>
@@ -873,7 +877,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-               <seg>:-( If you wish to !Cancel a Demand, please try again by sending '!cancel ref:your-reference-number'.</seg>
+               <seg>:-( If you wish to Cancel a Demand, please try again by sending 'cancel dem:your-reference-number'.</seg>
             </tuv>
         </tu>
 
@@ -882,7 +886,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Demand Reference number you wish to !Cancel and try again.</seg>
+                <seg>:-( Please verify the Demand reference number you wish to Cancel and try again.</seg>
             </tuv>
         </tu>
 
@@ -894,7 +898,7 @@
                 {1}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't !Cancel Demand reference:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Cancel Demand:{0} in the State:{1}.</seg>
             </tuv>
         </tu>
 
@@ -908,7 +912,7 @@
                 {2}: proposal tags as defined by the entry "cp_tweet_tags_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( The owner of the Demand {0} canceled it. Your {1} with {2} is canceled as a side-effect.</seg>
+                <seg>:-( The owner of the Demand:{0} canceled it. Your Proposal:{1} with {2} is canceled as a side-effect.</seg>
             </tuv>
         </tu>
 
@@ -917,7 +921,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Proposal number you wish to !Cancel and try again.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Cancel and try again.</seg>
             </tuv>
         </tu>
 
@@ -929,7 +933,7 @@
                 {1}: proposal state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't !Cancel Proposal:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Cancel Proposal:{0} in the State:{1}.</seg>
             </tuv>
         </tu>
 
@@ -943,7 +947,7 @@
                 {2}: demand tags as defined by the entry "cp_tweet_tags_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( The owner of the {0} canceled it. Your Demand {1} with {2} is back in the published State, ready to be proposed again.</seg>
+                <seg>:-( The owner of the Proposal:{0} canceled it. Your Demand:{1} with {2} is back in the published State, ready to be proposed again.</seg>
             </tuv>
         </tu>
 
@@ -952,7 +956,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Demand Reference number you wish to !Close and try again.</seg>
+                <seg>:-( Please verify the Demand number you wish to Close and try again.</seg>
             </tuv>
         </tu>
 
@@ -964,7 +968,7 @@
                 {1}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't !Close Demand reference:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Close Demand:{0} in the State:{1}.</seg>
             </tuv>
         </tu>
 
@@ -975,7 +979,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Thanks for Closing Demand reference:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Thanks for Closing Demand:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
             </tuv>
         </tu>
 
@@ -988,8 +992,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    FYI. Demand reference:{0} has been closed by the Consumer. |
-                    Hint: Send "!close proposal:{1}", or, "!flag proposal:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    FYI. Demand:{0} has been closed by the Consumer. |
+                    Hint: Send "close proposal:{1}", or, "flag proposal:{1} note:enter-your-note-here" to improve your Twetailer Rating.
                 </seg>
             </tuv>
         </tu>
@@ -999,7 +1003,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Proposal number you wish to !Close and try again.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Close and try again.</seg>
             </tuv>
         </tu>
 
@@ -1011,7 +1015,7 @@
                 {1}: proposal state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't !Close Proposal:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Close Proposal:{0} in the State:{1}.</seg>
             </tuv>
         </tu>
 
@@ -1036,7 +1040,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. Proposal:{0} has been closed by the Retailer. |
-                    Hint: Send "!close ref:{1}", or, "!flag ref:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    Hint: Send "close demand:{1}", or, "flag demand:{1} note:enter-your-note-here" to improve your Twetailer Rating.
                 </seg>
 
             </tuv>
@@ -1047,7 +1051,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( You can only !Close Proposals or Demands.</seg>
+                <seg>:-( You can only Close Proposals or Demands.</seg>
             </tuv>
         </tu>
 
@@ -1060,7 +1064,7 @@
                 {2}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can only !Confirm Proposal:{0} for Demand reference:{1} when it's in State:{2}.</seg>
+                <seg>:-( You can only Confirm Proposal:{0} for Demand:{1} when it's in State:{2}.</seg>
             </tuv>
         </tu>
 
@@ -1076,8 +1080,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
-                    Store:{3}, {4} will be asked to mark and hold Demand ref:{1} </seg>
+                    :-) Thank you for confirming Proposal:{0} for Demand:{1} Tags:{2} |
+                    Store:{3}, {4} will be asked to mark and hold Demand:{1} </seg>
             </tuv>
         </tu>
 
@@ -1091,8 +1095,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Proposal:{0} for tags:{1} has been confirmed.|
-                    Please mark, hold for Consumer with Demand reference:{2} and then '!close proposal:{0}', or, '!flag proposal:{0} note:your-note-here'.
+                    :-) Proposal:{0} for Tags:{1} has been confirmed.|
+                    Please mark, hold for Consumer with Demand:{2} and then 'close proposal:{0}', or, 'flag proposal:{0} note:your-note-here'.
                 </seg>
             </tuv>
         </tu>
@@ -1101,7 +1105,7 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>FYI: Demo Sales Associate will now !Close your Demand</seg>
+                <seg>FYI: Demo Sales Associate will now Close your Demand</seg>
             </tuv>
         </tu>
 
@@ -1110,7 +1114,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Proposal number you wish to !Confirm and try again.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Confirm and try again.</seg>
             </tuv>
         </tu>
 
@@ -1130,7 +1134,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Proposal number you wish to !Decline and try again.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Decline and try again.</seg>
             </tuv>
         </tu>
 
@@ -1139,7 +1143,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( As a Consumer, you can only !Decline Proposals whereas Retailers can only !Decline Demands.</seg>
+                <seg>:-( As a Consumer, you can only Decline Proposals whereas Retailers can only Decline Demands.</seg>
             </tuv>
         </tu>
 
@@ -1152,8 +1156,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( You can only !Delete Cancelled Demands. Demand reference:{0} is in the State:{1}.|
-                    If this is the Demand you intended to !Delete then send '!cancel reference:{0}' and try again.
+                    :-( You can only Delete Cancelled Demands. Demand:{0} is in the State:{1}.|
+                    If this is the Demand you intended to Delete then send 'cancel demand:{0}' and try again.
                 </seg>
             </tuv>
         </tu>
@@ -1165,7 +1169,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Demand reference:{0} has been marked for deletion and no longer accessible</seg>
+                <seg>:-) Demand:{0} has been marked for deletion and no longer accessible</seg>
             </tuv>
         </tu>
 
@@ -1174,7 +1178,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Demand Reference number you wish to !Delete and try again.</seg>
+                <seg>:-( Please verify the Demand number you wish to Delete and try again.</seg>
             </tuv>
         </tu>
 
@@ -1187,8 +1191,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( You can only !Delete Cancelled Proposals. Proposal:{0} is in the State:{1}.|
-                    If this is the Proposal you intended to !Delete then send '!cancel proposal:{0}' and try again.
+                    :-( You can only Delete Cancelled Proposals. Proposal:{0} is in the State:{1}.|
+                    If this is the Proposal you intended to Delete then send 'cancel proposal:{0}' and try again.
                 </seg>
             </tuv>
         </tu>
@@ -1209,7 +1213,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Proposal number you wish to !Delete and try again.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Delete and try again.</seg>
             </tuv>
         </tu>
 
@@ -1218,7 +1222,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( You can only !Delete Proposals or Demands.</seg>
+                <seg>:-( You can only Delete Proposals or Demands.</seg>
             </tuv>
         </tu>
 
@@ -1230,7 +1234,7 @@
                 {0}: dynamically generated demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing newly created Demand Reference:{0}... </seg>
+                <seg>:-) Listing newly created Demand:{0}... </seg>
             </tuv>
         </tu>
 
@@ -1239,7 +1243,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Demand Reference number you wish to Update and try again.</seg>
+                <seg>:-( Please verify the Demand number you wish to Update and try again.</seg>
             </tuv>
         </tu>
 
@@ -1251,7 +1255,7 @@
                 {1}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Demand reference:{0} is currently in State:{1} and can't be updated.</seg>
+                <seg>:-( Demand:{0} is currently in State:{1} and can't be updated.</seg>
             </tuv>
         </tu>
 
@@ -1264,7 +1268,7 @@
                 {1}: current language name
             </note>
             <tuv xml:lang="en">
-                <seg>Your current language is '{0}' {1}. Update it by sending: '!lg language-code'.</seg>
+                <seg>Your current language is '{0}' {1}. Update it by sending: 'lg language-code'.</seg>
             </tuv>
         </tu>
 
@@ -1277,7 +1281,7 @@
                 {1}: current language name
             </note>
             <tuv xml:lang="en">
-                <seg>Your language stays '{0}' {1}. Update it by sending: '!lg another-language-code'.</seg>
+                <seg>Your language stays '{0}' {1}. Update it by sending: 'lg another-language-code'.</seg>
             </tuv>
         </tu>
 
@@ -1291,7 +1295,7 @@
                 {2}: previous language code
             </note>
             <tuv xml:lang="en">
-                <seg>Your new language is updated to '{0}' {1}. Revert it back by sending: '!lg {2}'.</seg>
+                <seg>Your new language is updated to '{0}' {1}. Revert it back by sending: 'lg {2}'.</seg>
             </tuv>
         </tu>
 
@@ -1300,7 +1304,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Demand Reference number and try again.</seg>
+                <seg>:-( Please verify the Demand number and try again.</seg>
             </tuv>
         </tu>
 
@@ -1325,7 +1329,7 @@
         <tu tuid="cp_command_list_no_active_demand" datatype="Text">
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
-            <note>Message informing that no result can be displayed for the !List command.</note>
+            <note>Message informing that no result can be displayed for the List command.</note>
             <tuv xml:lang="en">
                 <seg>:-) There are no active Demands to list.</seg>
             </tuv>
@@ -1335,7 +1339,7 @@
             <prop type="x-version">7</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message introducing the series of messages, owned by the consumer requesting the list, to be sent in response to a !List command.|
+                Message introducing the series of messages, owned by the consumer requesting the list, to be sent in response to a List command.|
                 {0}: number of messages to be sent
                 Attention: it's not the same message as "cp_command_list_demand_series_introduction", because all active demands, whereever they are located, will be listed
             </note>
@@ -1348,7 +1352,7 @@
             <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that no result can be displayed for the !List store:* command.
+                Message informing that no result can be displayed for the List store:* command.
                 {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
             </note>
             <tuv xml:lang="en">
@@ -1360,11 +1364,11 @@
             <prop type="x-version">7</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that location information is missing for the !List demand:* command.
+                Message informing that location information is missing for the List demand:* command.
                 {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "!list {0} locale:12345 us"</seg>
+                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
@@ -1372,7 +1376,7 @@
             <prop type="x-version">5</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that no result can be displayed for the !List demand:* command.
+                Message informing that no result can be displayed for the List demand:* command.
                 {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
@@ -1385,7 +1389,7 @@
             <prop type="x-version">7</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message introducing the series of messages to be sent in response to a !List demand:* command.|
+                Message introducing the series of messages to be sent in response to a List demand:* command.|
                 {0}: number of messages to be sent
                 {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
@@ -1399,11 +1403,11 @@
             <prop type="x-version">7</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that location information is missing for the !List proposal:* command.
+                Message informing that location information is missing for the List proposal:* command.
                 {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "!list {0} locale:12345 us"</seg>
+                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
@@ -1411,7 +1415,7 @@
             <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that no result can be displayed for the !List proposal:* command.
+                Message informing that no result can be displayed for the List proposal:* command.
                 {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
@@ -1424,7 +1428,7 @@
             <prop type="x-version">7</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message introducing the series of messages to be sent in response to a !List proposal:* command.|
+                Message introducing the series of messages to be sent in response to a List proposal:* command.|
                 {0}: number of messages to be sent
                 {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
@@ -1438,11 +1442,11 @@
             <prop type="x-version">7</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that location information is missing for the !List store:* command.
+                Message informing that location information is missing for the List store:* command.
                 {0}: store reference part as defined by the entry "cp_tweet_store_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "!list {0} locale:12345 us"</seg>
+                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "list {0} locale:12345 us"</seg>
             </tuv>
         </tu>
 
@@ -1450,7 +1454,7 @@
             <prop type="x-version">4</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing that no result can be displayed for the !List store:* command.
+                Message informing that no result can be displayed for the List store:* command.
                 {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
             </note>
@@ -1463,7 +1467,7 @@
             <prop type="x-version">8</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message introducing the series of messages to be sent in response to a !List store:* command.|
+                Message introducing the series of messages to be sent in response to a List store:* command.|
                 {0}: number of messages to be sent
                 {1}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
                 {2}: range part (value + unit) as defined by the entry "cp_tweet_range_part"
@@ -1478,7 +1482,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>:-( Please verify the Proposal number you wish to !Update and try again.</seg>
+                <seg>:-( Please verify the Proposal number you wish to Update and try again.</seg>
 
             </tuv>
         </tu>
@@ -1512,7 +1516,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>FYI. You are no longer supplying any tags.</seg>
+                <seg>FYI. You are no longer supplying any Tags.</seg>
             </tuv>
         </tu>
 
@@ -1523,7 +1527,7 @@
                 {0}: unique tag
             </note>
             <tuv xml:lang="en">
-                <seg>FYI. You are now supplying only one tag: {0}.</seg>
+                <seg>FYI. You are now supplying only one Tag:{0}.</seg>
             </tuv>
         </tu>
 
@@ -1535,7 +1539,7 @@
                 {1}: list size
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {1} tags: {0}.</seg>
+                <seg>:-) Listing {1} Tags:{0}.</seg>
             </tuv>
         </tu>
 
@@ -1543,7 +1547,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>!demand</seg>
+                <seg> </seg>
             </tuv>
         </tu>
 
@@ -1551,7 +1555,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>!propose</seg>
+                <seg>propose</seg>
             </tuv>
         </tu>
 
@@ -1560,7 +1564,7 @@
             <prop type="x-tier">javarb</prop>
             <note>{0}: demand reference</note>
             <tuv xml:lang="en">
-                <seg>reference:{0}</seg>
+                <seg>demand:{0}</seg>
             </tuv>
         </tu>
 
@@ -1799,7 +1803,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand with at least tag by sending 'reference:{0} tags:your-tags-here'.</seg>
+                <seg>:-( Please update your Demand with at least Tag by sending 'demand:{0} tags:your-tags-here'.</seg>
             </tuv>
         </tu>
 
@@ -1811,7 +1815,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Expiration date is in the future by sending 'reference:{0} expiration:YYYYMMDD'.</seg>
+                <seg>:-( Please ensure your Demand's Expiration date is in the future by sending 'demand:{0} expiration:YYYYMMDD'.</seg>
             </tuv>
         </tu>
 
@@ -1825,7 +1829,7 @@
                 {2}: system limit (hardcoded: 5 km)
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'reference:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'demand:{0} range:your-range-and-km'.</seg>
             </tuv>
         </tu>
 
@@ -1839,7 +1843,7 @@
                 {2}: system limit (hardcoded: 40075 km)
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} km) by sending 'reference:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} km) by sending 'demand:{0} range:your-range-and-km'.</seg>
             </tuv>
         </tu>
 
@@ -1853,7 +1857,7 @@
                 {2}: system limit (hardcoded: 2.5 mi)
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'reference:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'demand:{0} range:your-range-and-km'.</seg>
             </tuv>
         </tu>
 
@@ -1867,7 +1871,7 @@
                 {2}: system limit (hardcoded: 24906 mi)
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} miles) by sending 'reference:{0} range:your-range-and-mi'.</seg>
+                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} miles) by sending 'demand:{0} range:your-range-and-mi'.</seg>
             </tuv>
         </tu>
 
@@ -1879,7 +1883,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Quantity exceeds zero by sending 'reference:{0} qty:1'.</seg>
+                <seg>:-( Please ensure your Demand's Quantity exceeds zero by sending 'demand:{0} qty:1'.</seg>
             </tuv>
         </tu>
 
@@ -1891,7 +1895,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand's Locale by sending 'ref:{0} locale:your-postal/zip-code-and-country(us,ca)', like 'ref:{0} locale:12345 us'</seg>
+                <seg>:-( Please update your Demand's Locale by sending 'demand:{0} locale:your-postal/zip-code-and-country(us,ca)', like 'demand:{0} locale:12345 us'</seg>
             </tuv>
         </tu>
 
@@ -1905,7 +1909,7 @@
                 {2}: given country code.
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'ref:{0} locale:12345 us'.</seg>
+                <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'demand:{0} locale:12345 us'.</seg>
             </tuv>
         </tu>
 
@@ -1917,7 +1921,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country - like 'us', or, 'ca').</seg>
+                <seg>The Locale information for Demand:{0} cannot be retrieved. Please provide them another time (postal/zip code and country - like 'us', or, 'ca').</seg>
             </tuv>
         </tu>
 
@@ -1930,7 +1934,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( #demo is currently the only supported hash (#) tag. If you wish, remove the # from the rejected list and update your Demand tags by sending '!demand ref:{0} {1}"
+                    :-( #demo is currently the only supported hash (#) Tag. If you wish, remove the # from the rejected list and update your Demand Tags by sending 'demand:{0} {1}"
                 </seg>
             </tuv>
         </tu>
@@ -1947,7 +1951,7 @@
                 {0}: original command.
             </note>
             <tuv xml:lang="en">
-                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'ref:{0} locale:12345 us', or, 'ref:{0} locale:h0h 0h0 ca' </seg>
+                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'demand:{0} locale:12345 us', or, 'demand:{0} locale:h0h 0h0 ca' </seg>
             </tuv>
         </tu>
 
@@ -1967,8 +1971,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. Can you supply Demand ref:{0} tags:{1} expires:{2}? If yes then send the following... |
-                    2/2 '!propose ref:{0} tags:your-description-here price:your-price-here'.
+                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Expires:{2}? If yes then send the following... |
+                    2/2 'propose demand:{0} tags:your-description-here price:your-price-here'.
                 </seg>
             </tuv>
         </tu>
@@ -1986,8 +1990,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
-                    2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here'.
+                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Qty:{3} Expires:{2}? If yes then send the following... |
+                    2/2 'propose demand:{0} tags:your-description-here qty:your-qty-here price:your-price-here'.
                 </seg>
             </tuv>
         </tu>
@@ -2015,7 +2019,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. {2} additional Sales Associates have been notified of your Demand ref:{0}, for a total of {1}.|
+                    1/2 FYI. {2} additional Sales Associates have been notified of your Demand:{0}, for a total of {1}.|
                     2/2 I'll continue checking until the expiration date.
                 </seg>
             </tuv>
@@ -2033,7 +2037,7 @@
                 {0}: proposal key:
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal with at least tag by sending '!propose proposal:{0} tags:your-tags-here'.</seg>
+                <seg>:-( Please update your Proposal with at least Tag by sending 'propose proposal:{0} tags:your-tags-here'.</seg>
             </tuv>
         </tu>
 
@@ -2045,7 +2049,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal's Quantity exceeds zero by sending '!propose proposal:{0} qty:1'.</seg>
+                <seg>:-( Please ensure your Proposal's Quantity exceeds zero by sending 'propose proposal:{0} qty:1'.</seg>
             </tuv>
         </tu>
 
@@ -2058,7 +2062,7 @@
                 Future release
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal has a unit Price and final Total cost by sending '!propose proposal:{0} price:unit-price total:final-cost'.</seg>
+                <seg>:-( Please ensure your Proposal has a unit Price and final Total cost by sending 'propose proposal:{0} price:unit-price total:final-cost'.</seg>
             </tuv>
         </tu>
 
@@ -2070,7 +2074,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal has a Reference number by sending '!propose proposal:{0} ref:see-previously-sent-ref'.</seg>
+                <seg>:-( Please ensure your Proposal has a Demand number by sending 'propose proposal:{0} demand:see-previously-sent-ref'.</seg>
             </tuv>
         </tu>
 
@@ -2083,7 +2087,7 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal has the appropriate Reference number by sending '!propose proposal:{0} ref:see-previously-sent-ref'.</seg>
+                <seg>:-( Please ensure your Proposal has the appropriate Demand number by sending 'propose proposal:{0} demand:see-previously-sent-ref'.</seg>
             </tuv>
         </tu>
 
@@ -2096,8 +2100,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 :-( #demo is currently the only supported hash (#) tag. |
-                    2/2 You can add the keyword to the Proposal tags by sending '!propose proposal:{0} {1}'.
+                    1/2 :-( #demo is currently the only supported hash (#) Tag. |
+                    2/2 You can add the keyword to the Proposal Tags by sending 'propose proposal:{0} {1}'.
                 </seg>
             </tuv>
         </tu>
@@ -2124,9 +2128,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ...|
-                    2/3 Proposal:{0} tags:{1} price:{7}{8} total:{7}{9}|
-                    3/3 From Store:{5} {6}. You can send '!confirm proposal:{0}', or, '!decline proposal:{0}'.
+                    1/3 Re: Demand:{2} Tags:{3} Expires:{4}. I have ...|
+                    2/3 Proposal:{0} Tags:{1} Price:{7}{8} Total:{7}{9}|
+                    3/3 From Store:{5} {6}. You can send 'confirm proposal:{0}', or, 'decline proposal:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -2148,9 +2152,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ...|
-                    2/3 Proposal:{0} tags:{1} price:{7}{8}|
-                    3/3 From Store:{5} {6}. You can send '!confirm proposal:{0}', or, '!decline proposal:{0}'.
+                    1/3 Re: Demand:{2} Tags:{3} Expires:{4}. I have ...|
+                    2/3 Proposal:{0} Tags:{1} Price:{7}{8}|
+                    3/3 From Store:{5} {6}. You can send 'confirm proposal:{0}', or, 'decline proposal:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -2172,9 +2176,9 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ...|
-                    2/3 Proposal:{0} tags:{1} total:{7}{8}|
-                    3/3 From Store:{5} {6}. You can send '!confirm proposal:{0}', or, '!decline proposal:{0}'.
+                    1/3 Re: Demand:{2} Tags:{3} Expires:{4}. I have ...|
+                    2/3 Proposal:{0} Tags:{1} Total:{7}{8}|
+                    3/3 From Store:{5} {6}. You can send 'confirm proposal:{0}', or, 'decline proposal:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -2189,7 +2193,7 @@
                 {2}: demand state
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Your proposal:{0} can't be attached to Demand reference:{1} in State:{2}.</seg>
+                <seg>:-( Your proposal:{0} can't be attached to Demand:{1} in State:{2}.</seg>
             </tuv>
         </tu>
 
@@ -2282,7 +2286,7 @@
                 {0}: proposal serialized keywords without the prefix
                 {1}: demand serialized keywords without the prefix
             </note>
-            <tuv xml:lang="en"><seg>You're going to pay for "{0}", as proposed for your demand "{1}". Thank you for shopping with Twetailer.</seg></tuv>
+            <tuv xml:lang="en"><seg>You're going to pay for {0}, as proposed for your Demand "{1}". Thank you for shopping with Twetailer.</seg></tuv>
         </tu>
 
     </body>

@@ -87,12 +87,12 @@
         <!-- =================== -->
 
         <tu tuid="Action" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the prefix 'action'</note>
             <tuv xml:lang="en">
                 <seg>Action (story): As a user of Twetailer, I want to be able to interact with the system via brief Command-line actions, so I can create, read, update, delete (CRUD) and process transactions |
-                Action (usage): Send "![action]". Example: Send "!list" |
+                Action (usage): Send "[action]". Example: Send "list". If the action verb is not the first word, prefix with "!". |
                 Action (see also): cancel, close, confirm, decline, demand, flag, help, list, propose, rate, register, reserve, settle, supply, wish, www |
                 Action (since): v0.0</seg>
             </tuv>
@@ -164,15 +164,15 @@
         <!-- =================== -->
 
         <tu tuid="Cancel" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'cancel'</note>
             <tuv xml:lang="en">
                 <seg>Cancel (story): As a Consumer, or, Retailer, I want to Cancel a respective Demand, or, Proposal, so I can cease further transaction processing on it |
-                Cancel (usage - Consumers): Send "!cancel ref:[my-Demand's-reference-number]" |
-                Cancel (example - Consumers): Send "!cancel ref:123456" |
-                Cancel (usage - Retailers): Send "!cancel proposal:[Demand's-reference-number-Proposal-number]" |
-                Cancel (example - Retailers): Example: Send "!cancel ref:123456-2" |
+                Cancel (usage - Consumers): Send "cancel ref:[my-Demand's-reference-number]" |
+                Cancel (example - Consumers): Send "cancel ref:123456" |
+                Cancel (usage - Retailers): Send "cancel proposal:[Demand's-reference-number-Proposal-number]" |
+                Cancel (example - Retailers): Example: Send "cancel ref:123456-2" |
                 Cancel (rules): Only non-closed transactions can be cancelled |
                 Cancel (see also): cancelled, state, state-flow, action |
                 Cancel (since): v0.0</seg>
@@ -192,16 +192,16 @@
         </tu>
 
         <tu tuid="Close" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'close'</note>
             <tuv xml:lang="en">
                 <seg>Close (story - Consumer): As a Consumer, I want to signify the successful completion of my Demand, so I can improve my Rating |
                 Close (story - Retailer): As a Retailer, I want to signify the successful completion of Proposal, so I can improve my Rating |
-                Close (usage - Consumer): Send "!close ref:[reference-number] note:[any-text] sentiment:[+/-] " |
-                Close (usage - Retailer): Send "!close proposal:[proposal-number] note:[any-text] sentiment:[+/-] " |
-                Close (example - Consumer): Send "!close ref:12345", or, Send "!close ref:123456 note:awesome sent:+ " |
-                Close (example - Retailer): Send "!close proposal:23456", or, Send "!close proposal:23456 note:awesome sent:+ " |
+                Close (usage - Consumer): Send "close ref:[reference-number] note:[any-text] sentiment:[+/-] " |
+                Close (usage - Retailer): Send "close proposal:[proposal-number] note:[any-text] sentiment:[+/-] " |
+                Close (example - Consumer): Send "close ref:12345", or, Send "close ref:123456 note:awesome sent:+ " |
+                Close (example - Retailer): Send "close proposal:23456", or, Send "close proposal:23456 note:awesome sent:+ " |
                 Close (rules): Consumers can only close open Demands created by them. Retailers can only close open Demands the have confirmed proposal for. Note and Sentiment are optional |
                 Close (see also): closed, state, state-flow, action |
                 Close (since): v0.0</seg>
@@ -231,13 +231,13 @@
         </tu>
 
         <tu tuid="Confirm" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'confirm'</note>
             <tuv xml:lang="en">
                 <seg>Confirm (story): As a Consumer, I want to Confirm a successful match between my Demand and a Retailer's respective Proposal, so I can proceed to close the sale |
-                Confirm (usage): Send "!confirm proposal:[proposal-number]" |
-                Confirm (example): Send "!confirm proposal:123456-2" |
+                Confirm (usage): Send "confirm proposal:[proposal-number]" |
+                Confirm (example): Send "confirm proposal:123456-2" |
                 Confirm (rules): Consumers can only confirm open Proposals for their Demands. Consumers are only allowed to have one confirmed Proposal for each Demand. Confirmed Proposals can be cancelled |
                 Confirm (see also): confirmed, state, state-flow, action |
                 Confirm (since): v0.0</seg>
@@ -282,13 +282,13 @@
         <!-- =================== -->
 
         <tu tuid="Decline" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'decline'</note>
             <tuv xml:lang="en">
                 <seg>Decline (story): As a Consumer, I want to Decline a Retailer's Proposal for a Demand of mine, so I have less open Proposals to consider |
-                Decline (usage): Send "!decline proposal:[proposal-number]" |
-                Decline (example): Send "!decline proposal:123456-2" |
+                Decline (usage): Send "decline proposal:[proposal-number]" |
+                Decline (example): Send "decline proposal:123456-2" |
                 Decline (rules): Optional. Consumers can only decline open Proposals for their Demands. Declined Proposals cannot be undone |
                 Decline (see also): declined, state, state-flow, action |
                 Decline (since): v0.0</seg>
@@ -328,7 +328,7 @@
         </tu>
 
         <tu tuid="Demand-crud" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the glossary 'demand-crud'</note>
             <tuv xml:lang="en">
@@ -337,9 +337,9 @@
                     Demand-crud (update story): As a Consumer, I want to update attributes of my Demand by sending its reference number and their replacement values, so I can modify my search criteria Retailers in my Locale. |
                     Demand-crud (delete story): As a Consumer, I want to delete a Demand. |
                     Demand-crud (create example): Send "wii console locale:12345 US range:25 mi expires:2009-12-23" |
-                    Demand-crud (read example): Send "!list ref:12345" |
+                    Demand-crud (read example): Send "list ref:12345" |
                     Demand-crud (update example): Send "ref:12345 range:50 mi" |
-                    Demand-crud (delete example): Send "!cancel ref:12345" |
+                    Demand-crud (delete example): Send "cancel ref:12345" |
                     Demand-crud (see also): ref, consumer, retailer, demand, demand-tags, locale, range, expires, cancel, list |
                     Demand-crud (since): v0.0</seg>
             </tuv>
@@ -380,13 +380,13 @@
         </tu>
 
         <tu tuid="Flag" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'flag'</note>
             <tuv xml:lang="en">
                 <seg>Flag (story): As a Consumer, or, Retailer, I want to flag Twetailer of an issue with a respective Demand, or, Proposal, so I can help improve the service. |
-                Flag (usage): Send "!problem ref:[demand-reference-number] note:[any-text] " |
-                Flag (example ): Send "!problem ref:123456" note:product held was not the one proposed and confirmed |
+                Flag (usage): Send "problem ref:[demand-reference-number] note:[any-text] " |
+                Flag (example ): Send "problem ref:123456" note:product held was not the one proposed and confirmed |
                 Flag (rules): Consumers can only report problems on open Demands created by them. Retailers can only report problems on Demands the have confirmed proposal for. Note is optional. "Sentiment:-" is implied |
                 Flag (see also): flagged, state, state-flow, action |
                 Flag (AKA): problem |
@@ -474,12 +474,12 @@
         </tu>
 
         <tu tuid="Help" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the prefix 'help'</note>
             <tuv xml:lang="en">
                 <seg>Help (story): As a user of Twetailer, I want to request Help by sending a one-word term in various formats, so I can better understand how Twetailer works |
-                Help (usage): Send "help:[query-term]", or, "!help", or, "?" |
+                Help (usage): Send "help:[query-term]", or, "help", or, "?" |
                 Help (example): Send "consumer?", or, "?consumer". Hint: You can query for Help on any capitalized help text keyword |
                 Help (rules): Help System currently supports only one word queries and will ignore everything after the first word. Query for words in singular form, regardless of case. Therefore "?consumer" = "?Consumer" = "?CONSUMER" |
                 Help (see also): ?, index, action |
@@ -539,13 +539,13 @@
         </tu>
 
         <tu tuid="List-demands-private" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'list-demands-private'</note>
             <tuv xml:lang="en">
                 <seg>List-demands-private (story): As a Consumer, I want to read the attributes of one, or, more of my Demands, so I can review my search criteria |
-                List-demands-private (usage-all): Send "!list". Example: Send "!list" |
-                List-demands-private (usage-one): Send "!list ref:[demand-reference-number]". Example: "!list ref:12345" |
+                List-demands-private (usage-all): Send "list". Example: Send "list" |
+                List-demands-private (usage-one): Send "list ref:[demand-reference-number]". Example: "list ref:12345" |
                 List-demands-private (rules): Only list Demands owned by Consumer |
                 List-demands-private (see also): list, list-demands-public, list-proposal, list-store, list-tag |
                 List-demands-private (since): v0.0</seg>
@@ -553,13 +553,13 @@
         </tu>
 
         <tu tuid="List-demands-public" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'list-demands-public'</note>
             <tuv xml:lang="en">
                 <seg>List-demands-public (story): As a Consumer, or, a Retailer, I want a public listing for all Demands and all their attributes - except reference, within a Locale's Range, optionally by Expiration date, so I can see what Consumers are demanding |
-                List-demands-public (usage): Send "!list locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] [expires:yyyy-mm-dd]" |
-                List-demands-public (example): Send "!list locale:12345 us range:25 mi expires:2009-12-23" |
+                List-demands-public (usage): Send "list locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] [expires:yyyy-mm-dd]" |
+                List-demands-public (example): Send "list locale:12345 us range:25 mi expires:2009-12-23" |
                 List-demands-public (rules): Does not list Demand Reference numbers |
                 List-demands-public (see also): list, list-demands-private, list-proposal, list-store, list-tag |
                 List-demands-public (since): v0.0</seg>
@@ -567,13 +567,13 @@
         </tu>
 
         <tu tuid="List-proposal" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'list-proposal'</note>
             <tuv xml:lang="en">
                 <seg>List-proposal (story): As a Consumer, or, Retailer, I want to List one, all, Proposals sent, or, received with optional search criteria |
-                List-proposal (usage): Send "!list proposal:[proposal-number | * | from | to] [reference:demand-reference-number] [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]" |
-                List-proposal (example): Send "!list proposal:*" |
+                List-proposal (usage): Send "list proposal:[proposal-number | * | from | to] [reference:demand-reference-number] [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]" |
+                List-proposal (example): Send "list proposal:*" |
                 List-proposal (rules): Only Proposals sent, or, received by their respective owners are listed |
                 List-proposal (see also): list, list-demands-private, list-demands-public,, list-proposal list-store, list-tag |
                 List-proposal (since): v0.0</seg>
@@ -581,26 +581,26 @@
         </tu>
 
         <tu tuid="List-store" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'list-store'</note>
             <tuv xml:lang="en">
                 <seg>List-store (story): As a Consumer, or, Retailer, I want to List one, or, all Stores with optional search criteria |
-                List-store (usage): Send "!list store:[* | store-number] [locale:h0h0 h0h ca] [range:25 km]" |
-                List-store (example): Send "!list store:*" |
+                List-store (usage): Send "list store:[* | store-number] [locale:h0h0 h0h ca] [range:25 km]" |
+                List-store (example): Send "list store:*" |
                 List-store (see also): list, list-demands-private, list-demands-public, list-proposal, list-tag |
                 List-store (since): v0.0</seg>
             </tuv>
         </tu>
 
         <tu tuid="List-tag" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'list-tags'</note>
             <tuv xml:lang="en">
                 <seg>List-tag (story): As a Consumer, or, Retailer, I want to List all Demand, or Supply Tags with with optional search criteria |
-                List-tag (usage): Send "!list tags:[demand | supply] [locale:h0h0 h0h ca] [range:25 km] [expires:yyyy-mm-dd]" |
-                List-tag (example): Send "!list tags:supply [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]"|
+                List-tag (usage): Send "list tags:[demand | supply] [locale:h0h0 h0h ca] [range:25 km] [expires:yyyy-mm-dd]" |
+                List-tag (example): Send "list tags:supply [locale:h0h0 h0h ca] [range:25 km] [expires:2009-12-23]"|
                 List-tag (see also):  list, list-demands-private, list-demands-public, list-proposal, list-store |
                 List-tag (since): v0.0</seg>
             </tuv>
@@ -746,15 +746,15 @@
         </tu>
 
         <tu tuid="Propose" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'propose'</note>
             <tuv xml:lang="en">
                 <seg>Propose (story): As a Retailer, I want to supply Consumer's demand by proposing a matching available good, or, service, so I can always be closing sales.|
-                Propose (usage - free): Send "!propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store]" |
-                Propose (example - free): Send "!propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98". |
-                Propose (usage - fee): Send "!propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store] total:[total-to-go-on-credit-card]" |
-                Propose (example - fee): Send "!propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98 total:430.14" |
+                Propose (usage - free): Send "propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store]" |
+                Propose (example - free): Send "propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98". |
+                Propose (usage - fee): Send "propose ref:[demand-reference-number] product:[actual-product-name] price:[price-marked-in-store] total:[total-to-go-on-credit-card]" |
+                Propose (example - fee): Send "propose ref:123456 product:"Nintendo Wii Console with Wii Fit Balance Board" price:369.98 total:430.14" |
                 Propose (rules): Retailers can only Propose for Demands published to them. Twetailer will respond with Proposal number in format proposal:[demand-reference-number-incremental-proposal-number]. Example: proposal:12346-2 |
                 Propose (see also): proposal, proposed, state, state-flow, action. |
                 Propose (since): v0.0</seg>
@@ -822,15 +822,15 @@
         </tu>
 
         <tu tuid="Rate" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'rate'</note>
             <tuv xml:lang="en">
                 <seg>Rate (story): As a Consumer, or, Retailer, I want to retrieve the Rating of others involved in my transaction so I can better judge with whom I want to deal with |
-                Rate (usage - Consumers): Send "!rate proposal:[proposal-number]" to see Retailer Rating |
-                Rate (example - Consumers): Send "!rate proposal:[123456-2]" |
-                Rate (usage - Retailers): Send "!rate ref:[reference-number]" to see Consumer Rating |
-                Rate (example - Retailers): Send "!rate ref:[123456]" |
+                Rate (usage - Consumers): Send "rate proposal:[proposal-number]" to see Retailer Rating |
+                Rate (example - Consumers): Send "rate proposal:[123456-2]" |
+                Rate (usage - Retailers): Send "rate ref:[reference-number]" to see Consumer Rating |
+                Rate (example - Retailers): Send "rate ref:[123456]" |
                 Rate (rules): Twetailer will respond with a "Rating ref/proposal:[number] Closes 95%". Twetailer will not disclose any of the other party's information |
                 Rate (since): Future release</seg>
             </tuv>
@@ -863,13 +863,13 @@
         </tu>
 
         <tu tuid="Register-link" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'register-link'</note>
             <tuv xml:lang="en">
                 <seg>Register-link (story): As the Responsible Sales Associate my Store, or, Retailer, I want to register the link between my respective Sales Associates and Store(s), and my Stores and Retailer, with optional Expiration date, so I can start Supplying tags |
-                Register-link (usage): Send "!register retailer:[Retailer-ID] store:[Store-ID] salesAssocate:[SA-ID] [expiration:[yyyy-mm-dd]] |
-                Register-link (usage): Send "!register retailer:12345 store:23456 ", or, "!register salesassociate:34567 store:23456 expiration:2010-12-23" |
+                Register-link (usage): Send "register retailer:[Retailer-ID] store:[Store-ID] salesAssocate:[SA-ID] [expiration:[yyyy-mm-dd]] |
+                Register-link (usage): Send "register retailer:12345 store:23456 ", or, "register salesassociate:34567 store:23456 expiration:2010-12-23" |
                 Register-link (rules): The RetailerID must exist in the Store record. The StoreID must exist in the Sales Associate record. |
                 Register-link (see also): register, register-salesassociate, register-store, register-retailer |
                 Register-link (since): v0.0</seg>
@@ -877,15 +877,15 @@
         </tu>
 
         <tu tuid="Register-retailer" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'register-retailer'</note>
             <tuv xml:lang="en">
                 <seg>Register-retailer (story): As the Sales Associate responsible for the Retailer, I want to register my Retailer, so I can link it with my Stores |
-                Register-retailer (usage - Create): Send "!register type:retailer name:[retailer-full-name] email:[retailer-email-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsibleID:[SalesAssociate-ID]"  |
-                Register-retailer (example - Create): Send "!register type:retailer name:Paw's email:info@paws.com locale:12345 us range:25 mi responsible:12345 "  |
-                Register-retailer (usage - Update): Send "!register retailer:[Retailer-ID] name:[retailer-full-name] email:[retailer-email-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsibleID:[SalesAssociate-ID]" |
-                Register-retailer (example - Update): Send "!register retailer:23456 name:Paw's email:info@paws.com locale:12345 us range:25 mi responsible:12345 " |
+                Register-retailer (usage - Create): Send "register type:retailer name:[retailer-full-name] email:[retailer-email-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsibleID:[SalesAssociate-ID]"  |
+                Register-retailer (example - Create): Send "register type:retailer name:Paw's email:info@paws.com locale:12345 us range:25 mi responsible:12345 "  |
+                Register-retailer (usage - Update): Send "register retailer:[Retailer-ID] name:[retailer-full-name] email:[retailer-email-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsibleID:[SalesAssociate-ID]" |
+                Register-retailer (example - Update): Send "register retailer:23456 name:Paw's email:info@paws.com locale:12345 us range:25 mi responsible:12345 " |
                 Register-retailer (rules): System generates Retailer ID. A notification will be sent to the Responsible Sales Associate for them to acknowledge the link. A notification will be sent to the Retailer's Responsible Sales Associate for them to initiate the link. Responsible Sales Associates must accept Twetailer's terms and conditions upon creation.
                 Register-retailer (see also): register, register-salesassociate, register-store, register-link |
                 Register-retailer (AKA): banner |
@@ -894,15 +894,15 @@
         </tu>
 
         <tu tuid="Register-salesassociate" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'register-salesassociate'</note>
             <tuv xml:lang="en">
                 <seg>Register-salesassociate (story): As a Sales Associate, I want to register myself and optionally a backup Sales Associate with Twetailer, so I can be linked to a Store and optionally a Retailer |
-                Register-salesassociate (usage - Create): Send "!register [type:SalesAssociate] name:[SA-full-name] email:[SA-email-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] store:[storeID] [backup:[backup-SA-ID]] [delay:number d | h]]" |
-                Register-salesassociate (example - Create): Send "!register name:Ryan Retailer email:ryan@pawselectronics.com locale:12345 us range:25 mi store:67890 backup:12345 delay:1d "  |
-                Register-salesassociate (usage - Update): Send "!register salesAssocate:[SA-ID] name:[SA-full-name] email:[SA-email-address] [locale:[postal/zip-code 2-letter-country-code]] [range:[distance 2-letter-distance-unit-of-measure]] store:storeID [backup:[backup-SA-ID]] delay:[[number d | h] " |
-                Register-salesassociate (example - Update): Send "!register salesassociate:23456 name:Ryan Retailer email:ryan@pawselectronics.com locale:12345 us range:25 mi store:67890 backup:12345 delay:1d" |
+                Register-salesassociate (usage - Create): Send "register [type:SalesAssociate] name:[SA-full-name] email:[SA-email-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] store:[storeID] [backup:[backup-SA-ID]] [delay:number d | h]]" |
+                Register-salesassociate (example - Create): Send "register name:Ryan Retailer email:ryan@pawselectronics.com locale:12345 us range:25 mi store:67890 backup:12345 delay:1d "  |
+                Register-salesassociate (usage - Update): Send "register salesAssocate:[SA-ID] name:[SA-full-name] email:[SA-email-address] [locale:[postal/zip-code 2-letter-country-code]] [range:[distance 2-letter-distance-unit-of-measure]] store:storeID [backup:[backup-SA-ID]] delay:[[number d | h] " |
+                Register-salesassociate (example - Update): Send "register salesassociate:23456 name:Ryan Retailer email:ryan@pawselectronics.com locale:12345 us range:25 mi store:67890 backup:12345 delay:1d" |
                 Register-salesassociate (rules): System generates Sakes Associate ID. A notification will be sent to the Backup Sales Associate for them to acknowledge the link. A notification will be sent to the Store's Responsible Sales Associate for them to initiate the link. Sales Associates cannot Propose any goods/services until they are linked to a Store. The Backup Sales Associate will receive Demand notifications in the event the Sales Associate does not Propose, or Decline a Demand within 24 hours. Sales Associates must accept Twetailer's terms and conditions upon creation.
                 Register-salesassociate (see also): register, register-store, register-retailer, register-link |
                 Register-salesassociate (AKA): sa, agent |
@@ -911,15 +911,15 @@
         </tu>
 
         <tu tuid="Register-store" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'register-store'</note>
             <tuv xml:lang="en">
                 <seg>Register-store (story): As the Sales Associate responsible for the Store, I want to register my Store, so I can link my Sales Associates and optionally associate it with a Retailer |
-                Register-store (usage - Create): Send "!register type:store name:[store-name] tel:[store's-business-telelphone-number] email:[store-email-address] address:[full-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsible:[SalesAssociate-ID] retailer:retailerID" |
-                Register-store (example - Create): Send "!register type:store name:Paw's Electronics and Gadgets email:info@pawselectronics.com address:[full-address] locale:12345 us range:25 mi responsible:12345 retailer:67890 " |
-                Register-store (usage - Update): Send "!register store:Store-ID name:[store-name] tel:[store's-business-telelphone-number] email:[store-email-address] address:[full-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsibleID:[SalesAssociate-ID] retailer:retailerID" |
-                Register-store (example - Update): Send "!register store:23456 name:Paw's Electronics and Gadgets email:info@pawselectronics.com address:123 Main St. locale:12345 us range:25 mi responsible:12345 retailer:67890 " |
+                Register-store (usage - Create): Send "register type:store name:[store-name] tel:[store's-business-telelphone-number] email:[store-email-address] address:[full-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsible:[SalesAssociate-ID] retailer:retailerID" |
+                Register-store (example - Create): Send "register type:store name:Paw's Electronics and Gadgets email:info@pawselectronics.com address:[full-address] locale:12345 us range:25 mi responsible:12345 retailer:67890 " |
+                Register-store (usage - Update): Send "register store:Store-ID name:[store-name] tel:[store's-business-telelphone-number] email:[store-email-address] address:[full-address] locale:[postal/zip-code 2-letter-country-code] range:[distance 2-letter-distance-unit-of-measure] responsibleID:[SalesAssociate-ID] retailer:retailerID" |
+                Register-store (example - Update): Send "register store:23456 name:Paw's Electronics and Gadgets email:info@pawselectronics.com address:123 Main St. locale:12345 us range:25 mi responsible:12345 retailer:67890 " |
                 Register-store (rules): System generates Store ID. A notification will be sent to the Responsible Sales Associate for them to acknowledge the link. A notification will be sent to the Retailer's Responsible Sales Associate for them to initiate the link.  Responsible Sales Associates must accept Twetailer's terms and conditions upon creation. |
                 Register-store (see also): register, register-salesassociate, register-retailer, register-link |
                 Register-store (AKA): location |
@@ -928,13 +928,13 @@
         </tu>
 
         <tu tuid="Reserve" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'reserve'</note>
             <tuv xml:lang="en">
                 <seg>Reserve (story): As a Consumer, I want to Reserve - via Amazon, the good, or, service Proposed by the Retailer, so I can complete the purchase as soon as possible, avoiding any delay, or risk in obtaining it |
-                Reserve (usage): Send "!reserve proposal:[proposal-number] total:dollar-value" |
-                Reserve (example): Send "!reserve proposal:23456 total:430.14" |
+                Reserve (usage): Send "reserve proposal:[proposal-number] total:dollar-value" |
+                Reserve (example): Send "reserve proposal:23456 total:430.14" |
                 Reserve (rules): Twetailer Fee Service. Consumers accept terms and conditions. Twetailer will respond with the Amazon web site address.  Consumer will have to open that address in a browser and complete transaction |
                 Reserve (see also): proposed, state, state-flow, <a href="http://docs.amazonwebservices.com/AmazonFPS/2008-09-17/FPSMarketplaceGuide/index.html?ReservingaPayment.html">Amazon's Reserve Payment</a>, action |
                 Reserve (since): Future release</seg>
@@ -993,13 +993,13 @@
         </tu>
 
         <tu tuid="Settle" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'settle</note>
             <tuv xml:lang="en">
                 <seg>Settle (story): As a Retailer, I want to notify Twetailer of my fulfilling of the Consumer's Reserved Proposal, so I can receive payment |
-                Settle (usage): Send "!settle proposal:[proposal-number]" |
-                Settle (usage): Send "!settle proposal:123456-2" |
+                Settle (usage): Send "settle proposal:[proposal-number]" |
+                Settle (usage): Send "settle proposal:123456-2" |
                 Settle (rules): Twetailer Fee Service. Retailers can only Settle for Reserved Proposals they created |
                 Settle (see also): settled, fulfil, state, state-flow, action |
                 Settle (since): Future release</seg>
@@ -1053,13 +1053,13 @@
         </tu>
 
         <tu tuid="Supply" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'supply'</note>
             <tuv xml:lang="en">
                 <seg>Supply (story): As a Retailer, I want to Supply Tags describing the goods, or, services I offer, so I may be notified upon Consumer's immediate interests |
-                Supply (usage): Send "!supply tags:[my-goods-services]" |
-                Supply (example): Send "!supply tags:nintendo wii sony playstation psp, psp2, psp3 super mario fit" |
+                Supply (usage): Send "supply tags:[my-goods-services]" |
+                Supply (example): Send "supply tags:nintendo wii sony playstation psp, psp2, psp3 super mario fit" |
                 Supply (rules): Retailers must be registered before they can Supply tags |
                 Supply (see also): tags-retailer, register, action |
                 Supply (since): v0.0</seg>
@@ -1127,12 +1127,12 @@
         <!-- =================== -->
 
         <tu tuid="Wish" datatype="Text">
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>Help text associated to the action 'wish'</note>
             <tuv xml:lang="en">
                 <seg>Wish (story): As a potential Consumer, I want to maintain a wish-list of Tags, so I, or, someone I share it with, might Demand one day |
-                Wish (usage): Send "!wish tags:[my-list-of-wish-tags]". Example: Send "!wish tags:"wii console"" |
+                Wish (usage): Send "wish tags:[my-list-of-wish-tags]". Example: Send "wish tags:"wii console"" |
                 Wish (rules): Potential Consumer must accept Twetailer terms and conditions |
                 Wish (since): Future release</seg>
             </tuv>
