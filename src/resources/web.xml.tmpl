@@ -145,6 +145,16 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>seed</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.SeedRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>seed</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Seed/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>store</servlet-name>
         <servlet-class>twetailer.j2ee.restlet.StoreRestlet</servlet-class>
         <load-on-startup>1</load-on-startup>
