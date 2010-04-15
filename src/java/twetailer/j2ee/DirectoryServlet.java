@@ -13,13 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import twetailer.dao.BaseOperations;
+import twetailer.dao.LocationOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SeedOperations;
 import twetailer.dao.SettingsOperations;
+import twetailer.dto.Location;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Seed;
 import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
@@ -28,6 +29,7 @@ public class DirectoryServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
 
     protected BaseOperations _baseOperations = new BaseOperations();
+    protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
     protected SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
     protected SeedOperations seedOperations = _baseOperations.getSeedOperations();
     protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
@@ -87,6 +89,10 @@ public class DirectoryServlet extends HttpServlet {
                 List<SaleAssociate> twetailerSaleReps = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.STORE_KEY, targetedSeed.getStoreKey(), 1);
                 List<String> tags = twetailerSaleReps == null || twetailerSaleReps.size() == 0 ? null : twetailerSaleReps.get(0).getCriteria();
                 envelope.put(SaleAssociate.CRITERIA, tags == null || tags.size() == 0 ? new GenericJsonArray() : new GenericJsonArray(tags.toArray()));
+
+                Location location = locationOperations.getLocation(pm, targetedSeed.getLocationKey());
+                envelope.put(Location.POSTAL_CODE, location.getPostalCode());
+                envelope.put(Location.COUNTRY_CODE, location.getCountryCode());
 
                 // Serialize the list to keep it in MemCache
                 // FIXME: be sure to escape JSON values!
