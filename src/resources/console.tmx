@@ -140,6 +140,33 @@
         <!-- Login box -->
         <!-- ========= -->
 
+        <tu tuid="login_localized_page_description" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                See also segement with tuid="sep_localized_page_description"
+                Description for search engines, as it can appear to customers when they look for a service/product
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    Twetailer users (consumers and retailers) can privately use the
+                    Twetailer Console to manage their orders. You can access your data with
+                    exisiting credentials (your identity provided will do the verification
+                    for us, Twetailer does not keep passwords) and consolidate accounts to
+                    communicate with Twetailer over many channels (Twitter, E-mail, GTalk, etc.).
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_localized_page_keywords" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Keywords for search engines</note>
+            <tuv xml:lang="en">
+                <seg>consumers, retailers, goods, services, local, postal code, range, expiration date</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="login_introduction_message" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -252,9 +279,41 @@
             <tuv xml:lang="en"><seg>Close</seg></tuv>
         </tu>
 
+        <tu tuid="login_other_locations_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                This message is displayed on the login page and have no context about the visitor location
+                See also segment with tuid="sep_other_locations_title"
+            </note>
+            <tuv xml:lang="en">
+                <seg>Top Active Cities</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_other_locations_introduction" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                This message is displayed on the login page and have no context about the visitor location
+                See also segment with tuid="sep_other_locations_introduction"
+            </note>
+            <tuv xml:lang="en">
+                <seg>Twetailer maintains the list of the top active cities (refreshed once a day). Use the following links to see the most used keywords by retailers per city:</seg>
+            </tuv>
+        </tu>
+
         <!-- ========= -->
         <!-- About box -->
         <!-- ========= -->
+
+        <tu tuid="about_dialog_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>About Twetailer</seg>
+            </tuv>
+        </tu>
 
         <tu tuid="about_text" datatype="Text">
             <prop type="x-version">1</prop>
@@ -589,6 +648,35 @@
         <!-- Search engine landing page -->
         <!-- ========================== -->
 
+        <tu tuid="sep_localized_page_name" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: name of the city listed on this page
+            </note>
+            <tuv xml:lang="en">
+                <seg>Twetailer Directory - {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_localized_page_description" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                See also segement with tuid="login_localized_page_description"
+                Description for search engines, as it can appear to customers when they look for a service/product in the corresponding city
+                {0}: name of the city listed on this page
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    This is the Twetailer directory for the city of {0}.
+                    It lists the top provided keywords for the Twetailer retailers participating in the area.
+                    Use the form on the top to post a demand about a product or service you are looking for.
+                    Twetailer will convey it to the corresponding retailers and they'll return to you if they can help.
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="sep_demand_samples_button" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -684,6 +772,15 @@
             </tuv>
         </tu>
 
+        <tu tuid="sep_need_non_empty_demand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>You cannot submit an empty Demand. Please, describe what you are looking for with a least 3 keywords.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="sep_advanced_form_button" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -726,6 +823,15 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Postal code and coutry code, to generate "H1X 2C6 CA" or "94523 US".</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_advanced_form_range_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Range:</seg>
             </tuv>
         </tu>
 
@@ -788,7 +894,9 @@
         <tu tuid="sep_other_locations_title" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <note/>
+            <note>
+                See also segment with tuid="login_other_locations_title"
+            </note>
             <tuv xml:lang="en">
                 <seg>Other Cities</seg>
             </tuv>
@@ -798,11 +906,91 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
+                See also segment with tuid="login_other_locations_introduction"
                 {0}: name of the city that the tag cloud has been generated for
                 {1}: page URL, made available as a perma-link
             </note>
             <tuv xml:lang="en">
                 <seg>This is a page for the {0} area is refreshed once a day. You can also check the pages for these other cities:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_sms_info_dialog_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>SMS setup for Twetailer</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_sms_info_dialog_content" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>
+                    The Short Message Service (SMS) is a system that allows cellphone users to send simple text messages to others.<br/>
+                    In Canada and United States of America, you can exchange with Twetailer via SMS through its Twitter connector.
+                    <ul>
+                        <li>In Canada, send your message to the short code: <b>21212</b>.</li>
+                        <li>In United States of America, send your message to the short code: <b>40404</b>.</li>
+                    </ul>
+                    Twetailer is open only in Canada and USA for now, but if folks want to try from another place covered by Twitter,<br/>
+                    check this <a href="http://help.twitter.com/entries/14014-twitter-phone-faqs"
+                    target="_blank">Twitter resource</a> for an up-to-date list of short codes.
+                    <p>
+                    For privacy concerns, all information about your orders should be sent as a
+                    <a href="http://help.twitter.com/entries/14606-what-is-a-direct-message-dm"
+                    target="_blank">Direct Message</a>.<br/>
+                    So don't forget to prefix you messages with <span onfocus="this.select();"
+                    style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">twetailer@appspot.com</span>
+                    </p>
+                    <p>
+                    With the demand tags you have specified, your message should be: <span onfocus="this.select();"
+                    style="padding:2px 5px;border:1px solid lightgrey;" id="demand_repetition_for_sms" tabindex="0"></span>
+                    </p>
+                    Happy shopping with Twetailer.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_gtalk_info_dialog_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>GTalk setup for Twetailer</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sep_gtalk_info_dialog_content" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>
+                    Google Talk (aka GTalk) is an instant messaging tool based on the standard <a href="http://en.wikipedia.org/wiki/XMPP" target="_blank">XMPP</a> protocol.<br />
+                    You can use the official <a href="http://www.google.com/talk/index.html" target="_blank">GTalk for Windows</a> or
+                    one of the <a href="http://www.google.com/talk/otherclients.html" target="_blank">listed 3rd party clients</a> for Windows, OSX or Linux.
+                    <p>
+                    Mobile phone users have more choices:
+                    </p>
+                    <ul>
+                        <li>Owners of any smart phone with the <a href="http://code.google.com/android/" target="_blank">Android Operating System</a> can use the official and pre-installed GTalk client.</li>
+                        <li>Owners of BlackBerry phone can get the official <a href="http://mobileapps.blackberry.com/devicesoftware/entry.do?code=gtalk" target="_blank">GTalk for BlackBerry</a>,</li>
+                        <li>Owners of Nokia phones can get a client from <a href="http://betalabs.nokia.com/apps/nokia-messaging-chat" target="_blank">betalabs.nokia.com</a></li>
+                        <li>Owners of other J2ME phones can get <a href="http://nimbuzz.com" target="_blank">Nimbuzz</a>.</li>
+                    </ul>
+                    <p>
+                    Once you have GTalk running:
+                    </p>
+                    <ol>
+                        <li>Invite <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">twetailer@appspot.com</span>, and</li>
+                        <li>Send the text of your demand: <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" id="demand_repetition_for_gtalk" tabindex="0"></span>!</li>
+                    </ol>
+                    Happy shopping with Twetailer.
+                </seg>
             </tuv>
         </tu>
 

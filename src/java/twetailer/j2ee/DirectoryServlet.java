@@ -37,58 +37,61 @@ public class DirectoryServlet extends HttpServlet {
         log = mockLogger;
     }
 
+    public final static String MEMCACHE_PREFIX = "/suppliesTagCloud";
+    public final static String SEED_CITY_LIST_ID = "/seedCityList";
+    public final static String QUERIED_CITY_ID = "/queriedCity";
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String pathInfo = request.getPathInfo();
         log.warning("Path Info: " + pathInfo);
 
-        String data = (String) settingsOperations.getFromCache("/suppliesTagCloud" + pathInfo);
-        if (data == null || data.length() == 0) {
+        boolean bypassCache = Boolean.valueOf(request.getParameter("bypassMemCache"));
+        log.warning("Bypass cache: " + bypassCache);
+
+        String seedCityList = (String) settingsOperations.getFromCache(MEMCACHE_PREFIX + SEED_CITY_LIST_ID);
+        if (seedCityList == null || seedCityList.length() == 0 || bypassCache) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                // Get the seed cities
+                List<Seed> seeds = seedOperations.getAllSeeds(pm);
+                log.warning("Seed#: " + seeds.size());
+                JsonArray citiesNearby = new GenericJsonArray();
+                for(Seed anySeed: seeds) {
+                    citiesNearby.add(anySeed.toJson());
+                }
+
+                // Serialize the list to keep it in MemCache
+                // FIXME: be sure to escape JSON values!
+                seedCityList = ((MockOutputStream) citiesNearby.toStream(new MockOutputStream(), false)).getStream().toString();
+                settingsOperations.setInCache(MEMCACHE_PREFIX + SEED_CITY_LIST_ID, seedCityList);
+            }
+            catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            finally {
+                pm.close();
+            }
+        }
+
+        String queriedCity = (String) settingsOperations.getFromCache(MEMCACHE_PREFIX + pathInfo);
+        if (queriedCity == null || queriedCity.length() == 0 || bypassCache) {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
                 Seed targetedSeed = seedOperations.getSeed(pm, pathInfo);
                 log.warning("Retreived seed: " + targetedSeed.toJson().toString());
 
-                JsonObject envelope = new GenericJsonObject();
-                envelope.put("city_label", targetedSeed.getLabel());
-                envelope.put("city_url", targetedSeed.buildQueryString());
+                JsonObject envelope = targetedSeed.toJson();
 
                 List<SaleAssociate> twetailerSaleReps = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.STORE_KEY, targetedSeed.getStoreKey(), 1);
-                List<String> tags = twetailerSaleReps.get(0).getCriteria();
-                envelope.put("city_tags", new GenericJsonArray(tags.toArray()));
+                List<String> tags = twetailerSaleReps == null || twetailerSaleReps.size() == 0 ? null : twetailerSaleReps.get(0).getCriteria();
+                envelope.put(SaleAssociate.CRITERIA, tags == null || tags.size() == 0 ? new GenericJsonArray() : new GenericJsonArray(tags.toArray()));
 
-                List<Seed> seeds = seedOperations.getAllSeeds(pm);
-                JsonArray citiesNearby = new GenericJsonArray();
-                for(Seed anySeed: seeds) {
-                    citiesNearby.add(anySeed.toJson());
-                }
-                envelope.put("cities_nearby", citiesNearby);
-
-                //
+                // Serialize the list to keep it in MemCache
                 // FIXME: be sure to escape JSON values!
-                //
-                MockOutputStream out = new MockOutputStream();
-                envelope.toStream(out, false);
-                data = out.getStream().toString();
-                settingsOperations.setInCache("/suppliesTagCloud" + pathInfo, data);
-
-                // Temporary injection
-                seedOperations.createSeed(pm, new Seed("us", "ny", "new_york", "New York, NY, USA", 790L)); // 11 Wall Street, New York, NY 10005
-                seedOperations.createSeed(pm, new Seed("us", "ca", "los_angeles", "Los Angeles, NY, USA", 790L)); // 11710 Telegraph Road, Santa Fe Springs, CA 90670
-                seedOperations.createSeed(pm, new Seed("us", "il", "chicago", "Chicago, IL, USA", 790L)); // 6N001 Medinah road, Medinah, IL 60157
-                // San Francisco, CA
-                // Boston, MA
-                // San Diego, CA
-                // Houston, TX
-                // Atlanta, Georgia
-                // Washington, DC
-                // Seatle, WA
-                // Dallas-Forth Worth, TX
-                // Las Vegas, Nevada
-                // Philadelphia, Pennsylvania
-                // Miami, Florida
-                // Portand, Oregon
+                queriedCity = ((MockOutputStream) envelope.toStream(new MockOutputStream(), false)).getStream().toString();
+                settingsOperations.setInCache(MEMCACHE_PREFIX + pathInfo, queriedCity);
             }
             catch(Exception ex) {
                 ex.printStackTrace();
@@ -99,8 +102,9 @@ public class DirectoryServlet extends HttpServlet {
         }
 
         try {
-            String viewUrl = data == null || data.length() == 0 ? "/404.html" : "/jsp_includes/directory.jsp";
-            request.getSession().setAttribute("data", data);
+            String viewUrl = queriedCity == null || queriedCity.length() == 0 ? "/404.html" : "/jsp_includes/directory.jsp";
+            request.getSession().setAttribute(QUERIED_CITY_ID, queriedCity);
+            request.getSession().setAttribute(SEED_CITY_LIST_ID, seedCityList);
             request.getRequestDispatcher(viewUrl).forward(request, response);
         }
         catch (ServletException ex) {

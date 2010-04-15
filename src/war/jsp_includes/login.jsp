@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page
     language="java"
     contentType="text/html; charset=UTF-8"
@@ -9,8 +9,16 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="domderrien.jsontools.JsonArray"
+    import="domderrien.jsontools.JsonObject"
+    import="domderrien.jsontools.JsonParser"
+    import="twetailer.dao.BaseOperations"
+    import="twetailer.dao.SettingsOperations"
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
+%><%!
+    protected BaseOperations _baseOperations = new BaseOperations();
+    protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
@@ -20,12 +28,18 @@
     // Locale detection
     Locale locale = LocaleController.detectLocale(request);
     String localeId = LocaleController.getLocaleId(request);
-%><html>
+
+    // Try to get the seed city list
+    String seedCityList = (String) settingsOperations.getFromCache("/suppliesTagCloud/seedCityList");
+%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="shortcut icon" href="/images/logo/favicon.ico" />
-    <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Language" content="<%= localeId %>" />
+    <meta name="description" content="<%= LabelExtractor.get(ResourceFileId.third, "login_localized_page_description", locale) %>" />
+    <meta name="keywords" content="<%= LabelExtractor.get(ResourceFileId.third, "login_localized_page_keywords", locale) %>" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%
     if (useCDN) {
     %><style type="text/css">
@@ -67,7 +81,7 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes//banner_open.jsp"></jsp:include>
+        <jsp:include page="/jsp_includes/banner_open.jsp"></jsp:include>
         <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
             <table style="width: 100%; height: 100%;">
                 <tr>
@@ -142,7 +156,28 @@
                 </tr>
             </table>
         </div>
-        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <%
+        if (seedCityList != null && 0 < seedCityList.length()) {
+            JsonArray citiesNearby = new JsonParser(seedCityList).getJsonArray();
+        %><div
+            dojoType="dijit.layout.ContentPane"
+            region="right"
+            style="width:240px;margin:10px;background-color:lightgrey;"
+            title="<%= LabelExtractor.get(ResourceFileId.third, "login_other_locations_title", locale) %>"
+        >
+            <div style="color:white;background-color:black;font-weight:bold;padding:2px 5px;">
+                <%= LabelExtractor.get(ResourceFileId.third, "login_other_locations_title", locale) %>
+            </div>
+            <div style="border:1px lightgrey solid;padding:10px;">
+                <%= LabelExtractor.get(ResourceFileId.third, "login_other_locations_introduction", locale) %>
+                <ul>
+                    <% for(int cityIdx=0; cityIdx < citiesNearby.size(); cityIdx ++) {
+                        JsonObject city = citiesNearby.getJsonObject(cityIdx);
+                    %><li><a href="/directory<%= city.getString("key") + (request.getQueryString() == null ? "" : "?" + request.getQueryString()) %>"><%= city.getString("label") %></a></li><% } %>
+                </ul>
+            </div>
+        </div>
+        <% } %><div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
     </div>
@@ -150,7 +185,7 @@
     <div
         dojoType="dijit.Dialog"
         id="aboutPopup"
-        title="About"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "about_dialog_title", locale) %>"
         href="/jsp_includes/about.jsp"
     >
     </div>
@@ -165,7 +200,7 @@
         <ul>
             <li>
                 <span id="openIdPrefix"></span>
-                <input dojoType="dijit.form.TextBox" id="openIdCustom" >
+                <input dojoType="dijit.form.TextBox" id="openIdCustom" />
                 <span id="openIdSuffix"></span>
             </li>
         </ul>

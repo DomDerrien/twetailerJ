@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page
     language="java"
     contentType="text/html; charset=UTF-8"
@@ -52,12 +52,13 @@
 
     MockOutputStream serializedConsumer = new MockOutputStream();
     consumer.toJson().toStream(serializedConsumer, false);
-%><html>
+%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="shortcut icon" href="/images/logo/favicon.ico" />
-    <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Language" content="<%= localeId %>" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%
     if (useCDN) {
     %><style type="text/css">
@@ -329,7 +330,7 @@
     <div
         dojoType="dijit.Dialog"
         id="aboutPopup"
-        title="About"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "about_dialog_title", locale) %>"
         href="/jsp_includes/about.jsp"
     >
     </div>

@@ -98,6 +98,28 @@
                 <seg>Sélecteur de langage</seg>
             </tuv>
         </tu>
+        <tu tuid="login_localized_page_description" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Les usagers de Twetailer (consommateurs et détaillants) peuvent
+                    accéder de manière confidentielle à leur données avec la Console
+                    Twetailer. Vous avez accès à la Console avec des coordonnées
+                    existentes (votre fournisseur vérifiera votre identité, Twetailer
+                    ne saura rien des mots de passe). La Console permet aussi de consolider
+                    les comptes pour utiliser plusieurs moyens de communication (Twitter,
+                    Courriel, GTalk, etc.).
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="login_localized_page_keywords" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>consommateurs, détaillants, revendeurs, biens, services, local, code postal, distance, date d'expiration</seg>
+            </tuv>
+        </tu>
         <tu tuid="login_introduction_message" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -205,6 +227,27 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Fermer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="login_other_locations_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Villes les plus actives</seg>
+            </tuv>
+        </tu>
+        <tu tuid="login_other_locations_introduction" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Twetailer maintient une liste des villes les plus actives (mise-à-jour une fois par jour). Suivez un des liens suivants pour voir quels sont les mots-clés utiliser par les détaillants pour promouvoir leur service dans chaque ville :</seg>
+            </tuv>
+        </tu>
+        <tu tuid="about_dialog_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>À propos de Twetailer</seg>
             </tuv>
         </tu>
         <tu tuid="about_text" dataType="text">
@@ -428,7 +471,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     Voici le code de confirmation: {0}.
--                   Vous devez reporter ce code dans la page « Votre profil » de la console Web de Twetailer.|
+                    Vous devez reporter ce code dans la page « Votre profil » de la console Web de Twetailer.|
                     |
                     Merci de magasiner avec Twetailer.|
                     |
@@ -496,6 +539,25 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Twetailer ne peut pas envoyer de messages directs aux usagers qui ne le suivent pas! Veuillez suivre @twetailer (http://twitter.com/twetailer) pour utiliser le système depuis Twitter.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_localized_page_name" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Répertoire de Twetailer - {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_localized_page_description" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Voici la page du répertoire de Twetailer pour la ville de {0}.
+                    Elle donne la liste des mots-clés les plus proposés par les détaillants participant à Twetailer pour cette région.
+                    Utilisez le formulaire en haut de page pour poster votre propre demande sur le service ou le produit que vous cherchez.
+                    Twetailer la relaiera aux détaillants et ceux-ci vous reviendrons avec une proposition s'ils ont quelque chose qui convient.
+                </seg>
             </tuv>
         </tu>
         <tu tuid="sep_demand_samples_button" dataType="text">
@@ -572,6 +634,13 @@
                 <seg>Twetailer</seg>
             </tuv>
         </tu>
+        <tu tuid="sep_need_non_empty_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Vous ne pouvez soumettre une demande vide. Veuillez décrire votre Demande avec au moins 3 mots-clés.</seg>
+            </tuv>
+        </tu>
         <tu tuid="sep_advanced_form_button" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -604,7 +673,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Code postal et code de pays, pour produire «&#160;H1X 2C6 CA&#160;» ou «&#160;94523 US&#160;».</seg>
+                <seg>Code postal et code de pays, pour produire « H1X 2C6 CA » ou « 94523 US ».</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_advanced_form_range_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Distance&#160;:</seg>
             </tuv>
         </tu>
         <tu tuid="sep_advanced_form_quantity_label" dataType="text">
@@ -632,14 +708,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mots-clés pour la région de&#160;: &lt;a href="{1}"&gt;{0}&lt;/a&gt;</seg>
+                <seg>Mots-clés pour la région de : &lt;a href="{1}"&gt;{0}&lt;/a&gt;</seg>
             </tuv>
         </tu>
         <tu tuid="sep_tag_cloud_disclaimer" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg> Avettissement&#160;: La liste ci-dessus contient les mots-clés pour la région de {0}.
+                <seg> Avertissement : La liste ci-dessus contient les mots-clés pour la région de {0}.
                     Les détaillants peuvent ajouter et retirer des mots-clés sur les produits et services
                     qu'ils penvent offrir à n'importe quel moment. Cette page est reconstruite chaque jour.
                     Notez bien que les détaillants déclarent les mots-clés sans pour autant avoir les
@@ -658,7 +734,82 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Cette page pour {0} est reconstruite une fois par jour. Vous pouvez aussi consulter les pages pour les villes suivantes&#160;:</seg>
+                <seg>Cette page pour {0} est reconstruite une fois par jour. Vous pouvez aussi consulter les pages pour les villes suivantes :</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_sms_info_dialog_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Envoi par SMS à Twetailer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_sms_info_dialog_content" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Le service de message court (aussi appelé SMS) est un système qui permet aux
+                    usagers de téléphones cellulaires d'envoyer de simple message texte à d'autres
+                    personnes.&lt;br /&gt;
+                    Au Canada et aux États Unis d'Amérique, vous pouvez communiquer par SMS avec
+                    Twetailer grâce à son accès à Twitter.
+                    &lt;ul&gt;
+                        &lt;li&gt;Au Canada, envoyez votre message au numéro court : &lt;b&gt;21212&lt;/b&gt;.&lt;/li&gt;
+                        &lt;li&gt;Aux États-Unis, envoyez votre message au numéro court: &lt;b&gt;40404&lt;/b&gt;.&lt;/li&gt;
+                    &lt;/ul&gt;
+                    Twetailer n'est ouvert qu'au Canada et aux États-Unis d'Amérique pour le moment, mais si d'autres
+                    utilisateurs veulent s'essayer,&lt;br /&gt; reportez-vous à la
+                    &lt;a href="http://help.twitter.com/entries/14014-twitter-phone-faqs" target="_blank"&gt;page
+                    ressource de Twitter&lt;/a&gt; pour une liste à jour des numéros courts dans les autres pays.
+                    &lt;p&gt;
+                    Pour des raisons de vie privée, toutes les informations concernant
+                    vos transactions avec Twetailer sont envoyées par
+                    &lt;a href="http://help.twitter.com/entries/14606-what-is-a-direct-message-dm" target="_blank"&gt;Message
+                    Direct&lt;/a&gt;.&lt;br /&gt;
+                    N'oubliez donc pas de préfixer tous vos messages avec :
+                    &lt;span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;d twetailer&lt;/span&gt;.&lt;br /&gt;
+                    Dans le cas présent, le message serait : &lt;span id="demand_repetition_for_sms" onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;&lt;/span&gt;
+                    &lt;/p&gt;
+                    Bon magasinage avec Twetailer.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_gtalk_info_dialog_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Utilisation de GTalk avec Twetailer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="sep_gtalk_info_dialog_content" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Google Talk (aussi juste appelé GTalk) est un système de messagerie instantannée
+                    reposant sur le standard &lt;a href="http://en.wikipedia.org/wiki/XMPP" target="_blank"&gt;XMPP&lt;/a&gt;.&lt;br /&gt;
+                    Vous pouvez utiliser l'outil &lt;a href="http://www.google.com/talk/index.html" target="_blank"&gt;GTalk pour Windows&lt;/a&gt;,
+                    ou un autre parmi la &lt;a href="http://www.google.com/talk/otherclients.html" target="_blank"&gt;liste des applications tiers&lt;/a&gt;
+                    pour Windows, OSX ou Linux.
+                    &lt;p&gt;
+                    Les utilsateurs de téléphones mobiles ont d'autres choix :
+                    &lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;Avec les téléphones intelligents basés sur le &lt;a href="http://code.google.com/android/" target="_blank"&gt;système Android&lt;/a&gt;, GTalk est pré-installé.&lt;/li&gt;
+                        &lt;li&gt;Avec les téléphones BlackBerry, il y a l'outil officiel &lt;a href="http://mobileapps.blackberry.com/devicesoftware/entry.do?code=gtalk" target="_blank"&gt;GTalk pour BlackBerry&lt;/a&gt;,&lt;/li&gt;
+                        &lt;li&gt;Avec les téléphones Nokia, il est possible d'utiliser l'outil du &lt;a href="http://betalabs.nokia.com/apps/nokia-messaging-chat" target="_blank"&gt;betalabs.nokia.com&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;Enfin, les téléphones compatibles J2ME peuvent utiliser &lt;a href="http://nimbuzz.com" target="_blank"&gt;Nimbuzz&lt;/a&gt;.&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;
+                    Quand GTalk est installé et fonctionnne :
+                    &lt;/p&gt;
+                    &lt;ol&gt;
+                        &lt;li&gt;Invitez &lt;span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;twetailer@appspot.com&lt;/span&gt;, et&lt;/li&gt;
+                        &lt;li&gt;Tapez simplement le texte de votre demande : &lt;span id="demand_repetition_for_gtalk" onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;&lt;/span&gt;&lt;/li&gt;
+                    &lt;/ol&gt;
+                    Bon magasinage avec Twetailer.
+                </seg>
             </tuv>
         </tu>
     </body>
