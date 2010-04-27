@@ -853,7 +853,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Le message pour cette Demande (paramètres compris) est trop longue pour Twitter.\nVoulez-vous l'envoyer par courriel ?</seg>
+                <seg>Le message pour cette Demande (paramètres compris) est trop longue pour Twitter.\nCliquer sur OK pour l'envoyer par courriel ou alors sur Annuler pour éditer votre demande&#160;?</seg>
             </tuv>
         </tu>
         <tu tuid="sep_email_subject" dataType="text">

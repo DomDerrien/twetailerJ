@@ -1054,7 +1054,7 @@
             <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>The message for the Demand (with its required attributes) is too long to be conveyed by Twitter.\nWould you like to send your Demand by E-Mail?</seg>
+                <seg>The message for the Demand (with its required attributes) is too long to be conveyed by Twitter.\nClick OK to send your Demand by E-Mail, or, Cancel?</seg>
             </tuv>
         </tu>
 
