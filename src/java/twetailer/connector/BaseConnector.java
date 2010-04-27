@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import domderrien.i18n.LabelExtractor;
-
 import twetailer.ClientException;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;

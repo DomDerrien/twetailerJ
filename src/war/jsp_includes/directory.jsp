@@ -44,6 +44,7 @@
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "sep_localized_page_name", new Object[] { cityName }, locale) %></title>
+    <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta http-equiv="Content-Language" content="<%= localeId %>" />
     <meta name="description" content="<%= LabelExtractor.get(ResourceFileId.third, "sep_localized_page_description", new Object[] { cityName }, locale) %>" />
@@ -372,6 +373,30 @@
     >
     </div>
 
+    <div
+        dojoType="dijit.Dialog"
+        id="postThruSMSInfo"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_sms_info_dialog_title", locale) %>"
+    >
+        <%= LabelExtractor.get(ResourceFileId.third, "sep_sms_info_dialog_content", locale) %>
+    </div>
+
+    <div
+        dojoType="dijit.Dialog"
+        id="postThruGTalkInfo"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_gtalk_info_dialog_title", locale) %>"
+    >
+        <%= LabelExtractor.get(ResourceFileId.third, "sep_gtalk_info_dialog_content", locale) %>
+    </div>
+
+    <div
+        dojoType="dijit.Dialog"
+        id="locationMap"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_locale_map_preview", locale) %>"
+    >
+        <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
+    </div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require("dojo.io.script");
@@ -404,30 +429,6 @@
         });
     });
     </script>
-
-    <div
-        dojoType="dijit.Dialog"
-        id="postThruSMSInfo"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_sms_info_dialog_title", locale) %>"
-    >
-        <%= LabelExtractor.get(ResourceFileId.third, "sep_sms_info_dialog_content", locale) %>
-    </div>
-
-    <div
-        dojoType="dijit.Dialog"
-        id="postThruGTalkInfo"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_gtalk_info_dialog_title", locale) %>"
-    >
-        <%= LabelExtractor.get(ResourceFileId.third, "sep_gtalk_info_dialog_content", locale) %>
-    </div>
-
-    <div
-        dojoType="dijit.Dialog"
-        id="locationMap"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_locale_map_preview", locale) %>"
-    >
-        <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
-    </div>
 
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>"></script>
 

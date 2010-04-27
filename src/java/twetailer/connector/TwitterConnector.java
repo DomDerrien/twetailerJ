@@ -15,7 +15,7 @@ public class TwitterConnector {
     private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
     public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
-    private static final String TWETAILER_TWITTER_PASSWORD = "ec0n0m1cs";
+    private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 
