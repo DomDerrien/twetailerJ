@@ -12,7 +12,6 @@ import javax.jdo.annotations.Persistent;
 
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
@@ -22,13 +21,6 @@ import domderrien.jsontools.TransferObject;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 
 public class Demand extends Command {
-
-    @Persistent
-    private List<String> criteria = new ArrayList<String>();
-
-    public static final String CRITERIA = "criteria";
-    public static final String CRITERIA_ADD = "\\+criteria";
-    public static final String CRITERIA_REMOVE = "\\-criteria";
 
     @Persistent
     private Date expirationDate;
@@ -50,23 +42,18 @@ public class Demand extends Command {
 
     public static final String RANGE = "range";
 
-    // Shortcut
-    public static final String REFERENCE = "reference";
-
     @Persistent
     private String rangeUnit = LocaleValidator.DEFAULT_RANGE_UNIT;
 
     public static final String RANGE_UNIT = "rangeUnit";
 
+    // Shortcut
+    public static final String REFERENCE = "reference";
+
     @Persistent
     private List<Long> saleAssociateKeys = new ArrayList<Long>();
 
     public static final String SALE_ASSOCIATE_KEYS = "saleAssociateKeys";
-
-    @Persistent
-    private Boolean stateCmdList = Boolean.TRUE;
-
-    public static final String STATE_COMMAND_LIST = "stateCmdList";
 
     /** Default constructor */
     public Demand() {
@@ -89,47 +76,9 @@ public class Demand extends Command {
      * Provided to reproduce the JDO behavior with Unit tests
      */
     protected void resetLists() {
-        criteria = null;
+        super.resetLists();
         proposalKeys = null;
         saleAssociateKeys = null;
-    }
-
-    public String getSerializedCriteria() {
-        return getSerializedTags(criteria);
-    }
-
-    public List<String> getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(List<String> criteria) {
-        if (criteria == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
-        }
-        this.criteria = criteria;
-    }
-
-    public void addCriterion(String criterion) {
-        if (criteria == null) {
-            criteria = new ArrayList<String>();
-        }
-        if (!criteria.contains(criterion)) {
-            criteria.add(criterion);
-        }
-    }
-
-    public void resetCriteria() {
-        if (criteria == null) {
-            return;
-        }
-        criteria = new ArrayList<String>();
-    }
-
-    public void removeCriterion(String criterion) {
-        if (criteria == null) {
-            return;
-        }
-        criteria.remove(criterion);
     }
 
     public Date getExpirationDate() {
@@ -264,33 +213,8 @@ public class Demand extends Command {
         saleAssociateKeys.remove(saleAssociateKey);
     }
 
-    @Override
-    public void setState(State state) {
-        super.setState(state);
-        stateCmdList =
-            !State.cancelled.equals(state) &&
-            !State.closed.equals(state) &&
-            !State.declined.equals(state) &&
-            !State.markedForDeletion.equals(state);
-    }
-
-    public Boolean getStateCmdList() {
-        return stateCmdList == null ? Boolean.TRUE : stateCmdList;
-    }
-
-    protected void setStateCmdList(Boolean  stateCmdList) {
-        this.stateCmdList = stateCmdList;
-    }
-
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        if (getCriteria() != null && 0 < getCriteria().size()) {
-            JsonArray jsonArray = new GenericJsonArray();
-            for(String criterion: getCriteria()) {
-                jsonArray.add(criterion);
-            }
-            out.put(CRITERIA, jsonArray);
-        }
         out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
         if (getProposalKeys() != null && 0 < getProposalKeys().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -302,7 +226,6 @@ public class Demand extends Command {
         out.put(QUANTITY, getQuantity());
         out.put(RANGE, getRange());
         out.put(RANGE_UNIT, getRangeUnit());
-        out.put(REFERENCE, getKey());
         if (getSaleAssociateKeys() != null && 0 < getSaleAssociateKeys().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(Long key: getSaleAssociateKeys()) {
@@ -310,32 +233,11 @@ public class Demand extends Command {
             }
             out.put(SALE_ASSOCIATE_KEYS, jsonArray);
         }
-        out.put(STATE_COMMAND_LIST, getStateCmdList());
         return out;
     }
 
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
-        if (in.containsKey(CRITERIA)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA);
-            resetCriteria();
-            for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
-            }
-        }
-        removeDuplicates(in, CRITERIA_ADD, CRITERIA_REMOVE);
-        if (in.containsKey(CRITERIA_REMOVE)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                removeCriterion(jsonArray.getString(i));
-            }
-        }
-        if (in.containsKey(CRITERIA_ADD)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
-            }
-        }
         if (in.containsKey(EXPIRATION_DATE)) {
             try {
                 Date expirationDate = DateUtils.isoToDate(in.getString(EXPIRATION_DATE));
@@ -362,27 +264,10 @@ public class Demand extends Command {
                 addSaleAssociateKey(jsonArray.getLong(i));
             }
         }
-        if (in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); }
 
         // Shortcut
         if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }
 
         return this;
-    }
-
-    protected static void removeDuplicates(JsonObject in, String addLabel, String removeLabel) {
-        if (in.containsKey(addLabel) && in.containsKey(removeLabel)) {
-            JsonArray inAdd = in.getJsonArray(addLabel);
-            JsonArray inRemove = in.getJsonArray(removeLabel);
-            int idx = inRemove.size();
-            while (0 < idx) {
-                --idx;
-                String tag = inRemove.getString(idx);
-                if (inAdd.getList().contains(tag)) {
-                    inAdd.remove(tag);
-                    inRemove.remove(tag);
-                }
-            }
-        }
     }
 }

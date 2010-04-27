@@ -17,6 +17,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
+import twetailer.j2ee.LoginServlet;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -283,8 +284,23 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        SaleAssociate saleAssociate = null;
+        if ("current".equals(resourceId)) {
+            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(SaleAssociate.CONSUMER_KEY, loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID), 1);
+            if (saleAssociates.size() != 1) {
+                throw new IllegalArgumentException("Invalid key; cannot retrieve the SaleAssociate instance for the logged user");
+            }
+            saleAssociate = saleAssociates.get(0);
+        }
+        else if (isAPrivilegedUser(loggedUser)) {
+            saleAssociate = saleAssociateOperations.getSaleAssociate(Long.valueOf(resourceId));
+        }
+        else {
+            // TODO: enable a store manager to get information about the sale associates for the store
+            throw new ClientException("Restricted access!");
+        }
+        return saleAssociate.toJson();
     }
 
     @Override

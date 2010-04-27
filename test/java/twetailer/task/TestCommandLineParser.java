@@ -47,6 +47,9 @@ public class TestCommandLineParser {
         JsonObject prefixes = new GenericJsonObject();
         for (Prefix prefix: Prefix.values()) {
             JsonArray equivalents = new GenericJsonArray();
+            if (Prefix.reference.equals(prefix)) {
+                equivalents.add("demand"); // To insert this label before "reference" ;)
+            }
             equivalents.add(prefix.toString());
             if (Prefix.action.equals(prefix)) {
                 equivalents.add("!");

@@ -95,13 +95,16 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         Consumer consumer = null;
         if ("current".equals(resourceId)) {
             consumer = consumerOperations.getConsumer((Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
         }
-        else {
+        else if (isAPrivilegedUser(loggedUser)) {
             consumer = consumerOperations.getConsumer(Long.valueOf(resourceId));
+        }
+        else {
+            throw new ClientException("Restricted access!");
         }
         return consumer.toJson();
     }
@@ -148,23 +151,32 @@ public class ConsumerRestlet extends BaseRestlet {
     @Override
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         // Get the logged user information
+        boolean isAdminControlled = isAPrivilegedUser(loggedUser);
         Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
         if (!consumerKey.toString().equals(resourceId)) {
-            throw new IllegalArgumentException("Consumer records can only be updated by the consumer themselves");
+            if (isAdminControlled) {
+                consumerKey = Long.valueOf(resourceId);
+            }
+            else {
+                throw new IllegalArgumentException("Consumer records can only be updated by the consumer themselves");
+            }
         }
 
         // Verify the information about the third party access providers
         String openId = loggedUser.getClaimedId();
-        String newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
-        String newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
-        String newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
+        String newEmail = null, newJabberId = null, newTwitterId = null;
+        if (!isAdminControlled) {
+            newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
+            newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
+            newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
+        }
 
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         Consumer consumer;
         try {
             // Get the identified consumer
             consumer = consumerOperations.getConsumer(pm, consumerKey);
-            if (!openId.equals(consumer.getOpenID())) {
+            if (!isAdminControlled && !openId.equals(consumer.getOpenID())) {
                 throw new IllegalArgumentException("Mismatch between the given OpenID and the one associated to the identified consumer");
             }
 
@@ -178,7 +190,7 @@ public class ConsumerRestlet extends BaseRestlet {
         }
 
         // Move demands to the updated account
-        if (newEmail != null || newJabberId != null || newTwitterId != null) {
+        if (!isAdminControlled && (newEmail != null || newJabberId != null || newTwitterId != null)) {
             /*
             Warning:
             --------

@@ -124,16 +124,32 @@ public class ProposalRestlet extends BaseRestlet {
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
+            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+            Long saleAssociateKey = null;
+            // Get the owner Key if needed
+            if (!isAPrivilegedUser(loggedUser)) {
+                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (saleAssociateKeys.size() != 1) {
+                    throw new IllegalArgumentException("Invalid key; cannot retrieve the SaleAssociate instance for the logged user");
+                }
+                saleAssociateKey = saleAssociateKeys.get(0);
+            }
+
             // Try to get the proposal
             Long proposalKey = Long.valueOf(resourceId);
-            Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
+            Proposal proposal = proposalOperations.getProposal(pm, proposalKey,  null, null);
 
             // Try to get the proposal owner
-            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-            List<Long> saleAssociates = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-            if (saleAssociates.size() == 0 || !saleAssociates.get(0).equals(proposal.getOwnerKey())) {
+            if (proposal.getOwnerKey().equals(saleAssociateKey)) {
+                // Everything is OK: the owner can get his Proposal information
+            }
+            else {
                 // Try to get the associated demand -- will fail if the querying consumer does own the demand
-                Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), consumerKey);
+                Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), isAPrivilegedUser(loggedUser) ? null : consumerKey);
+                if (!isAPrivilegedUser(loggedUser) && !demand.getOwnerKey().equals(consumerKey)) {
+                    throw new DataSourceException("Only the owner of the Proposal or the owner of the Demand the Proposal has been made for can list the Proposal!");
+                }
+                // Everything is OK: the owner of the Demand can get the Proposal information
                 if (State.confirmed.equals(proposal.getState())) {
                     //
                     // TODO: verify the store record to check if it accepts AWS FPS payment

@@ -238,9 +238,9 @@ body {
 }
 
 /**
- * Consumer Information Pane
+ * Information Pane
  */
-.consumerInformation {
+.entityInformation {
     border: 1px solid lightgrey;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -248,16 +248,16 @@ body {
     padding: 10px;
 }
 
-.consumerInformation legend {
+.entityInformation legend {
 	font-weight: bold;
 	color: green;
 }
 
-.consumerInformation>div {
+.entityInformation>div {
     margin: 3px 0;
 }
 
-.consumerInformation>div>span.hint, .demandForm>tbody>tr>td>span.hint {
+.entityInformation>div>span.hint, .demandForm>tbody>tr>td>span.hint {
     font-size: smaller;
     color: grey;
 }

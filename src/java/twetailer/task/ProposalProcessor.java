@@ -140,6 +140,7 @@ public class ProposalProcessor {
                             new String[] { message }
                     );
                     demand.addProposalKey(proposalKey);
+                    demand.addSaleAssociateKey(proposal.getOwnerKey());
                     demand = demandOperations.updateDemand(pm, demand);
                 }
                 else {

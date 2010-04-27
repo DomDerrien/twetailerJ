@@ -1738,7 +1738,7 @@ public class TestSaleAssociateRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testGetResource() throws DataSourceException {
+    public void testGetResource() throws DataSourceException, ClientException {
         ops.getResource(null, "resourceId", user);
     }
 

@@ -106,7 +106,6 @@ public class Store extends Entity {
         }
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
-        out.put(STORE_KEY, getKey());
         return out;
     }
 

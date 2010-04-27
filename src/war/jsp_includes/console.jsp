@@ -26,8 +26,6 @@
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
 
-    // useCDN = false; // To be included for runs in offline mode ++ begin/end
-
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
@@ -55,6 +53,7 @@
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
+    <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta http-equiv="Content-Language" content="<%= localeId %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -151,7 +150,7 @@
                 title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer_profile", locale) %>"
             >
                 <form id="consumerInformation" onsubmit="return false;">
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_first_field_group", locale) %></legend>
                         <div>
                             <label for="consumerOpenId"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_openid", locale) %></label><br/>
@@ -193,7 +192,7 @@
                         </div>
                         <br style="clear: both;" />
                     </fieldset>
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_second_field_group", locale) %></legend>
                         <div>
                             <label for="consumerEmail"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_email", locale) %></label><br/>

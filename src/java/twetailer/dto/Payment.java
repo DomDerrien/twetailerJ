@@ -13,27 +13,27 @@ import domderrien.jsontools.JsonObject;
 public class Payment extends Entity {
 
     @Persistent
-    String authorizationId;
+    private String authorizationId;
 
     public final static String AUTHORIZATION_ID = "authorizationId";
 
     @Persistent
-    String reference;
+    private String reference;
 
     public final static String REFERENCE = "reference";
 
     @Persistent
-    String requestId;
+    private String requestId;
 
     public final static String REQUEST_ID = "requestId";
 
     @Persistent
-    String transactionId;
+    private String transactionId;
 
     public final static String TRANSACTION_ID = "transactionId";
 
     @Persistent
-    TransactionStatus status;
+    private TransactionStatus status;
 
     public final static String STATUS = "status";
 

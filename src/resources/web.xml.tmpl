@@ -125,6 +125,16 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>payment</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.PaymentRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>payment</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Payment/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>proposal</servlet-name>
         <servlet-class>twetailer.j2ee.restlet.ProposalRestlet</servlet-class>
         <load-on-startup>1</load-on-startup>
