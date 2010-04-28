@@ -156,6 +156,10 @@ body {
     width:18px;
 }
 
+.silkIconAccept {
+    background-image:url(../images/accept.png);
+}
+
 .silkIconCancel {
     background-image:url(../images/cancel.png);
 }
