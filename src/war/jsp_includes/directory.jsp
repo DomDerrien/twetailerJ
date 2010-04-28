@@ -229,7 +229,7 @@
                 <td align="right"><label for="criteria"><%= LabelExtractor.get(ResourceFileId.third, "sep_advanced_form_tags_label", locale) %></label></td>
                 <td>
                     <input
-                        dojoType=dijit.form.TextBox
+                        dojoType="dijit.form.TextBox"
                         id="criteria"
                         name="criteria"
                         required="true"
@@ -246,14 +246,14 @@
                 <td align="right"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "sep_advanced_form_locale_label", locale) %></label></td>
                 <td>
                     <input
-                        dojoType=dijit.form.TextBox
+                        dojoType="dijit.form.TextBox"
                         id="postalCode"
                         name="postalCode"
                         required="true"
                         style="width:6em;font-size:larger;"
                         type="text"
                     />
-                    <select dojoType=dijit.form.FilteringSelect name="countryCode" id="countryCode" hasDownArrow="true" style="width:14em;font-size:larger;">
+                    <select dojoType="dijit.form.FilteringSelect" name="countryCode" id="countryCode" hasDownArrow="true" style="width:14em;font-size:larger;">
                         <option value="<%= Locale.CANADA.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                         <option value="<%= Locale.US.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
                     </select>
@@ -281,7 +281,7 @@
                         value="10"
                     />
                     <select
-                        dojoType=dijit.form.FilteringSelect
+                        dojoType="dijit.form.FilteringSelect"
                         hasDownArrow="true"
                         id="rangeUnit"
                         name="rangeUnit"
@@ -341,7 +341,7 @@
                 <td>
                     <input
                         constraints="{min:1,max:999,places:0}"
-                        dojoType=dijit.form.NumberSpinner
+                        dojoType="dijit.form.NumberSpinner"
                         id="quantity"
                         name="quantity"
                         style="width:5em;font-size:larger;"
@@ -357,7 +357,7 @@
             <tr>
                 <td colspan="2" align="center">
                     <button
-                        dojoType=dijit.form.Button
+                        dojoType="dijit.form.Button"
                         onclick="return dijit.byId('advancedForm').isValid();"
                         type="submit"
                     ><%= LabelExtractor.get(ResourceFileId.third, "sep_advanced_form_update_button", locale) %></button>

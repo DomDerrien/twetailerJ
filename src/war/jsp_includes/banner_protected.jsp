@@ -14,6 +14,7 @@
     import="domderrien.jsontools.JsonObject"
     import="domderrien.jsontools.JsonParser"
     import="domderrien.i18n.LocaleController"
+    import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
 %><%
@@ -48,7 +49,7 @@
                     <li><a name="justForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
-                    <li class="subItem"><a href="/logout?fromPageURL=<%= fromPageURL %>" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
+                    <li class="subItem"><a href="/logout?<%= LoginServlet.FROM_PAGE_URL_KEY %>=<%= fromPageURL %>" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
                 </ul>
             </div>
         </div>

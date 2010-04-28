@@ -18,6 +18,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -229,6 +230,7 @@ public class TestDemandRestlet {
         ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, false);
     }
 
+    @Ignore
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws DataSourceException {
         ops.getResource(null, "12345", user);

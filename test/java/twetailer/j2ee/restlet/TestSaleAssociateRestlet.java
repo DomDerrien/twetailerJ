@@ -16,6 +16,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -27,6 +28,7 @@ import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.TestBaseRestlet;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -90,25 +92,29 @@ public class TestSaleAssociateRestlet {
     @Test
     @SuppressWarnings({ "unchecked", "serial" })
     public void testCreateResourceIV() throws DataSourceException, ClientException {
+        JsonObject parameters = new GenericJsonObject();
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new SaleAssociateRestlet() {
             @Override
             protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) {
                 return new GenericJsonObject();
             }
-        }.createResource(null, user);
+        }.createResource(parameters, user);
+        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
     }
 
     @Test
     @SuppressWarnings({ "unchecked", "serial" })
     public void testCreateResourceV() throws DataSourceException, ClientException {
+        JsonObject parameters = new GenericJsonObject();
         ((Map<String, String>) user.getAttribute("info")).put("email", "steven.milstein@gmail.com");
         new SaleAssociateRestlet() {
             @Override
             protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) {
                 return new GenericJsonObject();
             }
-        }.createResource(null, user);
+        }.createResource(parameters, user);
+        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
     }
 
     @Test(expected=RuntimeException.class)
@@ -1737,6 +1743,7 @@ public class TestSaleAssociateRestlet {
         ops.delegateResourceDeletion(new MockPersistenceManager(), saleAssociateKey);
     }
 
+    @Ignore
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws DataSourceException, ClientException {
         ops.getResource(null, "resourceId", user);

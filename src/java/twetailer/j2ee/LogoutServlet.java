@@ -42,7 +42,7 @@ public class LogoutServlet extends HttpServlet {
         RelyingParty relyingParty = getRelyingParty();
         relyingParty.invalidate(request, response);
 
-        String pageToGo = request.getParameter("fromPageURL");
+        String pageToGo = request.getParameter(LoginServlet.FROM_PAGE_URL_KEY);
         pageToGo = pageToGo == null ? ApplicationSettings.get().getMainPageURL() : pageToGo;
         response.sendRedirect(pageToGo);
     }

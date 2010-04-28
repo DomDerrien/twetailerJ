@@ -79,7 +79,9 @@ public class TestConsumerRestlet {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetResourceI() throws DataSourceException, ClientException {
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         final Long resourceId = 12345L;
         ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override

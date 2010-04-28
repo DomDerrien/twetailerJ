@@ -97,7 +97,7 @@
                             </div>
                             <br/>
                             <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
-                                <input id="fromPageURL" name="fromPageURL" type="hidden" />
+                                <input id="fromPageURL" name="<%= LoginServlet.FROM_PAGE_URL_KEY %>" type="hidden" />
                                 <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
                                 <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
                                 <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
@@ -109,13 +109,13 @@
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/login?loginWith=google&fromPageURL=' + dojo.byId('fromPageURL').value"
+                                    onclick="window.location='/login?loginWith=google&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/google.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/login?loginWith=yahoo&fromPageURL=' + dojo.byId('fromPageURL').value"
+                                    onclick="window.location='/login?loginWith=yahoo&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/yahoo.ico" width="16" height="16" /></button>
                                 <button

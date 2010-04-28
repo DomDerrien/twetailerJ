@@ -365,12 +365,13 @@ public class TestProposalRestlet {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetResourceII() throws DataSourceException {
         //
         // Proposal queried by the Demand owner (Consumer)
         // Demand not yet confirmed!
         //
-        final Long saleAssociateKey = 65879L;
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
         final Long proposalKey = 45345L;
         final Long demandKey = 34567L;
         ProposalRestlet.proposalOperations = new ProposalOperations() {
@@ -398,26 +399,28 @@ public class TestProposalRestlet {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
                 assertEquals(demandKey, key);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, ownerKey);
+                assertNull(ownerKey); // Because it's a privileged access
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setOwnerKey(ownerKey);
+                demand.setOwnerKey(saleAssociateKey);
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.published);
                 return demand;
             }
         };
 
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         ops.getResource(null, proposalKey.toString(), user);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetResourceIII() throws DataSourceException {
         //
         // Proposal queried by the Demand owner (Consumer, who is also a SaleAssociate but who did not create the Proposal)
         // Demand not yet confirmed!
         //
-        final Long saleAssociateKey = 65879L;
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
         final Long proposalKey = 45345L;
         final Long demandKey = 34567L;
         ProposalRestlet.proposalOperations = new ProposalOperations() {
@@ -447,26 +450,28 @@ public class TestProposalRestlet {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
                 assertEquals(demandKey, key);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, ownerKey);
+                assertNull(ownerKey); // Because it's a privileged access
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setOwnerKey(ownerKey);
+                demand.setOwnerKey(saleAssociateKey);
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.published);
                 return demand;
             }
         };
 
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         ops.getResource(null, proposalKey.toString(), user);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetResourceIV() throws DataSourceException {
         //
         // Proposal queried by the Demand owner (Consumer)
         // Demand is in confirmed state => "Check out" URL needs to be computed
         //
-        final Long saleAssociateKey = 65879L;
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
         final Long proposalKey = 45345L;
         final Long demandKey = 34567L;
         ProposalRestlet.proposalOperations = new ProposalOperations() {
@@ -494,19 +499,21 @@ public class TestProposalRestlet {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
                 assertEquals(demandKey, key);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, ownerKey);
+                assertNull(ownerKey); // Because it's a privileged access
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setOwnerKey(ownerKey);
+                demand.setOwnerKey(saleAssociateKey);
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.confirmed);
                 return demand;
             }
         };
 
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         ops.getResource(null, proposalKey.toString(), user);
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected=DataSourceException.class)
     public void testGetResourceV() throws DataSourceException {
         //
@@ -514,7 +521,7 @@ public class TestProposalRestlet {
         // Demand is in confirmed state => "Check out" URL needs to be computed
         // Simulate error while updating the proposal field with the AWS Co-branded Service URL
         //
-        final Long saleAssociateKey = 65879L;
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
         final Long proposalKey = 45345L;
         final Long demandKey = 34567L;
         ProposalRestlet.proposalOperations = new ProposalOperations() {
@@ -547,16 +554,17 @@ public class TestProposalRestlet {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
                 assertEquals(demandKey, key);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, ownerKey);
+                assertNull(ownerKey); // Because it's a privileged access
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.setOwnerKey(ownerKey);
+                demand.setOwnerKey(saleAssociateKey);
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.confirmed);
                 return demand;
             }
         };
 
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         ops.getResource(null, proposalKey.toString(), user);
     }
 }

@@ -28,11 +28,7 @@
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
-%>
-<%@page import="twetailer.dto.SaleAssociate"%>
-<%@page import="twetailer.dto.Location"%>
-<%@page import="twetailer.dto.Store"%><html>
-<head>
+%><head>
     <title>Monitoring Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="shortcut icon" href="/favicon.ico" />

@@ -96,6 +96,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -119,6 +122,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -140,6 +146,9 @@ public class TestLoginServlet {
                     return "google";
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);
@@ -166,6 +175,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -190,6 +202,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return "unknown";
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -212,6 +227,9 @@ public class TestLoginServlet {
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return "test@gmail.com";
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
                 }
                 fail("Parameter access not expected for: " + name);
                 return null;
@@ -236,6 +254,9 @@ public class TestLoginServlet {
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return "test@yahoo.com";
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
                 }
                 fail("Parameter access not expected for: " + name);
                 return null;
@@ -264,12 +285,15 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
             @Override
             public RequestDispatcher getRequestDispatcher(String url) {
-                assertEquals(ApplicationSettings.get().getLoginPageURL(), url);
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
                 return new MockRequestDispatcher();
             }
         };
@@ -300,12 +324,15 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return "anyID";
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
             @Override
             public RequestDispatcher getRequestDispatcher(String url) {
-                assertEquals(ApplicationSettings.get().getLoginPageURL(), url);
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
                 return new MockRequestDispatcher();
             }
         };
@@ -335,6 +362,9 @@ public class TestLoginServlet {
                     return Constants.Mode.ID_RES;
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);
@@ -375,6 +405,9 @@ public class TestLoginServlet {
                     return null;
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);
@@ -438,6 +471,9 @@ public class TestLoginServlet {
                     return null;
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);
@@ -505,6 +541,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -535,7 +574,7 @@ public class TestLoginServlet {
             }
             @Override
             public RequestDispatcher getRequestDispatcher(String url) {
-                assertEquals(ApplicationSettings.get().getLoginPageURL(), url);
+                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
                 return new MockRequestDispatcher();
             }
         };
@@ -566,6 +605,9 @@ public class TestLoginServlet {
                     return Constants.Mode.ID_RES;
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);
@@ -648,6 +690,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -728,6 +773,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -793,6 +841,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -853,6 +904,9 @@ public class TestLoginServlet {
                     return null;
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);
@@ -919,6 +973,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -956,6 +1013,9 @@ public class TestLoginServlet {
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
                     return null;
                 }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
+                    return null;
+                }
                 fail("Parameter access not expected for: " + name);
                 return null;
             }
@@ -991,6 +1051,9 @@ public class TestLoginServlet {
                     return null;
                 }
                 if (RelyingParty.DEFAULT_IDENTIFIER_PARAMETER.equals(name)) {
+                    return null;
+                }
+                if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
                     return null;
                 }
                 fail("Parameter access not expected for: " + name);

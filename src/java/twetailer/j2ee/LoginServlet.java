@@ -37,6 +37,8 @@ import com.dyuproject.util.http.UrlEncodedParameterMap;
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 
+    public static final String FROM_PAGE_URL_KEY = "fromPageURL";
+
     protected static Listener sregExtension = new SRegExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("nickname"); // .addExchange("firstname").addExchange("lastname");
 
     protected static Listener axSchemaExtension = new AxSchemaExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("firstname").addExchange("lastname").addExchange("nickname");
@@ -146,7 +148,7 @@ public class LoginServlet extends HttpServlet {
         RelyingParty relyingParty = getRelyingParty();
         String errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         try {
-            String pageToGo = request.getParameter("fromPageURL");
+            String pageToGo = request.getParameter(FROM_PAGE_URL_KEY);
             pageToGo = pageToGo == null ? ApplicationSettings.get().getMainPageURL() : pageToGo;
 
             OpenIdUser user = relyingParty.discover(request);
@@ -194,7 +196,7 @@ public class LoginServlet extends HttpServlet {
             String trustRoot = url.substring(0, url.indexOf("/", 9));
             String realm = url.substring(0, url.lastIndexOf("/"));
             String returnTo = url.toString();
-            returnTo += "?fromPageURL=" + pageToGo;
+            returnTo += "?" + FROM_PAGE_URL_KEY + "=" + pageToGo;
             if (relyingParty.associateAndAuthenticate(user, request, response, trustRoot, realm, returnTo)) {
                 // successful association
                 return;
