@@ -34,11 +34,14 @@
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <meta http-equiv="Content-Language" content="<%= localeId %>" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-language" content="<%= localeId %>" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
     <meta name="description" content="<%= LabelExtractor.get(ResourceFileId.third, "login_localized_page_description", locale) %>" />
     <meta name="keywords" content="<%= LabelExtractor.get(ResourceFileId.third, "login_localized_page_keywords", locale) %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.third, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%
@@ -94,8 +97,9 @@
                             </div>
                             <br/>
                             <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
+                                <input id="fromPageURL" name="fromPageURL" type="hidden" />
                                 <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
-                                <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;" type="text" /></center>
+                                <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
                                 <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
                             </form>
                             <br/>
@@ -105,13 +109,13 @@
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/login?loginWith=google'"
+                                    onclick="window.location='/login?loginWith=google&fromPageURL=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/google.ico" width="16" height="16" /> </button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/login?loginWith=yahoo'"
+                                    onclick="window.location='/login?loginWith=yahoo&fromPageURL=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/yahoo.ico" width="16" height="16" /></button>
                                 <button
@@ -224,8 +228,7 @@
         dojo.require("dojo.parser");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            var userLocale = "<%= localeId %>";
-            twetailer.Console.init(userLocale, true);
+            twetailer.Console.init("<%= localeId %>", true);
             dojo.fadeOut({
                 node: "introFlash",
                 delay: 50,
@@ -253,6 +256,8 @@
                 dojo.byId("useAdditionalInfoButton").click();
             }
         });
+        dojo.byId("fromPageURL").value = encodeURI(window.location);
+        dijit.byId("signInButton").attr("disabled", false);
     };
     localModule.cookOpenId = function(prefix, suffix) {
         dojo.byId('openIdPrefix').innerHTML = prefix;

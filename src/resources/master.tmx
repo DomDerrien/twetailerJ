@@ -122,7 +122,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Copyright &copy; 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
+                <seg>Copyright \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
             </tuv>
         </tu>
 

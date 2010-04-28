@@ -45,10 +45,11 @@
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "sep_localized_page_name", new Object[] { cityName }, locale) %></title>
     <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <meta http-equiv="Content-Language" content="<%= localeId %>" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta name="description" content="<%= LabelExtractor.get(ResourceFileId.third, "sep_localized_page_description", new Object[] { cityName }, locale) %>" />
     <meta name="keywords" content="<%= cityName %>, <% for(int tagIdx = 0; tagIdx < (cityTags == null ? 0 : cityTags.size()); tagIdx ++) { %><%= cityTags.getString(tagIdx) %>, <% } %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.third, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%

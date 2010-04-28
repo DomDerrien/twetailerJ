@@ -6,6 +6,7 @@
     import="java.util.Locale"
     import="java.util.ResourceBundle"
     import="java.net.URL"
+    import="java.net.URLEncoder"
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
@@ -18,6 +19,11 @@
 %><%
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
+
+    // Get the current page url
+    String queryString = request.getQueryString();
+    String fromPageURL = request.getRequestURI() + (queryString == null ? "" : "?" + queryString);
+    fromPageURL = URLEncoder.encode(fromPageURL, "UTF-8");
 %>
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
             <div id="brand">
@@ -42,7 +48,7 @@
                     <li><a name="justForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
-                    <li class="subItem"><a href="/logout" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
+                    <li class="subItem"><a href="/logout?fromPageURL=<%= fromPageURL %>" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
                 </ul>
             </div>
         </div>

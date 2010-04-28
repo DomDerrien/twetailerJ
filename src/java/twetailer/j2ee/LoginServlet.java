@@ -146,11 +146,14 @@ public class LoginServlet extends HttpServlet {
         RelyingParty relyingParty = getRelyingParty();
         String errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         try {
+            String pageToGo = request.getParameter("fromPageURL");
+            pageToGo = pageToGo == null ? ApplicationSettings.get().getMainPageURL() : pageToGo;
+
             OpenIdUser user = relyingParty.discover(request);
             if (user == null) {
                 if (RelyingParty.isAuthResponse(request)) {
                     // authentication timeout
-                    response.sendRedirect(request.getRequestURI());
+                    response.sendRedirect(request.getRequestURI()); // TODO: verify if parameters should be added: "?" + request.getQueryString()
                 }
                 else {
                     // set error msg if the openid_identifier is not resolved.
@@ -158,7 +161,7 @@ public class LoginServlet extends HttpServlet {
                         request.setAttribute(OpenIdServletFilter.ERROR_MSG_ATTR, errorMsg);
                     }
                     // new user
-                    request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
+                    request.getRequestDispatcher(pageToGo).forward(request, response);
                 }
                 return;
             }
@@ -166,7 +169,7 @@ public class LoginServlet extends HttpServlet {
             if (user.isAuthenticated()) {
                 // user already authenticated
                 attachConsumerToSession(user);
-                request.getRequestDispatcher(ApplicationSettings.get().getMainPageURL()).forward(request, response);
+                request.getRequestDispatcher(pageToGo).forward(request, response);
                 return;
             }
 
@@ -177,11 +180,11 @@ public class LoginServlet extends HttpServlet {
                     // authenticated redirect to home to remove the query params instead of doing:
                     // request.setAttribute("user", user); request.getRequestDispatcher("/home.jsp").forward(request, response);
                     attachConsumerToSession(user);
-                    response.sendRedirect(ApplicationSettings.get().getMainPageURL());
+                    response.sendRedirect(pageToGo);
                 }
                 else {
                     // failed verification
-                    request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
+                    request.getRequestDispatcher(pageToGo).forward(request, response);
                 }
                 return;
             }
@@ -191,6 +194,7 @@ public class LoginServlet extends HttpServlet {
             String trustRoot = url.substring(0, url.indexOf("/", 9));
             String realm = url.substring(0, url.lastIndexOf("/"));
             String returnTo = url.toString();
+            returnTo += "?fromPageURL=" + pageToGo;
             if (relyingParty.associateAndAuthenticate(user, request, response, trustRoot, realm, returnTo)) {
                 // successful association
                 return;

@@ -37,6 +37,10 @@
     </filter>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>openidfilter</filter-name>
         <url-pattern>/console/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
@@ -72,16 +76,6 @@
     <servlet-mapping>
         <servlet-name>maezel</servlet-name>
         <url-pattern>@rwa.servletApiPath@/maezel/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>console</servlet-name>
-        <jsp-file>/jsp_includes/console.jsp</jsp-file>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>console</servlet-name>
-        <url-pattern>/console/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -281,4 +275,3 @@
     </security-constraint>
 
 </web-app>
-

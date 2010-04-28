@@ -41,6 +41,9 @@ public class LogoutServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RelyingParty relyingParty = getRelyingParty();
         relyingParty.invalidate(request, response);
-        response.sendRedirect(ApplicationSettings.get().getMainPageURL());
+
+        String pageToGo = request.getParameter("fromPageURL");
+        pageToGo = pageToGo == null ? ApplicationSettings.get().getMainPageURL() : pageToGo;
+        response.sendRedirect(pageToGo);
     }
 }
