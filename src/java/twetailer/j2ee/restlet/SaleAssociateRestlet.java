@@ -1,6 +1,8 @@
 package twetailer.j2ee.restlet;
 
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,12 +16,16 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
+import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.OpenIdUser;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -53,6 +59,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
         if (isAPrivilegedUser(loggedUser)) {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
+                parameters.put(SaleAssociate.CREATOR_KEY, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
                 return delegateResourceCreation(pm, parameters);
             }
             finally {
@@ -338,6 +345,114 @@ public class SaleAssociateRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        boolean isAdminControlled = isAPrivilegedUser(loggedUser);
+        String newEmail = null, newJabberId = null, newTwitterId = null;
+        SaleAssociate saleAssociate = null;
+        Long saleAssociateKey = null;
+
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+            saleAssociateKey = Long.valueOf(resourceId);
+            saleAssociate = saleAssociateOperations.getSaleAssociate(pm, saleAssociateKey);
+            if (!saleAssociate.getConsumerKey().equals(consumerKey) && !isAdminControlled) {
+                throw new IllegalArgumentException("Consumer records can only be updated by the sale associates themselves");
+            }
+
+            // Verify the information about the third party access providers
+            String openId = loggedUser.getClaimedId();
+            if (!isAdminControlled) {
+                newEmail = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
+                newJabberId = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
+                newTwitterId = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
+            }
+
+            if (!isAdminControlled && !openId.equals(saleAssociate.getOpenID())) {
+                throw new IllegalArgumentException("Mismatch between the given OpenID and the one associated to the identified consumer");
+            }
+
+            // Update the consumer account
+            saleAssociate.fromJson(parameters);
+            log.warning("Merged information: " + saleAssociate.toJson().toString());
+            saleAssociate = saleAssociateOperations.updateSaleAssociate(pm, saleAssociate);
+        }
+        finally {
+            pm.close();
+        }
+
+        // Move demands to the updated account
+        if (!isAdminControlled && (newEmail != null || newJabberId != null || newTwitterId != null)) {
+            /*
+            Warning:
+            --------
+            Cannot pass the connection to the following operations because they are
+            possibly going to affect different Consumer entities! And the JDO layer
+            will throw an exception like the following one:
+                Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
+                NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
+                    Found both Element {
+                      type: "Consumer"
+                      id: 425
+                    }
+                    and Element {
+                      type: "Consumer"
+                      id: 512
+                    }
+             */
+            scheduleConsolidationTasks(SaleAssociate.EMAIL, newEmail, saleAssociateKey);
+            scheduleConsolidationTasks(SaleAssociate.JABBER_ID, newJabberId, saleAssociateKey);
+            scheduleConsolidationTasks(SaleAssociate.TWITTER_ID, newTwitterId, saleAssociateKey);
+        }
+
+        return saleAssociate.toJson();
+    }
+
+    /**
+     * Use the identifier of the account to migrate to the current one to select its entity,
+     * to neutralize its identifiers, and to schedule tasks that will updates its attached demands
+     * to be now attached to the current account
+     *
+     * @param topic An identifier among {SaleAssociate.EMAIL, SaleAssociate.JABBER_ID, SaleAssociate.TWITTER_ID}
+     * @param identifier The value of the identified attribute
+     * @param SaleAssociateKey The key of the current SaleAssociate account
+     *
+     * @throws DataSourceException If the SaleAssociate or Demand look-up fails
+     */
+    protected static void scheduleConsolidationTasks(String topic, String identifier, Long saleAssociateKey) throws DataSourceException {
+        if (identifier != null && !"".equals(identifier)) {
+            if (!SaleAssociate.EMAIL.equals(topic) && !SaleAssociate.JABBER_ID.equals(topic) && !SaleAssociate.TWITTER_ID.equals(topic)) {
+                throw new IllegalArgumentException("Not supported field identifier: " + topic);
+            }
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, topic, identifier, 1);
+                if (0 < saleAssociates.size()) {
+                    // Reset other consumer field
+                    SaleAssociate otherSaleAssociate = saleAssociates.get(0);
+                    if (!saleAssociateKey.equals(otherSaleAssociate.getKey())) {
+                        if (SaleAssociate.EMAIL.equals(topic)) { otherSaleAssociate.setEmail("~" + otherSaleAssociate.getEmail()); }
+                        else if (SaleAssociate.JABBER_ID.equals(topic)) { otherSaleAssociate.setJabberId("~" + otherSaleAssociate.getJabberId()); }
+                        else /* if (SaleAssociate.TWITTER_ID.equals(topic)) */ { otherSaleAssociate.setTwitterId("~" + otherSaleAssociate.getTwitterId()); }
+                        otherSaleAssociate = saleAssociateOperations.updateSaleAssociate(pm, otherSaleAssociate);
+
+                        // Schedule tasks to migrate demands to this new sale associate
+                        List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherSaleAssociate.getKey(), 1);
+                        Queue queue = _baseOperations.getQueue();
+                        for (Long demandKey: demandKeys) {
+                            log.warning("Preparing the task: /maezel/consolidateSaleAssociateAccounts?key=" + demandKey.toString() + "&ownerKey=" + saleAssociateKey.toString());
+                            queue.add(
+                                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateSaleAssociateAccounts").
+                                    param(Demand.KEY, demandKey.toString()).
+                                    param(Demand.OWNER_KEY, saleAssociateKey.toString()).
+                                    method(Method.GET)
+                            );
+                        }
+                    }
+                }
+            }
+            finally {
+                pm.close();
+            }
+        }
     }
 }
