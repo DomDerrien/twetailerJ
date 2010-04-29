@@ -1971,8 +1971,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Expires:{2}? If yes then send the following... |
-                    2/2 'propose demand:{0} tags:your-description-here price:your-price-here'.
+                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Expires:{2}? If yes then replace the "?" and send the following... |
+                    2/2 'propose demand:{0} tags:?'.
                 </seg>
             </tuv>
         </tu>
@@ -1990,8 +1990,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Qty:{3} Expires:{2}? If yes then send the following... |
-                    2/2 'propose demand:{0} tags:your-description-here qty:your-qty-here price:your-price-here'.
+                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Qty:{3} Expires:{2}? If yes then replacing the "?" and send the following... |
+                    2/2 'propose demand:{0} tags:? qty:? price:?'.
                 </seg>
             </tuv>
         </tu>
@@ -2037,7 +2037,7 @@
                 {0}: proposal key:
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal with at least Tag by sending 'propose proposal:{0} tags:your-tags-here'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with your proposed desciption & sending 'propose proposal:{0} tags:?'.</seg>
             </tuv>
         </tu>
 
@@ -2062,7 +2062,7 @@
                 Future release
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal has a unit Price and final Total cost by sending 'propose proposal:{0} price:unit-price total:final-cost'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with the unit Price and final Total cost & sending 'propose proposal:{0} price:? total:?'.</seg>
             </tuv>
         </tu>
 
@@ -2074,7 +2074,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal has a Demand number by sending 'propose proposal:{0} demand:see-previously-sent-ref'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with your Demand number & sending 'propose proposal:{0} demand:?'.</seg>
             </tuv>
         </tu>
 
@@ -2087,7 +2087,7 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal has the appropriate Demand number by sending 'propose proposal:{0} demand:see-previously-sent-ref'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with a valid Demand number & sending 'propose proposal:{0} demand:?'.</seg>
             </tuv>
         </tu>
 
