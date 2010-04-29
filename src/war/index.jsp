@@ -22,10 +22,11 @@
 %><html>
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
+    <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="/images/favicon.ico" />
-    <meta http-equiv="refresh" content="0; URL=/html/console.jsp"/>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta http-equiv="refresh" content="0; URL=/console/"/>
     <%
     if (useCDN) {
     %><style type="text/css">
@@ -44,6 +45,6 @@
     %>
 </head>
 <body class="tundra">
-    <h3 style="text-align:center;"><%= LabelExtractor.get(ResourceFileId.third, "ui_page_redirection_message", new Object[] {"/html/console.jsp"},locale) %></h3>
+    <h3 style="text-align:center;"><%= LabelExtractor.get(ResourceFileId.third, "ui_page_redirection_message", new Object[] {"/console/"},locale) %></h3>
 </body>
 </html>

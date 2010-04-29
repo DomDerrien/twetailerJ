@@ -2,74 +2,47 @@
 Required tools
 ========================================
 
-- SUN Java SDK 1.6: http://java.sun.com/javase/downloads/index.jsp
-- Eclipse 3.4+: http://www.eclipse.org/downloads/
-- MSysGit 1.6: http://code.google.com/p/msysgit/
+- SUN Java SDK 1.6: from http://java.sun.com/javase/downloads/index.jsp
+- Eclipse 3.5+: from http://www.eclipse.org/downloads/
+- MSysGit 1.6: from http://code.google.com/p/msysgit/ -- follow directions from http://help.github.com/win-git-installation/
 
 ========================================
 Initial development environment setup
 ========================================
 
-** Note: all names between < and > are meant to be replaced by the corresponding information.
+* "~twetailerJ" is considered being the twetailerJ home directory, probably something like "c:\workspaces\twetailerJ".
 
-1. Install 7Zip, Java SDK, Eclipse, and MSysGit
-2. Use GitHub Web page to fork Twetailer master repository (then you'll have you own copy into your account)
-3. Open a command line shell
-	3.1 Go to your Eclipse workspace directory: $cd <workspace.dir>
-	3.2 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-	3.3 Launch Git Bash from <workspace.dir> & clone your fork of Twetailer repository: $git clone git@github.com:DomDerrien/twetailerJ.git
-	3.4 Keep a local reference of the master respository: $git remote add <your.username> git@/github.com/<your.username>/twetailerJ.git
-	3.5 Move to the twetailerJ sub-directory: $cd twetailerJ
-	3.6 Create the bin directory: $mkdir bin
-	3.7 Unzip the ant program: $<7Zip.dir>\7z.exe x -obin deps\tools\system\apache-ant-1.7.1-bin.zip
-	3.8 Unzip the App Engine SDK: $<7Zip.dir>\7z.exe x -obin deps\tools\containers\appengine-java-sdk-1.2.5.zip
-	3.9 Run the Ant command: $bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml init
-	
+1. Install the Java SDK, Eclipse, and MSysGit
+
+2. For the github.com page, fork the twetailerJ project (details on http://help.github.com/forking/)
+3. Add the git alias: git remote add dom git://github.com/DomDerrien/twetailerJ.git
+4. Add the alias for your fork: git remote add <your-id> git://github.com/<your-id>/twetailerJ.git
+5. As explained at http://github.com/guides/keeping-a-git-fork-in-sync-with-the-forked-repo, edit the "~twetailerJ\.git\config" file with:
+    [alias]
+        pu = !"git fetch dom -v; git fetch <your-id> -v; git merge <your-id>/master"
+
+
+6. Extract "~twetailerJ\deps\tools\system\apache-ant-*.zip" in "~twetailerJ\bin"
+7. Extract "~twetailerJ\deps\tools\containers\appengine-java-*.zip" in "~twetailerJ\bin"
+
+8. In a normal Windows Command Line Prompt, from the project top directory (i.e. from "~twetailerJ"), run the command: "build\init.bat"
+
 ==================================================
 Refresh from git hub before day-to-day development
 ==================================================
 
-1. Pull & merge latest source code from git hub by running gitbash & then enter command "git pull".  (See http://www.kernel.org/pub/software/scm/git/docs/everyday.html)
-2. From command prompt window, change directory to <twetailerJ>
-2.1 Run build: "bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml init"
-2.2 Run tests: "bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml test"
-2.3 Start App Engine server: "bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml webserver-start"
-2.4 Open http://localhost:9999/ for local Console, or, http://localhost:9999/_ah/admin for local Google App Engine 
+1. From the Git Command Line Prompt, go to the "~twetailerJ" folder and run the command "git pu" (call the alias defined above).
+
+2. From the Windows Command Line Prompt window:
+    2.1 Run build: "build\init.bat"
+    2.2 Run tests: "build\test-entire-project.bat"
+    2.3 Start App Engine server: "build\run-dev-server.bat"
+    2.4 Open http://localhost:9999/ for local Console, or, http://localhost:9999/_ah/admin for local Google App Engine 
 
 ========================================
-Day-to-day development
+Work and submit your updates
 ========================================
 
-1. Open Eclipse to update your files
-2. Open a command line shell
-	2.1 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-	2.2 Move to the twetailerJ\build directory: $cd <workspace.dir>\twetailerJ
-	2.3 Run the tests with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml test
-	2.4 Run the App Engine server with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml webserver-start
-	2.5 User the task manager to kill the nested series of JVMs (with the name "java.exe")
-3. Run a specific Java test suite
-    3.1 Run the tests with the Ant command: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml step-datanucleus-enhance-for-tests step-java-test -Dtestcase=twetailer.validator.TestCommandSettings
+Please, look at the webcast http://www.oreillynet.com/pub/e/1394.
 
-========================================
-Submit your updates
-========================================
-
-1. Open a command line shell
-	1.1 Set the JAVA_HOME variable: $set JAVA_HOME=<java.sdk.dir>
-	1.2 Move to the twetailerJ directory: $cd <workspace.dir>\twetailerJ
-	1.3 Run the Ant command: $build\clean.bat
-	1.4 Use Git to submit your patch:
-		$git status
-		$git add <new.file.path>
-		$git commit -a -m "<informative.message.about.the.patch>"
-		$git push
-	1.5 Or compress the Twetailer files (password-protected) and send the ZIP file to dom.derrien@twetailer.com:
-		$<7Zip.dir>\7z.exe a -xr!.git -ptwtlr twetailerJ-patch-<YYYYMMDD.of.the.day>.7z ./*
-
-========================================
-Update the application
-========================================
-
-1. Copy the files to go on production in a folder like <workspace_dir>/twetailerJ-stage
-2. Test the ready-to-deploy code with: bin\apache-ant-1.7.1\bin\ant -f build\build-appengine.xml step-appengine-start
-3. Deploy the code with: bin\appengine-java-sdk-1.2.5\bin\appcfg.cmd --email=twetailer@gmail.com update src\war
+If needed, follow-up with questions added to http://twetailer.cyn.in/home/developers/oreilly-git-in-one-hour.

@@ -81,14 +81,14 @@ public class Location extends Entity {
     }
 
     public void setLatitude(Double latitude) {
-        if (90.0D < latitude || latitude < -90.0D) {
+        if (latitude == null || 90.0D < latitude || latitude < -90.0D) {
             latitude = INVALID_COORDINATE;
         }
         this.latitude = latitude;
     }
 
     public Double getLongitude() {
-        if (180.0D < longitude || longitude < -180.0D) {
+        if (longitude == null || 180.0D < longitude || longitude < -180.0D) {
             longitude = INVALID_COORDINATE;
         }
         return longitude;

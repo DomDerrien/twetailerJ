@@ -9,15 +9,13 @@ import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 
 public class TwitterConnector {
     private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
     public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
-    private static final String TWETAILER_TWITTER_PASSWORD = "ec0n0m1cs";
-
-    // private static String robotScreenName = "jacktroll";
-    // private static String robotPassword = "twetailer@robot1";
+    private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 
@@ -35,7 +33,8 @@ public class TwitterConnector {
     public synchronized static Twitter getTwetailerAccount() {
         int size = _twetailerAccounts.size();
         if (size == 0) {
-            return new Twitter(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
+            // Depreciated: return new Twitter(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
+            return new TwitterFactory().getInstance(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
         }
         return _twetailerAccounts.remove(size - 1);
     }

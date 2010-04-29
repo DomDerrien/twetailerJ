@@ -11,6 +11,7 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -65,8 +66,9 @@ public class CloseCommandProcessor {
                     if (0 < proposals.size()) {
                         Proposal proposal = proposals.get(0);
                         SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                        RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, proposal.getRawCommandId());
                         communicateToSaleAssociate(
-                                new RawCommand(proposal.getSource()),
+                                originalRawCommand,
                                 saleAssociate,
                                 new String[] { LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale()) }
                         );
@@ -109,16 +111,14 @@ public class CloseCommandProcessor {
                 parameters.put(Demand.PROPOSAL_KEYS, proposal.getKey());
                 parameters.put(Command.STATE, State.confirmed.toString());
                 try {
-                    List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, 1);
-                    if (0 < demands.size()) {
-                        Demand demand = demands.get(0);
-                        Consumer demandOwner = CommandProcessor.consumerOperations.getConsumer(pm, demand.getOwnerKey());
-                        communicateToConsumer(
-                                new RawCommand(demand.getSource()),
-                                demandOwner,
-                                new String[] { LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposal.getKey(), demand.getKey() }, consumer.getLocale()) }
-                        );
-                    }
+                    Demand demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), null);
+                    Consumer demandOwner = CommandProcessor.consumerOperations.getConsumer(pm, demand.getOwnerKey());
+                    RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                    communicateToConsumer(
+                            originalRawCommand,
+                            demandOwner,
+                            new String[] { LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposal.getKey(), demand.getKey() }, consumer.getLocale()) }
+                    );
                 }
                 catch(Exception ex) {
                     // Too bad, the demand owner can be informed about the proposal closing...

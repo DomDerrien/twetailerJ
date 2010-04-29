@@ -237,6 +237,7 @@ public abstract class BaseRestlet extends HttpServlet {
         getLogger().fine("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
+        out.put("success", true);
         JsonObject in = null;
 
         try {
@@ -244,8 +245,12 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new GenericJsonObject(request.getParameterMap());
 
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
+            if (loggedUser == null) {
+                response.setStatus(401); // Unauthorized
+                out.put("success", false);
+                out.put("reason", "Unauthorized");
+            }
+            else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Get selected resources
                 out.put("resources", selectResources(in, loggedUser));
             }
@@ -264,8 +269,6 @@ public abstract class BaseRestlet extends HttpServlet {
             else {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
-
-            out.put("success", true);
         }
         catch (Exception ex) {
             String message = "Unexpected exception during BaseRESTServlet.doGet() operation";
@@ -307,6 +310,7 @@ public abstract class BaseRestlet extends HttpServlet {
         getLogger().finer("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
+        out.put("success", true);
         JsonObject in = null;
 
         try {
@@ -314,16 +318,18 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new JsonParser(request.getInputStream()).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
+            if (loggedUser == null) {
+                response.setStatus(401); // Unauthorized
+                out.put("success", false);
+                out.put("reason", "Unauthorized");
+            }
+            else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Create the resource
                 out.put("resource", createResource(in, loggedUser));
             }
             else {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
-
-            out.put("success", true);
         }
         catch (Exception ex) {
             String message = "Unexpected exception during BaseRESTServlet.doPost() operation";
@@ -365,6 +371,7 @@ public abstract class BaseRestlet extends HttpServlet {
         getLogger().finer("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
+        out.put("success", true);
         JsonObject in = null;
 
         try {
@@ -372,8 +379,12 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new JsonParser(request.getInputStream()).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
+            if (loggedUser == null) {
+                response.setStatus(401); // Unauthorized
+                out.put("success", false);
+                out.put("reason", "Unauthorized");
+            }
+            else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource update");
             }
             if (Pattern.matches("/(\\w+)", pathInfo)) {
@@ -387,8 +398,6 @@ public abstract class BaseRestlet extends HttpServlet {
             else {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
-
-            out.put("success", true);
         }
         catch (Exception ex) {
             String message = "Unexpected exception during BaseRESTServlet.doPut() operation";
@@ -429,11 +438,16 @@ public abstract class BaseRestlet extends HttpServlet {
         getLogger().finer("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
+        out.put("success", true);
 
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
-
-            if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
+            if (loggedUser == null) {
+                response.setStatus(401); // Unauthorized
+                out.put("success", false);
+                out.put("reason", "Unauthorized");
+            }
+            else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource deletion");
             }
             if (Pattern.matches("/(\\w+)", pathInfo)) {
@@ -447,8 +461,6 @@ public abstract class BaseRestlet extends HttpServlet {
             else {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
-
-            out.put("success", true);
         }
         catch (Exception ex) {
             String message = "Unexpected exception during BaseRESTServlet.doDelete() operation";

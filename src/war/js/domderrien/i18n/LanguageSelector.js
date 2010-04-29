@@ -6,7 +6,6 @@
      */
     var module = dojo.provide("domderrien.i18n.LanguageSelector");
 
-    dojo.require("dojo.data.ItemFileReadStore");
     dojo.require("dijit.form.Select");
 
     /**

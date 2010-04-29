@@ -2,10 +2,12 @@ package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.MockHttpServletRequest;
 import javax.servlet.http.MockHttpServletResponse;
 
-import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,6 +39,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
+import twetailer.dao.PaymentOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SettingsOperations;
@@ -45,9 +47,11 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.payment.AmazonFPS;
 import twetailer.task.CommandProcessor;
 import twetailer.task.MockCommandProcessor;
 import twetailer.task.MockDemandProcessor;
@@ -60,13 +64,18 @@ import twetailer.task.MockTweetLoader;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
+import twitter4j.MockDirectMessage;
+import twitter4j.MockTwitter;
 import twitter4j.Paging;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import com.amazonaws.fps.model.TransactionStatus;
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
+import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -170,9 +179,9 @@ public class TestMaezelServlet {
     @SuppressWarnings("serial")
     public void testDoGetLoadTweets() throws IOException {
         // Inject a mock Twitter account
-        final Twitter mockTwitterAccount = new Twitter() {
+        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
             @Override
-            public List<DirectMessage> getDirectMessages(Paging paging) {
+            public ResponseList<DirectMessage> getDirectMessages(Paging paging) {
                 return null;
             }
         };
@@ -1005,12 +1014,10 @@ public class TestMaezelServlet {
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
-
-        String sentMessage = mock.getLastSentMessage().getBody();
-        assertTrue(sentMessage.contains(String.valueOf(MaezelServlet.getCode(topic, identifier, openId))));
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testWaitForVerificationCodeIII() throws IOException, TwitterException, ClientException {
         final String openId = "http://openId";
         final String identifier = "unit_test_ca";
@@ -1060,16 +1067,20 @@ public class TestMaezelServlet {
 
         // Expected messages
         final long code = MaezelServlet.getCode(topic, identifier, openId);
-        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
-        String msg2 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, Locale.ENGLISH);
+        final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+        final String msg2 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, Locale.ENGLISH);
 
         // To inject the mock account
-        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andReturn(dm).once();
-        EasyMock.expect(account.sendDirectMessage(identifier, msg2)).andReturn(dm).once();
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            boolean firstMessage = true;
+            @Override
+            public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
+                assertEquals(identifier, screenName);
+                assertEquals(firstMessage ? msg1 : msg2, text);
+                firstMessage = !firstMessage;
+                return new MockDirectMessage(getScreenName(), screenName, text);
+            }
+        });
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
@@ -1078,6 +1089,7 @@ public class TestMaezelServlet {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testWaitForVerificationCodeIV() throws IOException, TwitterException, ClientException {
         final String openId = "http://openId";
         final String identifier = "unit_test_ca";
@@ -1126,13 +1138,17 @@ public class TestMaezelServlet {
         };
 
         // Expected messages
-        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+        final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andThrow(new TwitterException("Done in purpose!"));
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
+                assertEquals(identifier, screenName);
+                assertEquals(msg1, text);
+                throw new TwitterException("Done in purpose!");
+            }
+        });
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
@@ -1190,7 +1206,7 @@ public class TestMaezelServlet {
         };
 
         // Exception to inject
-        TwitterException injectedException = new TwitterException("blah-blah-blah.") {
+       final TwitterException injectedException = new TwitterException("blah-blah-blah.") {
             @Override
             public int getStatusCode() {
                 return 403;
@@ -1198,20 +1214,23 @@ public class TestMaezelServlet {
         };
 
         // Expected messages
-        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+        final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andThrow(injectedException);
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
+                assertEquals(identifier, screenName);
+                assertEquals(msg1, text);
+                throw injectedException;
+            }
+        });
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
         TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
     }
-
 
     @Test
     @SuppressWarnings("serial")
@@ -1263,7 +1282,7 @@ public class TestMaezelServlet {
         };
 
         // Exception to inject
-        TwitterException injectedException = new TwitterException("blah-blah-blah. <error>You cannot send messages to users who are not following you.</error>") {
+        final TwitterException injectedException = new TwitterException("blah-blah-blah. <error>You cannot send messages to users who are not following you.</error>") {
             @Override
             public int getStatusCode() {
                 return 403;
@@ -1271,13 +1290,17 @@ public class TestMaezelServlet {
         };
 
         // Expected messages
-        String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+        final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.sendDirectMessage(identifier, msg1)).andThrow(injectedException);
-        EasyMock.replay(account);
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
+                assertEquals(identifier, screenName);
+                assertEquals(msg1, text);
+                throw injectedException;
+            }
+        });
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
@@ -1894,5 +1917,461 @@ public class TestMaezelServlet {
 
         // Clean-up
         MockCommandProcessor.restoreOperations();
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsI() throws IOException {
+        final String duration = null;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(300 / 20, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsII() throws IOException {
+        final String duration = "0";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(0, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsIII() throws IOException {
+        final String duration = "12";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(1, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweetsIV() throws IOException {
+        final String duration = "100";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(100 / 20, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetSpeedUpLoadTweets() throws IOException {
+        final String duration = "1000";
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/speedUpLoadTweets";
+            }
+            @Override
+            public String getParameter(String name) {
+                if ("duration".equals(name)) {
+                    return duration;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(1000 / 20, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetCBUIEndPointI() throws IOException {
+        //
+        // Correct signature
+        //
+        final Long consumerKey = 11L;
+        final Long demandKey = 22L;
+        final Long proposalKey = 33L;
+        final Long paymentKey = 44L;
+        final String tokenId = "6543243/4324e/ewew";
+        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/cbuiEndPoint";
+            }
+            @Override
+            public String getParameter(String name) {
+                if (AmazonFPS.TOKEN_ID.equals(name)) {
+                    return tokenId;
+                }
+                if (AmazonFPS.CALLER_REFERENCE.equals(name)) {
+                    return reference;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+       };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.paymentOperations = new PaymentOperations() {
+            @Override
+            public Payment createPayment(PersistenceManager pm, Payment payment) {
+                assertEquals(tokenId, payment.getAuthorizationId());
+                assertEquals(reference, payment.getReference());
+                payment.setKey(paymentKey);
+                return payment;
+            }
+        };
+
+        servlet.amazonFPS = new AmazonFPS() {
+            @Override
+            public boolean verifyCoBrandedServiceResponse(Map<String, ?> requestParameters) throws SignatureException {
+                return true;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertTrue(stream.contains("payment"));
+        assertTrue(stream.contains("'" + Payment.KEY + "':" + paymentKey.toString()));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(1, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetCBUIEndPointII() throws IOException {
+        //
+        // Wrong signature
+        //
+        final Long consumerKey = 11L;
+        final Long demandKey = 22L;
+        final Long proposalKey = 33L;
+        final Long paymentKey = 44L;
+        final String tokenId = "6543243/4324e/ewew";
+        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/cbuiEndPoint";
+            }
+            @Override
+            public String getParameter(String name) {
+                if (AmazonFPS.TOKEN_ID.equals(name)) {
+                    return tokenId;
+                }
+                if (AmazonFPS.CALLER_REFERENCE.equals(name)) {
+                    return reference;
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+       };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.paymentOperations = new PaymentOperations() {
+            @Override
+            public Payment createPayment(PersistenceManager pm, Payment payment) {
+                assertEquals(tokenId, payment.getAuthorizationId());
+                assertEquals(reference, payment.getReference());
+                payment.setKey(paymentKey);
+                return payment;
+            }
+        };
+
+        servlet.amazonFPS = new AmazonFPS() {
+            @Override
+            public boolean verifyCoBrandedServiceResponse(Map<String, ?> requestParameters) throws SignatureException {
+                return false;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertTrue(queue == null || 0 == queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetMakePaymentI() throws IOException {
+        //
+        // Payment is a success
+        //
+        final Long consumerKey = 11L;
+        final Long demandKey = 22L;
+        final Long proposalKey = 33L;
+        final Long paymentKey = 44L;
+        final String tokenId = "6543243/4324e/ewew";
+        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
+        final TransactionStatus status = TransactionStatus.SUCCESS;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/makePayment";
+            }
+            @Override
+            public String getParameter(String name) {
+                if (Payment.KEY.equals(name)) {
+                    return paymentKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+       };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.paymentOperations = new PaymentOperations() {
+            @Override
+            public Payment getPayment(PersistenceManager pm, Long key) {
+                assertEquals(paymentKey, key);
+                Payment payment = new Payment();
+                payment.setKey(paymentKey);
+                payment.setReference(reference);
+                payment.setAuthorizationId(tokenId);
+                return payment;
+            }
+            @Override
+            public Payment updatePayment(PersistenceManager pm, Payment payment) {
+                assertEquals(paymentKey, payment.getKey());
+                assertEquals(status, payment.getStatus());
+                return payment;
+            }
+        };
+
+        servlet.amazonFPS = new AmazonFPS() {
+            @Override
+            public Payment makePayRequest(Payment payment) {
+                payment.setStatus(status);
+                return payment;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertTrue(queue == null || 0 == queue.getHistory().size());
+    }
+
+    @Test
+    public void testDoGetMakePaymentII() throws IOException {
+        //
+        // Payment is pending
+        // So same task schedule in some times
+        //
+        final Long consumerKey = 11L;
+        final Long demandKey = 22L;
+        final Long proposalKey = 33L;
+        final Long paymentKey = 44L;
+        final String tokenId = "6543243/4324e/ewew";
+        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
+        final TransactionStatus status = TransactionStatus.PENDING;
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/makePayment";
+            }
+            @Override
+            public String getParameter(String name) {
+                if (Payment.KEY.equals(name)) {
+                    return paymentKey.toString();
+                }
+                fail("Parameter query for " + name + " not expected");
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return new HashMap<String, Object>();
+            }
+       };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.paymentOperations = new PaymentOperations() {
+            @Override
+            public Payment getPayment(PersistenceManager pm, Long key) {
+                assertEquals(paymentKey, key);
+                Payment payment = new Payment();
+                payment.setKey(paymentKey);
+                payment.setReference(reference);
+                payment.setAuthorizationId(tokenId);
+                return payment;
+            }
+            @Override
+            public Payment updatePayment(PersistenceManager pm, Payment payment) {
+                assertEquals(paymentKey, payment.getKey());
+                assertEquals(status, payment.getStatus());
+                return payment;
+            }
+        };
+
+        servlet.amazonFPS = new AmazonFPS() {
+            @Override
+            public Payment makePayRequest(Payment payment) {
+                payment.setStatus(status);
+                return payment;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        assertEquals(1, queue.getHistory().size());
+    }
+
+    @Test
+    public void testGetCoBrandedServiceURL() {
+        assertNotNull(MaezelServlet.getCoBrandedServiceEndPointURL());
     }
 }

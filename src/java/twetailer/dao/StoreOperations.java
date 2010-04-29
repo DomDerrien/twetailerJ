@@ -84,8 +84,7 @@ public class StoreOperations extends BaseOperations {
      * @return Just created resource
      */
     public Store createStore(PersistenceManager pm, Store store) {
-        pm.makePersistent(store);
-        return store;
+        return pm.makePersistent(store);
     }
 
     /**
@@ -123,8 +122,7 @@ public class StoreOperations extends BaseOperations {
         }
         getLogger().warning("Get Store instance with id: " + key);
         try {
-            Store store = pm.getObjectById(Store.class, key);
-            return store;
+            return pm.getObjectById(Store.class, key);
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving store for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -274,9 +272,7 @@ public class StoreOperations extends BaseOperations {
      * @return Updated resource
      */
     public Store updateStore(PersistenceManager pm, Store store) {
-        getLogger().warning("Updating store with id: " + store.getKey());
-        store = pm.makePersistent(store);
-        return store;
+        return pm.makePersistent(store);
     }
 
     /**

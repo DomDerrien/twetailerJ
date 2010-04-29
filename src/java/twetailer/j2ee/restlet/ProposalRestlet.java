@@ -1,6 +1,7 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -13,13 +14,17 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
+import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
+import twetailer.payment.AmazonFPS;
+import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
+import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
@@ -32,6 +37,8 @@ public class ProposalRestlet extends BaseRestlet {
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
     protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
+
+    protected static AmazonFPS amazonFPS = new AmazonFPS();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -115,7 +122,63 @@ public class ProposalRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+            Long saleAssociateKey = null;
+            // Get the owner Key if needed
+            if (!isAPrivilegedUser(loggedUser)) {
+                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (saleAssociateKeys.size() != 1) {
+                    throw new IllegalArgumentException("Invalid key; cannot retrieve the SaleAssociate instance for the logged user");
+                }
+                saleAssociateKey = saleAssociateKeys.get(0);
+            }
+
+            // Try to get the proposal
+            Long proposalKey = Long.valueOf(resourceId);
+            Proposal proposal = proposalOperations.getProposal(pm, proposalKey,  null, null);
+
+            // Try to get the proposal owner
+            if (proposal.getOwnerKey().equals(saleAssociateKey)) {
+                // Everything is OK: the owner can get his Proposal information
+            }
+            else {
+                // Try to get the associated demand -- will fail if the querying consumer does own the demand
+                Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), isAPrivilegedUser(loggedUser) ? null : consumerKey);
+                if (!isAPrivilegedUser(loggedUser) && !demand.getOwnerKey().equals(consumerKey)) {
+                    throw new DataSourceException("Only the owner of the Proposal or the owner of the Demand the Proposal has been made for can list the Proposal!");
+                }
+                // Everything is OK: the owner of the Demand can get the Proposal information
+                if (State.confirmed.equals(proposal.getState())) {
+                    //
+                    // TODO: verify the store record to check if it accepts AWS FPS payment
+                    // TODO: verify that the proposal has a total cost value
+                    //
+                    // Cook the Amazon FPS Co-Branded service URL
+                    String description = LabelExtractor.get(
+                            "payment_transaction_description",
+                            new Object[] {
+                                    proposal.getSerializedCriteria(),
+                                    demand.getSerializedCriteria()
+                            },
+                            Locale.ENGLISH // FIXME: get logged user's locale
+                    );
+                    try {
+                        String transactionReference = Payment.getReference(consumerKey, demand.getKey(), proposalKey);
+                        proposal.setAWSCBUIURL(amazonFPS.getCoBrandedServiceUrl(transactionReference, description, proposal.getTotal(), "USD"));
+                    }
+                    catch (Exception ex) {
+                        throw new DataSourceException("Cannot compute the AWS FPS Co-Branded Service URL", ex);
+                    }
+                }
+            }
+
+            return proposal.toJson();
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Override

@@ -63,16 +63,16 @@ body {
     font-size: 3em;
 }
 
-#brand>h1 .bang {
+#brand>h1 .bang, .twBang {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
     color: #9966cc; /* PurpleChalk (aka Magenta 4)*/
 }
-#brand>h1 .tw {
+#brand>h1 .tw, .twTw {
     font-family: "Arial Rounded MT", arial, sans-serif;
     color: #696969; /* DimGray */
     letter-spacing: -.1em;
 }
-#brand>h1 .etailer {
+#brand>h1 .etailer, .twEtailer {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
     color: #696969; /* DimGray */
 }
@@ -154,6 +154,10 @@ body {
     text-align:center;
     height:18px;
     width:18px;
+}
+
+.silkIconAccept {
+    background-image:url(../images/accept.png);
 }
 
 .silkIconCancel {
@@ -238,9 +242,9 @@ body {
 }
 
 /**
- * Consumer Information Pane
+ * Information Pane
  */
-.consumerInformation {
+.entityInformation {
     border: 1px solid lightgrey;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -248,16 +252,16 @@ body {
     padding: 10px;
 }
 
-.consumerInformation legend {
+.entityInformation legend {
 	font-weight: bold;
 	color: green;
 }
 
-.consumerInformation>div {
+.entityInformation>div {
     margin: 3px 0;
 }
 
-.consumerInformation>div>span.hint {
+.entityInformation>div>span.hint, .demandForm>tbody>tr>td>span.hint {
     font-size: smaller;
     color: grey;
 }

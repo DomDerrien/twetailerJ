@@ -41,8 +41,7 @@ public class RawCommandOperations extends BaseOperations {
      * @return Just created resource
      */
     public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
-        pm.makePersistent(rawCommand);
-        return rawCommand;
+        return pm.makePersistent(rawCommand);
     }
 
     /**
@@ -80,8 +79,7 @@ public class RawCommandOperations extends BaseOperations {
         }
         getLogger().warning("Get RawCommand instance with id: " + key);
         try {
-            RawCommand rawCommand = pm.getObjectById(RawCommand.class, key);
-            return rawCommand;
+            return pm.getObjectById(RawCommand.class, key);
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -115,9 +113,7 @@ public class RawCommandOperations extends BaseOperations {
      * @return Updated resource
      */
     public RawCommand updateRawCommand(PersistenceManager pm, RawCommand rawCommand) {
-        getLogger().warning("Updating rawCommand with id: " + rawCommand.getKey());
-        pm.makePersistent(rawCommand);
-        return rawCommand;
+        return pm.makePersistent(rawCommand);
     }
 
     /**

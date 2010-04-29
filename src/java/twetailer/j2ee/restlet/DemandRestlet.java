@@ -11,6 +11,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
@@ -82,7 +83,7 @@ public class DemandRestlet extends BaseRestlet {
             List<Proposal> proposals = proposalOperations.getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
             for (Proposal proposal: proposals) {
                 proposal.setState(State.cancelled);
-                proposal.setDemandKey(null); // To cut the link
+                proposal.setDemandKey(0L); // To cut the link
                 proposalOperations.updateProposal(pm, proposal);
             }
         }
@@ -90,7 +91,10 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        return demandOperations.getDemand(
+                Long.valueOf(resourceId),
+                isAPrivilegedUser(loggedUser) ? null : (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)
+        ).toJson();
     }
 
     @Override

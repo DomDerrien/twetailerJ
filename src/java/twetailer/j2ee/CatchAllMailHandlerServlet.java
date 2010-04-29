@@ -92,7 +92,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             throw new MessagingException("Done in purpose!");
         }
 
-        log.warning("Message to be sent to: " + from + " with the subject: " + subject);
+        log.warning("Message to be sent to: " + from + " with the subject: " + subject + "\n***\n" + body + "\n***");
 
         Properties properties = new Properties();
         Session session = Session.getDefaultInstance(properties, null);

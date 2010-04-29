@@ -110,7 +110,7 @@ public class Consumer extends Entity {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = address == null || address.length() == 0 ? null : address;
     }
 
     public Boolean getAutomaticLocaleUpdate() {
@@ -126,7 +126,8 @@ public class Consumer extends Entity {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        // Normalize the email address because it's case insensitive
+        this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
     public String getJabberId() {
@@ -134,7 +135,8 @@ public class Consumer extends Entity {
     }
 
     public void setJabberId(String jabberId) {
-        this.jabberId = jabberId;
+        // Normalize the Jabber identifier because it's case insensitive
+        this.jabberId = jabberId == null || jabberId.length() == 0 ? null : jabberId.toLowerCase();
     }
 
     public String getLanguage() {
@@ -150,6 +152,9 @@ public class Consumer extends Entity {
     }
 
     public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
         this.locationKey = locationKey;
     }
 
@@ -162,15 +167,16 @@ public class Consumer extends Entity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null || name.length() == 0 ? null : name;
     }
 
     public String getOpenID() {
+        // Note: no normalization because the OpenID identifier is case sensitive!
         return openID;
     }
 
     public void setOpenID(String openID) {
-        this.openID = openID;
+        this.openID = openID == null || openID.length() == 0 ? null : openID;
     }
 
     public String getPhoneNumber() {
@@ -178,7 +184,7 @@ public class Consumer extends Entity {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
     public String getTwitterId() {
@@ -186,7 +192,8 @@ public class Consumer extends Entity {
     }
 
     public void setTwitterId(String twitterId) {
-        this.twitterId = twitterId;
+        // Note: no normalization because the Twitter identifier is case sensitive!
+        this.twitterId = twitterId == null || twitterId.length() == 0 ? null : twitterId;
     }
 
     public JsonObject toJson() {

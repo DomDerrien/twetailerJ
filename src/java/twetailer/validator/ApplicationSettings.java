@@ -17,23 +17,17 @@ public class ApplicationSettings {
 
     protected final static String CDN_BASE_URL_KEY = "cdnBaseURL";
 
-    protected final static String DEFAULT_LOGIN_PAGE_URL = "/html/login.jsp";
+    protected final static String DEFAULT_LOGIN_PAGE_URL = "/jsp_includes/login.jsp";
 
     public String loginPageURL = DEFAULT_LOGIN_PAGE_URL;
 
     protected final static String LOGIN_PAGE_URL_KEY = "loginPageURL";
 
-    public final static String DEFAULT_MAIN_PAGE_URL = "/html/console.jsp";
+    public final static String DEFAULT_MAIN_PAGE_URL = "/console/";
 
     private String mainPageURL = DEFAULT_MAIN_PAGE_URL;
 
     protected final static String MAIN_PAGE_URL_KEY = "mainPageURL";
-
-    public final static String DEFAULT_NEW_USER_PAGE_URL = "/html/welcome.jsp";
-
-    private String newUserPageURL = DEFAULT_NEW_USER_PAGE_URL;
-
-    protected final static String NEW_USER_PAGE_URL_KEY = "newUserPageURL";
 
     public final static String DEFAULT_LOGO_URL = "http://twetailer.appspot.com/images/logo/logo-48x48.png";
 
@@ -105,17 +99,6 @@ public class ApplicationSettings {
     public String getMainPageURL() {
         return mainPageURL;
     }
-
-    /**
-     * Get the relative main page URL
-     *
-     * @return Relative URL
-     */
-
-    public String getNewUserPageURL() {
-        return newUserPageURL;
-    }
-
 
     /**
      * Get the URL for the product logo
@@ -213,12 +196,6 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 mainPageURL = DEFAULT_MAIN_PAGE_URL;
-            }
-            try {
-                newUserPageURL = appSettings.getString(NEW_USER_PAGE_URL_KEY);
-            }
-            catch(Exception ex) {
-                newUserPageURL = DEFAULT_NEW_USER_PAGE_URL;
             }
             try {
                 logoURL = appSettings.getString(LOGO_URL_KEY);

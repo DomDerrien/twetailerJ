@@ -62,9 +62,11 @@ public class TestCommand {
 
     Action action = Action.cancel;
     List<String> hashTags = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
+    Long locationKey = 87541L;
     Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
+    Long cancelerKey = 76545L;
     CommandSettings.State state = CommandSettings.State.closed;
 
     @Test
@@ -73,7 +75,9 @@ public class TestCommand {
 
         object.setAction(action);
         object.setAction(action.toString());
+        object.setCancelerKey(cancelerKey);
         object.setHashTags(hashTags);
+        object.setLocationKey(locationKey);
         object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
@@ -82,8 +86,9 @@ public class TestCommand {
         object.setState(state.toString());
 
         assertEquals(action, object.getAction());
-        assertEquals(action, object.getAction());
+        assertEquals(cancelerKey, object.getCancelerKey());
         assertEquals(hashTags, object.getHashTags());
+        assertEquals(locationKey, object.getLocationKey());
         assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
@@ -95,7 +100,9 @@ public class TestCommand {
         Command object = new Command();
 
         object.setAction(action);
+        object.setCancelerKey(cancelerKey);
         object.setHashTags(hashTags);
+        object.setLocationKey(locationKey);
         object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
@@ -104,7 +111,9 @@ public class TestCommand {
         Command clone = new Command(object.toJson());
 
         assertEquals(action, clone.getAction());
+        assertEquals(cancelerKey, clone.getCancelerKey());
         assertEquals(hashTags, clone.getHashTags());
+        assertEquals(locationKey, clone.getLocationKey());
         assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
@@ -200,6 +209,26 @@ public class TestCommand {
     }
 
     @Test
+    public void testGetSerializedTagsI() {
+        assertEquals("", Command.getSerializedTags(null));
+    }
+
+    @Test
+    public void testGetSerializedTagsII() {
+        assertEquals("", Command.getSerializedTags(new ArrayList<String>()));
+    }
+
+    @Test
+    public void testGetSerializedTagsIII() {
+        assertEquals("", Command.getSerializedTags("Not important!", null));
+    }
+
+    @Test
+    public void testGetSerializedTagsIV() {
+        assertEquals("", Command.getSerializedTags("Not important!", new ArrayList<String>()));
+    }
+
+    @Test
     public void testGetSerializedHashTagsI() {
         Command command = new Command();
 
@@ -214,6 +243,17 @@ public class TestCommand {
         command.addHashTag("three");
 
         assertEquals("#one #two #three", command.getSerializedHashTags());
+    }
+
+    @Test
+    public void testGetSerializedHashTagsIII() {
+        Command command = new Command();
+        command.addHashTag("one");
+        command.addHashTag("two");
+        command.addHashTag("three");
+
+        assertEquals("one two three", Command.getSerializedTags(command.getHashTags()));
+        assertEquals("#one #two #three", Command.getSerializedTags("#", command.getHashTags()));
     }
 
     @Test

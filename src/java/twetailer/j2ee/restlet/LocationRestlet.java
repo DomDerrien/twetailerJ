@@ -42,7 +42,7 @@ public class LocationRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        return locationOperations.getLocation(Long.valueOf(resourceId)).toJson();
     }
 
     @Override

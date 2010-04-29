@@ -1,5 +1,6 @@
 package twetailer.validator;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,8 +8,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Collator;
 import java.util.Locale;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
@@ -56,6 +59,9 @@ public class LocaleValidator {
         return location;
     }
 
+    protected static Pattern CANADIAN_POSTAL_CODE_PATTERN = Pattern.compile("^\\w\\d\\w(?:\\s|-)?\\d\\w\\d$", Pattern.CASE_INSENSITIVE);
+    protected static Pattern US_POSTAL_CODE_PATTERN = Pattern.compile("^\\d\\d\\d\\d\\d(?:-\\d\\d\\d\\d(?:\\d\\d)?:)?$", Pattern.CASE_INSENSITIVE);
+
     /**
      * Use 3rd party service to resolve the geo-coordinates of the given location
      *
@@ -72,7 +78,7 @@ public class LocaleValidator {
             coordinates[1] = 0.0D;
         }
         // Postal code in USA
-        else if (Locale.US.getCountry().equals(countryCode)) {
+        else if (Locale.US.getCountry().equals(countryCode) && US_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 String line = reader.readLine(); // Only one line expected
@@ -87,7 +93,7 @@ public class LocaleValidator {
             catch (IOException e) { }
         }
         // Postal code in Canada
-        else if (Locale.CANADA.getCountry().equals(countryCode)) {
+        else if (Locale.CANADA.getCountry().equals(countryCode) && CANADIAN_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 // Manual parsing
@@ -197,6 +203,7 @@ public class LocaleValidator {
 
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
+    public static final String DEFAULT_DISPLAY_LANGUAGE = DEFAULT_LOCALE.getDisplayLanguage(DEFAULT_LOCALE);
 
     private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
     private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
@@ -280,5 +287,40 @@ public class LocaleValidator {
             //   Not a possible use case here...
         }
         return out;
+    }
+
+    /**
+     * Transform the Unicode string in its UTF-8 counterpart
+     *
+     * @param unicodeStr Original string
+     * @return Converted string if there's no error, the original value otherwise
+     */
+    public static String toUTF8(String unicodeStr) {
+        String out = unicodeStr;
+        try {
+            out = new String(unicodeStr.getBytes("UTF-8"));
+        }
+        catch (UnsupportedEncodingException e) {
+            // Note for the testers:
+            //   UnsupportedEncodingException can be generated if the character set would be invalid (instead of "UTF8")
+            //   Not a possible use case here...
+        }
+        return out;
+    }
+
+    /**
+     * Create a Collator instance for the given locale information.
+     * This object can be used for locale dependent comparisons.
+     *
+     * @param locale Consumer's locale
+     * @return Collator instance
+     */
+    public static Collator getCollator(Locale locale) {
+        //
+        // TODO: cache the value by user's locale
+        //
+        Collator collator = Collator.getInstance(locale);
+        collator.setStrength(Collator.PRIMARY);
+        return collator;
     }
 }

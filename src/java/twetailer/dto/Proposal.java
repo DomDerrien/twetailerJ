@@ -1,28 +1,22 @@
 package twetailer.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
-import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.JsonArray;
+
+import com.google.appengine.api.datastore.Text;
+
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Proposal extends Command {
 
-    @Persistent
-    private List<String> criteria = new ArrayList<String>();
+    private Text AWSCBUIURL;
 
-    public static final String CRITERIA = Demand.CRITERIA;
-    public static final String CRITERIA_ADD = Demand.CRITERIA_ADD;
-    public static final String CRITERIA_REMOVE = Demand.CRITERIA_REMOVE;
+    public static final String AWSCBUIURL_KEY = "AWSCBUIURL";
 
     @Persistent
     private Long demandKey;
@@ -43,11 +37,6 @@ public class Proposal extends Command {
     private Long quantity = 1L;
 
     public static final String QUANTITY = Demand.QUANTITY;
-
-    @Persistent
-    private Boolean stateCmdList = Boolean.TRUE;
-
-    public static final String STATE_COMMAND_LIST = Demand.STATE_COMMAND_LIST;
 
     @Persistent
     private Long storeKey;
@@ -79,45 +68,18 @@ public class Proposal extends Command {
      * Provided to reproduce the JDO behavior with Unit tests
      */
     protected void resetLists() {
-        criteria = null;
+        super.resetLists();
     }
 
-    public String getSerializedCriteria() {
-        return getSerializedTags(criteria);
-    }
-
-    public List<String> getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(List<String> criteria) {
-        if (criteria == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
+    public String getAWSCBUIURL() {
+        if (AWSCBUIURL == null) {
+            return null;
         }
-        this.criteria = criteria;
+        return AWSCBUIURL.getValue();
     }
 
-    public void addCriterion(String criterion) {
-        if (criteria == null) {
-            criteria = new ArrayList<String>();
-        }
-        if (!criteria.contains(criterion)) {
-            criteria.add(criterion);
-        }
-    }
-
-    public void resetCriteria() {
-        if (criteria == null) {
-            return;
-        }
-        criteria = new ArrayList<String>();
-    }
-
-    public void removeCriterion(String criterion) {
-        if (criteria == null) {
-            return;
-        }
-        criteria.remove(criterion);
+    public void setAWSCBUIURL(String aWSCBUIURL) {
+        AWSCBUIURL = aWSCBUIURL == null || aWSCBUIURL.length() == 0 ? null : new Text(aWSCBUIURL);
     }
 
     public Long getDemandKey() {
@@ -125,6 +87,9 @@ public class Proposal extends Command {
     }
 
     public void setDemandKey(Long demandKey) {
+        if (demandKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'demandKey'");
+        }
         this.demandKey = demandKey;
     }
 
@@ -141,25 +106,10 @@ public class Proposal extends Command {
     }
 
     public void setQuantity(Long quantity) {
+        if (quantity == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'quantity'");
+        }
         this.quantity = quantity;
-    }
-
-    @Override
-    public void setState(State state) {
-        super.setState(state);
-        stateCmdList =
-            !State.cancelled.equals(state) &&
-            !State.closed.equals(state) &&
-            !State.declined.equals(state) &&
-            !State.markedForDeletion.equals(state);
-    }
-
-    public Boolean getStateCmdList() {
-        return stateCmdList == null ? Boolean.TRUE : stateCmdList;
-    }
-
-    protected void setStateCmdList(Boolean  stateCmdList) {
-        this.stateCmdList = stateCmdList;
     }
 
     public Long getStoreKey() {
@@ -167,6 +117,9 @@ public class Proposal extends Command {
     }
 
     public void setStoreKey(Long storeKey) {
+        if (storeKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'storeKey'");
+        }
         this.storeKey = storeKey;
     }
 
@@ -180,17 +133,12 @@ public class Proposal extends Command {
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        if (getCriteria() != null && 0 < getCriteria().size()) {
-            JsonArray jsonArray = new GenericJsonArray();
-            for(String criterion: getCriteria()) {
-                jsonArray.add(criterion);
-            }
-            out.put(CRITERIA, jsonArray);
+        if (AWSCBUIURL != null) {
+            out.put(AWSCBUIURL_KEY, getAWSCBUIURL());
         }
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         out.put(PRICE, getPrice());
         out.put(QUANTITY, getQuantity());
-        out.put(STATE_COMMAND_LIST, getStateCmdList());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
         out.put(TOTAL, getTotal());
         return out;
@@ -198,30 +146,10 @@ public class Proposal extends Command {
 
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
-        if (in.containsKey(CRITERIA)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA);
-            resetCriteria();
-            for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
-            }
-        }
-        Demand.removeDuplicates(in, CRITERIA_ADD, CRITERIA_REMOVE);
-        if (in.containsKey(CRITERIA_REMOVE)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                removeCriterion(jsonArray.getString(i));
-            }
-        }
-        if (in.containsKey(CRITERIA_ADD)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
-            }
-        }
+        if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
         if (in.containsKey(DEMAND_KEY)) { setDemandKey(in.getLong(DEMAND_KEY)); }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
-        if (in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(TOTAL)) { setTotal(in.getDouble(TOTAL)); }
 

@@ -19,6 +19,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -60,6 +61,7 @@ public class TestProposal {
         assertNotNull(object.getCreationDate());
     }
 
+    String AWSCBUIURL = "Very long long text!";
     Action action = Action.cancel;
     Long OwnerKey = 12345L;
     Long rawCommandId = 67890L;
@@ -89,6 +91,7 @@ public class TestProposal {
         object.setState(state.toString());
 
         // Proposal
+        object.setAWSCBUIURL(AWSCBUIURL);
         object.setCriteria(criteria);
         object.setDemandKey(demandKey);
         object.setPrice(price);
@@ -105,6 +108,7 @@ public class TestProposal {
         assertEquals(state, object.getState());
 
         // Proposal
+        assertEquals(AWSCBUIURL, object.getAWSCBUIURL());
         assertEquals(criteria, object.getCriteria());
         assertEquals(demandKey, object.getDemandKey());
         assertEquals(quantity, object.getQuantity());
@@ -175,6 +179,7 @@ public class TestProposal {
         object.setState(state);
 
         // Proposal
+        object.setAWSCBUIURL(AWSCBUIURL);
         object.setCriteria(criteria);
         object.setDemandKey(demandKey);
         object.setPrice(price);
@@ -192,6 +197,7 @@ public class TestProposal {
         assertEquals(state, clone.getState());
 
         // Proposal
+        assertEquals(AWSCBUIURL, clone.getAWSCBUIURL());
         assertEquals(criteria, clone.getCriteria());
         assertEquals(demandKey, clone.getDemandKey());
         assertEquals(quantity, clone.getQuantity());

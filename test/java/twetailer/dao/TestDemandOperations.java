@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 

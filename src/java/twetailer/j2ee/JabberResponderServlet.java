@@ -66,7 +66,7 @@ public class JabberResponderServlet extends HttpServlet {
 
             // Extract information about the sender
             JID address = instantMessage.getFromJid();
-            jabberId = address.getId();
+            jabberId = address.getId().toLowerCase();
             command = instantMessage.getBody();
 
             // Prepare the message to persist

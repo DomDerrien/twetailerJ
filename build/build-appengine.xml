@@ -15,7 +15,7 @@
 
     <property name="appengine.sdk.dir"
         description="Location of the Google App Engine SDK"
-        location="${basedir}/bin/appengine-java-sdk-1.3.1"
+        location="${basedir}/bin/appengine-java-sdk-1.3.2"
     />
 
     <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
@@ -45,6 +45,7 @@
         <delete file="src/war/WEB-INF/lib/datanucleus*.jar" />
         <delete file="src/war/WEB-INF/lib/geronimo*.jar" />
         <delete file="src/war/WEB-INF/lib/jdo2*.jar" />
+        <delete file="src/war/WEB-INF/lib/amazon-fps*.jar" />
         <delete file="src/war/WEB-INF/lib/domderrien*.jar" />
         <delete file="src/war/WEB-INF/lib/dyuproject*.jar" />
         <delete file="src/war/WEB-INF/lib/jetty*.jar" />
@@ -54,20 +55,22 @@
     </target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
-    	<!-- This customized ant file is required to be able to not instrument (DataNucleus) the test code for the App Engine server to run -->
-    	<copy todir="${appengine.sdk.dir}/config/user" file="deps/lib/appengine/ant-macros.xml" overwrite="true" />
-    	<!-- Copy the App Engine files -->
+        <!-- This customized ant file is required to be able to not instrument (DataNucleus) the test code for the App Engine server to run -->
+        <copy todir="${appengine.sdk.dir}/config/user" file="deps/lib/appengine/ant-macros.xml" overwrite="true" />
+        <!-- Copy the App Engine files -->
         <copy todir="src/war/WEB-INF/lib" flatten="true">
             <fileset dir="${appengine.sdk.dir}/lib/user">
                 <include name="**/*.jar" />
             </fileset>
         </copy>
-    	<!-- Copy the Twetailer dependencies -->
-        <copy file="deps/lib/domderrien/domderrien-1.0.6.jar" todir="src/war/WEB-INF/lib" />
-        <copy file="deps/lib/twitter4j/twitter4j-2.0.10.jar" todir="src/war/WEB-INF/lib" />
+        <!-- Copy the Twetailer dependencies -->
+        <copy file="deps/lib/amazon/amazon-fps-2008-09-17-java-library-for-gae.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/commons/commons-codec-1.3.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/domderrien/domderrien-1.0.7.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/twitter4j/twitter4j-core-2.1.0.jar" todir="src/war/WEB-INF/lib" />
         <copy todir="src/war/WEB-INF/lib">
-        	<fileset dir="deps/lib/dyuproject" />
-    	</copy>
+            <fileset dir="deps/lib/dyuproject" />
+        </copy>
         <copy file="deps/lib/wave/json.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/jsonrpc.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/wave/wave-robot-api-20090916.jar" todir="src/war/WEB-INF/lib" />
@@ -81,7 +84,9 @@
 
     <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-datanucleus-enhance, step-appengine-start-debug" />
 
-	<!-- ================= -->
+    <target name="deploy" description="deploy the product on Google App Engine platform" depends="step-datanucleus-enhance, step-stage-prepare, step-stage-deploy" />
+
+    <!-- ================= -->
     <!-- Private variables -->
     <!-- ================= -->
 
@@ -191,6 +196,32 @@
                 <arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${rwa.serverPort}"/>
             </options>
         </dev_appserver>
+    </target>
+
+    <target name="step-stage-prepare">
+        <delete includeemptydirs="yes" failonerror="no" dir="${temp.dir}/appengine-stage" />
+        <mkdir dir="${temp.dir}/appengine-stage" />
+        <copy todir="${temp.dir}/appengine-stage" overwrite="yes" includeemptydirs="false">
+            <fileset dir="src/war">
+                <include name="**/*" />
+                <exclude name="js/dojo/**/*"/>
+                <exclude name="WEB-INF/appengine-generated/**" />
+                <exclude name="WEB-INF/classes/**/Test*.*" />
+                <exclude name="WEB-INF/classes/**/Mock*.*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="step-stage-deploy">
+        <appcfg action="update" war="${temp.dir}/appengine-stage">
+            <options>
+                <arg value="--email=dominique.derrien@gmail.com" />
+            </options>
+        </appcfg>
+    </target>
+
+    <target name="step-stage-rollback">
+        <appcfg action="rollback" options="--email=dominique.derrien@gmail.com" war="${temp.dir}/appengine-stage" />
     </target>
 
 </project>

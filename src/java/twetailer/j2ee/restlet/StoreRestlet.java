@@ -105,7 +105,7 @@ public class StoreRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        return storeOperations.getStore(Long.valueOf(resourceId)).toJson();
     }
 
     @Override

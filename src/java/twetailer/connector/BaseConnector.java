@@ -122,7 +122,16 @@ public class BaseConnector {
                 }
             }
             catch (TwitterException ex) {
-                throw new ClientException("Cannot communicate with Twitter to the consumer: " + userId, ex);
+                /*****
+                try {
+                    // FIXME: verify that the error is really related to a non following issue!
+                    log.warning("Emitter" + userId + " not following Twetailer");
+                    TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_inform_dm_sender_no_more_a_follower", new Object[] { userId }, locale));
+                }
+                catch(TwitterException nestedEx) {
+                *****/
+                   throw new ClientException("Cannot communicate with Twitter to the consumer: " + userId, ex);
+                //// }
             }
         }
         else if (Source.jabber.equals(source)) {

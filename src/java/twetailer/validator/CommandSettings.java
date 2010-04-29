@@ -67,6 +67,7 @@ public class CommandSettings {
         delete,
         demand,
         help,
+        language,
         list,
         propose,
         supply,
@@ -180,9 +181,11 @@ public class CommandSettings {
        int acceptedValueNb = acceptedValues.size();
        int acceptedValueIdx = 0;
        while (acceptedValueIdx < acceptedValueNb) {
-           if (collator != null && collator.compare(acceptedValues.getString(acceptedValueIdx), actualValue) == 0 ||
-               collator == null && acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
-           // if (acceptedValues.getString(acceptedValueIdx).equals(actualValue)) {
+           // String acceptedValue = LocaleValidator.toUnicode(acceptedValues.getString(acceptedValueIdx));
+           String acceptedValue = acceptedValues.getString(acceptedValueIdx);
+           if (collator != null && collator.compare(acceptedValue, actualValue) == 0 ||
+               collator == null && acceptedValue.equals(actualValue)) {
+           // if (acceptedValue.equals(actualValue)) {
                return true;
            }
            acceptedValueIdx++;

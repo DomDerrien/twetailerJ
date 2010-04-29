@@ -15,6 +15,7 @@
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Location"
+    import="twetailer.dto.Seed"
     import="twetailer.dto.Store"
     import="twetailer.dto.SaleAssociate"
     import="twetailer.connector.BaseConnector.Source"
@@ -23,8 +24,6 @@
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
-
-    // useCDN = false; // To be included for runs in offline mode ++ begin/end
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -36,8 +35,8 @@
 <head>
     <title>Sale Associate Registration Page</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="shortcut icon" href="/images/logo/favicon.ico" />
-    <link rel="icon" href="/images/logo/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%
     if (useCDN) {
     %><style type="text/css">
@@ -81,76 +80,29 @@
     ></script><%
     } // endif (useCDN)
     %>
-    <script type="text/javascript">
-    dojo.addOnLoad(function(){
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.StackContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.FilteringSelect");
-        dojo.require("twetailer.Console");
-        dojo.require("dojo.parser");
-        dojo.addOnLoad(function(){
-            dojo.parser.parse();
-            var userLocale = "<%= localeId %>";
-            twetailer.Console.init(userLocale, true);
-            dojo.fadeOut({
-                node: "introFlash",
-                delay: 50,
-                onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
-                }
-            }).play();
-        });
-    });
-    </script>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
-            <div id="brand">
-                <h1>
-                    <img
-                        alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                        id="logo"
-                        src="/images/logo/twitter-bird-and-cart-toLeft.png"
-                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                    />
-                    <a
-                        href="http://www.twetailer.com/"
-                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                    ><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
-                </h1>
-                <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
-            </div>
-            <div id="navigation">
-                <ul>
-                    <!--  Normal order because they are left aligned -->
-                    <li><a name="notImportantJustForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
-                    <li><a name="notImportantJustForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
-                    <!--  Reverse order because they are right aligned -->
-                    <li class="subItem"><a name="notImportantJustForStyle3"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
-                    <li class="subItem"><a id="logoutLnk" href="/control/logout" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
-                </ul>
-            </div>
-        </div>
-        <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
+        <jsp:include page="/jsp_includes/banner_protected.jsp"></jsp:include>
+        <div
+            dojoType="dijit.layout.ContentPane"
+            id="centerZone"
+            region="center"
+        >
             <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;">
                 <div dojoType="dijit.layout.ContentPane" jsId="step0">
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Action Selection</legend>
                         <p>
                             <button disabled="true" dojoType="dijit.form.Button"><< Previous</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();">New Location >></button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();">New Store >></button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">New Sale Associate >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step4);dijit.byId('s<%= Seed.STORE_KEY %>').focus();">New Seed >></button>
                         </p>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step1" style="display:hidden;">
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Location Creation/Retrieval</legend>
                         <form id="locationInformation">
                             <div>
@@ -161,18 +113,18 @@
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
                                 <select dojoType="dijit.form.FilteringSelect" name="countryCode">
                                     <option value="CA" selected="true">Canada</option>
-                                    <!--option value="US">United States of America</option-->
+                                    <option value="US">United States of America</option>
                                 </select>
                             </div>
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();registration.createLocation();dijit.byId('<%= Store.LOCATION_KEY %>').focus();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createLocation();dijit.byId('<%= Store.LOCATION_KEY %>').focus();">Next >></button>
                         </p>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step2" style="display:hidden;">
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Store Creation</legend>
                         <form id="storeInformation">
                             <div>
@@ -194,20 +146,20 @@
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();registration.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
                         </p>
                     </fieldset>
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Store Retrieval</legend>
                         <ul id="storeList">
                         </ul>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="registration.getStores();">Get Stores</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.getStores();">Get Stores</button>
                         </p>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step3" style="display:hidden;">
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Sale Associate Creation</legend>
                         <form id="saleAssociateInformation">
                             <div>
@@ -237,9 +189,9 @@
                             <div>
                                 <label for="<%= SaleAssociate.PREFERRED_CONNECTION %>">Preferred Connection</label><br/>
                                 <select dojoType="dijit.form.FilteringSelect" name="<%= SaleAssociate.PREFERRED_CONNECTION %>">
-                                    <option value="<%= Source.twitter %>" selected="true">Twitter</option>
+                                    <option value="<%= Source.twitter %>">Twitter</option>
                                     <option value="<%= Source.jabber %>">Jabber/XMPP</option>
-                                    <option value="<%= Source.mail %>">E-Mail</option>
+                                    <option value="<%= Source.mail %>" selected="true">E-Mail</option>
                                 </select>
                             </div>
                             <div>
@@ -252,34 +204,70 @@
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();registration.createSaleAssociate();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createSaleAssociate();dijit.byId('s<%= Seed.STORE_KEY %>').focus();">Next >></button>
                         </p>
                     </fieldset>
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Sale Associate Retrieval (for the specified Store Key)</legend>
                         <ul id="saleAssociateList">
                         </ul>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="registration.getSaleAssociates();">Get Sale Associates</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociates();">Get Sale Associates</button>
                         </p>
                     </fieldset>
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
                         <legend>Consumer Retrieval (for the E-mail Address, the Jabber Id, or the Twitter Name--in this order)</legend>
                         <ul id="consumerList">
                         </ul>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="registration.getConsumer();">Get Consumer</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.getConsumer();">Get Consumer</button>
                         </p>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step4" style="display:hidden;">
-                    <fieldset class="consumerInformation">
+                    <fieldset class="entityInformation">
+                        <legend>Seed Creation</legend>
+                        <form id="seedInformation">
+                            <div>
+                                <label for="s<%= Seed.STORE_KEY %>">Store Key</label><br/>
+                                <input dojoType="dijit.form.TextBox" id="s<%= Seed.STORE_KEY %>" name="<%= Seed.STORE_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Seed.LOCATION_KEY %>">Location Key</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Seed.LOCATION_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Seed.COUNTRY %>">Country (2-letters)</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Seed.COUNTRY %>" style="width:20em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Seed.REGION %>">Region (2-letters)</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Seed.REGION %>" style="width:30em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Seed.CITY %>">City</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Seed.CITY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Seed.LABEL %>">Label</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Seed.LABEL %>" style="width:10em;" type="text" value="" />
+                            </div>
+                        </form>
+                        <p>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createSeed();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
+                        </p>
+                    </fieldset>
+                </div>
+                <div dojoType="dijit.layout.ContentPane" jsId="step5" style="display:hidden;">
+                    <fieldset class="entityInformation">
                         <legend>Repeat Again ;)</legend>
                         <p>The Sale Associate can now tweet to @twetailer to supply his/her own tags.</p>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();"><< Another Location</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Another Store</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();"><< Another Sale Associate</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step4);dijit.byId('<%= Seed.STORE_KEY %>').focus();"><< Another Seed</button>
                             <button disabled="true" dojoType="dijit.form.Button">Next >></button>
                         </p>
                     </fieldset>
@@ -290,9 +278,34 @@
             <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
     </div>
+
     <script type="text/javascript">
-    var registration = new Object();
-    registration.createLocation = function() {
+    dojo.addOnLoad(function(){
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.StackContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dojo.parser");
+        dojo.addOnLoad(function(){
+            dojo.parser.parse();
+            dojo.fadeOut({
+                node: "introFlash",
+                delay: 50,
+                onEnd: function() {
+                    dojo.style("introFlash", "display", "none");
+                }
+            }).play();
+        });
+    });
+    </script>
+
+    <script type="text/javascript">
+    var localModule = new Object();
+    localModule.createLocation = function() {
         dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.formToJson("locationInformation"),
@@ -308,8 +321,8 @@
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Location/"
         });
-    },
-    registration.createStore = function() {
+    };
+    localModule.createStore = function() {
         var data = dojo.formToObject("storeInformation");
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
         dojo.xhrPost({
@@ -327,8 +340,8 @@
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Store/"
         });
-    },
-    registration.getStores = function() {
+    };
+    localModule.getStores = function() {
         var locationKey = parseInt(dijit.byId("<%= Store.LOCATION_KEY %>").attr("value"));
         if (locationKey.length == 0 || isNaN(locationKey)) {
             alert("You need to specify a valid Location key");
@@ -365,10 +378,15 @@
             url: "/API/Store/"
         });
     };
-    registration.createSaleAssociate = function() {
+    localModule.createSaleAssociate = function() {
         var data = dojo.formToObject("saleAssociateInformation");
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
-        data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
+        if (data.consumerKey == null || isNaN(data.consumerKey) || data.consumerKey.length == 0) {
+            delete data.consumerKey;
+        }
+        else {
+            data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
+        }
         dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.toJson(data),
@@ -386,7 +404,7 @@
             url: "/API/SaleAssociate/"
         });
     };
-    registration.getSaleAssociates = function() {
+    localModule.getSaleAssociates = function() {
         var storeKey = parseInt(dijit.byId("<%= SaleAssociate.STORE_KEY %>").attr("value"));
         if (storeKey.length == 0 || isNaN(storeKey)) {
             alert("You need to specify a valid Store key");
@@ -418,7 +436,7 @@
             url: "/API/SaleAssociate/"
         });
     };
-    registration.getConsumer = function() {
+    localModule.getConsumer = function() {
         var emailAddress = dijit.byId("<%= SaleAssociate.EMAIL %>").attr("value");
         var jabberId = dijit.byId("<%= SaleAssociate.JABBER_ID %>").attr("value");
         var twitterId = dijit.byId("<%= SaleAssociate.TWITTER_ID %>").attr("value");
@@ -455,6 +473,35 @@
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Consumer/"
+        });
+    };
+    localModule.createSeed = function() {
+        var data = dojo.formToObject("seedInformation");
+        if (data.storeKey == null || isNaN(data.storeKey) || data.storeKey.length == 0) {
+            delete data.storeKey;
+        }
+        else {
+            data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
+        }
+        if (data.locationKey == null || isNaN(data.locationKey) || data.locationKey.length == 0) {
+            delete data.locationKey;
+        }
+        else {
+            data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
+        }
+        dojo.xhrPost({
+            headers: { "content-type": "application/json" },
+            putData: dojo.toJson(data),
+            handleAs: "json",
+            load: function(response, ioArgs) {
+                if (response !== null && response.success) {
+                }
+                else {
+                    alert(response.message+"\nurl: "+ioArgs.url);
+                }
+            },
+            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
+            url: "/API/Seed/"
         });
     };
     </script>

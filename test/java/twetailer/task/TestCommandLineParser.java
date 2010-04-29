@@ -47,6 +47,9 @@ public class TestCommandLineParser {
         JsonObject prefixes = new GenericJsonObject();
         for (Prefix prefix: Prefix.values()) {
             JsonArray equivalents = new GenericJsonArray();
+            if (Prefix.reference.equals(prefix)) {
+                equivalents.add("demand"); // To insert this label before "reference" ;)
+            }
             equivalents.add(prefix.toString());
             if (Prefix.action.equals(prefix)) {
                 equivalents.add("!");
@@ -64,6 +67,14 @@ public class TestCommandLineParser {
         }
         CommandLineParser.localizedPrefixes.put(Locale.ENGLISH, prefixes);
 
+        // Very simplified list of prefixes in FRENCH
+        prefixes = new GenericJsonObject();
+        prefixes.put(Prefix.reference.toString(), new GenericJsonArray());
+        prefixes.getJsonArray(Prefix.reference.toString()).add("référence");
+        prefixes.put(Prefix.price.toString(), new GenericJsonArray());
+        prefixes.getJsonArray(Prefix.reference.toString()).add("prix");
+        CommandLineParser.localizedPrefixes.put(Locale.FRENCH, prefixes);
+
         // Simplified list of actions
         CommandLineParser.localizedActions.clear();
         JsonObject actions = new GenericJsonObject();
@@ -76,6 +87,12 @@ public class TestCommandLineParser {
             actions.put(action.toString(), equivalents);
         }
         CommandLineParser.localizedActions.put(Locale.ENGLISH, actions);
+
+        // Very simplified list of actions in FRENCH
+        actions = new GenericJsonObject();
+        actions.put(Action.demand.toString(), new GenericJsonArray());
+        actions.getJsonArray(Action.demand.toString()).add("demande");
+        CommandLineParser.localizedActions.put(Locale.FRENCH, actions);
 
         // Simplified list of states
         CommandLineParser.localizedStates.clear();
@@ -381,13 +398,13 @@ public class TestCommandLineParser {
 
     @Test
     public void testParsePriceIV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99€", Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25,99€", Locale.FRENCH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
     @Test
     public void testParsePriceV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25,3243", Locale.FRENCH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price: € 25.3243", Locale.ENGLISH);
         assertEquals(25.3243, data.getDouble(Proposal.PRICE), 0.0);
     }
 
@@ -812,12 +829,12 @@ public class TestCommandLineParser {
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0) + ":1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":12345"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":$25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + ":67890"));
         assertTrue(response.contains("sgrognegneu"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":35.33"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":$35.33"));
     }
 
     @Test
@@ -889,10 +906,10 @@ public class TestCommandLineParser {
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":$25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":35.33"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":$35.33"));
         assertTrue(response.contains("#demo"));
     }
 
@@ -1192,5 +1209,71 @@ public class TestCommandLineParser {
 
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAG).getString(1));
+    }
+
+    @Test
+    public void testGuessActionI() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+
+        assertEquals(Action.demand.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, "12345");
+
+        assertEquals(Action.list.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionIII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Demand.REFERENCE, "12345");
+        command.put(Proposal.PROPOSAL_KEY, "12345"); // Will be ignored
+        command.put(Store.STORE_KEY, "12345"); // Will be ignored
+        command.put(Demand.RANGE, "55.5");
+
+        assertEquals(Action.demand.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionIV() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Proposal.PROPOSAL_KEY, "12345");
+
+        assertEquals(Action.list.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionV() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Proposal.PROPOSAL_KEY, "12345");
+        command.put(Proposal.PRICE, "55.5");
+
+        assertEquals(Action.propose.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    public void testGuessActionVI() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Store.STORE_KEY, "12345");
+
+        assertEquals(Action.list.toString(), CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH)));
+    }
+
+    @Test
+    public void testGuessActionVII() {
+        // Command mock
+        JsonObject command = new GenericJsonObject();
+        command.put(Store.STORE_KEY, "12345");
+        command.put(Store.ADDRESS, "address");
+
+        assertNull(CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH))); // Cannot update Store instance from Twitter
     }
 }

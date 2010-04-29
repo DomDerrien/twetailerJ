@@ -2,18 +2,14 @@ package twetailer.connector;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javamocks.util.logging.MockLogger;
 
-import org.easymock.classextension.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
 import twitter4j.DirectMessage;
-import twitter4j.Paging;
+import twitter4j.MockDirectMessage;
+import twitter4j.MockTwitter;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -47,76 +43,48 @@ public class TestTwitterConnector {
 
     @Test
     public void testSendPublicMessageI() throws TwitterException {
-        Status status = EasyMock.createMock(Status.class);
-
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.updateStatus("test")).andReturn(status).once();
-        EasyMock.replay(account);
-
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME));
 
-        Status response = TwitterConnector.sendPublicMessage("test");
-        assertEquals(status, response);
+        Status response = TwitterConnector.sendPublicMessage("test 12345");
+        assertEquals("test 12345", response.getText());
     }
 
+    @SuppressWarnings("serial")
     @Test(expected=TwitterException.class)
     public void testSendPublicMessageII() throws TwitterException {
-        Status status = EasyMock.createMock(Status.class);
-
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.updateStatus("test")).andThrow(new TwitterException("Done in purpose")).once();
-        EasyMock.replay(account);
-
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public Status updateStatus(String text) throws TwitterException {
+                throw new TwitterException("Done in purpose!");
+            }
+        });
 
-        Status response = TwitterConnector.sendPublicMessage("test");
-        assertEquals(status, response);
+        TwitterConnector.sendPublicMessage("test failure");
     }
 
     @Test
     public void testSendDirectMessageI() throws TwitterException {
-        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
-
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.sendDirectMessage("target", "test")).andReturn(dm).once();
-        EasyMock.replay(account);
-
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME));
 
         DirectMessage response = TwitterConnector.sendDirectMessage("target", "test");
-        assertEquals(dm, response);
+        assertEquals("target", response.getRecipientScreenName());
+        assertEquals("test", response.getText());
     }
 
+    @SuppressWarnings("serial")
     @Test(expected=TwitterException.class)
     public void testSendDirectMessageII() throws TwitterException {
-        DirectMessage dm = EasyMock.createMock(DirectMessage.class);
-
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.sendDirectMessage("target", "test")).andThrow(new TwitterException("Done in purpose")).once();
-        EasyMock.replay(account);
-
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(account);
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+            @Override
+            public DirectMessage sendDirectMessage(String to, String text) throws TwitterException {
+                throw new TwitterException("Done in purpose!");
+            }
+        });
 
-        DirectMessage response = TwitterConnector.sendDirectMessage("target", "test");
-        assertEquals(dm, response);
-    }
-
-    @Test
-    public void testGetDirectMessages() throws TwitterException {
-        final long sinceId = 12L;
-
-        Twitter account = EasyMock.createMock(Twitter.class);
-        EasyMock.expect(account.getDirectMessages((Paging) EasyMock.anyObject())).andReturn(new ArrayList<DirectMessage>()).once();
-        EasyMock.replay(account);
-
-        // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(account);
-
-        List<DirectMessage> messages = TwitterConnector.getDirectMessages(sinceId);
-        assertEquals(0, messages.size());
+        TwitterConnector.sendDirectMessage("target", "test");
     }
 }

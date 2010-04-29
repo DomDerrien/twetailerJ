@@ -33,6 +33,7 @@ import twetailer.dto.Entity;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.TestBaseRestlet;
+import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -319,11 +320,6 @@ public class TestProposalRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testGetResource() throws DataSourceException {
-        ops.getResource(null, "12345", user);
-    }
-
-    @Test(expected=RuntimeException.class)
     public void testSelectResources() throws DataSourceException {
         ops.selectResources(null, null);
     }
@@ -331,5 +327,244 @@ public class TestProposalRestlet {
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException {
         ops.updateResource(null, "12345", user);
+    }
+
+    @Test
+    public void testGetResourceI() throws DataSourceException {
+        //
+        // Proposal queried by the owner (SaleAssociate)
+        //
+        final Long saleAssociateKey = 65879L;
+        final Long proposalKey = 45345L;
+        final Long demandKey = 34567L;
+        ProposalRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(Source.simulated);
+                proposal.setState(State.published);
+                return proposal;
+            }
+        };
+        ProposalRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+        };
+
+        ops.getResource(null, proposalKey.toString(), user);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetResourceII() throws DataSourceException {
+        //
+        // Proposal queried by the Demand owner (Consumer)
+        // Demand not yet confirmed!
+        //
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
+        final Long proposalKey = 45345L;
+        final Long demandKey = 34567L;
+        ProposalRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(Source.simulated);
+                proposal.setState(State.published);
+                return proposal;
+            }
+        };
+        ProposalRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, (Long) value);
+                return new ArrayList<Long>();
+            }
+        };
+        ProposalRestlet.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(ownerKey); // Because it's a privileged access
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(saleAssociateKey);
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.published);
+                return demand;
+            }
+        };
+
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        ops.getResource(null, proposalKey.toString(), user);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetResourceIII() throws DataSourceException {
+        //
+        // Proposal queried by the Demand owner (Consumer, who is also a SaleAssociate but who did not create the Proposal)
+        // Demand not yet confirmed!
+        //
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
+        final Long proposalKey = 45345L;
+        final Long demandKey = 34567L;
+        ProposalRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(Source.simulated);
+                proposal.setState(State.published);
+                return proposal;
+            }
+        };
+        ProposalRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(2 * saleAssociateKey); // Ensure the logged user is not the Proposal owner
+                return saleAssociateKeys;
+            }
+        };
+        ProposalRestlet.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(ownerKey); // Because it's a privileged access
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(saleAssociateKey);
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.published);
+                return demand;
+            }
+        };
+
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        ops.getResource(null, proposalKey.toString(), user);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetResourceIV() throws DataSourceException {
+        //
+        // Proposal queried by the Demand owner (Consumer)
+        // Demand is in confirmed state => "Check out" URL needs to be computed
+        //
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
+        final Long proposalKey = 45345L;
+        final Long demandKey = 34567L;
+        ProposalRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(Source.simulated);
+                proposal.setState(State.confirmed);
+                return proposal;
+            }
+        };
+        ProposalRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, (Long) value);
+                return new ArrayList<Long>();
+            }
+        };
+        ProposalRestlet.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(ownerKey); // Because it's a privileged access
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(saleAssociateKey);
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.confirmed);
+                return demand;
+            }
+        };
+
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        ops.getResource(null, proposalKey.toString(), user);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=DataSourceException.class)
+    public void testGetResourceV() throws DataSourceException {
+        //
+        // Proposal queried by the Demand owner (Consumer)
+        // Demand is in confirmed state => "Check out" URL needs to be computed
+        // Simulate error while updating the proposal field with the AWS Co-branded Service URL
+        //
+        final Long saleAssociateKey = TestBaseRestlet.LOGGED_USER_CONSUMER_KEY;
+        final Long proposalKey = 45345L;
+        final Long demandKey = 34567L;
+        ProposalRestlet.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal() {
+                    @Override
+                    public void setAWSCBUIURL(String url) {
+                        throw new IllegalArgumentException("Done in purpose!");
+                    }
+                };
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(Source.simulated);
+                proposal.setState(State.confirmed);
+                return proposal;
+            }
+        };
+        ProposalRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+            @Override
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
+                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, (Long) value);
+                return new ArrayList<Long>();
+            }
+        };
+        ProposalRestlet.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(ownerKey); // Because it's a privileged access
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(saleAssociateKey);
+                demand.addProposalKey(proposalKey);
+                demand.setState(State.confirmed);
+                return demand;
+            }
+        };
+
+        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
+        ops.getResource(null, proposalKey.toString(), user);
     }
 }

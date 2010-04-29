@@ -106,8 +106,7 @@ public class LocationOperations extends BaseOperations {
         catch (DataSourceException ex) {}
 
         // Create an entry for that new location
-        pm.makePersistent(location);
-        return location;
+        return pm.makePersistent(location);
     }
 
     /**
@@ -145,8 +144,7 @@ public class LocationOperations extends BaseOperations {
         }
         getLogger().warning("Get Location instance with id: " + key);
         try {
-            Location location = pm.getObjectById(Location.class, key);
-            return location;
+            return pm.getObjectById(Location.class, key);
         }
         catch(Exception ex) {
             throw new DataSourceException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -359,8 +357,6 @@ public class LocationOperations extends BaseOperations {
      * @return Updated resource
      */
     public Location updateLocation(PersistenceManager pm, Location location) {
-        getLogger().warning("Updating location with id: " + location.getKey());
-        pm.makePersistent(location);
-        return location;
+        return pm.makePersistent(location);
     }
 }

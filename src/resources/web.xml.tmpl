@@ -14,26 +14,39 @@
     </welcome-file-list>
 
     <filter>
+        <filter-name>appstats</filter-name>
+        <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
+        <init-param>
+            <param-name>logMessage</param-name>
+            <param-value>Appstats available: /appstats/details?time={ID}</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>openidfilter</filter-name>
         <filter-class>com.dyuproject.openid.OpenIdServletFilter</filter-class>
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>forwardUri</param-name>
-            <param-value>/html/login.jsp</param-value>
+            <param-value>/jsp_includes/login.jsp</param-value>
         </init-param>
     </filter>
-
-<!-- To be excluded for runs in offline mode ++ begin -->
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
-        <url-pattern>*.jsp</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
-
+    <filter-mapping>
+        <filter-name>openidfilter</filter-name>
+        <url-pattern>/console/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
         <url-pattern>@rwa.servletApiPath@/</url-pattern>
     </filter-mapping>
-<!-- To be excluded for runs in offline mode ++ end -->
 
     <servlet>
         <servlet-name>login</servlet-name>
@@ -42,7 +55,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
-        <url-pattern>/control/login</url-pattern>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -52,7 +65,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>logout</servlet-name>
-        <url-pattern>/control/logout</url-pattern>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -63,6 +76,16 @@
     <servlet-mapping>
         <servlet-name>maezel</servlet-name>
         <url-pattern>@rwa.servletApiPath@/maezel/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>directory</servlet-name>
+        <servlet-class>twetailer.j2ee.DirectoryServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>directory</servlet-name>
+        <url-pattern>/directory/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -96,6 +119,26 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>payment</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.PaymentRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>payment</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Payment/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>proposal</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.ProposalRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>proposal</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Proposal/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>saleassociate</servlet-name>
         <servlet-class>twetailer.j2ee.restlet.SaleAssociateRestlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -103,6 +146,16 @@
     <servlet-mapping>
         <servlet-name>saleassociate</servlet-name>
         <url-pattern>@rwa.servletApiPath@/SaleAssociate/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>seed</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.SeedRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>seed</servlet-name>
+        <url-pattern>@rwa.servletApiPath@/Seed/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -171,6 +224,25 @@
         <servlet-name>waveprofile</servlet-name>
         <url-pattern>/_wave/robot/profile</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>appstats</servlet-name>
+        <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>appstats</servlet-name>
+        <url-pattern>/admin/stats/*</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/404.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.html</location>
+    </error-page>
 
     <security-constraint>
         <web-resource-collection>

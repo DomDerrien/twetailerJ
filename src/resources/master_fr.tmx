@@ -51,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg> 2009-2010 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
+                <seg>Droits réservés \u00a9 2009-2010 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
             </tuv>
         </tu>
         <tu tuid="display_name_pattern" dataType="text">
@@ -115,7 +115,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>marquéPourEffacement</seg>
+                <seg>àEffacer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_action" dataType="text">
@@ -134,16 +134,17 @@
         </tu>
         <tu tuid="cl_prefix_expiration" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>expiration,expires</seg>
+                <seg>expiration,expire</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_hash" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>hashtag,#</seg>
+                <seg>metaÉtiquette,hashtag,#</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_help" dataType="text">
@@ -155,9 +156,10 @@
         </tu>
         <tu tuid="cl_prefix_locale" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>localité,localite,localisation,codePostal</seg>
+                <seg>localité,localisation,codePostal</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_name" dataType="text">
@@ -171,39 +173,41 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>numéroTéléphone,numeroTelephone</seg>
+                <seg>numéroTéléphone,téléphone</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_price" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>prix,coût,cout</seg>
+                <seg>prixUnitaire,coût</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>proposition,cléProposition,cleProposition,cp</seg>
+                <seg>proposition</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_quantity" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>quantité,quantite,qté,qte</seg>
+                <seg>quantité,qté</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_reference" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>référence,reference,identifiant,id,cléDemand,cleDemand,cd</seg>
+                <seg>demande,référence,identifiant,id</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_range" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>distance</seg>
@@ -213,28 +217,28 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>état,etat</seg>
+                <seg>état</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_store" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>magasin,cléMagasin,cleMagasin,cm</seg>
+                <seg>magasin</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_tags" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>motsClé,motCles</seg>
+                <seg>motsClés,motClé,description</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_total" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>coûtTotal,coutTotal,ttc</seg>
+                <seg>total,coûtTotal,ttc</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_cancel" dataType="text">
@@ -262,21 +266,21 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>décliner,decliner</seg>
+                <seg>décliner</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_delete" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>effacer</seg>
+                <seg>effacer,détruire</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>demande</seg>
+                <seg>demander</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_help" dataType="text">
@@ -286,11 +290,18 @@
                 <seg>aide,?</seg>
             </tuv>
         </tu>
+        <tu tuid="cl_action_language" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>langue,langage,lg</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_action_list" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>lister</seg>
+                <seg>afficher,lister</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_propose" dataType="text">
@@ -643,7 +654,7 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-( The System encountered an unexpected error! {1}. You can resend your message, or, report incident identifier: 323-{0}.
+                    :-( Le système a rencontré une erreur imprévue ! {1}Vous pouvez renvoyer votre message ou rapporter l'incident avec l'identifiant: 323-{0}.
                 </seg>
             </tuv>
         </tu>
@@ -651,91 +662,107 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Busy, busy, busy... Sorry, but could you please retry your request in few minutes?</seg>
+                <seg>:-( Le système est très occupé... Désolé#160;! Pouvez-vous ré-essayer dans quelques minutes ?</seg>
             </tuv>
         </tu>
         <tu tuid="error_mail_messaging" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Sorry, but I can't understand your e-mail message. Can you please try sending again from a different email application?</seg>
+                <seg>:-{ Désolé, mais je ne peux comprendre votre courriel. Pouvez ré-essayer en utilisant un autre outil de composition de courriel ?</seg>
             </tuv>
         </tu>
         <tu tuid="tl_inform_dm_sender_no_more_a_follower" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like requesting help with "d twetailer ?"</seg>
+                <seg>@{0} Pour protéger votre vie privée, vous devez suivre Twetailer et envoyer vos messages par « Messages Directs ».</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_parser_unsupported_action" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Action {0} is not recognized by the System. Send '?action' for help.</seg>
+                <seg>:-( L'action {0} n'est pas reconue par le système. Envoyer '?action' pour avoir de l'aide.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_parser_reserved_action" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Action {0} is not allowed by your profile. Send '?{0}' for help.</seg>
+                <seg>:-( L'action {0} n'est pas autorisé pour votre profil. Envoyer '?{0}' pour avoir de l'aide.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_cancel_missing_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( If you wish to Cancel a Demand, please try again by sending !cancel ref:your-reference-number.</seg>
+                <seg>:-( Si vous souhaitez Annuler une Demande, envoyer la commande 'annuler demande:référence-de-votre-demande'.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_cancel_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number you wish to Cancel and try again.</seg>
+                <seg>:-( Veuillez vérifier la référence de la Demande que vous voulez annuler et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_cancel_invalid_demand_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can't !cancel Demand reference:{0} in the state:{1}.</seg>
+                <seg>:-( Vous ne pouvez Annuler la Demande:{0} dans l'État:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_demand_canceled_proposal_to_be_canceled" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Le propriétaire de la Demande:{0} l'a annulée. Votre Proposition:{1} avec {2} est conséquemment annulée. </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_cancel_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number you wish to Cancel and try again.</seg>
+                <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Annuler et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_cancel_invalid_proposal_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can't !cancel Proposal:{0} in the state:{1}.</seg>
+                <seg>:-( Vous ne pouvez Annuler la Proposition:{0} dans l'État:{1}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_cancel_proposal_canceled_demand_to_be_published" dataType="text">
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Le propriétaire de la Proposition:{0} est annulée. Votre Demande:{1} avec {2} est remise dans l'État:publié, prête à recevoir de nouvelles propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number you wish to Close and try again.</seg>
+                <seg>:-( Veuillez vérifier la référence de la Demande que vous souhaiter Fermer et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_invalid_demand_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can't !close Demand reference:{0} in the state:{1}.</seg>
+                <seg>:-( Vous ne pouvez Fermer la Demande:{0} dans l'État:{1}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_acknowledge_demand_closing" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Thanks for Closing Demand reference:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Merci pour la Fermeture de la Demande:{0}, ce qui va se réflèter sur votre Notation sous peu.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_demand_closed_proposal_to_close" dataType="text">
@@ -743,8 +770,8 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. Demand reference:{0} has been closed by the Consumer. |
-                    Hint: Send "!close proposal:{1}", or, "!flag proposal:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    PVI. La Demande:{0} a été fermée par le Consommateur.|
+                    Conseil: Envoyer 'fermer proposition:{1}' ou 'rapporter proposition:{1} note:votre-commentaire' pour la mise-à-jour de votre Notation.
                 </seg>
             </tuv>
         </tu>
@@ -752,21 +779,21 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number you wish to Close and try again.</seg>
+                <seg>:-( Veuiller vérifier la référence de la Proposition que vous souhaiter Fermer et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_invalid_proposal_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can't !close Proposal:{0} in the state:{1}.</seg>
+                <seg>:-( Vous ne pouvez pas Fermer la Proposition:{0} qui est dans l'État:{1}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_acknowledge_proposal_closing" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Thanks for Closing Proposal:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Merci pour la Fermeture de la Proposition:{0}, ce qui va se réflèter sur votre Notation sous peu.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_proposal_closed_demand_to_close" dataType="text">
@@ -774,8 +801,8 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. Proposal:{0} has been closed by the Retailer. |
-                    Hint: Send "!close ref:{1}", or, "!flag ref:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    PVI. La Proposition:{0} a été fermée par le Vendeur.|
+                    Conseil: Envoyer 'fermer demande:{1}' ou 'rapporter demande:{1} note:votre-commentaire' pour la mise-à-jour de votre Notation.
                 </seg>
             </tuv>
         </tu>
@@ -783,14 +810,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can only !close Proposals or Demands.</seg>
+                <seg>Vous ne pouvez Fermer que des Demandes ou des Propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_invalid_state_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can only !confirm proposal:{0} for Demand reference:{1} when it's in state:{2}.</seg>
+                <seg>:-( Vous ne pouvez pas Confirmer Proposition:{0} pour la Demande:{1} quand elle est dans l'État:{2}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_acknowledge_confirmation" dataType="text">
@@ -798,8 +825,9 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Thank you for confirming Proposal:{0} for Demand ref:{1}, tags:{2} |
-                    Store:{3}, {4} will be asked to mark and hold Demand ref:{1} </seg>
+                    :-) Merci pour la confirmation de la Proposition:{0} associée à la Demande:{1}|
+                    Le Magasin:{3}, {4} va en être informé et va mettre votre demande de côté.
+                </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_inform_about_confirmation" dataType="text">
@@ -807,8 +835,8 @@
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Proposal:{0} for tags:{1} has been confirmed.|
-                    Please mark, hold for Consumer with Demand reference:{2} and then !close proposal:{0}, or, !flag proposal:{0} note:your-note-here.
+                    :-) La Proposition:{0} pour les MotsClés:{1} a été confirmée.|
+                    Veuillez la mettre de côté pour la Demande:{2}. Une fois livrée, n'oubliez pas de Fermer ou Rapporter la Proposition.
                 </seg>
             </tuv>
         </tu>
@@ -816,37 +844,35 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>
-                    FYI: Demo Sales Associate will now !close your Demand
-                </seg>
+                <seg>FYI: Demo Sales Associate will now Close your Demand</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number you wish to Confirm and try again.</seg>
+                <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Confirmer et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_decline_acknowledge_proposal_closing" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Proposal:{0} has been declined and further updates halted.</seg>
+                <seg>:-) La Proposition:{0} été déclinée et les prochaines mises-à-jour ne sont plus transmises.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_decline_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number you wish to Decline and try again.</seg>
+                <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Décliner et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_decline_invalid_parameters" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( As a Consumer, you can only !decline Proposals whereas Retailers can only !decline Demands.</seg>
+                <seg>:-( En tant que Consommateur, vous ne pouver Décliner que des Propositions--seuls les Vendeurs peuvent Décliner les Demandes.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_delete_invalid_demand_state" dataType="text">
@@ -854,8 +880,8 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-( You can only !delete Cancelled Demands. Demand reference:{0} is in the state:{1}.|
-                    If this is the Demand you intended to !delete then send '!cancel reference:{0}' and try again.
+                    :-( Vous pouvez seulement Détruire les Demandes annulées. La Demande:{0} est dans l'État:{1}.|
+                    Si c'est bien cette Demande que vous souhaitez Détruire, envoyer d'abord la Commande 'annuler demande:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -863,14 +889,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Demand reference:{0} has been marked for deletion and no longer accessible</seg>
+                <seg>:-) La Demande:{0} a été marqué pour destruction et n'est plus accessible.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_delete_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number you wish to Delete and try again.</seg>
+                <seg>Veuillez vérifier la référence de la Demande que vous souhaiter Détruire et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_delete_invalid_proposal_state" dataType="text">
@@ -878,8 +904,8 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-( You can only !delete Cancelled Proposals. Proposal:{0} is in the state:{1}.|
-                    If this is the Proposal you intended to !delete then send '!cancel proposal:{0}' and try again.
+                    :-( Vous pouvez seulement Détruire les Propositions annulées. La Proposition:{0} est dans l'État:{1}.|
+                    Si c'est bien cette Proposition que vous souhaitez Détruire, envoyer d'abord la Commande 'Annuler Proposition:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -887,266 +913,290 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Proposal:{0} has been marked for deletion and no longer accessible</seg>
+                <seg>:-) La Proposition:{0} a été marqué pour destruction et n'est plus accessible.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_delete_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number you wish to Delete and try again.</seg>
+                <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Détruire et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_delete_invalid_parameters" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( You can only !delete Proposals or Demands.</seg>
+                <seg>:-( Vous ne pouvez Détruire que Demandes et Propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_acknowledge_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing newly created Demand Reference:{0}... </seg>
+                <seg>:-) Détails de la Demande:{0} nouvellement créée... </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number you wish to Update and try again.</seg>
+                <seg>:-( Veuillez vérifier la référence de la Demande que vous souhaiter mettre-à-jour et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_non_modifiable_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Demand reference:{0} is currently in state:{1} and can't be updated.</seg>
+                <seg>:-( La Demande:{0} est présentemment dans l'État:{1} et ne peut être mise-à-jour.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_language_missing_language_code" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Votre langue courante est '{0}' {1}. Changez le en envoyant: 'lg code-langue'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_language_given_value_as_current" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Votre langue reste '{0}' {1}. Changez le en envoyant: 'lg autre-code-langue'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_language_given_value_accepted" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-for-review">Steven</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Votre nouvelle langue est '{0}' {1}. Revenez en arrière en envoyant: 'lg {2}'.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_invalid_demand_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Demand Reference number and try again.</seg>
+                <seg>:-( Veuillez vérifier la référence de la Demande et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number and try again.</seg>
+                <seg>:-( Veuillez vérifier la référence de la Proposition et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_invalid_store_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Store number and try again.</seg>
+                <seg>:-( Veuillez vérifier la référence du Magasin et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_active_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) There are no active Demands to list.</seg>
+                <seg>:-) Il n'y a pas de Demande Active à afficher.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_personal_demand_series_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">7</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing your {0} active Demand(s)...</seg>
+                <seg>:-) Affichage de {0} Demande(s) Active(s)...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_with_new_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>You've just submitted {0} which the system does not know yet. Twetailer will attempt to validate it &amp; will contact you shortly.</seg>
+                <seg>Vous avez soumis {0} que le système ne connait pas. Twetailer va essayer de valider l'information et vous recontacte sous peu.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_demand_missing_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">7</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "!list {0} locale:12345 us"</seg>
+                <seg>:-( Veuillez founir une Localité valide avec un code postal et un code de pays ('us' ou 'ca'). Par exemple: Afficher {0} localité:H3A 2P4 CA</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_demand_in_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">5</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find any active Demands within {1} of {0}.</seg>
+                <seg>:-( Je ne peux pas trouver de Demandes Actives à {1} pour {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_demand_series_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">7</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} active Demand(s) within {2} of {1}...</seg>
+                <seg>:-) Affichage de {0} Demande(s) Active(s) à {2} pour {0}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_proposal_missing_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">7</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "!list {0} locale:12345 us"</seg>
+                <seg>:-( Veuillez founir une Localité valide avec un code postal et un code de pays ('us' ou 'ca'). Par exemple: Afficher {0} localité:H3A 2P4 CA</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_proposal_in_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find any active Proposals within {1} of {0}.</seg>
+                <seg>:-( Je ne peux pas trouver de Propositions Actives à {1} pour {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_proposal_series_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">7</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} active Demand(s) within {2} of {1}...</seg>
+                <seg>:-) Affichage de {0} Proposition(s) Active(s) à {2} pour {0}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_missing_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">7</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please provide a valid Locale:postal/zip code and country code ('us', or, 'ca') like "!list {0} locale:12345 us"</seg>
+                <seg>:-( Veuillez founir une Localité valide avec un code postal et un code de pays ('us' ou 'ca'). Par exemple: Afficher {0} localité:H3A 2P4 CA</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_store_in_location" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find any Stores within {1} of {0}.</seg>
+                <seg>:-( Je ne peux pas trouver de Magasins à {1} pour {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_series_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">8</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {0} Store(s) within {2} of {1}...</seg>
+                <seg>:-) Affichage de {0} Magasin(s) à {2} pour {0}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_propose_invalid_proposal_id" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please verify the Proposal number you wish to update and try again.</seg>
+                <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Mettre-à-jour et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_propose_non_modifiable_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Proposal:{0} is currently in state:{1} and can't be updated.</seg>
+                <seg>:-( La Proposition:{0} est présentemment dans l'État:{1} et ne peut être mise-à-jour.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_propose_acknowledge_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing newly created Proposal:{0}... </seg>
+                <seg>:-) Affichage de la Proposition:{} nouvellement créée... </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_supply_empty_tag_list" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>FYI. You are no longer supplying any tags.</seg>
+                <seg>PVI. Vous n'avez plus de mot clé pour vos Fournitures.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_supply_updated_1_tag_list" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>FYI. You are now supplying only one tag: {0}.</seg>
+                <seg>PVI. Vous fournissez avec le mot-clé: {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_supply_updated_n_tag_list" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Listing {1} tags: {0}.</seg>
+                <seg>:-) {1} mots-clés illustrent vos founitures: {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand_action_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>!demand</seg>
+                <seg> </seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_propose_action_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>!propose</seg>
+                <seg>proposer</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand_reference_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>reference:{0}</seg>
+                <seg>demande:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposal_reference_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>proposal:{0}</seg>
+                <seg>proposition:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store_reference_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>store:{0}</seg>
+                <seg>magasin:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_state_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>state:{0}</seg>
+                <seg>état:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_expiration_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>expires:{0}</seg>
+                <seg>expire:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_locale_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>locale:{0} {1}</seg>
+                <seg>localité:{0} {1}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_range_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>range:{0}{1}</seg>
+                <seg>distance:{0}{1}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_quantity_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>quantity:{0}</seg>
+                <seg>quantité:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_tags_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>tags:{0}</seg>
+                <seg>motsClés:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_hashtags_part" dataType="text">
@@ -1160,49 +1210,49 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>price:{1}{0}</seg>
+                <seg>prix:{0}{1}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_total_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>total:{1}{0}</seg>
+                <seg>total:{0}{1}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>store:{0} [{1}]</seg>
+                <seg>magasin:{0} {1}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_name_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>name:</seg>
+                <seg>nom:</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_address_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>address:{0}</seg>
+                <seg>adresse:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_phone_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>phone:{0}</seg>
+                <seg>téléphone:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposals_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>proposal:[{0}]</seg>
+                <seg>proposition:[{0}]</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand" dataType="text">
@@ -1230,70 +1280,70 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please update your Demand with at least tag by sending 'reference:{0} tags:your-tags-here'.</seg>
+                <seg>:-( Veuillez ajouter au moins un mot clé à votre Demande en envoyant: 'demande:{0} motsClés:votre-description-par-mots-clés'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_expiration_in_past" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Demand's Expiration date is in the future by sending 'reference:{0} expiration:YYYYMMDD'.</seg>
+                <seg>:-( Veuillez vous assurer que la date d'expiration est dans le futur en envoyant: 'demande:{0} expire:AAAA-MM-DD'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_range_km_too_small" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'reference:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Veuillez vous assurer que la Distance est plus grande ou egale à {1} km en envoyant: 'demande:{0} distance:votre-distance km'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_range_km_too_big" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} km) by sending 'reference:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Veuillez vous assurer que la Distance reste dans les limites terrestres ({1} km) en envoyant: 'demande:{0} distance:votre-distance km'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_range_mi_too_small" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'reference:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Veuillez vous assurer que la Distance est plus grande ou egale à {1} miles en envoyant: 'demande:{0} distance:votre-distance mi'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_range_mi_too_big" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} miles) by sending 'reference:{0} range:your-range-and-mi'.</seg>
+                <seg>:-( Veuillez vous assurer que la Distance reste dans les limites terrestres ({1} miles) en envoyant: 'demande:{0} distance:votre-distance mi'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_quantity_zero" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Demand's Quantity exceeds zero by sending 'reference:{0} qty:1'.</seg>
+                <seg>:-( Veuillez vous assurer que la Quantité soit non nulle en envoyant au moins: 'demande:{0} quantité:1'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_missing_locale" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please update your Demand's Locale by sending 'ref:{0} locale:your-postal/zip-code-and-country(us,ca)', like 'ref:{0} locale:12345 us'</seg>
+                <seg>:-( Veuillez vous assurer que la Localité soit transmise en envoyant au moins: 'demande:{0} localité:votre-code-postal votre-code-pays' (localité:h3a 2p4 ca, par exemple).</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_invalid_locale" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'ref:{0} locale:12345 us'.</seg>
+                <seg>:-( Veuillez vous assurer que la Localité soit valide en envoyant au moins: 'demande:{0} localité:votre-code-postal votre-code-pays' (localité:h3a 2p4 ca, par exemple).</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_unable_to_get_locale_information" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>The Locale information for Demand reference:{0} cannot be retrieved. Please provide them another time (postal/zip code and country - like 'us', or, 'ca').</seg>
+                <seg>L'information de Localité pour la Demande:{0} ne peut pas être vérifiée maintenant. Essayer une mise-à-jour plus tard. </seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_hashtag_warning" dataType="text">
@@ -1301,9 +1351,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    The hash tag (#) concept is reserved for a future feature. For now, only the "#demo" tag is accepted.|
-                    Other values are ignored. You can add them to the proposal tag list with "!demand ref:{0} {1}"|
-                    Send "? demo" for help on the demo mode, and join the Twetailer community to get more details about future enhancements.
+                    Le concept de meta étiquette (#) est réservé pour une future fonctionalité. Pour le moment, seul "#demo" est accepté.|
+                    Les autres valeurs sont ignorées. Vous pouvez les ajouter aux mots-clés avec 'demande:{0} {1}'.|
+                    Envoyez '? demo' pour de l'aide sur le mode démo, et joignez la communauté de Twetailer pour plus d'informations sur les fonctionalités.
                 </seg>
             </tuv>
         </tu>
@@ -1311,74 +1361,82 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'ref:{0} locale:12345 us', or, 'ref:{0} locale:h0h 0h0 ca' </seg>
+                <seg>:-( Je ne peux trouver la Localité#160;! Veuillez mettre à jour votre Demande avec une valeur comme 'demande:{0} localité: 12345 us' (code postal et code de pays).</seg>
             </tuv>
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_one_item" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} expires:{2}? If yes then send the following... |
-                     2/2 '!propose ref:{0} tags:your-description-here price:your-price-here' </seg>
+                <seg>
+                    1/2 PVI. Pouvez-vous fournir la Demande:{0} MotsClés:{1} Expire:{2}? Si oui, veuillez envoyer la commande suivante...|
+                    2/2 'proposer demande:{0} prix:votre-prix-unitaire la-description-de-votre-proposition'.
+                </seg>
             </tuv>
         </tu>
         <tu tuid="dp_inform_saleAssociate_about_demand_many_items" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>1/2 FYI. Can you supply Demand ref:{0} tags:{1} qty:{3} expires:{2}? If yes then send the following... |
-                     2/2 '!propose ref:{0} tags:your-description-here qty:your-qty-here price:your-price-here' </seg>
+                <seg>
+                    1/2 PVI. Pouvez-vous fournir la Demande:{0} MotsClés:{1} Quantité:{3} Expire:{2}? Si oui, veuillez envoyer la commande suivante...|
+                    2/2 'proposer demande:{0} prix:votre-prix-unitaire quantité:votre-disponibilite la-description-de-votre-proposition'.
+                </seg>
             </tuv>
         </tu>
         <tu tuid="dp_inform_consumer_about_no_store" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>FYI. 1/2 I currently don't have any Stores supplying those tags but will keep checking until the expiration date.|
-                2/2 Please ask any potential Stores you may visit to register with Twetailer so we may improve our service in your community.</seg>
+                <seg>
+                    1/2 PVI. Je n'ai trouver aucun Magasin pour les mots-clés mais je vais continuer d'en chercher jusqu'à ce que la Demande expire.|
+                    2/2 N'hésitez pas à demander aux Magasins que vous visitez de s'enregistrer sur Twetailer pour améliorer notre service dans votre Localité.
+                </seg>
             </tuv>
         </tu>
         <tu tuid="dp_inform_consumer_about_new_sale_associates_contacted" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>FYI. 1/2 {2} additional Sales Associates have been notified of your Demand ref:{0}, for a total of {1}.|
-                2/2 I'll continue checking until the expiration date.</seg>
+                <seg>
+                    1/2 PVI. {2} nouveaux Vendeurs ont été notifiés pour votre Demande:{0}, sur un total de {1}.|
+                    2/2 Je vais continuer d'en chercher jusqu'à ce que la Demande expire.
+                </seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_proposal_without_tag" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please update your Proposal with at least tag by sending 'proposal:{0} tags:your-tags-here'.</seg>
+                <seg>:-( Veuillez mettre à jour votre Proposition avec au moins un mot-clé en envoyant: 'proposer proposition:{0} votre-description'.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_quantity_zero" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Proposal's Quantity exceeds zero by sending 'proposal:{0} qty:1'.</seg>
+                <seg>:-( Veuillez vous assurer que la Quantité soit non nulle en envoyant: 'proposer proposition:{0} quantité:1'.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_missing_price_and_total" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Proposal has a unit Price and final Total cost by sending '!propose price:unit-price total:final-cost'</seg>
+                <seg>:-( Veuillez vous assurer qu'un Prix unitaire ou que le coût Total soit non nul en envoyant: 'proposer proposition:{0} prix:votre-prix-unitaire total:votre-coût-total'.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_missing_demand_reference" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Proposal has a Reference number by sending '!propose ref:see-previously-sent-ref'</seg>
+                <seg>:-( Veuillez vous assurer que votre Proposition référence une Demande en envoyant: 'proposer proposition:{0} demande:référence-associée'.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_invalid_demand_reference" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Please ensure your Proposal has the appropriate Reference number by sending '!propose ref:see-previously-sent-ref'</seg>
+                <seg>:-( Veuillez vous assurer que la référence de la Demande associée est valide en envoyant: 'proposer proposition:{0} demande:référence-associée'.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_hashtag_warning" dataType="text">
@@ -1386,8 +1444,8 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/2 :-( #demo is currently the only supported hash (#) tag. |
-                    2/2 If you wish, remove the # from the rejected list and update your Proposal tags by sending '!proposal proposal:{0} {1}"
+                   1/2 :-( #demo est la seule meta étiquette supportée.|
+                   2/2 Vous pouvez ajouter le mot clé à la description de la Proposition en envoyant: 'proposer proposition:{0} {1}'.
                 </seg>
             </tuv>
         </tu>
@@ -1396,9 +1454,9 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ... |
-                    2/3 Proposal:{0} tags:{1} price:{7}{8} total:{7}{9} |
-                    3/3 From Store:{5} {6}. You can send '!confirm proposal:{0}', or, '!decline proposal:{0}'
+                    1/3 Re: Pour la Demande:{2} Expire:{4} MotsClés:{3}, j'ai...|
+                    2/3 Proposition:{0} MotsClés:{1} Prix:{8}{7} Total:{9}{7}|
+                    3/3 Par le Magasin:{5} {6}. Vous pouvez envoyer 'confirmer proposition:{0}' ou 'décliner proposition:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -1407,9 +1465,9 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ... |
-                    2/3 Proposal:{0} tags:{1} price:{7}{8} |
-                    3/3 From Store:{5} {6}. You can send '!confirm proposal:{0}', or, '!decline proposal:{0}'
+                    1/3 Re: Pour la Demande:{2} Expire:{4} MotsClés:{3}, j'ai...|
+                    2/3 Proposition:{0} MotsClés:{1} Prix:{8}{7}'|
+                    3/3 Par le Magasin:{5} {6}. Vous pouvez envoyer 'confirmer proposition:{0}' ou 'décliner proposition:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -1418,9 +1476,9 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/3 Re: Demand ref:{2} tags:{3} expires:{4}. I have ... |
-                    2/3 Proposal:{0} tags:{1} total:{7}{8} |
-                    3/3 From Store:{5} {6}. You can send '!confirm proposal:{0}', or, '!decline proposal:{0}'
+                    1/3 Re: Pour la Demande:{2} Expire:{4} MotsClés:{3}, j'ai...|
+                    2/3 Proposition:{0} MotsClés:{1} Total:{8}{7}'|
+                    3/3 Par le Magasin:{5} {6}. Vous pouvez envoyer 'confirmer proposition:{0}' ou 'décliner proposition:{0}'.
                 </seg>
             </tuv>
         </tu>
@@ -1428,7 +1486,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Your proposal:{0} can't be attached to Demand reference:{1} in state:{2}.</seg>
+                <seg>:-( Votre Proposition:{0} ne peut être attachée à la Demande:{1} qui est dans l'État:{2}.</seg>
             </tuv>
         </tu>
         <tu tuid="mc_mail_subject_response_default" dataType="text">
@@ -1449,7 +1507,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>proposed description</seg>
+                <seg>description proposée</seg>
             </tuv>
         </tu>
         <tu tuid="country_CA" dataType="text">
@@ -1490,6 +1548,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>États-Unis d'Amérique</seg>
+            </tuv>
+        </tu>
+        <tu tuid="payment_transaction_description" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>Vous êtes sur le point de payer pour {0}, tel que proposé pour votre Demande '{1}'. Merci de magasiner avec Twetailer.</seg>
             </tuv>
         </tu>
     </body>

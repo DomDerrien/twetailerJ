@@ -62,8 +62,11 @@ public class RawCommand extends Entity {
         return emitterId;
     }
 
-    public void setEmitterId(String sId) {
-        emitterId = sId;
+    public void setEmitterId(String emitterId) {
+        if (emitterId == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'emitterId'");
+        }
+        this.emitterId = emitterId;
     }
 
     public String getErrorMessage() {
@@ -71,15 +74,18 @@ public class RawCommand extends Entity {
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = new Text(errorMessage);
+        this.errorMessage = errorMessage == null || errorMessage.length() == 0 ? null : new Text(errorMessage);
     }
 
     public Long getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(Long lId) {
-        messageId = lId;
+    public void setMessageId(Long messageId) {
+        if (messageId == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'messageId'");
+        }
+        this.messageId = messageId;
     }
 
     public Source getSource() {
@@ -102,6 +108,6 @@ public class RawCommand extends Entity {
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
+        this.subject = subject == null || subject.length() == 0 ? null : subject;
     }
 }

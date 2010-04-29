@@ -1,5 +1,6 @@
 package twetailer.dto;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,8 @@ import domderrien.jsontools.TransferObject;
 public class SaleAssociate extends Entity {
 
     /*** SaleAssociate ***/
+    private Collator collator;
+
     @Persistent
     private Long consumerKey;
 
@@ -122,11 +125,21 @@ public class SaleAssociate extends Entity {
         criteria = null;
     }
 
+    protected Collator getCollator() {
+        if (collator == null) {
+            collator = LocaleValidator.getCollator(getLocale());
+        }
+        return collator;
+    }
+
     public Long getConsumerKey() {
         return consumerKey;
     }
 
     public void setConsumerKey(Long consumerKey) {
+        if (consumerKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'consumerKey'");
+        }
         this.consumerKey = consumerKey;
     }
 
@@ -135,17 +148,21 @@ public class SaleAssociate extends Entity {
     }
 
     public void setCreatorKey(Long creatorKey) {
+        if (creatorKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'creatorKey'");
+        }
         this.creatorKey = creatorKey;
     }
 
     public void addCriterion(String criterion) {
+        removeCriterion(criterion);
+        if (criterion == null || criterion.length() == 0) {
+            return;
+        }
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        criterion = criterion.toLowerCase(getLocale());
-        if (!criteria.contains(criterion)) {
-            criteria.add(criterion);
-        }
+        criteria.add(criterion);
     }
 
     public void resetCriteria() {
@@ -156,11 +173,17 @@ public class SaleAssociate extends Entity {
     }
 
     public void removeCriterion(String criterion) {
-        if (criteria == null) {
+        if (criteria == null|| criterion == null || criterion.length() == 0) {
             return;
         }
-        criterion = criterion.toLowerCase(getLocale());
-        criteria.remove(criterion);
+        String normalizedCriterion = LocaleValidator.toUnicode(criterion);
+        for(String item: criteria) {
+            String normalizedItem = LocaleValidator.toUnicode(item);
+            if (getCollator().compare(normalizedCriterion, normalizedItem) == 0) {
+                criteria.remove(item);
+                break;
+            }
+        }
     }
 
     public String getSerializedCriteria() {
@@ -186,15 +209,17 @@ public class SaleAssociate extends Entity {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        // Normalize the email address because it's case unsensitive
+        this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
     public String getJabberId() {
         return jabberId;
     }
 
-    public void setJabberId(String imId) {
-        this.jabberId = imId;
+    public void setJabberId(String jabberId) {
+        // Normalize the Jabber identifier because it's case unsensitive
+        this.jabberId = jabberId == null || jabberId.length() == 0 ? null : jabberId.toLowerCase();
     }
 
     public Boolean getIsStoreAdmin() {
@@ -222,6 +247,9 @@ public class SaleAssociate extends Entity {
     }
 
     public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
         this.locationKey = locationKey;
     }
 
@@ -234,7 +262,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null || name.length() == 0 ? null : name;
     }
 
     public String getOpenID() {
@@ -242,7 +270,8 @@ public class SaleAssociate extends Entity {
     }
 
     public void setOpenID(String openID) {
-        this.openID = openID;
+        // Note: no normalization because the OpenID identifier is case sensitive!
+        this.openID = openID == null || openID.length() == 0 ? null : openID;
     }
 
     public String getPhoneNumber() {
@@ -250,7 +279,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
     public Source getPreferredConnection() {
@@ -273,6 +302,9 @@ public class SaleAssociate extends Entity {
     }
 
     public void setStoreKey(Long storeKey) {
+        if (storeKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'storeKey'");
+        }
         this.storeKey = storeKey;
     }
 
@@ -281,14 +313,18 @@ public class SaleAssociate extends Entity {
     }
 
     public void setScore(Long score) {
+        if (score == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'score'");
+        }
         this.score = score;
     }
 
     public String getTwitterId() {
-        return twitterId;
+        return twitterId == null || twitterId.length() == 0 ? null : twitterId;
     }
 
     public void setTwitterId(String twitterId) {
+        // Note: no normalization because the Twitter identifier is case sensitive!
         this.twitterId = twitterId;
     }
 

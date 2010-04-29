@@ -35,7 +35,6 @@ import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.apphosting.api.MockAppEngineEnvironment;
 
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -152,6 +151,14 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -187,6 +194,14 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -325,6 +340,14 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -358,6 +381,14 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -390,6 +421,14 @@ public class TestBaseRestlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return in;
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -430,6 +469,14 @@ public class TestBaseRestlet {
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -464,6 +511,14 @@ public class TestBaseRestlet {
             @Override
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -629,6 +684,14 @@ public class TestBaseRestlet {
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -775,6 +838,14 @@ public class TestBaseRestlet {
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -810,6 +881,14 @@ public class TestBaseRestlet {
             @Override
             public ServletInputStream getInputStream() {
                 return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -893,6 +972,14 @@ public class TestBaseRestlet {
             public String getPathInfo() {
                 return null;
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -918,6 +1005,14 @@ public class TestBaseRestlet {
             @Override
             public String getPathInfo() {
                 return "";
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -1037,6 +1132,14 @@ public class TestBaseRestlet {
             @Override
             public String getPathInfo() {
                 return "/";
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -1472,5 +1575,85 @@ public class TestBaseRestlet {
     public void testIsAPrivilegedUserV() {
         user.setAttribute("info", null);
         assertFalse(BaseRestlet.isAPrivilegedUser(user));
+    }
+
+    @Test
+    public void testDoGetUnauthorized() throws IOException {
+        final Map<String, ?> in = new HashMap<String, Object>();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return in;
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(401, mockResponse.getStatus());
+        assertTrue(stream.contains("reason"));
+        assertTrue(stream.contains("Unauthorized"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
+    public void testDoPostUnauthorized() throws IOException {
+        final Map<String, ?> in = new HashMap<String, Object>();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return null;
+            }
+            @Override
+            public Map<String, ?> getParameterMap() {
+                return in;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(401, mockResponse.getStatus());
+        assertTrue(stream.contains("reason"));
+        assertTrue(stream.contains("Unauthorized"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
     }
 }

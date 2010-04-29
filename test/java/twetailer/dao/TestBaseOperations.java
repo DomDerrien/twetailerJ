@@ -601,6 +601,19 @@ public class TestBaseOperations {
     }
 
     @Test
+    public void testGetPaymentOperations() {
+        BaseOperations base = new BaseOperations();
+        BaseOperations ops1 = base.getPaymentOperations();
+        assertNotNull(ops1);
+        BaseOperations ops2 = base.getPaymentOperations();
+        assertNotNull(ops2);
+        assertEquals(ops1, ops2);
+        BaseOperations ops3 = new BaseOperations().getPaymentOperations();
+        assertNotNull(ops3);
+        assertNotSame(ops1, ops3);
+    }
+
+    @Test
     public void testGetProductOperations() {
         BaseOperations base = new BaseOperations();
         BaseOperations ops1 = base.getProductOperations();

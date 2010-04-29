@@ -65,15 +65,9 @@ public class TestApplicationSettings {
         assertNotNull(ApplicationSettings.get().getMainPageURL());
     }
 
-    @Test
-    public void testGetNewUserPageURL() {
-        assertNotNull(ApplicationSettings.get().getNewUserPageURL());
-    }
-
     final String cdnURL = "http://";
     final String loginURL = "login";
     final String mainURL = "main";
-    final String newUserURL = "welcome";
     final String logoURL = "http://";
     final String productEmail = "e-mail";
     final String productName = "name";
@@ -86,7 +80,6 @@ public class TestApplicationSettings {
             {ApplicationSettings.CDN_BASE_URL_KEY, cdnURL},
             {ApplicationSettings.LOGIN_PAGE_URL_KEY, loginURL},
             {ApplicationSettings.MAIN_PAGE_URL_KEY, mainURL},
-            {ApplicationSettings.NEW_USER_PAGE_URL_KEY, newUserURL},
             {ApplicationSettings.LOGO_URL_KEY, logoURL},
             {ApplicationSettings.PRODUCT_EMAIL_KEY, productEmail},
             {ApplicationSettings.PRODUCT_NAME_KEY, productName},
@@ -123,7 +116,6 @@ public class TestApplicationSettings {
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -141,7 +133,6 @@ public class TestApplicationSettings {
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -159,7 +150,6 @@ public class TestApplicationSettings {
         assertEquals(ApplicationSettings.DEFAULT_BASE_URL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -177,7 +167,6 @@ public class TestApplicationSettings {
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(ApplicationSettings.DEFAULT_LOGIN_PAGE_URL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -195,25 +184,6 @@ public class TestApplicationSettings {
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(ApplicationSettings.DEFAULT_MAIN_PAGE_URL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
-        assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
-        assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
-        assertEquals(productName, ApplicationSettings.get().getProductName());
-        assertEquals(productWebsite, ApplicationSettings.get().getProductWebsite());
-        assertEquals(servletApiPath, ApplicationSettings.get().getServletApiPath());
-    }
-
-    @Test
-    public void testNewPageURLNotSet() {
-        MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[4] = new Object[] { ApplicationSettings.NEW_USER_PAGE_URL_KEY, 12345L };
-        ApplicationSettings.setResourceBundle(mRB);
-
-        assertTrue(ApplicationSettings.get().isUseCDN());
-        assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
-        assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
-        assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(ApplicationSettings.DEFAULT_NEW_USER_PAGE_URL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -224,14 +194,13 @@ public class TestApplicationSettings {
     @Test
     public void testLogoURLNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[5] = new Object[] { ApplicationSettings.LOGO_URL_KEY, 12345L };
+        mRB.contents[4] = new Object[] { ApplicationSettings.LOGO_URL_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(ApplicationSettings.DEFAULT_LOGO_URL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -242,14 +211,13 @@ public class TestApplicationSettings {
     @Test
     public void testProductEmailNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[6] = new Object[] { ApplicationSettings.PRODUCT_EMAIL_KEY, 12345L };
+        mRB.contents[5] = new Object[] { ApplicationSettings.PRODUCT_EMAIL_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(ApplicationSettings.DEFAULT_PRODUCT_EMAIL, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -260,14 +228,13 @@ public class TestApplicationSettings {
     @Test
     public void testProductNameNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[7] = new Object[] { ApplicationSettings.PRODUCT_NAME_KEY, 12345L };
+        mRB.contents[6] = new Object[] { ApplicationSettings.PRODUCT_NAME_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(ApplicationSettings.DEFAULT_PRODUCT_NAME, ApplicationSettings.get().getProductName());
@@ -278,14 +245,13 @@ public class TestApplicationSettings {
     @Test
     public void testProductWebsiteNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[8] = new Object[] { ApplicationSettings.PRODUCT_WEBSITE_KEY, 12345L };
+        mRB.contents[7] = new Object[] { ApplicationSettings.PRODUCT_WEBSITE_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());
@@ -296,14 +262,13 @@ public class TestApplicationSettings {
     @Test
     public void testServletApiPathNotSet() {
         MockResourceBundle mRB = new MockResourceBundle();
-        mRB.contents[9] = new Object[] { ApplicationSettings.SERVLET_API_PATH_KEY, 12345L };
+        mRB.contents[8] = new Object[] { ApplicationSettings.SERVLET_API_PATH_KEY, 12345L };
         ApplicationSettings.setResourceBundle(mRB);
 
         assertTrue(ApplicationSettings.get().isUseCDN());
         assertEquals(cdnURL, ApplicationSettings.get().getCdnBaseURL());
         assertEquals(loginURL, ApplicationSettings.get().getLoginPageURL());
         assertEquals(mainURL, ApplicationSettings.get().getMainPageURL());
-        assertEquals(newUserURL, ApplicationSettings.get().getNewUserPageURL());
         assertEquals(logoURL, ApplicationSettings.get().getLogoURL());
         assertEquals(productEmail, ApplicationSettings.get().getProductEmail());
         assertEquals(productName, ApplicationSettings.get().getProductName());

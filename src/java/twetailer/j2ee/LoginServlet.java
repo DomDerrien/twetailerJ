@@ -37,6 +37,8 @@ import com.dyuproject.util.http.UrlEncodedParameterMap;
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 
+    public static final String FROM_PAGE_URL_KEY = "fromPageURL";
+
     protected static Listener sregExtension = new SRegExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("nickname"); // .addExchange("firstname").addExchange("lastname");
 
     protected static Listener axSchemaExtension = new AxSchemaExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("firstname").addExchange("lastname").addExchange("nickname");
@@ -134,14 +136,26 @@ public class LoginServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         preselectOpendIdServer(request);
 
+        //
+        // FIXME:
+        //   1. Get the URL for the initial request
+        //   2. If this URL is ApplicationSettings.get().getLoginPageURL(), change it to ApplicationSettings.get().getMainPageURL()
+        //   3. Save the URL in the session
+        //   4. When the servlet is invoked again with the user being authenticated. jump to the URL saved in the session
+        //   5. Note that URL parameters should be saved and restored later
+        //
+
         RelyingParty relyingParty = getRelyingParty();
         String errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         try {
+            String pageToGo = request.getParameter(FROM_PAGE_URL_KEY);
+            pageToGo = pageToGo == null ? ApplicationSettings.get().getMainPageURL() : pageToGo;
+
             OpenIdUser user = relyingParty.discover(request);
             if (user == null) {
                 if (RelyingParty.isAuthResponse(request)) {
                     // authentication timeout
-                    response.sendRedirect(request.getRequestURI());
+                    response.sendRedirect(request.getRequestURI()); // TODO: verify if parameters should be added: "?" + request.getQueryString()
                 }
                 else {
                     // set error msg if the openid_identifier is not resolved.
@@ -149,7 +163,7 @@ public class LoginServlet extends HttpServlet {
                         request.setAttribute(OpenIdServletFilter.ERROR_MSG_ATTR, errorMsg);
                     }
                     // new user
-                    request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
+                    request.getRequestDispatcher(pageToGo).forward(request, response);
                 }
                 return;
             }
@@ -157,7 +171,7 @@ public class LoginServlet extends HttpServlet {
             if (user.isAuthenticated()) {
                 // user already authenticated
                 attachConsumerToSession(user);
-                request.getRequestDispatcher(ApplicationSettings.get().getMainPageURL()).forward(request, response);
+                request.getRequestDispatcher(pageToGo).forward(request, response);
                 return;
             }
 
@@ -168,11 +182,11 @@ public class LoginServlet extends HttpServlet {
                     // authenticated redirect to home to remove the query params instead of doing:
                     // request.setAttribute("user", user); request.getRequestDispatcher("/home.jsp").forward(request, response);
                     attachConsumerToSession(user);
-                    response.sendRedirect(ApplicationSettings.get().getMainPageURL());
+                    response.sendRedirect(pageToGo);
                 }
                 else {
                     // failed verification
-                    request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
+                    request.getRequestDispatcher(pageToGo).forward(request, response);
                 }
                 return;
             }
@@ -182,6 +196,7 @@ public class LoginServlet extends HttpServlet {
             String trustRoot = url.substring(0, url.indexOf("/", 9));
             String realm = url.substring(0, url.lastIndexOf("/"));
             String returnTo = url.toString();
+            returnTo += "?" + FROM_PAGE_URL_KEY + "=" + pageToGo;
             if (relyingParty.associateAndAuthenticate(user, request, response, trustRoot, realm, returnTo)) {
                 // successful association
                 return;
@@ -204,7 +219,7 @@ public class LoginServlet extends HttpServlet {
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
-    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_wetailerId";
+    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_twetailerId";
 
     protected static void attachConsumerToSession(OpenIdUser user) {
         Long consumerKey = (Long) user.getAttribute(AUTHENTICATED_USER_TWETAILER_ID);

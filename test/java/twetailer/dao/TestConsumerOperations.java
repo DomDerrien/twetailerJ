@@ -27,7 +27,7 @@ import org.junit.Test;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
 import twetailer.j2ee.LoginServlet;
-import twitter4j.MockTwitterUser;
+import twitter4j.MockUser;
 import twitter4j.TwitterException;
 
 import com.dyuproject.openid.YadisDiscovery;
@@ -361,7 +361,7 @@ public class TestConsumerOperations {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
         };
-        ops.createConsumer(new twitter4j.MockTwitterUser());
+        ops.createConsumer(new twitter4j.MockUser());
     }
 
     @Test(expected=RuntimeException.class)
@@ -411,7 +411,7 @@ public class TestConsumerOperations {
         };
         ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
         ops.createConsumer(new com.google.appengine.api.xmpp.JID("jabberId"));
-        ops.createConsumer(new twitter4j.MockTwitterUser());
+        ops.createConsumer(new twitter4j.MockUser());
         ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"));
         ops.createConsumer(new com.dyuproject.openid.OpenIdUser());
         ops.createConsumer(new Consumer());
@@ -509,13 +509,9 @@ public class TestConsumerOperations {
     @Test
     @SuppressWarnings("serial")
     public void testCreateIV() throws DataSourceException, TwitterException {
-        final String name = "test";
-        MockTwitterUser user = new MockTwitterUser() {
-            @Override
-            public String getName() {
-                return name;
-            }
-        };
+        final String name = "displayName";
+        final String screenName = "screenName";
+        MockUser user = new MockUser(0, screenName, name);
 
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -535,7 +531,8 @@ public class TestConsumerOperations {
         query = new Query(Consumer.class.getSimpleName());
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
-        assertEquals(name, consumer.getTwitterId());
+        assertEquals(screenName, consumer.getTwitterId());
+        assertEquals(name, consumer.getName());
 
         // Tries to recreate it
         ops.createConsumer(user);
