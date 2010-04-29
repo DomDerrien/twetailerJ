@@ -2037,7 +2037,7 @@
                 {0}: proposal key:
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with your proposed desciption & sending 'propose proposal:{0} tags:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with your proposed desciption and sending 'propose proposal:{0} tags:?'.</seg>
             </tuv>
         </tu>
 
