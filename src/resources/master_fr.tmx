@@ -1054,9 +1054,9 @@
         </tu>
         <tu tuid="cp_command_list_proposal_series_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">7</prop>
+            <prop type="x-version">8</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Affichage de {0} Proposition(s) Active(s) à {2} pour {0}...</seg>
+                <seg>:-) Affichage de {0} Proposition(s) active(s) à {2} autour de {1}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_missing_location" dataType="text">
@@ -1386,17 +1386,17 @@
         </tu>
         <tu tuid="dp_inform_consumer_about_no_store" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/2 PVI. Je n'ai trouver aucun Magasin pour les mots-clés mais je vais continuer d'en chercher jusqu'à ce que la Demande expire.|
+                    1/2 PVI. Je n'ai trouvé aucun Magasin pour les mots-clés mais je vais continuer d'en chercher jusqu'à ce que la Demande expire.|
                     2/2 N'hésitez pas à demander aux Magasins que vous visitez de s'enregistrer sur Twetailer pour améliorer notre service dans votre Localité.
                 </seg>
             </tuv>
         </tu>
         <tu tuid="dp_inform_consumer_about_new_sale_associates_contacted" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>
                     1/2 PVI. {2} nouveaux Vendeurs ont été notifiés pour votre Demande:{0}, sur un total de {1}.|

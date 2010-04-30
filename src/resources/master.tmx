@@ -2062,7 +2062,7 @@
                 Future release
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with the unit Price and final Total cost & sending 'propose proposal:{0} price:? total:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with the unit Price and final Total cost &#38; sending 'propose proposal:{0} price:? total:?'.</seg>
             </tuv>
         </tu>
 
@@ -2074,7 +2074,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with your Demand number & sending 'propose proposal:{0} demand:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with your Demand number &#38; sending 'propose proposal:{0} demand:?'.</seg>
             </tuv>
         </tu>
 
@@ -2087,7 +2087,7 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with a valid Demand number & sending 'propose proposal:{0} demand:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with a valid Demand number &#38; sending 'propose proposal:{0} demand:?'.</seg>
             </tuv>
         </tu>
 
