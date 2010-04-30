@@ -13,7 +13,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dao.LocationOperations;
 import twetailer.dto.Location;
-import twetailer.j2ee.TestBaseRestlet;
+import twetailer.j2ee.MockLoginServlet;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -33,7 +33,7 @@ public class TestLocationRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new LocationRestlet();
-        user = TestBaseRestlet.setupOpenIdUser();
+        user = MockLoginServlet.buildMockOpenIdUser();
     }
 
     @After

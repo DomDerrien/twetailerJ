@@ -118,9 +118,6 @@ public abstract class BaseRestlet extends HttpServlet {
      * @throws Exception If the OpendIdUser un-marshaling fails
      */
     public static OpenIdUser getLoggedUser(HttpServletRequest request) throws Exception {
-        if (debugModeDetected(request)) {
-            injectMockOpenUser(request);
-        }
         return RelyingParty.getInstance().discover(request);
     }
 
@@ -153,77 +150,6 @@ public abstract class BaseRestlet extends HttpServlet {
      */
     protected static boolean debugModeDetected(HttpServletRequest request) {
         return CommandProcessor.DEBUG_INFO_SWITCH.equals(request.getParameter("debugMode"));
-    }
-
-    /**
-     * Inject in the request a mock OpenUser instance built with values found among the request parameters
-     * with fallback on default values
-     *
-     * @param parameters HTTP request parameters
-     */
-    protected static void injectMockOpenUser(HttpServletRequest request) {
-        // Get the consumer information
-        String proposeConsumerKey = request.getParameter("debugConsumerKey");
-        Long consumerKey = proposeConsumerKey == null ? 1L : Long.valueOf(proposeConsumerKey);
-        String proposedOpenId = request.getParameter("debugConsumerOpenId");
-        String openId = proposedOpenId == null ? "http://open.id" : proposedOpenId;
-
-        // Inject the data in an OpenIdUser and inject this one in the request
-        injectMockOpenUser(request, openId, consumerKey);
-    }
-
-    /**
-     * Inject in the request a mock OpenUser instance built with values found among the request parameters
-     * with fallback on default values
-     *
-     * @param parameters HTTP request parameters
-     * @param openId openId of the user to fake
-     * @param consumerKey Key of the Consumer instance to attach to the fake user
-     */
-    protected static void injectMockOpenUser(HttpServletRequest request, String openId, Long consumerKey) {
-        // Create fake user
-        OpenIdUser user = OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
-
-        // Inject the result in the request
-        injectMockOpenUser(request, user, openId, consumerKey);
-    }
-
-    /**
-     * Inject in the request a mock OpenUser instance built with values found among the request parameters
-     * with fallback on default values
-     *
-     * @param parameters HTTP request parameters
-     * @param user Basic fake user record
-     * @param openId openId of the user to fake
-     * @param consumerKey Key of the Consumer instance to attach to the fake user
-     */
-    protected static void injectMockOpenUser(HttpServletRequest request, OpenIdUser user, String openId, Long consumerKey) {
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", openId);
-        user.fromJSON(json);
-
-        // Inject a defined Consumer key
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
-
-        // Inject the result in the request
-        injectMockOpenUser(request, user);
-    }
-
-    /**
-     * Inject in the request a mock OpenUser instance built with values found among the request parameters
-     * with fallback on default values
-     *
-     * @param parameters HTTP request parameters
-     * @param user Fetched fake user record
-     */
-    protected static void injectMockOpenUser(HttpServletRequest request, OpenIdUser user) {
-        // Save the fake user as the request attribute
-        request.setAttribute(OpenIdUser.ATTR_NAME, user);
     }
 
     private static final String ROOT = "/";

@@ -49,7 +49,7 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        return demandOperations.createDemand(parameters, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)).toJson();
+        return demandOperations.createDemand(parameters, LoginServlet.getConsumerKey(loggedUser)).toJson();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DemandRestlet extends BaseRestlet {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
                 Long demandKey = Long.valueOf(resourceId);
-                delegateResourceDeletion(pm, demandKey, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID), false);
+                delegateResourceDeletion(pm, demandKey, LoginServlet.getConsumerKey(loggedUser), false);
                 return;
             }
             finally {
@@ -99,34 +99,42 @@ public class DemandRestlet extends BaseRestlet {
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         return demandOperations.getDemand(
                 Long.valueOf(resourceId),
-                isAPrivilegedUser(loggedUser) ? null : (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)
+                isAPrivilegedUser(loggedUser) ? null : LoginServlet.getConsumerKey(loggedUser)
         ).toJson();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         JsonArray resources;
         String pointOfView = parameters.getString("pointOfView");
         boolean onlyKeys = "onlyKeys".equals(parameters.getString("detailLevel"));
-        if ("SA".equals(pointOfView)) {
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
-            try {
-                Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            if ("SA".equals(pointOfView)) {
+                Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+                if (saleAssociateKey == null) {
+                    throw new ClientException("Current user is not a Sale Associate!");
+                }
                 if (onlyKeys) {
-                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKeys.get(0), 0));
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey, 0));
                 }
                 else { // full detail
-                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKeys.get(0), 0));
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey, 0));
                 }
             }
-            finally {
-                pm.close();
+            else { // consumer point-of-view
+                Long consumerKey = LoginServlet.getConsumerKey(loggedUser);
+                if (onlyKeys) {
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, consumerKey, 0));
+                }
+                else { // full detail
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.OWNER_KEY, consumerKey, 0));
+                }
             }
         }
-        else { // consumer point-of-view
-            throw new RuntimeException("Not yet implemented!");
+        finally {
+            pm.close();
         }
         return resources;
     }

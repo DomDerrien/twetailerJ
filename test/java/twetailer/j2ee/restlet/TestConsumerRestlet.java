@@ -30,6 +30,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.MaezelServlet;
+import twetailer.j2ee.MockLoginServlet;
 import twetailer.j2ee.TestBaseRestlet;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -53,7 +54,7 @@ public class TestConsumerRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new ConsumerRestlet();
-        user = TestBaseRestlet.setupOpenIdUser();
+        user = MockLoginServlet.buildMockOpenIdUser();
     }
 
     @After
@@ -101,14 +102,14 @@ public class TestConsumerRestlet {
         ConsumerRestlet.consumerOperations = new ConsumerOperations() {
             @Override
             public Consumer getConsumer(Long key) {
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, key);
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
                 Consumer temp = new Consumer();
-                temp.setKey(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY);
+                temp.setKey(MockLoginServlet.DEFAULT_CONSUMER_KEY);
                 return temp;
             }
         };
         JsonObject resource = ops.getResource(null, "current", user);
-        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
+        assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
     }
 
     @Test
@@ -533,18 +534,18 @@ public class TestConsumerRestlet {
         assertEquals(1, queue.getHistory().size());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected=ClientException.class)
     public void testUpdateResourceI() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        MockLoginServlet.updateConsumerKey(user, consumerKey);
         ConsumerRestlet._baseOperations = new MockBaseOperations();
         ops.updateResource(null, "0", user);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testUpdateResourceII() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         ConsumerRestlet.consumerOperations = new ConsumerOperations() {
@@ -561,7 +562,7 @@ public class TestConsumerRestlet {
     @Test
     public void testUpdateResourceIII() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
@@ -588,7 +589,7 @@ public class TestConsumerRestlet {
         parameters.put(Consumer.EMAIL, email);
         parameters.put(Consumer.EMAIL + "Code", MaezelServlet.getCode(Consumer.EMAIL, email, user.getClaimedId()));
         final Long consumerKey = 12345L;
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
@@ -621,7 +622,7 @@ public class TestConsumerRestlet {
         parameters.put(Consumer.JABBER_ID, jabberId);
         parameters.put(Consumer.JABBER_ID + "Code", MaezelServlet.getCode(Consumer.JABBER_ID, jabberId, user.getClaimedId()));
         final Long consumerKey = 12345L;
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
@@ -654,7 +655,7 @@ public class TestConsumerRestlet {
         parameters.put(Consumer.TWITTER_ID, twitterId);
         parameters.put(Consumer.TWITTER_ID + "Code", MaezelServlet.getCode(Consumer.TWITTER_ID, twitterId, user.getClaimedId()));
         final Long consumerKey = 12345L;
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
+        MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());

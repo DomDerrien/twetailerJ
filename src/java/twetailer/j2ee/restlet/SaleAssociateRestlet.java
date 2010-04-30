@@ -59,7 +59,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
         if (isAPrivilegedUser(loggedUser)) {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
-                parameters.put(SaleAssociate.CREATOR_KEY, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+                parameters.put(SaleAssociate.CREATOR_KEY, LoginServlet.getConsumerKey(loggedUser));
                 return delegateResourceCreation(pm, parameters);
             }
             finally {
@@ -292,22 +292,28 @@ public class SaleAssociateRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        SaleAssociate saleAssociate = null;
-        if ("current".equals(resourceId)) {
-            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(SaleAssociate.CONSUMER_KEY, loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID), 1);
-            if (saleAssociates.size() != 1) {
-                throw new IllegalArgumentException("Invalid key; cannot retrieve the SaleAssociate instance for the logged user");
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            SaleAssociate saleAssociate = null;
+            if ("current".equals(resourceId)) {
+                // Get the sale associate
+                saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
+                if (saleAssociate == null) {
+                    throw new ClientException("Current user is not a Sale Associate!");
+                }
             }
-            saleAssociate = saleAssociates.get(0);
+            else if (isAPrivilegedUser(loggedUser)) {
+                saleAssociate = saleAssociateOperations.getSaleAssociate(pm, Long.valueOf(resourceId));
+            }
+            else {
+                // TODO: enable a store manager to get information about the sale associates for the store
+                throw new ClientException("Restricted access!");
+            }
+            return saleAssociate.toJson();
         }
-        else if (isAPrivilegedUser(loggedUser)) {
-            saleAssociate = saleAssociateOperations.getSaleAssociate(Long.valueOf(resourceId));
+        finally {
+            pm.close();
         }
-        else {
-            // TODO: enable a store manager to get information about the sale associates for the store
-            throw new ClientException("Restricted access!");
-        }
-        return saleAssociate.toJson();
     }
 
     @Override
@@ -344,7 +350,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         boolean isAdminControlled = isAPrivilegedUser(loggedUser);
         String newEmail = null, newJabberId = null, newTwitterId = null;
         SaleAssociate saleAssociate = null;
@@ -352,11 +358,15 @@ public class SaleAssociateRestlet extends BaseRestlet {
 
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
-            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-            saleAssociateKey = Long.valueOf(resourceId);
-            saleAssociate = saleAssociateOperations.getSaleAssociate(pm, saleAssociateKey);
-            if (!saleAssociate.getConsumerKey().equals(consumerKey) && !isAdminControlled) {
-                throw new IllegalArgumentException("Consumer records can only be updated by the sale associates themselves");
+            // Get the sale associate key
+            if (isAdminControlled) {
+                saleAssociateKey = Long.valueOf(resourceId);
+            }
+            else {
+                saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+                if (!resourceId.equals(saleAssociateKey.toString())) {
+                    throw new ClientException("SaleAssociate records can only be updated by the associates themselves");
+                }
             }
 
             // Verify the information about the third party access providers
@@ -367,13 +377,9 @@ public class SaleAssociateRestlet extends BaseRestlet {
                 newTwitterId = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
             }
 
-            if (!isAdminControlled && !openId.equals(saleAssociate.getOpenID())) {
-                throw new IllegalArgumentException("Mismatch between the given OpenID and the one associated to the identified consumer");
-            }
-
             // Update the consumer account
+            saleAssociate = saleAssociateOperations.getSaleAssociate(pm, saleAssociateKey);
             saleAssociate.fromJson(parameters);
-            log.warning("Merged information: " + saleAssociate.toJson().toString());
             saleAssociate = saleAssociateOperations.updateSaleAssociate(pm, saleAssociate);
         }
         finally {

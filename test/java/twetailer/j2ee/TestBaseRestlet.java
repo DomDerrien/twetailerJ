@@ -31,7 +31,6 @@ import twetailer.DataSourceException;
 import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -77,43 +76,6 @@ public class TestBaseRestlet {
         }
     }
 
-    public static final String LOGGED_USER_OPEN_ID = "http://unit.test";
-    public static final Long LOGGED_USER_CONSUMER_KEY = 12345L;
-
-    public static OpenIdUser setupOpenIdUser() {
-        OpenIdUser user = OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
-
-        //  {
-        //      a: "claimId",
-        //      b: "identity",
-        //      c: "assocHandle",
-        //      d: associationData,
-        //      e: "openIdServer",
-        //      f: "openIdDelegate",
-        //      g: attributes,
-        //      h: "identifier"
-        //  }
-        Map<String, Object> json = new HashMap<String, Object>();
-
-        json.put("a", LOGGED_USER_OPEN_ID);
-
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", new HashMap<String, String>());
-        json.put("g", attributes);
-
-        user.fromJSON(json);
-
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, LOGGED_USER_CONSUMER_KEY);
-
-        return user;
-    }
-
-    OpenIdUser user;
-
     private static LocalServiceTestHelper  helper;
 
     @BeforeClass
@@ -122,9 +84,11 @@ public class TestBaseRestlet {
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
+    OpenIdUser user;
+
     @Before
     public void setUp() throws Exception {
-        user = setupOpenIdUser();
+        user = MockLoginServlet.buildMockOpenIdUser();
         helper.setUp();
     }
 
@@ -1177,66 +1141,6 @@ public class TestBaseRestlet {
     }
 
     @Test
-    public void testInjectMockOpenUserI() {
-        final Long consumerKey = 12345L;
-        final String openId = "http://unit.test";
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
-                }
-                if ("debugConsumerKey".equals(name)) {
-                    return consumerKey.toString();
-                }
-                if ("debugConsumerOpenId".equals(name)) {
-                    return openId;
-                }
-                fail("Parameter access not expected for: " + name);
-                return null;
-            }
-            @Override
-            public void setAttribute(String name, Object value) {
-                assertEquals(OpenIdUser.ATTR_NAME, name);
-                OpenIdUser user = (OpenIdUser) value;
-                assertEquals(openId, user.getClaimedId());
-                assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
-            }
-        };
-
-        BaseRestlet.injectMockOpenUser(mockRequest);
-    }
-
-    @Test
-    public void testInjectMockOpenUserII() {
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
-                }
-                if ("debugConsumerKey".equals(name)) {
-                    return null;
-                }
-                if ("debugConsumerOpenId".equals(name)) {
-                    return null;
-                }
-                fail("Parameter access not expected for: " + name);
-                return null;
-            }
-            @Override
-            public void setAttribute(String name, Object value) {
-                assertEquals(OpenIdUser.ATTR_NAME, name);
-                OpenIdUser user = (OpenIdUser) value;
-                assertEquals("http://open.id", user.getClaimedId());
-                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
-            }
-        };
-
-        BaseRestlet.injectMockOpenUser(mockRequest);
-    }
-
-    @Test
     public void testGetLoggedUserWithInjection() throws Exception {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -1266,7 +1170,7 @@ public class TestBaseRestlet {
                 assertEquals(OpenIdUser.ATTR_NAME, name);
                 OpenIdUser user = (OpenIdUser) value;
                 assertEquals("http://open.id", user.getClaimedId());
-                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID));
             }
         };
 

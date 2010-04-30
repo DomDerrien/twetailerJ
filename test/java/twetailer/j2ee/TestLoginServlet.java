@@ -1262,29 +1262,8 @@ public class TestLoginServlet {
         );
 
         // Authenticated user already known
-        assertNull(user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+        assertNull(user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID));
         LoginServlet.attachConsumerToSession(user);
-        assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
-    }
-
-    @Test
-    public void testAttachConsumerToSessionII() throws ServletException, IOException {
-        final Long consumerKey = 12345L;
-        LoginServlet.consumerOperations = new ConsumerOperations() {
-            @Override
-            public Consumer createConsumer(OpenIdUser user) {
-                fail("Not expected call");
-                throw new IllegalArgumentException("Not expected call");
-            }
-        };
-        OpenIdUser user = OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
-
-        // Authenticated user already attached
-        user.setAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, consumerKey);
-        LoginServlet.attachConsumerToSession(user);
+        assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID));
     }
 }
