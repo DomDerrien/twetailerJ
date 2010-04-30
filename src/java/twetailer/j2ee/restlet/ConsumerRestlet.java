@@ -98,7 +98,7 @@ public class ConsumerRestlet extends BaseRestlet {
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         Consumer consumer = null;
         if ("current".equals(resourceId)) {
-            consumer = consumerOperations.getConsumer((Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID));
+            consumer = consumerOperations.getConsumer(LoginServlet.getConsumerKey(loggedUser));
         }
         else if (isAPrivilegedUser(loggedUser)) {
             consumer = consumerOperations.getConsumer(Long.valueOf(resourceId));
@@ -149,16 +149,18 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        // Get the logged user information
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         boolean isAdminControlled = isAPrivilegedUser(loggedUser);
-        Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-        if (!consumerKey.toString().equals(resourceId)) {
-            if (isAdminControlled) {
-                consumerKey = Long.valueOf(resourceId);
-            }
-            else {
-                throw new IllegalArgumentException("Consumer records can only be updated by the consumer themselves");
+
+        // Get the logged user information
+        Long consumerKey = null;
+        if (isAdminControlled) {
+            consumerKey = Long.valueOf(resourceId);
+        }
+        else {
+            consumerKey = LoginServlet.getConsumerKey(loggedUser);
+            if (!resourceId.equals(consumerKey.toString())) {
+                throw new ClientException("Consumer records can only be updated by the consumers themselves");
             }
         }
 
@@ -174,15 +176,9 @@ public class ConsumerRestlet extends BaseRestlet {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         Consumer consumer;
         try {
-            // Get the identified consumer
-            consumer = consumerOperations.getConsumer(pm, consumerKey);
-            if (!isAdminControlled && !openId.equals(consumer.getOpenID())) {
-                throw new IllegalArgumentException("Mismatch between the given OpenID and the one associated to the identified consumer");
-            }
-
             // Update the consumer account
+            consumer = consumerOperations.getConsumer(pm, consumerKey);
             consumer.fromJson(parameters);
-            log.warning("Merged information: " + consumer.toJson().toString());
             consumer = consumerOperations.updateConsumer(pm, consumer);
         }
         finally {

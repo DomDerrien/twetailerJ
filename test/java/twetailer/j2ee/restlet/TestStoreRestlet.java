@@ -30,7 +30,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
-import twetailer.j2ee.TestBaseRestlet;
+import twetailer.j2ee.MockLoginServlet;
 import twetailer.validator.LocaleValidator;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -51,7 +51,7 @@ public class TestStoreRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new StoreRestlet();
-        user = TestBaseRestlet.setupOpenIdUser();
+        user = MockLoginServlet.buildMockOpenIdUser();
     }
 
     @After

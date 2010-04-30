@@ -25,10 +25,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
-import twetailer.j2ee.LoginServlet;
+import twetailer.j2ee.MockLoginServlet;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -37,14 +36,7 @@ import domderrien.jsontools.JsonObject;
 
 public class TestBaseOperations {
 
-    static final String OPEN_ID = "http://unit.test";
-    static final Long CONSUMER_KEY = 12345L;
-
-    static final OpenIdUser user = OpenIdUser.populate(
-            "http://www.yahoo.com",
-            YadisDiscovery.IDENTIFIER_SELECT,
-            LoginServlet.YAHOO_OPENID_SERVER_URL
-    );
+    static final OpenIdUser user = MockLoginServlet.buildMockOpenIdUser();
 
     private static LocalServiceTestHelper  helper;
 
@@ -52,17 +44,6 @@ public class TestBaseOperations {
     public static void setUpBeforeClass() {
         BaseOperations.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
-
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", OPEN_ID);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", new HashMap<String, String>());
-        Map<String, String> info = new HashMap<String, String>();
-        info.put(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID, CONSUMER_KEY.toString());
-        attributes.put("info", info);
-        json.put("g", attributes);
-        user.fromJSON(json);
     }
 
     @AfterClass

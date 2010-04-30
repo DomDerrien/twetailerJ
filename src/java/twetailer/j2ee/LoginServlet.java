@@ -7,16 +7,21 @@ package twetailer.j2ee;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Map;
 
+import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import twetailer.DataSourceException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
+import twetailer.dto.SaleAssociate;
 import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.OpenIdServletFilter;
@@ -218,16 +223,90 @@ public class LoginServlet extends HttpServlet {
 
     protected static BaseOperations _baseOperations = new BaseOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    public static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
 
-    public static final String AUTHENTICATED_USER_TWETAILER_ID = "authUser_twetailerId";
+    protected static final String AUTHENTICATED_CONSUMER_TWETAILER_ID = "authConsumer_tId";
 
+    /**
+     * Save the Consumer key as attribute of the OpenID user record
+     *
+     * @param user Descriptor of the logged in OpenID user
+     */
     protected static void attachConsumerToSession(OpenIdUser user) {
-        Long consumerKey = (Long) user.getAttribute(AUTHENTICATED_USER_TWETAILER_ID);
-        if (consumerKey == null) {
-            // Create only if does not yet exist, otherwise return the existing instance
-            Consumer consumer = consumerOperations.createConsumer((OpenIdUser) user);
-            // Attached the consumer identifier to the OpenID user record
-            user.setAttribute(AUTHENTICATED_USER_TWETAILER_ID, consumer.getKey());
+        // Create only if does not yet exist, otherwise return the existing instance
+        Consumer consumer = consumerOperations.createConsumer((OpenIdUser) user);
+        // Attached the consumer identifier to the OpenID user record
+        user.setAttribute(AUTHENTICATED_CONSUMER_TWETAILER_ID, consumer.getKey());
+    }
+
+    /**
+     * Return the Consumer key corresponding to the OpenID user
+     *
+     * @param user OpenID user with the attached Consumer key
+     * @return The key of the Consumer instance attached to the OpenID user
+     */
+    public static Long getConsumerKey(OpenIdUser user) {
+        return (Long) user.getAttribute(AUTHENTICATED_CONSUMER_TWETAILER_ID);
+    }
+
+    /**
+     * Create a Consumer instance for the OpenID user
+     *
+     * @param user OpenID user to create a Consumer instance for
+     * @param pm PersistenceManager instance used if the OpenID user has not been yet attached;
+     *           Should stay open for future usage of the connection
+     * @return Corresponding Consumer instance
+     *
+     * @throws DataSourceException If the data retrieval fails
+     */
+    public static Consumer getConsumer(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
+        return consumerOperations.getConsumer(pm, getConsumerKey(user));
+    }
+
+    protected static final String AUTHENTICATED_SALE_ASSOCIATE_ID = "authSA_tId";
+    protected static final String NO_SALE_ASSOCIATE_ATTACHED = "authSA_none";
+
+    /**
+     * Get the key of the SaleAssociate instance for the OpenID user
+     *
+     * @param user OpenID user to create a cv instance for
+     * @param pm PersistenceManager instance used if the OpenID user has not been yet attached;
+     *           Should stay open for future usage of the connection
+     * @return Corresponding SaleAssociate key
+     *
+     * @throws DataSourceException If the data retrieval fails
+     */
+    public static Long getSaleAssociateKey(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
+        boolean noSaleAssociateAttached = (Boolean) user.getAttribute(NO_SALE_ASSOCIATE_ATTACHED) != null;
+        Long saleAssociateKey = (Long) user.getAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID);
+        if (!noSaleAssociateAttached && saleAssociateKey == null) {
+            // Use memcache to limit the number of {consumerKey, saleAssociateKey} association lookup
+            Long consumerKey = getConsumerKey(user);
+            List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+            if (0 < saleAssociateKeys.size()) {
+                user.setAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID, saleAssociateKeys.get(0));
+                saleAssociateKey = saleAssociateKeys.get(0);
+            }
+            else {
+                user.setAttribute(NO_SALE_ASSOCIATE_ATTACHED, Boolean.TRUE);
+                saleAssociateKey = null;
+            }
         }
+        return saleAssociateKey;
+    }
+
+    /**
+     * Get the SaleAssociate instance for the OpenID user
+     *
+     * @param user OpenID user to create a SaleAssociate instance for
+     * @param pm PersistenceManager instance used if the OpenID user has not been yet attached;
+     *           Should stay open for future usage of the connection
+     * @return Corresponding SaleAssociate instance or <code>null</code> if none is attached to the OpenID user
+     *
+     * @throws DataSourceException If the data retrieval fails
+     */
+    public static SaleAssociate getSaleAssociate(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
+        Long saleAssociateKey = getSaleAssociateKey(user, pm);
+        return saleAssociateKey == null ? null : saleAssociateOperations.getSaleAssociate(pm, saleAssociateKey);
     }
 }

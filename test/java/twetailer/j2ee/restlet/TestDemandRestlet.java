@@ -33,7 +33,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Proposal;
-import twetailer.j2ee.TestBaseRestlet;
+import twetailer.j2ee.MockLoginServlet;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -53,7 +53,7 @@ public class TestDemandRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new DemandRestlet();
-        user = TestBaseRestlet.setupOpenIdUser();
+        user = MockLoginServlet.buildMockOpenIdUser();
     }
 
     @After
@@ -87,7 +87,7 @@ public class TestDemandRestlet {
                 assertEquals(proposedPM, pm);
                 assertFalse(pm.isClosed());
                 assertEquals(proposedParameters, parameters);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, OwnerKey);
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, OwnerKey);
                 Demand temp = new Demand();
                 temp.setOwnerKey(OwnerKey);
                 temp.setKey(resourceId);
@@ -102,7 +102,7 @@ public class TestDemandRestlet {
         assertTrue(returnedDemand.containsKey(Entity.KEY));
         assertEquals(resourceId.longValue(), returnedDemand.getLong(Entity.KEY));
         assertTrue(returnedDemand.containsKey(Command.OWNER_KEY));
-        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), returnedDemand.getLong(Command.OWNER_KEY));
+        assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), returnedDemand.getLong(Command.OWNER_KEY));
     }
 
     @Test(expected=RuntimeException.class)
@@ -131,7 +131,7 @@ public class TestDemandRestlet {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key, Long ownerKey, boolean stopRecursion) {
                 assertEquals(demandKey, key);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, ownerKey);
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, ownerKey);
             }
         }.deleteResource(demandKey.toString(), user);
     }
@@ -145,7 +145,7 @@ public class TestDemandRestlet {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key, Long ownerKey, boolean stopRecursion) {
                 assertEquals(demandKey, key);
-                assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, ownerKey);
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, ownerKey);
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
         }.deleteResource(demandKey.toString(), user);
@@ -164,7 +164,7 @@ public class TestDemandRestlet {
             }
         };
 
-        ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, true);
+        ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, MockLoginServlet.DEFAULT_CONSUMER_KEY, true);
     }
 
     @Test
@@ -189,7 +189,7 @@ public class TestDemandRestlet {
             }
         };
 
-        ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, false);
+        ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, MockLoginServlet.DEFAULT_CONSUMER_KEY, false);
     }
 
     @Test
@@ -227,7 +227,7 @@ public class TestDemandRestlet {
             }
         };
 
-        ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, TestBaseRestlet.LOGGED_USER_CONSUMER_KEY, false);
+        ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, MockLoginServlet.DEFAULT_CONSUMER_KEY, false);
     }
 
     @Ignore
@@ -237,7 +237,7 @@ public class TestDemandRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testSelectResources() throws DataSourceException {
+    public void testSelectResources() throws DataSourceException, ClientException {
         ops.selectResources(null, null);
     }
 

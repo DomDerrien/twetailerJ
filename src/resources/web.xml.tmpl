@@ -18,7 +18,7 @@
         <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
         <init-param>
             <param-name>logMessage</param-name>
-            <param-value>Appstats available: /appstats/details?time={ID}</param-value>
+            <param-value>Appstats available: http://twetailer.appspot.com/admin/stats/details?time={ID}</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -185,6 +185,10 @@
     <servlet-mapping>
         <servlet-name>mailresponder</servlet-name>
         <url-pattern>/_ah/mail/maezel@twetailer.appspotmail.com</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>mailresponder</servlet-name>
+        <url-pattern>/_ah/mail/golf@twetailer.appspotmail.com</url-pattern>
     </servlet-mapping>
 
     <servlet>

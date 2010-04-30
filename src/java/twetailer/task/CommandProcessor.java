@@ -319,11 +319,12 @@ public class CommandProcessor {
      * @throws ReservedOperationException If no account is returned
      */
     public static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
-        List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumer.getKey(), 1);
-        if (saleAssociates.size() == 0) {
+        // Use memcache to limit the number of {consumerKey, saleAssociateKey} association lookup
+        List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumer.getKey(), 1);
+        if (saleAssociateKeys.size() == 0) {
             throw new ReservedOperationException(action);
         }
-        return saleAssociates.get(0);
+        return saleAssociateOperations.getSaleAssociate(pm, saleAssociateKeys.get(0));
     }
 
     /**

@@ -55,12 +55,11 @@ public class ProposalRestlet extends BaseRestlet {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
             // Get the sale associate
-            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-            if (0 < saleAssociates.size()) {
-                return proposalOperations.createProposal(pm, parameters, saleAssociates.get(0)).toJson();
+            SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
+            if (saleAssociate == null) {
+                throw new ClientException("Current user is not a Sale Associate!");
             }
-            throw new ClientException("Current user is not a Sale Associate!");
+            return proposalOperations.createProposal(pm, parameters, saleAssociate).toJson();
         }
         finally {
             pm.close();
@@ -74,12 +73,11 @@ public class ProposalRestlet extends BaseRestlet {
             try {
                 Long proposalKey = Long.valueOf(resourceId);
                 // Get the sale associate
-                Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    delegateResourceDeletion(pm, proposalKey, saleAssociate, false);
+                SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
+                if (saleAssociate == null) {
+                    throw new ClientException("Current user is not a Sale Associate!");
                 }
+                delegateResourceDeletion(pm, proposalKey, saleAssociate, false);
                 return;
             }
             finally {
@@ -121,18 +119,16 @@ public class ProposalRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
-            Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
             Long saleAssociateKey = null;
             // Get the owner Key if needed
             if (!isAPrivilegedUser(loggedUser)) {
-                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                if (saleAssociateKeys.size() != 1) {
-                    throw new IllegalArgumentException("Invalid key; cannot retrieve the SaleAssociate instance for the logged user");
+                saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+                if (saleAssociateKey == null) {
+                    throw new ClientException("Current user is not a Sale Associate!");
                 }
-                saleAssociateKey = saleAssociateKeys.get(0);
             }
 
             // Try to get the proposal
@@ -144,7 +140,8 @@ public class ProposalRestlet extends BaseRestlet {
                 // Everything is OK: the owner can get his Proposal information
             }
             else {
-                // Try to get the associated demand -- will fail if the querying consumer does own the demand
+                // Try to get the associated demand -- will fail if the querying consumer does NOT own the demand
+                Long consumerKey = LoginServlet.getConsumerKey(loggedUser);
                 Demand demand = demandOperations.getDemand(pm, proposal.getDemandKey(), isAPrivilegedUser(loggedUser) ? null : consumerKey);
                 if (!isAPrivilegedUser(loggedUser) && !demand.getOwnerKey().equals(consumerKey)) {
                     throw new DataSourceException("Only the owner of the Proposal or the owner of the Demand the Proposal has been made for can list the Proposal!");

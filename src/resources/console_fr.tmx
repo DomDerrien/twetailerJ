@@ -886,6 +886,20 @@
                 <seg>Twetailer &amp; Golf - Reservation Desk</seg>
             </tuv>
         </tu>
+        <tu tuid="ga_dataGrid_loading" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Please, wait...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_dataGrid_loadingError" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Sorry, an error occured during the data loading...</seg>
+            </tuv>
+        </tu>
         <tu tuid="ga_theader_key" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

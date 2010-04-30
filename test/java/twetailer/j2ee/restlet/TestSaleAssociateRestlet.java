@@ -28,7 +28,7 @@ import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
-import twetailer.j2ee.LoginServlet;
+import twetailer.j2ee.MockLoginServlet;
 import twetailer.j2ee.TestBaseRestlet;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -50,7 +50,7 @@ public class TestSaleAssociateRestlet {
     @Before
     public void setUp() throws Exception {
         ops = new SaleAssociateRestlet();
-        user = TestBaseRestlet.setupOpenIdUser();
+        user = MockLoginServlet.buildMockOpenIdUser();
     }
 
     @After
@@ -100,7 +100,7 @@ public class TestSaleAssociateRestlet {
                 return new GenericJsonObject();
             }
         }.createResource(parameters, user);
-        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
+        assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class TestSaleAssociateRestlet {
                 return new GenericJsonObject();
             }
         }.createResource(parameters, user);
-        assertEquals(TestBaseRestlet.LOGGED_USER_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
+        assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
     }
 
     @Test(expected=RuntimeException.class)
@@ -1807,7 +1807,7 @@ public class TestSaleAssociateRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testUpdateResource() throws DataSourceException {
+    public void testUpdateResource() throws DataSourceException, ClientException {
         ops.updateResource(new GenericJsonObject(), "resourceId", user);
     }
 

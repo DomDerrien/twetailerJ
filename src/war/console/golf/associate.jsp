@@ -92,7 +92,9 @@
         </div>
         <table
             dojoType="dojox.grid.DataGrid"
+            errorMessage="&lt;span class='dojoxGridError'&gt;<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loadingError", locale) %>&lt;/span&gt;"
             id="demandList"
+            errorMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loading", locale) %>"
             region="center"
             rowMenu="cellMenu"
             rowsPerPage="20"
@@ -106,15 +108,15 @@
                        <th field="<%= Demand.QUANTITY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
                        <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
                        <th field="<%= Demand.CREATION_DATE %>" formatter="localModule.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
-                    <!--th
-                        cellType="dojox.grid.cells.Select"
-                        editable="true"
-                        field="status"
-                        formatter="cpwr.ConsoleLogic.displayParameterStatus"
-                        options="Not Set,Excluded,Always Included,Cache Bypasser"
-                        values="NotSet,Excluded,Included,CacheBypasser"
-                        width="20%"
-                    >Status</th-->
+                       <!--th
+                           cellType="dojox.grid.cells.Select"
+                           editable="true"
+                           field="status"
+                           formatter="cpwr.ConsoleLogic.displayParameterStatus"
+                           options="Not Set,Excluded,Always Included,Cache Bypasser"
+                           values="NotSet,Excluded,Included,CacheBypasser"
+                           width="20%"
+                       >Status</th-->
                 </tr>
             </thead>
         </table>
@@ -231,6 +233,7 @@
             cellNode = e.cellNode;
             rowIndex = e.rowIndex;
         };
+        localModule._grid = grid;
 
         localModule.loadDemands();
     };
@@ -238,60 +241,73 @@
         alert("Not yet implemented");
     };
     localModule.loadDemands = function() {
-        var url = "/API/Demand/";
-        url = "demandSet.json";
-        var store = new dojo.data.ItemFileWriteStore({
-            url: url,
-            urlPreventCache: true,
-            typeMap: localModule.typeMap
-        });
-        var errMsg = "Error occured while retreiving Received Requests' Detail.";
-        store.fetch( {
-            query : {},
-            onComplete : function(items, request) {
-                if (localModule.itemListWithErrors(items, "Error while getting Demands")) {
-                    return;
+        dojo.xhrGet({
+            content: null,
+            handleAs: "json",
+            load: function(response, ioArgs) {
+                if (response !== null && response.success) {
+                    var resources = response.resources;
+                    localModule.filterResourcesForDataStore(resources);
+                    store = new dojo.data.ItemFileWriteStore({
+                        data:{identifier:'key', items: resources},
+                    });
+                    store.fetch( {
+                        query : {},
+                        onComplete : localModule.updateGridWithDataStore,
+                        error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); }
+                    });
+                    localModule._ = store;
                 }
-                var grid = dijit.byId("demandList");
-                if (grid.selection !== null) {
-                    grid.selection.clear();
+                else {
+                    alert(response.message+"\nurl: "+ioArgs.url);
                 }
-                grid.setStore(store);
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); }
+            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
+            url: "/API/Demand/?pointOfView=SA"
         });
+    };
+    localModule.filterResourcesForDataStore = function(resources) {
+        var limit = resources.length;
+        for (var idx = 0; idx < limit; idx++) {
+            var resource = resources[idx];
+            for (var attr in resource) {
+                var value = resource[attr];
+                if (attr.indexOf("Date") != -1) {
+                    value = dojo.date.stamp.fromISOString(value);
+                }
+                if (attr == "criteria" || attr == "hastags") {
+                    value = value.join('\n');
+                }
+                resource[attr] = value;
+            }
+        }
+    };
+    localModule.updateGridWithDataStore = function(items, request) {
+        if (localModule.itemListWithErrors(items, "Error while getting Demands")) {
+            return;
+        }
+        var grid = localModule._grid;
+        if (grid.selection !== null) {
+            grid.selection.clear();
+        }
+        grid.setStore(store);
     };
     localModule.itemListWithErrors = function(items, message) {
         if (items !== null && items.length == 1 && items[0].isException != null && items[0].isException[0] === true) {
             alert(response.exceptionMessage+"\nurl: "+ioArgs.url+"\n\n"+response.originalExceptionMessage);
-            _reportUpdateFailure(items[0], message);
             return true;
         }
         return false;
     };
-    localModule.typeMap = {
-        "Date" : {
-            type: Date,
-            deserialize : function(value) {
-                return dojo.date.stamp.fromISOString(value);
-            },
-            serialize : function(value) {
-                return dojo.date.stamp.toISOString(value, {});
-            }
-        }
-    };
     localModule.displayDate = function(dateObject) {
         return dojo.date.locale.format(dateObject, {selector: "date"});
-    };
-    localModule.displayCriteria = function(criteria) {
-        return criteria.join(" ");
     };
     localModule.displayProposalForm = function() {
         // rowIndex bind to the handler
         if (rowIndex === null) {
             return;
         }
-        var grid = dijit.byId("demandList");
+        var grid = localModule._grid;
         var item = grid.getItem(rowIndex);
         if (item === null) {
             return;

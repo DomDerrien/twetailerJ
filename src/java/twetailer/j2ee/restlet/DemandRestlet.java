@@ -11,16 +11,21 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dto.Consumer;
+import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonUtils;
 
 @SuppressWarnings("serial")
 public class DemandRestlet extends BaseRestlet {
@@ -30,6 +35,7 @@ public class DemandRestlet extends BaseRestlet {
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -43,7 +49,7 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        return demandOperations.createDemand(parameters, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)).toJson();
+        return demandOperations.createDemand(parameters, LoginServlet.getConsumerKey(loggedUser)).toJson();
     }
 
     @Override
@@ -52,7 +58,7 @@ public class DemandRestlet extends BaseRestlet {
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
                 Long demandKey = Long.valueOf(resourceId);
-                delegateResourceDeletion(pm, demandKey, (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID), false);
+                delegateResourceDeletion(pm, demandKey, LoginServlet.getConsumerKey(loggedUser), false);
                 return;
             }
             finally {
@@ -93,13 +99,44 @@ public class DemandRestlet extends BaseRestlet {
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
         return demandOperations.getDemand(
                 Long.valueOf(resourceId),
-                isAPrivilegedUser(loggedUser) ? null : (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID)
+                isAPrivilegedUser(loggedUser) ? null : LoginServlet.getConsumerKey(loggedUser)
         ).toJson();
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    @SuppressWarnings("unchecked")
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        JsonArray resources;
+        String pointOfView = parameters.getString("pointOfView");
+        boolean onlyKeys = "onlyKeys".equals(parameters.getString("detailLevel"));
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            if ("SA".equals(pointOfView)) {
+                Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+                if (saleAssociateKey == null) {
+                    throw new ClientException("Current user is not a Sale Associate!");
+                }
+                if (onlyKeys) {
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey, 0));
+                }
+                else { // full detail
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey, 0));
+                }
+            }
+            else { // consumer point-of-view
+                Long consumerKey = LoginServlet.getConsumerKey(loggedUser);
+                if (onlyKeys) {
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, consumerKey, 0));
+                }
+                else { // full detail
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.OWNER_KEY, consumerKey, 0));
+                }
+            }
+        }
+        finally {
+            pm.close();
+        }
+        return resources;
     }
 
     @Override
