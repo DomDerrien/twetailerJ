@@ -11,16 +11,21 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dto.Consumer;
+import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.JsonUtils;
 
 @SuppressWarnings("serial")
 public class DemandRestlet extends BaseRestlet {
@@ -30,6 +35,7 @@ public class DemandRestlet extends BaseRestlet {
     protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
     protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -98,8 +104,31 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        JsonArray resources;
+        String pointOfView = parameters.getString("pointOfView");
+        boolean onlyKeys = "onlyKeys".equals(parameters.getString("detailLevel"));
+        if ("SA".equals(pointOfView)) {
+            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            try {
+                Long consumerKey = (Long) loggedUser.getAttribute(LoginServlet.AUTHENTICATED_USER_TWETAILER_ID);
+                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (onlyKeys) {
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKeys.get(0), 0));
+                }
+                else { // full detail
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKeys.get(0), 0));
+                }
+            }
+            finally {
+                pm.close();
+            }
+        }
+        else { // consumer point-of-view
+            throw new RuntimeException("Not yet implemented!");
+        }
+        return resources;
     }
 
     @Override

@@ -1104,6 +1104,24 @@
             </tuv>
         </tu>
 
+        <tu tuid="ga_dataGrid_loading" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Please, wait...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_dataGrid_loadingError" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Sorry, an error occured during the data loading...</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="ga_theader_key" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

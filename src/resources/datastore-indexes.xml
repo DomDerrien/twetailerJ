@@ -55,6 +55,11 @@
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <datastore-index kind="Demand" ancestor="false" source="manual">
+        <property name="saleAssociateKeys" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
     <!--
      Location
       -->

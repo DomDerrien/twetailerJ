@@ -719,7 +719,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.price">Price:</label></td>
-                            <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.price" name="price" style="width:3em;" type="text" /></td>
+                            <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.price" name="price" style="width:7em;" type="text" /></td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.quantity">Quantity:</label></td>
@@ -734,7 +734,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.total">Total:</label></td>
-                            <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.total" name="total" style="width:3em;" type="text" /></td>
+                            <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.total" name="total" style="width:7em;" type="text" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
