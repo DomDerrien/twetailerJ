@@ -1,4 +1,12 @@
-<project default="test" name="base_build_control" basedir="..">
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE project>
+
+<project
+    basedir=".."
+	default="test"
+	name="base_build_control"
+>
 
     <description>
         Basic build system for Web Application development
@@ -317,8 +325,8 @@
     <path id="java.compile.classpath">
         <filelist dir="deps/lib">
             <file name="amazon/amazon-fps-2008-09-17-java-library-for-gae.jar" />
-            <file name="appengine/appengine-api-1.0-sdk-1.3.2.jar" />
-            <file name="appengine/appengine-api-labs-1.3.2.jar" />
+            <file name="appengine/appengine-api-1.0-sdk-1.3.3.jar" />
+            <file name="appengine/appengine-api-labs-1.3.3.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-api-labs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
