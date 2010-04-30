@@ -30,7 +30,7 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
 import twitter4j.DirectMessage;
 import twitter4j.MockDirectMessage;
-import twitter4j.MockHttpResponse;
+import twitter4j.internal.http.MockHttpResponse;
 import twitter4j.MockResponseList;
 import twitter4j.MockTwitter;
 import twitter4j.MockUser;
@@ -115,7 +115,7 @@ public class TestTweetLoader {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 try {
-                    return new MockResponseList<DirectMessage>(0, new MockHttpResponse(null));
+                    return new MockResponseList<DirectMessage>(0, new MockHttpResponse());
                 }
                 catch (IOException ex) {
                     throw new TwitterException("Relay IOException: " + ex.getMessage());
@@ -337,7 +337,7 @@ public class TestTweetLoader {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 try {
-                    ResponseList<DirectMessage> messages = new MockResponseList<DirectMessage>(0, new MockHttpResponse(null));
+                    ResponseList<DirectMessage> messages = new MockResponseList<DirectMessage>(0, new MockHttpResponse());
                     messages.add(dm);
                     return messages;
                 }
@@ -404,7 +404,7 @@ public class TestTweetLoader {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 try {
-                    ResponseList<DirectMessage> messages = new MockResponseList<DirectMessage>(0, new MockHttpResponse(null));
+                    ResponseList<DirectMessage> messages = new MockResponseList<DirectMessage>(0, new MockHttpResponse());
                     messages.add(dm);
                     return messages;
                 }

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="webserver-start" name="build_control_for_google_appengine" basedir="..">
+<!DOCTYPE project>
+
+<project
+    basedir=".."
+	default="webserver-start"
+	name="build_control_for_google_appengine"
+>
 
     <description>
         Basic build system for Web Application development
@@ -66,8 +72,8 @@
         <!-- Copy the Twetailer dependencies -->
         <copy file="deps/lib/amazon/amazon-fps-2008-09-17-java-library-for-gae.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/commons/commons-codec-1.3.jar" todir="src/war/WEB-INF/lib" />
-        <copy file="deps/lib/domderrien/domderrien-1.0.7.jar" todir="src/war/WEB-INF/lib" />
-        <copy file="deps/lib/twitter4j/twitter4j-core-2.1.0.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/domderrien/domderrien-1.0.8.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/twitter4j/twitter4j-core-2.1.2.jar" todir="src/war/WEB-INF/lib" />
         <copy todir="src/war/WEB-INF/lib">
             <fileset dir="deps/lib/dyuproject" />
         </copy>
