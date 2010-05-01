@@ -23,6 +23,7 @@ import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -30,8 +31,10 @@ import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
+import twetailer.task.MockRobotResponder;
 import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
@@ -149,7 +152,17 @@ public class TestConfirmCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
+        // Settings mock for the RobotResponder
+        MockRobotResponder.injectMocks(new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
+            }
+        });
+
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+
+        MockRobotResponder.restoreOperations();
 
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText); // Informs the saleAssociate

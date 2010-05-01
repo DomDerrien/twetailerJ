@@ -70,16 +70,21 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                saleAssociate.setConsumerKey(consumerKey);
+                return saleAssociate;
             }
         };
 
@@ -114,9 +119,17 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                // SaleAssociate saleAssociate = new SaleAssociate();
                 SaleAssociate saleAssociate = new SaleAssociate() {
                     @Override
                     public List<String> getCriteria() {
@@ -124,11 +137,9 @@ public class TestSupplyCommandProcessor {
                     }
                 };
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                saleAssociate.setConsumerKey(consumerKey);
+                return saleAssociate;
             }
         };
 
@@ -164,17 +175,22 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.addCriterion(tag1);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                return saleAssociate;
             }
         };
 
@@ -212,19 +228,24 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.addCriterion(tag1);
                 saleAssociate.addCriterion(tag2);
                 saleAssociate.addCriterion(tag3);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                return saleAssociate;
             }
         };
 
@@ -266,19 +287,24 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.addCriterion(tag1);
                 saleAssociate.addCriterion(tag2);
                 saleAssociate.addCriterion(tag3);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                return saleAssociate;
             }
         };
 
@@ -320,19 +346,24 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.addCriterion(tag1);
                 saleAssociate.addCriterion(tag2);
                 saleAssociate.addCriterion(tag3);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                return saleAssociate;
             }
         };
 
@@ -387,19 +418,24 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(key, SaleAssociate.CONSUMER_KEY);
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                assertEquals(SaleAssociate.CONSUMER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
+                List<Long> saleAssociateKeys = new ArrayList<Long>();
+                saleAssociateKeys.add(saleAssociateKey);
+                return saleAssociateKeys;
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 saleAssociate.addCriterion(tag1);
                 saleAssociate.addCriterion(tag2);
                 saleAssociate.addCriterion(tag3);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(saleAssociate);
-                return saleAssociates;
+                return saleAssociate;
             }
         };
 

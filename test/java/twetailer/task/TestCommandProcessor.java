@@ -481,8 +481,8 @@ public class TestCommandProcessor {
         // Mock SaleAssociateOperations
         SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                return new ArrayList<SaleAssociate>();
+            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
+                return new ArrayList<Long>();
             }
         };
         CommandProcessor.rawCommandOperations = rawCommandOperations;
