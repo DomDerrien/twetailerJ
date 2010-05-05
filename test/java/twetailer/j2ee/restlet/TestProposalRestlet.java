@@ -76,6 +76,7 @@ public class TestProposalRestlet {
         assertNull(null);
     }
 
+    @Ignore
     @Test(expected=ClientException.class)
     public void testCreateResourceI() throws DataSourceException, ClientException {
         final JsonObject proposedParameters = new GenericJsonObject();
@@ -93,6 +94,7 @@ public class TestProposalRestlet {
     }
 
     @Test
+    @Ignore
     public void testCreateResourceII() throws DataSourceException, ClientException {
         final JsonObject proposedParameters = new GenericJsonObject();
         final Source source = Source.simulated;
@@ -144,7 +146,7 @@ public class TestProposalRestlet {
 
     @Test
     @Ignore
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "serial" })
     public void testDeleteResourceI() throws DataSourceException, ClientException {
         final Long proposalKey = 12345L;
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
@@ -347,8 +349,9 @@ public class TestProposalRestlet {
         ops.selectResources(null, null);
     }
 
+    @Ignore
     @Test(expected=RuntimeException.class)
-    public void testUpdateResource() throws DataSourceException {
+    public void testUpdateResource() throws DataSourceException, ClientException {
         ops.updateResource(null, "12345", user);
     }
 

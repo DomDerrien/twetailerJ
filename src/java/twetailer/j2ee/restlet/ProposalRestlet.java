@@ -1,6 +1,7 @@
 package twetailer.j2ee.restlet;
 
-import java.util.List;
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -8,11 +9,13 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
@@ -20,9 +23,13 @@ import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.payment.AmazonFPS;
+import twetailer.task.CommandProcessor;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonArray;
@@ -59,7 +66,22 @@ public class ProposalRestlet extends BaseRestlet {
             if (saleAssociate == null) {
                 throw new ClientException("Current user is not a Sale Associate!");
             }
-            return proposalOperations.createProposal(pm, parameters, saleAssociate).toJson();
+
+            // Create the Proposal
+            parameters.put(Command.SOURCE, Source.api.toString());
+            Proposal proposal = proposalOperations.createProposal(pm, parameters, saleAssociate);
+
+            // Create a task for that proposal validation
+            Queue queue = CommandProcessor._baseOperations.getQueue();
+            log.warning("Preparing the task: /maezel/validateOpenProposal?key=" + proposal.getKey().toString());
+            queue.add(
+                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
+                        param(Proposal.KEY, proposal.getKey().toString()).
+                        method(Method.GET)
+            );
+
+            // Return the just created proposal
+            return proposal.toJson();
         }
         finally {
             pm.close();
@@ -184,7 +206,42 @@ public class ProposalRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        try {
+            // Get the sale associate
+            Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+            if (saleAssociateKey == null) {
+                throw new ClientException("Current user is not a Sale Associate!");
+            }
+
+            // Get the Proposal
+            Long key = Long.valueOf(resourceId);
+            Proposal proposal = proposalOperations.getProposal(pm, key, saleAssociateKey, null);
+
+            // Check if the proposal is going to be canceled
+            if (!proposal.getState().equals(State.cancelled) && parameters.containsKey(Proposal.STATE) && parameters.getString(Proposal.STATE).equals(State.cancelled.toString())) {
+                parameters.put(Proposal.CANCELER_KEY, saleAssociateKey);
+            }
+
+            // Merge with the new parameters and update the data store
+            proposal.fromJson(parameters);
+            proposal = proposalOperations.updateProposal(pm, proposal);
+
+            // Create a task for that proposal validation
+            Queue queue = CommandProcessor._baseOperations.getQueue();
+            log.warning("Preparing the task: /maezel/validateOpenProposal?key=" + proposal.getKey().toString());
+            queue.add(
+                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
+                        param(Proposal.KEY, proposal.getKey().toString()).
+                        method(Method.GET)
+            );
+
+            // Return the just created proposal
+            return proposal.toJson();
+        }
+        finally {
+            pm.close();
+        }
     }
 }

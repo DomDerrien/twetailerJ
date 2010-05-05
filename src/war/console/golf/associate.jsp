@@ -59,6 +59,7 @@
             height: 24px;
             vertical-align: middle;
         }
+        .dijitTextBox .rightAlign { text-align: right; }
     </style>
 </head>
 <body class="tundra">
@@ -87,39 +88,52 @@
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
         <jsp:include page="/jsp_includes/banner_protected.jsp"></jsp:include>
         <div dojoType="dijit.Menu" id="cellMenu" style="display: none;">
-            <div dojoType="dijit.MenuItem" iconClass="silkIcon silkAddIcon" onClick="localModule.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_viewProposal", locale) %></div>
-            <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkRemoveIcon" onClick="localModule.nYI();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
+            <div dojoType="dijit.MenuItem" iconClass="silkIcon silkAddIcon" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
+            <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkRemoveIcon"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
         </div>
-        <table
-            dojoType="dojox.grid.DataGrid"
-            errorMessage="&lt;span class='dojoxGridError'&gt;<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loadingError", locale) %>&lt;/span&gt;"
-            id="demandList"
-            errorMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loading", locale) %>"
-            region="center"
-            rowMenu="cellMenu"
-            rowsPerPage="20"
-            style="font-size:larger;margin:10px;border:1px solid lightgrey;"
-        >
-            <thead>
-                <tr>
-                       <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_key", locale) %></th>
-                       <th field="<%= Demand.EXPIRATION_DATE %>" formatter="localModule.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
-                       <th field="<%= Demand.CRITERIA %>" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
-                       <th field="<%= Demand.QUANTITY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
-                       <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
-                       <th field="<%= Demand.CREATION_DATE %>" formatter="localModule.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
-                       <!--th
-                           cellType="dojox.grid.cells.Select"
-                           editable="true"
-                           field="status"
-                           formatter="cpwr.ConsoleLogic.displayParameterStatus"
-                           options="Not Set,Excluded,Always Included,Cache Bypasser"
-                           values="NotSet,Excluded,Included,CacheBypasser"
-                           width="20%"
-                       >Status</th-->
-                </tr>
-            </thead>
-        </table>
+        <div dojoType="dijit.layout.BorderContainer" gutters="false" region="center">
+            <div dojoType="dijit.layout.ContentPane" region="top" style="text-align:right;margin:10px 10px 0 10px;">
+                <button
+                    busyLabel="<%= LabelExtractor.get(ResourceFileId.third, "refreshing_button_state", locale) %>"
+                    dojoType="dojox.form.BusyButton"
+                    id="refreshButton"
+                    onclick="twetailer.GolfAssociate.loadNewDemands();"
+                ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
+            </div>
+            <table
+                dojoType="dojox.grid.DataGrid"
+                errorMessage="&lt;span class='dojoxGridError'&gt;<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loadingError", locale) %>&lt;/span&gt;"
+                id="demandList"
+                errorMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loading", locale) %>"
+                region="center"
+                rowMenu="cellMenu"
+                rowsPerPage="20"
+                style="font-size:larger;margin:10px;border:1px solid lightgrey;"
+            >
+                <thead>
+                    <tr>
+                           <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
+                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfAssociate.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
+                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfAssociate.displayCriteria" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.QUANTITY %>" styles="text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
+                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
+                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfAssociate.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
+                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfAssociate.displayDateTime" styles="text-align:right;" width="180px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
+                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfAssociate.displayDate" hidden="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
+                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfAssociate.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <!--th
+                               cellType="dojox.grid.cells.Select"
+                               editable="true"
+                               field="status"
+                               formatter="cpwr.ConsoleLogic.displayParameterStatus"
+                               options="Not Set,Excluded,Always Included,Cache Bypasser"
+                               values="NotSet,Excluded,Included,CacheBypasser"
+                               width="20%"
+                           >Status</th-->
+                    </tr>
+                </thead>
+            </table>
+        </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
@@ -127,15 +141,16 @@
 
     <div
         dojoType="dijit.Dialog"
-        execute="localModule.updateProposal"
+        execute="twetailer.GolfAssociate.updateProposal"
         id="proposalForm"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_dialogTitle", locale) %>"
     >
-        <input id="demand.key" name="demand.key" type="hidden" />
-        <input id="proposal.key" name="proposal.key" type="hidden" />
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandInfo", locale) %></legend>
             <table class="demandForm">
+                <tr>
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandKey", locale) %></td>
+                    <td><input dojoType="dijit.form.NumberTextBox" id="demand.key" name="demandKey" readonly="true" style="width:6em;" type="text" /> </td>
+                </tr>
                 <tr>
                     <td align="right"><label for="demand.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandQuantity", locale) %></label></td>
                     <td><input dojoType="dijit.form.NumberTextBox" id="demand.quantity" readonly="true" style="width:3em;" type="text" /> </td>
@@ -149,26 +164,39 @@
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalInfo", locale) %></legend>
             <table class="demandForm">
+                <tr class="existingProposalAttribute">
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalKey", locale) %></td>
+                    <td><input dojoType="dijit.form.NumberTextBox" id="proposal.key" name="key" readonly="true" style="width:6em;" type="text" /> </td>
+                </tr>
+                <tr class="existingProposalAttribute">
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalState", locale) %></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.state" readonly="true" type="text" /> </td>
+                </tr>
                 <tr>
                     <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalTime", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TimeTextBox" id="proposal.time" required="true" type="text" /> </td>
+                    <td><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T12:00:00" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalPrice", locale) %></label></td>
-                    <td><input constraints="{min:1,max:999,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" required="true" style="width:5em;" type="text" value="60" /></td>
+                    <td><input constraints="{min:0,max:999,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" required="true" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.total"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalTotal", locale) %></label></td>
-                    <td><input constraints="{min:1,max:999,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" style="width:5em;" type="text" /></td>
+                    <td><input class="rightAlign" constraints="{min:0,max:999,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalCriteria", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.criteria" name="criteria" required="true" style="width:25em;" type="text" /></td>
                 </tr>
+                <tr class="existingProposalAttribute">
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalModificationDate", locale) %></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
+                </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconAccept" onclick="return dijit.byId('advancedForm').isValid();" type="submit"><%= LabelExtractor.get(ResourceFileId.third, "update_button", locale) %></button>
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconCancel" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "close_button", locale) %></button>
+                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').isValid();" type="submit"><%= LabelExtractor.get(ResourceFileId.third, "update_button", locale) %></button>
+                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconCancel" id="proposalFormCancelButton" onclick="twetailer.GolfAssociate.cancelProposal();"><%= LabelExtractor.get(ResourceFileId.third, "cancel_button", locale) %></button>
+                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "close_button", locale) %></button>
                     </td>
                 </tr>
             </table>
@@ -183,34 +211,51 @@
     >
     </div>
 
+    <div
+       color="yellow"
+       dojoType="dojox.widget.Standby"
+       id="demandListOverlay"
+       target="demandList"
+    ></div>
+
+    <div
+       color="yellow"
+       dojoType="dojox.widget.Standby"
+       id="proposalFormOverlay"
+       target="proposalForm"
+    ></div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.TabContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dojox.grid.DataGrid");
         dojo.require("dojo.data.ItemFileWriteStore");
         dojo.require("dojo.date.locale");
         dojo.require("dojo.number");
+        dojo.require("dojo.parser");
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.layout.TabContainer");
+        // dojo.require("dijit.form.CheckBox");
+        // dojo.require("dijit.form.ComboBox");
+        // dojo.require("dijit.form.DateTextBox");
+        // dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.NumberSpinner");
+        dojo.require("dijit.form.NumberTextBox");
+        // dojo.require("dijit.form.Textarea");
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.TimeTextBox");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.NumberSpinner");
-        /*
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.CheckBox");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.FilteringSelect");
-        dojo.require("dijit.form.ComboBox");
-        dojo.require("dijit.form.Textarea");
-        */
-        dojo.require("dojo.parser");
+        dojo.require("dojox.form.BusyButton");
+        dojo.require("dojox.form.Rating");
+        // dojo.require("dojox.grid.EnhancedDataGrid");
+        dojo.require("dojox.grid.DataGrid");
+        // dojo.require("dojox.layout.ExpandoPane");
+        // dojo.require("dojox.secure");
+        // dojo.require("dojox.widget.Portlet");
+        dojo.require("dojox.widget.Standby");
+        dojo.require("twetailer.GolfAssociate");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
+            twetailer.GolfAssociate.init("<%= localeId %>");
             dojo.fadeOut({
                 node: "introFlash",
                 delay: 50,
@@ -218,109 +263,9 @@
                     dojo.style("introFlash", "display", "none");
                 }
             }).play();
-            localModule.init();
         });
+        // http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/image/tests/test_SlideShow.html
     });
-    </script>
-
-    <script type="text/javascript">
-    var localModule = new Object();
-    localModule.init = function() {
-        // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
-        var grid = dijit.byId("demandList");
-        dijit.byId("cellMenu").bindDomNode(grid.domNode);
-        grid.onCellContextMenu = function(e) {
-            cellNode = e.cellNode;
-            rowIndex = e.rowIndex;
-        };
-        localModule._grid = grid;
-
-        localModule.loadDemands();
-    };
-    localModule.nYI = function() {
-        alert("Not yet implemented");
-    };
-    localModule.loadDemands = function() {
-        dojo.xhrGet({
-            content: null,
-            handleAs: "json",
-            load: function(response, ioArgs) {
-                if (response !== null && response.success) {
-                    var resources = response.resources;
-                    localModule.filterResourcesForDataStore(resources);
-                    store = new dojo.data.ItemFileWriteStore({
-                        data:{identifier:'key', items: resources},
-                    });
-                    store.fetch( {
-                        query : {},
-                        onComplete : localModule.updateGridWithDataStore,
-                        error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); }
-                    });
-                    localModule._ = store;
-                }
-                else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
-                }
-            },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Demand/?pointOfView=SA"
-        });
-    };
-    localModule.filterResourcesForDataStore = function(resources) {
-        var limit = resources.length;
-        for (var idx = 0; idx < limit; idx++) {
-            var resource = resources[idx];
-            for (var attr in resource) {
-                var value = resource[attr];
-                if (attr.indexOf("Date") != -1) {
-                    value = dojo.date.stamp.fromISOString(value);
-                }
-                if (attr == "criteria" || attr == "hastags") {
-                    value = value.join('\n');
-                }
-                resource[attr] = value;
-            }
-        }
-    };
-    localModule.updateGridWithDataStore = function(items, request) {
-        if (localModule.itemListWithErrors(items, "Error while getting Demands")) {
-            return;
-        }
-        var grid = localModule._grid;
-        if (grid.selection !== null) {
-            grid.selection.clear();
-        }
-        grid.setStore(store);
-    };
-    localModule.itemListWithErrors = function(items, message) {
-        if (items !== null && items.length == 1 && items[0].isException != null && items[0].isException[0] === true) {
-            alert(response.exceptionMessage+"\nurl: "+ioArgs.url+"\n\n"+response.originalExceptionMessage);
-            return true;
-        }
-        return false;
-    };
-    localModule.displayDate = function(dateObject) {
-        return dojo.date.locale.format(dateObject, {selector: "date"});
-    };
-    localModule.displayProposalForm = function() {
-        // rowIndex bind to the handler
-        if (rowIndex === null) {
-            return;
-        }
-        var grid = localModule._grid;
-        var item = grid.getItem(rowIndex);
-        if (item === null) {
-            return;
-        }
-        dojo.byId("demand.key").value = item.key;
-        dijit.byId("demand.criteria").attr("value", item.criteria);
-        dijit.byId("demand.quantity").attr("value", item.quantity);
-        dijit.byId("proposal.time").focus();
-        dijit.byId("proposalForm").show();
-    };
-    localModule.updateProposal = function() {
-        dijit.byId("proposalForm").hide();
-    }
     </script>
 
     <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">

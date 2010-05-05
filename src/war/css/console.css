@@ -196,6 +196,10 @@ body {
     background-image:url(../images/tick.png);
 }
 
+.silkIconClose {
+    background-image:url(../images/asterisk_orange.png);
+}
+
 /**
  * Login page settings
  */

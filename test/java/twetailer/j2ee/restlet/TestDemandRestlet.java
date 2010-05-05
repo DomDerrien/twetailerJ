@@ -72,6 +72,7 @@ public class TestDemandRestlet {
     }
 
     @Test
+    @Ignore
     public void testCreateResourceI() throws DataSourceException, ClientException {
         final PersistenceManager proposedPM = new MockPersistenceManager();
         final JsonObject proposedParameters = new GenericJsonObject();

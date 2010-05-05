@@ -336,51 +336,30 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        /*
-        dojo.require("dijit.layout.AccordionContainer");
-        dojo.require("dijit.layout.TabContainer");
-        dojo.require("dojox.grid.DataGrid");
-        dojo.require("dojox.grid.cells");
-        dojo.require("dijit.form.Form");
+        dojo.require("dojo.parser");
+        dojo.require("dijit.Dialog");
         dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.TimeTextBox");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.NumberSpinner");
-        dojo.require("dijit.form.CurrencyTextBox");
-        dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dijit.form.FilteringSelect");
-        dojo.require("dijit.form.CheckBox");
-        dojo.require("dijit.form.MultiSelect");
-        dojo.require("dijit.form.Textarea");
-        // dojo.require("dijit.Editor");
-        */
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("dijit.form.ValidationTextBox");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("twetailer.Console");
         dojo.addOnLoad(function(){
-            dojo.require("dijit.Dialog");
-            dojo.require("dijit.layout.BorderContainer");
-            dojo.require("dijit.layout.ContentPane");
-            dojo.require("dijit.layout.TabContainer");
-            dojo.require("dijit.form.Form");
-            dojo.require("dijit.form.Button");
-            dojo.require("dijit.form.TextBox");
-            dojo.require("dijit.form.NumberTextBox");
-            dojo.require("dijit.form.ValidationTextBox");
-            dojo.require("dijit.form.FilteringSelect");
-            dojo.require("twetailer.Console");
-            dojo.require("dojo.parser");
-            dojo.addOnLoad(function(){
-                dojo.parser.parse();
-                var userLocale = "en"; // "<%= localeId %>"
-                twetailer.Console.init(userLocale);
-                twetailer.Console.registerConsumer(<%= serializedConsumer.getStream() %>);
-                dojo.fadeOut({
-                    node: "introFlash",
-                    delay: 50,
-                    onEnd: function() {
-                        dojo.style("introFlash", "display", "none");
-                    }
-                }).play();
-            });
+            dojo.parser.parse();
+            var userLocale = "<%= localeId %>";
+            twetailer.Console.init(userLocale);
+            twetailer.Console.registerConsumer(<%= serializedConsumer.getStream() %>);
+            dojo.fadeOut({
+                node: "introFlash",
+                delay: 50,
+                onEnd: function() {
+                    dojo.style("introFlash", "display", "none");
+                }
+            }).play();
         });
     });
     </script>

@@ -39,8 +39,7 @@
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a name="justForStyle1"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
-                    <li><a name="justForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
+                    <li>&nbsp;</li>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="#" onclick="dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
                     <li class="subItem">

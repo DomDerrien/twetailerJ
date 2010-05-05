@@ -18,7 +18,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Redirecting...</seg>
+                <seg>Redirection...</seg>
             </tuv>
         </tu>
         <tu tuid="ui_application_name" dataType="text">
@@ -46,7 +46,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Close</seg>
+                <seg>Fermer</seg>
             </tuv>
         </tu>
         <tu tuid="reset_button" dataType="text">
@@ -56,8 +56,17 @@
                 <seg>Remise-à-zéro</seg>
             </tuv>
         </tu>
+        <tu tuid="create_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Créer</seg>
+            </tuv>
+        </tu>
         <tu tuid="update_button" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Mise-à-jour</seg>
@@ -65,9 +74,38 @@
         </tu>
         <tu tuid="verify_button" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Verifier</seg>
+                <seg>Vérifier</seg>
+            </tuv>
+        </tu>
+        <tu tuid="refresh_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Mettre-à-jour</seg>
+            </tuv>
+        </tu>
+        <tu tuid="refreshing_button_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Mise-à-jour en cours...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cancel_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Annuler</seg>
+            </tuv>
+        </tu>
+        <tu tuid="decline_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Décliner</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer" dataType="text">
@@ -132,9 +170,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    In order to use the Twetailer console, you &lt;u&gt;need to be authenticated first&lt;/u&gt;.
-                    To eliminate the management of yet another set of credentials, Twetailer relies on OpenID.
-                    Consult &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; website for more information on that technology.
+                    Pour pouvoir utiliser la console de Twetailer, vous devez &lt;u&gt;être préalablement authentifié&lt;/u&gt;.
+                    Pour faciliter la gestion des coordonnées de connection, Twetailer s'appuie sur  OpenID, protocole grâce
+                    auquel vous utilisez  une de vos identités électroniques.
+                    Consulter le site &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; (en anglais)
+                    pour plus d'informations sur OpenID.
                 </seg>
             </tuv>
         </tu>
@@ -149,7 +189,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Connecter avec OpenID</seg>
+                <seg>Se connecter avec OpenID</seg>
             </tuv>
         </tu>
         <tu tuid="login_provider_list_message" dataType="text">
@@ -883,28 +923,28 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twetailer &amp; Golf - Reservation Desk</seg>
+                <seg>Twetailer &amp; Golf - Bureau de réservation</seg>
             </tuv>
         </tu>
         <tu tuid="ga_dataGrid_loading" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Please, wait...</seg>
+                <seg>Patientez s'il vous plaît...</seg>
             </tuv>
         </tu>
         <tu tuid="ga_dataGrid_loadingError" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sorry, an error occured during the data loading...</seg>
+                <seg>Veuillez nous excuser, une erreur s'est produite durant le chargement des données...</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_theader_key" dataType="text">
+        <tu tuid="ga_theader_demandKey" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Identifier</seg>
+                <seg>Identifiant de Demande</seg>
             </tuv>
         </tu>
         <tu tuid="ga_theader_criteria" dataType="text">
@@ -918,105 +958,163 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Player #</seg>
+                <seg>Nombre de joueurs</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_theader_expirationDate" dataType="text">
+        <tu tuid="ga_theader_dueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Game Date</seg>
+                <seg>Date du départ</seg>
             </tuv>
         </tu>
         <tu tuid="ga_theader_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>State</seg>
+                <seg>État</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_theader_proposalKeys" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Identifiants de Proposition</seg>
             </tuv>
         </tu>
         <tu tuid="ga_theader_creationDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Creation Date</seg>
+                <seg>Date de création</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_theader_modificationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Dernière date de modification</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_theader_expirationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Date d'expiration</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_cmenu_createProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Créer une Proposition</seg>
             </tuv>
         </tu>
         <tu tuid="ga_cmenu_viewProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>View Proposal</seg>
+                <seg>Voir la Proposition {0}</seg>
             </tuv>
         </tu>
         <tu tuid="ga_cmenu_declineDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Decline Demand</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_proposalForm_dialogTitle" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>View Proposal</seg>
+                <seg>Décliner la Demande</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_demandInfo" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Demand Information</seg>
+                <seg>Attributs de la Demande</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_demandKey" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Identifiant de la Demande:</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_demandQuantity" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Number of Players</seg>
+                <seg>Nombre de joueurs:</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_demandCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Players' Demand</seg>
+                <seg>Demande du joueur</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalInfo" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Proposal Information</seg>
+                <seg>Attributs de la Proposition</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_proposalKey" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Identifiant de la Proposition:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_proposalState" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>État:</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Additional Information</seg>
+                <seg>Informations supplémentaires:</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalPrice" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Price</seg>
+                <seg>Coût:</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalTotal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Total (tax included):</seg>
+                <seg>Total (taxes incluses):</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalTime" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Proposed Time:</seg>
+                <seg>Horaire proposé:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_proposalCreationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Date de création:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_proposalModificationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Date de dernière modification:</seg>
             </tuv>
         </tu>
     </body>

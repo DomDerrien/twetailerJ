@@ -17,9 +17,8 @@
      * Module initializer
      *
      * @param {String} ISO locale identifier
-     * @param {Boolean} Indicator of the login page
      */
-    module.init = function(locale, isLoginPage) {
+    module.init = function(locale) {
         // Get the localized resource bundle
         domderrien.i18n.LabelExtractor.init("twetailer", _masterBundleName, locale);
         module._labelExtractor = domderrien.i18n.LabelExtractor.init("twetailer", _consoleBundleName, locale);
@@ -47,7 +46,7 @@
         if (_debugMode != null) {
             console.log("Client error message: " + message + "\nurl: " + ioArgs.url);
         }
-        alert(_getLabel("console", "error_client_side_communication_failed"));
+        alert(_getLabel(_consoleBundleName, "error_client_side_communication_failed"));
         // dojo.analytics.addData("ClientError", "[" + message + "][" + ioArgs.url + "]");
     };
 

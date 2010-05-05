@@ -248,6 +248,28 @@ public class ProposalOperations extends BaseOperations {
     }
 
     /**
+     * Use the given pairs {attribute; value} to get the corresponding Proposal identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of proposal keys matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getProposalKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
+        Object[] values = prepareQuery(queryObj, parameters, limit);
+        getLogger().warning("Select proposal(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Long> proposals = (List<Long>) queryObj.executeWithArray(values);
+        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return proposals;
+    }
+
+    /**
      * Use the given pair {attribute; value} to get the corresponding Proposal instances
      *
      * @param locations list of locations where expected proposals should be retrieved

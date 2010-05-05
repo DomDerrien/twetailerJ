@@ -1,28 +1,41 @@
 package twetailer.j2ee.restlet;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Demand;
+import twetailer.dto.Entity;
 import twetailer.dto.Proposal;
-import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
+import twetailer.task.CommandProcessor;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
+import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
@@ -49,7 +62,20 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        return demandOperations.createDemand(parameters, LoginServlet.getConsumerKey(loggedUser)).toJson();
+        // Create the Demand
+        parameters.put(Command.SOURCE, Source.api.toString());
+        Demand demand = demandOperations.createDemand(parameters, LoginServlet.getConsumerKey(loggedUser));
+
+        // Create a task for that demand validation
+        Queue queue = CommandProcessor._baseOperations.getQueue();
+        log.warning("Preparing the task: /maezel/validateOpenDemand?key=" + demand.getKey().toString());
+        queue.add(
+                url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
+                    param(Proposal.KEY, demand.getKey().toString()).
+                    method(Method.GET)
+        );
+
+        return demand.toJson();
     }
 
     @Override
@@ -116,11 +142,49 @@ public class DemandRestlet extends BaseRestlet {
                 if (saleAssociateKey == null) {
                     throw new ClientException("Current user is not a Sale Associate!");
                 }
+                Map<String, Object> queryDemands = new HashMap<String, Object>();
+                queryDemands.put(Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey);
+                queryDemands.put(Command.STATE_COMMAND_LIST, Boolean.TRUE);
+                if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
+                    try {
+                        Date lastUpdate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
+                        queryDemands.put(">" + Entity.MODIFICATION_DATE, lastUpdate);
+                    }
+                    catch (ParseException e) {
+                        // Ignored error, the date stays not set
+                    }
+                }
                 if (onlyKeys) {
-                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey, 0));
+                    // Get the keys
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, queryDemands, 0));
                 }
                 else { // full detail
-                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey, 0));
+                    // Get the demands
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, queryDemands, 0));
+
+                    pm.close();
+                    pm = _baseOperations.getPersistenceManager();
+
+                    // Get the keys of the proposals owned by the requester
+                    Map<String, Object> queryProposals = new HashMap<String, Object>();
+                    queryProposals.put(Command.OWNER_KEY, saleAssociateKey);
+                    queryProposals.put(Command.STATE_COMMAND_LIST, Boolean.TRUE);
+                    ArrayList validProposalKeys = new ArrayList(proposalOperations.getProposalKeys(pm, queryProposals, 0));
+
+                    // Filter out information that don't belong to the requester
+                    for (int i=0; i<resources.size(); i++) {
+                        JsonObject demand = resources.getJsonObject(i);
+                        // Clean-up the list of sale associate identifiers
+                        demand.remove(Demand.SALE_ASSOCIATE_KEYS);
+                        // Remove all proposal keys that don't belong to the requester or that are not in a valid state for the listing
+                        JsonArray attachedProposalKeys = demand.getJsonArray(Demand.PROPOSAL_KEYS);
+                        for (int j=0; j<(attachedProposalKeys == null ? 0 : attachedProposalKeys.size()); j++) {
+                            if (!validProposalKeys.contains(attachedProposalKeys.getLong(j))) {
+                                attachedProposalKeys.remove(j);
+                                j--; // To account for the list size reduction
+                            }
+                        }
+                    }
                 }
             }
             else { // consumer point-of-view

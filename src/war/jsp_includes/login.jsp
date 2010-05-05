@@ -218,17 +218,15 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
+        dojo.require("dojo.parser");
         dojo.require("dijit.Dialog");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.TextBox");
         dojo.require("dijit.layout.BorderContainer");
         dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("twetailer.Console");
-        dojo.require("dojo.parser");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            twetailer.Console.init("<%= localeId %>", true);
             dojo.fadeOut({
                 node: "introFlash",
                 delay: 50,

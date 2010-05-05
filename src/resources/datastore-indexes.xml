@@ -60,6 +60,19 @@
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <datastore-index kind="Demand" ancestor="false" source="manual">
+        <property name="saleAssociateKeys" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Demand" ancestor="false" source="manual">
+        <property name="saleAssociateKeys" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="modificationDate" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
     <!--
      Location
       -->
@@ -96,6 +109,12 @@
 
     <datastore-index kind="Proposal" ancestor="false" source="manual">
         <property name="locationKey" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Proposal" ancestor="false" source="manual">
+        <property name="ownerKey" direction="asc"/>
         <property name="stateCmdList" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>

@@ -401,22 +401,22 @@
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require("dojo.io.script");
+        dojo.require("dojo.parser");
         dojo.require("dijit.Dialog");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.DateTextBox");
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.HorizontalSlider");
+        dojo.require("dijit.form.NumberSpinner");
+        dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dijit.layout.BorderContainer");
         dojo.require("dijit.layout.ContentPane");
+        // dojo.require("dojox.layout.ExpandoPane");
         dojo.require("dijit.layout.TabContainer");
-        dojo.require("dojox.layout.ExpandoPane");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.FilteringSelect");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.NumberSpinner");
-        dojo.require("dijit.form.ValidationTextBox");
-        dojo.require("dijit.form.HorizontalSlider");
         dojo.require("twetailer.Directory");
-        dojo.require("dojo.parser");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             twetailer.Directory.init("<%= localeId %>", "<%= cityName %>", "<%= data.getString(Location.POSTAL_CODE) %>", "<%= data.getString(Location.COUNTRY_CODE) %>");
