@@ -17,6 +17,7 @@ public class CommandSettings {
     public enum Prefix {
         action,
         address,
+        dueDate,
         expiration,
         hash,
         help,

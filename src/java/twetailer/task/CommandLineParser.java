@@ -1,8 +1,10 @@
 package twetailer.task;
 
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -71,10 +73,13 @@ public class CommandLineParser {
             final String separatorFromNonDigit = "(?:\\D|$)";
             final String separatorFromNonAlpha = "(?:\\W|$)";
 
+            final String dateTimePattern = "\\s?(?:\\d\\d\\d\\d(?: |/|-)?\\d\\d(?: |/|-)?\\d\\d)?(?:T\\d\\d\\:\\d\\d\\:\\d\\d|T\\d\\d\\:\\d\\d|)(?:AM|PM|)";
+
             // Read http://www.regular-expressions.info/unicode.html for explanations on \p{M} used to handle accented characters
             preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|\\p{M}]+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
-            preparePattern(prefixes, patterns, Prefix.expiration, "[\\d- ]+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.expiration, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.hash, "\\s*\\S+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
@@ -208,6 +213,14 @@ public class CommandLineParser {
         if (matcher.find()) { // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
             command.put(Store.ADDRESS, getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+        }
+        // Due Date
+        matcher = patterns.get(Prefix.dueDate.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Demand.DUE_DATE, getDate(currentGroup));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
         }
@@ -385,26 +398,89 @@ public class CommandLineParser {
     }
 
     /**
-     * Helper extracting an expiration date
+     * Helper extracting a date with or without time
 
      * @param pattern Parameters extracted by a regular expression
      * @return valid expiration date
      *
      * @throws ParseException if the date format is invalid
      */
+    @SuppressWarnings("deprecation")
     private static String getDate(String pattern) throws ParseException {
-        // TODO: ensure the date is in the future
-        String date = pattern.substring(pattern.indexOf(":") + 1).trim();
-        if (date.indexOf('-') == -1) {
-            String day = date.substring(date.length() - 2);
-            String month = date.substring(date.length() - 4, date.length() - 2);
-            String year = date.substring(0, date.length() - 4);
-            date = year + "-" + month + "-" + day;
+        String value = pattern.substring(pattern.indexOf(":") + 1).trim();
+        int year, month, day, hour, minute, second;
+        int timeSeparator = value.indexOf('T');
+        String date = value;
+        if (timeSeparator == -1) {
+            // For the last second of that day
+            hour = 23;
+            minute = 59;
+            second = 59;
         }
-        if (date.length() == 8) {
-            date = "20" + date;
+        else {
+            String time = date.substring(timeSeparator + 1);
+            date = date.substring(0, timeSeparator);
+            hour = Integer.valueOf(time.substring(0,2)) % 24;
+            time = time.substring(2); // to skip the hour
+            if (time.length() == 0 || time.charAt(0) != ':') {
+                minute = 0;
+                second = 0;
+            }
+            else {
+                time = time.substring(1); // to skip the colon
+                minute = Integer.valueOf(time.substring(0,2)) % 60;
+                time = time.substring(2); // to skip the minute
+                if (time.length() == 0 || time.charAt(0) != ':') {
+                    second = 0;
+                }
+                else {
+                    time = time.substring(1); // to skip the colon
+                    second = Integer.valueOf(time.substring(0,2)) % 60;
+                    time = time.substring(2); // to skip the second
+                }
+            }
+            if ("pm".equalsIgnoreCase(time.trim())) {
+                hour = (hour + 12) % 24;
+            }
         }
-        return date + "T23:59:59";
+        int dateLength = date.length();
+        if (dateLength == 0) {
+            Date today = new Date();
+            day = today.getDate();
+            month = today.getMonth() + 1;
+            year = today.getYear() + 1900;
+        }
+        else {
+            day = Integer.valueOf(date.substring(dateLength-2, dateLength-0));
+            char digit = date.charAt(dateLength-3);
+            if (digit < '0' || '9' < digit) {
+                month = Integer.valueOf(date.substring(dateLength-5, dateLength-3));
+                digit = date.charAt(dateLength-6);
+                if (digit < '0' || '9' < digit) {
+                    year = Integer.valueOf(date.substring(0, dateLength-6));
+                }
+                else {
+                    year = Integer.valueOf(date.substring(0, dateLength-5));
+                }
+            }
+            else {
+                month = Integer.valueOf(date.substring(dateLength-4, dateLength-2));
+                digit = date.charAt(dateLength-5);
+                if (digit < '0' || '9' < digit) {
+                    year = Integer.valueOf(date.substring(0, dateLength-5));
+                }
+                else {
+                    year = Integer.valueOf(date.substring(0, dateLength-4));
+                }
+            }
+        }
+        return
+            "" + year +
+            "-" + (month < 10 ? "0" + month : month) +
+            "-" + (day < 10 ? "0" + day : day) +
+            "T" + (hour < 10 ? "0" + hour : hour) +
+            ":" + (minute < 10 ? "0" + minute : minute) +
+            ":" + (second < 10 ? "0" + second : second);
     }
 
     /**
@@ -555,8 +631,6 @@ public class CommandLineParser {
             if (matcher.find()) { // Runs the matcher once
                 keywords = matcher.replaceFirst("");
             }
-            // Incorrect tags that lands among the keywords are neutralized
-            keywords = keywords.replace(':', '_');
         }
         return keywords.trim().split("\\s+");
     }

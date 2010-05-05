@@ -3,6 +3,7 @@ package twetailer.task;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.text.Collator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,6 +73,20 @@ public class CommandProcessor {
     }
 
     /**
+     * Helper to print the short date if the time is set for the last second of the day
+     *
+     * @param date Date to process
+     * @return String with the date attributes as: YYYY-MM-DD or YYYY-MM-DD'T'HH:MM:SS
+     */
+    @SuppressWarnings("deprecation")
+    protected static String serializeDate(Date date) {
+        if (date.getHours() == 23 && date.getMinutes() == 59 && date.getSeconds() == 59) {
+            return DateUtils.dateToYMD(date);
+        }
+        return DateUtils.dateToISO(date);
+    }
+
+    /**
      * Prepare a message to be submit a user
      *
      * @param demand Demand to process
@@ -94,7 +109,8 @@ public class CommandProcessor {
                     locale
             ) +
             space;
-        String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { DateUtils.dateToYMD(demand.getExpirationDate()) }, locale) + space;
+        String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { serializeDate(demand.getDueDate()) }, locale) + space;
+        String expiration = demand.getExpirationDate().equals(demand.getDueDate()) ? "" : (LabelExtractor.get("cp_tweet_expiration_part", new Object[] { serializeDate(demand.getExpirationDate()) }, locale) + space);
         String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get("cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
         String range = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange(), demand.getRangeUnit() }, locale) + space;
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
@@ -108,6 +124,7 @@ public class CommandProcessor {
                         action,
                         reference,
                         state,
+                        dueDate,
                         expiration,
                         coordinates,
                         range,
@@ -145,6 +162,7 @@ public class CommandProcessor {
             ) +
             space;
         String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
+        String dueDate = proposal.getDueDate() == null ? "" : (LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { serializeDate(proposal.getDueDate()) }, locale) + space);
         String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
         String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
         String price = LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale) + space;
@@ -159,6 +177,7 @@ public class CommandProcessor {
                         demand,
                         state,
                         quantity,
+                        dueDate,
                         tags,
                         hashtags,
                         price,

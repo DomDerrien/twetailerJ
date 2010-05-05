@@ -132,6 +132,14 @@
                 <seg>adresse</seg>
             </tuv>
         </tu>
+        <tu tuid="cl_prefix_dueDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>dateLimite</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_prefix_expiration" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
@@ -1164,6 +1172,13 @@
                 <seg>état:{0}</seg>
             </tuv>
         </tu>
+        <tu tuid="cp_tweet_dueDate_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>dateLimite:{0}</seg>
+            </tuv>
+        </tu>
         <tu tuid="cp_tweet_expiration_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1257,16 +1272,16 @@
         </tu>
         <tu tuid="cp_tweet_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}</seg>
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store" dataType="text">

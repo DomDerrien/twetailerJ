@@ -1,6 +1,8 @@
 package twetailer.dto;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.jdo.annotations.IdentityType;
@@ -10,8 +12,10 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import twetailer.connector.BaseConnector.Source;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
+import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -37,6 +41,11 @@ public class Command extends Entity {
     public static final String CRITERIA = "criteria";
     public static final String CRITERIA_ADD = "\\+criteria";
     public static final String CRITERIA_REMOVE = "\\-criteria";
+
+    @Persistent
+    private Date dueDate;
+
+    public static final String DUE_DATE = "dueDate";
 
     @Persistent
     private Long locationKey;
@@ -164,6 +173,14 @@ public class Command extends Entity {
         criteria.remove(criterion);
     }
 
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
     public Long getLocationKey() {
         return locationKey;
     }
@@ -288,6 +305,7 @@ public class Command extends Entity {
             }
             out.put(CRITERIA, jsonArray);
         }
+        if (getDueDate() != null) { out.put(DUE_DATE, DateUtils.dateToISO(getDueDate())); }
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getHashTags() != null && 0 < getHashTags().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -326,6 +344,15 @@ public class Command extends Entity {
             JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
             for (int i=0; i<jsonArray.size(); ++i) {
                 addCriterion(jsonArray.getString(i));
+            }
+        }
+        if (in.containsKey(DUE_DATE)) {
+            try {
+                Date dueDate = DateUtils.isoToDate(in.getString(DUE_DATE));
+                setDueDate(dueDate);
+            }
+            catch (ParseException e) {
+                setDueDate(null);
             }
         }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }

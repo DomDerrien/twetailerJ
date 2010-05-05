@@ -60,7 +60,7 @@ public class TestCommandLineParser {
             else if (Prefix.hash.equals(prefix)) {
                 equivalents.add("#");
             }
-            if (Prefix.expiration.equals(prefix)) {
+            else if (Prefix.expiration.equals(prefix)) {
                 equivalents.add("expires");
             }
             prefixes.put(prefix.toString(), equivalents);
@@ -232,12 +232,6 @@ public class TestCommandLineParser {
     @Test
     public void testParseExpirationIII() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration: 20500101", Locale.ENGLISH);
-        assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
-    }
-
-    @Test
-    public void testParseExpirationIV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 expiration:50-01-01", Locale.ENGLISH);
         assertEquals("2050-01-01T23:59:59", data.getString(Demand.EXPIRATION_DATE));
     }
 
@@ -689,7 +683,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " url " + url, Locale.ENGLISH);
         assertEquals(Action.www.toString(), data.getString(Command.ACTION));
         assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals(url.replace(":", "_"), data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals(url, data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
     }
 
     @Test
@@ -1084,7 +1078,7 @@ public class TestCommandLineParser {
 
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
         assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
         assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(3));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
@@ -1101,7 +1095,7 @@ public class TestCommandLineParser {
 
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
         assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
         assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(3));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
@@ -1118,7 +1112,7 @@ public class TestCommandLineParser {
 
         assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("locale_h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
         assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
         assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
         assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
@@ -1275,5 +1269,49 @@ public class TestCommandLineParser {
         command.put(Store.ADDRESS, "address");
 
         assertNull(CommandLineParser.guessAction(command, CommandLineParser.localizedActions.get(Locale.ENGLISH))); // Cannot update Store instance from Twitter
+    }
+
+    @Test
+    public void testParseDueDateI() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 due:2050-01-01", Locale.ENGLISH);
+        assertEquals("2050-01-01T23:59:59", data.getString(Demand.DUE_DATE));
+    }
+
+    @Test
+    public void testParseDueDateII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 dueDate:2050-01-01T08:31", Locale.ENGLISH);
+        assertEquals("2050-01-01T08:31:00", data.getString(Demand.DUE_DATE));
+    }
+
+    @Test
+    public void testParseDueDateIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 dueDate:2050-01-01T08:32 AM", Locale.ENGLISH);
+        assertEquals("2050-01-01T08:32:00", data.getString(Demand.DUE_DATE));
+    }
+
+    @Test
+    public void testParseDueDateIV() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 dueDate:2050-01-01T08:33PM", Locale.ENGLISH);
+        assertEquals("2050-01-01T20:33:00", data.getString(Demand.DUE_DATE));
+    }
+
+    @Test
+    public void testParseDueDateV() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 dueDate:2050-01-01T08:34:45", Locale.ENGLISH);
+        assertEquals("2050-01-01T08:34:45", data.getString(Demand.DUE_DATE));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testParseDueDateVI() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 dueDate:T08:35:46", Locale.ENGLISH);
+        Date today = new Date();
+        assertEquals(
+                (today.getYear() + 1900) +
+                "-" + (today.getMonth() < 9 ? "0" : "") + (today.getMonth() + 1) +
+                "-" + (today.getDate() < 10 ? "0" : "") + today.getDate() +
+                "T08:35:46",
+                data.getString(Demand.DUE_DATE)
+        );
     }
 }

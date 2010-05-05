@@ -60,6 +60,7 @@ public class Demand extends Command {
         super();
         setAction(Action.demand);
         setDefaultExpirationDate();
+        setDueDate(getExpirationDate());
     }
 
     /**
@@ -79,6 +80,15 @@ public class Demand extends Command {
         super.resetLists();
         proposalKeys = null;
         saleAssociateKeys = null;
+    }
+
+    @Override
+    public Date getDueDate() {
+        Date dueDate = super.getDueDate();
+        if (dueDate == null) {
+            dueDate = getExpirationDate();
+        }
+        return dueDate;
     }
 
     public Date getExpirationDate() {
