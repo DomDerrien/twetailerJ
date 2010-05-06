@@ -39,7 +39,7 @@ public class ProposeCommandProcessor {
         // 2. update the identified proposal
         //
         Long proposalKey = 0L;
-        SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.propose);
+        SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.propose, Proposal.class.getName());
         Store store = CommandProcessor.storeOperations.getStore(pm, saleAssociate.getStoreKey());
         List<String> messages = new ArrayList<String>();
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {

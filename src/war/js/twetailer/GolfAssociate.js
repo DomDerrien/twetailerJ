@@ -69,7 +69,17 @@
                 dijit.byId("demandListOverlay").hide();
                 return response;
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
+            error: function(message, ioArgs) {
+                if (ioArgs.xhr.status == 403) { // 403 == Forbidden
+                    dijit.byId("demandListOverlay").hide();
+                    alert("This is a page for Associates you can't do anything with. You're about to be redirected to the corresponding page for Consumers.");
+                    window.location = "./";
+                }
+                else {
+                    alert(message+"\nurl: "+ioArgs.url);
+                    dijit.byId("demandListOverlay").hide();
+                }
+            },
             preventCache: true,
             url: "/API/Demand/"
         });
@@ -244,7 +254,7 @@
                 dijit.byId("proposalFormOverlay").hide();
                 return response;
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
+            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); dijit.byId("proposalFormOverlay").hide(); },
             url: "/API/Proposal/" + proposalKey
         });
         return dfd;
@@ -325,7 +335,7 @@
      * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box
      */
     module.cancelProposal = function() {
-        if (!confirm("Do you want to retake the proposal?")) {
+        if (!confirm(_getLabel("console", "ga_alert_askConfirmationOfProposalCancelling", [pK]))) {
             return;
         }
 
@@ -360,7 +370,7 @@
                 }
                 dijit.byId('demandListOverlay').hide();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
+            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); dijit.byId("demandListOverlay").hide(); },
             url: "/API/Proposal/" + (data.key == null ? "" : data.key)
         });
         return dfd;

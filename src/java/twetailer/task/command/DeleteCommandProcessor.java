@@ -55,7 +55,7 @@ public class DeleteCommandProcessor {
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             Proposal proposal = null;
             String message = null;
-            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.delete);
+            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.delete, Proposal.class.getName());
             try {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
                 State state = proposal.getState();

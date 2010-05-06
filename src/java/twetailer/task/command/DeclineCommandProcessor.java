@@ -25,7 +25,7 @@ public class DeclineCommandProcessor {
         //
         String message = null;
         if (command.containsKey(Demand.REFERENCE)) {
-            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.decline);
+            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.decline, Demand.class.getName());
             communicateToSaleAssociate(
                     rawCommand,
                     saleAssociate,
@@ -37,7 +37,7 @@ public class DeclineCommandProcessor {
             try {
                 // Get the proposal
                 Proposal proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
-                // Get the corresponding demand -- No need for this demand, just the verification it exists
+                // Get the corresponding demand -- No need for this demand, just the verification it exists and it's owned by the logged in consumer
                 CommandProcessor.demandOperations.getDemand(proposal.getDemandKey(), consumer.getKey());
                 // Update the proposal state
                 proposal.setState(State.declined);

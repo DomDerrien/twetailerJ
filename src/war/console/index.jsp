@@ -36,9 +36,8 @@
     LocationOperations locationOperations = _baseOperations.getLocationOperations();
 
     // Consumer attributes
-    OpenIdUser user = BaseRestlet.getLoggedUser(request);
-    Long consumerKey = LoginServlet.getConsumerKey(user);
-    Consumer consumer = consumerOperations.getConsumer(consumerKey);
+    OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
+    Consumer consumer = LoginServlet.getConsumer(loggedUser);
     String openId = consumer.getOpenID() == null ? "" : consumer.getOpenID();
     String name = consumer.getName() == null ? "" : consumer.getName();
     // Location location = locationOperations.getLocation(consumer.getLocationKey());
@@ -50,6 +49,9 @@
 
     MockOutputStream serializedConsumer = new MockOutputStream();
     consumer.toJson().toStream(serializedConsumer, false);
+
+    // Get the logged user SaleAssociate key
+    Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser);
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
@@ -85,6 +87,8 @@
 </head>
 <body class="tundra">
 
+    <div id="topBar"></div>
+
     <div id="introFlash">
         <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
     </div>
@@ -107,7 +111,11 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes/banner_protected.jsp"></jsp:include>
+        <jsp:include page="/jsp_includes/banner_protected.jsp">
+            <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
+            <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
+            <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+        </jsp:include>
         <div
             dojoType="dijit.layout.TabContainer"
             id="centerZone"

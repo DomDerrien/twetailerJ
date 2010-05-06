@@ -14,13 +14,23 @@ public class ReservedOperationException extends ClientException {
     }
 
     private Action action;
+    private String entityClassName;
 
     public ReservedOperationException(Action action) {
-        super("Concerned action: " + action.toString());
+        this(action, null);
+    }
+
+    public ReservedOperationException(Action action, String entityClassName) {
+        super("Reserved operation -- Cannot use action \"" + action.toString() + "\"" + (entityClassName == null ? "" : " on entity \"" + entityClassName + "\""));
         this.action = action;
+        this.entityClassName = entityClassName;
     }
 
     public Action getAction() {
         return action;
+    }
+
+    public String getEntityClassName() {
+        return entityClassName;
     }
 }

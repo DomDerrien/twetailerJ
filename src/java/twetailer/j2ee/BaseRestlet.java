@@ -2,9 +2,7 @@ package twetailer.j2ee;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,11 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.RelyingParty;
-import com.dyuproject.openid.YadisDiscovery;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -196,33 +194,13 @@ public abstract class BaseRestlet extends HttpServlet {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
         }
+        catch (ReservedOperationException ex) {
+            response.setStatus(403); // Forbidden
+            out.put("success", false);
+            out.put("reason", ex.getMessage());
+        }
         catch (Exception ex) {
-            String message = "Unexpected exception during BaseRESTServlet.doGet() operation";
-            // Special case
-            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
-                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
-                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
-            }
-            // Prepare the exception report
-            getLogger().warning("doGet().exception: " + ex);
-            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
-            // Send an e-mail to out catch-all list
-            MockOutputStream stackTrace = new MockOutputStream();
-            ex.printStackTrace(new PrintStream(stackTrace));
-            try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
-                        "Unexpected error caught in " + this.getClass().getName() + ".doGet()",
-                        "Path info: " + pathInfo + "\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
-                );
-            }
-            catch (MessagingException e) {
-                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
-            }
-            // Log the stack trace
-            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
-                ex.printStackTrace();
-            }
+            out = processException(getLogger(), ex, "doGet", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -257,33 +235,13 @@ public abstract class BaseRestlet extends HttpServlet {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
         }
+        catch (ReservedOperationException ex) {
+            response.setStatus(403); // Forbidden
+            out.put("success", false);
+            out.put("reason", ex.getMessage());
+        }
         catch (Exception ex) {
-            String message = "Unexpected exception during BaseRESTServlet.doPost() operation";
-            // Special case
-            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
-                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
-                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
-            }
-            // Prepare the exception report
-            getLogger().warning("doPost().exception: " + ex);
-            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
-            // Send an e-mail to out catch-all list
-            MockOutputStream stackTrace = new MockOutputStream();
-            ex.printStackTrace(new PrintStream(stackTrace));
-            try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
-                        "Unexpected error caught in " + this.getClass().getName() + ".doPost()",
-                        "Path info: " + pathInfo + "\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
-                );
-            }
-            catch (MessagingException e) {
-                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
-            }
-            // Log the stack trace
-            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
-                ex.printStackTrace();
-            }
+            out = processException(getLogger(), ex, "doPost", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -325,33 +283,13 @@ public abstract class BaseRestlet extends HttpServlet {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
         }
+        catch (ReservedOperationException ex) {
+            response.setStatus(403); // Forbidden
+            out.put("success", false);
+            out.put("reason", ex.getMessage());
+        }
         catch (Exception ex) {
-            String message = "Unexpected exception during BaseRESTServlet.doPut() operation";
-            // Special case
-            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
-                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
-                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
-            }
-            // Prepare the exception report
-            getLogger().warning("doPut().exception: " + ex);
-            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
-            // Send an e-mail to out catch-all list
-            MockOutputStream stackTrace = new MockOutputStream();
-            ex.printStackTrace(new PrintStream(stackTrace));
-            try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
-                        "Unexpected error caught in " + this.getClass().getName() + ".doPut()",
-                        "Path info: " + pathInfo + "\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
-                );
-            }
-            catch (MessagingException e) {
-                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
-            }
-            // Log the stack trace
-            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
-                ex.printStackTrace();
-            }
+            out = processException(getLogger(), ex, "doPut", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -388,35 +326,41 @@ public abstract class BaseRestlet extends HttpServlet {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
             }
         }
+        catch (ReservedOperationException ex) {
+            response.setStatus(403); // Forbidden
+            out.put("success", false);
+            out.put("reason", ex.getMessage());
+        }
         catch (Exception ex) {
-            String message = "Unexpected exception during BaseRESTServlet.doDelete() operation";
-            // Special case
-            if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
-                // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
-                message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
-            }
-            // Prepare the exception report
-            getLogger().warning("doDelete().exception: " + ex);
-            out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
-            // Send an e-mail to out catch-all list
-            MockOutputStream stackTrace = new MockOutputStream();
-            ex.printStackTrace(new PrintStream(stackTrace));
-            try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
-                        "Unexpected error caught in " + this.getClass().getName() + ".doDelete()",
-                        "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
-                );
-            }
-            catch (MessagingException e) {
-                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
-            }
-            // Log the stack trace
-            if (debugModeDetected(request) || getLogger().getLevel() == Level.FINEST) {
-                ex.printStackTrace();
-            }
+            out = processException(getLogger(), ex, "doDelete", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
+    }
+
+    protected static JsonObject processException(Logger logger, Exception ex, String methodName, String pathInfo) {
+        String message = "Unexpected exception during BaseRESTServlet." + methodName + "() operation";
+        // Special case
+        if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
+            // http://code.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreTimeoutException.html
+            message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
+        }
+        // Prepare the exception report
+        logger.warning(methodName + "().exception: " + ex);
+        JsonObject out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
+        // Send an e-mail to out catch-all list
+        MockOutputStream stackTrace = new MockOutputStream();
+        ex.printStackTrace(new PrintStream(stackTrace));
+        try {
+            CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                    "error-notifier",
+                    "Unexpected error caught in BaseRestlet." + methodName + "()",
+                    "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
+            );
+        }
+        catch (MessagingException e) {
+            logger.severe("Failure while trying to report an unexpected by e-mail!");
+        }
+        return out;
     }
 }

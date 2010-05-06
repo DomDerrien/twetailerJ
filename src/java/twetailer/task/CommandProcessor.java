@@ -332,16 +332,17 @@ public class CommandProcessor {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Consumer account to consider
      * @param action Action involved for that lookup
+     * @param entityClassName Name of the class concerned by the action
      * @return The SaleAssociate account
      *
      * @throws DataSourceException If the data retrieval fails
      * @throws ReservedOperationException If no account is returned
      */
-    public static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action) throws DataSourceException, ReservedOperationException {
-        // Use memcache to limit the number of {consumerKey, saleAssociateKey} association lookup
+    public static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action, String entityClassName) throws DataSourceException, ReservedOperationException {
+        // TODO: Use MemCache to limit the number of {consumerKey, saleAssociateKey} association lookup
         List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumer.getKey(), 1);
         if (saleAssociateKeys.size() == 0) {
-            throw new ReservedOperationException(action);
+            throw new ReservedOperationException(action, entityClassName);
         }
         return saleAssociateOperations.getSaleAssociate(pm, saleAssociateKeys.get(0));
     }

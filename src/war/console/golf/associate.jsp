@@ -19,6 +19,8 @@
     import="twetailer.dto.Seed"
     import="twetailer.dto.Store"
     import="twetailer.dto.SaleAssociate"
+    import="twetailer.j2ee.BaseRestlet"
+    import="twetailer.j2ee.LoginServlet"
     import="twetailer.connector.BaseConnector.Source"
 %><%
     // Application settings
@@ -29,7 +31,18 @@
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
-%><head>
+
+    // Get the logged user record
+    OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
+    Consumer consumer = LoginServlet.getConsumer(loggedUser);
+    Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser);
+
+    // Redirects non sale associates
+    if (saleAssociateKey == null) {
+        response.sendRedirect("./");
+    }
+%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+<head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ga_localized_page_name", locale) %></title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -64,6 +77,8 @@
 </head>
 <body class="tundra">
 
+    <div id="topBar"></div>
+
     <div id="introFlash">
         <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
     </div>
@@ -86,11 +101,11 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes/banner_protected.jsp"></jsp:include>
-        <div dojoType="dijit.Menu" id="cellMenu" style="display: none;">
-            <div dojoType="dijit.MenuItem" iconClass="silkIcon silkAddIcon" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
-            <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkRemoveIcon"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
-        </div>
+        <jsp:include page="/jsp_includes/banner_protected.jsp">
+            <jsp:param name="pageForAssociate" value="<%= Boolean.TRUE.toString() %>" />
+            <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
+            <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+        </jsp:include>
         <div dojoType="dijit.layout.BorderContainer" gutters="false" region="center">
             <div dojoType="dijit.layout.ContentPane" region="top" style="text-align:right;margin:10px 10px 0 10px;">
                 <button
@@ -99,6 +114,10 @@
                     id="refreshButton"
                     onclick="twetailer.GolfAssociate.loadNewDemands();"
                 ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
+            </div>
+            <div dojoType="dijit.Menu" id="cellMenu" style="display: none;">
+                <div dojoType="dijit.MenuItem" iconClass="silkIcon silkAddIcon" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
+                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkRemoveIcon"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
             </div>
             <table
                 dojoType="dojox.grid.DataGrid"

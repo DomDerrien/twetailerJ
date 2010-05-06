@@ -320,6 +320,20 @@
                 <seg>Réalisé avec Google App Engine</seg>
             </tuv>
         </tu>
+        <tu tuid="navigation_welcome_user" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Bonjour {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="navigation_username_editIt" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Cliquez pour mettre-à-jour votre nom</seg>
+            </tuv>
+        </tu>
         <tu tuid="navigation_consumer_createDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1115,6 +1129,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Date de dernière modification:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_alert_askConfirmationOfProposalCancelling" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>La Proposition:{0} que vous avez créée et qui a été transmise à l'émetteur de la Demande:{1} va être annulée. Souhaitez-vous continuer?</seg>
             </tuv>
         </tu>
     </body>

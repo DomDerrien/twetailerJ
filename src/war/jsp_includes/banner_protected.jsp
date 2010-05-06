@@ -23,8 +23,20 @@
 
     // Get the current page url
     String queryString = request.getQueryString();
-    String fromPageURL = request.getRequestURI() + (queryString == null ? "" : "?" + queryString);
+    String fromPageURL = request.getRequestURI();
+    int defaultPageIdx = fromPageURL.lastIndexOf("index.jsp");
+    if (defaultPageIdx == fromPageURL.length() - "index.jsp".length()) {
+        fromPageURL = fromPageURL.substring(0, defaultPageIdx);
+    }
+    if (queryString != null) {
+        fromPageURL += "?" + queryString;
+    }
     fromPageURL = URLEncoder.encode(fromPageURL, "UTF-8");
+
+    // Get the parameters passed to this template
+    boolean pageForAssociate = Boolean.valueOf(request.getParameter("pageForAssociate"));
+    boolean isLoggedUserAssociate = Boolean.valueOf(request.getParameter("isLoggedUserAssociate"));
+    String consumerName = request.getParameter("consumerName");
 %>
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
             <div id="brand">
@@ -45,11 +57,18 @@
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a name="justForStyle1" class="active"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
-                    <li><a name="justForStyle2"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li>
+                    <li><a href="./" class="<%= pageForAssociate ? "" : "active" %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <% if(isLoggedUserAssociate) {
+                    %><li><a href="./associate.jsp" class="<%= pageForAssociate ? "active" : "" %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li><%
+                    } %>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
                     <li class="subItem"><a href="/logout?<%= LoginServlet.FROM_PAGE_URL_KEY %>=<%= fromPageURL %>" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
+                    <li class="subItem" style="color: orange; font-weight: bold; padding: 0 20px;">
+                        <a href="/console/#profile" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_username_editIt", locale) %>">
+                            <span style="color:orange;"><%= LabelExtractor.get(ResourceFileId.third, "navigation_welcome_user", new Object[] { consumerName}, locale) %></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -53,6 +53,16 @@ public class BaseOperations {
      * @return Persistence manager instance
      */
     public PersistenceManager getPersistenceManager() {
+        return getPersistenceManagerHelper();
+    }
+
+
+    /**
+     * Real getter of a PersistenceManager instance
+     *
+     * @return Persistence manager instance
+     */
+    public static PersistenceManager getPersistenceManagerHelper() {
         PersistenceManager pm = getPersistenceManagerFactory().getPersistenceManager();
         pm.setDetachAllOnCommit(true);
         pm.setCopyOnAttach(false);

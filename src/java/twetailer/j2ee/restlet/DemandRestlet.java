@@ -14,6 +14,7 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
@@ -28,6 +29,7 @@ import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
+import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -140,7 +142,7 @@ public class DemandRestlet extends BaseRestlet {
             if ("SA".equals(pointOfView)) {
                 Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
                 if (saleAssociateKey == null) {
-                    throw new ClientException("Current user is not a Sale Associate!");
+                    throw new ReservedOperationException(Action.list, Demand.class.getName());
                 }
                 Map<String, Object> queryDemands = new HashMap<String, Object>();
                 queryDemands.put(Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey);

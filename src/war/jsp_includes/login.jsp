@@ -60,8 +60,16 @@
     </style><%
     } // endif (useCDN)
     %>
+    <style type="text/css">
+    .dijitButtonText>img {
+        width:24px;
+        height:24px;
+    }
+    </style>
 </head>
 <body class="tundra">
+
+    <div id="topBar"></div>
 
     <div id="introFlash">
         <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
@@ -85,6 +93,7 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
+
         <jsp:include page="/jsp_includes/banner_open.jsp"></jsp:include>
         <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
             <table style="width: 100%; height: 100%;">
@@ -95,13 +104,6 @@
                             <div style="color:#888; text-align: justify;">
                                  <%= LabelExtractor.get(ResourceFileId.third, "login_introduction_message", locale) %>
                             </div>
-                            <br/>
-                            <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
-                                <input id="fromPageURL" name="<%= LoginServlet.FROM_PAGE_URL_KEY %>" type="hidden" />
-                                <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
-                                <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
-                                <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
-                            </form>
                             <br/>
                             <%= LabelExtractor.get(ResourceFileId.third, "login_provider_list_message", locale) %>
                             <br/>
@@ -155,6 +157,13 @@
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myopenid", locale) %>"
                                 ><img src="http://domderrien.github.com/images/icons/myopenid.ico" width="16" height="16" /> </button>
                             </div>
+                            <br/>
+                            <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
+                                <input id="fromPageURL" name="<%= LoginServlet.FROM_PAGE_URL_KEY %>" type="hidden" />
+                                <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
+                                <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
+                                <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
+                            </form>
                         </div>
                     </td>
                     <td>&nbsp;</td>

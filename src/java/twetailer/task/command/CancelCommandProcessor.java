@@ -100,7 +100,7 @@ public class CancelCommandProcessor {
         }
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             // Get the sale associate
-            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.cancel);
+            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.cancel, Proposal.class.getName());
             // Update proposal state
             Proposal proposal = null;
             String message = null;

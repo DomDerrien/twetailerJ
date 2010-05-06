@@ -9,6 +9,7 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
@@ -25,6 +26,7 @@ import twetailer.j2ee.LoginServlet;
 import twetailer.payment.AmazonFPS;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
+import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -149,7 +151,7 @@ public class ProposalRestlet extends BaseRestlet {
             if (!isAPrivilegedUser(loggedUser)) {
                 saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
                 if (saleAssociateKey == null) {
-                    throw new ClientException("Current user is not a Sale Associate!");
+                    throw new ReservedOperationException(Action.propose);
                 }
             }
 
@@ -212,7 +214,7 @@ public class ProposalRestlet extends BaseRestlet {
             // Get the sale associate
             Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
             if (saleAssociateKey == null) {
-                throw new ClientException("Current user is not a Sale Associate!");
+                throw new ReservedOperationException(Action.propose);
             }
 
             // Get the Proposal

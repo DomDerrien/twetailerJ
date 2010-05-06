@@ -396,6 +396,26 @@
         <!-- Page Sections -->
         <!-- ============= -->
 
+        <tu tuid="navigation_welcome_user" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: user name
+            </note>
+            <tuv xml:lang="en">
+                <seg>Hi {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_username_editIt" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Click to update your name</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="navigation_consumer_createDemand" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -1393,6 +1413,18 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Last Modification Date:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_alert_askConfirmationOfProposalCancelling" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: proposal key
+                {1}: demand key
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Proposal:{0} you created and that has been communicated to the Demand:{1} owner is going to be cancelled. Do you want to continue?</seg>
             </tuv>
         </tu>
 

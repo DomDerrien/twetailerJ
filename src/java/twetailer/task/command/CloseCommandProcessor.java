@@ -83,7 +83,7 @@ public class CloseCommandProcessor {
         else if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             Proposal proposal = null;
             String message = null;
-            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.close);
+            SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.close, Proposal.class.getName());
             try {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
                 State state = proposal.getState();

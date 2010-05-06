@@ -9,6 +9,7 @@ import javax.jdo.PersistenceManager;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Consumer;
+import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
@@ -24,7 +25,7 @@ public class SupplyCommandProcessor {
 
         // Process the command for the identifier sale associate
         boolean updateDetected = false;
-        SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.supply);
+        SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.supply, Proposal.class.getName());
         if (command.containsKey(SaleAssociate.CRITERIA)) {
             updateDetected = true;
             saleAssociate.resetCriteria();

@@ -54,7 +54,6 @@ public class LoginServlet extends HttpServlet {
         public void onPreAuthenticate(OpenIdUser user, HttpServletRequest request, UrlEncodedParameterMap params) {
         }
         public void onAuthenticate(OpenIdUser user, HttpServletRequest request) {
-            System.err.println("******** newly authenticated user: " + user.getIdentity());
             Map<String, String> sreg = SRegExtension.remove(user);
             Map<String, String> axschema = AxSchemaExtension.remove(user);
             if (sreg != null && !sreg.isEmpty()) {
@@ -140,15 +139,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         preselectOpendIdServer(request);
-
-        //
-        // FIXME:
-        //   1. Get the URL for the initial request
-        //   2. If this URL is ApplicationSettings.get().getLoginPageURL(), change it to ApplicationSettings.get().getMainPageURL()
-        //   3. Save the URL in the session
-        //   4. When the servlet is invoked again with the user being authenticated. jump to the URL saved in the session
-        //   5. Note that URL parameters should be saved and restored later
-        //
 
         RelyingParty relyingParty = getRelyingParty();
         String errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
@@ -253,6 +243,26 @@ public class LoginServlet extends HttpServlet {
      * Create a Consumer instance for the OpenID user
      *
      * @param user OpenID user to create a Consumer instance for
+     * @return Corresponding Consumer instance
+     *
+     * @throws DataSourceException If the data retrieval fails
+     *
+     * @see LoginServlet#getConsumer(PersistenceManager, OpenIdUser)
+     */
+    public static Consumer getConsumer(OpenIdUser user) throws DataSourceException {
+        PersistenceManager pm = BaseOperations.getPersistenceManagerHelper();
+        try {
+            return getConsumer(user, pm);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create a Consumer instance for the OpenID user
+     *
+     * @param user OpenID user to create a Consumer instance for
      * @param pm PersistenceManager instance used if the OpenID user has not been yet attached;
      *           Should stay open for future usage of the connection
      * @return Corresponding Consumer instance
@@ -269,7 +279,22 @@ public class LoginServlet extends HttpServlet {
     /**
      * Get the key of the SaleAssociate instance for the OpenID user
      *
-     * @param user OpenID user to create a cv instance for
+     * @param user OpenID user to create a SaleAssociate instance for
+     * @return Corresponding SaleAssociate key
+     *
+     * @throws DataSourceException If the data retrieval fails
+     *
+     * @see LoginServlet#getSaleAssociateKey(PersistenceManager, OpenIdUser)
+     */
+    public static Long getSaleAssociateKey(OpenIdUser user) throws DataSourceException {
+        // Delay the PersistenceManager instance creation because it's possible it's not required, because the SaleAssociate key has already been retreived for this session!
+        return getSaleAssociateKey(user, null);
+    }
+
+    /**
+     * Get the key of the SaleAssociate instance for the OpenID user
+     *
+     * @param user OpenID user to create a SaleAssociate instance for
      * @param pm PersistenceManager instance used if the OpenID user has not been yet attached;
      *           Should stay open for future usage of the connection
      * @return Corresponding SaleAssociate key
@@ -277,22 +302,50 @@ public class LoginServlet extends HttpServlet {
      * @throws DataSourceException If the data retrieval fails
      */
     public static Long getSaleAssociateKey(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
-        boolean noSaleAssociateAttached = (Boolean) user.getAttribute(NO_SALE_ASSOCIATE_ATTACHED) != null;
+        boolean noSaleAssociateAttached = user.getAttribute(NO_SALE_ASSOCIATE_ATTACHED) != null; // "attribute != null" means: attribute already set with Boolean.TRUE
         Long saleAssociateKey = (Long) user.getAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID);
         if (!noSaleAssociateAttached && saleAssociateKey == null) {
-            // Use memcache to limit the number of {consumerKey, saleAssociateKey} association lookup
-            Long consumerKey = getConsumerKey(user);
-            List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-            if (0 < saleAssociateKeys.size()) {
-                user.setAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID, saleAssociateKeys.get(0));
-                saleAssociateKey = saleAssociateKeys.get(0);
+            // TODO: Use MemCache to limit the number of {consumerKey, saleAssociateKey} association lookup
+            PersistenceManager localPM = pm == null ? BaseOperations.getPersistenceManagerHelper() : null;
+            try {
+                Long consumerKey = getConsumerKey(user);
+                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm == null ? localPM : pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
+                if (0 < saleAssociateKeys.size()) {
+                    user.setAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID, saleAssociateKeys.get(0));
+                    saleAssociateKey = saleAssociateKeys.get(0);
+                }
+                else {
+                    user.setAttribute(NO_SALE_ASSOCIATE_ATTACHED, Boolean.TRUE);
+                    saleAssociateKey = null;
+                }
             }
-            else {
-                user.setAttribute(NO_SALE_ASSOCIATE_ATTACHED, Boolean.TRUE);
-                saleAssociateKey = null;
+            finally {
+                if (pm == null) {
+                    localPM.close();
+                }
             }
         }
         return saleAssociateKey;
+    }
+
+    /**
+     * Get the SaleAssociate instance for the OpenID user
+     *
+     * @param user OpenID user to create a SaleAssociate instance for
+     * @return Corresponding SaleAssociate instance or <code>null</code> if none is attached to the OpenID user
+     *
+     * @throws DataSourceException If the data retrieval fails
+     *
+     * @see LoginServlet#getSaleAssociate(PersistenceManager, OpenIdUser)
+     */
+    public static SaleAssociate getSaleAssociate(OpenIdUser user) throws DataSourceException {
+        PersistenceManager pm = BaseOperations.getPersistenceManagerHelper();
+        try {
+            return getSaleAssociate(user, pm);
+        }
+        finally {
+            pm.close();
+        }
     }
 
     /**

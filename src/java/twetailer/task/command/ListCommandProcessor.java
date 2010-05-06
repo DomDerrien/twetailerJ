@@ -223,7 +223,7 @@ public class ListCommandProcessor {
             boolean checkIfConsumerOwnsDemand = false;
             try {
                 // Try to get the proposal owner
-                saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.list);
+                saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.list, Proposal.class.getName());
                 if (proposal != null && !saleAssociate.getKey().equals(proposal.getOwnerKey())) {
                     checkIfConsumerOwnsDemand = true;
                 }
