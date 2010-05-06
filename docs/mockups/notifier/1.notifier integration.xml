@@ -1,0 +1,130 @@
+<mockup version="1.0" skin="sketch" measuredW="1050" measuredH="651" mockupW="810" mockupH="589">
+  <controls>
+    <control controlID="423" controlTypeID="com.balsamiq.mockups::Canvas" x="230" y="52" w="810" h="581" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1"/>
+    <control controlID="424" controlTypeID="com.balsamiq.mockups::Canvas" x="230" y="587" w="810" h="46" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="425" controlTypeID="com.balsamiq.mockups::Canvas" x="890" y="594" w="140" h="31" measuredW="100" measuredH="70" zOrder="2" locked="false" isInGroup="-1"/>
+    <control controlID="426" controlTypeID="com.balsamiq.mockups::Button" x="240" y="593" w="-1" h="-1" measuredW="86" measuredH="32" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>StarIcon%7Csmall</icon>
+        <text>Start</text>
+      </controlProperties>
+    </control>
+    <control controlID="428" controlTypeID="com.balsamiq.mockups::Label" x="407" y="600" w="-1" h="-1" measuredW="51" measuredH="25" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Firefox</text>
+      </controlProperties>
+    </control>
+    <control controlID="429" controlTypeID="com.balsamiq.mockups::IconLabel" x="245" y="365" w="-1" h="-1" measuredW="121" measuredH="73" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CartIcon%7Clarge</icon>
+        <labelPosition>bottom</labelPosition>
+        <text>Twetailer%20Notifier</text>
+      </controlProperties>
+    </control>
+    <control controlID="430" controlTypeID="com.balsamiq.mockups::IconLabel" x="269" y="159" w="-1" h="-1" measuredW="74" measuredH="73" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TrashIcon%7Clarge</icon>
+        <labelPosition>bottom</labelPosition>
+        <text>Recycle%20bin</text>
+      </controlProperties>
+    </control>
+    <control controlID="431" controlTypeID="com.balsamiq.mockups::IconLabel" x="264" y="71" w="-1" h="-1" measuredW="85" measuredH="73" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>ScreenIcon%7Clarge</icon>
+        <labelPosition>bottom</labelPosition>
+        <text>My%20computer</text>
+      </controlProperties>
+    </control>
+    <control controlID="432" controlTypeID="com.balsamiq.mockups::Label" x="980" y="600" w="-1" h="-1" measuredW="45" measuredH="20" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <text>4%3A32%20PM</text>
+      </controlProperties>
+    </control>
+    <control controlID="433" controlTypeID="com.balsamiq.mockups::IconLabel" x="960" y="600" w="-1" h="-1" measuredW="16" measuredH="41" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>VolumeIcon%7Cxsmall</icon>
+        <text>%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="434" controlTypeID="com.balsamiq.mockups::SearchBox" x="819" y="597" w="-1" h="-1" measuredW="66" measuredH="25" zOrder="10" locked="false" isInGroup="-1"/>
+    <control controlID="435" controlTypeID="com.balsamiq.mockups::IconLabel" x="940" y="600" w="-1" h="-1" measuredW="16" measuredH="41" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CellBarsIcon%7Cxsmall</icon>
+        <text>%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="436" controlTypeID="com.balsamiq.mockups::IconLabel" x="920" y="600" w="-1" h="-1" measuredW="16" measuredH="41" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>EmailIcon%7Cxsmall</icon>
+        <text>%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="437" controlTypeID="com.balsamiq.mockups::IconLabel" x="900" y="600" w="-1" h="-1" measuredW="16" measuredH="41" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CartIcon%7Cxsmall</icon>
+        <text>%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="438" controlTypeID="com.balsamiq.mockups::Canvas" x="405" y="593" w="118" h="33" measuredW="100" measuredH="70" zOrder="14" locked="false" isInGroup="-1"/>
+    <control controlID="439" controlTypeID="com.balsamiq.mockups::Canvas" x="523" y="593" w="118" h="33" measuredW="100" measuredH="70" zOrder="16" locked="false" isInGroup="-1"/>
+    <control controlID="440" controlTypeID="com.balsamiq.mockups::Label" x="525" y="600" w="-1" h="-1" measuredW="82" measuredH="25" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Thunderbird</text>
+      </controlProperties>
+    </control>
+    <control controlID="441" controlTypeID="com.balsamiq.mockups::Canvas" x="641" y="593" w="118" h="33" measuredW="100" measuredH="70" zOrder="18" locked="false" isInGroup="-1"/>
+    <control controlID="442" controlTypeID="com.balsamiq.mockups::Label" x="643" y="600" w="-1" h="-1" measuredW="80" measuredH="25" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>OpenOffice</text>
+      </controlProperties>
+    </control>
+    <control controlID="443" controlTypeID="com.balsamiq.mockups::StickyNote" x="309" y="430" w="141" h="93" measuredW="109" measuredH="123" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>This%20is%20the%20icon%0Aof%20Adobe%20AIR%20app</text>
+      </controlProperties>
+    </control>
+    <control controlID="444" controlTypeID="com.balsamiq.mockups::Arrow" x="768" y="511" w="132" h="89" measuredW="150" measuredH="100" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>16750848</color>
+        <direction>top</direction>
+        <leftArrow>false</leftArrow>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="445" controlTypeID="com.balsamiq.mockups::RoundButton" x="240" y="329" w="152" h="155" measuredW="32" measuredH="32" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <borderColor>16750848</borderColor>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="448" controlTypeID="com.balsamiq.mockups::StickyNote" x="607" y="444" w="173" h="117" measuredW="109" measuredH="123" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Indicator%20of%20the%0AAdobe%20AIR%20app%0Aworking%20in%20background</text>
+      </controlProperties>
+    </control>
+    <control controlID="449" controlTypeID="com.balsamiq.mockups::TitleWindow" x="847" y="408" w="178" h="168" measuredW="450" measuredH="400" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bottomheight>0</bottomheight>
+        <close>true</close>
+        <dragger>true</dragger>
+        <text>Twetailer%20Notifier</text>
+      </controlProperties>
+    </control>
+    <control controlID="450" controlTypeID="com.balsamiq.mockups::Paragraph" x="848" y="432" w="177" h="140" measuredW="200" measuredH="140" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>You%27ve%20received%20*1*%20new%20Proposal%2C%20and%20still%20have%20*4*%20waiting%20for%20your%20action.%0A%20%0AClick%20%5Bhere%5D%20to%20open%20the%20Twetailer%20Console.</text>
+      </controlProperties>
+    </control>
+    <control controlID="452" controlTypeID="com.balsamiq.mockups::StickyNote" x="780" y="78" w="236" h="154" measuredW="109" measuredH="123" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>1%29%20When%20users%20over%20the%0Aicon%20in%20the%20systray%2C%20the%20popup%0Ashows%20information%20about%20how%0Amany%20proposals%20are%20waiting%20for%0Aan%20action.</text>
+      </controlProperties>
+    </control>
+    <control controlID="453" controlTypeID="com.balsamiq.mockups::StickyNote" x="780" y="232" w="236" h="133" measuredW="109" measuredH="123" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>2%29%20When%20a%20new%20proposal%20is%0Areturned%2C%20the%20popup%20opens%0Aautomatically%20to%20notify%20the%20users.</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
