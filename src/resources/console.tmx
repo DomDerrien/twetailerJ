@@ -716,6 +716,50 @@
             </tuv>
         </tu>
 
+        <tu tuid="error_invalid_data" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>Message printed in table cells or in input fields!</note>
+            <tuv xml:lang="en">
+                <seg>Invalid!</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_invalid_date" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: the invalid date value
+            </note>
+            <tuv xml:lang="en">
+                <seg>Invalid date format in: {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_invalid_email" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: the invalid date value
+            </note>
+            <tuv xml:lang="en">
+                <seg>Invalid e-mail address format in: {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_invalid_array" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Expects an instance of Array</seg>
+            </tuv>
+        </tu>
+
         <!-- ========================== -->
         <!-- Search engine landing page -->
         <!-- ========================== -->

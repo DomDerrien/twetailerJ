@@ -77,15 +77,18 @@ body {
 #brand>h1 .bang, .twBang {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
     color: #9966cc; /* PurpleChalk (aka Magenta 4)*/
+    text-shadow: 0 0 0.2em #fff, 0 0 0.2em #fff;
 }
 #brand>h1 .tw, .twTw {
     font-family: "Arial Rounded MT", arial, sans-serif;
     color: #696969; /* DimGray */
     letter-spacing: -.1em;
+    text-shadow: 0 0 0.2em #fff;
 }
 #brand>h1 .etailer, .twEtailer {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
     color: #696969; /* DimGray */
+    text-shadow: 0 0 0.2em #fff;
 }
 
 #brand>h1>a {
@@ -98,6 +101,7 @@ body {
 	margin-top:-25px;
 	padding-left: 70px;
 	font-size: 1.2em !important;
+    text-shadow: 1px 1px 0.2em #fff;
 }
 
 #logo {
@@ -283,4 +287,10 @@ body {
 .entityInformation>div>span.hint, .demandForm>tbody>tr>td>span.hint {
     font-size: smaller;
     color: grey;
+}
+
+.invalidData {
+	color: red;
+	border-bottom: 2px dotted red;
+	text-shadow: #bbb 2px 2px 2px;
 }
