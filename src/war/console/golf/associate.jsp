@@ -72,7 +72,15 @@
             height: 24px;
             vertical-align: middle;
         }
-        .dijitTextBox .rightAlign { text-align: right; }
+        .dijitTextBox .rightAlign {
+            text-align: right;
+        }
+        #demandList .dojoxGridScrollbox {
+            background: url("/images/golf/grass-border.png") repeat-x scroll center bottom #FFFFFF;
+        }
+        #proposalForm .dijitDialogPaneContent {
+            background: url("/images/golf/18-hole-flag.png") no-repeat scroll right bottom #FFFFFF;
+        }
     </style>
 </head>
 <body class="tundra">
@@ -132,14 +140,14 @@
                 <thead>
                     <tr>
                            <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
-                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfAssociate.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
-                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfAssociate.displayCriteria" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
+                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
                            <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
-                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfAssociate.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
-                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfAssociate.displayDateTime" styles="text-align:right;" width="180px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
-                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfAssociate.displayDate" hidden="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
-                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfAssociate.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfCommon.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
+                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="180px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
+                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDate" hidden="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
+                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
                            <!--th
                                cellType="dojox.grid.cells.Select"
                                editable="true"
@@ -231,14 +239,14 @@
     </div>
 
     <div
-       color="yellow"
+       color="darkgreen"
        dojoType="dojox.widget.Standby"
        id="demandListOverlay"
        target="demandList"
     ></div>
 
     <div
-       color="yellow"
+       color="darkgreen"
        dojoType="dojox.widget.Standby"
        id="proposalFormOverlay"
        target="proposalForm"

@@ -69,6 +69,9 @@
             vertical-align: middle;
         }
         .dijitTextBox .rightAlign { text-align: right; }
+        #demandList .dojoxGridScrollbox {
+            background: url("/images/golf/grass-border.png") repeat-x scroll center bottom #FFFFFF;
+        }
     </style>
 </head>
 <body class="tundra">
@@ -145,10 +148,10 @@
         // dojo.require("dojox.secure");
         // dojo.require("dojox.widget.Portlet");
         // dojo.require("dojox.widget.Standby");
-        // dojo.require("twetailer.GolfAssociate");
+        dojo.require("twetailer.GolfConsumer");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            // twetailer.GolfAssociate.init("<%= localeId %>");
+            twetailer.GolfConsumer.init("<%= localeId %>");
             dojo.fadeOut({
                 node: "introFlash",
                 delay: 50,

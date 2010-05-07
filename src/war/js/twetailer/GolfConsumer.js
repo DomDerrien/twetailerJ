@@ -18,7 +18,7 @@
      */
     module.init = function(locale) {
         _common = twetailer.GolfCommon;
-        _getLabel = _common.init(locale);
+        _getLabel = _commom.init(locale);
 
         // Attach the contextual menu to the DataGrid instance
         // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
@@ -30,15 +30,12 @@
         };
 
         // Fetch
-        var dfd = _common.loadRemoteDemands("SA"); // No modificationDate means "load all active Demands"
+        var dfd = _common.loadRemoteDemands("Consumer"); // No modificationDate means "load all active Demands"
         dfd.addCallback(function(response) { _common.processDemandList(response.resources, _grid); });
     };
 
     /**
-     * Open a dialog box with the attributes of the identified proposal. If there's no
-     * proposalKey, the variable set by the contextual menu handler for the Demand grid
-     * is used to identified a selected grid row and to propose a dialog for a new
-     * proposal creation.
+     * Open a dialog box with the attributes of the identified proposal.
      *
      * @param {Number} proposedRowIndex (Optional) index given when a link on the proposal key is activated
      * @param {Number} proposalKey (Optional) index given when a link on the proposal key is activated
@@ -57,29 +54,18 @@
             return;
         }
 
+        // TODO: fetch the form
+        /*
         var proposalForm = dijit.byId("proposalForm");
         proposalForm.reset();
 
-        dijit.byId("demand.key").attr("value", item.key);
-        dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
-        dijit.byId("demand.quantity").attr("value", item.quantity);
+        // ...
+        _loadProposal(proposalKey);
+        // ...
 
-        if (proposalKey == null) {
-            proposalForm.attr("title", _getLabel("console", "ga_cmenu_createProposal"));
-            dijit.byId("proposalFormSubmitButton").attr("label", _getLabel("console", "create_button"));
-            dijit.byId("proposalFormCancelButton").attr("disabled", true);
-            dojo.query(".existingProposalAttribute").style("display", "none");
-        }
-        else {
-            _loadProposal(proposalKey);
-            proposalForm.attr("title", _getLabel("console", "ga_cmenu_viewProposal", [proposalKey]));
-            dijit.byId("proposalFormSubmitButton").attr("label", _getLabel("console", "update_button"));
-            dijit.byId("proposalFormCancelButton").attr("disabled", false);
-            dojo.query(".existingProposalAttribute").style("display", "");
-            dijit.byId("proposal.key").attr("value", proposalKey);
-        }
         proposalForm.show();
         dijit.byId('proposal.price').focus();
+        */
     };
 
     /**
@@ -105,52 +91,7 @@
      * @param {Proposal} proposal Object to represent
      */
     var _fetchProposal = function(proposal) {
-        var time = null;
-        var additionalInformation = [];
-        var criteria = proposal.criteria;
-        var limit = criteria.length;
-        for (var idx = 0; idx < limit; idx++) {
-            var criterion = criteria[idx];
-            if (criterion == "time:") {
-                idx ++;
-                time = _getTime(criteria[idx]);
-            }
-            else if (criterion.substr(0, "time:".length) == "time:") {
-                time = _getTime(criterion.substring("time:".length, criterion.length));
-            }
-            else {
-                additionalInformation.push(criterion);
-            }
-        }
-        if (time != null) {
-            dijit.byId("proposal.time").attr("value", time);
-        }
-        dijit.byId("proposal.state").attr("value", proposal.state);
-        dijit.byId("proposal.price").attr("value", proposal.price);
-        dijit.byId("proposal.total").attr("value", proposal.total);
-        // TODO: skip the date part ;)
-        dijit.byId("proposal.criteria").attr("value", additionalInformation.join(" "));
-        dijit.byId("proposal.modificationDate").attr("value", _common.displayDateTime(proposal.modificationDate));
-    };
-
-    /**
-     * Helper extracting the time in 24 or AM/PM
-     */
-    var _getTime = function(time) {
-        var hour = parseInt(time.substr(0, 2));
-        var minute = parseInt(time.substr("00:".length, 2));
-        if (isNaN(hour) || isNaN(minute)) {
-            return null;
-        }
-        if (time.charAt("00:00".length) != ':') {
-            if (time.charAt("00:00".length) == 'p') {
-                hour += 12;
-            }
-            if (time.charAt("00:00".length) == ' ' && time.charAt("00:00 ".length) == 'p') {
-                hour += 12;
-            }
-        }
-        return new Date(1970,0,1,parseInt(hour),parseInt(minute),0,0);
+        // TODO: fetch the form
     };
 
     /**
@@ -192,7 +133,7 @@
      * Call the back-end to get the new Demands
      */
     module.loadNewDemands = function() {
-        var dfd = _common.loadRemoteDemands("SA");
+        var dfd = _common.loadRemoteDemands();
         dfd.addCallback(function(response) { dijit.byId("refreshButton").resetTimeout(); _common.processDemandList(response.resources, _grid); });
     };
 })(); // End of the function limiting the scope of the private variables
