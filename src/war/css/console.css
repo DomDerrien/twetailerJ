@@ -37,7 +37,7 @@ body {
 	margin: 0;
 	border: 0 none;
 	padding: 0;
-	background: white url('../images/loading.gif') no-repeat center center;
+	background: white url('/images/loading.gif') no-repeat center center;
 	z-index: 999;
 }
 
@@ -176,47 +176,51 @@ body {
 }
 
 .silkIconAccept {
-    background-image:url(../images/accept.png);
+    background-image:url(/images/accept.png);
+}
+
+.silkIconAdd {
+    background-image:url(/images/add.png);
 }
 
 .silkIconCancel {
-    background-image:url(../images/cancel.png);
+    background-image:url(/images/cancel.png);
 }
 
 .silkIconDemand {
-    background-image:url(../images/page_white_go.png);
+    background-image:url(/images/page_white_go.png);
 }
 
 .silkIconDemandList {
-    background-image:url(../images/page_white_go_list.png);
+    background-image:url(/images/page_white_go_list.png);
 }
 
 .silkIconHelp {
-    background-image:url(../images/help.png);
+    background-image:url(/images/help.png);
 }
 
 .silkIconProposal {
-    background-image:url(../images/page_white_come.png);
+    background-image:url(/images/page_white_come.png);
 }
 
 .silkIconProposalList {
-    background-image:url(../images/page_white_come_list.png);
+    background-image:url(/images/page_white_come_list.png);
 }
 
 .silkIconUpdate {
-    background-image:url(../images/page_white_edit.png);
+    background-image:url(/images/page_white_edit.png);
 }
 
 .silkIconProfile {
-    background-image:url(../images/user.png);
+    background-image:url(/images/user.png);
 }
 
 .silkIconVerify {
-    background-image:url(../images/tick.png);
+    background-image:url(/images/tick.png);
 }
 
 .silkIconClose {
-    background-image:url(../images/asterisk_orange.png);
+    background-image:url(/images/asterisk_orange.png);
 }
 
 /**

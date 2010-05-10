@@ -23,7 +23,7 @@
         // Attach the contextual menu to the DataGrid instance
         // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
         _grid = dijit.byId("demandList");
-        dijit.byId("cellMenu").bindDomNode(_grid.domNode);
+        dijit.byId("demandListCellMenu").bindDomNode(_grid.domNode);
         _grid.onCellContextMenu = function(e) {
             _gridCellNode = e.cellNode;
             _gridRowIndex = e.rowIndex;

@@ -37,6 +37,7 @@
             return dojo.date.locale.format(dateObject, {selector: "date"});
         }
         catch(ex) {
+            console.log("displayDate('" + serializedDate + "') -- ex: " + ex.message);
             return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_date", [serializedDate]) + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
         }
     };
@@ -53,6 +54,7 @@
             return dojo.date.locale.format(dateObject, {selector: "dateTime"});
         }
         catch(ex) {
+            console.log("displayDateTime('" + serializedDate + "') -- ex: " + ex.message);
             return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_date", [serializedDate]) + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
         }
     };
@@ -70,6 +72,7 @@
         if (dojo.isArray(criteria)) {
             return criteria.join(" ");
         }
+        console.log("displayCriteria(" + criteria + ") is not an Array");
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
 
@@ -102,6 +105,7 @@
             }
             return value.join("");
         }
+        console.log("displayProposalKeys(" + proposalKeys + ") is not an Array");
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
 

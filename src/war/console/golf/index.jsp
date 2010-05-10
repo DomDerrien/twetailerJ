@@ -105,8 +105,51 @@
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
         </jsp:include>
-        <div dojoType="dijit.layout.BorderContainer" gutters="false" region="center" style="margin: 0 10px;">
-            <blockquote style="text-align: center; font-size: xx-large;">Under construction!</blockquote>
+        <div dojoType="dijit.layout.BorderContainer" gutters="false" region="center">
+            <div dojoType="dijit.layout.ContentPane" region="top" style="text-align:left;margin:10px 10px 0 10px;">
+                <button
+                    dojoType="dijit.form.Button"
+                    iconClass="silkIcon silkIconAdd"
+                    id="createButton"
+                    onclick="twetailer.GolfConsumer.createDemand();"
+                ><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createDemand", locale) %></button>
+                <button
+                    busyLabel="<%= LabelExtractor.get(ResourceFileId.third, "refreshing_button_state", locale) %>"
+                    dojoType="dojox.form.BusyButton"
+                    id="refreshButton"
+                    onclick="twetailer.GolfConsumer.loadNewDemands();"
+                    style="float:right;"
+                ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
+            </div>
+            <div dojoType="dijit.Menu" id="demandListCellMenu" style="display: none;">
+                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconAdd" onClick="twetailer.GolfConsumer.displayDemandForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createDemand", locale) %></div>
+                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconAdd" onClick="twetailer.GolfConsumer.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
+                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconRemove"  onClick="twetailer.GolfConsumer.cancelProposal();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_cancelDemand", locale) %></div>
+            </div>
+            <table
+                dojoType="dojox.grid.DataGrid"
+                errorMessage="&lt;span class='dojoxGridError'&gt;<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loadingError", locale) %>&lt;/span&gt;"
+                id="demandList"
+                errorMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loading", locale) %>"
+                region="center"
+                rowMenu="cellMenu"
+                rowsPerPage="20"
+                style="font-size:larger;margin:10px;border:1px solid lightgrey;"
+            >
+                <thead>
+                    <tr>
+                           <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
+                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
+                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.QUANTITY %>" styles="text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
+                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
+                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfCommon.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
+                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="180px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
+                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDate" hidden="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
+                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                    </tr>
+                </thead>
+            </table>
         </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get("product_copyright", locale) %>
@@ -121,10 +164,31 @@
     >
     </div>
 
+    <div
+       color="darkgreen"
+       dojoType="dojox.widget.Standby"
+       id="demandListOverlay"
+       target="demandList"
+    ></div>
+
+    <div
+       color="darkgreen"
+       dojoType="dojox.widget.Standby"
+       id="demandFormOverlay"
+       target="demandForm"
+    ></div>
+
+    <div
+       color="darkgreen"
+       dojoType="dojox.widget.Standby"
+       id="proposalFormOverlay"
+       target="proposalForm"
+    ></div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        // dojo.require("dojo.data.ItemFileWriteStore");
-        // dojo.require("dojo.date.locale");
+        dojo.require("dojo.data.ItemFileWriteStore");
+        dojo.require("dojo.date.locale");
         // dojo.require("dojo.number");
         dojo.require("dojo.parser");
         dojo.require("dijit.Dialog");
@@ -140,14 +204,14 @@
         // dojo.require("dijit.form.Textarea");
         // dojo.require("dijit.form.TextBox");
         // dojo.require("dijit.form.TimeTextBox");
-        // dojo.require("dojox.form.BusyButton");
+        dojo.require("dojox.form.BusyButton");
         // dojo.require("dojox.form.Rating");
         // dojo.require("dojox.grid.EnhancedDataGrid");
-        // dojo.require("dojox.grid.DataGrid");
+        dojo.require("dojox.grid.DataGrid");
         // dojo.require("dojox.layout.ExpandoPane");
         // dojo.require("dojox.secure");
         // dojo.require("dojox.widget.Portlet");
-        // dojo.require("dojox.widget.Standby");
+        dojo.require("dojox.widget.Standby");
         dojo.require("twetailer.GolfConsumer");
         dojo.addOnLoad(function(){
             dojo.parser.parse();

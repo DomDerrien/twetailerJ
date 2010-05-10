@@ -123,9 +123,9 @@
                     onclick="twetailer.GolfAssociate.loadNewDemands();"
                 ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
             </div>
-            <div dojoType="dijit.Menu" id="cellMenu" style="display: none;">
-                <div dojoType="dijit.MenuItem" iconClass="silkIcon silkAddIcon" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
-                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkRemoveIcon"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
+            <div dojoType="dijit.Menu" id="demandListCellMenu" style="display: none;">
+                <div dojoType="dijit.MenuItem" iconClass="silkIcon silkIconAdd" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
+                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconRemove"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
             </div>
             <table
                 dojoType="dojox.grid.DataGrid"
