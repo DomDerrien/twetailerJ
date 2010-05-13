@@ -142,6 +142,12 @@ public class DemandProcessor {
             for(SaleAssociate saleAssociate: saleAssociates) {
                 // Communicate with the sale associate
                 try {
+                    Locale locale = saleAssociate.getLocale();
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String tags = demand.getSerializedCriteria() == null ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
+                    String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale);
+                    String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale);
+                    String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale);
                     communicateToSaleAssociate(
                             new RawCommand(saleAssociate.getPreferredConnection()),
                             saleAssociate,
@@ -149,12 +155,13 @@ public class DemandProcessor {
                                 LabelExtractor.get(
                                     demand.getQuantity() == 1 ? "dp_inform_saleAssociate_about_demand_one_item" : "dp_inform_saleAssociate_about_demand_many_items",
                                     new Object[] {
-                                        demand.getKey(),
-                                        demand.getSerializedCriteria(),
-                                        demand.getExpirationDate(),
-                                        demand.getQuantity()
+                                        demandRef,
+                                        tags,
+                                        expiration,
+                                        dueDate,
+                                        quantity
                                     },
-                                    saleAssociate.getLocale()
+                                    locale
                                 )
                             }
                     );
@@ -203,8 +210,10 @@ public class DemandProcessor {
             try {
                 int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
                 log.warning("Sale associates contacted: " + initialNumberOfSaleAssociatesContacted + " => " + newNumberOfSaleAssociatesContacted + " (cron: " + cronJob + ")");
+                Locale locale = owner.getLocale();
                 if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
                     RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                     communicateToConsumer(
                             rawCommand,
                             owner,
@@ -212,11 +221,11 @@ public class DemandProcessor {
                                 LabelExtractor.get(
                                     "dp_inform_consumer_about_new_sale_associates_contacted",
                                     new Object[] {
-                                        demandKey,
+                                        demandRef,
                                         newNumberOfSaleAssociatesContacted,
                                         newNumberOfSaleAssociatesContacted - initialNumberOfSaleAssociatesContacted
                                     },
-                                    owner.getLocale()
+                                    locale
                                 )
                             }
                     );
@@ -229,7 +238,7 @@ public class DemandProcessor {
                             new String[] {
                                 LabelExtractor.get(
                                     "dp_inform_consumer_about_no_store",
-                                    owner.getLocale()
+                                    locale
                                 )
                             }
                     );

@@ -28,6 +28,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
@@ -410,7 +411,10 @@ public class TestProposeCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposalKey, State.confirmed.toString()}, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { State.confirmed.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposalRef, stateLabel }, Locale.ENGLISH), sentText);
     }
 
     @Test

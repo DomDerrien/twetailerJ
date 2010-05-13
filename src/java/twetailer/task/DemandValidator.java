@@ -89,31 +89,40 @@ public class DemandValidator {
                 // Temporary filter
                 filterHashTags(pm, consumer, demand);
 
+                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                 if (demand.getCriteria() == null || demand.getCriteria().size() == 0) {
-                    message = LabelExtractor.get("dv_report_demand_without_tag", new Object[] { demand.getKey() }, locale);
+                    message = LabelExtractor.get("dv_report_demand_without_tag", new Object[] { demandRef }, locale);
                 }
                 else if (demand.getExpirationDate() == null || demand.getExpirationDate().getTime() < nowTime) {
-                    message = LabelExtractor.get("dv_report_expiration_in_past", new Object[] { demand.getKey() }, locale);
+                    message = LabelExtractor.get("dv_report_expiration_in_past", new Object[] { demandRef }, locale);
                 }
                 else if (LocaleValidator.KILOMETER_UNIT.equals(demand.getRangeUnit()) && (demand.getRange() == null || demand.getRange().doubleValue() < RANGE_KM_MIN.doubleValue())) {
-                    message = LabelExtractor.get("dv_report_range_km_too_small", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange(), RANGE_KM_MIN }, locale);
+                    String rangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange() == null ? 0.0D : demand.getRange(), LocaleValidator.KILOMETER_UNIT }, locale);
+                    String minRangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { RANGE_KM_MIN, LocaleValidator.KILOMETER_UNIT }, locale);
+                    message = LabelExtractor.get("dv_report_range_too_small", new Object[] { demandRef, rangeDef, minRangeDef, LocaleValidator.KILOMETER_UNIT }, locale);
                 }
                 else if (/* LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && */ (demand.getRange() == null || demand.getRange().doubleValue() < RANGE_MI_MIN.doubleValue())) {
-                    message = LabelExtractor.get("dv_report_range_mi_too_small", new Object[] { demand.getKey(), demand.getRange() == null ? 0.0D : demand.getRange(), RANGE_MI_MIN }, locale);
+                    String rangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange() == null ? 0.0D : demand.getRange(), LocaleValidator.MILE_UNIT }, locale);
+                    String minRangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { RANGE_MI_MIN, LocaleValidator.MILE_UNIT }, locale);
+                    message = LabelExtractor.get("dv_report_range_too_small", new Object[] { demandRef, rangeDef, minRangeDef, LocaleValidator.MILE_UNIT }, locale);
                 }
                 else if (LocaleValidator.MILE_UNIT.equals(demand.getRangeUnit()) && demand.getRange().doubleValue() > RANGE_MI_MAX.doubleValue()) {
-                    message = LabelExtractor.get("dv_report_range_mi_too_big", new Object[] { demand.getKey(), demand.getRange(), RANGE_MI_MAX }, locale);
+                    String rangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange(), LocaleValidator.MILE_UNIT }, locale);
+                    String maxRangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { RANGE_MI_MAX, LocaleValidator.MILE_UNIT }, locale);
+                    message = LabelExtractor.get("dv_report_range_too_big", new Object[] { demandRef, rangeDef, maxRangeDef, LocaleValidator.MILE_UNIT }, locale);
                 }
                 else if (/* LocaleValidator.KILOMETER_UNIT.equals(demand.getRangeUnit()) && */ demand.getRange().doubleValue() > RANGE_KM_MAX.doubleValue()) {
-                    message = LabelExtractor.get("dv_report_range_km_too_big", new Object[] { demand.getKey(), demand.getRange(), RANGE_KM_MAX }, locale);
+                    String rangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange(), LocaleValidator.KILOMETER_UNIT }, locale);
+                    String maxRangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { RANGE_KM_MAX, LocaleValidator.KILOMETER_UNIT }, locale);
+                    message = LabelExtractor.get("dv_report_range_too_big", new Object[] { demandRef, rangeDef, maxRangeDef, LocaleValidator.KILOMETER_UNIT }, locale);
                 }
                 else if (demand.getQuantity() == null || demand.getQuantity() == 0L) {
-                    message = LabelExtractor.get("dv_report_quantity_zero", new Object[] { demand.getKey() }, locale);
+                    message = LabelExtractor.get("dv_report_quantity_zero", new Object[] { demandRef }, locale);
                 }
                 else {
                     Long locationKey = demand.getLocationKey();
                     if (locationKey == null || locationKey == 0L) {
-                        message = LabelExtractor.get("dv_report_missing_locale", new Object[] { demand.getKey() }, locale);
+                        message = LabelExtractor.get("dv_report_missing_locale", new Object[] { demandRef }, locale);
                     }
                     else {
                         try {
@@ -126,7 +135,7 @@ public class DemandValidator {
                             if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                 location = LocaleValidator.getGeoCoordinates(location);
                                 if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
-                                    message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { demand.getKey(), location.getPostalCode(), location.getCountryCode() }, locale);
+                                    message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { demandRef, location.getPostalCode(), location.getCountryCode() }, locale);
                                 }
                                 else {
                                     location = locationOperations.updateLocation(pm, location);
@@ -139,7 +148,7 @@ public class DemandValidator {
                             }
                         }
                         catch (DataSourceException ex) {
-                            message = LabelExtractor.get("dv_report_unable_to_get_locale_information", new Object[] { demand.getKey() }, locale);
+                            message = LabelExtractor.get("dv_report_unable_to_get_locale_information", new Object[] { demandRef }, locale);
                         }
                    }
                 }
@@ -194,11 +203,13 @@ public class DemandValidator {
                     }
                 }
                 if (0 < serializedHashTags.length()) {
-                    serializedHashTags = serializedHashTags.trim();
+                    Locale locale = consumer.getLocale();
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { serializedHashTags.trim() }, locale);
                     communicateToConsumer(
                             new RawCommand(demand.getSource()),
                             consumer,
-                            new String[] { LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demand.getKey(), serializedHashTags }, consumer.getLocale()) }
+                            new String[] { LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandRef, tags }, locale) }
                     );
                     for (String tag: serializedHashTags.split(" ")) {
                         demand.removeHashTag(tag);

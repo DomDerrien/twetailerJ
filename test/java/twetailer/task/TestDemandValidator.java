@@ -1708,7 +1708,9 @@ public class TestDemandValidator {
         assertEquals(0, demand.getHashTags().size());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandKey, "test" }, Locale.ENGLISH), sentText);
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, Locale.ENGLISH);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "test" }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandRef, tags }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1725,7 +1727,9 @@ public class TestDemandValidator {
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandKey, "unit test" }, Locale.ENGLISH), sentText);
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, Locale.ENGLISH);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandRef, tags }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1742,6 +1746,8 @@ public class TestDemandValidator {
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandKey, "unit test" }, Locale.ENGLISH), sentText);
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, Locale.ENGLISH);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandRef, tags }, Locale.ENGLISH), sentText);
     }
 }

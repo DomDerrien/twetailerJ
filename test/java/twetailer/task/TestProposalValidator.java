@@ -185,8 +185,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -230,8 +231,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -276,8 +278,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -322,8 +325,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -371,8 +375,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -420,8 +425,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -469,8 +475,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -518,8 +525,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -564,8 +572,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -610,8 +619,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -660,8 +670,9 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -717,8 +728,10 @@ public class TestProposalValidator {
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, Locale.ENGLISH);
         assertEquals(
-                LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposalKey, demandKey }, Locale.ENGLISH),
+                LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposalRef, demandRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
         assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -899,7 +912,9 @@ public class TestProposalValidator {
         assertEquals(0, proposal.getHashTags().size());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalKey, "test" }, Locale.ENGLISH), sentText);
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "test" }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -916,7 +931,9 @@ public class TestProposalValidator {
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalKey, "unit test" }, Locale.ENGLISH), sentText);
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -933,6 +950,8 @@ public class TestProposalValidator {
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalKey, "unit test" }, Locale.ENGLISH), sentText);
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
     }
 }

@@ -5,6 +5,7 @@ import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
@@ -43,8 +44,11 @@ public class CancelCommandProcessor {
                 demand = CommandProcessor.demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
                 State state = demand.getState();
                 if (State.closed.equals(state) || State.cancelled.equals(state) || State.markedForDeletion.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    message = LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale());
+                    Locale locale = consumer.getLocale();
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    message = LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
                     demand = null; // To stop the process
                 }
             }
@@ -79,10 +83,14 @@ public class CancelCommandProcessor {
                             // Inform the proposal owner
                             SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
                             RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, proposal.getRawCommandId());
+                            Locale locale = saleAssociate.getLocale();
+                            String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                            String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                            String tags = proposal.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
                             communicateToSaleAssociate(
                                     originalRawCommand,
                                     saleAssociate,
-                                    new String[] { LabelExtractor.get("cp_command_cancel_demand_canceled_proposal_to_be_canceled", new Object[] { demand.getKey(), proposal.getKey(), proposal.getSerializedCriteria() }, consumer.getLocale()) }
+                                    new String[] { LabelExtractor.get("cp_command_cancel_demand_canceled_proposal_to_be_canceled", new Object[] { demandRef, proposalRef, tags }, locale) }
                             );
                         }
                     }
@@ -108,13 +116,16 @@ public class CancelCommandProcessor {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
                 State state = proposal.getState();
                 if (State.closed.equals(state) || State.cancelled.equals(state) || State.markedForDeletion.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    message = LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale());
+                    Locale locale = saleAssociate.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    message = LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalRef, stateLabel },  locale);
                     proposal = null; // To stop the process
                 }
             }
             catch(Exception ex) {
-                message = LabelExtractor.get("cp_command_cancel_invalid_proposal_id", consumer.getLocale());
+                message = LabelExtractor.get("cp_command_cancel_invalid_proposal_id", saleAssociate.getLocale());
             }
             if (proposal != null) {
                 // Update the proposal and echo back the new state
@@ -133,10 +144,14 @@ public class CancelCommandProcessor {
                     // Inform the consumer of the state change
                     Consumer demandOwner = CommandProcessor.consumerOperations.getConsumer(pm, demand.getOwnerKey());
                     RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                    Locale locale = demandOwner.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String tags = demand.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
                     communicateToConsumer(
                             originalRawCommand,
                             demandOwner,
-                            new String[] { LabelExtractor.get("cp_command_cancel_proposal_canceled_demand_to_be_published", new Object[] { proposal.getKey(), demand.getKey(), demand.getSerializedCriteria() }, consumer.getLocale()) }
+                            new String[] { LabelExtractor.get("cp_command_cancel_proposal_canceled_demand_to_be_published", new Object[] { proposalRef, demandRef, tags }, locale) }
                     );
                 }
                 else if (!State.declined.equals(previousState)) {

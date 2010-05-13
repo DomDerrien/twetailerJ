@@ -75,26 +75,28 @@ public class ProposalValidator {
                 // Temporary filter
                 filterHashTags(pm, saleAssociate, proposal);
 
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                 if (proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
-                    message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {
-                    message = LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, locale);
                 }
                 else if ((proposal.getPrice() == null || Double.valueOf(0.0D).equals(proposal.getPrice())) && (proposal.getTotal() == null || Double.valueOf(0.0D).equals(proposal.getTotal()))) {
-                    message = LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposal.getKey() }, locale);
+                    message = LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, locale);
                 }
                 else {
                     Long demandKey = proposal.getDemandKey();
                     if (demandKey == null || demandKey == 0L) {
-                        message = LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposal.getKey() }, locale);
+                        message = LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, locale);
                     }
                     else {
                         try {
                             demandOperations.getDemand(pm, demandKey, null);
                         }
                         catch (DataSourceException ex) {
-                            message = LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposal.getKey(), demandKey }, locale);
+                            String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+                            message = LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposalRef, demandRef }, locale);
                         }
                    }
                 }
@@ -149,11 +151,13 @@ public class ProposalValidator {
                     }
                 }
                 if (0 < serializedHashTags.length()) {
-                    serializedHashTags = serializedHashTags.trim();
+                    Locale locale = saleAssociate.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { serializedHashTags.trim() }, locale);
                     communicateToSaleAssociate(
                             new RawCommand(proposal.getSource()),
                             saleAssociate,
-                            new String[] { LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposal.getKey(), serializedHashTags }, saleAssociate.getLocale()) }
+                            new String[] { LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, locale) }
                     );
                     for (String tag: serializedHashTags.split(" ")) {
                         proposal.removeHashTag(tag);

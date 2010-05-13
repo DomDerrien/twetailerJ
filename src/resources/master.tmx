@@ -914,16 +914,15 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key|
-                {1}: demand state
+                {0}: demand reference part defined by the entry "cp_tweet_demand_reference_part"
+                {1}: demand state part defined by the entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't Cancel Demand:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Cancel {0} in the {1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_cancel_demand_canceled_proposal_to_be_canceled" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -932,7 +931,7 @@
                 {2}: proposal tags as defined by the entry "cp_tweet_tags_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( The owner of the Demand:{0} canceled it. Your Proposal:{1} with {2} is canceled as a side-effect.</seg>
+                <seg>:-( The owner of the {0} canceled it. Your {1} with {2}, is canceled as a side-effect.</seg>
             </tuv>
         </tu>
 
@@ -949,16 +948,15 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key|
-                {1}: proposal state
+                {0}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"
+                {1}: proposal state part as defined by entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't Cancel Proposal:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Cancel {0} in the {1}.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_cancel_proposal_canceled_demand_to_be_published" datatype="Text">
-            <prop type="x-for-review">Steven</prop>
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -967,7 +965,7 @@
                 {2}: demand tags as defined by the entry "cp_tweet_tags_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( The owner of the Proposal:{0} canceled it. Your Demand:{1} with {2} is back in the published State, ready to be proposed again.</seg>
+                <seg>:-( The owner of the {0} canceled it. Your {1} with {2}, is back in the published State, ready to be proposed again.</seg>
             </tuv>
         </tu>
 
@@ -984,11 +982,11 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key|
-                {1}: demand state
+                {0}: demand reference part as defined by entry "cp_tweet_demand_reference_part"}
+                {1}: demand state part as defined by entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't Close Demand:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Close {0} in the {1}.</seg>
             </tuv>
         </tu>
 
@@ -996,10 +994,10 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key
+                {0}: demand reference part as defined by entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Thanks for Closing Demand:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Thanks for Closing {0} - which will be reflected in your Twetailer Rating shortly.</seg>
             </tuv>
         </tu>
 
@@ -1007,13 +1005,13 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key|
-                {1}: proposal key
+                {0}: demand reference part as defined by entry "cp_tweet_demand_reference_part"|
+                {1}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    FYI. Demand:{0} has been closed by the Consumer. |
-                    Hint: Send "close proposal:{1}", or, "flag proposal:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    FYI. {0} has been closed by the Consumer. |
+                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your Twetailer Rating.
                 </seg>
             </tuv>
         </tu>
@@ -1031,11 +1029,11 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key|
-                {1}: proposal state
+                {0}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"|
+                {1}: proposal state part as defined by entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can't Close Proposal:{0} in the State:{1}.</seg>
+                <seg>:-( You can't Close {0} in the {1}.</seg>
             </tuv>
         </tu>
 
@@ -1043,10 +1041,10 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key
+                {0}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Thanks for Closing Proposal:{0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Thanks for Closing {0} - which will be reflected in your Twetailer Rating shortly.</seg>
             </tuv>
         </tu>
 
@@ -1054,13 +1052,13 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key|
-                {1}: demand key
+                {0}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"|
+                {1}: demand reference part as defined by entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    FYI. Proposal:{0} has been closed by the Retailer. |
-                    Hint: Send "close demand:{1}", or, "flag demand:{1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    FYI. {0} has been closed by the Retailer. |
+                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your Twetailer Rating.
                 </seg>
 
             </tuv>
@@ -1079,12 +1077,12 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key|
-                {1}: demand key|
-                {2}: demand state
+                {0}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"|
+                {0}: demand reference part as defined by entry "cp_tweet_demand_reference_part"|
+                {0}: demand state part as defined by entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( You can only Confirm Proposal:{0} for Demand:{1} when it's in State:{2}.</seg>
+                <seg>:-( You can only Confirm {0} for {1} when it's in {2}.</seg>
             </tuv>
         </tu>
 
@@ -1094,7 +1092,7 @@
             <note>
                 {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
                 {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
-                {2}: demand tags as defined by the entry "cp_tweet_tags_part"
+                {2}: demand tags as defined by the entry "cp_tweet_tags_part"|
                 {3}: store information as defined by the entry "cp_tweet_store_part"
             </note>
             <tuv xml:lang="en">
@@ -1126,14 +1124,14 @@
             <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key|
-                {1}: proposal tags|
-                {2}: demand key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: proposal tags as defined by the entry "cp_tweet_tags_part"|
+                {2}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Proposal:{0} for Tags:{1} has been confirmed.|
-                    Please mark, hold for Consumer with Demand:{2} and then 'close proposal:{0}', or, 'flag proposal:{0} note:your-note-here'.
+                    :-) {0} for {1} has been confirmed.|
+                    Please mark, hold for Consumer with {2} and then 'close {0}', or, 'flag {0} note:your-note-here'.
                 </seg>
             </tuv>
         </tu>
@@ -1159,10 +1157,10 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Proposal:{0} has been declined and further updates halted.</seg>
+                <seg>:-) {0} has been declined and further updates halted.</seg>
             </tuv>
         </tu>
 
@@ -1188,13 +1186,13 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key
-                {1}: demand state
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
+                {1}: demand state as defined by the entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( You can only Delete Cancelled Demands. Demand:{0} is in the State:{1}.|
-                    If this is the Demand you intended to Delete then send 'cancel demand:{0}' and try again.
+                    :-( You can only Delete Cancelled Demands. {0} is in the {1}.|
+                    If this is the Demand you intended to Delete then send 'cancel {0}' and try again.
                 </seg>
             </tuv>
         </tu>
@@ -1203,10 +1201,10 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Demand:{0} has been marked for deletion and no longer accessible</seg>
+                <seg>:-) {0} has been marked for deletion and no longer accessible</seg>
             </tuv>
         </tu>
 
@@ -1223,13 +1221,13 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key
-                {1}: proposal state
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: proposal state as defined by the entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( You can only Delete Cancelled Proposals. Proposal:{0} is in the State:{1}.|
-                    If this is the Proposal you intended to Delete then send 'cancel proposal:{0}' and try again.
+                    :-( You can only Delete Cancelled Proposals. {0} is in the {1}.|
+                    If this is the Proposal you intended to Delete then send 'cancel {0}' and try again.
                 </seg>
             </tuv>
         </tu>
@@ -1238,7 +1236,7 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
                 <seg>:-) Proposal:{0} has been marked for deletion and no longer accessible</seg>
@@ -1268,10 +1266,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
-                {0}: dynamically generated demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing newly created Demand:{0}... </seg>
+                <seg>:-) Listing newly created {0}... </seg>
             </tuv>
         </tu>
 
@@ -1314,18 +1312,17 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key
-                {1}: demand state
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}
+                {1}: demand state as defined by the entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Demand:{0} is currently in State:{1} and can't be updated.</seg>
+                <seg>:-( {0} is currently in {1} and can't be updated.</seg>
             </tuv>
         </tu>
 
         <tu tuid="cp_command_language_missing_language_code" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <note>
                 {0}: current language code
                 {1}: current language name
@@ -1338,7 +1335,6 @@
         <tu tuid="cp_command_language_given_value_as_current" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <note>
                 {0}: current language code
                 {1}: current language name
@@ -1351,7 +1347,6 @@
         <tu tuid="cp_command_language_given_value_accepted" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <prop type="x-for-review">Steven</prop>
             <note>
                 {0}: current language code
                 {1}: current language name
@@ -1554,11 +1549,11 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key
-                {1}: proposal state
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: proposal state as defined by the entry "cp_tweet_state_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Proposal:{0} is currently in State:{1} and can't be updated.</seg>
+                <seg>:-( {0} is currently in {1} and can't be updated.</seg>
             </tuv>
         </tu>
 
@@ -1567,10 +1562,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
-                {0}: dynamically generated proposal key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing newly created Proposal:{0}... </seg>
+                <seg>:-) Listing newly created {0}... </seg>
             </tuv>
         </tu>
 
@@ -1587,7 +1582,7 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: unique tag
+                {1}: one unique tag
             </note>
             <tuv xml:lang="en">
                 <seg>FYI. You are now supplying only one Tag:{0}.</seg>
@@ -1598,11 +1593,11 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: list of tags, separated by a blank space
+                {1}: supplied tags as defined by the entry "cp_tweet_tags_part"
                 {1}: list size
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Listing {1} Tags:{0}.</seg>
+                <seg>:-) Listing {1} {0}.</seg>
             </tuv>
         </tu>
 
@@ -1887,10 +1882,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the demand should have at least one tag.|
-                {0}: demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand with at least Tag by sending 'demand:{0} tags:your-tags-here'.</seg>
+                <seg>:-( Please update your Demand with at least Tag by sending '{0} tags:your-tags-here'.</seg>
             </tuv>
         </tu>
 
@@ -1899,66 +1894,40 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the expiration date should be in the future.|
-                {0}: demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Expiration date is in the future by sending 'demand:{0} expiration:YYYYMMDD'.</seg>
+                <seg>:-( Please ensure your Demand's Expiration date is in the future by sending '{0} expiration:YYYYMMDD'.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_report_range_km_too_small" datatype="Text">
+        <tu tuid="dv_report_range_too_small" datatype="Text">
             <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too small.|
-                {0}: demand key|
-                {1}: given distance|
-                {2}: system limit (hardcoded: 5 km)
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
+                {1}: range part (value + unit) as defined by the entry "cp_tweet_range_part"|
+                {2}: minimum range part (value + unit) as defined by the entry "cp_tweet_range_part"
+                {3}: range unit
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'demand:{0} range:your-range-and-km'.</seg>
+                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {2} by sending '{0} range:??? {3}'.</seg>
             </tuv>
         </tu>
 
-        <tu tuid="dv_report_range_km_too_big" datatype="Text">
+        <tu tuid="dv_report_range_too_big" datatype="Text">
             <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer the range is too big.|
-                {0}: demand key|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {1}: given distance|
                 {2}: system limit (hardcoded: 40075 km)
+                {3}: range unit
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} km) by sending 'demand:{0} range:your-range-and-km'.</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="dv_report_range_mi_too_small" datatype="Text">
-            <prop type="x-version">3</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>
-                Inform the consumer the range is too small.|
-                {0}: demand key|
-                {1}: given distance|
-                {2}: system limit (hardcoded: 2.5 mi)
-            </note>
-            <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is greater than, or, equal to {1} km by sending 'demand:{0} range:your-range-and-km'.</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="dv_report_range_mi_too_big" datatype="Text">
-            <prop type="x-version">3</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>
-                Inform the consumer the range is too big.|
-                {0}: demand key|
-                {1}: given distance|
-                {2}: system limit (hardcoded: 24906 mi)
-            </note>
-            <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({1} miles) by sending 'demand:{0} range:your-range-and-mi'.</seg>
+                <seg>:-( Please ensure your Demand's Range is within Earth's boundaries ({2}) by sending '{0} range:??? {3}'.</seg>
             </tuv>
         </tu>
 
@@ -1966,11 +1935,11 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the consumer the quantity cannot be 0.|
-                {0}: demand key
+                Inform the consumer the quantity cannot be 0|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Demand's Quantity exceeds zero by sending 'demand:{0} qty:1'.</seg>
+                <seg>:-( Please ensure your Demand's Quantity exceeds zero by sending '{0} quantity:1'.</seg>
             </tuv>
         </tu>
 
@@ -1979,10 +1948,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is missing.|
-                {0}: demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand's Locale by sending 'demand:{0} locale:your-postal/zip-code-and-country(us,ca)', like 'demand:{0} locale:12345 us'</seg>
+                <seg>:-( Please update your Demand's Locale by sending '{0} locale:your-postal/zip-code-and-country(us,ca)', like '{0} locale:12345 us'</seg>
             </tuv>
         </tu>
 
@@ -1991,12 +1960,12 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
-                {0}: demand key|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {1}: given postal code|
                 {2}: given country code.
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like 'demand:{0} locale:12345 us'.</seg>
+                <seg>:-( Please update your Demand with a valid Locale - postal/zip code and country (us, ca) like '{0} locale:12345 US'.</seg>
             </tuv>
         </tu>
 
@@ -2005,10 +1974,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the information for the locale cannot be retrieved.|
-                {0}: demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>The Locale information for Demand:{0} cannot be retrieved. Please provide them another time (postal/zip code and country - like 'us', or, 'ca').</seg>
+                <seg>The Locale information for {0} cannot be retrieved. Please provide them another time (postal/zip code and country - like 'US', or, 'CA').</seg>
             </tuv>
         </tu>
 
@@ -2016,12 +1985,12 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand key
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {1}: serialized list of rejected hash tags, separated by a space
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-( #demo is currently the only supported hash (#) Tag. If you wish, remove the # from the rejected list and update your Demand Tags by sending 'demand:{0} {1}"
+                    :-( #demo is currently the only supported hash (#) Tag. If you wish, remove the # from the rejected list and update your Demand Tags by sending '{0} {1}"
                 </seg>
             </tuv>
         </tu>
@@ -2035,10 +2004,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that the locale information is invalid.|
-                {0}: original command.
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'demand:{0} locale:12345 us', or, 'demand:{0} locale:h0h 0h0 ca' </seg>
+                <seg>:-( I can't find that Locale. Please update your Demand with a valid one like 'demand:{0} locale:12345 US', or, '{0} locale:A1B 2C3 CA' </seg>
             </tuv>
         </tu>
 
@@ -2051,15 +2020,16 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
-                {0}: demand key|
-                {1}: given tags, separated by a space|
-                {2}: expiration date, ISO formatted|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}
+                {1}: tags part as defined by the entry "cp_tweet_tags_part"|
+                {2}: expiration date part as defined by the entry "cp_tweet_expiration_part"|
+                {3}: due date part as defined by the entry "cp_tweet_dueDate_part"|
                 Future release:  total:enter-final-price-including-all-taxes-and-service-fees
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Expires:{2}? If yes then replace the "?" and send the following... |
-                    2/2 'propose demand:{0} tags:?'.
+                    1/2 FYI. Can you supply {0} {1} {2} {3}? If yes then replace the "?" and send the following... |
+                    2/2 'propose {0} tags:? price:?'.
                 </seg>
             </tuv>
         </tu>
@@ -2069,16 +2039,17 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a sale associate about a new demand.|
-                {0}: demand key|
-                {1}: given tags, separated by a space|
-                {2}: expiration date, ISO formatted|
-                {3}: quantity|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}
+                {1}: tags part as defined by the entry "cp_tweet_tags_part"|
+                {2}: expiration date part as defined by the entry "cp_tweet_expiration_part"|
+                {3}: due date date part as defined by the entry "cp_tweet_dueDate_part"|
+                {4}: quantity part as defined by the entry "cp_tweet_quantity_part"|
                 Future release:  total:enter-final-price-including-all-taxes-and-service-fees
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. Can you supply Demand:{0} Tags:{1} Qty:{3} Expires:{2}? If yes then replacing the "?" and send the following... |
-                    2/2 'propose demand:{0} tags:? qty:? price:?'.
+                    1/2 FYI. Can you supply {0} {1} {4} {2} {3}? If yes then replacing the "?" and send the following... |
+                    2/2 'propose {0} tags:? qty:? price:?'.
                 </seg>
             </tuv>
         </tu>
@@ -2100,13 +2071,13 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the consumer that twetailer has contacted new stores.|
-                {0}: demand key|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}
                 {1}: total number of sale associates contacted so far|
                 {2}: number of sale associates just contacted
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/2 FYI. {2} additional Sales Associates have been notified of your Demand:{0}, for a total of {1}.|
+                    1/2 FYI. {2} additional Sales Associates have been notified of your {0}, for a total of {1}.|
                     2/2 I'll continue checking until the expiration date.
                 </seg>
             </tuv>
@@ -2121,10 +2092,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the proposal should have at least one tag.|
-                {0}: proposal key:
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with your proposed desciption and sending 'propose proposal:{0} tags:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with your proposed desciption and sending 'propose {0} tags:?'.</seg>
             </tuv>
         </tu>
 
@@ -2133,10 +2104,10 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the quantity cannot be 0.|
-                {0}: proposal key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please ensure your Proposal's Quantity exceeds zero by sending 'propose proposal:{0} qty:1'.</seg>
+                <seg>:-( Please ensure your Proposal's Quantity exceeds zero by sending 'propose {0} qty:1'.</seg>
             </tuv>
         </tu>
 
@@ -2145,11 +2116,11 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate a unit price or the total price is required.|
-                {0}: proposal key|
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
                 Future release
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with the unit Price and final Total cost &#38; sending 'propose proposal:{0} price:? total:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with the unit Price and final Total cost &#38; sending 'propose {0} price:? total:?'.</seg>
             </tuv>
         </tu>
 
@@ -2158,7 +2129,7 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate the demand reference is missing.|
-                {0}: proposal key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
                 <seg>:-( Please update your Proposal by replacing "?" with your Demand number &#38; sending 'propose proposal:{0} demand:?'.</seg>
@@ -2170,11 +2141,11 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate that the given reference is invalid.|
-                {0}: proposal key|
-                {1}: demand key
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: invalid demand reference part as defined by the entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Please update your Proposal by replacing "?" with a valid Demand number &#38; sending 'propose proposal:{0} demand:?'.</seg>
+                <seg>:-( Please update your Proposal by replacing "?" with a valid Demand number &#38; sending 'propose {0} demand:?'.</seg>
             </tuv>
         </tu>
 
@@ -2182,13 +2153,13 @@
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: proposal key
-                {1}: serialized list of rejected hash tags, separated by a space
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: proposal tags part as defined by the entry "cp_tweet_tags_part"
             </note>
             <tuv xml:lang="en">
                 <seg>
                     1/2 :-( #demo is currently the only supported hash (#) Tag. |
-                    2/2 You can add the keyword to the Proposal Tags by sending 'propose proposal:{0} {1}'.
+                    2/2 You can add the keyword to the Proposal Tags by sending 'propose {0} {1}'.
                 </seg>
             </tuv>
         </tu>
@@ -2251,12 +2222,12 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate his proposal cannot be submitted to the demand.|
-                {0}: proposal key|
-                {1}: demand key|
-                {2}: demand state
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"}|
+                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
+                {2}: demand state part as defined by the entry "cp_tweet_state_part"}
             </note>
             <tuv xml:lang="en">
-                <seg>:-( Your proposal:{0} can't be attached to Demand:{1} in State:{2}.</seg>
+                <seg>:-( Your {0} can't be attached to {1} in {2}.</seg>
             </tuv>
         </tu>
 

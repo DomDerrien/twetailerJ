@@ -3,6 +3,8 @@ package twetailer.task.command;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.Locale;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -31,16 +33,19 @@ public class DeleteCommandProcessor {
             String message = null;
             try {
                 demand = CommandProcessor.demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
+                Locale locale = consumer.getLocale();
+                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                 State state = demand.getState();
                 if (!State.cancelled.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    message = LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale());
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    message = LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
                     demand = null; // To stop the process
                 }
                 else {
                     demand.setState(State.markedForDeletion);
                     demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
-                    message = LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demand.getKey() }, consumer.getLocale());
+                    message = LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demandRef }, locale);
                 }
             }
             catch(Exception ex) {
@@ -59,19 +64,22 @@ public class DeleteCommandProcessor {
             try {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
                 State state = proposal.getState();
+                Locale locale = saleAssociate.getLocale();
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                 if (!State.cancelled.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    message = LabelExtractor.get("cp_command_delete_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale());
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    message = LabelExtractor.get("cp_command_delete_invalid_proposal_state", new Object[] { proposalRef, stateLabel },  locale);
                     proposal = null; // To stop the process
                 }
                 else {
                     proposal.setState(State.markedForDeletion);
                     proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
-                    message = LabelExtractor.get("cp_command_delete_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale());
+                    message = LabelExtractor.get("cp_command_delete_acknowledge_proposal_closing", new Object[] { proposalRef }, locale);
                 }
             }
             catch(Exception ex) {
-                message = LabelExtractor.get("cp_command_delete_invalid_proposal_id", consumer.getLocale());
+                message = LabelExtractor.get("cp_command_delete_invalid_proposal_id", saleAssociate.getLocale());
             }
             communicateToSaleAssociate(
                     rawCommand,

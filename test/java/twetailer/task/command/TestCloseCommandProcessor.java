@@ -153,7 +153,9 @@ public class TestCloseCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandRef }, locale), sentText);
     }
 
     @Test
@@ -206,7 +208,9 @@ public class TestCloseCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandRef }, locale), sentText);
     }
 
     @Test
@@ -292,11 +296,14 @@ public class TestCloseCommandProcessor {
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandRef }, locale), sentText);
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(proposalKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demandKey, proposalKey }, Locale.ENGLISH), sentText);
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demandRef, proposalRef }, locale), sentText);
     }
 
     @Test
@@ -407,7 +414,9 @@ public class TestCloseCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(proposalKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalRef }, locale), sentText);
     }
 
     @Test
@@ -488,7 +497,9 @@ public class TestCloseCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(proposalKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalRef }, locale), sentText);
     }
 
     @Test
@@ -602,11 +613,14 @@ public class TestCloseCommandProcessor {
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
         assertTrue(sentText.contains(proposalKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalRef }, locale), sentText);
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
-        assertEquals(LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposalKey, demandKey }, Locale.ENGLISH), sentText);
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposalRef, demandRef }, locale), sentText);
     }
 
     @Test

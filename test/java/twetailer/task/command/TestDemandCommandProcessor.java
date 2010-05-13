@@ -266,7 +266,10 @@ public class TestDemandCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demandKey, State.confirmed.toString()}, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { State.confirmed.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demandRef, stateLabel}, Locale.ENGLISH), sentText);
     }
 
     @Test

@@ -7,6 +7,7 @@ import static twetailer.connector.BaseConnector.communicateToConsumer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
+import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.State;
@@ -80,7 +82,11 @@ public class DemandCommandProcessor {
                     }
                 }
                 else {
-                    messages.add(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale()));
+                    Locale locale = consumer.getLocale();
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    messages.add(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demandRef, stateLabel }, locale));
                 }
             }
         }
@@ -104,13 +110,9 @@ public class DemandCommandProcessor {
             command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
             // Persist the new demand
             Demand newDemand = CommandProcessor.demandOperations.createDemand(pm, command, consumer.getKey());
-            messages.add(
-                    LabelExtractor.get(
-                            "cp_command_demand_acknowledge_creation",
-                            new Object[] { newDemand.getKey() },
-                            consumer.getLocale()
-                    )
-            );
+            Locale locale = consumer.getLocale();
+            String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { newDemand.getKey() }, locale);
+            messages.add( LabelExtractor.get("cp_command_demand_acknowledge_creation", new Object[] { demandRef }, locale));
             Location location = newDemand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, newDemand.getLocationKey());
             String tweet = CommandProcessor.generateTweet(newDemand, location, false, consumer.getLocale());
             messages.add(tweet);
@@ -118,7 +120,7 @@ public class DemandCommandProcessor {
             demandKey = newDemand.getKey();
             // Prepare the message for the CC-ed
             if (0 < newDemand.getCC().size()) {
-                messageCC = LabelExtractor.get("cp_command_demand_forward_creation_to_cc", new Object[] { consumer.getName(), tweet }, consumer.getLocale());
+                messageCC = LabelExtractor.get("cp_command_demand_forward_creation_to_cc", new Object[] { consumer.getName(), tweet }, locale);
                 cc = newDemand.getCC();
             }
         }

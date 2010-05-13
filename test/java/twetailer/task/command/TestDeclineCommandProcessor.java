@@ -211,6 +211,7 @@ public class TestDeclineCommandProcessor {
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposalKey }, Locale.ENGLISH), sentText);
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
+        assertEquals(LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposalRef }, Locale.ENGLISH), sentText);
     }
 }

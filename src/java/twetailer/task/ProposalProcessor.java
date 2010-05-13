@@ -28,7 +28,6 @@ import twetailer.dto.Store;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.JsonObject;
 
 public class ProposalProcessor {
     private static Logger log = Logger.getLogger(ProposalProcessor.class.getName());
@@ -144,13 +143,17 @@ public class ProposalProcessor {
                 }
                 else {
                     SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
-                    JsonObject states = CommandSettings.getStates(saleAssociate.getLocale());
+                    Locale locale = saleAssociate.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String stateLabel = CommandSettings.getStates(saleAssociate.getLocale()).getString(demand.getState().toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
                     String message = LabelExtractor.get(
                             "pp_inform_saleAssociate_demand_not_published_state",
                             new Object[] {
-                                    proposal.getKey(),
-                                    demand.getKey(),
-                                    states.getString(demand.getState().toString())
+                                    proposalRef,
+                                    demandRef,
+                                    stateLabel
                             },
                             saleAssociate.getLocale()
                     );

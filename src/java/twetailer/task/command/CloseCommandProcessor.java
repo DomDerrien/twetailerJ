@@ -5,13 +5,13 @@ import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -37,16 +37,19 @@ public class CloseCommandProcessor {
             String message = null;
             try {
                 demand = CommandProcessor.demandOperations.getDemand(pm, command.getLong(Demand.REFERENCE), consumer.getKey());
+                Locale locale = consumer.getLocale();
+                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                 State state = demand.getState();
                 if (!State.confirmed.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    message = LabelExtractor.get("cp_command_close_invalid_demand_state", new Object[] { demand.getKey(), stateLabel },  consumer.getLocale());
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    message = LabelExtractor.get("cp_command_close_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
                     demand = null; // To stop the process
                 }
                 else {
                     demand.setState(State.closed);
                     demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
-                    message = LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demand.getKey() }, consumer.getLocale());
+                    message = LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandRef }, locale);
                 }
             }
             catch(Exception ex) {
@@ -67,10 +70,13 @@ public class CloseCommandProcessor {
                         Proposal proposal = proposals.get(0);
                         SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
                         RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, proposal.getRawCommandId());
+                        Locale locale = saleAssociate.getLocale();
+                        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                         communicateToSaleAssociate(
                                 originalRawCommand,
                                 saleAssociate,
-                                new String[] { LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demand.getKey(), proposal.getKey() }, consumer.getLocale()) }
+                                new String[] { LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demandRef, proposalRef }, locale) }
                         );
                     }
                 }
@@ -86,20 +92,23 @@ public class CloseCommandProcessor {
             SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.close, Proposal.class.getName());
             try {
                 proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), saleAssociate.getKey(), null);
+                Locale locale = saleAssociate.getLocale();
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                 State state = proposal.getState();
                 if (!State.confirmed.equals(state)) {
-                    String stateLabel = CommandLineParser.localizedStates.get(consumer.getLocale()).getString(state.toString());
-                    message = LabelExtractor.get("cp_command_close_invalid_proposal_state", new Object[] { proposal.getKey(), stateLabel },  consumer.getLocale());
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    message = LabelExtractor.get("cp_command_close_invalid_proposal_state", new Object[] { proposalRef, stateLabel },  locale);
                     proposal = null; // To stop the process
                 }
                 else {
                     proposal.setState(State.closed);
                     proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
-                    message = LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale());
+                    message = LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalRef }, locale);
                 }
             }
             catch(Exception ex) {
-                message = LabelExtractor.get("cp_command_close_invalid_proposal_id", consumer.getLocale());
+                message = LabelExtractor.get("cp_command_close_invalid_proposal_id", saleAssociate.getLocale());
             }
             communicateToSaleAssociate(
                     rawCommand,
@@ -114,10 +123,13 @@ public class CloseCommandProcessor {
                     Demand demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), null);
                     Consumer demandOwner = CommandProcessor.consumerOperations.getConsumer(pm, demand.getOwnerKey());
                     RawCommand originalRawCommand = CommandProcessor.rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                    Locale locale = demandOwner.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                     communicateToConsumer(
                             originalRawCommand,
                             demandOwner,
-                            new String[] { LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposal.getKey(), demand.getKey() }, consumer.getLocale()) }
+                            new String[] { LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposalRef, demandRef }, locale) }
                     );
                 }
                 catch(Exception ex) {

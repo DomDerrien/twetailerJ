@@ -394,7 +394,10 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandKey, state.toString() }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -434,7 +437,10 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandKey, state.toString() }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -474,7 +480,10 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandKey, state.toString() }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -538,7 +547,10 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalKey, state.toString() }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -602,7 +614,10 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalKey, state.toString() }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -666,7 +681,10 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalKey, state.toString() }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalRef, stateLabel }, locale), sentText);
     }
 
     @Test

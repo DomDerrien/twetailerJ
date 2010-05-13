@@ -5,6 +5,7 @@ import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -17,6 +18,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
@@ -63,7 +65,11 @@ public class ProposeCommandProcessor {
                     proposalKey = proposal.getKey();
                 }
                 else {
-                    messages.add(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposal.getKey(), state }, saleAssociate.getLocale()));
+                    Locale locale = saleAssociate.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String stateLabel = CommandLineParser.localizedStates.get(locale).getString(state.toString());
+                    stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                    messages.add(LabelExtractor.get("cp_command_propose_non_modifiable_state", new Object[] { proposalRef, stateLabel }, locale));
                 }
             }
         }
@@ -74,10 +80,12 @@ public class ProposeCommandProcessor {
             command.put(Command.LOCATION_KEY, store.getLocationKey());
             // Persist the new proposal
             Proposal newProposal = CommandProcessor.proposalOperations.createProposal(pm, command, saleAssociate);
+            Locale locale = saleAssociate.getLocale();
+            String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { newProposal.getKey() }, locale);
             messages.add(
                     LabelExtractor.get(
                             "cp_command_propose_acknowledge_creation",
-                            new Object[] { newProposal.getKey() },
+                            new Object[] { proposalRef },
                             saleAssociate.getLocale()
                     )
             );

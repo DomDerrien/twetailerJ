@@ -3,6 +3,7 @@ package twetailer.task.command;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.jdo.PersistenceManager;
 
@@ -64,7 +65,9 @@ public class SupplyCommandProcessor {
             message = LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { saleAssociate.getCriteria().get(0) }, saleAssociate.getLocale());
         }
         else {
-            message = LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { saleAssociate.getSerializedCriteria(), tagNb }, saleAssociate.getLocale());
+            Locale locale = saleAssociate.getLocale();
+            String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { saleAssociate.getSerializedCriteria() }, locale);
+            message = LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, tagNb }, saleAssociate.getLocale());
         }
         communicateToSaleAssociate(
                 rawCommand,

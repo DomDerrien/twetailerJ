@@ -3,6 +3,8 @@ package twetailer.task.command;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.Locale;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -42,7 +44,9 @@ public class DeclineCommandProcessor {
                 // Update the proposal state
                 proposal.setState(State.declined);
                 proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
-                message = LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposal.getKey() }, consumer.getLocale());
+                Locale locale = consumer.getLocale();
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                message = LabelExtractor.get("cp_command_decline_acknowledge_proposal_closing", new Object[] { proposalRef }, locale);
             }
             catch(Exception ex) {
                 message = LabelExtractor.get("cp_command_decline_invalid_proposal_id", consumer.getLocale());

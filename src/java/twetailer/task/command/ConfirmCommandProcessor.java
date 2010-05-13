@@ -22,6 +22,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.task.RobotResponder;
 import twetailer.validator.ApplicationSettings;
@@ -62,39 +63,20 @@ public class ConfirmCommandProcessor {
             messages.add(LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale()));
         }
         if (demand != null) {
+            Locale locale = consumer.getLocale();
+            String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+            String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
             if (!State.published.equals(demand.getState())) {
-                messages.add(
-                        LabelExtractor.get(
-                                "cp_command_confirm_invalid_state_demand",
-                                new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        demand.getState().toString()
-                                },
-                                consumer.getLocale()
-                        )
-                );
+                String stateLabel = CommandLineParser.localizedStates.get(locale).getString(demand.getState().toString());
+                stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                messages.add(LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposalRef, demandRef, stateLabel }, locale));
             }
             else {
-                Locale locale = consumer.getLocale();
                 Store store = CommandProcessor.storeOperations.getStore(pm, proposal.getStoreKey());
-                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
-                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                 String demandTags = demand.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
                 String pickup = LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale);
                 // Inform the consumer of the successful confirmation
-                messages.add(
-                        LabelExtractor.get(
-                                "cp_command_confirm_acknowledge_confirmation",
-                                new Object[] {
-                                        proposalRef,
-                                        demandRef,
-                                        demandTags,
-                                        pickup
-                                },
-                                locale
-                        )
-                );
+                messages.add(LabelExtractor.get("cp_command_confirm_acknowledge_confirmation", new Object[] { proposalRef, demandRef, demandTags, pickup }, locale));
                 // Prepare the message for the CC-ed
                 if (0 < demand.getCC().size()) {
                     messageCC = LabelExtractor.get(
@@ -129,18 +111,14 @@ public class ConfirmCommandProcessor {
                 else {
                     // Inform the sale associate of the successful confirmation
                     SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                    locale = saleAssociate.getLocale();
+                    demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
                     communicateToSaleAssociate(
                             new RawCommand(saleAssociate.getPreferredConnection()),
                             saleAssociate,
-                            new String[] { LabelExtractor.get(
-                                    "cp_command_confirm_inform_about_confirmation",
-                                    new Object[] {
-                                            proposal.getKey(),
-                                            proposal.getSerializedCriteria(),
-                                            demand.getKey()
-                                    },
-                                    consumer.getLocale()
-                            )}
+                            new String[] { LabelExtractor.get("cp_command_confirm_inform_about_confirmation", new Object[] { proposalRef, tags, demandRef }, locale)}
                     );
                 }
 

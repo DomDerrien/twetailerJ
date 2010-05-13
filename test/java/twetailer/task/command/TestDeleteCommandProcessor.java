@@ -131,7 +131,10 @@ public class TestDeleteCommandProcessor {
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demandKey, state }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demandRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -164,7 +167,10 @@ public class TestDeleteCommandProcessor {
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demandKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demandRef }, locale), sentText);
     }
 
     @Test
@@ -276,7 +282,10 @@ public class TestDeleteCommandProcessor {
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("cp_command_delete_invalid_proposal_state", new Object[] { proposalKey, state }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
+        assertEquals(LabelExtractor.get("cp_command_delete_invalid_proposal_state", new Object[] { proposalRef, stateLabel }, locale), sentText);
     }
 
     @Test
@@ -335,6 +344,8 @@ public class TestDeleteCommandProcessor {
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertEquals(LabelExtractor.get("cp_command_delete_acknowledge_proposal_closing", new Object[] { proposalKey }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+        assertEquals(LabelExtractor.get("cp_command_delete_acknowledge_proposal_closing", new Object[] { proposalRef }, locale), sentText);
     }
 }

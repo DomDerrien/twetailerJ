@@ -264,7 +264,9 @@ public class TestSupplyCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tag1 + " " + tag2 + " " + tag3, 3 }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag2 + " " + tag3 }, locale);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 3 }, locale), sentText);
     }
 
     @Test
@@ -382,20 +384,9 @@ public class TestSupplyCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(
-                LabelExtractor.get(
-                        "cp_command_supply_updated_n_tag_list",
-                        new Object[] {
-                                tag1 + " " +
-                                tag2 + " " +
-                                tag3 + " " +
-                                newTag,
-                                4
-                        },
-                        Locale.ENGLISH
-                ),
-                sentText
-        );
+        Locale locale = Locale.ENGLISH;
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag2 + " " + tag3 + " " + newTag }, locale);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 4 }, locale), sentText);
     }
 
     @Test
@@ -454,6 +445,8 @@ public class TestSupplyCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tag1 + " " + tag3, 2 }, Locale.ENGLISH), sentText);
+        Locale locale = Locale.ENGLISH;
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag3 }, locale);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 2 }, locale), sentText);
     }
 }
