@@ -78,7 +78,7 @@ public class TestBaseConnector {
     }
 
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testTwitterSourceI() throws ClientException {
         final String twitterId = "tId";
         final String message = "test";
@@ -98,7 +98,7 @@ public class TestBaseConnector {
     }
 
     @Test(expected=ClientException.class)
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testTwitterSourceII() throws ClientException {
         final String twitterId = "tId";
         final String message = "test";

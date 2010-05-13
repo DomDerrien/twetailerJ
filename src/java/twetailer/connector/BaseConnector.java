@@ -33,6 +33,24 @@ public class BaseConnector {
     /**
      * Send the specified message to the RawCommand emitter, using the same communication channel
      *
+     * @param coordinate Identifier of a CC-ed contact
+     * @param message Text to forward to the CC-ed contact
+     * @param locale recipient's locale (expects it's good for the CC-ed contact too)
+     *
+     * @throws ClientException If the communication fails
+     */
+    public static void communicateToCCed(String coordinate, String message, Locale locale) throws ClientException {
+        Source source = Source.mail;
+        int arobasIdx = coordinate.indexOf('@');
+        if (arobasIdx == -1 || arobasIdx == 1) {
+            source = Source.twitter;
+        }
+        communicateToUser(source, coordinate, null, null, new String[] { message }, locale);
+    }
+
+    /**
+     * Send the specified message to the RawCommand emitter, using the same communication channel
+     *
      * @param rawCommand Command as received by the system, from an IM, in a tweet, an e-mail, etc.
      * @param messages Array of messages to send back
      * @param locale recipient's locale
@@ -193,12 +211,16 @@ public class BaseConnector {
 
     /** If found into a message, this separator is used as a suggestion to break a message in many parts */
     public static final char SUGGESTED_MESSAGE_SEPARATOR = '|';
+    public static final String SUGGESTED_MESSAGE_SEPARATOR_STR = "|";
+    public static final String SENTENCE_SEPARATOR_STR = ".";
+    public static final String MANY_SPACES_REGEXP = "\\s+";
 
     /** Minimal size of the messages to be sent */
     public static final int MINIMAL_MESSAGE_LENGTH = 8;
 
     private static final char SPACE_CHAR = ' ';
     private static final char TABULATION_CHAR = '\t';
+    private static final String SPACE_STR = " ";
 
     /**
      * Split the message in many parts as suggested and when the different parts are larger than the specified limit.
@@ -214,7 +236,11 @@ public class BaseConnector {
         List<String> output = new ArrayList<String>();
         if (message != null) {
             // Initial conditions
-            message = message.trim();
+            message =
+                message.trim().
+                replaceAll(MANY_SPACES_REGEXP, SPACE_STR).
+                replaceAll(MANY_SPACES_REGEXP + "\\" + SENTENCE_SEPARATOR_STR, SENTENCE_SEPARATOR_STR).
+                replaceAll(MANY_SPACES_REGEXP + "\\" + SUGGESTED_MESSAGE_SEPARATOR, SUGGESTED_MESSAGE_SEPARATOR_STR);
             int separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR);
             while (0 < message.length()) {
                 String head = separatorIdx == -1 ? message : message.substring(0, separatorIdx);

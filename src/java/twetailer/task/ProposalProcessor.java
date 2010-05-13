@@ -1,8 +1,10 @@
 package twetailer.task;
 
+import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -78,61 +80,35 @@ public class ProposalProcessor {
                 Store store = storeOperations.getStore(pm, proposal.getStoreKey());
                 if (State.published.equals(demand.getState())) {
                     Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
-                    Double totalCost = proposal.getTotal();
-                    Double price = proposal.getPrice();
-                    String message = null;
-                    if (totalCost == null || totalCost.doubleValue() == 0.0D) {
-                        message = LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_price_only",
-                                new Object[] {
-                                        proposal.getKey(),                // {0}: proposal key
-                                        proposal.getSerializedCriteria(), // {1}: proposal product
-                                        demand.getKey(),                  // {2}: demand key
-                                        demand.getSerializedCriteria(),   // {3}: demand tags
-                                        demand.getExpirationDate(),       // {4}: demand expiration date
-                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        store.getName(),                  // {6}: store name
-                                        "$",                              // {7}: currency symbol
-                                        price                             // {8}: price
-                                },
-                                consumer.getLocale()
-                        );
-                    }
-                    else if (price == null || price.doubleValue() == 0.0D) {
-                        message = LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_total_cost_only",
-                                new Object[] {
-                                        proposal.getKey(),                // {0}: proposal key
-                                        proposal.getSerializedCriteria(), // {1}: proposal product
-                                        demand.getKey(),                  // {2}: demand key
-                                        demand.getSerializedCriteria(),   // {3}: demand tags
-                                        demand.getExpirationDate(),       // {4}: demand expiration date
-                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        store.getName(),                  // {6}: store name
-                                        "$",                              // {7}: currency symbol
-                                        totalCost                         // {8}: total
-                                },
-                                consumer.getLocale()
-                        );
-                    }
-                    else {
-                        message = LabelExtractor.get(
-                                "pp_inform_consumer_about_proposal_with_price_and_total_cost",
-                                new Object[] {
-                                        proposal.getKey(),                // {0}: proposal key
-                                        proposal.getSerializedCriteria(), // {1}: proposal product
-                                        demand.getKey(),                  // {2}: demand key
-                                        demand.getSerializedCriteria(),   // {3}: demand tags
-                                        demand.getExpirationDate(),       // {4}: demand expiration date
-                                        proposal.getStoreKey(),           // {5}: store key, identifying the place where the sale associate works.
-                                        store.getName(),                  // {6}: store name
-                                        "$",                              // {7}: currency symbol
-                                        price,                            // {8}: price
-                                        totalCost                         // {9}: total
-                                },
-                                consumer.getLocale()
-                        );
-                    }
+
+                    Locale locale = consumer.getLocale();
+                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    String proposalTags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale));
+                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                    String demandTags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale));
+                    String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale);
+                    String expiration = demand.getExpirationDate().equals(demand.getDueDate()) ? "" : (LabelExtractor.get("cp_tweet_expiration_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale));
+                    String pickup = store == null ? "" : (LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale));
+                    String price = proposal.getPrice() == null || proposal.getPrice().equals(0.0) ? "" : LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale);
+                    String total = proposal.getTotal() == null || proposal.getTotal().equals(0.0) ? "" : LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale);
+
+                    String message = LabelExtractor.get(
+                            "pp_inform_consumer_about_proposal",
+                            new Object[] {
+                                    proposalRef,  // 0
+                                    proposalTags, // 1
+                                    demandRef,    // 2
+                                    demandTags,   // 3
+                                    dueDate,      // 4
+                                    expiration,   // 5
+                                    pickup,       // 6
+                                    price,        // 7
+                                    total         // 8
+                            },
+                            locale
+                    );
+
+                    // Inform the demand owner
                     RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
                     communicateToConsumer(
                             rawCommand,
@@ -141,6 +117,30 @@ public class ProposalProcessor {
                     );
                     demand.addProposalKey(proposalKey);
                     demand = demandOperations.updateDemand(pm, demand);
+
+                    // Inform the cc-ed people
+                    if(0 < demand.getCC().size()) {
+                        message = LabelExtractor.get(
+                                "pp_inform_cc_about_proposal",
+                                new Object[] {
+                                        proposalRef,  // 0
+                                        proposalTags, // 1
+                                        demandRef,    // 2
+                                        demandTags,   // 3
+                                        dueDate,      // 4
+                                        expiration,   // 5
+                                        pickup,       // 6
+                                        price,        // 7
+                                        total         // 8
+                                },
+                                locale
+                        );
+
+                        for (String coordinate: demand.getCC()) {
+                            communicateToCCed(coordinate, message, locale);
+                        }
+
+                    }
                 }
                 else {
                     SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());

@@ -78,6 +78,7 @@ public class CommandLineParser {
             // Read http://www.regular-expressions.info/unicode.html for explanations on \p{M} used to handle accented characters
             preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|\\p{M}]+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
+            preparePattern(prefixes, patterns, Prefix.cc, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.expiration, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.hash, "\\s*\\S+", separatorFromNonAlpha);
@@ -215,6 +216,20 @@ public class CommandLineParser {
             command.put(Store.ADDRESS, getValue(currentGroup));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
+        }
+        // CC
+        matcher = patterns.get(Prefix.cc.toString()).matcher(messageCopy);
+        while (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            JsonArray cc = command.getJsonArray(Command.CC);
+            if (cc == null) {
+                cc = new GenericJsonArray();
+                command.put(Command.CC, cc);
+            }
+            cc.add(getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+            matcher = patterns.get(Prefix.cc.toString()).matcher(messageCopy);
         }
         // Due Date
         matcher = patterns.get(Prefix.dueDate.toString()).matcher(messageCopy);

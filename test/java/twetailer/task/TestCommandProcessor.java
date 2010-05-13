@@ -38,7 +38,6 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -61,7 +60,7 @@ public class TestCommandProcessor {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        CommandProcessor.setLogger(new MockLogger("test", null));
+        // CommandProcessor.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 

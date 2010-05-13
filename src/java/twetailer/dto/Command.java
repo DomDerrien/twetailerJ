@@ -12,7 +12,6 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import twetailer.connector.BaseConnector.Source;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
@@ -34,6 +33,13 @@ public class Command extends Entity {
     private Long cancelerKey;
 
     public static final String CANCELER_KEY = "cancelerKey";
+
+    @Persistent
+    private List<String> cc = new ArrayList<String>();
+
+    public static final String CC = "cc";
+    public static final String CC_ADD = "\\+cc";
+    public static final String CC_REMOVE = "\\-cc";
 
     @Persistent
     private List<String> criteria = new ArrayList<String>();
@@ -105,6 +111,7 @@ public class Command extends Entity {
      * Provided to reproduce the JDO behavior with Unit tests
      */
     protected void resetLists() {
+        cc = null;
         criteria = null;
         hashTags = null;
     }
@@ -133,6 +140,44 @@ public class Command extends Entity {
             throw new IllegalArgumentException("Cannot nullify the attribute 'cancelerKey'");
         }
         this.cancelerKey = cancelerKey;
+    }
+
+    public String getSerializedCC() {
+        return getSerializedTags(cc);
+    }
+
+    public List<String> getCC() {
+        return cc;
+    }
+
+    public void setCC(List<String> cc) {
+        if (cc == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'cc' of type List<String>");
+        }
+        this.cc = cc;
+    }
+
+    public void addCoordinate(String coordinates) {
+        if (cc == null) {
+            cc = new ArrayList<String>();
+        }
+        if (!cc.contains(coordinates)) {
+            cc.add(coordinates);
+        }
+    }
+
+    public void resetCC() {
+        if (cc == null) {
+            return;
+        }
+        cc = new ArrayList<String>();
+    }
+
+    public void removeCoordinate(String coordinates) {
+        if (cc == null) {
+            return;
+        }
+        cc.remove(coordinates);
     }
 
     public String getSerializedCriteria() {
@@ -298,6 +343,13 @@ public class Command extends Entity {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
         if (getCancelerKey() != null) { out.put(CANCELER_KEY, getCancelerKey()); }
+        if (getCC() != null && 0 < getCC().size()) {
+            JsonArray jsonArray = new GenericJsonArray();
+            for(String coordinate: getCC()) {
+                jsonArray.add(coordinate);
+            }
+            out.put(CC, jsonArray);
+        }
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
@@ -326,6 +378,26 @@ public class Command extends Entity {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
         if (in.containsKey(CANCELER_KEY)) { setCancelerKey(in.getLong(CANCELER_KEY)); }
+        if (in.containsKey(CC)) {
+            JsonArray jsonArray = in.getJsonArray(CC);
+            resetCC();
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addCoordinate(jsonArray.getString(i));
+            }
+        }
+        removeDuplicates(in, CC_ADD, CC_REMOVE);
+        if (in.containsKey(CC_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(CC_REMOVE);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                removeCoordinate(jsonArray.getString(i));
+            }
+        }
+        if (in.containsKey(CC_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(CC_ADD);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addCoordinate(jsonArray.getString(i));
+            }
+        }
         if (in.containsKey(CRITERIA)) {
             JsonArray jsonArray = in.getJsonArray(CRITERIA);
             resetCriteria();

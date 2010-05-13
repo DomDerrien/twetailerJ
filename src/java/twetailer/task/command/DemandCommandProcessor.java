@@ -1,6 +1,7 @@
 package twetailer.task.command;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class DemandCommandProcessor {
         // 2. update the identified demand
         //
         List<String> messages = new ArrayList<String>();
+        String messageCC = null;
+        List<String> cc = null;
 
         // Extracts and process the given location information
         if (Location.hasAttributeForANewLocation(command)) {
@@ -66,9 +69,15 @@ public class DemandCommandProcessor {
                     demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
                     // Echo back the updated demand
                     Location location = demand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, demand.getLocationKey());
-                    messages.add(CommandProcessor.generateTweet(demand, location, false, consumer.getLocale()));
+                    String tweet = CommandProcessor.generateTweet(demand, location, false, consumer.getLocale());
+                    messages.add(tweet);
                     // Get the demandKey for the task scheduling
                     demandKey = demand.getKey();
+                    // Prepare the message for the CC-ed
+                    if (0 < demand.getCC().size()) {
+                        messageCC = LabelExtractor.get("cp_command_demand_forward_update_to_cc", new Object[] { consumer.getName(), tweet }, consumer.getLocale());
+                        cc = demand.getCC();
+                    }
                 }
                 else {
                     messages.add(LabelExtractor.get("cp_command_demand_non_modifiable_state", new Object[] { demand.getKey(), state }, consumer.getLocale()));
@@ -103,16 +112,24 @@ public class DemandCommandProcessor {
                     )
             );
             Location location = newDemand.getLocationKey() == null ? null : CommandProcessor.locationOperations.getLocation(pm, newDemand.getLocationKey());
-            messages.add(CommandProcessor.generateTweet(newDemand, location, false, consumer.getLocale()));
+            String tweet = CommandProcessor.generateTweet(newDemand, location, false, consumer.getLocale());
+            messages.add(tweet);
             // Get the demandKey for the task scheduling
             demandKey = newDemand.getKey();
+            // Prepare the message for the CC-ed
+            if (0 < newDemand.getCC().size()) {
+                messageCC = LabelExtractor.get("cp_command_demand_forward_creation_to_cc", new Object[] { consumer.getName(), tweet }, consumer.getLocale());
+                cc = newDemand.getCC();
+            }
         }
 
+        // Inform the demand owner
         communicateToConsumer(
                 rawCommand,
                 consumer,
                 messages.toArray(new String[messages.size()])
         );
+
         // Create a task for that demand
         if (demandKey != 0L) {
             Queue queue = CommandProcessor._baseOperations.getQueue();
@@ -122,6 +139,13 @@ public class DemandCommandProcessor {
                         param(Demand.KEY, demandKey.toString()).
                         method(Method.GET)
             );
+        }
+
+        // Inform the cc-ed people
+        if (cc != null) {
+            for (String coordinate: cc) {
+                communicateToCCed(coordinate, messageCC, consumer.getLocale());
+            }
         }
     }
 }

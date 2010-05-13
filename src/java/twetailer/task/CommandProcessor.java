@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
@@ -54,7 +53,7 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
 public class CommandProcessor {
-    private static Logger log = Logger.getLogger(CommandProcessor.class.getName());
+    // private static Logger log = Logger.getLogger(CommandProcessor.class.getName());
 
     // References made public for the business logic located in package twetailer.task.command
     public static BaseOperations _baseOperations = new BaseOperations();
@@ -68,9 +67,9 @@ public class CommandProcessor {
     public static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
+    // protected static void setLogger(Logger mock) {
+    //     log = mock;
+    // }
 
     /**
      * Helper to print the short date if the time is set for the last second of the day
@@ -79,7 +78,7 @@ public class CommandProcessor {
      * @return String with the date attributes as: YYYY-MM-DD or YYYY-MM-DD'T'HH:MM:SS
      */
     @SuppressWarnings("deprecation")
-    protected static String serializeDate(Date date) {
+    public static String serializeDate(Date date) {
         if (date.getHours() == 23 && date.getMinutes() == 59 && date.getSeconds() == 59) {
             return DateUtils.dateToYMD(date);
         }
@@ -117,6 +116,10 @@ public class CommandProcessor {
         String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
         String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
         String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
+        String CC = "";
+        for (int i=0; i <demand.getCC().size(); i++) {
+            CC += LabelExtractor.get("cp_tweet_cc_part", new Object[] { demand.getCC().get(i) }, locale) + space;
+        }
         // Compose the final message
         return LabelExtractor.get(
                 "cp_tweet_demand",
@@ -131,7 +134,8 @@ public class CommandProcessor {
                         quantity,
                         tags,
                         hashtags,
-                        proposals
+                        proposals,
+                        CC
                 },
                 locale
         ).trim();
@@ -168,6 +172,10 @@ public class CommandProcessor {
         String price = LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale) + space;
         String total = LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale) + space;
         String pickup = store == null ? "" : (LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale) + space);
+        String CC = "";
+        for (int i=0; i <proposal.getCC().size(); i++) {
+            CC += LabelExtractor.get("cp_tweet_cc_part", new Object[] { proposal.getCC().get(i) }, locale) + space;
+        }
         // Compose the final message
         return LabelExtractor.get(
                 "cp_tweet_proposal",
@@ -182,7 +190,8 @@ public class CommandProcessor {
                         hashtags,
                         price,
                         total,
-                        pickup
+                        pickup,
+                        CC
                 },
                 locale
         ).trim();

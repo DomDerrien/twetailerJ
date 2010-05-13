@@ -1,11 +1,13 @@
 package twetailer.task.command;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -47,6 +49,9 @@ public class ConfirmCommandProcessor {
         Proposal proposal = null;
         Demand demand = null;
         List<String> messages = new ArrayList<String>();
+        String messageCC = null;
+        List<String> cc = null;
+
         try {
             // If there's no PROPOSAL_KEY attribute, it's going to generate an exception as the desired side-effect
             proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
@@ -71,21 +76,34 @@ public class ConfirmCommandProcessor {
                 );
             }
             else {
+                Locale locale = consumer.getLocale();
                 Store store = CommandProcessor.storeOperations.getStore(pm, proposal.getStoreKey());
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                String demandTags = demand.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
+                String pickup = LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale);
                 // Inform the consumer of the successful confirmation
                 messages.add(
                         LabelExtractor.get(
                                 "cp_command_confirm_acknowledge_confirmation",
                                 new Object[] {
-                                        proposal.getKey(),
-                                        demand.getKey(),
-                                        demand.getSerializedCriteria(),
-                                        proposal.getStoreKey(),
-                                        store.getName()
+                                        proposalRef,
+                                        demandRef,
+                                        demandTags,
+                                        pickup
                                 },
-                                consumer.getLocale()
+                                locale
                         )
                 );
+                // Prepare the message for the CC-ed
+                if (0 < demand.getCC().size()) {
+                    messageCC = LabelExtractor.get(
+                            "cp_command_confirm_forward_confirmation_to_cc",
+                            new Object[] { consumer.getName(), proposalRef, demandRef, demandTags, pickup },
+                            locale
+                    );
+                    cc = demand.getCC();
+                }
                 Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
                 if (proposal.getOwnerKey().equals(robotKey)) {
                     // Inform the consumer about the next steps in the demo mode
@@ -134,10 +152,18 @@ public class ConfirmCommandProcessor {
             }
         }
 
+        // Inform the demand owner
         communicateToConsumer(
                 rawCommand,
                 consumer,
                 messages.toArray(new String[0])
         );
+
+        // Inform the cc-ed people
+        if (cc != null) {
+            for (String coordinate: cc) {
+                communicateToCCed(coordinate, messageCC, consumer.getLocale());
+            }
+        }
     }
 }

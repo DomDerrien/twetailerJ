@@ -180,20 +180,21 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        Locale locale = Locale.ENGLISH;
         String expectedMessage = LabelExtractor.get(
-                "pp_inform_consumer_about_proposal_with_total_cost_only",
+                "pp_inform_consumer_about_proposal",
                 new Object[] {
-                        proposal.getKey(),
-                        proposal.getSerializedCriteria(),
-                        demand.getKey(),
-                        demand.getSerializedCriteria(),
-                        demand.getExpirationDate(),
-                        proposal.getStoreKey(),
-                        name,
-                        currency,
-                        total
+                        LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
+                        "", // No tags attached to this demand
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
+                        "", // No unit price attached to this demand
+                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale)
                 },
-                Locale.ENGLISH);
+                locale);
         assertEquals(
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
@@ -290,20 +291,21 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        Locale locale = Locale.ENGLISH;
         String expectedMessage = LabelExtractor.get(
-                "pp_inform_consumer_about_proposal_with_total_cost_only",
+                "pp_inform_consumer_about_proposal",
                 new Object[] {
-                        proposal.getKey(),
-                        proposal.getSerializedCriteria(),
-                        demand.getKey(),
-                        demand.getSerializedCriteria(),
-                        demand.getExpirationDate(),
-                        proposal.getStoreKey(),
-                        name,
-                        currency,
-                        total
+                        LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
+                        "", // No tags attached to this demand
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
+                        "", // No unit price attached to this proposal
+                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale)
                 },
-                Locale.ENGLISH);
+                locale);
         assertEquals(
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
@@ -400,20 +402,21 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        Locale locale = Locale.ENGLISH;
         String expectedMessage = LabelExtractor.get(
-                "pp_inform_consumer_about_proposal_with_price_only",
+                "pp_inform_consumer_about_proposal",
                 new Object[] {
-                        proposal.getKey(),
-                        proposal.getSerializedCriteria(),
-                        demand.getKey(),
-                        demand.getSerializedCriteria(),
-                        demand.getExpirationDate(),
-                        proposal.getStoreKey(),
-                        name,
-                        currency,
-                        price
+                        LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
+                        "", // No tags attached to this demand
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
+                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale),
+                        "" // No total cost attached to this proposal
                 },
-                Locale.ENGLISH);
+                locale);
         assertEquals(
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
@@ -510,20 +513,21 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        Locale locale = Locale.ENGLISH;
         String expectedMessage = LabelExtractor.get(
-                "pp_inform_consumer_about_proposal_with_price_only",
+                "pp_inform_consumer_about_proposal",
                 new Object[] {
-                        proposal.getKey(),
-                        proposal.getSerializedCriteria(),
-                        demand.getKey(),
-                        demand.getSerializedCriteria(),
-                        demand.getExpirationDate(),
-                        proposal.getStoreKey(),
-                        name,
-                        currency,
-                        price
+                        LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
+                        "", // No tags attached to this demand
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
+                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale),
+                        "" // No total cost attached to this proposal
                 },
-                Locale.ENGLISH);
+                locale);
         assertEquals(
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
@@ -620,21 +624,21 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        Locale locale = Locale.ENGLISH;
         String expectedMessage = LabelExtractor.get(
-                "pp_inform_consumer_about_proposal_with_price_and_total_cost",
+                "pp_inform_consumer_about_proposal",
                 new Object[] {
-                        proposal.getKey(),
-                        proposal.getSerializedCriteria(),
-                        demand.getKey(),
-                        demand.getSerializedCriteria(),
-                        demand.getExpirationDate(),
-                        proposal.getStoreKey(),
-                        name,
-                        currency,
-                        price,
-                        total
+                        LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
+                        "", // No tags attached to this demand
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
+                        LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
+                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale),
+                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale)
                 },
-                Locale.ENGLISH);
+                locale);
         assertEquals(
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()

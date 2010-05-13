@@ -132,6 +132,14 @@
                 <seg>adresse</seg>
             </tuv>
         </tu>
+        <tu tuid="cl_prefix_cc" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>cc,copieCarbone,copieÀ</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_prefix_dueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
@@ -833,8 +841,17 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Merci pour la confirmation de la Proposition:{0} associée à la Demande:{1}|
-                    Le Magasin:{3}, {4} va en être informé et va mettre votre demande de côté.
+                    :-) Merci pour la confirmation de la {0} associée à la {1} {2}|
+                    Le {3} va en être informé et va mettre votre demande de côté.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_confirm_forward_confirmation_to_cc" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) PVI: {0} a confirmé la {1} pour la {2} {3}.
                 </seg>
             </tuv>
         </tu>
@@ -943,6 +960,20 @@
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>:-) Détails de la Demande:{0} nouvellement créée... </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_demand_forward_creation_to_cc" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>PVI: {0} a crée une Demand pour laquelle vous êtes en copie...|{1} </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_demand_forward_update_to_cc" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>PVI: {0} a mis-à-jour la Demande pour laquelle vous êtes en copie...|{1} </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
@@ -1172,6 +1203,13 @@
                 <seg>état:{0}</seg>
             </tuv>
         </tu>
+        <tu tuid="cp_tweet_cc_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>CC:{0}</seg>
+            </tuv>
+        </tu>
         <tu tuid="cp_tweet_dueDate_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1274,14 +1312,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}</seg>
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}</seg>
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_store" dataType="text">
@@ -1464,36 +1502,24 @@
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="pp_inform_consumer_about_proposal_with_price_and_total_cost" dataType="text">
+        <tu tuid="pp_inform_consumer_about_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/3 Re: Pour la Demande:{2} Expire:{4} MotsClés:{3}, j'ai...|
-                    2/3 Proposition:{0} MotsClés:{1} Prix:{8}{7} Total:{9}{7}|
-                    3/3 Par le Magasin:{5} {6}. Vous pouvez envoyer 'confirmer proposition:{0}' ou 'décliner proposition:{0}'.
+                    1/3 En réponse à votre {2} {3} {4}, j'ai...|
+                    2/3 {0} {1} {7} {8}|
+                    3/3 Du {6}. Vous pouvez envoyer 'confirmer {0}', ou 'décliner {0}'.
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="pp_inform_consumer_about_proposal_with_price_only" dataType="text">
+        <tu tuid="pp_inform_cc_about_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/3 Re: Pour la Demande:{2} Expire:{4} MotsClés:{3}, j'ai...|
-                    2/3 Proposition:{0} MotsClés:{1} Prix:{8}{7}'|
-                    3/3 Par le Magasin:{5} {6}. Vous pouvez envoyer 'confirmer proposition:{0}' ou 'décliner proposition:{0}'.
-                </seg>
-            </tuv>
-        </tu>
-        <tu tuid="pp_inform_consumer_about_proposal_with_total_cost_only" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">2</prop>
-            <tuv xml:lang="fr">
-                <seg>
-                    1/3 Re: Pour la Demande:{2} Expire:{4} MotsClés:{3}, j'ai...|
-                    2/3 Proposition:{0} MotsClés:{1} Total:{8}{7}'|
-                    3/3 Par le Magasin:{5} {6}. Vous pouvez envoyer 'confirmer proposition:{0}' ou 'décliner proposition:{0}'.
+                    1/2 PVI: {2} {3} {4} a reçu...|
+                    2/2 {0} {1} {7} {8}.
                 </seg>
             </tuv>
         </tu>
