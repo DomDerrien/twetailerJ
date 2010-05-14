@@ -10,12 +10,35 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationContext;
+import twitter4j.http.AccessToken;
+import twitter4j.http.OAuthAuthorization;
 
 public class TwitterConnector {
     private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
+    /* Information for basic authentication -- to be depreciated on June 30, 2010
+     * Username: twetailer
+     * Password: 6GmeM3FJzPOy-zNJ
+     */
     public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
     private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
+
+    /* Information for OAuth authentication
+     * Consumer key:                  Kxo0DAP1ImQ1PV1pAAZkQ
+     * Consumer secret:               8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o
+     *
+     * Request token key:             Twitter instance dependent
+     * Request token secret:          Twitter instance dependent
+     *
+     * Access token key:              18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4
+     * Access token secret:           GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk
+     */
+    public static final String TWETAILER_TWITTER_CONSUMER_KEY = "Kxo0DAP1ImQ1PV1pAAZkQ";
+    public static final String TWETAILER_TWITTER_CONSUMER_SECRET = "8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o";
+
+    public static final String TWETAILER_TWITTER_ACCESS_KEY = "18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4";
+    public static final String TWETAILER_TWITTER_ACCESS_SECRET = "GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 
@@ -30,15 +53,25 @@ public class TwitterConnector {
      *
      * @see TwitterUtils#releaseTwetailerAccount(Twitter)
      */
-    public synchronized static Twitter getTwetailerAccount() {
+    public static Twitter getTwetailerAccount() {
         int size = _twetailerAccounts.size();
         if (size == 0) {
             // Depreciated: return new Twitter(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
-            return new TwitterFactory().getInstance(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
+            // Depreciated: return new TwitterFactory().getInstance(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
+            return new TwitterFactory().getInstance(
+                    new OAuthAuthorization(
+                            ConfigurationContext.getInstance(),
+                            TwitterConnector.TWETAILER_TWITTER_CONSUMER_KEY,
+                            TwitterConnector.TWETAILER_TWITTER_CONSUMER_SECRET,
+                            new AccessToken(
+                                    TwitterConnector.TWETAILER_TWITTER_ACCESS_KEY,
+                                    TwitterConnector.TWETAILER_TWITTER_ACCESS_SECRET
+                            )
+                    )
+            );
         }
         return _twetailerAccounts.remove(size - 1);
     }
-
 
     /**
      * Allow to return the Twitter account object to the pool

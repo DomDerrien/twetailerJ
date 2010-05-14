@@ -23,7 +23,15 @@
     </filter>
     <filter-mapping>
         <filter-name>appstats</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/API/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/console/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/directory/*</url-pattern>
     </filter-mapping>
 
     <filter>

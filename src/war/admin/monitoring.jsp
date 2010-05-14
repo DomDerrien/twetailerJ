@@ -10,15 +10,17 @@
     import="com.dyuproject.openid.OpenIdUser"
     import="com.dyuproject.openid.RelyingParty"
     import="domderrien.i18n.LabelExtractor"
-    import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
-    import="twetailer.validator.ApplicationSettings"
+    import="domderrien.i18n.LocaleController"
+    import="twetailer.connector.BaseConnector.Source"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Location"
+    import="twetailer.dto.SaleAssociate"
     import="twetailer.dto.Seed"
     import="twetailer.dto.Store"
-    import="twetailer.dto.SaleAssociate"
-    import="twetailer.connector.BaseConnector.Source"
+    import="twetailer.j2ee.BaseRestlet"
+    import="twetailer.j2ee.LoginServlet"
+    import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
@@ -28,7 +30,12 @@
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
-%><head>
+
+    // Consumer attributes
+    OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
+    Consumer consumer = LoginServlet.getConsumer(loggedUser);
+%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+<head>
     <title>Monitoring Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -84,7 +91,11 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes/banner_protected.jsp"></jsp:include>
+        <jsp:include page="/jsp_includes/banner_protected.jsp">
+            <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
+            <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
+            <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+        </jsp:include>
         <div
             dojoType="dijit.layout.ContentPane"
             id="centerZone"
@@ -806,21 +817,20 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.TabContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.CheckBox");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.FilteringSelect");
-        dojo.require("dijit.form.ComboBox");
-        dojo.require("dijit.form.Textarea");
         dojo.require("dojo.data.ItemFileWriteStore");
         dojo.require("dojo.parser");
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.CheckBox");
+        dojo.require("dijit.form.ComboBox");
+        dojo.require("dijit.form.DateTextBox");
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.Form");
+        dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.Textarea");
+        dojo.require("dijit.form.TextBox");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({
