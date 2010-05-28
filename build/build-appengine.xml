@@ -21,7 +21,7 @@
 
     <property name="appengine.sdk.dir"
         description="Location of the Google App Engine SDK"
-        location="${basedir}/bin/appengine-java-sdk-1.3.3"
+        location="${basedir}/bin/appengine-java-sdk-1.3.4"
     />
 
     <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
@@ -121,6 +121,7 @@
         <delete file="src/war/WEB-INF/datastore-indexes.xml" />
         <delete file="src/war/WEB-INF/classes/META-INF/jdoconfig.xml" />
         <delete file="src/war/WEB-INF/classes/log4j.properties" />
+        <delete file="src/war/WEB-INF/classes/openid.properties" />
         <delete file="src/war/WEB-INF/logging.properties" />
         <delete file="src/war/WEB-INF/queue.xml" />
         <delete file="src/war/_wave/capabilities.xml" />
@@ -139,6 +140,7 @@
         <copy file="src/resources/jdoconfig.xml"         todir="src/war/WEB-INF/classes/META-INF/" overwrite="true" />
         <copy file="src/resources/log4j.properties"      todir="src/war/WEB-INF/classes/"          overwrite="true" />
         <copy file="src/resources/logging.properties"    todir="src/war/WEB-INF/"                  overwrite="true" />
+        <copy file="src/resources/openid.properties"     todir="src/war/WEB-INF/classes"           overwrite="true" />
         <copy file="src/resources/queue.xml"             todir="src/war/WEB-INF/"                  overwrite="true" />
         <copy
             file="src/resources/capabilities.xml.tmpl"
