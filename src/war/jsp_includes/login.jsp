@@ -63,8 +63,8 @@
     %>
     <style type="text/css">
     .dijitButtonText>img {
-        width:24px;
-        height:24px;
+        width:32px;
+        height:32px;
     }
     </style>
 </head>
@@ -114,49 +114,49 @@
                                     dojoType="dijit.form.Button"
                                     onclick="window.location='/login?loginWith=google&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/google.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/Google-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="window.location='/login?loginWith=yahoo&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/yahoo.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/Yahoo-red-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://www.myspace.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myspace", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/myspace.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/MySpace-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://openid.aol.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_aol", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/aol.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/Aol-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.wordpress.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_wordpress", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/wordpress.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/Wordpress-blue-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.blogspot.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_blogger", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/blogger.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/Blogger-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.mp');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_chimp", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/chimp.gif" width="16" height="16" /></button>
+                                ><img src="/images/icons/Chimp-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.myopenid.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myopenid", locale) %>"
-                                ><img src="http://domderrien.github.com/images/icons/myopenid.ico" width="16" height="16" /></button>
+                                ><img src="/images/icons/MyOpenId-32.png" width="32" height="32" /></button>
                             </div>
                             <br/>
                             <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
