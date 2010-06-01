@@ -252,10 +252,18 @@ public class Demand extends Command {
             try {
                 Date expirationDate = DateUtils.isoToDate(in.getString(EXPIRATION_DATE));
                 setExpirationDate(expirationDate);
+                if (!in.containsKey(KEY) && !in.containsKey(DUE_DATE)) {
+                    // To push the given expirationDate as the default dueDate if the exchange is about a demand to be created
+                    setDueDate(getExpirationDate());
+                }
             }
             catch (ParseException e) {
                 setExpirationDate(DEFAULT_EXPIRATION_DELAY); // Default to an expiration 30 days in the future
             }
+        }
+        else if (!in.containsKey(KEY) && in.containsKey(DUE_DATE)) {
+            // To push the given dueDate as the default expirationDate if the exchange is about a demand to be created
+            setExpirationDate(getDueDate());
         }
         if (in.containsKey(PROPOSAL_KEYS)) {
             resetProposalKeys();

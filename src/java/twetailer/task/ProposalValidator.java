@@ -3,6 +3,7 @@ package twetailer.task;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import twetailer.validator.CommandSettings;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class ProposalValidator {
@@ -68,6 +70,8 @@ public class ProposalValidator {
     public static void process(PersistenceManager pm, Long proposalKey) throws DataSourceException {
         Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
         if (CommandSettings.State.opened.equals(proposal.getState())) {
+            Date nowDate = DateUtils.getNowDate();
+            Long nowTime = nowDate.getTime() - 60*1000; // Minus 1 minute
             try {
                 SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
                 Locale locale = saleAssociate.getLocale();
@@ -79,6 +83,12 @@ public class ProposalValidator {
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                 if (proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
                     message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, locale);
+                }
+                else if (proposal.getDueDate() == null || proposal.getDueDate().getTime() < nowTime) {
+                    message = LabelExtractor.get("dv_report_due_in_past", new Object[] { proposalRef }, locale);
+                }
+                else if (nowTime + (365*24*60*60*1000) < proposal.getDueDate().getTime()) {
+                    message = LabelExtractor.get("dv_report_due_too_far_in_future", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {
                     message = LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, locale);

@@ -94,8 +94,20 @@ public class DemandValidator {
                 if (demand.getCriteria() == null || demand.getCriteria().size() == 0) {
                     message = LabelExtractor.get("dv_report_demand_without_tag", new Object[] { demandRef }, locale);
                 }
+                else if (demand.getDueDate() == null || demand.getDueDate().getTime() < nowTime) {
+                    message = LabelExtractor.get("dv_report_due_in_past", new Object[] { demandRef }, locale);
+                }
+                else if (nowTime + (365*24*60*60*1000) < demand.getDueDate().getTime()) {
+                    message = LabelExtractor.get("dv_report_due_too_far_in_future", new Object[] { demandRef }, locale);
+                }
                 else if (demand.getExpirationDate() == null || demand.getExpirationDate().getTime() < nowTime) {
                     message = LabelExtractor.get("dv_report_expiration_in_past", new Object[] { demandRef }, locale);
+                }
+                else if (nowTime + (365*24*60*60*1000) < demand.getExpirationDate().getTime()) {
+                    message = LabelExtractor.get("dv_report_expiration_too_far_in_future", new Object[] { demandRef }, locale);
+                }
+                else if (demand.getDueDate().getTime() < demand.getExpirationDate().getTime()) {
+                    message = LabelExtractor.get("dv_report_expiration_before_due_date", new Object[] { demandRef }, locale);
                 }
                 else if (LocaleValidator.KILOMETER_UNIT.equals(demand.getRangeUnit()) && (demand.getRange() == null || demand.getRange().doubleValue() < RANGE_KM_MIN.doubleValue())) {
                     String rangeDef = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange() == null ? 0.0D : demand.getRange(), LocaleValidator.KILOMETER_UNIT }, locale);

@@ -1889,6 +1889,30 @@
             </tuv>
         </tu>
 
+        <tu tuid="dv_report_due_in_past" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer the due date should be in the future.|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please ensure your Demand's Due date is in the future by sending '{0} due:YYYYMMDD' or '{0} due:YYYYMMDDTHH:MM:SS'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="dv_report_due_too_far_in_future" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer the due date should NOT be too far in the future.|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please ensure your Demand's Due date is NOT too far in the future by sending '{0} due:YYYYMMDD'.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="dv_report_expiration_in_past" datatype="Text">
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
@@ -1898,6 +1922,30 @@
             </note>
             <tuv xml:lang="en">
                 <seg>:-( Please ensure your Demand's Expiration date is in the future by sending '{0} expiration:YYYYMMDD'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="dv_report_expiration_too_far_in_future" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer the expiration date should NOT be too far in the future.|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please ensure your Demand's Expiration date is NOT too far in the future by sending '{0} due:YYYYMMDD'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="dv_report_expiration_before_due_date" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer the expiration date should be before the due date.|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please ensure your Demand's Expiration date does not exceed the Due date by sending '{0} due:YYYYMMDD'.</seg>
             </tuv>
         </tu>
 
@@ -2096,6 +2144,30 @@
             </note>
             <tuv xml:lang="en">
                 <seg>:-( Please update your Proposal by replacing "?" with your proposed desciption and sending 'propose {0} tags:?'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="pv_report_due_in_past" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer the due date should be in the future.|
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please ensure your Proposal's Due date is in the future by sending '{0} due:YYYYMMDD' or '{0} due:YYYYMMDDTHH:MM:SS'.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="pv_report_due_too_far_in_future" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform the consumer the due date should NOT be too far in the future.|
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please ensure your Proposal's Due date is NOT too far in the future by sending '{0} due:YYYYMMDD'.</seg>
             </tuv>
         </tu>
 

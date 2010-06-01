@@ -1331,11 +1331,39 @@
                 <seg>:-( Veuillez ajouter au moins un mot clé à votre Demande en envoyant: '{0} motsClés:votre-description-par-mots-clés'.</seg>
             </tuv>
         </tu>
+        <tu tuid="dv_report_due_in_past" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vous assurer que la Date limite est dans le futur en envoyant: '{0} expire:AAAA-MM-DD' ou '{0} expire:AAAA-MM-DDTHH:MM:SS'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_due_too_far_in_future" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vous assurer que la Date limite n'est pas trop loin dans le futur en envoyant: '{0} expire:AAAA-MM-DD'.</seg>
+            </tuv>
+        </tu>
         <tu tuid="dv_report_expiration_in_past" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Veuillez vous assurer que la date d'expiration est dans le futur en envoyant: '{0} expire:AAAA-MM-DD'.</seg>
+                <seg>:-( Veuillez vous assurer que la date d'Expiration est dans le futur en envoyant: '{0} expire:AAAA-MM-DD'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_expiration_too_far_in_future" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vous assurer que la date d'Expiration n'est pas trop loin dans le futur en envoyant: '{0} expire:AAAA-MM-DD'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="dv_report_expiration_before_due_date" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vous assurer que la date d'Expiration n'excède pas la Date limite en envoyant: '{0} expire:AAAA-MM-DD'.</seg>
             </tuv>
         </tu>
         <tu tuid="dv_report_range_too_small" dataType="text">
@@ -1443,6 +1471,20 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>:-( Veuillez mettre à jour votre Proposition avec au moins un mot-clé en envoyant: 'proposer proposition:{0} votre-description'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_due_in_past" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vous assurer que la Date limite est dans le futur en envoyant: '{0} expire:AAAA-MM-DD' ou '{0} expire:AAAA-MM-DDTHH:MM:SS'.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="pv_report_due_too_far_in_future" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vous assurer que la Date limite n'est pas trop loin dans le futur en envoyant: '{0} expire:AAAA-MM-DD'.</seg>
             </tuv>
         </tu>
         <tu tuid="pv_report_quantity_zero" dataType="text">

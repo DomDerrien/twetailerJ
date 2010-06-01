@@ -29,7 +29,7 @@ public class HashTag {
     public static List<String> getHashTagsList() {
         return VALID_HASHTAGS_LIST;
     }
-    
+
     public static String getVocabularySetIdentifier(Command command) {
         String identifier = "";
         if (command.getHashTags().contains(HashTag.DEMO)) {
