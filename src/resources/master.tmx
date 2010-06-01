@@ -338,7 +338,7 @@
             <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the quantity attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>quantity,qty</seg>
+                <seg>quantity,qty,players</seg>
             </tuv>
         </tu>
 
@@ -388,7 +388,7 @@
                 IMPORTANT: the trailing comma is required to let tags being presented without prefix
             </note>
             <tuv xml:lang="en">
-                <seg>tags,keywords,keys</seg>
+                <seg>tags,keywords,keys,description,information,infos</seg>
             </tuv>
         </tu>
 
@@ -472,7 +472,7 @@
                 IMPORTANT: keep the 'lg' shortcut for all translated version, so everyone has the same mechansim to go back to his/her mother tongue ;)
             </note>
             <tuv xml:lang="en">
-                <seg>language,lg</seg>
+                <seg>language,lang,lg</seg>
             </tuv>
         </tu>
 

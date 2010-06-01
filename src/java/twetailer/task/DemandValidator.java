@@ -19,6 +19,7 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.HashTag;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.validator.ApplicationSettings;
@@ -191,13 +192,13 @@ public class DemandValidator {
             if (hashTags.size() != 0) {
                 String serializedHashTags = "";
                 String hashTag = hashTags.get(0);
-                if (hashTags.size() == 1 && !RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                if (hashTags.size() == 1 && !HashTag.getHashTagsList().contains(hashTag)) {
                     serializedHashTags = hashTag;
                 }
                 else { // if (1 < hashTags.size()) {
                     for(int i = 0; i < hashTags.size(); ++i) {
                         hashTag = hashTags.get(i);
-                        if (!RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                        if (!HashTag.getHashTagsList().contains(hashTag)) {
                             serializedHashTags += " " + hashTag;
                         }
                     }

@@ -18,6 +18,7 @@ import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
@@ -56,7 +57,7 @@ public class RobotResponder {
         }
     }
 
-    public final static String ROBOT_DEMO_HASH_TAG = "demo";
+    public final static String ROBOT_DEMO_HASH_TAG = HashTag.DEMO;
 
     public static void processDemand(PersistenceManager pm, Long demandKey) throws DataSourceException {
         //

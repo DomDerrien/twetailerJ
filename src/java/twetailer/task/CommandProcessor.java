@@ -27,6 +27,7 @@ import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.HashTag;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
@@ -50,6 +51,7 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonObject;
 
 public class CommandProcessor {
@@ -91,14 +93,17 @@ public class CommandProcessor {
      * @param demand Demand to process
      * @param location Place where the demand is attached to
      * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
-     * @param locale Indicator for the localized resource bundle to use
-     * @return Serialized command
+     * @param locale Indicator for the localised resource bundle to use
+     * @return Serialised command
      */
     public static String generateTweet(Demand demand, Location location, boolean anonymized, Locale locale) {
+        String labelKeyPrefix = HashTag.getVocabularySetIdentifier(demand);
+        ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
+
         final String space = " ";
         // Get the labels for each demand attributes
-        String action = LabelExtractor.get("cp_tweet_demand_action_part", locale) + space;
-        String reference = anonymized || demand.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
+        String action = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_action_part", locale) + space;
+        String reference = anonymized || demand.getKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
         String state =
             LabelExtractor.get(
                     "cp_tweet_state_part",
@@ -108,17 +113,17 @@ public class CommandProcessor {
                     locale
             ) +
             space;
-        String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { serializeDate(demand.getDueDate()) }, locale) + space;
-        String expiration = demand.getExpirationDate().equals(demand.getDueDate()) ? "" : (LabelExtractor.get("cp_tweet_expiration_part", new Object[] { serializeDate(demand.getExpirationDate()) }, locale) + space);
-        String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get("cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
-        String range = LabelExtractor.get("cp_tweet_range_part", new Object[] { demand.getRange(), demand.getRangeUnit() }, locale) + space;
-        String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
-        String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
-        String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
-        String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
+        String dueDate = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_dueDate_part", new Object[] { serializeDate(demand.getDueDate()) }, locale) + space;
+        String expiration = demand.getExpirationDate().equals(demand.getDueDate()) ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_expiration_part", new Object[] { serializeDate(demand.getExpirationDate()) }, locale) + space);
+        String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
+        String range = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_range_part", new Object[] { demand.getRange(), demand.getRangeUnit() }, locale) + space;
+        String quantity = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
+        String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
+        String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
+        String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
         String CC = "";
         for (int i=0; i <demand.getCC().size(); i++) {
-            CC += LabelExtractor.get("cp_tweet_cc_part", new Object[] { demand.getCC().get(i) }, locale) + space;
+            CC += LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_cc_part", new Object[] { demand.getCC().get(i) }, locale) + space;
         }
         // Compose the final message
         return LabelExtractor.get(
@@ -147,15 +152,18 @@ public class CommandProcessor {
      * @param proposal Proposal to process
      * @param store Store where the Sale Associate who created the proposal works
      * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
-     * @param locale Indicator for the localized resource bundle to use
-     * @return Serialized command
+     * @param locale Indicator for the localised resource bundle to use
+     * @return Serialised command
      */
     public static String generateTweet(Proposal proposal, Store store, boolean anonymized, Locale locale) {
+        String labelKeyPrefix = HashTag.getVocabularySetIdentifier(proposal);
+        ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
+
         final String space = " ";
         // Get the labels for each proposal attributes
-        String action = LabelExtractor.get("cp_tweet_propose_action_part", locale) + space;
-        String reference = anonymized || proposal.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
-        String demand = anonymized || proposal.getDemandKey() == null ? "" : (LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
+        String action = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_propose_action_part", locale) + space;
+        String reference = anonymized || proposal.getKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
+        String demand = anonymized || proposal.getDemandKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
         String state =
             LabelExtractor.get(
                     "cp_tweet_state_part",
@@ -165,16 +173,16 @@ public class CommandProcessor {
                     locale
             ) +
             space;
-        String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
-        String dueDate = proposal.getDueDate() == null ? "" : (LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { serializeDate(proposal.getDueDate()) }, locale) + space);
-        String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
-        String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
-        String price = LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale) + space;
-        String total = LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale) + space;
-        String pickup = store == null ? "" : (LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale) + space);
+        String quantity = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
+        String dueDate = proposal.getDueDate() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_dueDate_part", new Object[] { serializeDate(proposal.getDueDate()) }, locale) + space);
+        String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
+        String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
+        String price = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale) + space;
+        String total = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale) + space;
+        String pickup = store == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale) + space);
         String CC = "";
         for (int i=0; i <proposal.getCC().size(); i++) {
-            CC += LabelExtractor.get("cp_tweet_cc_part", new Object[] { proposal.getCC().get(i) }, locale) + space;
+            CC += LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_cc_part", new Object[] { proposal.getCC().get(i) }, locale) + space;
         }
         // Compose the final message
         return LabelExtractor.get(
@@ -202,8 +210,8 @@ public class CommandProcessor {
      *
      * @param store Store to process
      * @param location Place where the store is located
-     * @param locale Indicator for the localized resource bundle to use
-     * @return Serialized command
+     * @param locale Indicator for the localised resource bundle to use
+     * @return Serialised command
      */
     public static String generateTweet(Store store, Location location, Locale locale) {
         final String space = " ";

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+    <header creationtool="domderrien.i18n" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="domderrien"
+    ></header>
+    <body>
+        <tu tuid="bundle_language" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>English</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_demand_action_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg> </seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_propose_action_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>propose</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_demand_reference_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>demande:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_proposal_reference_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>proposition:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_state_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>état:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_cc_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>CC:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_dueDate_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>dateLimite:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_expiration_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>expiration:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_locale_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>localité:{0} {1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_range_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>distance:{0}{1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_quantity_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>joueurs:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_tags_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>description:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_hashtags_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_price_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>prix:{0}{1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_total_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>total:{0}{1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_store_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>golf:{0} {1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">3</prop>
+            <tuv xml:lang="fr">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cp_tweet_proposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">3</prop>
+            <tuv xml:lang="fr">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+    </body>
+</tmx>

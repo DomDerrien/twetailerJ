@@ -211,7 +211,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>quantité,qté</seg>
+                <seg>quantité,qté,joueurs</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_reference" dataType="text">
@@ -247,7 +247,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>motsClés,motClé,description</seg>
+                <seg>motsClés,motClé,description,informations,infos</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_total" dataType="text">
@@ -310,7 +310,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>langue,langage,lg</seg>
+                <seg>langue,langage,lang,lg</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_list" dataType="text">

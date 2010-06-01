@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+    <header creationtool="developers" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="Twetailer">
+    </header>
+    <body>
+
+        <!-- =================== -->
+        <!-- Default definitions -->
+        <!-- =================== -->
+
+        <tu tuid="bundle_language" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
+                IMPORTANT: "English" should not be just translated!
+                IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
+                           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
+            </note>
+            <tuv xml:lang="en">
+                <seg>English</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!-- Golf related labels -->
+        <!-- =================== -->
+
+        <tu tuid="golf_cp_tweet_demand_action_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg> </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_propose_action_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>propose</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_demand_reference_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand reference</note>
+            <tuv xml:lang="en">
+                <seg>demand:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_proposal_reference_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: proposal reference</note>
+            <tuv xml:lang="en">
+                <seg>proposal:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_state_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand state</note>
+            <tuv xml:lang="en">
+                <seg>state:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_cc_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: one CC-ied for the demand</note>
+            <tuv xml:lang="en">
+                <seg>CC:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_dueDate_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand due date</note>
+            <tuv xml:lang="en">
+                <seg>due:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_expiration_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand expiration date</note>
+            <tuv xml:lang="en">
+                <seg>expires:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_locale_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: postal code
+                {1}: country code
+            </note>
+            <tuv xml:lang="en">
+                <seg>locale:{0} {1}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_range_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: range (digits)
+                {1}: range unit (km or mi)
+            </note>
+            <tuv xml:lang="en">
+                <seg>range:{0}{1}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_quantity_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand quantity</note>
+            <tuv xml:lang="en">
+                <seg>players:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_tags_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: serialized demand tags (separated by a space)</note>
+            <tuv xml:lang="en">
+                <seg>description:{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_hashtags_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: serialized demand hashtags (separated by a space)</note>
+            <tuv xml:lang="en">
+                <seg>{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_price_part" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal unit price |
+                {1}: currency symbol|
+                Note:  expected to be unit price
+            </note>
+            <tuv xml:lang="en">
+                <seg>price:{1}{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_total_part" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: proposal total cost |
+                {1}: currency symbol|
+                Note: expected to be total cost, taxes included
+            </note>
+            <tuv xml:lang="en">
+                <seg>total:{1}{0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_store_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: store key
+                {1}: store name
+            </note>
+            <tuv xml:lang="en">
+                <seg>golf:{0} {1}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_demand" datatype="Text">
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: action
+                {1}: demand reference
+                {2}: state
+                {3}: due date
+                {4}: expiration date (not printed if equals to due date)
+                {5}: locale (postal and country codes)
+                {6}: range
+                {7}: quantity
+                {8}: tags
+                {9}: hashtags
+                {10}: proposal keys
+                {11}: cc-ed ids
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="golf_cp_tweet_proposal" datatype="Text">
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: action
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: state
+                {4}: quantity
+                {5}: due date
+                {6}: tags
+                {7}: hashtags
+                {8}: unit price
+                {9}: total price
+                {10}: short store identifier
+                {11}: cc-ed ids
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+
+    </body>
+</tmx>

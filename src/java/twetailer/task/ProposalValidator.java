@@ -15,6 +15,7 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
@@ -139,13 +140,13 @@ public class ProposalValidator {
             if (hashTags.size() != 0) {
                 String serializedHashTags = "";
                 String hashTag = hashTags.get(0);
-                if (hashTags.size() == 1 && !RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                if (hashTags.size() == 1 && !HashTag.getHashTagsList().contains(hashTag)) {
                     serializedHashTags = hashTag;
                 }
                 else { // if (1 < hashTags.size()) {
                     for(int i = 0; i < hashTags.size(); ++i) {
                         hashTag = hashTags.get(i);
-                        if (!RobotResponder.ROBOT_DEMO_HASH_TAG.equals(hashTag)) {
+                        if (!HashTag.getHashTagsList().contains(hashTag)) {
                             serializedHashTags += " " + hashTag;
                         }
                     }
