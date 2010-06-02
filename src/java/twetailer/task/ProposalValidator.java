@@ -59,6 +59,8 @@ public class ProposalValidator {
         }
     }
 
+    private static final Long oneYear = 365 * 24 * 60 * 60 * 1000L;
+
     /**
      * Check the validity of the identified proposal
      *
@@ -87,7 +89,7 @@ public class ProposalValidator {
                 else if (proposal.getDueDate() == null || proposal.getDueDate().getTime() < nowTime) {
                     message = LabelExtractor.get("dv_report_due_in_past", new Object[] { proposalRef }, locale);
                 }
-                else if (nowTime + (365*24*60*60*1000) < proposal.getDueDate().getTime()) {
+                else if (nowTime + oneYear < proposal.getDueDate().getTime()) {
                     message = LabelExtractor.get("dv_report_due_too_far_in_future", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {

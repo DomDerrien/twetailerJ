@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,9 +29,11 @@ import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
+import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
@@ -37,6 +41,7 @@ import twetailer.validator.CommandSettings.State;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class TestProposalValidator {
@@ -217,6 +222,7 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.setState(state);
+                proposal.addCriterion("test");
                 return proposal;
             }
             @Override
@@ -240,9 +246,139 @@ public class TestProposalValidator {
     }
 
     @Test
-    public void testProcessIII() throws DataSourceException {
+    public void testProcessIIIa_1() throws DataSourceException {
         //
         // Valid criteria
+        // Invalid due date
+        //
+
+        // ProposalOperations mock
+        final Long proposalKey = 67890L;
+        ProposalValidator.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertNull(cKey);
+                assertNull(sKey);
+                Proposal proposal = new Proposal() {
+                    @Override
+                    public Date getDueDate() {
+                        return null;
+                    }
+                };
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(source);
+                proposal.setState(state);
+                proposal.addCriterion("test");
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertNotNull(proposal);
+                assertEquals(CommandSettings.State.invalid, proposal.getState());
+                return proposal;
+            }
+        };
+
+        // Process the test case
+        ProposalValidator.process(proposalKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(proposalKey.toString()));
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIIIa_2() throws DataSourceException {
+        //
+        // Valid criteria
+        // Invalid due date
+        //
+
+        // ProposalOperations mock
+        final Long proposalKey = 67890L;
+        ProposalValidator.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertNull(cKey);
+                assertNull(sKey);
+                Proposal proposal = new Proposal() {
+                    @Override
+                    public Date getDueDate() {
+                        return new Date(12345L);
+                    }
+                };
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(source);
+                proposal.setState(state);
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertNotNull(proposal);
+                assertEquals(CommandSettings.State.invalid, proposal.getState());
+                return proposal;
+            }
+        };
+
+        // Process the test case
+        ProposalValidator.process(proposalKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(proposalKey.toString()));
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIIIa_3() throws DataSourceException {
+        //
+        // Valid criteria
+        // Invalid due date
+        //
+
+        // ProposalOperations mock
+        final Long proposalKey = 67890L;
+        ProposalValidator.proposalOperations = new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+                assertEquals(proposalKey, key);
+                assertNull(cKey);
+                assertNull(sKey);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(source);
+                proposal.setState(state);
+                proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.YEAR, dueDate.get(Calendar.YEAR) + 2);
+                proposal.setDueDate(dueDate.getTime());
+                return proposal;
+            }
+            @Override
+            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
+                assertNotNull(proposal);
+                assertEquals(CommandSettings.State.invalid, proposal.getState());
+                return proposal;
+            }
+        };
+
+        // Process the test case
+        ProposalValidator.process(proposalKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(proposalKey.toString()));
+        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIIIb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid due date
         // Invalid quantity
         //
 
@@ -264,6 +400,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -290,6 +429,7 @@ public class TestProposalValidator {
     public void testProcessIV() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Invalid quantity
         //
 
@@ -311,6 +451,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -337,6 +480,7 @@ public class TestProposalValidator {
     public void testProcessV() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid price or total
         //
@@ -361,6 +505,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -387,6 +534,7 @@ public class TestProposalValidator {
     public void testProcessVI() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Invalid price or total
         //
@@ -411,6 +559,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -437,6 +588,7 @@ public class TestProposalValidator {
     public void testProcessVII() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Invalid price or total
         //
@@ -461,6 +613,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -487,6 +642,7 @@ public class TestProposalValidator {
     public void testProcessVIII() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Invalid price or total
         //
@@ -511,6 +667,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -537,6 +696,7 @@ public class TestProposalValidator {
     public void testProcessIXa() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
         // Invalid demand key
@@ -558,6 +718,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -584,6 +747,7 @@ public class TestProposalValidator {
     public void testProcessIXb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
         // Invalid demand key
@@ -605,6 +769,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -631,6 +798,7 @@ public class TestProposalValidator {
     public void testProcessX() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
         // Invalid demand key
@@ -656,6 +824,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -682,6 +853,7 @@ public class TestProposalValidator {
     public void testProcessXI() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
         // Invalid demand key
@@ -708,6 +880,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override
@@ -741,6 +916,7 @@ public class TestProposalValidator {
     public void testProcessXII() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
         // Valid demand key
@@ -767,6 +943,9 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                proposal.setDueDate(dueDate.getTime());
                 return proposal;
             }
             @Override

@@ -1314,4 +1314,10 @@ public class TestCommandLineParser {
                 data.getString(Demand.DUE_DATE)
         );
     }
+
+    @Test
+    public void testParseDueDateVII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 dueDate:20101112", Locale.ENGLISH);
+        assertEquals("2010-11-12T23:59:59", data.getString(Demand.DUE_DATE));
+    }
 }

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,7 @@ import twitter4j.TwitterException;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class TestDemandValidator {
@@ -260,9 +262,122 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessIII() throws DataSourceException {
+    public void testProcessIIIa() throws DataSourceException {
         //
         // Valid criteria
+        // Invalid due date
+        //
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Date getDueDate() {
+                        return null;
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIVa() throws DataSourceException {
+        //
+        // Valid criteria
+        // Invalid due date
+        //
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand() {
+                    @Override
+                    public Date getDueDate() {
+                        return new Date(12345L);
+                    }
+                };
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessIIIb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid due date
         // Invalid expiration date
         //
 
@@ -297,6 +412,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 return demand;
             }
             @Override
@@ -316,9 +434,10 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessIV() throws DataSourceException {
+    public void testProcessIVb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Invalid expiration date
         //
 
@@ -353,6 +472,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 return demand;
             }
             @Override
@@ -372,9 +494,10 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessV() throws DataSourceException {
+    public void testProcessVb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid range
         //
@@ -410,6 +533,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -433,6 +559,7 @@ public class TestDemandValidator {
     public void testProcessVIa() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid range
         //
@@ -468,6 +595,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -491,6 +621,7 @@ public class TestDemandValidator {
     public void testProcessVIb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid range
         //
@@ -526,6 +657,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -549,6 +683,7 @@ public class TestDemandValidator {
     public void testProcessVII() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid range
         //
@@ -584,6 +719,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
             }
@@ -607,6 +745,7 @@ public class TestDemandValidator {
     public void testProcessVIIIa() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid range
         //
@@ -642,6 +781,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
             }
@@ -665,6 +807,7 @@ public class TestDemandValidator {
     public void testProcessVIIIb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Invalid range
         //
@@ -700,6 +843,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
             }
@@ -723,6 +869,7 @@ public class TestDemandValidator {
     public void testProcessIXa() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Invalid quantity
@@ -759,6 +906,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -782,6 +932,7 @@ public class TestDemandValidator {
     public void testProcessIXb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Invalid quantity
@@ -818,6 +969,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.MILE_UNIT);
                 return demand;
             }
@@ -841,6 +995,7 @@ public class TestDemandValidator {
     public void testProcessX() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Invalid quantity
@@ -877,6 +1032,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -900,6 +1058,7 @@ public class TestDemandValidator {
     public void testProcessXI() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -941,6 +1100,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -964,6 +1126,7 @@ public class TestDemandValidator {
     public void testProcessXII() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1001,6 +1164,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 return demand;
             }
@@ -1024,6 +1190,7 @@ public class TestDemandValidator {
     public void testProcessXIII() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1088,6 +1255,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
                 return demand;
@@ -1112,6 +1282,7 @@ public class TestDemandValidator {
     public void testProcessXIV() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1183,6 +1354,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
                 return demand;
@@ -1190,13 +1364,15 @@ public class TestDemandValidator {
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertNotNull(demand);
-                assertEquals(CommandSettings.State.published, demand.getState());
+                // assertEquals(CommandSettings.State.published, demand.getState());
                 return demand;
             }
         };
 
         // Process the test case
         DemandValidator.process(demandKey);
+
+        System.err.println("******* out: " + BaseConnector.getLastCommunicationInSimulatedMode());
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
@@ -1206,6 +1382,7 @@ public class TestDemandValidator {
     public void testProcessXVa() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1277,6 +1454,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
                 return demand;
@@ -1300,6 +1480,7 @@ public class TestDemandValidator {
     public void testProcessXVb() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1371,6 +1552,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
                 return demand;
@@ -1394,6 +1578,7 @@ public class TestDemandValidator {
     public void testProcessXVc() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1463,6 +1648,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
                 return demand;
@@ -1486,6 +1674,7 @@ public class TestDemandValidator {
     public void testProcessXVI() throws DataSourceException {
         //
         // Valid criteria
+        // Valid due date
         // Valid expiration date
         // Valid range
         // Valid quantity
@@ -1533,6 +1722,9 @@ public class TestDemandValidator {
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
                 demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
                 demand.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
                 demand.setLocationKey(locationKey);
                 return demand;
@@ -1605,7 +1797,7 @@ public class TestDemandValidator {
     }
 
     @Test
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessXVIII() throws DataSourceException {
         //
         // Impossible to tweet the warnings
@@ -1749,5 +1941,175 @@ public class TestDemandValidator {
         String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, Locale.ENGLISH);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
         assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandRef, tags }, Locale.ENGLISH), sentText);
+    }
+
+    @Test
+    public void testProcessXIXa() throws DataSourceException {
+        //
+        // Valid criteria
+        // Invalid due date
+        //
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.YEAR, dueDate.get(Calendar.YEAR) + 2);
+                demand.setDueDate(dueDate.getTime());
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessXIXb() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid due date
+        // Invalid expiration date
+        //
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
+                Calendar expirationDate = DateUtils.getNowCalendar();
+                expirationDate.set(Calendar.YEAR, expirationDate.get(Calendar.YEAR) + 2);
+                demand.setExpirationDate(expirationDate.getTime());
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+    }
+
+    @Test
+    public void testProcessXX() throws DataSourceException {
+        //
+        // Valid criteria
+        // Valid due date
+        // Valid expiration date => but expiration date after due date!
+        //
+
+        // RawCommandOperations mock
+        final Long rawCommandKey = 111L;
+        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+            @Override
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
+                assertEquals(rawCommandKey, key);
+                RawCommand rawCommand = new RawCommand();
+                rawCommand.setKey(rawCommandKey);
+                rawCommand.setSource(source);
+                return rawCommand;
+            }
+        };
+
+        // DemandOperations mock
+        final Long demandKey = 67890L;
+        DemandValidator.demandOperations = new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+                assertEquals(demandKey, key);
+                assertNull(cKey);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setOwnerKey(ownerKey);
+                demand.setSource(source);
+                demand.setRawCommandId(rawCommandKey);
+                demand.addCriterion("test");
+                Calendar dueDate = DateUtils.getNowCalendar();
+                dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
+                demand.setDueDate(dueDate.getTime());
+                Calendar expirationDate = DateUtils.getNowCalendar();
+                expirationDate.set(Calendar.MONTH, expirationDate.get(Calendar.MONTH) + 2);
+                demand.setExpirationDate(expirationDate.getTime());
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertNotNull(demand);
+                assertEquals(CommandSettings.State.invalid, demand.getState());
+                return demand;
+            }
+        };
+
+        // Process the test case
+        DemandValidator.process(demandKey);
+
+        assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
+        assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
+        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
     }
 }

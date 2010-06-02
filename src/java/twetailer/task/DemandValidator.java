@@ -69,6 +69,8 @@ public class DemandValidator {
     public static final Double RANGE_MI_MIN = Double.valueOf(2.5D);
     public static final Double RANGE_MI_MAX = Double.valueOf(24906.0D);
 
+    private static final Long oneYear = 365 * 24 * 60 * 60 * 1000L;
+
     /**
      * Check the validity of the identified demand
      *
@@ -81,7 +83,7 @@ public class DemandValidator {
         Demand demand = demandOperations.getDemand(pm, demandKey, null);
         if (CommandSettings.State.opened.equals(demand.getState())) {
             Date nowDate = DateUtils.getNowDate();
-            Long nowTime = nowDate.getTime() - 60*1000; // Minus 1 minute
+            Long nowTime = nowDate.getTime() - 60 * 1000L; // Minus 1 minute
             try {
                 Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
                 Locale locale = consumer.getLocale();
@@ -95,15 +97,19 @@ public class DemandValidator {
                     message = LabelExtractor.get("dv_report_demand_without_tag", new Object[] { demandRef }, locale);
                 }
                 else if (demand.getDueDate() == null || demand.getDueDate().getTime() < nowTime) {
+                    log.warning("Demand: " + demand.getKey() + "\nNow: " + nowDate + "\nDue: " + demand.getDueDate());
                     message = LabelExtractor.get("dv_report_due_in_past", new Object[] { demandRef }, locale);
                 }
-                else if (nowTime + (365*24*60*60*1000) < demand.getDueDate().getTime()) {
+                else if (nowTime + oneYear < demand.getDueDate().getTime()) {
+                    log.warning("Demand: " + demand.getKey() + "\nNow: " + nowDate + "\n+1 year: " + new Date(nowTime + oneYear) + "\nDue: " + demand.getDueDate());
                     message = LabelExtractor.get("dv_report_due_too_far_in_future", new Object[] { demandRef }, locale);
                 }
                 else if (demand.getExpirationDate() == null || demand.getExpirationDate().getTime() < nowTime) {
+                    log.warning("Demand: " + demand.getKey() + "\nNow: " + nowDate + "\nExpiration: " + demand.getExpirationDate());
                     message = LabelExtractor.get("dv_report_expiration_in_past", new Object[] { demandRef }, locale);
                 }
-                else if (nowTime + (365*24*60*60*1000) < demand.getExpirationDate().getTime()) {
+                else if (nowTime + oneYear < demand.getExpirationDate().getTime()) {
+                    log.warning("Demand: " + demand.getKey() + "\nNow: " + nowDate + "\n+1 year: " + new Date(nowTime + oneYear) + "\nExpiration: " + demand.getExpirationDate());
                     message = LabelExtractor.get("dv_report_expiration_too_far_in_future", new Object[] { demandRef }, locale);
                 }
                 else if (demand.getDueDate().getTime() < demand.getExpirationDate().getTime()) {
