@@ -1,6 +1,8 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -33,26 +35,29 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         dispatchMailMessage(request, response);
     }
 
+    private static List<String> mailResponderEndpoints = new ArrayList<String>();
+    static {
+        mailResponderEndpoints.add("/maezel@twetailer.appspotmail.com");
+        mailResponderEndpoints.add("/hub@twetailer.appspotmail.com");
+        mailResponderEndpoints.add("/thehub@twetailer.appspotmail.com");
+        mailResponderEndpoints.add("/assistant@twetailer.appspotmail.com");
+    }
+
     protected void dispatchMailMessage(HttpServletRequest request, HttpServletResponse response) {
         String pathInfo = request.getPathInfo();
         log.warning("Path Info: " + pathInfo);
 
-        /*************
-         * Triage proposed when I had issues specifying the filters in the web.xml fil
-         * No needed when the full servlet path is specified!
-         *
         if ("/twitter@twetailer.appspotmail.com".equals(pathInfo)) {
             log.warning("Forwarding to: TwitterMailNotificationHandlerServlet.processTwitterNotification()");
             TwitterMailNotificationHandlerServlet.processTwitterNotification(request, response);
             return;
         }
 
-        if ("/maezel@twetailer.appspotmail.com".equals(pathInfo)) {
+        if (mailResponderEndpoints.contains(pathInfo)) {
             log.warning("Forwarding to: MailResponderServlet.processMailedRequest()");
             MailResponderServlet.processMailedRequest(request, response);
             return;
         }
-        *************/
 
         forwardUnexpectedMailMessage(request, response);
     }
@@ -62,17 +67,23 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
 
-            Address[] from = mailMessage.getFrom();
+            Address from = mailMessage.getSender();
+            Address[] to = mailMessage.getAllRecipients();
             String subject = mailMessage.getSubject();
-            String body = MailConnector.getText(mailMessage);
+            StringBuilder body = new StringBuilder();
 
-            composeAndPostMailMessage((from == null || from.length == 0 ? "unknown" : from[0].toString()), subject, body);
+            body.append("From: ").append(from.toString()).append("\n");
+            for(int idx = 0; idx < to.length; idx ++) {
+                body.append("To: ").append(to[idx].toString()).append("\n");
+            }
+            body.append("Subject: ").append(subject).append("\n");
+            body.append("\n").append(MailConnector.getText(mailMessage));
+
+            composeAndPostMailMessage(from.toString(), "Unexpected e-mail!", body.toString());
         }
         // catch (MessagingException ex) {
         // catch (IOException ex) {
         catch (Exception ex) {
-            // Too bad! Should we tweet the issue?
-            // Dom: I don't think so because e-mail is probably the most robust communication mechanism (with native auto-retry, for example)
             log.severe("Error while processing e-mail from");
         }
     }
