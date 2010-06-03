@@ -1,8 +1,6 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -30,30 +28,23 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.warning("Path Info: " + request.getPathInfo());
-
         dispatchMailMessage(request, response);
-    }
-
-    private static List<String> mailResponderEndpoints = new ArrayList<String>();
-    static {
-        mailResponderEndpoints.add("/maezel@twetailer.appspotmail.com");
-        mailResponderEndpoints.add("/hub@twetailer.appspotmail.com");
-        mailResponderEndpoints.add("/thehub@twetailer.appspotmail.com");
-        mailResponderEndpoints.add("/assistant@twetailer.appspotmail.com");
     }
 
     protected void dispatchMailMessage(HttpServletRequest request, HttpServletResponse response) {
         String pathInfo = request.getPathInfo();
         log.warning("Path Info: " + pathInfo);
+        if (pathInfo != null && 0 < pathInfo.length()) {
+            pathInfo = pathInfo.substring(1); // To remove the leading '/'
+        }
 
-        if ("/twitter@twetailer.appspotmail.com".equals(pathInfo)) {
+        if (TwitterMailNotificationHandlerServlet.responderEndpoints.contains(pathInfo)) {
             log.warning("Forwarding to: TwitterMailNotificationHandlerServlet.processTwitterNotification()");
             TwitterMailNotificationHandlerServlet.processTwitterNotification(request, response);
             return;
         }
 
-        if (mailResponderEndpoints.contains(pathInfo)) {
+        if (MailResponderServlet.responderEndpoints.contains(pathInfo)) {
             log.warning("Forwarding to: MailResponderServlet.processMailedRequest()");
             MailResponderServlet.processMailedRequest(request, response);
             return;
@@ -68,13 +59,20 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
 
             Address from = mailMessage.getSender();
-            Address[] to = mailMessage.getAllRecipients();
+            if (mailMessage.getSender() == null) {
+                from = mailMessage.getFrom()[0];
+            }
+            Address[] to = mailMessage.getRecipients(Message.RecipientType.TO);
+            Address[] cc = mailMessage.getRecipients(Message.RecipientType.CC);
             String subject = mailMessage.getSubject();
             StringBuilder body = new StringBuilder();
 
             body.append("From: ").append(from.toString()).append("\n");
-            for(int idx = 0; idx < to.length; idx ++) {
+            for (int idx = 0; idx < to.length; idx ++) {
                 body.append("To: ").append(to[idx].toString()).append("\n");
+            }
+            for (int idx = 0; idx < cc.length; idx ++) {
+                body.append("Cc: ").append(cc[idx].toString()).append("\n");
             }
             body.append("Subject: ").append(subject).append("\n");
             body.append("\n").append(MailConnector.getText(mailMessage));

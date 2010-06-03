@@ -4,12 +4,15 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
 
 import javax.jdo.PersistenceManager;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -22,25 +25,31 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
+import twetailer.dto.HashTag;
 import twetailer.dto.RawCommand;
+import twetailer.task.CommandLineParser;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
+import twetailer.validator.CommandSettings.Prefix;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.JsonObject;
 
 @SuppressWarnings("serial")
 public class MailResponderServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MailResponderServlet.class.getName());
 
     protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
     protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
+    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
+    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
@@ -52,7 +61,24 @@ public class MailResponderServlet extends HttpServlet {
         processMailedRequest(request, response);
     }
 
+    public static List<String> responderEndpoints = new ArrayList<String>();
+    static {
+        responderEndpoints.add("assistant@twetailer.appspotmail.com");
+        responderEndpoints.add("maezel@twetailer.appspotmail.com");
+        responderEndpoints.add("hub@twetailer.appspotmail.com");
+        responderEndpoints.add("thehub@twetailer.appspotmail.com");
+        
+        String[] hashTags = HashTag.getHashTagsArray();
+        for (int idx=0; idx<hashTags.length; idx ++) {
+            responderEndpoints.add(hashTags[idx] + "@twetailer.appspotmail.com");
+        }
+    }
+
+    private static final String MESSAGE_ID_LIST = "mailMessageIds";
+
+    @SuppressWarnings("unchecked")
     protected static void processMailedRequest(HttpServletRequest request, HttpServletResponse response) {
+        String to = null;
         String name = null;
         String email = null;
         String subject = null;
@@ -70,6 +96,22 @@ public class MailResponderServlet extends HttpServlet {
                 throw new MessagingException("Incorrect message (no FROM!)");
             }
 
+            // Check if the message has already been processed
+            String messageId = mailMessage.getMessageID();
+            if (messageId != null && 0 < messageId.length()) {
+                List<String> lastMailMessageIds = (List<String>) settingsOperations.getFromCache(MESSAGE_ID_LIST);
+                if (lastMailMessageIds != null && lastMailMessageIds.contains(messageId)) {
+                    log.warning("**** Email '" + messageId + "' already processed");
+                    return;
+                }
+                if (lastMailMessageIds == null) {
+                    lastMailMessageIds = new ArrayList<String>();
+                    log.warning("**** Create list in MemCache to store the last mail message identifiers.");
+                }
+                lastMailMessageIds.add(messageId);
+                settingsOperations.setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
+            }
+
             // Extract information about the sender
             InternetAddress address = (InternetAddress) (mailMessage.getFrom()[0]);
             name = address.getPersonal();
@@ -79,13 +121,51 @@ public class MailResponderServlet extends HttpServlet {
                 language = LocaleValidator.checkLanguage(mailMessage.getContentLanguage()[0]);
             }
 
+            // Extract information about a supported receiver
+            InternetAddress[] recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.TO));
+            for (int idx = 0; to == null && idx < recipients.length; idx ++) {
+                to = recipients[idx].getAddress();
+                if (!responderEndpoints.contains(to)) {
+                    to = null;
+                }
+            }
+            if (to == null) {
+                log.warning("**** Email '" + messageId + "' not addressed to Twetailer!");
+                return;
+            }
+            StringBuilder ccList = new StringBuilder();
+            recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.CC));
+            if (recipients != null && 0 < recipients.length) {
+                // TODO: push this code below to fallback on the consumer locale
+                Locale locale = language == null ? Locale.ENGLISH : new Locale(language);
+                log.warning("Language for the CC prefix: " + language);
+                CommandLineParser.loadLocalizedSettings(locale);
+                JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+                String ccPrefix = prefixes.getJsonArray(Prefix.cc.toString()).getString(0);
+                for (int idx = 0; idx < recipients.length; idx ++) {
+                    String ccAddress = recipients[idx].getAddress();
+                    if (!responderEndpoints.contains(ccAddress)) {
+                        ccList.append(Command.SPACE).append(ccPrefix).append(CommandLineParser.PREFIX_SEPARATOR).append(ccAddress);
+                    }
+                }
+                command = ccList.insert(0, command).toString();
+            }
+            
+            // Add vertical information
+            String toBase = to.substring(0, to.indexOf('@'));
+            if (HashTag.getHashTagsList().contains(toBase)) {
+                command += " #" + toBase;
+            }
+
             // Fill up the message to persist
+            rawCommand.setCommandId(messageId);
             rawCommand.setEmitterId(email.toLowerCase());
+            rawCommand.setToId(to.toLowerCase());
             rawCommand.setSubject(subject);
             command = extractFirstLine(MailConnector.getText(mailMessage));
             rawCommand.setCommand(command);
 
-            log.warning("Message sent by: " + email + " with the subject: " + subject + "\nWith the command: " + command);
+            log.warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);
 
             PersistenceManager pm = _baseOperations.getPersistenceManager();
             try {
@@ -145,6 +225,7 @@ public class MailResponderServlet extends HttpServlet {
             if (email != null) {
                 try {
                     MailConnector.sendMailMessage(
+                            false,
                             email,
                             name,
                             subject,

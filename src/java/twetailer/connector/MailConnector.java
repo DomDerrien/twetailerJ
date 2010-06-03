@@ -17,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
 
+import twetailer.j2ee.MailResponderServlet;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
@@ -49,11 +50,17 @@ public class MailConnector {
     }
 
     public static InternetAddress twetailer;
+    public static InternetAddress twetailer_cc;
     static {
         twetailer = prepareInternetAddress(
                 "UTF-8",
                 ApplicationSettings.get().getProductName(),
-                ApplicationSettings.get().getProductEmail()
+                MailResponderServlet.responderEndpoints.get(0)
+        );
+        twetailer_cc = prepareInternetAddress(
+                "UTF-8",
+                ApplicationSettings.get().getProductName(),
+                MailResponderServlet.responderEndpoints.get(0).replace("@", "-cc@")
         );
     }
 
@@ -84,6 +91,7 @@ public class MailConnector {
     /**
      * Use the Google App Engine API to send an mail message to the identified e-mail address
      *
+     * @param useCcAccount Indicates that the message should be sent from a CC account, which is going to ignore unexpected replies
      * @param receiverId E-mail address of the recipient
      * @param recipientName recipient display name
      * @param subject Subject of the message that triggered this response
@@ -93,14 +101,14 @@ public class MailConnector {
      * @throws MessagingException If one of the message attribute is incorrect
      * @throws UnsupportedEncodingException if the e-mail address is invalid
      */
-    public static void sendMailMessage(String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
+    public static void sendMailMessage(boolean useCcAccount, String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
         InternetAddress recipient = new InternetAddress(receiverId, recipientName, "UTF-8");
 
         Properties properties = new Properties();
         Session session = Session.getDefaultInstance(properties, null);
 
         MimeMessage mailMessage = new MimeMessage(session);
-        mailMessage.setFrom(twetailer);
+        mailMessage.setFrom(useCcAccount ? twetailer_cc : twetailer);
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
         String responsePrefix = LabelExtractor.get("mc_mail_subject_response_prefix", locale);
         if (subject == null || subject.length() == 0) {

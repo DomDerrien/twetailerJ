@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -42,6 +43,11 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processTwitterNotification(request, response);
+    }
+
+    public static List<String> responderEndpoints = new ArrayList<String>();
+    static {
+        responderEndpoints.add("twitter@twetailer.appspotmail.com");
     }
 
     protected static void processTwitterNotification(HttpServletRequest request, HttpServletResponse response) {

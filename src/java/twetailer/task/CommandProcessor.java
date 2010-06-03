@@ -100,7 +100,7 @@ public class CommandProcessor {
         String labelKeyPrefix = HashTag.getVocabularySetIdentifier(demand);
         ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
 
-        final String space = " ";
+        final String space = Command.SPACE;
         // Get the labels for each demand attributes
         String action = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_action_part", locale) + space;
         String reference = anonymized || demand.getKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
@@ -159,7 +159,7 @@ public class CommandProcessor {
         String labelKeyPrefix = HashTag.getVocabularySetIdentifier(proposal);
         ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
 
-        final String space = " ";
+        final String space = Command.SPACE;
         // Get the labels for each proposal attributes
         String action = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_propose_action_part", locale) + space;
         String reference = anonymized || proposal.getKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
@@ -214,7 +214,7 @@ public class CommandProcessor {
      * @return Serialised command
      */
     public static String generateTweet(Store store, Location location, Locale locale) {
-        final String space = " ";
+        final String space = Command.SPACE;
         // Get the labels for each store attributes
         String reference = store.getKey() == null ? "" : (LabelExtractor.get("cp_tweet_store_reference_part", new Object[] { store.getKey() }, locale) + space);
         String name = store.getName() == null ? "" : (LabelExtractor.get("cp_tweet_name_part", new Object[] { store.getName() }, locale) + space);

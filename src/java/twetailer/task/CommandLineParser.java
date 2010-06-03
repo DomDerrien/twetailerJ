@@ -35,12 +35,13 @@ public class CommandLineParser {
     public static Map<Locale, JsonObject> localizedHelpKeywords = new HashMap<Locale, JsonObject>();
     public static Map<Locale, Map<String, Pattern>> localizedPatterns = new HashMap<Locale, Map<String, Pattern>>();
 
+    public final static String PREFIX_SEPARATOR = ":";
     /**
      * Load the command processor parameters for the specified locale
      *
      * @param locale user's preferred locale
      */
-    protected static void loadLocalizedSettings(Locale locale) {
+    public static void loadLocalizedSettings(Locale locale) {
         JsonObject prefixes = localizedPrefixes.get(locale);
         if (prefixes == null) {
             prefixes = CommandSettings.getPrefixes(locale);
@@ -124,7 +125,7 @@ public class CommandLineParser {
             prefixEnd --;
             pattern.insert(0, prefix.charAt(prefixEnd)).insert(0, "(?:").append(")?");
         }
-        return pattern.insert(0, prefix.subSequence(0, prefixEnd)).append(":");
+        return pattern.insert(0, prefix.subSequence(0, prefixEnd)).append(PREFIX_SEPARATOR);
     }
 
     /**
@@ -407,7 +408,7 @@ public class CommandLineParser {
             command = pattern.substring(1);
         }
         else {
-            command = pattern.substring(pattern.indexOf(":") + 1);
+            command = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1);
         }
         return command;
     }
@@ -422,7 +423,7 @@ public class CommandLineParser {
      */
     @SuppressWarnings("deprecation")
     private static String getDate(String pattern) throws ParseException {
-        String value = pattern.substring(pattern.indexOf(":") + 1).trim();
+        String value = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim();
         int year, month, day, hour, minute, second;
         int timeSeparator = value.indexOf('T');
         String date = value;
@@ -494,8 +495,8 @@ public class CommandLineParser {
             "-" + (month < 10 ? "0" + month : month) +
             "-" + (day < 10 ? "0" + day : day) +
             "T" + (hour < 10 ? "0" + hour : hour) +
-            ":" + (minute < 10 ? "0" + minute : minute) +
-            ":" + (second < 10 ? "0" + second : second);
+            PREFIX_SEPARATOR + (minute < 10 ? "0" + minute : minute) +
+            PREFIX_SEPARATOR + (second < 10 ? "0" + second : second);
     }
 
     /**
@@ -509,7 +510,7 @@ public class CommandLineParser {
             command = pattern.substring(1);
         }
         else {
-            command = pattern.substring(pattern.indexOf(":") + 1);
+            command = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1);
         }
         return command;
     }
@@ -560,7 +561,7 @@ public class CommandLineParser {
      * @return valid postal code
      */
     private static String getPostalCode(String pattern, String countryCode) {
-        String postalCode = pattern.substring(pattern.indexOf(":") + 1, pattern.length() - countryCode.length()).replaceAll("\\s", "");
+        String postalCode = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1, pattern.length() - countryCode.length()).replaceAll("\\s", "");
         if (postalCode.charAt(postalCode.length() - 1) == '-') {
             return postalCode.substring(0, postalCode.length() - 1);
         }
@@ -574,7 +575,7 @@ public class CommandLineParser {
      * @return valid number representation, ready to be transformed
      */
     private static String getCleanNumber(String pattern) {
-        StringBuilder value = new StringBuilder(pattern.substring(pattern.indexOf(":") + 1).trim());
+        StringBuilder value = new StringBuilder(pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim());
         int idx = value.length();
         while (0 < idx) {
             -- idx;
@@ -624,7 +625,7 @@ public class CommandLineParser {
      * @return any value
      */
     private static String getValue(String pattern) {
-        return pattern.substring(pattern.indexOf(":") + 1).trim();
+        return pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim();
     }
 
     /**
@@ -636,8 +637,8 @@ public class CommandLineParser {
     private static String[] getTags(String pattern, Map<String, Pattern> patterns) {
         String keywords = pattern;
         // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of tags: or -tags:)
-        if (patterns == null) { // && pattern.indexOf(":") != -1) {
-            keywords = pattern.substring(pattern.indexOf(":") + 1).trim();
+        if (patterns == null) { // && pattern.indexOf(PREFIX_SEPARATOR) != -1) {
+            keywords = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim();
         }
         else {
             // Because it's possible the keywords are not prefixed, it's not possible to ignore everything before the colon

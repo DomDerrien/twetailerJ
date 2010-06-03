@@ -37,11 +37,6 @@
         value="Twetailer"
     />
 
-    <property name="rwa.productEmail"
-        description="Product e-mail address"
-        value="maezel@twetailer.appspotmail.com"
-    />
-
     <property name="rwa.productWebsite"
         description="Product website"
         value="http://www.twetailer.com/"
@@ -382,7 +377,6 @@
             <token key="rwa.release" value="${rwa.release}" />
             <token key="rwa.productWebsite" value="${rwa.productWebsite}" />
             <token key="rwa.productName" value="${rwa.productName}" />
-            <token key="rwa.productEmail" value="${rwa.productEmail}" />
             <token key="rwa.productShortName" value="${rwa.productShortName}" />
             <token key="rwa.contextRoot" value="${rwa.contextRoot}" />
             <token key="rwa.servletApiPath" value="${rwa.servletApiPath}" />
@@ -650,6 +644,7 @@
             destdir="src/war/WEB-INF/classes"
             deprecation="true"
             debug="true"
+			includeantruntime="false"
             optimize="false"
             excludes=""
             srcdir="src/java"
@@ -660,6 +655,7 @@
             destdir="src/war/WEB-INF/classes"
             deprecation="false"
             debug="true"
+            includeantruntime="false"
             optimize="false"
             excludes=""
             srcdir="test/java"

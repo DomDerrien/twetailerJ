@@ -11,7 +11,6 @@ import javamocks.util.logging.MockLogger;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 

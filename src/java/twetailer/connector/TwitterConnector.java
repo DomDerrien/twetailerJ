@@ -22,17 +22,17 @@ public class TwitterConnector {
      * Password: 6GmeM3FJzPOy-zNJ
      */
     public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
-    private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
+    // private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
 
     /* Information for OAuth authentication
-     * Consumer key:                  Kxo0DAP1ImQ1PV1pAAZkQ
-     * Consumer secret:               8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o
+     * Consumer key:          Kxo0DAP1ImQ1PV1pAAZkQ
+     * Consumer secret:       8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o
      *
-     * Request token key:             Twitter instance dependent
-     * Request token secret:          Twitter instance dependent
+     * Request token key:     Twitter instance dependent
+     * Request token secret:  Twitter instance dependent
      *
-     * Access token key:              18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4
-     * Access token secret:           GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk
+     * Access token key:      18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4
+     * Access token secret:   GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk
      */
     public static final String TWETAILER_TWITTER_CONSUMER_KEY = "Kxo0DAP1ImQ1PV1pAAZkQ";
     public static final String TWETAILER_TWITTER_CONSUMER_SECRET = "8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o";

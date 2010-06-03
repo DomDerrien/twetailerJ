@@ -11,7 +11,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>English</seg>
+                <seg>Français</seg>
             </tuv>
         </tu>
         <tu tuid="golf_cp_tweet_demand_action_part" dataType="text">

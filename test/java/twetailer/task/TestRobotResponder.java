@@ -25,6 +25,7 @@ import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
@@ -226,7 +227,7 @@ public class TestRobotResponder {
                 assertEquals(storeKey, proposal.getStoreKey());
                 StringBuilder message = new StringBuilder();
                 for (String tag : proposal.getCriteria()) {
-                    message.append(tag).append(" ");
+                    message.append(tag).append(Command.SPACE);
                 }
                 assertEquals(LabelExtractor.get("rr_robot_automatic_proposition", Locale.ENGLISH).trim(), message.toString().trim());
                 proposal.setKey(proposalKey);

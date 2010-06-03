@@ -366,6 +366,7 @@ public class MaezelServlet extends HttpServlet {
                     if (waitForCode) {
                         // Account with an e-mail address
                         MailConnector.sendMailMessage(
+                                false,
                                 email,
                                 in.getString(Consumer.NAME),
                                 LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", locale),

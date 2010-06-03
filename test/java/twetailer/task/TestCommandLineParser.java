@@ -784,13 +784,13 @@ public class TestCommandLineParser {
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
         JsonObject states = CommandLineParser.localizedStates.get(locale);
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":1"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + ":2025-01-01"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0) + ":ZZZ " + Locale.CANADA.getCountry()));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "1"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "first second"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + CommandLineParser.PREFIX_SEPARATOR + "2025-01-01"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "4.0" + LocaleValidator.KILOMETER_UNIT));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "ZZZ " + Locale.CANADA.getCountry()));
     }
 
     @Test
@@ -820,15 +820,15 @@ public class TestCommandLineParser {
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
         JsonObject states = CommandLineParser.localizedStates.get(locale);
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0) + ":1"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + ":first second"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + ":12345"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":$25.99"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + ":67890"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "1"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "first second"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "12345"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "67890"));
         assertTrue(response.contains("sgrognegneu"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":$35.33"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$35.33"));
     }
 
     @Test
@@ -852,10 +852,10 @@ public class TestCommandLineParser {
         JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + ":2025-01-01"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + ":4.0" + LocaleValidator.KILOMETER_UNIT));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + CommandLineParser.PREFIX_SEPARATOR + "2025-01-01"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "4.0" + LocaleValidator.KILOMETER_UNIT));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)));
         assertTrue(response.contains("#demo"));
     }
@@ -900,10 +900,10 @@ public class TestCommandLineParser {
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + ":$25.99"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + ":3"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + ":" + states.getString(State.published.toString())));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + ":$35.33"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$25.99"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$35.33"));
         assertTrue(response.contains("#demo"));
     }
 

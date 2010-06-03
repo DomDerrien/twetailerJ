@@ -60,6 +60,10 @@ public class TestCatchAllMailHandlerServlet {
             public ServletInputStream getInputStream() {
                 return stream;
             }
+            @Override
+            public String getPathInfo() {
+                return MailResponderServlet.responderEndpoints.get(0);
+            }
         };
 
         CatchAllMailHandlerServlet servlet = new CatchAllMailHandlerServlet();
@@ -78,6 +82,10 @@ public class TestCatchAllMailHandlerServlet {
             @Override
             public ServletInputStream getInputStream() {
                 return stream;
+            }
+            @Override
+            public String getPathInfo() {
+                return MailResponderServlet.responderEndpoints.get(0);
             }
         };
 
@@ -98,6 +106,10 @@ public class TestCatchAllMailHandlerServlet {
             public ServletInputStream getInputStream() {
                 return stream;
             }
+            @Override
+            public String getPathInfo() {
+                return MailResponderServlet.responderEndpoints.get(0);
+            }
         };
 
         CatchAllMailHandlerServlet servlet = new CatchAllMailHandlerServlet();
@@ -116,6 +128,10 @@ public class TestCatchAllMailHandlerServlet {
             @Override
             public ServletInputStream getInputStream() {
                 return stream;
+            }
+            @Override
+            public String getPathInfo() {
+                return MailResponderServlet.responderEndpoints.get(0);
             }
         };
 

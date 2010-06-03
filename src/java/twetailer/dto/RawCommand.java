@@ -20,6 +20,9 @@ public class RawCommand extends Entity {
     private String command;
 
     @Persistent
+    private String commandId;
+
+    @Persistent
     private String emitterId;
 
     @Persistent
@@ -33,6 +36,9 @@ public class RawCommand extends Entity {
 
     @Persistent
     private String subject;
+
+    @Persistent
+    private String toId;
 
     /** Default constructor */
     public RawCommand() {
@@ -56,6 +62,14 @@ public class RawCommand extends Entity {
             }
         }
         command = text;
+    }
+
+    public String getCommandId() {
+        return commandId;
+    }
+
+    public void setCommandId(String commandId) {
+        this.commandId = commandId;
     }
 
     public String getEmitterId() {
@@ -109,5 +123,13 @@ public class RawCommand extends Entity {
 
     public void setSubject(String subject) {
         this.subject = subject == null || subject.length() == 0 ? null : subject;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 }

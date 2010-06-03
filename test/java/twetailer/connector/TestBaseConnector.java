@@ -53,7 +53,7 @@ public class TestBaseConnector {
 
     @Test(expected=ClientException.class)
     public void testUnsupportedSource() throws ClientException {
-        BaseConnector.communicateToUser(null, null, null, null, null, Locale.ENGLISH);
+        BaseConnector.communicateToUser(null, false, null, null, null, null, Locale.ENGLISH);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
         final String message = "test";
-        BaseConnector.communicateToUser(Source.simulated, null, null, null, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.simulated, false, null, null, null, new String[] { message }, Locale.ENGLISH);
 
         assertEquals(BaseConnector.getLastCommunicationInSimulatedMode(), message);
     }
@@ -92,7 +92,7 @@ public class TestBaseConnector {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        BaseConnector.communicateToUser(Source.twitter, twitterId, null, null, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.twitter, false, twitterId, null, null, new String[] { message }, Locale.ENGLISH);
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -110,7 +110,7 @@ public class TestBaseConnector {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        BaseConnector.communicateToUser(Source.twitter, twitterId, null, null, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.twitter, false, twitterId, null, null, new String[] { message }, Locale.ENGLISH);
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -119,7 +119,7 @@ public class TestBaseConnector {
     public void testJabberSource() throws ClientException {
         final String jabberId = "jId";
         final String message = "test";
-        BaseConnector.communicateToUser(Source.jabber, jabberId, null, null, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.jabber, false, jabberId, null, null, new String[] { message }, Locale.ENGLISH);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class TestBaseConnector {
         final String mailAddress = "unit@test.net";
         final String message = "test";
         final String subject = "subject";
-        BaseConnector.communicateToUser(Source.mail, mailAddress, null, subject, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.mail, false, mailAddress, null, subject, new String[] { message }, Locale.ENGLISH);
     }
 
     @Test(expected=ClientException.class)
@@ -135,7 +135,7 @@ public class TestBaseConnector {
         final String mailAddress = "@@@";
         final String message = "test";
         final String subject = "subject";
-        BaseConnector.communicateToUser(Source.mail, mailAddress, null, subject, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.mail, false, mailAddress, null, subject, new String[] { message }, Locale.ENGLISH);
     }
 
     @Test(expected=RuntimeException.class)
@@ -143,7 +143,7 @@ public class TestBaseConnector {
         final String facebookId = "fId";
         final String message = "test";
         final String subject = "subject";
-        BaseConnector.communicateToUser(Source.facebook, facebookId, null, subject, new String[] { message }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.facebook, false, facebookId, null, subject, new String[] { message }, Locale.ENGLISH);
     }
 
     @Test
@@ -377,7 +377,7 @@ public class TestBaseConnector {
         final String subject = "subject";
         final String message1 = "test1";
         final String message2 = "test2";
-        BaseConnector.communicateToUser(Source.mail, mailAddress, null, subject, new String[] { message1, message2 }, Locale.ENGLISH);
+        BaseConnector.communicateToUser(Source.mail, false, mailAddress, null, subject, new String[] { message1, message2 }, Locale.ENGLISH);
     }
 
     @Test

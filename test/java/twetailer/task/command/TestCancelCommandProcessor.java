@@ -37,6 +37,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.validator.CommandSettings.Action;
@@ -168,7 +169,7 @@ public class TestCancelCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(demandKey.toString()));
-        assertTrue(sentText.contains(Prefix.state.toString()+":"+State.cancelled.toString()));
+        assertTrue(sentText.contains(Prefix.state.toString()+CommandLineParser.PREFIX_SEPARATOR+State.cancelled.toString()));
     }
 
     @Test
@@ -299,7 +300,7 @@ public class TestCancelCommandProcessor {
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
         assertTrue(sentText.contains(proposalKey.toString()));
-        assertTrue(sentText.contains(Prefix.state.toString()+":"+State.cancelled.toString()));
+        assertTrue(sentText.contains(Prefix.state.toString()+CommandLineParser.PREFIX_SEPARATOR+State.cancelled.toString()));
     }
 
     @Test

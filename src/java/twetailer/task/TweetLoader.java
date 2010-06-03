@@ -3,10 +3,7 @@ package twetailer.task;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -28,8 +25,6 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
-import domderrien.i18n.LabelExtractor;
 
 public class TweetLoader {
     private static Logger log = Logger.getLogger(TweetLoader.class.getName());
@@ -88,7 +83,6 @@ public class TweetLoader {
      * @throws TwitterException
      * @throws DataSourceException
      */
-    @SuppressWarnings("deprecation")
     protected static Long loadDirectMessages(PersistenceManager pm, Long sinceId) throws DataSourceException, TwitterException {
         long lastId = sinceId;
 
@@ -112,6 +106,7 @@ public class TweetLoader {
 
             log.warning("DM emitter: " + consumer.getTwitterId());
             RawCommand rawCommand = new RawCommand(Source.twitter);
+            rawCommand.setCommandId(String.valueOf(dm.getId()));
             rawCommand.setEmitterId(consumer.getTwitterId());
             rawCommand.setMessageId(dmId);
             rawCommand.setCommand(message);

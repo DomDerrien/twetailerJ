@@ -93,7 +93,7 @@ public class ConfirmCommandProcessor {
 
                     // Prepare the message simulating the closing by the robot
                     RawCommand consequence = new RawCommand();
-                    consequence.setCommand(Prefix.action + ":" + Action.close + " " + Prefix.proposal + ":" + proposal.getKey());
+                    consequence.setCommand(Prefix.action + CommandLineParser.PREFIX_SEPARATOR + Action.close + " " + Prefix.proposal + CommandLineParser.PREFIX_SEPARATOR + proposal.getKey());
                     consequence.setSource(Source.robot);
 
                     // Persist message

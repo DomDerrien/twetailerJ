@@ -1,6 +1,6 @@
 package twetailer.dto;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HashTag {
@@ -15,12 +15,7 @@ public class HashTag {
         TAXI
     };
 
-    private static List<String> VALID_HASHTAGS_LIST = new ArrayList<String>();
-    static {
-        for(int idx = 0; idx < VALID_HASHTAGS_ARRAY.length; idx ++) {
-            VALID_HASHTAGS_LIST.add(VALID_HASHTAGS_ARRAY[idx]);
-        }
-    }
+    private static List<String> VALID_HASHTAGS_LIST = Arrays.asList(VALID_HASHTAGS_ARRAY);
 
     public static String[] getHashTagsArray() {
         return VALID_HASHTAGS_ARRAY;

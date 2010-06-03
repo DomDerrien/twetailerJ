@@ -35,12 +35,6 @@ public class ApplicationSettings {
 
     protected final static String LOGO_URL_KEY = "logoURL";
 
-    public final static String DEFAULT_PRODUCT_EMAIL = "maezel@twetailer.appspotmail.com";
-
-    private String productEmail = DEFAULT_PRODUCT_EMAIL;
-
-    protected final static String PRODUCT_EMAIL_KEY = "productEmail";
-
     public final static String DEFAULT_PRODUCT_NAME = "";
 
     private String productName = DEFAULT_PRODUCT_NAME;
@@ -107,15 +101,6 @@ public class ApplicationSettings {
      */
     public String getLogoURL() {
         return logoURL;
-    }
-
-    /**
-     * Get the product e-mail address
-     *
-     * @return E-mail address
-     */
-    public String getProductEmail() {
-        return productEmail;
     }
 
     /**
@@ -202,12 +187,6 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 logoURL = DEFAULT_LOGO_URL;
-            }
-            try {
-                productEmail = appSettings.getString(PRODUCT_EMAIL_KEY);
-            }
-            catch(Exception ex) {
-                productEmail = DEFAULT_PRODUCT_EMAIL;
             }
             try {
                 productName = appSettings.getString(PRODUCT_NAME_KEY);

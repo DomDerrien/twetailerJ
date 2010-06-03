@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import twetailer.ClientException;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
@@ -45,7 +46,7 @@ public class BaseConnector {
         if (arobasIdx == -1 || arobasIdx == 1) {
             source = Source.twitter;
         }
-        communicateToUser(source, coordinate, null, null, new String[] { message }, locale);
+        communicateToUser(source, true, coordinate, null, null, new String[] { message }, locale);
     }
 
     /**
@@ -58,7 +59,7 @@ public class BaseConnector {
      * @throws ClientException If the communication fails
      */
     public static void communicateToEmitter(RawCommand rawCommand, String[] messages, Locale locale) throws ClientException {
-        communicateToUser(rawCommand.getSource(), rawCommand.getEmitterId(), null, rawCommand.getSubject(), messages, locale);
+        communicateToUser(rawCommand.getSource(), false, rawCommand.getEmitterId(), null, rawCommand.getSubject(), messages, locale);
     }
 
     /**
@@ -81,7 +82,7 @@ public class BaseConnector {
                         null;
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, userId, userName, rawCommand.getSubject(), messages, consumer.getLocale());
+            communicateToUser(source, false, userId, userName, rawCommand.getSubject(), messages, consumer.getLocale());
         }
     }
 
@@ -105,7 +106,7 @@ public class BaseConnector {
                         null;
         String userName = saleAssociate.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, userId, userName, rawCommand.getSubject(), messages, saleAssociate.getLocale());
+            communicateToUser(source, false, userId, userName, rawCommand.getSubject(), messages, saleAssociate.getLocale());
         }
     }
 
@@ -117,6 +118,7 @@ public class BaseConnector {
      * If the suggested communication fails, the System can try to use another channel if the SaleAssociate profile contains alternatives.
      *
      * @param source Identifier of the suggested communication channel
+     * @param useCcAccount Indicates that the message should be sent from a CC account, which is going to ignore unexpected replies
      * @param userId User identifier (can be Jabber ID, Twitter screen name, etc.)
      * @param userName User display name
      * @param subject TODO
@@ -124,7 +126,7 @@ public class BaseConnector {
      * @param locale recipient's locale
      * @throws ClientException If all communication attempts fail
      */
-    protected static void communicateToUser(Source source, String userId, String userName, String subject, String[] messages, Locale locale) throws ClientException {
+    protected static void communicateToUser(Source source, boolean useCcAccount, String userId, String userName, String subject, String[] messages, Locale locale) throws ClientException {
         log.warning("Communicating with " + userId + " (medium: " + (source == null ? "null" : source.toString()) + ") -- message: " + Arrays.toString(messages));
         if (Source.simulated.equals(source)) {
             for (String message: messages) {
@@ -175,7 +177,7 @@ public class BaseConnector {
                         mailMessage.append(part).append(MESSAGE_SEPARATOR);
                     }
                 }
-                MailConnector.sendMailMessage(userId, userName, subject, mailMessage.toString(), locale);
+                MailConnector.sendMailMessage(useCcAccount, userId, userName, subject, mailMessage.toString(), locale);
             }
             catch(Exception ex) {
                 throw new ClientException("Cannot communicate by E-mail to the consumer: " + userId, ex);
@@ -220,7 +222,7 @@ public class BaseConnector {
 
     private static final char SPACE_CHAR = ' ';
     private static final char TABULATION_CHAR = '\t';
-    private static final String SPACE_STR = " ";
+    private static final String SPACE_STR = Command.SPACE;
 
     /**
      * Split the message in many parts as suggested and when the different parts are larger than the specified limit.
