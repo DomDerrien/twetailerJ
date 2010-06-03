@@ -100,7 +100,7 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes/banner_protected.jsp">
+        <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
@@ -160,7 +160,7 @@
         dojoType="dijit.Dialog"
         id="aboutPopup"
         title="<%= LabelExtractor.get(ResourceFileId.third, "about_dialog_title", locale) %>"
-        href="/jsp_includes/about.jsp"
+        href="/_includes/about.jsp"
     >
     </div>
 

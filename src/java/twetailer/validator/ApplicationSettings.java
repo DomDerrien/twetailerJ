@@ -17,7 +17,7 @@ public class ApplicationSettings {
 
     protected final static String CDN_BASE_URL_KEY = "cdnBaseURL";
 
-    protected final static String DEFAULT_LOGIN_PAGE_URL = "/jsp_includes/login.jsp";
+    protected final static String DEFAULT_LOGIN_PAGE_URL = "/_includes/login.jsp";
 
     public String loginPageURL = DEFAULT_LOGIN_PAGE_URL;
 

@@ -91,7 +91,7 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes/banner_protected.jsp">
+        <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />

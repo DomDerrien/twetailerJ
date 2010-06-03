@@ -111,7 +111,7 @@
     ></script><% } %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/jsp_includes/banner_open.jsp"></jsp:include>
+        <jsp:include page="/_includes/banner_open.jsp"></jsp:include>
         <div
             design="sidebar"
             dojoType="dijit.layout.BorderContainer"
@@ -370,7 +370,7 @@
         dojoType="dijit.Dialog"
         id="aboutPopup"
         title="<%= LabelExtractor.get(ResourceFileId.third, "about_dialog_title", locale) %>"
-        href="/jsp_includes/about.jsp"
+        href="/_includes/about.jsp"
     >
     </div>
 

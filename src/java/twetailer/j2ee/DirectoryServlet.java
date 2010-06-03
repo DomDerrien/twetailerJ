@@ -108,7 +108,7 @@ public class DirectoryServlet extends HttpServlet {
         }
 
         try {
-            String viewUrl = queriedCity == null || queriedCity.length() == 0 ? "/404.html" : "/jsp_includes/directory.jsp";
+            String viewUrl = queriedCity == null || queriedCity.length() == 0 ? "/404.html" : "/_includes/directory.jsp";
             request.getSession().setAttribute(QUERIED_CITY_ID, queriedCity);
             request.getSession().setAttribute(SEED_CITY_LIST_ID, seedCityList);
             request.getRequestDispatcher(viewUrl).forward(request, response);
