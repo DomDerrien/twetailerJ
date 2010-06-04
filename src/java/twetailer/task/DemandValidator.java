@@ -93,7 +93,7 @@ public class DemandValidator {
                 filterHashTags(pm, consumer, demand);
 
                 String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                if (demand.getCriteria() == null || demand.getCriteria().size() == 0) {
+                if ((demand.getCriteria() == null || demand.getCriteria().size() == 0) && (demand.getHashTags() == null || demand.getHashTags().size() == 0)) {
                     message = LabelExtractor.get("dv_report_demand_without_tag", new Object[] { demandRef }, locale);
                 }
                 else if (demand.getDueDate() == null || demand.getDueDate().getTime() < nowTime) {
