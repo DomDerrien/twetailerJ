@@ -18,7 +18,7 @@
         <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
         <init-param>
             <param-name>logMessage</param-name>
-            <param-value>Appstats available: http://twetailer.appspot.com/admin/stats/details?time={ID}</param-value>
+            <param-value>Appstats available: http://twetailer.appspot.com/_admin/stats/details?time={ID}</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -40,12 +40,12 @@
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>forwardUri</param-name>
-            <param-value>/jsp_includes/login.jsp</param-value>
+            <param-value>/_includes/login.jsp</param-value>
         </init-param>
     </filter>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
-        <url-pattern>/admin/*</url-pattern>
+        <url-pattern>/_admin/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
@@ -221,7 +221,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>appstats</servlet-name>
-        <url-pattern>/admin/stats/*</url-pattern>
+        <url-pattern>/_admin/stats/*</url-pattern>
     </servlet-mapping>
 
     <error-page>
@@ -237,7 +237,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Administrative tools</web-resource-name>
-            <url-pattern>/admin/*</url-pattern>
+            <url-pattern>/_admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>
