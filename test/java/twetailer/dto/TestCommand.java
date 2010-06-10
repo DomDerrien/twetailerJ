@@ -264,8 +264,8 @@ public class TestCommand {
         command.addHashTag("three");
 
         JsonObject json = new GenericJsonObject();
-        json.put(Command.HASH_TAG_ADD, new GenericJsonArray());
-        json.getJsonArray(Command.HASH_TAG_ADD).add("four");
+        json.put(Command.HASH_TAGS_ADD, new GenericJsonArray());
+        json.getJsonArray(Command.HASH_TAGS_ADD).add("four");
 
         command.fromJson(json);
 
@@ -280,8 +280,8 @@ public class TestCommand {
         command.addHashTag("three");
 
         JsonObject json = new GenericJsonObject();
-        json.put(Command.HASH_TAG_REMOVE, new GenericJsonArray());
-        json.getJsonArray(Command.HASH_TAG_REMOVE).add("two");
+        json.put(Command.HASH_TAGS_REMOVE, new GenericJsonArray());
+        json.getJsonArray(Command.HASH_TAGS_REMOVE).add("two");
 
         command.fromJson(json);
 

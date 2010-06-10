@@ -1076,7 +1076,7 @@ public class TestCommandLineParser {
                 Locale.ENGLISH
         );
 
-        assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
+        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
         assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
         assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
@@ -1093,7 +1093,7 @@ public class TestCommandLineParser {
                 Locale.ENGLISH
         );
 
-        assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
+        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
         assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
         assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
@@ -1110,7 +1110,7 @@ public class TestCommandLineParser {
                 Locale.ENGLISH
         );
 
-        assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
+        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
         assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
         assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
         assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
@@ -1201,8 +1201,8 @@ public class TestCommandLineParser {
                 Locale.ENGLISH
         );
 
-        assertEquals("game", data.getJsonArray(Command.HASH_TAG).getString(0));
-        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAG).getString(1));
+        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAGS).getString(1));
     }
 
     @Test

@@ -23,7 +23,7 @@
     </filter>
     <filter-mapping>
         <filter-name>appstats</filter-name>
-        <url-pattern>/API/*</url-pattern>
+        <url-pattern>@rwa.servletApiPath@/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>appstats</filter-name>
@@ -94,6 +94,16 @@
     <servlet-mapping>
         <servlet-name>directory</servlet-name>
         <url-pattern>/directory/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>shortcut</servlet-name>
+        <servlet-class>twetailer.j2ee.ShortcutServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>shortcut</servlet-name>
+        <url-pattern>/shortcut/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

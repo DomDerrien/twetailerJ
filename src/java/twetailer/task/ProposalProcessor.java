@@ -11,6 +11,7 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -107,13 +108,17 @@ public class ProposalProcessor {
                             locale
                     );
 
-                    // Inform the demand owner
-                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
-                    communicateToConsumer(
-                            rawCommand,
-                            consumer,
-                            new String[] { message }
-                    );
+                    if (!Source.api.equals(demand.getSource())) {
+                        // Inform the demand owner
+                        RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
+                        communicateToConsumer(
+                                rawCommand,
+                                consumer,
+                                new String[] { message }
+                        );
+                    }
+
+                    // Update the demand
                     demand.addProposalKey(proposalKey);
                     demand = demandOperations.updateDemand(pm, demand);
 

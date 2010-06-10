@@ -1043,6 +1043,14 @@ public class TestBaseRestlet {
             public String getPathInfo() {
                 return "/" + uid;
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -1069,6 +1077,14 @@ public class TestBaseRestlet {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -1404,6 +1420,14 @@ public class TestBaseRestlet {
             public String getPathInfo() {
                 return "/12345";
             }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -1418,6 +1442,7 @@ public class TestBaseRestlet {
                 throw new DatastoreTimeoutException("Done in purpose");
             }
         }.doDelete(mockRequest, mockResponse);
+        System.err.println("**** " + stream.getStream().toString());
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
     }
@@ -1429,6 +1454,14 @@ public class TestBaseRestlet {
             @Override
             public String getPathInfo() {
                 return "/12345";
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();

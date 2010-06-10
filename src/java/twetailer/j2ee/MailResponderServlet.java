@@ -66,7 +66,6 @@ public class MailResponderServlet extends HttpServlet {
         responderEndpoints.add("assistant@twetailer.appspotmail.com");
         responderEndpoints.add("maezel@twetailer.appspotmail.com");
         responderEndpoints.add("hub@twetailer.appspotmail.com");
-        responderEndpoints.add("thehub@twetailer.appspotmail.com");
 
         String[] hashTags = HashTag.getHashTagsArray();
         for (int idx=0; idx<hashTags.length; idx ++) {

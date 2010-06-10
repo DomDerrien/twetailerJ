@@ -140,14 +140,15 @@
                 <thead>
                     <tr>
                            <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
-                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
-                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
+                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <th field="<%= Demand.LOCATION_KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
-                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfCommon.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
-                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="180px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
-                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDate" hidden="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
-                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="40%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
+                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
+                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
                            <!--th
                                cellType="dojox.grid.cells.Select"
                                editable="true"
@@ -201,7 +202,10 @@
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalTime", locale) %></label></td>
-                    <td><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T12:00:00" /> </td>
+                    <td>
+                        <input dojoType="dijit.form.DateTextBox" id="proposal.date" name="date" required="true" type="text" value="2010-10-07" />
+                        <input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T12:00:00" />
+                    </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalPrice", locale) %></label></td>
@@ -264,7 +268,7 @@
         dojo.require("dijit.layout.TabContainer");
         // dojo.require("dijit.form.CheckBox");
         // dojo.require("dijit.form.ComboBox");
-        // dojo.require("dijit.form.DateTextBox");
+        dojo.require("dijit.form.DateTextBox");
         // dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.NumberSpinner");
         dojo.require("dijit.form.NumberTextBox");

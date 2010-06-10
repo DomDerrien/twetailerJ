@@ -331,6 +331,24 @@ public class LocationOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified Location instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param locationKeys list of Location instance identifiers
+     * @return Collection of locations matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Location> getLocations(PersistenceManager pm, List<Long> locationKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(Location.class, ":keys.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        List<Location> locations = (List<Location>) query.execute(locationKeys);
+        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return locations;
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param location Resource to update

@@ -61,6 +61,10 @@
         proposalForm.reset();
 
         dijit.byId("demand.key").attr("value", item.key);
+        var dueDate = dojo.date.stamp.fromISOString(item.dueDate);
+        dijit.byId("proposal.date").attr("value", dueDate);
+        dijit.byId("proposal.date").constraints.min = new Date();
+        dijit.byId("proposal.time").attr("value", dueDate);
         dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
         dijit.byId("demand.quantity").attr("value", item.quantity);
 
@@ -105,52 +109,14 @@
      * @param {Proposal} proposal Object to represent
      */
     var _fetchProposal = function(proposal) {
-        var time = null;
-        var additionalInformation = [];
-        var criteria = proposal.criteria;
-        var limit = criteria.length;
-        for (var idx = 0; idx < limit; idx++) {
-            var criterion = criteria[idx];
-            if (criterion == "time:") {
-                idx ++;
-                time = _getTime(criteria[idx]);
-            }
-            else if (criterion.substr(0, "time:".length) == "time:") {
-                time = _getTime(criterion.substring("time:".length, criterion.length));
-            }
-            else {
-                additionalInformation.push(criterion);
-            }
-        }
-        if (time != null) {
-            dijit.byId("proposal.time").attr("value", time);
-        }
         dijit.byId("proposal.state").attr("value", proposal.state);
         dijit.byId("proposal.price").attr("value", proposal.price);
         dijit.byId("proposal.total").attr("value", proposal.total);
-        // TODO: skip the date part ;)
-        dijit.byId("proposal.criteria").attr("value", additionalInformation.join(" "));
+        alert("proposal.dueDate: " + proposal.dueDate)
+        dijit.byId("proposal.date").attr("value", proposal.dueDate);
+        dijit.byId("proposal.time").attr("value", proposal.dueDate);
+        dijit.byId("proposal.criteria").attr("value", proposal.criteri.join(" "));
         dijit.byId("proposal.modificationDate").attr("value", _common.displayDateTime(proposal.modificationDate));
-    };
-
-    /**
-     * Helper extracting the time in 24 or AM/PM
-     */
-    var _getTime = function(time) {
-        var hour = parseInt(time.substr(0, 2));
-        var minute = parseInt(time.substr("00:".length, 2));
-        if (isNaN(hour) || isNaN(minute)) {
-            return null;
-        }
-        if (time.charAt("00:00".length) != ':') {
-            if (time.charAt("00:00".length) == 'p') {
-                hour += 12;
-            }
-            if (time.charAt("00:00".length) == ' ' && time.charAt("00:00 ".length) == 'p') {
-                hour += 12;
-            }
-        }
-        return new Date(1970,0,1,parseInt(hour),parseInt(minute),0,0);
     };
 
     /**
@@ -162,7 +128,17 @@
         data.key = isNaN(data.key) ? null : data.key;
         data.total = isNaN(data.total) ? null : data.total;
         data.criteria = data.criteria.split(" ");
-        data.criteria.push("time:" + data.time.toString().replace(/.*1970\s(\S+).*/,"$1"));
+        var month = (data.date.getMonth() + 1);
+        var day = data.date.getDate();
+        var hours = data.time.getHours();
+        var minutes = data.time.getMinutes();
+        data.dueDate =
+              data.date.getFullYear() +
+              (month < 10 ? "-0" : "-") + month +
+              (day < 10 ? "-0" : "-") + day +
+              (hours < 10 ? "T0" : "T") + hours +
+              (minutes < 10 ? ":0" : ":") + minutes +
+              ":00"
 
         var dfd = _common.updateRemoteProposal(data);
         dfd.addCallback(function(response) { module.loadNewDemands() });

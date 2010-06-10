@@ -602,36 +602,36 @@
                 <seg>Twetailer ne peut pas envoyer de messages directs aux usagers qui ne le suivent pas! Veuillez suivre @twetailer (http://twitter.com/twetailer) pour utiliser le système depuis Twitter.</seg>
             </tuv>
         </tu>
-        <tu tuid="error_invalid_data" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="error_invalid_data" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
-            <tuv xml:lang="en">
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
                 <seg>Invalide!</seg>
             </tuv>
         </tu>
-        <tu tuid="error_invalid_date" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="error_invalid_date" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
-            <tuv xml:lang="en">
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
                 <seg>Format de date invalide: {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="error_invalid_email" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="error_invalid_email" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
-            <tuv xml:lang="en">
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
                 <seg>Adresse de courriel invalide: {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="error_invalid_array" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="error_invalid_array" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
-            <tuv xml:lang="en">
-                <seg>Requiert un object de type <code>Array</code>!</seg>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Requiert un object de type &lt;code&gt;Array&lt;/code&gt;!</seg>
             </tuv>
         </tu>
         <tu tuid="sep_localized_page_name" dataType="text">
@@ -1047,6 +1047,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Date d'expiration</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_cmenu_createDemand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Create Demand</seg>
             </tuv>
         </tu>
         <tu tuid="ga_cmenu_createProposal" dataType="text">

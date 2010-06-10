@@ -61,9 +61,9 @@ public class Command extends Entity {
     @Persistent
     private List<String> hashTags = new ArrayList<String>();
 
-    public static final String HASH_TAG = "hasTag";
-    public static final String HASH_TAG_ADD = "\\+hasTag";
-    public static final String HASH_TAG_REMOVE = "\\-hasTag";
+    public static final String HASH_TAGS = "hashTags";
+    public static final String HASH_TAGS_ADD = "\\+hashTags";
+    public static final String HASH_TAGS_REMOVE = "\\-hashTags";
 
     @Persistent
     private Long ownerKey;
@@ -364,7 +364,7 @@ public class Command extends Entity {
             for(String hashTag: getHashTags()) {
                 jsonArray.add(hashTag);
             }
-            out.put(HASH_TAG, jsonArray);
+            out.put(HASH_TAGS, jsonArray);
         }
         if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
@@ -428,22 +428,22 @@ public class Command extends Entity {
             }
         }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
-        if (in.containsKey(HASH_TAG)) {
-            JsonArray jsonArray = in.getJsonArray(HASH_TAG);
+        if (in.containsKey(HASH_TAGS)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS);
             resetHashTags();
             for (int i=0; i<jsonArray.size(); ++i) {
                 addHashTag(jsonArray.getString(i));
             }
         }
-        removeDuplicates(in, HASH_TAG_ADD, HASH_TAG_REMOVE);
-        if (in.containsKey(HASH_TAG_REMOVE)) {
-            JsonArray jsonArray = in.getJsonArray(HASH_TAG_REMOVE);
+        removeDuplicates(in, HASH_TAGS_ADD, HASH_TAGS_REMOVE);
+        if (in.containsKey(HASH_TAGS_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS_REMOVE);
             for (int i=0; i<jsonArray.size(); ++i) {
                 removeHashTag(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(HASH_TAG_ADD)) {
-            JsonArray jsonArray = in.getJsonArray(HASH_TAG_ADD);
+        if (in.containsKey(HASH_TAGS_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS_ADD);
             for (int i=0; i<jsonArray.size(); ++i) {
                 addHashTag(jsonArray.getString(i));
             }

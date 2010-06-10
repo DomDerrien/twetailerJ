@@ -18,7 +18,7 @@ public class Store extends Entity {
     @Persistent
     private String email;
 
-    public final static String EMAIL = "email";
+    public final static String EMAIL = Consumer.EMAIL;
 
     @Persistent
     private Long locationKey;

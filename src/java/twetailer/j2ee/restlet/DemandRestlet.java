@@ -134,9 +134,25 @@ public class DemandRestlet extends BaseRestlet {
     @Override
     @SuppressWarnings("unchecked")
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        JsonArray resources;
+
         String pointOfView = parameters.getString("pointOfView");
         boolean onlyKeys = "onlyKeys".equals(parameters.getString("detailLevel"));
+        int maximumResults = parameters.containsKey("maximumResults") ? (int) parameters.getLong("maximumResults") : 0;
+        Date lastModificationDate = null;
+        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
+            try {
+                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
+           }
+            catch (ParseException e) { } // Date not set, too bad.
+        }
+
+        Map<String, Object> queryDemands = new HashMap<String, Object>();
+        queryDemands.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
+        if (lastModificationDate != null) {
+            queryDemands.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
+        }
+
+        JsonArray resources;
         PersistenceManager pm = _baseOperations.getPersistenceManager();
         try {
             if ("SA".equals(pointOfView)) {
@@ -144,25 +160,14 @@ public class DemandRestlet extends BaseRestlet {
                 if (saleAssociateKey == null) {
                     throw new ReservedOperationException(Action.list, Demand.class.getName());
                 }
-                Map<String, Object> queryDemands = new HashMap<String, Object>();
                 queryDemands.put(Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey);
-                queryDemands.put(Command.STATE_COMMAND_LIST, Boolean.TRUE);
-                if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-                    try {
-                        Date lastUpdate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                        queryDemands.put(">" + Entity.MODIFICATION_DATE, lastUpdate);
-                    }
-                    catch (ParseException e) {
-                        // Ignored error, the date stays not set
-                    }
-                }
                 if (onlyKeys) {
                     // Get the keys
-                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, queryDemands, 0));
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, queryDemands, maximumResults));
                 }
                 else { // full detail
                     // Get the demands
-                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, queryDemands, 0));
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, queryDemands, maximumResults));
 
                     pm.close();
                     pm = _baseOperations.getPersistenceManager();
@@ -191,11 +196,12 @@ public class DemandRestlet extends BaseRestlet {
             }
             else { // consumer point-of-view
                 Long consumerKey = LoginServlet.getConsumerKey(loggedUser);
+                queryDemands.put(Command.OWNER_KEY, consumerKey);
                 if (onlyKeys) {
-                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, consumerKey, 0));
+                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, queryDemands, maximumResults));
                 }
                 else { // full detail
-                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, Demand.OWNER_KEY, consumerKey, 0));
+                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, queryDemands, maximumResults));
                 }
             }
         }

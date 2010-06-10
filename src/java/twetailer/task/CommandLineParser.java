@@ -338,10 +338,10 @@ public class CommandLineParser {
         // Loop to get all matching sequences
         while (matcher.find()) { // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            if (!command.containsKey(Command.HASH_TAG)) {
-                command.put(Command.HASH_TAG, new GenericJsonArray());
+            if (!command.containsKey(Command.HASH_TAGS)) {
+                command.put(Command.HASH_TAGS, new GenericJsonArray());
             }
-            command.getJsonArray(Command.HASH_TAG).add(getHashTag(currentGroup.toLowerCase(locale)));
+            command.getJsonArray(Command.HASH_TAGS).add(getHashTag(currentGroup.toLowerCase(locale)));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
             // Rescan the remaining sequence

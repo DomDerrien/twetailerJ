@@ -760,6 +760,16 @@
             </tuv>
         </tu>
 
+        <tu tuid="error_invalid_locale" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Expects the identifier of an existing locale</seg>
+            </tuv>
+        </tu>
+
         <!-- ========================== -->
         <!-- Search engine landing page -->
         <!-- ========================== -->
@@ -1239,12 +1249,30 @@
             </tuv>
         </tu>
 
+        <tu tuid="ga_theader_locale" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label of a column header in the table of Demands</note>
+            <tuv xml:lang="en">
+                <seg>Locale</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="ga_theader_criteria" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Label of a column header in the table of Demands</note>
             <tuv xml:lang="en">
-                <seg>Description</seg>
+                <seg>Additional Information</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_theader_ccList" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label of a column header in the table of Demands</note>
+            <tuv xml:lang="en">
+                <seg>CC</seg>
             </tuv>
         </tu>
 
@@ -1280,7 +1308,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label of a column header in the table of Demands</note>
             <tuv xml:lang="en">
-                <seg>Proposal Ids</seg>
+                <seg>Proposal&#160;Ids</seg>
             </tuv>
         </tu>
 
@@ -1298,7 +1326,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label of a column header in the table of Demands</note>
             <tuv xml:lang="en">
-                <seg>Last Modification Date</seg>
+                <seg>Modification Date</seg>
             </tuv>
         </tu>
 
@@ -1308,6 +1336,16 @@
             <note>Label of a column header in the table of Demands</note>
             <tuv xml:lang="en">
                 <seg>Expiration Date</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_createDemand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>Label of an item in the contextual menu for the table of Demands</note>
+            <tuv xml:lang="en">
+                <seg>Create Demand</seg>
             </tuv>
         </tu>
 

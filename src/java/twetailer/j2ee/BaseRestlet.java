@@ -182,16 +182,17 @@ public abstract class BaseRestlet extends HttpServlet {
                 // Get current resource
                 out.put("resource", getResource(in, "current", loggedUser));
             }
-            else if (Pattern.matches("/(\\w+)", pathInfo)) {
-                // Get the key
-                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
-                keyMatcher.matches();
-                String key = keyMatcher.group(1);
-                // Get resource by key
-                out.put("resource", getResource(in, key, loggedUser));
-            }
             else {
-                throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
+                if (keyMatcher.matches()) {
+                    // Get the key
+                    String key = keyMatcher.group(1);
+                    // Get resource by key
+                    out.put("resource", getResource(in, key, loggedUser));
+                }
+                else {
+                    throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+                }
             }
         }
         catch (ReservedOperationException ex) {
@@ -200,6 +201,7 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("reason", ex.getMessage());
         }
         catch (Exception ex) {
+            response.setStatus(500); // Internal Server Error
             out = processException(getLogger(), ex, "doGet", pathInfo);
         }
 
@@ -241,6 +243,7 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("reason", ex.getMessage());
         }
         catch (Exception ex) {
+            response.setStatus(500); // Internal Server Error
             out = processException(getLogger(), ex, "doPost", pathInfo);
         }
 
@@ -271,10 +274,9 @@ public abstract class BaseRestlet extends HttpServlet {
             else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource update");
             }
-            if (Pattern.matches("/(\\w+)", pathInfo)) {
+            Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
+            if (keyMatcher.matches()) {
                 // Get the key
-                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
-                keyMatcher.matches();
                 String key = keyMatcher.group(1);
                 // Update the identified resource
                 out.put("resource", updateResource(in, key, loggedUser));
@@ -289,6 +291,7 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("reason", ex.getMessage());
         }
         catch (Exception ex) {
+            response.setStatus(500); // Internal Server Error
             out = processException(getLogger(), ex, "doPut", pathInfo);
         }
 
@@ -314,16 +317,18 @@ public abstract class BaseRestlet extends HttpServlet {
             else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource deletion");
             }
-            if (Pattern.matches("/(\\w+)", pathInfo)) {
-                // Get the key
-                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
-                keyMatcher.matches();
-                String key = keyMatcher.group(1);
-                // Delete the resource
-                deleteResource(key, loggedUser);
-            }
             else {
-                throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
+                if (keyMatcher.matches()) {
+                    // Get the key
+                    String key = keyMatcher.group(1);
+                    // Delete the resource
+                    deleteResource(key, loggedUser);
+                    out.put("resourceId", key);
+                }
+                else {
+                    throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+                }
             }
         }
         catch (ReservedOperationException ex) {
@@ -332,6 +337,7 @@ public abstract class BaseRestlet extends HttpServlet {
             out.put("reason", ex.getMessage());
         }
         catch (Exception ex) {
+            response.setStatus(500); // Internal Server Error
             out = processException(getLogger(), ex, "doDelete", pathInfo);
         }
 

@@ -139,14 +139,16 @@
                 <thead>
                     <tr>
                            <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
-                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
-                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="60%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
+                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <th field="<%= Demand.LOCATION_KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
-                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfCommon.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
-                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="180px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
-                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDate" hidden="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
-                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDate"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th fields="<%= Demand.CC %>" formatter="twetailer.GolfCommon.displayCCList" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_ccList", locale) %></th>
+                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
+                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
+                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
                     </tr>
                 </thead>
             </table>

@@ -59,8 +59,8 @@ public class MailConnector {
         );
         twetailer_cc = prepareInternetAddress(
                 "UTF-8",
-                ApplicationSettings.get().getProductName(),
-                MailResponderServlet.responderEndpoints.get(0).replace("@", "-cc@")
+                ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply
+                MailResponderServlet.responderEndpoints.get(0).replace("@", "-noreply@")
         );
     }
 
