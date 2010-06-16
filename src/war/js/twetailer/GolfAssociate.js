@@ -112,7 +112,6 @@
         dijit.byId("proposal.state").attr("value", proposal.state);
         dijit.byId("proposal.price").attr("value", proposal.price);
         dijit.byId("proposal.total").attr("value", proposal.total);
-        alert("proposal.dueDate: " + proposal.dueDate)
         dijit.byId("proposal.date").attr("value", proposal.dueDate);
         dijit.byId("proposal.time").attr("value", proposal.dueDate);
         dijit.byId("proposal.criteria").attr("value", proposal.criteri.join(" "));
