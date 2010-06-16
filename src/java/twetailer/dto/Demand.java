@@ -33,11 +33,6 @@ public class Demand extends Command {
     public static final String PROPOSAL_KEYS = "proposalKeys";
 
     @Persistent
-    private Long quantity = 1L;
-
-    public static final String QUANTITY = "quantity";
-
-    @Persistent
     private Double range = LocaleValidator.DEFAULT_RANGE;
 
     public static final String RANGE = "range";
@@ -159,17 +154,6 @@ public class Demand extends Command {
         proposalKeys.remove(proposalKey);
     }
 
-    public Long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        if (quantity == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'quantity'");
-        }
-        this.quantity = quantity;
-    }
-
     public Double getRange() {
         return range;
     }
@@ -233,7 +217,6 @@ public class Demand extends Command {
             }
             out.put(PROPOSAL_KEYS, jsonArray);
         }
-        out.put(QUANTITY, getQuantity());
         out.put(RANGE, getRange());
         out.put(RANGE_UNIT, getRangeUnit());
         if (getSaleAssociateKeys() != null && 0 < getSaleAssociateKeys().size()) {
@@ -272,7 +255,6 @@ public class Demand extends Command {
                 addProposalKey(jsonArray.getLong(i));
             }
         }
-        if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
         if (in.containsKey(SALE_ASSOCIATE_KEYS)) {

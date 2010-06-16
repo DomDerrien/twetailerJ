@@ -54,11 +54,6 @@ public class Command extends Entity {
     public static final String DUE_DATE = "dueDate";
 
     @Persistent
-    private Long locationKey;
-
-    public final static String LOCATION_KEY = Location.LOCATION_KEY;
-
-    @Persistent
     private List<String> hashTags = new ArrayList<String>();
 
     public static final String HASH_TAGS = "hashTags";
@@ -66,9 +61,19 @@ public class Command extends Entity {
     public static final String HASH_TAGS_REMOVE = "\\-hashTags";
 
     @Persistent
+    private Long locationKey;
+
+    public final static String LOCATION_KEY = Location.LOCATION_KEY;
+
+    @Persistent
     private Long ownerKey;
 
     public static final String OWNER_KEY = "ownerKey";
+
+    @Persistent
+    private Long quantity = 1L;
+
+    public static final String QUANTITY = "quantity";
 
     public static final String NEED_HELP = "needHelp";
 
@@ -226,17 +231,6 @@ public class Command extends Entity {
         this.dueDate = dueDate;
     }
 
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        if (locationKey == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
-        }
-        this.locationKey = locationKey;
-    }
-
     public String getSerializedHashTags() {
         return getSerializedTags(HASH, hashTags);
     }
@@ -275,6 +269,17 @@ public class Command extends Entity {
         hashTags.remove(hashTag);
     }
 
+    public Long getLocationKey() {
+        return locationKey;
+    }
+
+    public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
+        this.locationKey = locationKey;
+    }
+
     public Long getOwnerKey() {
         return ownerKey;
     }
@@ -284,6 +289,17 @@ public class Command extends Entity {
             throw new IllegalArgumentException("Cannot nullify the attribute 'ownerKey'");
         }
         this.ownerKey = ownerKey;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        if (quantity == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'quantity'");
+        }
+        this.quantity = quantity;
     }
 
     public Long getRawCommandId() {
@@ -358,7 +374,6 @@ public class Command extends Entity {
             out.put(CRITERIA, jsonArray);
         }
         if (getDueDate() != null) { out.put(DUE_DATE, DateUtils.dateToISO(getDueDate())); }
-        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getHashTags() != null && 0 < getHashTags().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String hashTag: getHashTags()) {
@@ -366,7 +381,9 @@ public class Command extends Entity {
             }
             out.put(HASH_TAGS, jsonArray);
         }
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
+        out.put(QUANTITY, getQuantity());
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
         out.put(SOURCE, getSource().toString());
         out.put(STATE, getState().toString());
@@ -427,7 +444,6 @@ public class Command extends Entity {
                 setDueDate(null);
             }
         }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(HASH_TAGS)) {
             JsonArray jsonArray = in.getJsonArray(HASH_TAGS);
             resetHashTags();
@@ -448,7 +464,9 @@ public class Command extends Entity {
                 addHashTag(jsonArray.getString(i));
             }
         }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
+        if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
         if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (in.containsKey(STATE)) { setState(in.getString(STATE)); }

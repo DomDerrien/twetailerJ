@@ -34,11 +34,6 @@ public class Proposal extends Command {
     public static final String PRICE = "price";
 
     @Persistent
-    private Long quantity = 1L;
-
-    public static final String QUANTITY = Demand.QUANTITY;
-
-    @Persistent
     private Long storeKey;
 
     public static final String STORE_KEY = Store.STORE_KEY;
@@ -101,17 +96,6 @@ public class Proposal extends Command {
         this.price = price;
     }
 
-    public Long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        if (quantity == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'quantity'");
-        }
-        this.quantity = quantity;
-    }
-
     public Long getStoreKey() {
         return storeKey;
     }
@@ -138,7 +122,6 @@ public class Proposal extends Command {
         }
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         out.put(PRICE, getPrice());
-        out.put(QUANTITY, getQuantity());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
         out.put(TOTAL, getTotal());
         return out;
@@ -149,7 +132,6 @@ public class Proposal extends Command {
         if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
         if (in.containsKey(DEMAND_KEY)) { setDemandKey(in.getLong(DEMAND_KEY)); }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }
-        if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(TOTAL)) { setTotal(in.getDouble(TOTAL)); }
 
