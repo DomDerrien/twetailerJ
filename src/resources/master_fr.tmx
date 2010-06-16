@@ -1538,11 +1538,12 @@
         </tu>
         <tu tuid="pp_inform_cc_about_proposal" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/2 PVI: {2} {3} {4} a reçu...|
-                    2/2 {0} {1} {7} {8}.
+                    1/3 PVI: {2} {3} {4} a reçu...|
+                    2/3 {0} {1} {7} {8}.|
+                    3/3 Du {6}.
                 </seg>
             </tuv>
         </tu>
