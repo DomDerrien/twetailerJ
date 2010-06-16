@@ -323,6 +323,69 @@ public class ProposalOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified Proposal instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param proposalKeys list of proposal instance identifiers
+     * @return Collection of proposals matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Proposal> getProposals(PersistenceManager pm, List<Long> proposalKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(Proposal.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        List<Proposal> proposals = (List<Proposal>) query.execute(proposalKeys);
+        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return proposals;
+    }
+
+    /**
+     * Load the proposal matching the given parameters and persist the result of the merge
+     *
+     * @param parameters List of updated attributes, plus the resource identifier (cannot be changed)
+     * @param ownerKey Identifier of the proposal owner
+     * @param storeKey Identifier of the proposal owner's store
+     * @return Updated resource
+     *
+     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     *
+     * @see ProposalOperations#updateProposal(PersistenceManager, Proposal)
+     */
+    public Proposal updateProposal(JsonObject parameters, Long ownerKey, Long storeKey) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return updateProposal(pm, parameters, ownerKey, storeKey);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Load the proposal matching the given parameters and persist the result of the merge
+     * while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters List of updated attributes, plus the resource identifier (cannot be changed)
+     * @param ownerKey Identifier of the proposal owner
+     * @param storeKey Identifier of the proposal owner's store
+     * @return Updated resource
+     *
+     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     *
+     * @see ProposalOperations#updateProposal(PersistenceManager, Proposal)
+     */
+    public Proposal updateProposal(PersistenceManager pm, JsonObject parameters, Long ownerKey, Long storeKey) throws DataSourceException {
+        // Get the original proposal
+        Proposal updatedProposal = getProposal(pm, parameters.getLong(Proposal.KEY), ownerKey, storeKey);
+        // Merge with the updates
+        updatedProposal.fromJson(parameters);
+        // Persist updated proposal
+        return updateProposal(pm, updatedProposal);
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param proposal Resource to update

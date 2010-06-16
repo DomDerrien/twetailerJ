@@ -421,6 +421,24 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified Consumer instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param consumerKeys list of Consumer instance identifiers
+     * @return Collection of consumers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Consumer> getConsumers(PersistenceManager pm, List<Long> consumerKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(Consumer.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        List<Consumer> consumers = (List<Consumer>) query.execute(consumerKeys);
+        consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return consumers;
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param consumer Resource to update

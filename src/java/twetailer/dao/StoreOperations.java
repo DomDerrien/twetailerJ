@@ -246,6 +246,24 @@ public class StoreOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified Store instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param storeKeys list of Store instance identifiers
+     * @return Collection of stores matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Store> getStores(PersistenceManager pm, List<Long> storeKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(Store.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        List<Store> stores = (List<Store>) query.execute(storeKeys);
+        stores.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return stores;
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param store Resource to update

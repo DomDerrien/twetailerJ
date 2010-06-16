@@ -315,6 +315,24 @@ public class DemandOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified Demand instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param demandKeys list of Demand instance identifiers
+     * @return Collection of demands matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Demand> getDemands(PersistenceManager pm, List<Long> demandKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(Demand.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        List<Demand> demands = (List<Demand>) query.execute(demandKeys);
+        demands.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return demands;
+    }
+
+    /**
      * Load the demand matching the given parameters and persist the result of the merge
      *
      * @param parameters List of updated attributes, plus the resource identifier (cannot be changed)
@@ -328,14 +346,33 @@ public class DemandOperations extends BaseOperations {
     public Demand updateDemand(JsonObject parameters, Long ownerKey) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), ownerKey);
-            updatedDemand.fromJson(parameters);
-            // Persist updated demand
-            return updateDemand(pm, updatedDemand);
+            return updateDemand(pm, parameters, ownerKey);
         }
         finally {
             pm.close();
         }
+    }
+
+    /**
+     * Load the demand matching the given parameters and persist the result of the merge
+     * while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters List of updated attributes, plus the resource identifier (cannot be changed)
+     * @param ownerKey Identifier of the owner issuing the operation
+     * @return Updated resource
+     *
+     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     *
+     * @see DemandOperations#updateDemand(PersistenceManager, Demand)
+     */
+    public Demand updateDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws DataSourceException {
+        // Get the original demand
+        Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), ownerKey);
+        // Merge with the updates
+        updatedDemand.fromJson(parameters);
+        // Persist updated demand
+        return updateDemand(pm, updatedDemand);
     }
 
     /**

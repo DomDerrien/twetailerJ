@@ -246,6 +246,24 @@ public class SaleAssociateOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified SaleAssociate instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param saleAssociateKeys list of SaleAssociate instance identifiers
+     * @return Collection of sale associates matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, List<Long> saleAssociateKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(SaleAssociate.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.execute(saleAssociateKeys);
+        saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return saleAssociates;
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param saleAssociate Resource to update

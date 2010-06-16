@@ -342,7 +342,7 @@ public class LocationOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Location> getLocations(PersistenceManager pm, List<Long> locationKeys) throws DataSourceException {
         // Select the corresponding resources
-        Query query = pm.newQuery(Location.class, ":keys.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        Query query = pm.newQuery(Location.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
         List<Location> locations = (List<Location>) query.execute(locationKeys);
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
         return locations;
