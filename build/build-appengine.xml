@@ -32,12 +32,12 @@
 
     <property environment="env"/>
 
-    <property name="rwa.hostname"
+    <property name="app.hostname"
         description="Name of the local host. Update it in your local.build.properties file."
         value="${env.COMPUTERNAME}"
     />
 
-    <property name="rwa.serverPort"
+    <property name="app.serverPort"
         description="Port number used by the Web server"
         value="9999"
     />
@@ -195,14 +195,14 @@
     </target>
 
     <target name="step-appengine-start" depends="step-configuration-push">
-        <dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war" />
+        <dev_appserver port="${app.serverPort}" war="${basedir}/src/war" />
     </target>
 
     <target name="step-appengine-start-debug">
-        <dev_appserver port="${rwa.serverPort}" war="${basedir}/src/war">
+        <dev_appserver port="${app.serverPort}" war="${basedir}/src/war">
             <options>
                 <arg value="--jvm_flag=-Xdebug"/>
-                <arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${rwa.serverPort}"/>
+                <arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=${app.serverPort}"/>
             </options>
         </dev_appserver>
     </target>

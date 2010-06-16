@@ -22,87 +22,87 @@
         description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
     />
 
-    <property name="rwa.release"
+    <property name="app.release"
         description="Planned release of this build"
         value="21"
     />
 
-    <property name="rwa.companyName"
+    <property name="app.companyName"
         description="Company name"
         value="Steven Milstein &amp; Associates inc."
     />
 
-    <property name="rwa.productName"
+    <property name="app.productName"
         description="Product name"
         value="Twetailer"
     />
 
-    <property name="rwa.productWebsite"
+    <property name="app.productWebsite"
         description="Product website"
         value="http://www.twetailer.com/"
     />
 
-    <property name="rwa.productShortName"
+    <property name="app.productShortName"
         description="Short name of the company used for the JavaScript namespace"
         value="twetailer"
     />
 
-    <property name="rwa.contextRoot"
+    <property name="app.contextRoot"
         description="Application context root for the containers"
-        value="${rwa.productShortName}"
+        value="${app.productShortName}"
     />
 
-    <property name="rwa.servletApiPath"
+    <property name="app.servletApiPath"
         description="Prefix for the API access"
         value="/API"
     />
     
-    <property name="rwa.languageListFilename"
+    <property name="app.languageListFilename"
         value="languages"
     />
 
-    <property name="rwa.masterLocalizedLabelBaseFilename"
+    <property name="app.masterLocalizedLabelBaseFilename"
         value="master"
     />
 
-    <property name="rwa.secondLocalizedLabelBaseFilename"
+    <property name="app.secondLocalizedLabelBaseFilename"
         value="lexicon"
     />
 
-    <property name="rwa.thirdLocalizedLabelBaseFilename"
+    <property name="app.thirdLocalizedLabelBaseFilename"
         value="console"
     />
 
-    <property name="rwa.fourthLocalizedLabelBaseFilename"
+    <property name="app.fourthLocalizedLabelBaseFilename"
         value="verticals"
     />
 
-    <property name="rwa.sessionTimeout"
+    <property name="app.sessionTimeout"
         description="HTTP session timeout, in minutes"
         value="30"
     />
 
-    <property name="rwa.dbDriver"
+    <property name="app.dbDriver"
         description="Database driver"
         value="org.apache.derby.jdbc.EmbeddedDriver"
     />
 
-    <property name="rwa.dbName"
+    <property name="app.dbName"
         description="Database name"
-        value="${rwa.productShortName}"
+        value="${app.productShortName}"
     />
 
-    <property name="rwa.dbURL"
+    <property name="app.dbURL"
         description="Database URL"
-        value="jdbc:derby:${rwa.dbName}"
+        value="jdbc:derby:${app.dbName}"
     />
 
-    <property name="rwa.dbAdminUsername"
+    <property name="app.dbAdminUsername"
         description="Database administrator username"
         value="admin"
     />
 
-    <property name="rwa.dbAdminPassword"
+    <property name="app.dbAdminPassword"
         description="Database administrator password"
         value="admin"
     />
@@ -161,6 +161,7 @@
         description="Piece of information inserted as the title page of all HTML pages produced by JavaDoc."
         value="Twetailer API and Console"
     />
+	
     <!-- ============== -->
     <!-- Public targets -->
     <!-- ============== -->
@@ -177,14 +178,14 @@
                 <include name="docs/test-reports/**/*" />
                 <exclude name="src" />
                 <include name="src/war/js/dojo/**/*" />
-                <include name="src/war/js/${rwa.productShortName}/nls/**/*" />
+                <include name="src/war/js/${app.productShortName}/nls/**/*" />
                 <include name="src/war/WEB-INF/classes/com/**/*" />
                 <include name="src/war/WEB-INF/classes/org/**/*" />
-                <include name="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}*.properties" />
-                <include name="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}*.properties" />
-                <include name="src/war/WEB-INF/classes/${rwa.thirdLocalizedLabelBaseFilename}*.properties" />
-                <include name="src/war/WEB-INF/classes/${rwa.fourthLocalizedLabelBaseFilename}*.properties" />
-                <include name="src/war/WEB-INF/classes/${rwa.languageListFilename}*.properties" />
+                <include name="src/war/WEB-INF/classes/${app.masterLocalizedLabelBaseFilename}*.properties" />
+                <include name="src/war/WEB-INF/classes/${app.secondLocalizedLabelBaseFilename}*.properties" />
+                <include name="src/war/WEB-INF/classes/${app.thirdLocalizedLabelBaseFilename}*.properties" />
+                <include name="src/war/WEB-INF/classes/${app.fourthLocalizedLabelBaseFilename}*.properties" />
+                <include name="src/war/WEB-INF/classes/${app.languageListFilename}*.properties" />
                 <exclude name="test" />
             </fileset>
             <fileset dir="${temp.dir}/stage" includes="**/*"/>
@@ -274,7 +275,7 @@
     <defaultexcludes add="**/.copyarea.db" />
 
     <!-- Property set later by "step-info-get" because <property /> are immutable
-    <property name="rwa.taggedDir" value="tagged" />
+    <property name="app.taggedDir" value="tagged" />
     -->
 
     <xmlcatalog id="tmx.dtd">
@@ -286,7 +287,7 @@
 
     <path id="tmxconverter.classpath">
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
-        <pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${rwa.languageListFilename}.properties file -->
+        <pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${app.languageListFilename}.properties file -->
         <filelist dir="deps/lib">
             <file name="domderrien/domderrien-1.0.8.jar" />
             <file name="xml/xalan-2.7.0.jar" />
@@ -374,26 +375,26 @@
 
     <filterchain id="genericFilterChain">
         <replacetokens>
-            <token key="rwa.release" value="${rwa.release}" />
-            <token key="rwa.productWebsite" value="${rwa.productWebsite}" />
-            <token key="rwa.productName" value="${rwa.productName}" />
-            <token key="rwa.productShortName" value="${rwa.productShortName}" />
-            <token key="rwa.contextRoot" value="${rwa.contextRoot}" />
-            <token key="rwa.servletApiPath" value="${rwa.servletApiPath}" />
-            <token key="dd2tu.languageListFilename" value="${rwa.languageListFilename}" />
-            <token key="dd2tu.masterLocalizedLabelBaseFilename" value="${rwa.masterLocalizedLabelBaseFilename}" />
-            <token key="dd2tu.secondLocalizedLabelBaseFilename" value="${rwa.secondLocalizedLabelBaseFilename}" />
-            <token key="dd2tu.thirdLocalizedLabelBaseFilename" value="${rwa.thirdLocalizedLabelBaseFilename}" />
-            <token key="dd2tu.fourthLocalizedLabelBaseFilename" value="${rwa.fourthLocalizedLabelBaseFilename}" />
-            <token key="rwa.dbDriver" value="${rwa.dbDriver}" />
-            <token key="rwa.dbName" value="${rwa.dbName}" />
-            <token key="rwa.dbURL" value="${rwa.dbURL}" />
-            <token key="rwa.dbAdminUsername" value="${rwa.dbAdminUsername}" />
-            <token key="rwa.dbAdminPassword" value="${rwa.dbAdminPassword}" />
-            <token key="rwa.taggedDir" value="${rwa.taggedDir}" />
-            <token key="rwa.stageId" value="${rwa.stageId}" />
-            <token key="rwa.stageYear" value="${rwa.stageYear}" />
-            <token key="rwa.sessionTimeout" value="${rwa.sessionTimeout}" />
+            <token key="app.release" value="${app.release}" />
+            <token key="app.productWebsite" value="${app.productWebsite}" />
+            <token key="app.productName" value="${app.productName}" />
+            <token key="app.productShortName" value="${app.productShortName}" />
+            <token key="app.contextRoot" value="${app.contextRoot}" />
+            <token key="app.servletApiPath" value="${app.servletApiPath}" />
+            <token key="dd2tu.languageListFilename" value="${app.languageListFilename}" />
+            <token key="dd2tu.masterLocalizedLabelBaseFilename" value="${app.masterLocalizedLabelBaseFilename}" />
+            <token key="dd2tu.secondLocalizedLabelBaseFilename" value="${app.secondLocalizedLabelBaseFilename}" />
+            <token key="dd2tu.thirdLocalizedLabelBaseFilename" value="${app.thirdLocalizedLabelBaseFilename}" />
+            <token key="dd2tu.fourthLocalizedLabelBaseFilename" value="${app.fourthLocalizedLabelBaseFilename}" />
+            <token key="app.dbDriver" value="${app.dbDriver}" />
+            <token key="app.dbName" value="${app.dbName}" />
+            <token key="app.dbURL" value="${app.dbURL}" />
+            <token key="app.dbAdminUsername" value="${app.dbAdminUsername}" />
+            <token key="app.dbAdminPassword" value="${app.dbAdminPassword}" />
+            <token key="app.taggedDir" value="${app.taggedDir}" />
+            <token key="app.stageId" value="${app.stageId}" />
+            <token key="app.stageYear" value="${app.stageYear}" />
+            <token key="app.sessionTimeout" value="${app.sessionTimeout}" />
         </replacetokens>
     </filterchain>
 
@@ -401,15 +402,15 @@
     <!-- Private targets -->
     <!-- =============== -->
 
-    <target name="step-info-get" unless="rwa.stageId">
+    <target name="step-info-get" unless="app.stageId">
         <tstamp description="Set the properties {DSTAMP, TSTAMP, TODAY} to the current time">
-            <format pattern="yyyy" property="rwa.stageYear" />
+            <format pattern="yyyy" property="app.stageYear" />
         </tstamp>
-        <property name="rwa.stageId" value="${DSTAMP}.${TSTAMP}" />
-        <property name="rwa.taggedDir" value="${rwa.stageId}" />
+        <property name="app.stageId" value="${DSTAMP}.${TSTAMP}" />
+        <property name="app.taggedDir" value="${app.stageId}" />
         <echo>
             ${ant.project.name}
-            ${TODAY} (${rwa.stageId})
+            ${TODAY} (${app.stageId})
             JVM version detected by Ant: ${ant.java.version}
         </echo>
     </target>
@@ -671,7 +672,7 @@
             <classpath location="${temp.dir}/resources" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-filenameBase" />
-            <arg value="${rwa.masterLocalizedLabelBaseFilename}" />
+            <arg value="${app.masterLocalizedLabelBaseFilename}" />
             <arg value="-directoryName" />
             <arg value="${basedir}/src/resources" />
         </java>
@@ -680,7 +681,7 @@
             <classpath location="${temp.dir}/resources" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-filenameBase" />
-            <arg value="${rwa.secondLocalizedLabelBaseFilename}" />
+            <arg value="${app.secondLocalizedLabelBaseFilename}" />
             <arg value="-directoryName" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
         </java>
@@ -689,7 +690,7 @@
             <classpath location="${temp.dir}/resources" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-filenameBase" />
-            <arg value="${rwa.thirdLocalizedLabelBaseFilename}" />
+            <arg value="${app.thirdLocalizedLabelBaseFilename}" />
             <arg value="-directoryName" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
         </java>
@@ -698,14 +699,14 @@
             <classpath location="${temp.dir}/resources" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-filenameBase" />
-            <arg value="${rwa.fourthLocalizedLabelBaseFilename}" />
+            <arg value="${app.fourthLocalizedLabelBaseFilename}" />
             <arg value="-directoryName" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
         </java>
     </target>
 
     <target name="step-tmx-convert">
-        <mkdir dir="src/war/js/${rwa.productShortName}/nls" />
+        <mkdir dir="src/war/js/${app.productShortName}/nls" />
         <java
             classname="domderrien.build.TMXConverter"
             failonerror="true"
@@ -714,17 +715,17 @@
             <classpath refid="tmxconverter.classpath" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-tmxFilenameBase" />
-            <arg value="${rwa.masterLocalizedLabelBaseFilename}" />
+            <arg value="${app.masterLocalizedLabelBaseFilename}" />
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
-            <arg value="${rwa.languageListFilename}" />
+            <arg value="${app.languageListFilename}" />
             <arg value="-buildStamp" />
-            <arg value="${rwa.stageId}" />
+            <arg value="${app.stageId}" />
         </java>
         <native2ascii
             src="${temp.dir}"
@@ -733,13 +734,13 @@
             includes="*.properties-utf8" ext=".properties"
         />
         <copy
-            file="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}.properties"
-            tofile="src/war/WEB-INF/classes/${rwa.masterLocalizedLabelBaseFilename}_en.properties"
+            file="src/war/WEB-INF/classes/${app.masterLocalizedLabelBaseFilename}.properties"
+            tofile="src/war/WEB-INF/classes/${app.masterLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
         <copy
-            file="src/war/js/${rwa.productShortName}/nls/${rwa.masterLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${rwa.productShortName}/nls/en"
+            file="src/war/js/${app.productShortName}/nls/${app.masterLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.productShortName}/nls/en"
         />
         <java
             classname="domderrien.build.TMXConverter"
@@ -748,17 +749,17 @@
             <classpath refid="tmxconverter.classpath" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-tmxFilenameBase" />
-            <arg value="${rwa.secondLocalizedLabelBaseFilename}" />
+            <arg value="${app.secondLocalizedLabelBaseFilename}" />
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
-            <arg value="${rwa.languageListFilename}" />
+            <arg value="${app.languageListFilename}" />
             <arg value="-buildStamp" />
-            <arg value="${rwa.stageId}" />
+            <arg value="${app.stageId}" />
         </java>
         <native2ascii
             src="${temp.dir}"
@@ -767,13 +768,13 @@
             includes="*.properties-utf8" ext=".properties"
         />
         <copy
-            file="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}.properties"
-            tofile="src/war/WEB-INF/classes/${rwa.secondLocalizedLabelBaseFilename}_en.properties"
+            file="src/war/WEB-INF/classes/${app.secondLocalizedLabelBaseFilename}.properties"
+            tofile="src/war/WEB-INF/classes/${app.secondLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
         <copy
-            file="src/war/js/${rwa.productShortName}/nls/${rwa.secondLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${rwa.productShortName}/nls/en"
+            file="src/war/js/${app.productShortName}/nls/${app.secondLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.productShortName}/nls/en"
         />
         <java
             classname="domderrien.build.TMXConverter"
@@ -782,17 +783,17 @@
             <classpath refid="tmxconverter.classpath" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-tmxFilenameBase" />
-            <arg value="${rwa.thirdLocalizedLabelBaseFilename}" />
+            <arg value="${app.thirdLocalizedLabelBaseFilename}" />
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
-            <arg value="${rwa.languageListFilename}" />
+            <arg value="${app.languageListFilename}" />
             <arg value="-buildStamp" />
-            <arg value="${rwa.stageId}" />
+            <arg value="${app.stageId}" />
         </java>
         <native2ascii
             src="${temp.dir}"
@@ -801,13 +802,13 @@
             includes="*.properties-utf8" ext=".properties"
         />
         <copy
-            file="src/war/WEB-INF/classes/${rwa.thirdLocalizedLabelBaseFilename}.properties"
-            tofile="src/war/WEB-INF/classes/${rwa.thirdLocalizedLabelBaseFilename}_en.properties"
+            file="src/war/WEB-INF/classes/${app.thirdLocalizedLabelBaseFilename}.properties"
+            tofile="src/war/WEB-INF/classes/${app.thirdLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
         <copy
-            file="src/war/js/${rwa.productShortName}/nls/${rwa.thirdLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${rwa.productShortName}/nls/en"
+            file="src/war/js/${app.productShortName}/nls/${app.thirdLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.productShortName}/nls/en"
         />
         <java
             classname="domderrien.build.TMXConverter"
@@ -816,17 +817,17 @@
             <classpath refid="tmxconverter.classpath" />
             <jvmarg value="-Dfile.encoding=UTF-8" />
             <arg value="-tmxFilenameBase" />
-            <arg value="${rwa.fourthLocalizedLabelBaseFilename}" />
+            <arg value="${app.fourthLocalizedLabelBaseFilename}" />
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${rwa.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
-            <arg value="${rwa.languageListFilename}" />
+            <arg value="${app.languageListFilename}" />
             <arg value="-buildStamp" />
-            <arg value="${rwa.stageId}" />
+            <arg value="${app.stageId}" />
         </java>
         <native2ascii
             src="${temp.dir}"
@@ -835,13 +836,13 @@
             includes="*.properties-utf8" ext=".properties"
         />
         <copy
-            file="src/war/WEB-INF/classes/${rwa.fourthLocalizedLabelBaseFilename}.properties"
-            tofile="src/war/WEB-INF/classes/${rwa.fourthLocalizedLabelBaseFilename}_en.properties"
+            file="src/war/WEB-INF/classes/${app.fourthLocalizedLabelBaseFilename}.properties"
+            tofile="src/war/WEB-INF/classes/${app.fourthLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${rwa.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
         <copy
-            file="src/war/js/${rwa.productShortName}/nls/${rwa.fourthLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${rwa.productShortName}/nls/en"
+            file="src/war/js/${app.productShortName}/nls/${app.fourthLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.productShortName}/nls/en"
         />
     </target>
 
@@ -894,7 +895,7 @@
     
     <target name="step-package-jar">
         <mkdir dir="bin/distribution" />
-        <delete file="bin/distribution/${rwa.productShortName}-${rwa.release}.jar" />
+        <delete file="bin/distribution/${app.productShortName}-${app.release}.jar" />
         <copy todir="src/war/WEB-INF/classes" overwrite="yes">
             <fileset dir="src/resources">
                 <include name="**/*.x*" />
@@ -903,7 +904,7 @@
             </fileset>
             <filterchain refid="genericFilterChain" />
         </copy>
-        <jar destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.jar">
+        <jar destfile="bin/distribution/${app.productShortName}-${app.release}.jar">
             <fileset dir="src/war/WEB-INF/classes">
                 <include name="**/*" />
                 <exclude name="**/build/**" />
@@ -911,16 +912,16 @@
                 <exclude name="**/Mock*.*" />
             </fileset>
             <manifest>
-                <attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
-                <attribute name="Implementation-Version" value="${rwa.stageId}" />
-                <attribute name="Implementation-Vendor" value="${rwa.companyName}" />
+                <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                <attribute name="Implementation-Version" value="${app.stageId}" />
+                <attribute name="Implementation-Vendor" value="${app.companyName}" />
             </manifest>
         </jar>
     </target>
 
     <target name="step-package-src-jar">
         <mkdir dir="bin/distribution" />
-        <jar destfile="bin/distribution/${rwa.productShortName}-${rwa.release}-src.jar">
+        <jar destfile="bin/distribution/${app.productShortName}-${app.release}-src.jar">
             <fileset dir="src" excludes="**/package.html,**/*.db,**/*.keep*,**/*.contrib*"/>
         </jar>
         </target>
@@ -929,7 +930,7 @@
             <mkdir dir="bin/distribution" />
             <mkdir dir="${temp.dir}/stage" />
             <war
-                destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.war"
+                destfile="bin/distribution/${app.productShortName}-${app.release}.war"
                 webxml="src/war/WEB-INF/web.xml"
                 compress="true"
             >
@@ -938,9 +939,9 @@
                     <exclude name="WEB-INF/web.xml" />
                 </fileset>
                 <manifest>
-                    <attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
-                    <attribute name="Implementation-Version" value="${rwa.stageId}" />
-                    <attribute name="Implementation-Vendor" value="${rwa.companyName}" />
+                    <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                    <attribute name="Implementation-Version" value="${app.stageId}" />
+                    <attribute name="Implementation-Vendor" value="${app.companyName}" />
                 </manifest>
             </war>
         </target>
@@ -970,7 +971,7 @@
             </fileset>
             <filterchain refid="genericFilterChain" />
         </copy>
-        <copy todir="${temp.dir}/stage/${rwa.taggedDir}">
+        <copy todir="${temp.dir}/stage/${app.taggedDir}">
             <fileset dir="src/war">
                 <include name="js/**/*" />
                 <exclude name="js/dojo/**/*"/>
@@ -985,7 +986,7 @@
             </fileset>
             <filterchain refid="genericFilterChain" />
         </copy>
-        <copy todir="${temp.dir}/stage/${rwa.taggedDir}">
+        <copy todir="${temp.dir}/stage/${app.taggedDir}">
             <fileset dir="war/tagged">
                 <include name="js/dojo/**/*"/>
                 <exclude name="js/dojo/util/**/*"/>
@@ -1001,12 +1002,12 @@
         <mkdir dir="bin/distribution" />
         <copy todir="${temp.dir}/stage/WEB-INF/lib" flatten="true" overwrite="yes">
             <fileset dir="bin/distribution">
-                <include name="${rwa.productShortName}-${rwa.release}.jar" />
+                <include name="${app.productShortName}-${app.release}.jar" />
             </fileset>
             <fileset refid="runtime.deps" />
         </copy>
         <war
-            destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.war"
+            destfile="bin/distribution/${app.productShortName}-${app.release}.war"
             webxml="${temp.dir}/stage/WEB-INF/web.xml"
             compress="true"
         >
@@ -1014,9 +1015,9 @@
                 <exclude name="WEB-INF/classes/META-INF/application.xml" />
             </fileset>
             <manifest>
-                <attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
-                <attribute name="Implementation-Version" value="${rwa.stageId}" />
-                <attribute name="Implementation-Vendor" value="${rwa.companyName}" />
+                <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                <attribute name="Implementation-Version" value="${app.stageId}" />
+                <attribute name="Implementation-Vendor" value="${app.companyName}" />
             </manifest>
         </war>
     </target>
@@ -1025,7 +1026,7 @@
     <target name="step-package-ear">
         <delete verbose="true" failonerror="false">
             <fileset dir="bin/distribution">
-                <include name="${rwa.productShortName}-${rwa.release}.ear" />
+                <include name="${app.productShortName}-${app.release}.ear" />
             </fileset>
         </delete>
         <copy file="src/resources/application.xml.tmpl" tofile="${temp.dir}/stage/application.xml" overwrite="yes">
@@ -1033,16 +1034,16 @@
         </copy>
         <mkdir dir="bin/distribution" />
         <ear
-            destfile="bin/distribution/${rwa.productShortName}-${rwa.release}.ear"
+            destfile="bin/distribution/${app.productShortName}-${app.release}.ear"
             appxml="${temp.dir}/stage/application.xml"
             compress="true"
         >
             <fileset dir="bin/distribution">
-                <include name="${rwa.productShortName}-${rwa.release}.war" />
+                <include name="${app.productShortName}-${app.release}.war" />
             </fileset>
             <manifest>
-                <attribute name="Implementation-Title" value="${rwa.productName} ${rwa.release}" />
-                <attribute name="Implementation-Version" value="${rwa.stageId}" />
+                <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                <attribute name="Implementation-Version" value="${app.stageId}" />
                 <attribute name="Implementation-Vendor" value="${rw.companyName}" />
             </manifest>
         </ear>
@@ -1161,7 +1162,7 @@
             <sysproperty key="resourceBase" value="${basedir}" />
             <sysproperty key="timeoutSeconds" value="${jsunit.timeout.seconds}" />
             <!-- See: http://www.jsunit.net/documentation/standardQueryStrings.html -->
-            <sysproperty key="url" value="file:///${basedir}/bin/jsunit/testRunner.html?testPage=${basedir}/test/war/JSUnitSuite.html&amp;resultId=${rwa.productShortName}" />
+            <sysproperty key="url" value="file:///${basedir}/bin/jsunit/testRunner.html?testPage=${basedir}/test/war/JSUnitSuite.html&amp;resultId=${app.productShortName}" />
 
             <test name="net.jsunit.StandaloneTest" todir="${basedir}/docs/test-reports/jsunit-xml" />
         </junit>
@@ -1170,7 +1171,7 @@
     <target name="step-jsunit-report-transform">
         <concat destfile="docs/test-reports/jsunit-html/index.xml">
             <header filtering="no" trimleading="yes">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;?xml-stylesheet type="text/xsl" href="xml2html.xsl"?&gt;</header>
-            <filelist dir="docs/test-reports/jsunit-xml" files="JSTEST-${rwa.contextRoot}.0.xml" />
+            <filelist dir="docs/test-reports/jsunit-xml" files="JSTEST-${app.contextRoot}.0.xml" />
         </concat>
         <copy file="deps/tools/testing/jsunit-results2html.xsl" tofile="docs/test-reports/jsunit-html/xml2html.xsl" />
     </target>
@@ -1189,10 +1190,10 @@
             <!--arg value="- -exclude=dojo/util" /-->
             <!--arg value="- -no-instrument=dojo" /-->
             <!--arg value="- -no-instrument=domderrien/i18n/nls" /-->
-            <!--arg value="- -no-instrument=${rwa.productShortName}/nls" /-->
+            <!--arg value="- -no-instrument=${app.productShortName}/nls" /-->
             <arg value="--exclude=dojo" />
             <arg value="--exclude=domderrien/i18n/nls" />
-            <arg value="--exclude=${rwa.productShortName}/nls" />
+            <arg value="--exclude=${app.productShortName}/nls" />
             <arg value="${basedir}/src/war/js" />
             <arg value="temp" />
         </exec>
@@ -1214,9 +1215,9 @@
         <copy todir="docs/test-reports/jscoverage-html/js/domderrien/i18n/nls" includeemptydirs="no" overwrite="yes">
             <fileset dir="src/war/js/domderrien/i18n/nls" />
         </copy>
-        <mkdir dir="docs/test-reports/jscoverage-html/js/${rwa.productShortName}/nls" />
-        <copy todir="docs/test-reports/jscoverage-html/js/${rwa.productShortName}/nls" includeemptydirs="no" overwrite="yes">
-            <fileset dir="src/war/js/${rwa.productShortName}/nls" />
+        <mkdir dir="docs/test-reports/jscoverage-html/js/${app.productShortName}/nls" />
+        <copy todir="docs/test-reports/jscoverage-html/js/${app.productShortName}/nls" includeemptydirs="no" overwrite="yes">
+            <fileset dir="src/war/js/${app.productShortName}/nls" />
         </copy>
         <!-- Copy the test files -->
         <copy todir="docs/test-reports/jscoverage-html/js" includeemptydirs="no" overwrite="yes">
@@ -1242,7 +1243,7 @@
             destdir="docs/generated-doc/javadoc"
             author="true"
             version="true"
-            packagenames="com.${rwa.productShortName}.*,domderrien.*"
+            packagenames="com.${app.productShortName}.*,domderrien.*"
             sourcepath="src/java"
             windowtitle="${javadoc.docs.window.title}"
         >
@@ -1262,9 +1263,9 @@
             <arg value="-t=templates/jsdoc" />
             <arg value="-d=${basedir}/docs/generated-doc/jsdoc" />
             <arg value="-r=2" />
-            <arg value="${basedir}/src/war/js/${rwa.productShortName}/" />
+            <arg value="${basedir}/src/war/js/${app.productShortName}/" />
             <!-- List all files deeper than depth 2 -->
-                <!--arg value="${basedir}/src/war/js/${rwa.productShortName}/util/sample/sample.js" /-->
+                <!--arg value="${basedir}/src/war/js/${app.productShortName}/util/sample/sample.js" /-->
         </java>
     </target>
 
