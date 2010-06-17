@@ -61,11 +61,6 @@ public class SaleAssociate extends Entity {
     public final static String LANGUAGE = Consumer.LANGUAGE;
 
     @Persistent
-    private Long locationKey;
-
-    public final static String LOCATION_KEY = Location.LOCATION_KEY;
-
-    @Persistent
     private String name;
 
     public final static String NAME = Consumer.NAME;
@@ -242,17 +237,6 @@ public class SaleAssociate extends Entity {
         this.language = LocaleValidator.checkLanguage(language);
     }
 
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        if (locationKey == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
-        }
-        this.locationKey = locationKey;
-    }
-
     public Locale getLocale() {
         return LocaleValidator.getLocale(language);
     }
@@ -343,7 +327,6 @@ public class SaleAssociate extends Entity {
         out.put(JABBER_ID, getJabberId());
         out.put(IS_STORE_ADMIN, isStoreAdmin());
         out.put(LANGUAGE, getLanguage());
-        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(NAME, getName());
         out.put(OPEN_ID, getOpenID());
         out.put(PHONE_NUMBER, getPhoneNumber());
@@ -382,7 +365,6 @@ public class SaleAssociate extends Entity {
         if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }

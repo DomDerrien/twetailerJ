@@ -61,11 +61,6 @@ public class Command extends Entity {
     public static final String HASH_TAGS_REMOVE = "\\-hashTags";
 
     @Persistent
-    private Long locationKey;
-
-    public final static String LOCATION_KEY = Location.LOCATION_KEY;
-
-    @Persistent
     private Long ownerKey;
 
     public static final String OWNER_KEY = "ownerKey";
@@ -269,17 +264,6 @@ public class Command extends Entity {
         hashTags.remove(hashTag);
     }
 
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        if (locationKey == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
-        }
-        this.locationKey = locationKey;
-    }
-
     public Long getOwnerKey() {
         return ownerKey;
     }
@@ -381,7 +365,6 @@ public class Command extends Entity {
             }
             out.put(HASH_TAGS, jsonArray);
         }
-        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
         out.put(QUANTITY, getQuantity());
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
@@ -464,7 +447,6 @@ public class Command extends Entity {
                 addHashTag(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }

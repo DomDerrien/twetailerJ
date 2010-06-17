@@ -21,11 +21,6 @@ public class Store extends Entity {
     public final static String EMAIL = Consumer.EMAIL;
 
     @Persistent
-    private Long locationKey;
-
-    public final static String LOCATION_KEY = Location.LOCATION_KEY;
-
-    @Persistent
     private String name;
 
     public final static String NAME = "name";
@@ -70,17 +65,6 @@ public class Store extends Entity {
         this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        if (locationKey == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
-        }
-        this.locationKey = locationKey;
-    }
-
     public String getName() {
         return name;
     }
@@ -101,9 +85,6 @@ public class Store extends Entity {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
         out.put(EMAIL, getEmail());
-        if (getLocationKey() != null) {
-            out.put(LOCATION_KEY, getLocationKey());
-        }
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
         return out;
@@ -113,7 +94,6 @@ public class Store extends Entity {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
 

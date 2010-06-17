@@ -32,6 +32,11 @@ public class Entity implements TransferObject {
     public static final String CREATION_DATE = "creationDate";
 
     @Persistent
+    private Long locationKey;
+
+    public final static String LOCATION_KEY = Location.LOCATION_KEY;
+
+    @Persistent
     private Boolean markedForDeletion = Boolean.FALSE;
 
     public static final String MARKED_FOR_DELETION = "markedForDeletion";
@@ -95,6 +100,25 @@ public class Entity implements TransferObject {
         setModificationDate(getCreationDate());
     }
 
+    public Long getLocationKey() {
+        return locationKey;
+    }
+
+    public void setLocationKey(Long locationKey) {
+        if (locationKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'locationKey'");
+        }
+        this.locationKey = locationKey;
+    }
+
+    public Boolean getMarkedForDeletion() {
+        return markedForDeletion == null ? Boolean.FALSE : markedForDeletion;
+    }
+
+    public void setMarkedForDeletion(Boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
+    }
+
     public Date getModificationDate() {
         return modificationDate;
     }
@@ -110,22 +134,17 @@ public class Entity implements TransferObject {
         this.modificationDate = modificationDate;
     }
 
-    public Boolean getMarkedForDeletion() {
-        return markedForDeletion == null ? Boolean.FALSE : markedForDeletion;
-    }
-
-    public void setMarkedForDeletion(Boolean markedForDeletion) {
-        this.markedForDeletion = markedForDeletion;
-    }
-
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         if (getKey() != null) {
             out.put(KEY, getKey());
         }
         out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate()));
-        out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate()));
+        if (getLocationKey() != null) {
+            out.put(LOCATION_KEY, getLocationKey());
+        }
         out.put(MARKED_FOR_DELETION, getMarkedForDeletion());
+        out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate()));
         return out;
     }
 
@@ -142,12 +161,9 @@ public class Entity implements TransferObject {
                 // Ignored error, the date stays not set
             }
         }
+        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(MARKED_FOR_DELETION)) { setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION)); }
         updateModificationDate();
-        // Don't accept deletion here by external source because of possible side-effects
-        // However, each final class is free to accept it if the side-effects are controlled
-        // if (in.containsKey(MARKED_FOR_DELETION)) {
-        //    setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION));
-        // }
         return this;
     }
 }
