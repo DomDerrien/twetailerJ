@@ -17,17 +17,26 @@ import javax.servlet.http.HttpServletResponse;
 import twetailer.DataSourceException;
 import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Consumer;
+import twetailer.task.step.BaseSteps;
 import twitter4j.TwitterException;
 
+/**
+ * Entry point processing notifications sent by the
+ * Twitter service. The main goal is to detect the
+ * notifications about new followers and to follow
+ * them back.
+ *
+ * Unresolved notifications are forwarded to the
+ * "catch-all@twetailer.com" e-mail address.
+ *
+ * @see twetailer.j2ee.CatchAllMailHandlerServlet
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class TwitterMailNotificationHandlerServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(TwitterMailNotificationHandlerServlet.class.getName());
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
     public static final String TWITTER_NOTIFICATION_SUBJECT_SUFFIX = " is now following you on Twitter!";
     public static final String TWITTER_INTRODUCTION_MESSAGE_RATTERN = "\\(([a-zA-Z0-9_]+)\\) is now following your tweets on Twitter";
@@ -70,7 +79,7 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                     isAFollowingNotification = true;
                     String followerScreenName = matcher.group(1).trim();
                     log.warning("Follower screen name: " + followerScreenName);
-                    PersistenceManager pm = _baseOperations.getPersistenceManager();
+                    PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                     try {
                         try {
                             // 1. Follow the user
@@ -78,13 +87,13 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                             TwitterConnector.getTwetailerAccount().createFriendship(followerScreenName, true);
                             // 2. Create his record
                             // TODO: call getConsumerKeys()
-                            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
+                            List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
                             if (consumers.size() == 0) {
                                 log.warning("Follower account to be created");
                                 Consumer consumer = new Consumer();
                                 consumer.setName(followerName);
                                 consumer.setTwitterId(followerScreenName);
-                                consumer = consumerOperations.createConsumer(pm, consumer);
+                                consumer = BaseSteps.getConsumerOperations().createConsumer(pm, consumer);
                                 log.warning("Consumer account created for the new Twitter follower: " + followerScreenName);
                             }
                             else {

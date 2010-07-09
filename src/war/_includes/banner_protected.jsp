@@ -57,9 +57,15 @@
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
-                    <li><a href="./" class="<%= pageForAssociate ? "" : "active" %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <% if (pageForAssociate) {
+                    %><li><a href="./"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></a></li>
+                    <li><span class="active"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></span></li><%
+                    }
+                    else {
+                    %><li><span class="active"><%= LabelExtractor.get(ResourceFileId.third, "navigation_consumer", locale) %></span></li>
                     <% if(isLoggedUserAssociate) {
-                    %><li><a href="./associate.jsp" class="<%= pageForAssociate ? "active" : "" %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li><%
+                    %><li><a href="./associate.jsp"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sale_associate", locale) %></a></li><%
+                    }
                     } %>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>

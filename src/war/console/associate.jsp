@@ -36,7 +36,12 @@
     // Get the logged user record
     OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
     Consumer consumer = LoginServlet.getConsumer(loggedUser);
-    Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser);
+    Long saleAssociateKey = consumer.getSaleAssociateKey();
+
+    // Redirects non sale associates
+    if (saleAssociateKey == null) {
+        response.sendRedirect("./");
+    }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ga_localized_page_name", locale) %></title>

@@ -1,6 +1,5 @@
 package twetailer.task;
 
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -26,6 +25,14 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Define the logic and the utility methods used to extract the information
+ * from messages conveyed by the text-based connectors (XMPP, IMAP, Twitter, etc.).
+ *
+ * @see twetailer.task.CommandProcessor
+ *
+ * @author Dom Derrien
+ */
 public class CommandLineParser {
 
     // References made public for the business logic located in package twetailer.task.command
@@ -82,12 +89,12 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.cc, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.expiration, dateTimePattern, separatorFromNonDigit);
-            preparePattern(prefixes, patterns, Prefix.hash, "\\s*\\S+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
             // FIXME: use DecimalFormatSymbols.getInstance(locale).getCurrencySymbol() in the following expression
             preparePattern(prefixes, patterns, Prefix.name, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.phoneNumber, "[^\\:]+", separatorFromOtherPrefix);
+            preparePattern(prefixes, patterns, Prefix.pointOfView, "\\s*\\w+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.price, "[ $€£¥\\d\\.,]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.proposal, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.quantity, "[\\s\\d\\.,]+", separatorFromNonDigit);
@@ -104,6 +111,12 @@ public class CommandLineParser {
             patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))?.+)", Pattern.CASE_INSENSITIVE));
 
             patterns.put("\\+" + tagKey + "Start", Pattern.compile("^(\\+" + tagPattern + ")", Pattern.CASE_INSENSITIVE));
+
+            tagKey = Prefix.hash.toString();
+            tagPattern = assembleModularPrefixes(prefixes.getJsonArray(tagKey), tagKey).toString();
+            patterns.put(tagKey, Pattern.compile("((?:(?:^|[^\\+\\-])(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
+            patterns.put("\\-" + tagKey, Pattern.compile("((?:\\-(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
+            patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
 
             localizedPatterns.put(locale, patterns);
         }
@@ -276,6 +289,14 @@ public class CommandLineParser {
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
         }
+        // Point of view
+        matcher = patterns.get(Prefix.pointOfView.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Command.POINT_OF_VIEW, getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+        }
         // Price
         matcher = patterns.get(Prefix.price.toString()).matcher(messageCopy);
         if (matcher.find()) { // Runs the matcher once
@@ -344,8 +365,34 @@ public class CommandLineParser {
             command.getJsonArray(Command.HASH_TAGS).add(getHashTag(currentGroup.toLowerCase(locale)));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
-            // Rescan the remaining sequence
+            // Scan the remaining sequence
             matcher = patterns.get(Prefix.hash.toString()).matcher(messageCopy);
+        }
+        // \-Hash tags
+        matcher = patterns.get("\\-" + Prefix.hash.toString()).matcher(messageCopy);
+        while (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            if (!command.containsKey(Command.HASH_TAGS_REMOVE)) {
+                command.put(Command.HASH_TAGS_REMOVE, new GenericJsonArray());
+            }
+            command.getJsonArray(Command.HASH_TAGS_REMOVE).add(getHashTag(currentGroup.toLowerCase(locale)));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+            // Scan the remaining sequence
+            matcher = patterns.get("\\-" + Prefix.hash.toString()).matcher(messageCopy);
+        }
+        // \+Hash tags
+        matcher = patterns.get("\\+" + Prefix.hash.toString()).matcher(messageCopy);
+        while (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            if (!command.containsKey(Command.HASH_TAGS_ADD)) {
+                command.put(Command.HASH_TAGS_ADD, new GenericJsonArray());
+            }
+            command.getJsonArray(Command.HASH_TAGS_ADD).add(getHashTag(currentGroup.toLowerCase(locale)));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+            // Scan the remaining sequence
+            matcher = patterns.get("\\+" + Prefix.hash.toString()).matcher(messageCopy);
         }
         // Tags
         matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
@@ -505,12 +552,18 @@ public class CommandLineParser {
      * @return valid command
      */
     private static String getHashTag(String pattern) {
-        String command;
-        if (pattern.charAt(0) == '#') {
-            command = pattern.substring(1);
+        String command = pattern;
+        if (pattern.charAt(0) == '+') {
+            command = command.substring(1);
+        }
+        else if (pattern.charAt(0) == '-') {
+            command = command.substring(1);
+        }
+        if (command.charAt(0) == '#') {
+            command = command.substring(1);
         }
         else {
-            command = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1);
+            command = command.substring(command.indexOf(PREFIX_SEPARATOR) + 1);
         }
         return command;
     }

@@ -20,9 +20,44 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Base class for all Twetailer commands consumers and sale associates can produce
+ *
+ * @see twetailer.dto.Demand
+ * @see twetailer.dto.Proposal
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class Command extends Entity {
+
+    public static final String POINT_OF_VIEW = "pointOfView";
+
+    public enum QueryPointOfView {
+        ANONYMOUS,
+        CONSUMER,
+        SALE_ASSOCIATE;
+
+        /**
+         * Returns the enum constant extracted from the given JSON bag
+         *
+         * @param parameters JSON bag to scan
+         * @param defaultValue default value to apply if the JSON bag does not contain the expected information
+         * @return Corresponding enum constant if found, <code>consumer</code> value otherwise
+         */
+        public static QueryPointOfView fromJson(JsonObject parameters, QueryPointOfView defaultValue) {
+            try {
+                if (parameters != null && parameters.containsKey(POINT_OF_VIEW)) {
+                    String value = parameters.getString(POINT_OF_VIEW).toUpperCase();
+                    return QueryPointOfView.valueOf(value);
+                }
+                return defaultValue;
+            }
+            catch(IllegalArgumentException ex) { } // Will fallback on the default value ;)
+            return defaultValue;
+        }
+    }
 
     @Persistent
     private Action action;
@@ -227,7 +262,7 @@ public class Command extends Entity {
     }
 
     public String getSerializedHashTags() {
-        return getSerializedTags(HASH, hashTags);
+        return getSerializedTags(HASH, SPACE, hashTags);
     }
 
     public List<String> getHashTags() {
@@ -459,31 +494,31 @@ public class Command extends Entity {
     public final static String EMPTY_STRING = "";
     public final static String SPACE = " ";
     public final static String HASH = "#";
+    public final static String SEMICOLON = ";";
 
     public static String getSerializedTags(List<?> keywords) {
-        return getSerializedTags(null, keywords);
+        return getSerializedTags(null, SPACE, keywords);
     }
 
-    public static String getSerializedTags(String prefix, List<?> keywords) {
+    public static String getSerializedTags(String prefix, String spacer, List<?> keywords) {
         if (keywords == null || keywords.size() == 0) {
             return EMPTY_STRING;
         }
         StringBuilder out = new StringBuilder();
         if (prefix == null) {
             for(Object keyword: keywords) {
-                out.append(keyword.toString()).append(SPACE);
+                out.append(spacer).append(keyword.toString());
             }
         }
         else {
             for(Object keyword: keywords) {
-                out.append(prefix).append(keyword.toString()).append(SPACE);
+                out.append(spacer).append(prefix).append(keyword.toString());
             }
         }
-        out.setLength(out.length() - 1); // To remove the trailing space
-        return out.toString();
+        return out.substring(spacer.length()); // Leading spacer excluded
     }
 
-    protected static void removeDuplicates(JsonObject in, String addLabel, String removeLabel) {
+    public static void removeDuplicates(JsonObject in, String addLabel, String removeLabel) {
         if (in.containsKey(addLabel) && in.containsKey(removeLabel)) {
             JsonArray inAdd = in.getJsonArray(addLabel);
             JsonArray inRemove = in.getJsonArray(removeLabel);

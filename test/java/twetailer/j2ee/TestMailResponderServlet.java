@@ -22,12 +22,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.TestMailConnector;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -48,16 +48,14 @@ public class TestMailResponderServlet {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
         helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = MailResponderServlet._baseOperations.getRawCommandOperations();
-        MailResponderServlet.consumerOperations = MailResponderServlet._baseOperations.getConsumerOperations();
     }
 
     @Test
@@ -83,7 +81,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -96,10 +94,10 @@ public class TestMailResponderServlet {
                 fail("Call not expected");
                 return null;
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
@@ -110,11 +108,7 @@ public class TestMailResponderServlet {
                 consumer.setEmail(address.getAddress());
                 return consumer;
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -135,7 +129,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -148,10 +142,10 @@ public class TestMailResponderServlet {
                 fail("Call not expected");
                 return null;
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
@@ -162,11 +156,7 @@ public class TestMailResponderServlet {
                 consumer.setEmail(address.getAddress());
                 return consumer;
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -206,7 +196,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertNotNull(from, rawCommand.getEmitterId());
@@ -221,19 +211,15 @@ public class TestMailResponderServlet {
                 fail("Call not expected");
                 return null;
             }
-        };
+        });
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 fail("Call not expected");
                 return null;
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -270,7 +256,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertNull(rawCommand.getEmitterId());
@@ -285,19 +271,15 @@ public class TestMailResponderServlet {
                 fail("Call not expected");
                 return null;
             }
-        };
+        });
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 fail("Call not expected");
                 return null;
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -422,7 +404,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -437,20 +419,16 @@ public class TestMailResponderServlet {
                 fail("Call not expected!");
                 return null;
             }
-        };
+        });
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new DatastoreTimeoutException("Done in purpose");
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -471,7 +449,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -485,20 +463,16 @@ public class TestMailResponderServlet {
                 fail("Call not expected!");
                 return null;
             }
-        };
+        });
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new DatastoreTimeoutException("Done in purpose");
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -521,7 +495,7 @@ public class TestMailResponderServlet {
         };
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -537,20 +511,16 @@ public class TestMailResponderServlet {
                 assertEquals(rawCommandKey, rawCommand.getKey());
                 return null;
             }
-        };
+        });
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
-
-        MailResponderServlet._baseOperations = new MockBaseOperations();
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -572,15 +542,15 @@ public class TestMailResponderServlet {
             }
         };
 
-        BaseOperations baseOperations = new MockBaseOperations() {
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
             @Override
             public Queue getQueue() {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -596,10 +566,10 @@ public class TestMailResponderServlet {
                 assertEquals(LabelExtractor.get("error_unexpected", new Object[] { rawCommandKey, "" }, Locale.ENGLISH), rawCommand.getErrorMessage());
                 return null;
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
@@ -610,11 +580,7 @@ public class TestMailResponderServlet {
                 consumer.setEmail(address.getAddress());
                 return consumer;
             }
-        };
-
-        MailResponderServlet._baseOperations = baseOperations;
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         new MailResponderServlet().doPost(request, null);
     }
@@ -637,15 +603,15 @@ public class TestMailResponderServlet {
             }
         };
 
-        BaseOperations baseOperations = new MockBaseOperations() {
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
             @Override
             public Queue getQueue() {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
@@ -661,10 +627,10 @@ public class TestMailResponderServlet {
                 assertEquals(LabelExtractor.get("error_unexpected", new Object[] { rawCommandKey, "" }, Locale.ENGLISH), rawCommand.getErrorMessage());
                 return null;
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
                 assertEquals(from, address.getAddress());
@@ -675,11 +641,7 @@ public class TestMailResponderServlet {
                 consumer.setEmail(address.getAddress());
                 return consumer;
             }
-        };
-
-        MailResponderServlet._baseOperations = baseOperations;
-        MailResponderServlet.rawCommandOperations = rawCommandOperations;
-        MailResponderServlet.consumerOperations = consumerOperations;
+        });
 
         CatchAllMailHandlerServlet.foolNextMessagePost();
 

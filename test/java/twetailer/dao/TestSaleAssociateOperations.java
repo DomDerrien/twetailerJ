@@ -5,12 +5,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 import java.io.IOException;
+import java.text.Collator;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -21,15 +22,17 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
+import twetailer.task.step.BaseSteps;
+import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonObject;
 
 public class TestSaleAssociateOperations {
 
@@ -44,6 +47,7 @@ public class TestSaleAssociateOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -121,18 +125,7 @@ public class TestSaleAssociateOperations {
     }
 
     @Test
-    public void testCreateIII() throws ClientException {
-        String name="test";
-        JsonObject item = new GenericJsonObject();
-        item.put(SaleAssociate.NAME, name);
-
-        SaleAssociate saleAssociate = new SaleAssociateOperations().createSaleAssociate(item);
-        assertNotNull(saleAssociate.getKey());
-        assertEquals(name, saleAssociate.getName());
-    }
-
-    @Test
-    public void testGetI() throws DataSourceException {
+    public void testGetI() throws InvalidIdentifierException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
 
         SaleAssociateOperations ops = new SaleAssociateOperations();
@@ -143,33 +136,19 @@ public class TestSaleAssociateOperations {
         assertEquals(item.getKey(), selected.getKey());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetII() throws InvalidIdentifierException {
         new SaleAssociateOperations().getSaleAssociate(null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIII() throws InvalidIdentifierException {
         new SaleAssociateOperations().getSaleAssociate(0L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIV() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIV() throws InvalidIdentifierException {
         new SaleAssociateOperations().getSaleAssociate(888L);
-    }
-
-    @Test
-    public void testGetsI() throws DataSourceException {
-        Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
-        consumer.setTwitterId("Ryan");
-
-        SaleAssociateOperations ops = new SaleAssociateOperations();
-        SaleAssociate item = ops.createSaleAssociate(consumer, 111L);
-
-        List<SaleAssociate> selection = ops.getSaleAssociates(SaleAssociate.TWITTER_ID, "Ryan", 0);
-        assertNotNull(selection);
-        assertEquals(1, selection.size());
-        assertEquals(item.getKey(), selection.get(0).getKey());
     }
 
     @Test(expected=RuntimeException.class)
@@ -187,28 +166,6 @@ public class TestSaleAssociateOperations {
         };
 
         ops.getSaleAssociates("test", null, 0);
-    }
-
-    @Test
-    public void testUpdateI() throws DataSourceException {
-        Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
-        consumer.setTwitterId("Ryan");
-
-        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
-        SaleAssociateOperations ops = new SaleAssociateOperations() {
-            @Override
-            public PersistenceManager getPersistenceManager() {
-                return pm; // Return always the same object to be able to verify it has been closed
-            }
-        };
-        SaleAssociate item = ops.createSaleAssociate(pm, consumer, 111L); // Gives the PersistenceManager so it won't be closed
-
-        item.setEmail("test@test.com");
-
-        SaleAssociate updated = ops.updateSaleAssociate(item);
-        assertNotNull(updated);
-        assertEquals(item.getKey(), updated.getKey());
-        assertEquals(item.getEmail(), updated.getEmail());
     }
 
     @Test(expected=RuntimeException.class)
@@ -229,7 +186,7 @@ public class TestSaleAssociateOperations {
     }
 
     @Test
-    public void testGetExtendedI() throws DataSourceException {
+    public void testGetExtendedI() throws DataSourceException, InvalidIdentifierException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
 
         SaleAssociateOperations ops = new SaleAssociateOperations();
@@ -242,8 +199,10 @@ public class TestSaleAssociateOperations {
         assertEquals(item.getKey(), selected.getKey());
         assertNotNull(selected.getCriteria()); // No more nullified by the JPO by creation process - appengine 1.2.8
 
-        selected.addCriterion("first");
-        selected.addCriterion("second");
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        selected.addCriterion("first", collator);
+        selected.addCriterion("second", collator);
         assertNotNull(selected.getCriteria());
         assertNotSame(0, selected.getCriteria().size());
 
@@ -292,7 +251,7 @@ public class TestSaleAssociateOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testDeleteWithFailureI() throws DataSourceException {
+    public void testDeleteWithFailureI() throws InvalidIdentifierException, DataSourceException {
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
             public void deleteSaleAssociate(PersistenceManager pm, Long key) {
@@ -303,11 +262,11 @@ public class TestSaleAssociateOperations {
     }
 
     @Test
-    public void testDeleteI() throws DataSourceException {
+    public void testDeleteI() throws InvalidIdentifierException, DataSourceException {
         final Long saleAssociateKey = 54657L;
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws DataSourceException {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
@@ -319,17 +278,5 @@ public class TestSaleAssociateOperations {
             }
         };
         ops.deleteSaleAssociate(saleAssociateKey);
-    }
-
-    @Test
-    public void testDeleteII() throws DataSourceException {
-        final String name = "name";
-        SaleAssociate toBeCreated = new SaleAssociate();
-        toBeCreated.setName(name);
-        SaleAssociateOperations ops = new SaleAssociateOperations();
-        SaleAssociate justCreated = ops.createSaleAssociate(toBeCreated);
-        assertNotNull(justCreated.getKey());
-        assertEquals(name, justCreated.getName());
-        ops.deleteSaleAssociate(justCreated.getKey());
     }
 }

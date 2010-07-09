@@ -1060,10 +1060,10 @@
     <target name="step-cobertura-instrument">
         <!-- Remove the coverage data file.-->
         <delete file="${temp.dir}/cobertura.ser" />
-        <delete dir="bin/instrumented" />
+        <delete dir="${temp.dir}/instrumented" />
 
         <!--Instrument the application classes  -->
-        <cobertura-instrument datafile="${temp.dir}/cobertura.ser" todir="bin/instrumented">
+        <cobertura-instrument datafile="${temp.dir}/cobertura.ser" todir="${temp.dir}/instrumented">
             <!-- Ignore log4j -->
             <ignore regex="org.apache.log4j.*" />
             <ignore regex="org.apache.commons.logging.*" />
@@ -1091,7 +1091,7 @@
         >
             <sysproperty key="net.sourceforge.cobertura.datafile" file="${temp.dir}/cobertura.ser" />
 
-            <classpath location="bin/instrumented" />
+            <classpath location="${temp.dir}/instrumented" />
             <!-- Important: instrumented classes are before the original (uninstrumented) classes. -->
             <classpath location="src/war/WEB-INF/classes" />
             <classpath refid="junit.classpath" />

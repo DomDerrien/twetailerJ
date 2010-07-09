@@ -7,10 +7,16 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Seed;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Seed entities
+ *
+ * @author Dom Derrien
+ */
 public class SeedOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(ProductOperations.class.getName());
+    private static Logger log = Logger.getLogger(SeedOperations.class.getName());
 
     @Override
     protected Logger getLogger() {
@@ -23,11 +29,11 @@ public class SeedOperations extends BaseOperations {
      * @param seed Resource to persist
      * @return Just created resource
      *
-     * @throws DataSourceException If the given seed that is read from the object or created from its data is invalid
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Seed record
      *
      * @see SeedOperations#createSeed(PersistenceManager, Seed)
      */
-    public Seed createSeed(Seed seed) throws DataSourceException {
+    public Seed createSeed(Seed seed) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return createSeed(pm, seed);
@@ -45,11 +51,11 @@ public class SeedOperations extends BaseOperations {
      * @param seed Resource to persist
      * @return Just created resource
      *
-     * @throws DataSourceException If the given seed that is read from the object or created from its data is invalid
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Seed record
      *
      * @see SeedOperations#getSeed(PersistenceManager, String)
      */
-    public Seed createSeed(PersistenceManager pm, Seed seed) throws DataSourceException {
+    public Seed createSeed(PersistenceManager pm, Seed seed) throws InvalidIdentifierException {
         // Check if the seed already exists
         if (seed.getKey() != null) {
             return getSeed(pm, seed.getKey());
@@ -67,11 +73,11 @@ public class SeedOperations extends BaseOperations {
      * @city City name
      * @return First location matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved location does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Seed record
      *
      * @see SeedOperations#getSeed(PersistenceManager, String, String, String)
      */
-    public Seed getSeed(String country, String region, String city) throws DataSourceException {
+    public Seed getSeed(String country, String region, String city) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getSeed(pm, country, region, city);
@@ -91,11 +97,11 @@ public class SeedOperations extends BaseOperations {
      * @city City name
      * @return First location matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved location does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Seed record
      *
      * @see SeedOperations#getSeed(String)
      */
-    public Seed getSeed(PersistenceManager pm, String country, String region, String city) throws DataSourceException {
+    public Seed getSeed(PersistenceManager pm, String country, String region, String city) throws InvalidIdentifierException {
         return getSeed(Seed.generateKey(Seed.buildQueryString(country, region, city)));
     }
 
@@ -105,11 +111,11 @@ public class SeedOperations extends BaseOperations {
      * @param key Identifier of the location
      * @return First location matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved location does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Seed record
      *
      * @see SeedOperations#getSeed(PersistenceManager, String)
      */
-    public Seed getSeed(String key) throws DataSourceException {
+    public Seed getSeed(String key) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getSeed(pm, key);
@@ -126,18 +132,18 @@ public class SeedOperations extends BaseOperations {
      * @param key Identifier of the location
      * @return First location matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the location cannot be retrieved
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Seed record
      */
-    public Seed getSeed(PersistenceManager pm, String key) throws DataSourceException {
+    public Seed getSeed(PersistenceManager pm, String key) throws InvalidIdentifierException {
         if (key == null || key.length() == 0) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the Seed instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the Seed instance");
         }
         getLogger().warning("Get Seed instance with id: " + key);
         try {
             return pm.getObjectById(Seed.class, key);
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving seed for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving seed for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 
@@ -183,7 +189,7 @@ public class SeedOperations extends BaseOperations {
     public Seed updateSeed(Seed seed) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return createSeed(pm, seed);
+            return updateSeed(pm, seed);
         }
         finally {
             pm.close();

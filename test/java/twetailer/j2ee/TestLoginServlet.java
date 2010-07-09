@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Consumer;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.Constants;
@@ -64,11 +65,11 @@ public class TestLoginServlet {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
     }
 
     @After
     public void tearDown() throws Exception {
-        LoginServlet.consumerOperations = new ConsumerOperations();
     }
 
     @Test
@@ -439,14 +440,14 @@ public class TestLoginServlet {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         final Long consumerKey = 12345L;
-        LoginServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(OpenIdUser user) {
                 Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
 
         new LoginServlet() {
             @Override
@@ -505,14 +506,14 @@ public class TestLoginServlet {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         final Long consumerKey = 12345L;
-        LoginServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(OpenIdUser user) {
                 Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
 
         new LoginServlet() {
             @Override
@@ -652,14 +653,14 @@ public class TestLoginServlet {
         };
 
         final Long consumerKey = 12345L;
-        LoginServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(OpenIdUser user) {
                 Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
 
         new LoginServlet() {
             @Override
@@ -735,14 +736,14 @@ public class TestLoginServlet {
         };
 
         final Long consumerKey = 12345L;
-        LoginServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(OpenIdUser user) {
                 Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
 
         new LoginServlet() {
             @Override
@@ -1247,14 +1248,14 @@ public class TestLoginServlet {
     @Test
     public void testAttachConsumerToSessionI() throws ServletException, IOException {
         final Long consumerKey = 12345L;
-        LoginServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(OpenIdUser user) {
                 Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
         OpenIdUser user = OpenIdUser.populate(
                 "http://www.yahoo.com",
                 YadisDiscovery.IDENTIFIER_SELECT,
@@ -1262,8 +1263,8 @@ public class TestLoginServlet {
         );
 
         // Authenticated user already known
-        assertNull(user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID));
+        assertNull(user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID));
         LoginServlet.attachConsumerToSession(user);
-        assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID));
+        assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID));
     }
 }

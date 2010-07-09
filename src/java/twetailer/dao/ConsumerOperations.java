@@ -9,10 +9,16 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Consumer;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Consumer entities
+ *
+ * @author Dom Derrien
+ */
 public class ConsumerOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(ConsumerOperations.class.getName());
 
@@ -336,11 +342,11 @@ public class ConsumerOperations extends BaseOperations {
      * @param key Identifier of the consumer
      * @return First consumer matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved consumer does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      *
      * @see ConsumerOperations#getConsumer(PersistenceManager, Long)
      */
-    public Consumer getConsumer(Long key) throws DataSourceException {
+    public Consumer getConsumer(Long key) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getConsumer(pm, key);
@@ -357,18 +363,18 @@ public class ConsumerOperations extends BaseOperations {
      * @param key Identifier of the consumer
      * @return First consumer matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved consumer does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      */
-    public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
+    public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the Consumer instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the Consumer instance");
         }
         getLogger().warning("Get Consumer instance with id: " + key);
         try {
             return pm.getObjectById(Consumer.class, key);
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 
@@ -439,6 +445,50 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
+     * Use the given pairs {attribute; value} to get the corresponding Consumer instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of consumers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Consumer> getConsumers(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query query = pm.newQuery(Consumer.class);
+        Object[] values = prepareQuery(query, parameters, limit);
+        getLogger().warning("Select consumer(s) with: " + query.toString());
+        // Select the corresponding resources
+        List<Consumer> consumers = (List<Consumer>) query.executeWithArray(values);
+        consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return consumers;
+    }
+
+    /**
+     * Use the given pairs {attribute; value} to get the corresponding Consumer identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of consumer keys matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getConsumerKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query queryObj = pm.newQuery("select " + Consumer.KEY + " from " + Consumer.class.getName());
+        Object[] values = prepareQuery(queryObj, parameters, limit);
+        getLogger().warning("Select consumer(s) with: " + queryObj.toString());
+        // Select the corresponding resources
+        List<Long> consumerKeys = (List<Long>) queryObj.executeWithArray(values);
+        consumerKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return consumerKeys;
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param consumer Resource to update
@@ -469,15 +519,15 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
-     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     * Use the given pair {attribute; value} to get the corresponding Consumer instance and to delete it
      *
      * @param consumerKey Identifier of the consumer
      *
-     * @throws DataSourceException If the consumer record retrieval fails
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      *
      * @see ConsumerOperations#deleteConsumer(PersistenceManager, Long)
      */
-    public void deleteConsumer(Long consumerKey) throws DataSourceException {
+    public void deleteConsumer(Long consumerKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             deleteConsumer(pm, consumerKey);
@@ -488,23 +538,23 @@ public class ConsumerOperations extends BaseOperations {
     }
 
     /**
-     * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
+     * Use the given pair {attribute; value} to get the corresponding Consumer instance and to delete it
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumerKey Identifier of the consumer
      *
-     * @throws DataSourceException If the consumer record retrieval fails
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      *
      * @see ConsumerOperations#getConsumers(PersistenceManager, Long)
      * @see ConsumerOperations#deleteConsumer(PersistenceManager, Consumer)
      */
-    public void deleteConsumer(PersistenceManager pm, Long consumerKey) throws DataSourceException {
+    public void deleteConsumer(PersistenceManager pm, Long consumerKey) throws InvalidIdentifierException {
         Consumer consumer = getConsumer(pm, consumerKey);
         deleteConsumer(pm, consumer);
     }
 
     /**
-     * Delete the given demand while leaving the given persistence manager open for future updates
+     * Delete the given Consumer while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Object to delete

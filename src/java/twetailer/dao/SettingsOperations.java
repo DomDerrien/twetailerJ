@@ -14,6 +14,11 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.dto.Settings;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Settings entities
+ *
+ * @author Dom Derrien
+ */
 public class SettingsOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(SettingsOperations.class.getName());
 

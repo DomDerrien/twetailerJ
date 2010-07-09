@@ -21,10 +21,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
@@ -32,6 +32,7 @@ import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
@@ -56,17 +57,14 @@ public class TestLocationValidator {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
-        LocationValidator._baseOperations = new MockBaseOperations();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
 
-        LocationValidator._baseOperations = new BaseOperations();
-        LocationValidator.locationOperations = LocationValidator._baseOperations.getLocationOperations();
-        LocationValidator.rawCommandOperations = LocationValidator._baseOperations.getRawCommandOperations();
-        LocationValidator.consumerOperations = LocationValidator._baseOperations.getConsumerOperations();
         LocaleValidator.setValidatorStream(null);
         BaseConnector.resetLastCommunicationInSimulatedMode();
     }
@@ -77,19 +75,19 @@ public class TestLocationValidator {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testProcessWithFailure() throws DataSourceException {
-        LocationValidator.locationOperations = new LocationOperations() {
+    public void testProcessWithFailure() throws DataSourceException, InvalidIdentifierException {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        };
+        });
 
         LocationValidator.process("postal code", "country code", 12345L, 34567L);
     }
 
     @Test
-    public void testProcessWithOneValidLocation() throws DataSourceException {
+    public void testProcessWithOneValidLocation() throws DataSourceException, InvalidIdentifierException {
         final String postalCode = "H2N3C6";
         final String countryCode = "CA";
         final Long consumerKey = 111L;
@@ -97,7 +95,7 @@ public class TestLocationValidator {
         final Double longitude = -73.3D;
 
         // LocationOperations mock
-        LocationValidator.locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 Location location = new Location();
@@ -106,13 +104,13 @@ public class TestLocationValidator {
                 locations.add(location);
                 return locations;
             }
-        };
+        });
 
         LocationValidator.process(postalCode, countryCode, consumerKey, rawCommandKey);
     }
 
     @Test
-    public void testProcessWithOneIncompleteLocation() throws DataSourceException {
+    public void testProcessWithOneIncompleteLocation() throws DataSourceException, InvalidIdentifierException {
         final String postalCode = "H2N3C6";
         final String countryCode = "CA";
         final Long consumerKey = 111L;
@@ -121,7 +119,7 @@ public class TestLocationValidator {
         final Double latitude = 45.5D;
 
         // LocationOperations mock
-        LocationValidator.locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 Location location = new Location();
@@ -140,24 +138,24 @@ public class TestLocationValidator {
                 assertEquals(latitude, location.getLatitude(), 0.0);
                 return location;
             }
-        };
+        });
         // RawCommandOperations mock
-        LocationValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 RawCommand command = new RawCommand();
                 command.setSource(Source.simulated);
                 return command;
             }
-        };
+        });
         // ConsumerOperations mock
-        LocationValidator.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 Consumer consumer = new Consumer();
                 return consumer;
             }
-        };
+        });
         // LocaleValidator mock
         LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>" + latitude + "</latt>\n\t<longt>"
                 + longitude + "</longt>\n</geodata>"));
@@ -166,7 +164,7 @@ public class TestLocationValidator {
     }
 
     @Test
-    public void testProcessWithOneNewLocation() throws DataSourceException {
+    public void testProcessWithOneNewLocation() throws DataSourceException, InvalidIdentifierException {
         final String postalCode = "H2N3C6";
         final String countryCode = "CA";
         final Long consumerKey = 111L;
@@ -175,7 +173,7 @@ public class TestLocationValidator {
         final Double latitude = 45.5D;
 
         // LocationOperations mock
-        LocationValidator.locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 List<Location> locations = new ArrayList<Location>();
@@ -190,24 +188,24 @@ public class TestLocationValidator {
                 assertEquals(latitude, location.getLatitude(), 0.0);
                 return location;
             }
-        };
+        });
         // RawCommandOperations mock
-        LocationValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 RawCommand command = new RawCommand();
                 command.setSource(Source.simulated);
                 return command;
             }
-        };
+        });
         // ConsumerOperations mock
-        LocationValidator.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 Consumer consumer = new Consumer();
                 return consumer;
             }
-        };
+        });
         // LocaleValidator mock
         LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>" + latitude + "</latt>\n\t<longt>"
                 + longitude + "</longt>\n</geodata>"));
@@ -216,7 +214,7 @@ public class TestLocationValidator {
     }
 
     @Test
-    public void testProcessWithOneNewLocationButCannotResolve() throws DataSourceException {
+    public void testProcessWithOneNewLocationButCannotResolve() throws DataSourceException, InvalidIdentifierException {
         final String postalCode = "H2N3C6";
         final String countryCode = "CA";
         final Long consumerKey = 111L;
@@ -224,7 +222,7 @@ public class TestLocationValidator {
         final String command = "!list store:* locale:" + postalCode + " " + countryCode;
 
         // LocationOperations mock
-        LocationValidator.locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 List<Location> locations = new ArrayList<Location>();
@@ -236,9 +234,9 @@ public class TestLocationValidator {
                 fail("Not expected because the resoltion failed");
                 return location;
             }
-        };
+        });
         // RawCommandOperations mock
-        LocationValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 RawCommand rawCommand = new RawCommand();
@@ -246,15 +244,15 @@ public class TestLocationValidator {
                 rawCommand.setCommand(command);
                 return rawCommand;
             }
-        };
+        });
         // ConsumerOperations mock
-        LocationValidator.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 Consumer consumer = new Consumer();
                 return consumer;
             }
-        };
+        });
         // LocaleValidator mock
         LocaleValidator.setValidatorStream(new MockInputStream(""));
 
@@ -273,8 +271,8 @@ public class TestLocationValidator {
     }
 
     @Test
-    @SuppressWarnings("serial")
-    public void testProcessWithOneNewLocationButCannotResolveAndCannotCommunicate() throws DataSourceException {
+    @SuppressWarnings({ "serial", "deprecation" })
+    public void testProcessWithOneNewLocationButCannotResolveAndCannotCommunicate() throws DataSourceException, InvalidIdentifierException {
         final String postalCode = "H2N3C6";
         final String countryCode = "CA";
         final Long consumerKey = 111L;
@@ -282,7 +280,7 @@ public class TestLocationValidator {
         final String command = "!list store:* locale:" + postalCode + " " + countryCode;
 
         // LocationOperations mock
-        LocationValidator.locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 List<Location> locations = new ArrayList<Location>();
@@ -294,9 +292,9 @@ public class TestLocationValidator {
                 fail("Not expected because the resoltion failed");
                 return location;
             }
-        };
+        });
         // RawCommandOperations mock
-        LocationValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 RawCommand rawCommand = new RawCommand();
@@ -304,16 +302,16 @@ public class TestLocationValidator {
                 rawCommand.setCommand(command);
                 return rawCommand;
             }
-        };
+        });
         // ConsumerOperations mock
-        LocationValidator.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 Consumer consumer = new Consumer();
                 consumer.setTwitterId("test");
                 return consumer;
             }
-        };
+        });
         // LocaleValidator mock
         LocaleValidator.setValidatorStream(new MockInputStream(""));
         // TwitterAccout mock

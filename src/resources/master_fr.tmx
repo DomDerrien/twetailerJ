@@ -64,6 +64,7 @@
         </tu>
         <tu tuid="cl_state_opened" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>ouvert</seg>
@@ -71,6 +72,7 @@
         </tu>
         <tu tuid="cl_state_invalid" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>invalide</seg>
@@ -78,6 +80,7 @@
         </tu>
         <tu tuid="cl_state_published" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>publié</seg>
@@ -85,6 +88,7 @@
         </tu>
         <tu tuid="cl_state_confirmed" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>confirmé</seg>
@@ -92,6 +96,7 @@
         </tu>
         <tu tuid="cl_state_closed" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>fermé</seg>
@@ -99,6 +104,7 @@
         </tu>
         <tu tuid="cl_state_cancelled" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>annulé</seg>
@@ -106,6 +112,7 @@
         </tu>
         <tu tuid="cl_state_declined" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>décliné</seg>
@@ -113,6 +120,7 @@
         </tu>
         <tu tuid="cl_state_markedForDeletion" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>àEffacer</seg>
@@ -190,6 +198,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>numéroTéléphone,téléphone</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_prefix_pointOfView" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>pointDeVue,pdv</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_price" dataType="text">
@@ -877,11 +892,11 @@
                 <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Confirmer et essayer de nouveau.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_decline_acknowledge_proposal_closing" dataType="text">
+        <tu tuid="cp_command_decline_acknowledge_proposal_declination" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-) La {0} été déclinée et les prochaines mises-à-jour ne sont plus transmises.</seg>
+                <seg>:-) {0} has been declined and further updates halted.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_decline_invalid_proposal_id" dataType="text">
@@ -889,6 +904,13 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>:-( Veuillez vérifer la référence de la Proposition que vous souhaiter Décliner et essayer de nouveau.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_decline_invalid_state_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( You can only Decline {0} for {1} when it's in {2}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_decline_invalid_parameters" dataType="text">
@@ -972,6 +994,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>PVI: {0} a mis-à-jour la Demande pour laquelle vous êtes en copie...|{1} </seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_demand_forward_cancel_to_cc" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI: {0} cancelled the Demand you've been CC-ed...|{1} </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
@@ -1135,11 +1164,25 @@
                 <seg>:-) Affichage de la {0} nouvellement créée... </seg>
             </tuv>
         </tu>
+        <tu tuid="cp_command_supply_empty_tag_hashtag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. You are no longer supplying any Tags nor HashTags.</seg>
+            </tuv>
+        </tu>
         <tu tuid="cp_command_supply_empty_tag_list" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>PVI. Vous n'exposez plus aucun mots-clés.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_supply_empty_hashtag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. You supply no HashTags.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_supply_updated_1_tag_list" dataType="text">
@@ -1154,6 +1197,20 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>:-) Vous exposez {1} {0}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_supply_updated_1_hashtag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>FYI. You are now supplying one hash tag: {0}.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_command_supply_updated_n_hashtag_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-) Listing {1} hash tags: {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_demand_action_part" dataType="text">

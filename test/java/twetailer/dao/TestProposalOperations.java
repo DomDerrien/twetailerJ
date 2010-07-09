@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -26,12 +25,13 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.connector.BaseConnector.Source;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Command;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.RobotResponder;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -53,6 +53,7 @@ public class TestProposalOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -105,7 +106,6 @@ public class TestProposalOperations {
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setKey(111L);
         saleAssociate.setStoreKey(222L);
-        saleAssociate.setPreferredConnection(Source.simulated);
 
         Proposal object = new ProposalOperations().createProposal(item, saleAssociate);
         assertNotNull(object.getKey());
@@ -120,7 +120,6 @@ public class TestProposalOperations {
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setKey(111L);
         saleAssociate.setStoreKey(222L);
-        saleAssociate.setPreferredConnection(Source.simulated);
 
         Proposal object = new ProposalOperations().createProposal(item, saleAssociate);
         assertNotNull(object.getKey());
@@ -135,7 +134,6 @@ public class TestProposalOperations {
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setKey(111L);
         saleAssociate.setStoreKey(222L);
-        saleAssociate.setPreferredConnection(Source.simulated);
 
         Proposal object = new ProposalOperations().createProposal(item, saleAssociate);
         assertNotNull(object.getKey());
@@ -150,7 +148,6 @@ public class TestProposalOperations {
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setKey(111L);
         saleAssociate.setStoreKey(222L);
-        saleAssociate.setPreferredConnection(Source.simulated);
 
         new ProposalOperations().createProposal(item, saleAssociate);
     }
@@ -175,8 +172,8 @@ public class TestProposalOperations {
         assertTrue(pm.isClosed());
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIIa() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIIa() throws InvalidIdentifierException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -186,8 +183,8 @@ public class TestProposalOperations {
         ops.getProposal(object.getKey(), 333L, null);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIIb() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIIb() throws InvalidIdentifierException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -197,8 +194,8 @@ public class TestProposalOperations {
         ops.getProposal(object.getKey(), 333L, 0L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIIIa() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIIIa() throws InvalidIdentifierException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -208,8 +205,8 @@ public class TestProposalOperations {
         ops.getProposal(object.getKey(), null, 444L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIIIb() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIIIb() throws InvalidIdentifierException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -219,8 +216,8 @@ public class TestProposalOperations {
         ops.getProposal(object.getKey(), 0L, 444L);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIVa() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIVa() throws InvalidIdentifierException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -230,8 +227,8 @@ public class TestProposalOperations {
         ops.getProposal(null, 111L, 222L);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIVb() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIVb() throws InvalidIdentifierException, DataSourceException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -500,7 +497,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testDeleteWithFailureI() throws DataSourceException {
+    public void testDeleteWithFailureI() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations() {
             @Override
             public void deleteProposal(PersistenceManager pm, Long key, Long ownerKey) {
@@ -511,11 +508,11 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testDeleteI() throws DataSourceException {
+    public void testDeleteI() throws InvalidIdentifierException {
         final Long proposalKey = 54657L;
         ProposalOperations ops = new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
@@ -530,7 +527,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testDeleteII() throws DataSourceException {
+    public void testDeleteII() throws InvalidIdentifierException {
         final String tag = "tag";
         Proposal toBeCreated = new Proposal();
         toBeCreated.addCriterion(tag);
@@ -542,7 +539,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetsAroundLocationI() throws DataSourceException {
+    public void testGetsAroundLocationI() throws DataSourceException, InvalidIdentifierException {
         //
         // Get all demands from one location
         //
@@ -583,7 +580,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetsAroundLocationII() throws DataSourceException {
+    public void testGetsAroundLocationII() throws InvalidIdentifierException, DataSourceException {
         //
         // Get just one demand from one location
         //
@@ -624,7 +621,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetsAroundLocationIII() throws DataSourceException {
+    public void testGetsAroundLocationIII() throws InvalidIdentifierException, DataSourceException {
         //
         // Get limited number of demands from many locations
         //
@@ -684,7 +681,7 @@ public class TestProposalOperations {
         //
         ProposalOperations sOps = new ProposalOperations() {
             @Override
-            public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+            public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) throws DataSourceException {
                 throw new RuntimeException("Done in purpose!");
             }
         };

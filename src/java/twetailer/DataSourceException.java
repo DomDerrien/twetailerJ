@@ -5,6 +5,11 @@ import java.text.ParseException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * To report issues thrown by the back-end infrastructure
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class DataSourceException extends Exception implements TransferObject {
 

@@ -17,6 +17,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.connector.MailConnector;
 
+/**
+ * Servlet receiving all unexpected e-mails. Do triage them in
+ * order to dispatch the useful ones, and forward the remaining
+ * ones to "catch-all@twetailer.com".
+ *
+ * The ability to compose e-mails to "catch-all@twetailer.com"
+ * is also used by the system to forward information about unexpected
+ * errors (with stack traces).
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class CatchAllMailHandlerServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(CatchAllMailHandlerServlet.class.getName());

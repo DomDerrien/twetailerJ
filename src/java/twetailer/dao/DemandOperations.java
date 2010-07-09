@@ -11,11 +11,17 @@ import javax.jdo.Query;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
-import twetailer.task.CommandProcessor;
+import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Demand entities
+ *
+ * @author Dom Derrien
+ */
 public class DemandOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(DemandOperations.class.getName());
 
@@ -107,11 +113,11 @@ public class DemandOperations extends BaseOperations {
      * @param ownerKey Identifier of the demand owner
      * @return First demand matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved demand does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      *
      * @see DemandOperations#getDemand(PersistenceManager, Long, Long)
      */
-    public Demand getDemand(Long key, Long ownerKey) throws DataSourceException {
+    public Demand getDemand(Long key, Long ownerKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getDemand(pm, key, ownerKey);
@@ -129,23 +135,26 @@ public class DemandOperations extends BaseOperations {
      * @param ownerKey Identifier of the demand owner
      * @return First demand matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved demand does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      */
-    public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+    public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the Demand instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the Demand instance");
         }
         getLogger().warning("Get Demand instance with id: " + key);
         try {
             Demand demand = pm.getObjectById(Demand.class, key);
             if (ownerKey != null && !ownerKey.equals(demand.getOwnerKey())) {
-                throw new DataSourceException("Mismatch of owner identifiers [" + ownerKey + "/" + demand.getOwnerKey() + "]");
+                throw new InvalidIdentifierException("Mismatch of owner identifiers [" + ownerKey + "/" + demand.getOwnerKey() + "]");
+            }
+            if (State.markedForDeletion.equals(demand.getState())) {
+                throw new InvalidIdentifierException("Invalid key; entity marked for deletion.");
             }
             demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return demand;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving demand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving demand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 
@@ -275,7 +284,7 @@ public class DemandOperations extends BaseOperations {
     public List<Demand> getDemands(List<Location> locations, int limit) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return getDemands(pm, locations, limit);
+            return getDemands(pm, new HashMap<String, Object>(), locations, limit);
         }
         finally {
             pm.close();
@@ -285,23 +294,22 @@ public class DemandOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding Demand instances while leaving the given persistence manager open for future updates
      *
-     * Note that this command only return Demand not canceled, not marked-for-deletion, not closed (see Demand.stateCmdList attribute and Demand.setState() method).
+     * Note that this command only return Demand not cancelled, not marked-for-deletion, not closed (see Demand.stateCmdList attribute and Demand.setState() method).
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param queryParameters Map of attributes and values to match
      * @param locations list of locations where expected demands should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of demands matching the given criteria
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
-    public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+    public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> queryParameters, List<Location> locations, int limit) throws DataSourceException {
         List<Demand> selection = new ArrayList<Demand>();
         for (Location location: locations) {
             // Select the corresponding resources
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put(Demand.LOCATION_KEY, location.getKey());
-            parameters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
-            List<Demand> demands = CommandProcessor.demandOperations.getDemands(pm, parameters, limit);
+            queryParameters.put(Demand.LOCATION_KEY, location.getKey());
+            List<Demand> demands = getDemands(pm, queryParameters, limit);
             // Copy into the list to be returned
             selection.addAll(demands);
             if (limit != 0) {
@@ -339,11 +347,11 @@ public class DemandOperations extends BaseOperations {
      * @param ownerKey Identifier of the owner issuing the operation
      * @return Updated resource
      *
-     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      *
      * @see DemandOperations#updateDemand(PersistenceManager, Demand)
      */
-    public Demand updateDemand(JsonObject parameters, Long ownerKey) throws DataSourceException {
+    public Demand updateDemand(JsonObject parameters, Long ownerKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return updateDemand(pm, parameters, ownerKey);
@@ -362,11 +370,11 @@ public class DemandOperations extends BaseOperations {
      * @param ownerKey Identifier of the owner issuing the operation
      * @return Updated resource
      *
-     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      *
      * @see DemandOperations#updateDemand(PersistenceManager, Demand)
      */
-    public Demand updateDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws DataSourceException {
+    public Demand updateDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws InvalidIdentifierException {
         // Get the original demand
         Demand updatedDemand = getDemand(pm, parameters.getLong(Demand.KEY), ownerKey);
         // Merge with the updates
@@ -411,11 +419,12 @@ public class DemandOperations extends BaseOperations {
      * @param key Identifier of the demand
      * @param ownerKey Identifier of the demand owner
      *
-     * @throws DataSourceException If the retrieved demand does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      *
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      * @see DemandOperations#deleteDemand(PersistenceManager, Long)
      */
-    public void deleteDemand(Long key, Long ownerKey) throws DataSourceException {
+    public void deleteDemand(Long key, Long ownerKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             deleteDemand(pm, key, ownerKey);
@@ -425,7 +434,6 @@ public class DemandOperations extends BaseOperations {
         }
     }
 
-
     /**
      * Use the given pair {attribute; value} to get the corresponding Demand instance and to delete it
      *
@@ -433,12 +441,12 @@ public class DemandOperations extends BaseOperations {
      * @param key Identifier of the demand
      * @param ownerKey Identifier of the demand owner
      *
-     * @throws DataSourceException If the retrieved demand does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      *
      * @see DemandOperations#getDemands(PersistenceManager, Long, Long)
      * @see DemandOperations#deleteDemand(PersistenceManager, Demand)
      */
-    public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+    public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws InvalidIdentifierException {
         Demand demand = getDemand(pm, key, ownerKey);
         deleteDemand(pm, demand);
     }

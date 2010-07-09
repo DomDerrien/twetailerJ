@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -22,8 +21,10 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -45,6 +46,7 @@ public class TestLocationOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -231,20 +233,20 @@ public class TestLocationOperations {
         assertTrue(pm.isClosed());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected=InvalidIdentifierException.class)
     public void testGetIII() throws ClientException, DataSourceException {
         LocationOperations ops = new LocationOperations();
         ops.getLocation(null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIV() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIV() throws InvalidIdentifierException, DataSourceException {
         LocationOperations ops = new LocationOperations();
         ops.getLocation(0L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetV() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetV() throws InvalidIdentifierException, DataSourceException {
         LocationOperations ops = new LocationOperations();
         ops.getLocation(888L);
     }

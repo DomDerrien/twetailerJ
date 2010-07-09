@@ -22,15 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.RawCommandOperations;
-import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.HashTag;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandLineParser;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Prefix;
@@ -42,14 +39,20 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Entry point processing IMAP messages.
+ * Received information are stored in a RawCommand instance
+ * that the task "/maezel/processCommand" will process
+ * asynchronously.
+ *
+ * @see twetailer.dto.RawCommand
+ * @see twetailer.j2ee.MaezelServlet
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class MailResponderServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MailResponderServlet.class.getName());
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
@@ -98,7 +101,7 @@ public class MailResponderServlet extends HttpServlet {
             // Check if the message has already been processed
             String messageId = mailMessage.getMessageID();
             if (messageId != null && 0 < messageId.length()) {
-                List<String> lastMailMessageIds = (List<String>) settingsOperations.getFromCache(MESSAGE_ID_LIST);
+                List<String> lastMailMessageIds = (List<String>) BaseSteps.getSettingsOperations().getFromCache(MESSAGE_ID_LIST);
                 if (lastMailMessageIds != null && lastMailMessageIds.contains(messageId)) {
                     log.warning("**** Email '" + messageId + "' already processed");
                     return;
@@ -108,7 +111,7 @@ public class MailResponderServlet extends HttpServlet {
                     log.warning("**** Create list in MemCache to store the last mail message identifiers.");
                 }
                 lastMailMessageIds.add(messageId);
-                settingsOperations.setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
+                BaseSteps.getSettingsOperations().setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
             }
 
             // Extract information about the sender
@@ -166,23 +169,23 @@ public class MailResponderServlet extends HttpServlet {
 
             log.warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);
 
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 // Creation only occurs if the corresponding Consumer instance is not retrieved
-                Consumer consumer = consumerOperations.createConsumer(pm, address);
+                Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, address);
                 if (language == null) {
                     language = consumer.getLanguage();
                 }
 
                 // Persist message
-                rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
+                rawCommand = BaseSteps.getRawCommandOperations().createRawCommand(pm, rawCommand);
             }
             finally {
                 pm.close();
             }
 
             // Create a task for to process that new command
-            Queue queue = _baseOperations.getQueue();
+            Queue queue = BaseSteps.getBaseOperations().getQueue();
             log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
@@ -215,10 +218,10 @@ public class MailResponderServlet extends HttpServlet {
         if (rawCommand.getErrorMessage() != null) {
             // Persist the error message
             if (rawCommand.getKey() == null) {
-                rawCommandOperations.createRawCommand(rawCommand);
+                BaseSteps.getRawCommandOperations().createRawCommand(rawCommand);
             }
             else {
-                rawCommandOperations.updateRawCommand(rawCommand);
+                BaseSteps.getRawCommandOperations().updateRawCommand(rawCommand);
             }
             // Communicate the error to the communication initiator directly with the MailConnector (no fallback possible)
             if (email != null) {

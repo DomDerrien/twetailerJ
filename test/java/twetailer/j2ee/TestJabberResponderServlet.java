@@ -23,12 +23,12 @@ import twetailer.connector.BaseConnector;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.TestJabberConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -51,6 +51,8 @@ public class TestJabberResponderServlet {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
         helper.setUp();
     }
 
@@ -87,7 +89,7 @@ public class TestJabberResponderServlet {
         };
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 assertEquals(jabberId, address.getId());
@@ -96,10 +98,10 @@ public class TestJabberResponderServlet {
                 consumer.setJabberId(jabberId);
                 return consumer;
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -107,12 +109,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);
     }
@@ -139,15 +138,15 @@ public class TestJabberResponderServlet {
             }
         };
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -155,12 +154,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         MockXMPPService mock = new MockXMPPService();
         mock.setPresence(jabberId, true);
@@ -194,15 +190,15 @@ public class TestJabberResponderServlet {
             }
         };
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 throw new DatastoreTimeoutException("Done in purpose");
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -210,12 +206,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         MockXMPPService mock = new MockXMPPService();
         mock.setPresence(jabberId, true);
@@ -249,15 +242,15 @@ public class TestJabberResponderServlet {
             }
         };
 
-        BaseOperations baseOperations = new MockBaseOperations() {
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
             @Override
             public Queue getQueue() {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 assertEquals(jabberId, address.getId());
@@ -266,10 +259,10 @@ public class TestJabberResponderServlet {
                 consumer.setJabberId(jabberId);
                 return consumer;
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -283,12 +276,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setSource(Source.simulated); // Redirection to allow the capture of the output sent via BaseConnector.communicateToConsumer()
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = baseOperations;
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         servlet.doPost(request, null);
 
@@ -319,15 +309,15 @@ public class TestJabberResponderServlet {
             }
         };
 
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -335,12 +325,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = new MockBaseOperations();
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         MockXMPPService mock = new MockXMPPService();
         mock.setPresence(jabberId, false);
@@ -373,15 +360,15 @@ public class TestJabberResponderServlet {
             }
         };
 
-        BaseOperations baseOperations = new MockBaseOperations() {
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
             @Override
             public Queue getQueue() {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 assertEquals(jabberId, address.getId());
@@ -390,10 +377,10 @@ public class TestJabberResponderServlet {
                 consumer.setJabberId(jabberId);
                 return consumer;
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -407,12 +394,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setSource(Source.jabber); // Redirection because the MockXMPPService allows to generate an exception during the communication
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = baseOperations;
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         MockXMPPService mock = new MockXMPPService();
         mock.setPresence(jabberId, false);
@@ -446,15 +430,15 @@ public class TestJabberResponderServlet {
             }
         };
 
-        BaseOperations baseOperations = new MockBaseOperations() {
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
             @Override
             public Queue getQueue() {
                 throw new IllegalArgumentException("Done in purpose");
             }
-        };
+        });
 
         final Long consumerKey = 56645L;
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(JID address) {
                 assertEquals(jabberId, address.getId());
@@ -463,10 +447,10 @@ public class TestJabberResponderServlet {
                 consumer.setJabberId(jabberId);
                 return consumer;
             }
-        };
+        });
 
         final Long rawCommandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(RawCommand rawCommand) {
                 assertEquals(jabberId, rawCommand.getEmitterId());
@@ -480,12 +464,9 @@ public class TestJabberResponderServlet {
                 rawCommand.setSource(Source.jabber); // Redirection because the MockXMPPService allows to generate an exception during the communication
                 return rawCommand;
             }
-        };
+        });
 
         JabberResponderServlet servlet = new JabberResponderServlet();
-        servlet._baseOperations = baseOperations;
-        servlet.consumerOperations = consumerOperations;
-        servlet.rawCommandOperations = rawCommandOperations;
 
         MockXMPPService mock = new MockXMPPService();
         mock.setPresence(jabberId, false);

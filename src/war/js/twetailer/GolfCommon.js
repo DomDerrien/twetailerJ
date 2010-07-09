@@ -2,11 +2,19 @@
 
     var module = dojo.provide("twetailer.GolfCommon");
 
-    dojo.require("domderrien.i18n.LabelExtractor");
+    dojo.require("twetailer.Common");
 
     /* Set of local variables */
-    var _getLabel,
-        _proposals = {};
+    var _common = twetailer.Common,
+        _getLabel,
+        _locations = {},
+        _demands = {},
+        _proposals = {},
+        _lastDemand,
+        _supportGeolocation;
+
+    module.STATES = _common.STATES;
+    module.POINT_OF_VIEWS = _common.POINT_OF_VIEWS;
 
     /**
      * Initializer
@@ -15,11 +23,7 @@
      * @return {Function} Shortcut on the local function getting localized labels
      */
     module.init = function(locale) {
-
-        // Get the localized resource bundle
-        domderrien.i18n.LabelExtractor.init("twetailer", "master", locale);
-        domderrien.i18n.LabelExtractor.init("twetailer", "console", locale);
-        _getLabel = domderrien.i18n.LabelExtractor.getFrom;
+        _getLabel = _common.init(locale, "detectLocationButton");
 
         // Return the shortcut on domderrien.i18n.LabelExtractor.getFrom()
         return _getLabel;
@@ -50,7 +54,7 @@
      */
     module.displayDateTime = function(serializedDate) {
         try {
-            dateObject = dojo.date.stamp.fromISOString(serializedDate);
+            var dateObject = dojo.date.stamp.fromISOString(serializedDate);
             return dojo.date.locale.format(dateObject, {selector: "dateTime"});
         }
         catch(ex) {
@@ -115,16 +119,17 @@
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
 
-    var _proposalKeyDecoration = ["<a href='#' onclick='twetailer.GolfAssociate.displayProposalForm(", ",", ");return false;' title='", "'>", "</a> "];
-
     /**
      * Formatter for the list of attached proposal keys
      *
      * @param {Number[]} proposalKeys List of proposal keys
      * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane
+     * @param {Array} decoration Link definition wrapping a proposal key with:
+     *                   ${0}: place holder for the proposalKey
+     *                   ${1}: place holder for the rowIndex
      * @return {String} Formatter list of one link per proposal key, a link opening a dialog with the proposal detail
      */
-    module.displayProposalKeys = function(proposalKeys, rowIndex) {
+    module.displayProposalKeys = function(proposalKeys, rowIndex, decoration) {
         if (proposalKeys == null) {
             return "";
         }
@@ -133,21 +138,32 @@
             var limit = proposalKeys.length;
             for (var idx = 0; idx < limit; idx ++) {
                 pK = proposalKeys[idx];
-                value.push(_proposalKeyDecoration[0]);
-                value.push(rowIndex);
-                value.push(_proposalKeyDecoration[1]);
-                value.push(pK);
-                value.push(_proposalKeyDecoration[2]);
-                value.push(_getLabel("console", "ga_cmenu_viewProposal", [pK]));
-                value.push(_proposalKeyDecoration[3]);
-                value.push(pK);
-                value.push(_proposalKeyDecoration[4]);
+                value.push(dojo.string.substitute(decoration || "${0}", [pK, rowIndex]));
             }
-            return value.join("");
+            return value.join(" ");
         }
-        console.log("displayProposalKeys(" + proposalKeys + ") is not an Array");
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
+
+    var _previouslySelectedCountryCode = null;
+
+    /**
+     * Helper modifying on the fly the constraints for the postal code field
+     *
+     * @param {Object} countryCode New country code
+     * @param {Object} postalCodeFieldId Identifier of the postal code field
+     */
+    module.updatePostalCodeFieldConstraints = function(countryCode, postalCodeFieldId) {
+        if (_previouslySelectedCountryCode != countryCode) {
+            var pcField = dijit.byId(postalCodeFieldId);
+            if (pcField != null) {
+                pcField.attr("regExp", _getLabel("console", "location_postalCode_regExp_" + countryCode));
+                pcField.attr("invalidMessage", _getLabel("console", "location_postalCode_invalid_" + countryCode));
+                pcField.focus();
+            }
+            _previouslySelectedCountryCode = countryCode;
+        }
+    }
 
     /**
      * Locale formatter with a lookup in the Location list
@@ -167,23 +183,50 @@
     };
 
     /**
+     * Get the specified demand from the cache.
+     *
+     * @param {String} demandKey Identifier of the demand to load
+     * @return {Demand} Identified demand if it exists, <code>null</code> otherwise;
+     */
+    module.getCachedDemand = function(demandKey) {
+        return _demands[demandKey];
+    };
+
+    /**
      * Load the demands modified after the given date from the back-end
      *
-     * @param {String} pointOfView Identifier of the caller type, to be able to get the corresponding Demand view
-     * @param {Date} lastModificationDate (Optional) Date to considered before returning the demands
+     * @param {Date} lastModificationDate (Optional) Date to considered before returning the demands (ISO formatted)
+     * @param {String} pointOfView (Optional) operation initiator point of view, default to CONSUMER server-side
      * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks
      */
-    module.loadRemoteDemands = function(pointOfView, lastModificationDate) {
+    module.loadRemoteDemands = function(lastModificationISODate, pointOfView) {
         dijit.byId("demandListOverlay").show();
         var dfd = dojo.xhrGet({
             content: {
-                pointOfView: pointOfView,
-                lastModificationDate: lastModificationDate == null ? null : lastModificationDate
+                pointOfView: pointOfView || _common.POINT_OF_VIEWS.CONSUMER,
+                lastModificationDate: lastModificationISODate
             },
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     // Deferred callback will process the list
+                    _lastDemand = null;
+                    var resources = response.resources;
+                    var resourceNb = resources == null ? 0 : resources.length;
+                    if (0 < resourceNb) {
+                        _lastDemand = resources[0];
+                        for (var i=0; i<resourceNb; ++i) {
+                            // Add the updated demand into the cache
+                            var resource = resources[i];
+                            _demands[resource.key] = resource;
+                            // Remove the associated and possibily updated proposals from the cache
+                            var proposalKeys = resource.proposalKeys;
+                            var proposalKeyNb = proposalKeys == null ? 0 : proposalKeys.length;
+                            for (var j=0; j<proposalKeyNb; j++) {
+                                delete _proposals[proposalKeys[j]];
+                            }
+                        }
+                    }
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
@@ -192,15 +235,8 @@
                 return response;
             },
             error: function(message, ioArgs) {
-                if (ioArgs.xhr.status == 403) { // 403 == Forbidden
-                    dijit.byId("demandListOverlay").hide();
-                    alert("This is a page for Associates you can't do anything with. You're about to be redirected to the corresponding page for Consumers.");
-                    window.location = "./";
-                }
-                else {
-                    alert(message+"\nurl: "+ioArgs.url);
-                    dijit.byId("demandListOverlay").hide();
-                }
+                dijit.byId("demandListOverlay").hide();
+                _common.handleError(message, ioArgs);
             },
             preventCache: true,
             url: "/API/Demand/"
@@ -220,7 +256,7 @@
             data: { identifier: 'key', items: resources }
         });
         // Fetch the grid with the data
-        demandStore.fetch( {
+        demandStore.fetch({
             query : {},
             onComplete : function(items, request) {
                 if (grid.selection !== null) {
@@ -228,8 +264,54 @@
                 }
                 grid.setStore(demandStore);
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); }
+            error: function(message, ioArgs) {
+                _common.handleError(message, ioArgs);
+            },
+            sort:  [{attribute: "quantity", descending: true}]
         });
+    };
+
+    /**
+     * Return the last modified demand.
+     *
+     * @return {Demand} Identified demand if it exists, <code>null</code> otherwise;
+     */
+    module.getLastDemand = function(demandKey) {
+        return _lastDemand;
+    };
+
+    /**
+     * Call the back-end to create or update a Demand with the given attribute
+     *
+     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box
+     * @param {Number} demandKey (Optional) demand identifier, picked-up in the given JSON bag if missing
+     * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks
+     */
+    module.updateRemoteDemand = function(data, demandKey) {
+        dijit.byId('demandListOverlay').show();
+        demandKey = demandKey || data.key;
+        var dfd = (demandKey == null ? dojo.xhrPost : dojo.xhrPut)({
+            headers: { "content-type": "application/json; charset=utf-8" },
+            postData: dojo.toJson(data),
+            putData: dojo.toJson(data),
+            handleAs: "json",
+            load: function(response, ioArgs) {
+                if (response !== null && response.success) {
+                    var demand = response.resource;
+                    _demands[demand.key] = demand;
+                }
+                else {
+                    alert(response.message+"\nurl: "+ioArgs.url);
+                }
+                dijit.byId('demandListOverlay').hide();
+            },
+            error: function(message, ioArgs) {
+                dijit.byId("demandListOverlay").hide();
+                _common.handleError(message, ioArgs);
+            },
+            url: "/API/Demand/" + (demandKey == null ? "" : demandKey)
+        });
+        return dfd;
     };
 
     /**
@@ -256,12 +338,15 @@
      * Load the identified proposal by its key from the remote back-end.
      *
      * @param {String} proposalKey Identifier of the proposal to load
+     * @param {String} pointOfView (Optional) operation initiator point of view, default to SALE_ASSOCIATE
      * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks
      */
-    module.loadRemoteProposal = function(proposalKey) {
+    module.loadRemoteProposal = function(proposalKey, pointOfView) {
         dijit.byId("proposalFormOverlay").show();
         var dfd = dojo.xhrGet({
-            content: null,
+            content: {
+                pointOfView: pointOfView || _common.POINT_OF_VIEWS.SALE_ASSOCIATE
+            },
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
@@ -274,7 +359,10 @@
                 dijit.byId("proposalFormOverlay").hide();
                 return response;
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); dijit.byId("proposalFormOverlay").hide(); },
+            error: function(message, ioArgs) {
+                dijit.byId("proposalFormOverlay").hide();
+                _common.handleError(message, ioArgs);
+            },
             url: "/API/Proposal/" + proposalKey
         });
         return dfd;
@@ -284,11 +372,13 @@
      * Call the back-end to create or update a Proposal with the given attribute
      *
      * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box
+     * @param {Number} proposalKey (Optional) proposal identifier, picked-up in the given JSON bag if missing
      * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks
      */
-    module.updateRemoteProposal = function(data) {
+    module.updateRemoteProposal = function(data, proposalKey, pointOfView) {
         dijit.byId('demandListOverlay').show();
-        var dfd = (data.key == null ? dojo.xhrPost : dojo.xhrPut)({
+        proposalKey = proposalKey || data.key;
+        var dfd = (proposalKey == null ? dojo.xhrPost : dojo.xhrPut)({
             headers: { "content-type": "application/json; charset=utf-8" },
             postData: dojo.toJson(data),
             putData: dojo.toJson(data),
@@ -303,9 +393,45 @@
                 }
                 dijit.byId('demandListOverlay').hide();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); dijit.byId("demandListOverlay").hide(); },
-            url: "/API/Proposal/" + (data.key == null ? "" : data.key)
+            error: function(message, ioArgs) {
+                dijit.byId("demandListOverlay").hide();
+                _common.handleError(message, ioArgs);
+            },
+            url: "/API/Proposal/" + (proposalKey == null ? "" : proposalKey)
         });
         return dfd;
     };
+
+    module.setLocation = function(locationKey, postalCodeField, countryCodeField) {
+        var location = _locations[locationKey];
+        if (location != null) {
+            postalCodeField.attr("value", location.postalCode);
+            countryCodeField.attr("value", location.countryCode);
+            return;
+        }
+    }
+
+    module.getBrowserLocation = function(overlayId) {
+        var eventName = "browserLocationCodeAvailable";
+        var handle = dojo.subscribe(eventName, function(postalCode, countryCode) {
+            dijit.byId("demand.postalCode").attr("value", postalCode);
+            dijit.byId("demand.countryCode").attr("value", countryCode);
+            dijit.byId("demand.postalCode").focus();
+            dojo.unsubscribe(handle);
+        })
+        _common.getBrowserLocation(eventName, overlayId);
+    }
+
+    module.showDemandLocaleMap = function() {
+        var postalCode = dijit.byId("demand.postalCode").attr("value");
+        var countryCode = dijit.byId("demand.countryCode").attr("value");
+        _common.showMap(postalCode, countryCode);
+    }
+
+    module.showStoreLocaleMap = function() {
+        alert("Not yet implemented!");
+//        var postalCode = dijit.byId("demand.postalCode").attr("value");
+//        var countryCode = dijit.byId("demand.countryCode").attr("value");
+//        _common.showMap(postalCode, countryCode);
+    }
 })(); // End of the function limiting the scope of the private variables

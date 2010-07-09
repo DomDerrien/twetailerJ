@@ -30,11 +30,6 @@
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
 
-    // Data access
-    BaseOperations _baseOperations = new BaseOperations();
-    ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    LocationOperations locationOperations = _baseOperations.getLocationOperations();
-
     // Consumer attributes
     OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
     Consumer consumer = LoginServlet.getConsumer(loggedUser);
@@ -51,7 +46,7 @@
     consumer.toJson().toStream(serializedConsumer, false);
 
     // Get the logged user SaleAssociate key
-    Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser);
+    Long saleAssociateKey = consumer.getSaleAssociateKey();
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>

@@ -15,9 +15,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
@@ -32,6 +32,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
@@ -55,7 +56,9 @@ public class TestRobotResponder {
     public void setUp() throws Exception {
         // Install the mocks
         helper.setUp();
-        RobotResponder._baseOperations = new MockBaseOperations();
+
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -64,14 +67,6 @@ public class TestRobotResponder {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-
-        RobotResponder._baseOperations = new BaseOperations();
-        RobotResponder.demandOperations = RobotResponder._baseOperations.getDemandOperations();
-        RobotResponder.consumerOperations = RobotResponder._baseOperations.getConsumerOperations();
-        RobotResponder.saleAssociateOperations = RobotResponder._baseOperations.getSaleAssociateOperations();
-        RobotResponder.proposalOperations = RobotResponder._baseOperations.getProposalOperations();
-        RobotResponder.settingsOperations = RobotResponder._baseOperations.getSettingsOperations();
-        RobotResponder.storeOperations = RobotResponder._baseOperations.getStoreOperations();
     }
 
     @Test
@@ -80,13 +75,13 @@ public class TestRobotResponder {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testProcessWithFailure() throws DataSourceException {
-        RobotResponder.settingsOperations = new SettingsOperations() {
+    public void testProcessWithFailure() throws InvalidIdentifierException, DataSourceException {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        };
+        });
 
         RobotResponder.processDemand(12345L);
     }
@@ -99,31 +94,31 @@ public class TestRobotResponder {
     final Long proposalKey = 666L;
 
     @Test
-    public void testProcessDemandI() throws TwitterException, DataSourceException {
-        RobotResponder.settingsOperations = new SettingsOperations() {
+    public void testProcessDemandI() throws TwitterException, DataSourceException, InvalidIdentifierException {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 return new Settings();
             }
-        };
+        });
 
         RobotResponder.processDemand(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) RobotResponder._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessDemandII() throws TwitterException, DataSourceException {
-        RobotResponder.settingsOperations = new SettingsOperations() {
+    public void testProcessDemandII() throws TwitterException, DataSourceException, InvalidIdentifierException {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 Settings settings = new Settings();
                 settings.setRobotSaleAssociateKey(robotKey);
                 return settings;
             }
-        };
-        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(robotKey, key);
@@ -132,8 +127,8 @@ public class TestRobotResponder {
                 saleAssociate.setStoreKey(storeKey);
                 return saleAssociate;
             }
-        };
-        RobotResponder.storeOperations = new StoreOperations() {
+        });
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -142,8 +137,8 @@ public class TestRobotResponder {
                 store.setLocationKey(locationKey);
                 return store;
             }
-        };
-        RobotResponder.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
                 assertEquals(demandKey, key);
@@ -154,33 +149,33 @@ public class TestRobotResponder {
                 demand.setState(State.invalid);
                 return demand;
             }
-        };
-        RobotResponder.consumerOperations = new ConsumerOperations() {
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
                 Consumer consumer = new Consumer();
                 return consumer;
             }
-        };
+        });
 
         RobotResponder.processDemand(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) RobotResponder._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
     public void testProcessDemandIII() throws Exception {
-        RobotResponder.settingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 Settings settings = new Settings();
                 settings.setRobotSaleAssociateKey(robotKey);
                 return settings;
             }
-        };
-        RobotResponder.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(robotKey, key);
@@ -189,8 +184,8 @@ public class TestRobotResponder {
                 saleAssociate.setStoreKey(storeKey);
                 return saleAssociate;
             }
-        };
-        RobotResponder.storeOperations = new StoreOperations() {
+        });
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -199,8 +194,8 @@ public class TestRobotResponder {
                 store.setLocationKey(locationKey);
                 return store;
             }
-        };
-        RobotResponder.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
                 assertEquals(demandKey, key);
@@ -211,16 +206,16 @@ public class TestRobotResponder {
                 demand.setState(State.published);
                 return demand;
             }
-        };
-        RobotResponder.consumerOperations = new ConsumerOperations() {
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
                 Consumer consumer = new Consumer();
                 return consumer;
             }
-        };
-        RobotResponder.proposalOperations = new ProposalOperations() {
+        });
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal createProposal(PersistenceManager pm, Proposal proposal) {
                 assertEquals(demandKey, proposal.getDemandKey());
@@ -233,12 +228,12 @@ public class TestRobotResponder {
                 proposal.setKey(proposalKey);
                 return proposal;
             }
-        };
+        });
 
         RobotResponder.processDemand(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) RobotResponder._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -246,7 +241,7 @@ public class TestRobotResponder {
         final Long robotKey = 12345L;
         final Settings settings = new Settings();
         settings.setRobotConsumerKey(robotKey);
-        RobotResponder.settingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             boolean alreadyCalled = false;
             @Override
             public Settings getSettings(PersistenceManager pm) {
@@ -257,7 +252,7 @@ public class TestRobotResponder {
                 assertNull(pm);
                 return settings;
             }
-        };
+        });
         RobotResponder.setRobotConsumerKey(null); // To be sure to have a fresh behavior
         assertEquals(robotKey, RobotResponder.getRobotConsumerKey(null));
         assertEquals(robotKey, RobotResponder.getRobotConsumerKey(null));

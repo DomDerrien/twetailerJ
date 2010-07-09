@@ -19,7 +19,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
-import com.google.appengine.api.datastore.Text;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -201,7 +200,7 @@ public class TestProposal {
         assertEquals(criteria, clone.getCriteria());
         assertEquals(demandKey, clone.getDemandKey());
         assertEquals(quantity, clone.getQuantity());
-        assertEquals(storeKey, clone.getStoreKey());
+        assertNull(clone.getStoreKey()); // Set automatically by the system with the SaleAssociate storeKey
         assertEquals(total, clone.getTotal());
         assertFalse(clone.getStateCmdList());
     }
@@ -216,6 +215,7 @@ public class TestProposal {
         assertNull(object.getRawCommandId());
 
         // Proposal
+        assertNull(object.getConsumerKey());
         assertNull(object.getDemandKey());
         assertEquals(0, object.getCriteria().size());
         assertNull(object.getStoreKey());
@@ -227,6 +227,7 @@ public class TestProposal {
         assertNull(clone.getRawCommandId());
 
         // Proposal
+        assertNull(clone.getConsumerKey());
         assertNull(clone.getDemandKey());
         assertEquals(0, clone.getCriteria().size());
         assertNull(clone.getStoreKey());
@@ -256,7 +257,7 @@ public class TestProposal {
     }
 
     @Test
-    public void testShortcut() {
+    public void testShortcutI() {
         Long key = 12345L;
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Proposal.PROPOSAL_KEY, key);
@@ -264,6 +265,17 @@ public class TestProposal {
 
         Proposal proposal = new Proposal(parameters);
         assertEquals(key, proposal.getKey());
+        assertNull(proposal.getDemandKey()); // Can only be set with Proposal to be created
+    }
+
+    @Test
+    public void testShortcutII() {
+        Long key = 12345L;
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Proposal.DEMAND_REFERENCE, key);
+
+        Proposal proposal = new Proposal(parameters);
+        assertNull(proposal.getKey());
         assertEquals(key, proposal.getDemandKey());
     }
 

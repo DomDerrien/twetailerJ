@@ -16,6 +16,11 @@ import twetailer.DataSourceException;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
 
+/**
+ * Base class defining shared methods for entity-based controllers
+ *
+ * @author Dom Derrien
+ */
 public class BaseOperations {
     private static Logger _log = Logger.getLogger(BaseOperations.class.getName());
 
@@ -195,153 +200,11 @@ public class BaseOperations {
             values.add(preparation[1]);
         }
         query.setOrdering(additionalOrder != null ? additionalOrder + " desc, creationDate desc" : "creationDate desc");
-        query.setFilter(filterDefinition.substring(" && ".length()));
-        query.declareParameters(parameterDefinitions.substring(", ".length()));
+        query.setFilter(filterDefinition.length() == 0 ? null : filterDefinition.substring(" && ".length()));
+        query.declareParameters(parameterDefinitions.length() == 0 ? null : parameterDefinitions.substring(", ".length()));
         if (0 < limit) {
             query.setRange(0, limit);
         }
         return values.toArray();
-    }
-
-    private ConsumerOperations _consumerOperations;
-
-    /**
-     * Factory for the ConsumerOperations instance
-     * @return ConsumerOperations instance
-     */
-    public ConsumerOperations getConsumerOperations() {
-        if (_consumerOperations == null) {
-            _consumerOperations = new ConsumerOperations();
-        }
-        return _consumerOperations;
-    }
-
-    private DemandOperations _demandOperations;
-
-    /**
-     * Factory for the DemandOperations instance
-     * @return DemandOperations instance
-     */
-    public DemandOperations getDemandOperations() {
-        if (_demandOperations == null) {
-            _demandOperations = new DemandOperations();
-        }
-        return _demandOperations;
-    }
-
-    private LocationOperations _locationOperations;
-
-    /**
-     * Factory for the LocationOperations instance
-     * @return LocationOperations instance
-     */
-    public LocationOperations getLocationOperations() {
-        if (_locationOperations == null) {
-            _locationOperations = new LocationOperations();
-        }
-        return _locationOperations;
-    }
-
-    private PaymentOperations _paymentOperations;
-
-    /**
-     * Factory for the PaymentOperations instance
-     * @return PaymentOperations instance
-     */
-    public PaymentOperations getPaymentOperations() {
-        if (_paymentOperations == null) {
-            _paymentOperations = new PaymentOperations();
-        }
-        return _paymentOperations;
-    }
-
-    private ProductOperations _productOperations;
-
-    /**
-     * Factory for the ProductOperations instance
-     * @return ProductOperations instance
-     */
-    public ProductOperations getProductOperations() {
-        if (_productOperations == null) {
-            _productOperations = new ProductOperations();
-        }
-        return _productOperations;
-    }
-
-    private ProposalOperations _proposalOperations;
-
-    /**
-     * Factory for the ProposalOperations instance
-     * @return ProposalOperations instance
-     */
-    public ProposalOperations getProposalOperations() {
-        if (_proposalOperations == null) {
-            _proposalOperations = new ProposalOperations();
-        }
-        return _proposalOperations;
-    }
-
-    private RawCommandOperations _rawCommandOperations;
-
-    /**
-     * Factory for the RawCommandOperations instance
-     * @return RawCommandOperations instance
-     */
-    public RawCommandOperations getRawCommandOperations() {
-        if (_rawCommandOperations == null) {
-            _rawCommandOperations = new RawCommandOperations();
-        }
-        return _rawCommandOperations;
-    }
-    private SaleAssociateOperations _saleAssociateOperations;
-
-    /**
-     * Factory for the SaleAssociateOperations instance
-     * @return SaleAssociateOperations instance
-     */
-    public SaleAssociateOperations getSaleAssociateOperations() {
-        if (_saleAssociateOperations == null) {
-            _saleAssociateOperations = new SaleAssociateOperations();
-        }
-        return _saleAssociateOperations;
-    }
-
-    private SeedOperations _seedOperations;
-
-    /**
-     * Factory for the SeedOperations instance
-     * @return SeedOperations instance
-     */
-    public SeedOperations getSeedOperations() {
-        if (_seedOperations == null) {
-            _seedOperations = new SeedOperations();
-        }
-        return _seedOperations;
-    }
-
-    private SettingsOperations _settingsOperations;
-
-    /**
-     * Factory for the SettingsOperations instance
-     * @return SettingsOperations instance
-     */
-    public SettingsOperations getSettingsOperations() {
-        if (_settingsOperations == null) {
-            _settingsOperations = new SettingsOperations();
-        }
-        return _settingsOperations;
-    }
-
-    private StoreOperations _storeOperations;
-
-    /**
-     * Factory for the StoreOperations instance
-     * @return StoreOperations instance
-     */
-    public StoreOperations getStoreOperations() {
-        if (_storeOperations == null) {
-            _storeOperations = new StoreOperations();
-        }
-        return _storeOperations;
     }
 }

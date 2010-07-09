@@ -2,7 +2,6 @@ package twetailer.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -21,7 +19,9 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -39,6 +39,7 @@ public class TestRawCommandOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -79,7 +80,7 @@ public class TestRawCommandOperations {
     }
 
     @Test
-    public void testGetI() throws DataSourceException {
+    public void testGetI() throws InvalidIdentifierException {
         RawCommandOperations ops = new RawCommandOperations();
         RawCommand item = ops.createRawCommand(new RawCommand());
 
@@ -88,18 +89,18 @@ public class TestRawCommandOperations {
         assertEquals(item.getKey(), selected.getKey());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetII() throws InvalidIdentifierException {
         new RawCommandOperations().getRawCommand(null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIII() throws InvalidIdentifierException {
         new RawCommandOperations().getRawCommand(0L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIV() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIV() throws InvalidIdentifierException {
         new RawCommandOperations().getRawCommand(888L);
     }
 
@@ -138,7 +139,7 @@ public class TestRawCommandOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testDeleteWithFailureI() throws DataSourceException {
+    public void testDeleteWithFailureI() throws InvalidIdentifierException {
         RawCommandOperations ops = new RawCommandOperations() {
             @Override
             public void deleteRawCommand(PersistenceManager pm, Long key) {
@@ -149,11 +150,11 @@ public class TestRawCommandOperations {
     }
 
     @Test
-    public void testDeleteI() throws DataSourceException {
+    public void testDeleteI() throws InvalidIdentifierException {
         final Long rawCommandKey = 54657L;
         RawCommandOperations ops = new RawCommandOperations() {
             @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(rawCommandKey, key);
                 RawCommand rawCommand = new RawCommand();
                 rawCommand.setKey(rawCommandKey);
@@ -168,7 +169,7 @@ public class TestRawCommandOperations {
     }
 
     @Test
-    public void testDeleteII() throws DataSourceException {
+    public void testDeleteII() throws InvalidIdentifierException {
         final String tag = "tag";
         RawCommand toBeCreated = new RawCommand();
         toBeCreated.setCommand(tag);

@@ -8,13 +8,22 @@ import twetailer.validator.LocaleValidator;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define the attribute of a location area (postal code-based) as tracked by Twetailer
+ *
+ * @see twetailer.dto.Command
+ * @see twetailer.dto.Consumer
+ * @see twetailer.dto.Store
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Location extends Entity {
 
     public static final Double INVALID_COORDINATE = Double.valueOf(-1000.0D);
 
     @Persistent
-    private String countryCode;
+    private String countryCode = LocaleValidator.DEFAULT_COUNTRY_CODE;
 
     public static final String COUNTRY_CODE = "countryCode";
 

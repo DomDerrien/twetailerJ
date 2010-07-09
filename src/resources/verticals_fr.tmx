@@ -126,6 +126,13 @@
                 <seg>golf:{0} {1}</seg>
             </tuv>
         </tu>
+        <tu tuid="golf_cp_tweet_proposals_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>proposal:[{0}]</seg>
+            </tuv>
+        </tu>
         <tu tuid="golf_cp_tweet_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">3</prop>

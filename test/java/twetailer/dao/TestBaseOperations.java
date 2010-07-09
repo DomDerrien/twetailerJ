@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.j2ee.MockLoginServlet;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -52,6 +53,7 @@ public class TestBaseOperations {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
         helper.setUp();
     }
 
@@ -540,136 +542,6 @@ public class TestBaseOperations {
         parameters.put("<second", "test");
 
         BaseOperations.prepareQuery(new MockQuery(), parameters, 12345);
-    }
-
-    @Test
-    public void testGetConsumerOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getConsumerOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getConsumerOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getConsumerOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetDemandOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getDemandOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getDemandOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getDemandOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetLocationOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getLocationOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getLocationOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getLocationOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetPaymentOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getPaymentOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getPaymentOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getPaymentOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetProductOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getProductOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getProductOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getProductOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetProposalOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getProposalOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getProposalOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getProposalOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetRawCommandOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getRawCommandOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getRawCommandOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getRawCommandOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetSaleAssociateOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getSaleAssociateOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getSaleAssociateOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getSaleAssociateOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetSettingsOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getSettingsOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getSettingsOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getSettingsOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
-    }
-
-    @Test
-    public void testGetStoreOperations() {
-        BaseOperations base = new BaseOperations();
-        BaseOperations ops1 = base.getStoreOperations();
-        assertNotNull(ops1);
-        BaseOperations ops2 = base.getStoreOperations();
-        assertNotNull(ops2);
-        assertEquals(ops1, ops2);
-        BaseOperations ops3 = new BaseOperations().getStoreOperations();
-        assertNotNull(ops3);
-        assertNotSame(ops1, ops3);
     }
 
     @Test

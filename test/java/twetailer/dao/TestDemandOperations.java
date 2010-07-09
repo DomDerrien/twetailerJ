@@ -24,11 +24,13 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -50,6 +52,7 @@ public class TestDemandOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -149,7 +152,7 @@ public class TestDemandOperations {
         assertTrue(pm.isClosed());
     }
 
-    @Test(expected=DataSourceException.class)
+    @Test(expected=InvalidIdentifierException.class)
     public void testGetIIa() throws ClientException, DataSourceException {
         DemandOperations ops = new DemandOperations();
         Demand object = new Demand();
@@ -169,20 +172,20 @@ public class TestDemandOperations {
         ops.getDemand(object.getKey(), null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIII() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIII() throws InvalidIdentifierException {
         DemandOperations ops = new DemandOperations();
         ops.getDemand(null, 111L);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIV() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIV() throws InvalidIdentifierException {
         DemandOperations ops = new DemandOperations();
         ops.getDemand(0L, 111L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetV() throws ClientException, DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetV() throws InvalidIdentifierException {
         DemandOperations ops = new DemandOperations();
         ops.getDemand(888L, 111L);
     }
@@ -237,7 +240,7 @@ public class TestDemandOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testUpdateWithFailureII() throws DataSourceException {
+    public void testUpdateWithFailureII() throws InvalidIdentifierException {
         DemandOperations ops = new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
@@ -291,7 +294,7 @@ public class TestDemandOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testDeleteWithFailureI() throws DataSourceException {
+    public void testDeleteWithFailureI() throws InvalidIdentifierException {
         DemandOperations ops = new DemandOperations() {
             @Override
             public void deleteDemand(PersistenceManager pm, Long key, Long owner) {
@@ -426,7 +429,7 @@ public class TestDemandOperations {
     }
 
     @Test
-    public void testGetsAroundLocationI() throws DataSourceException {
+    public void testGetsAroundLocationI() throws InvalidIdentifierException, DataSourceException {
         //
         // Get all demands from one location
         //
@@ -464,7 +467,7 @@ public class TestDemandOperations {
     }
 
     @Test
-    public void testGetsAroundLocationII() throws DataSourceException {
+    public void testGetsAroundLocationII() throws InvalidIdentifierException, DataSourceException {
         //
         // Get just one demand from one location
         //
@@ -502,7 +505,7 @@ public class TestDemandOperations {
     }
 
     @Test
-    public void testGetsAroundLocationIII() throws DataSourceException {
+    public void testGetsAroundLocationIII() throws DataSourceException, InvalidIdentifierException {
         //
         // Get limited number of demands from many locations
         //
@@ -558,7 +561,7 @@ public class TestDemandOperations {
         //
         DemandOperations sOps = new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) throws DataSourceException {
                 throw new RuntimeException("Done in purpose!");
             }
         };

@@ -22,6 +22,11 @@ import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Definition of the methods specific to communication over IMAP
+ *
+ * @author Dom Derrien
+ */
 public class MailConnector {
     //
     // Mail properties (transparently handled by App Engine)

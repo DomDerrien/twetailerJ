@@ -15,6 +15,11 @@ import com.google.appengine.api.xmpp.SendResponse;
 import com.google.appengine.api.xmpp.XMPPService;
 import com.google.appengine.api.xmpp.XMPPServiceFactory;
 
+/**
+ * Definition of the methods specific to communication over XMPP/Jabber
+ *
+ * @author Dom Derrien
+ */
 public class JabberConnector {
     /**
      * Use the Google App Engine API to get the Jabber message carried by the HTTP request

@@ -177,37 +177,6 @@
                                 <label for="<%= SaleAssociate.CONSUMER_KEY %>">Consumer Key</label><br/>
                                 <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" name="<%= SaleAssociate.CONSUMER_KEY %>" style="width:20em;" type="text" value="" />
                             </div>
-                            <div>
-                                <label for="<%= SaleAssociate.NAME %>">Associate Name</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= SaleAssociate.NAME %>" style="width:20em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= SaleAssociate.EMAIL %>">E-mail Address</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.EMAIL %>" name="<%= SaleAssociate.EMAIL %>" style="width:30em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= SaleAssociate.JABBER_ID %>">Jabber Id</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.JABBER_ID %>" name="<%= SaleAssociate.JABBER_ID %>" style="width:10em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= SaleAssociate.TWITTER_ID %>">Twitter Name</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.TWITTER_ID %>" name="<%= SaleAssociate.TWITTER_ID %>" style="width:10em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= SaleAssociate.PREFERRED_CONNECTION %>">Preferred Connection</label><br/>
-                                <select dojoType="dijit.form.FilteringSelect" name="<%= SaleAssociate.PREFERRED_CONNECTION %>">
-                                    <option value="<%= Source.twitter %>">Twitter</option>
-                                    <option value="<%= Source.jabber %>">Jabber/XMPP</option>
-                                    <option value="<%= Source.mail %>" selected="true">E-Mail</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="<%= SaleAssociate.LANGUAGE %>">Language</label><br/>
-                                <select dojoType="dijit.form.FilteringSelect" name="<%= SaleAssociate.LANGUAGE %>">
-                                    <option value="en" selected="true">English</option>
-                                    <!--option value="fr">French</option-->
-                                </select>
-                            </div>
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Previous</button>
@@ -428,10 +397,7 @@
                     dojo.forEach(response.resources, function(saleAssociate, i) {
                         var listItem = dojo.doc.createElement("li");
                         listItem.innerHTML =
-                            "Name: " + saleAssociate.<%= SaleAssociate.NAME %> + "</a>, " +
-                            "E-mail Address: <a href='mailto:" + saleAssociate.<%= SaleAssociate.EMAIL %> + "'>" + saleAssociate.<%= SaleAssociate.EMAIL %> + "</a>, " +
-                            "Jabber Id: <a href='xmpp:" + saleAssociate.<%= SaleAssociate.JABBER_ID %> + "'>" + saleAssociate.<%= SaleAssociate.JABBER_ID %> + "</a>, " +
-                            "Twitter Name: <a href='http://twitter.com/" + saleAssociate.<%= SaleAssociate.TWITTER_ID %> +"' target='_blank'>" + saleAssociate.<%= SaleAssociate.TWITTER_ID %> + "</a>";
+                            "Consumer key: " + saleAssociate.<%= SaleAssociate.CONSUMER_KEY %>;
                         placeHolder.appendChild(listItem);
                     });
                 }
@@ -444,18 +410,13 @@
         });
     };
     localModule.getConsumer = function() {
-        var emailAddress = dijit.byId("<%= SaleAssociate.EMAIL %>").attr("value");
-        var jabberId = dijit.byId("<%= SaleAssociate.JABBER_ID %>").attr("value");
-        var twitterId = dijit.byId("<%= SaleAssociate.TWITTER_ID %>").attr("value");
-        if (emailAddress.length == 0 && jabberId.length == 0 && twitterId.length == 0) {
-            alert("You need to specify an E-mail Address, a Jabber Id, or a Twitter Name");
-            dijit.byId("<%= SaleAssociate.EMAIL %>").focus();
+        var consumerKey = dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").attr("value");
+        if (consumerKet.length == 0) {
+            alert("You need to specify a consumer key!");
+            dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").focus();
             return;
         }
-        var parameters = {};
-        if (0 < emailAddress.length) { parameters["<%= Consumer.EMAIL %>"] = emailAddress; }
-        if (0 < jabberId.length) { parameters["<%= Consumer.JABBER_ID %>"] = jabberId; }
-        if (0 < twitterId.length) { parameters["<%= Consumer.TWITTER_ID %>"] = twitterId; }
+        var parameters = { <%= SaleAssociate.CONSUMER_KEY %>: consumerKey };
         dojo.xhrGet({
             content: parameters,
             handleAs: "json",
@@ -463,23 +424,22 @@
                 if (response !== null && response.success) {
                     var placeHolder = dojo.byId("consumerList");
                     placeHolder.innerHTML = "";
-                    dojo.forEach(response.resources, function(consumer, i) {
-                        var listItem = dojo.doc.createElement("li");
-                        listItem.innerHTML =
-                            "Key: <a href='#' onclick='javascript:dijit.byId(\"<%= SaleAssociate.CONSUMER_KEY %>\").attr(\"value\"," + consumer.<%= Consumer.KEY %> + ");return false;'>" + consumer.<%= Consumer.KEY %> + "</a>, " +
-                            "Name: " + consumer.<%= Consumer.NAME %> + ", " +
-                            "E-mail Address: <a href='mailto:" + consumer.<%= Consumer.EMAIL %> + "'>" + consumer.<%= Consumer.EMAIL %> + "</a>, " +
-                            "Jabber Id: <a href='xmpp:" + consumer.<%= Consumer.JABBER_ID %> + "'>" + consumer.<%= Consumer.JABBER_ID %> + "</a>, " +
-                            "Twitter Name: <a href='http://twitter.com/" + consumer.<%= Consumer.TWITTER_ID %> +"' target='_blank'>" + consumer.<%= Consumer.TWITTER_ID %> + "</a>";
-                        placeHolder.appendChild(listItem);
-                    });
+                    var consumer = response.resource;
+                    var listItem = dojo.doc.createElement("li");
+                    listItem.innerHTML =
+                        "Key: <a href='#' onclick='javascript:dijit.byId(\"<%= SaleAssociate.CONSUMER_KEY %>\").attr(\"value\"," + consumer.<%= Consumer.KEY %> + ");return false;'>" + consumer.<%= Consumer.KEY %> + "</a>, " +
+                        "Name: " + consumer.<%= Consumer.NAME %> + ", " +
+                        "E-mail Address: <a href='mailto:" + consumer.<%= Consumer.EMAIL %> + "'>" + consumer.<%= Consumer.EMAIL %> + "</a>, " +
+                        "Jabber Id: <a href='xmpp:" + consumer.<%= Consumer.JABBER_ID %> + "'>" + consumer.<%= Consumer.JABBER_ID %> + "</a>, " +
+                        "Twitter Name: <a href='http://twitter.com/" + consumer.<%= Consumer.TWITTER_ID %> +"' target='_blank'>" + consumer.<%= Consumer.TWITTER_ID %> + "</a>";
+                    placeHolder.appendChild(listItem);
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
                 }
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Consumer/"
+            url: "/API/Consumer/" + consumerKey
         });
     };
     localModule.createSeed = function() {

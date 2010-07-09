@@ -4,6 +4,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -16,17 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.PaymentOperations;
-import twetailer.dao.SaleAssociateOperations;
-import twetailer.dao.SettingsOperations;
-import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -43,7 +37,9 @@ import twetailer.task.ProposalProcessor;
 import twetailer.task.ProposalValidator;
 import twetailer.task.RobotResponder;
 import twetailer.task.TweetLoader;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
+import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
 import com.amazonaws.fps.model.TransactionStatus;
@@ -59,18 +55,16 @@ import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
+/**
+ * Entry point used by the system to process tasks asynchronously.
+ * This entry point access is restricted to users with the corresponding
+ * administrative rights and to the task/cron job schedulers.
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
-
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected PaymentOperations paymentOperations = _baseOperations.getPaymentOperations();
-    protected SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
-    protected StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     protected AmazonFPS amazonFPS = new AmazonFPS();
 
@@ -94,7 +88,7 @@ public class MaezelServlet extends HttpServlet {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
             else if ("/setupRobotCoordinates".equals(pathInfo)) {
-                PersistenceManager pm = _baseOperations.getPersistenceManager();
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
                     // Get parameters
                     Long consumerKey = Long.parseLong(request.getParameter("consumerKey"));
@@ -106,10 +100,10 @@ public class MaezelServlet extends HttpServlet {
                         param("saleAssociateKey", saleAssociateKey.toString()).
                         method(Method.GET);
                     // Process the command itself
-                    Settings settings = settingsOperations.getSettings(pm);
+                    Settings settings = BaseSteps.getSettingsOperations().getSettings(pm);
                     settings.setRobotConsumerKey(consumerKey);
                     settings.setRobotSaleAssociateKey(saleAssociateKey);
-                    settingsOperations.updateSettings(settings);
+                    BaseSteps.getSettingsOperations().updateSettings(settings);
                 }
                 finally {
                     pm.close();
@@ -128,7 +122,7 @@ public class MaezelServlet extends HttpServlet {
                 long duration = givenDuration == null ? 300 : Long.parseLong(givenDuration);
                 final long defaultDelay = 20;
                 // Prepare the loop to post the batch of "loadTweets" requests
-                Queue queue = _baseOperations.getQueue();
+                Queue queue = BaseSteps.getBaseOperations().getQueue();
                 while (0 < duration) {
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/loadTweets").
@@ -231,11 +225,11 @@ public class MaezelServlet extends HttpServlet {
                     param(Demand.KEY, demandKey.toString()).
                     param(Demand.OWNER_KEY, consumerKey.toString());
                 // Process the command itself
-                PersistenceManager pm = _baseOperations.getPersistenceManager();
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
-                    Demand demand = demandOperations.getDemand(pm, demandKey, null);
+                    Demand demand = BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
                     demand.setOwnerKey(consumerKey);
-                    demandOperations.updateDemand(pm, demand);
+                    BaseSteps.getDemandOperations().updateDemand(pm, demand);
                 }
                 finally {
                     pm.close();
@@ -247,11 +241,11 @@ public class MaezelServlet extends HttpServlet {
                     payment.setAuthorizationId(request.getParameter(AmazonFPS.TOKEN_ID));
                     payment.setReference(request.getParameter(AmazonFPS.CALLER_REFERENCE));
 
-                    paymentOperations.createPayment(payment);
+                    BaseSteps.getPaymentOperations().createPayment(payment);
                     out.put("payment", payment.toJson());
 
                     // Create a task to make the payment with the received token
-                    Queue queue = _baseOperations.getQueue();
+                    Queue queue = BaseSteps.getBaseOperations().getQueue();
                     log.warning("Preparing the task: /maezel/makePayment?key=" + payment.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/makePayment").
@@ -265,18 +259,18 @@ public class MaezelServlet extends HttpServlet {
             }
             else if("/makePayment".equals(pathInfo)) {
                 Long paymentKey = Long.parseLong(request.getParameter(Payment.KEY));
-                PersistenceManager pm = _baseOperations.getPersistenceManager();
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
-                    Payment payment = paymentOperations.getPayment(pm, paymentKey);
+                    Payment payment = BaseSteps.getPaymentOperations().getPayment(pm, paymentKey);
 
                     payment = amazonFPS.makePayRequest(payment);
 
-                    paymentOperations.updatePayment(pm, payment);
+                    BaseSteps.getPaymentOperations().updatePayment(pm, payment);
                     out.put("payment", payment.toJson());
 
                     if (TransactionStatus.PENDING.equals(payment.getStatus())) {
                         // Validate the payment again in 15 minutes
-                        Queue queue = _baseOperations.getQueue();
+                        Queue queue = BaseSteps.getBaseOperations().getQueue();
                         log.warning("Preparing the task: /maezel/makePayment?key=" + payment.getKey().toString());
                         queue.add(
                                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/makePayment").
@@ -303,7 +297,7 @@ public class MaezelServlet extends HttpServlet {
             // Reschedule the task if possible
             if(ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException && retryOptions != null) {
                 log.warning("Schedule another attempt for the task: /maezel/" + pathInfo);
-                _baseOperations.getQueue().add(retryOptions.method(Method.GET));
+                BaseSteps.getBaseOperations().getQueue().add(retryOptions.method(Method.GET));
             }
             // Send an e-mail to out catch-all list
             MockOutputStream stackTrace = new MockOutputStream();
@@ -502,5 +496,108 @@ public class MaezelServlet extends HttpServlet {
 
     public static String getCoBrandedServiceEndPointURL() {
         return "http://twetailer.appspot.com/API/maezel/cbuiEndPoint";
+    }
+
+    /**
+     * Prepare a task for the workflow step "Command Process".
+     *
+     * @param rawCommandKey identifier of the raw command to process
+     */
+    public static void triggerCommandProcessorTask(Long rawCommandKey) {
+        // Create a task for that command
+        Queue queue = BaseSteps.getBaseOperations().getQueue();
+        log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommandKey.toString());
+        queue.add(
+                url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                    param(Command.KEY, rawCommandKey.toString()).
+                    method(Method.GET)
+        );
+    }
+
+    /**
+     * Prepare a task for the workflow step "Demand Validation".
+     * If this step completes, the step "Demand Process" will be triggered
+     * and the demand will be forwarded to the matching sale associates.
+     *
+     * @param demand Entity to validate
+     */
+    public static void triggerValidationTask(Demand demand) {
+        Long demandKey = demand.getKey();
+        // Create a task for that demand validation
+        Queue queue = BaseSteps.getBaseOperations().getQueue();
+        log.warning("Preparing the task: /maezel/validateOpenDemand?key=" + demandKey.toString());
+        queue.add(
+                url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
+                    param(Proposal.KEY, demandKey.toString()).
+                    method(Method.GET)
+        );
+    }
+
+    /**
+     * Prepare a task for the workflow step "Proposal Validation".
+     * If this step completes, the step "Proposal Process" will be triggered
+     * and the proposal will be forwarded to the owner of the demand being proposed to.
+     *
+     * @param proposal Entity to validate
+     */
+    public static void triggerValidationTask(Proposal proposal) {
+        Long proposalKey = proposal.getKey();
+        // Create a task for that proposal validation
+        Queue queue = BaseSteps.getBaseOperations().getQueue();
+        log.warning("Preparing the task: /maezel/validateOpenProposal?key=" + proposalKey.toString());
+        queue.add(
+                url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
+                    param(Proposal.KEY, proposalKey.toString()).
+                    method(Method.GET)
+        );
+    }
+
+    /**
+     * Prepare a task for the workflow step "Cancel Proposal".
+     *
+     * @param proposalKeys List of Proposal identifiers to cancel
+     * @param cancellerKey Identifier of the one initiating the operation
+     * @param preservedProposalKey Identifier of the Proposal to keep referenced
+     */
+    public static void triggerProposalCancellationTask(List<Long> proposalKeys, Long cancellerKey, Long preservedProposalKey) {
+        /*
+        // Create a task per proposal
+        Queue queue = BaseSteps.getBaseOperations().getQueue();
+        for(Long proposalKey: proposalKeys) {
+            if(!proposalKey.equals(preservedProposalKey)) {
+                log.warning("Preparing the task: /maezel/cancelPublishedProposal?key=" + proposalKey.toString() + "&cancellerKey=" + demand.getOwnerKey().toString());
+                queue.add(
+                        url(ApplicationSettings.get().getServletApiPath() + "/maezel/cancelPublishedProposal").
+                            param(Proposal.CANCELER_KEY, cancellerKey.toString()).
+                            param(Proposal.KEY, proposalKey.toString()).
+                            method(Method.GET)
+                );
+            }
+        }
+        */
+
+        //
+        // TODO: implement the corresponding cancel proposal command
+        //
+
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            for(Long proposalKey: proposalKeys) {
+                if(preservedProposalKey == null || !proposalKey.equals(preservedProposalKey)) {
+                    try {
+                        Proposal proposal = BaseSteps.getProposalOperations().getProposal(pm, proposalKey, null, null);
+                        proposal.setState(State.cancelled);
+                        proposal.setCancelerKey(cancellerKey);
+                        proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
+                    }
+                    catch (InvalidIdentifierException e) {
+                        // Not an issue, process the next one
+                    }
+                }
+            }
+        }
+        finally {
+            pm.close();
+        }
     }
 }

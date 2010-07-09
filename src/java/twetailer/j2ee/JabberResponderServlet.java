@@ -19,12 +19,10 @@ import twetailer.ClientException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 
@@ -36,13 +34,21 @@ import com.google.appengine.api.xmpp.Message;
 
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Entry point processing XMPP messages.
+ * Received information are stored in a RawCommand instance
+ * that the task "/maezel/processCommand" will process
+ * asynchronously.
+ *
+ * @see twetailer.dto.RawCommand
+ * @see twetailer.j2ee.MaezelServlet
+ *
+ * @author Dom Derrien
+ *
+ */
 @SuppressWarnings("serial")
 public class JabberResponderServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(JabberResponderServlet.class.getName());
-
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    protected ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
@@ -75,21 +81,21 @@ public class JabberResponderServlet extends HttpServlet {
 
             log.warning("Instant message sent by: " + jabberId + "\nWith the command: " + command);
 
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 // Creation only occurs if the corresponding Consumer instance is not retrieved
-                consumer = consumerOperations.createConsumer(address);
+                consumer = BaseSteps.getConsumerOperations().createConsumer(address);
                 language = consumer.getLanguage();
 
                 // Persist message
-                rawCommand = rawCommandOperations.createRawCommand(rawCommand);
+                rawCommand = BaseSteps.getRawCommandOperations().createRawCommand(rawCommand);
             }
             finally {
                 pm.close();
             }
 
             // Create a task for to process that new command
-            Queue queue = _baseOperations.getQueue();
+            Queue queue = BaseSteps.getBaseOperations().getQueue();
             log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
@@ -118,10 +124,10 @@ public class JabberResponderServlet extends HttpServlet {
         if (rawCommand.getErrorMessage() != null) {
             // Persist the error message
             if (rawCommand.getKey() == null) {
-                rawCommandOperations.createRawCommand(rawCommand);
+                BaseSteps.getRawCommandOperations().createRawCommand(rawCommand);
             }
             else {
-                rawCommandOperations.updateRawCommand(rawCommand);
+                BaseSteps.getRawCommandOperations().updateRawCommand(rawCommand);
             }
             // Communicate the error to the communication initiator
             if (consumer != null) {

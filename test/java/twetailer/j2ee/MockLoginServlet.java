@@ -68,7 +68,7 @@ public class MockLoginServlet extends LoginServlet {
 
         user.fromJSON(json);
 
-        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID, consumerKey);
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
 
         return user;
     }
@@ -80,7 +80,7 @@ public class MockLoginServlet extends LoginServlet {
      * @param consumerKey New value
      */
     public static void updateConsumerKey(OpenIdUser user, Long consumerKey) {
-        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID, consumerKey);
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
     }
 
     /**

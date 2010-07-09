@@ -1,45 +1,90 @@
 package twetailer.task.command;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
-import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.connector.BaseConnector.Source;
+import twetailer.InvalidIdentifierException;
+import twetailer.InvalidStateException;
+import twetailer.ReservedOperationException;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.dto.Command.QueryPointOfView;
 import twetailer.task.CommandLineParser;
-import twetailer.task.CommandProcessor;
-import twetailer.task.RobotResponder;
-import twetailer.validator.ApplicationSettings;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.Prefix;
+import twetailer.task.step.BaseSteps;
+import twetailer.task.step.ProposalSteps;
 import twetailer.validator.CommandSettings.State;
-
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
 public class ConfirmCommandProcessor {
-    private static Logger log = Logger.getLogger(ConfirmCommandProcessor.class.getName());
+
+    private static JsonObject confirmParameters = new GenericJsonObject();
+
+    private static JsonObject getFreshConfirmParameters() {
+        confirmParameters.removeAll();
+        confirmParameters.put(Command.STATE, State.confirmed.toString());
+        confirmParameters.put(Command.POINT_OF_VIEW, QueryPointOfView.CONSUMER.toString());
+        return confirmParameters;
+    }
 
     public static void processConfirmCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
+
+        Locale locale = consumer.getLocale();
+
+        // Confirm identified Proposal
+        if (command.containsKey(Proposal.PROPOSAL_KEY)) {
+            String message = null;
+            Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
+            try {
+                Proposal proposal = ProposalSteps.updateProposal(pm, entityKey, getFreshConfirmParameters(), consumer);
+                // Echo back the successful confirmation
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { entityKey }, locale);
+                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale);
+                Demand demand = BaseSteps.getDemandOperations().getDemand(pm, proposal.getDemandKey(), consumer.getKey());
+                Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
+                String demandTags = demand.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
+                String pickup = LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale);
+                message = LabelExtractor.get("cp_command_confirm_acknowledge_confirmation", new Object[] { proposalRef, demandRef, demandTags, pickup }, locale);
+            }
+            catch(InvalidIdentifierException ex) {
+                message = LabelExtractor.get("cp_command_confirm_invalid_proposal_id", locale);
+            }
+            catch(InvalidStateException ex) {
+                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { entityKey }, locale);
+                String stateLabel = CommandLineParser.localizedStates.get(locale).getString(ex.getEntityState().toString());
+                stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
+                message = LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposalRef, stateLabel },  locale);
+            }
+            catch(ReservedOperationException ex) {
+                message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
+            }
+            communicateToConsumer(
+                    rawCommand,
+                    consumer,
+                    new String[] { message }
+            );
+            return;
+        }
+
+        communicateToConsumer(
+                rawCommand,
+                consumer,
+                new String[] { LabelExtractor.get("cp_command_confirm_missing_proposal_id", consumer.getLocale()) }
+        );
+
+        /********** ddd
+        if (locale != null) { return; }
+
         //
         // Used by the consumer to accept a proposal
         // Note that the proposal should refer to a demand owned by the consumer
@@ -55,15 +100,14 @@ public class ConfirmCommandProcessor {
 
         try {
             // If there's no PROPOSAL_KEY attribute, it's going to generate an exception as the desired side-effect
-            proposal = CommandProcessor.proposalOperations.getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
+            proposal = BaseSteps.getProposalOperations().getProposal(pm, command.getLong(Proposal.PROPOSAL_KEY), null, null);
             // If the proposal is not for a demand the consumer owns, it's going to generate an exception as the desired side-effect
-            demand = CommandProcessor.demandOperations.getDemand(pm, proposal.getDemandKey(), consumer.getKey());
+            demand = BaseSteps.getDemandOperations().getDemand(pm, proposal.getDemandKey(), consumer.getKey());
         }
         catch(Exception ex) {
             messages.add(LabelExtractor.get("cp_command_confirm_invalid_proposal_id", consumer.getLocale()));
         }
         if (demand != null) {
-            Locale locale = consumer.getLocale();
             String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
             String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
             if (!State.published.equals(demand.getState())) {
@@ -72,7 +116,7 @@ public class ConfirmCommandProcessor {
                 messages.add(LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposalRef, demandRef, stateLabel }, locale));
             }
             else {
-                Store store = CommandProcessor.storeOperations.getStore(pm, proposal.getStoreKey());
+                Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
                 String demandTags = demand.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
                 String pickup = LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale);
                 // Inform the consumer of the successful confirmation
@@ -92,41 +136,26 @@ public class ConfirmCommandProcessor {
                     messages.add(LabelExtractor.get("cp_command_confirm_inform_about_demo_mode", consumer.getLocale()));
 
                     // Prepare the message simulating the closing by the robot
-                    RawCommand consequence = new RawCommand();
-                    consequence.setCommand(Prefix.action + CommandLineParser.PREFIX_SEPARATOR + Action.close + " " + Prefix.proposal + CommandLineParser.PREFIX_SEPARATOR + proposal.getKey());
-                    consequence.setSource(Source.robot);
-
-                    // Persist message
-                    consequence = CommandProcessor.rawCommandOperations.createRawCommand(pm, consequence);
-
-                    // Create a task for that command
-                    Queue queue = CommandProcessor._baseOperations.getQueue();
-                    log.warning("Preparing the task: /maezel/processCommand?key=" + consequence.getKey().toString());
-                    queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
-                                param(Command.KEY, consequence.getKey().toString()).
-                                method(Method.GET)
-                    );
+                    prepareClosingResponseByTheRobot(pm, proposal.getKey());
                 }
                 else {
                     // Inform the sale associate of the successful confirmation
-                    SaleAssociate saleAssociate = CommandProcessor.saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
+                    SaleAssociate saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
+                    Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                     locale = saleAssociate.getLocale();
-                    demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                    proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                     String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
-                    communicateToSaleAssociate(
-                            new RawCommand(saleAssociate.getPreferredConnection()),
-                            saleAssociate,
+                    communicateToConsumer(
+                            new RawCommand(saConsumerRecord.getPreferredConnection()),
+                            saConsumerRecord,
                             new String[] { LabelExtractor.get("cp_command_confirm_inform_about_confirmation", new Object[] { proposalRef, tags, demandRef }, locale)}
                     );
                 }
 
                 // Update the proposal and the demand states
                 proposal.setState(State.confirmed);
-                proposal = CommandProcessor.proposalOperations.updateProposal(pm, proposal);
+                proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
                 demand.setState(State.confirmed);
-                demand = CommandProcessor.demandOperations.updateDemand(pm, demand);
+                demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
             }
         }
 
@@ -143,5 +172,19 @@ public class ConfirmCommandProcessor {
                 communicateToCCed(coordinate, messageCC, consumer.getLocale());
             }
         }
+    }
+
+    protected static void prepareClosingResponseByTheRobot(PersistenceManager pm, Long proposalKey) {
+        // Simulated interaction
+        RawCommand consequence = new RawCommand();
+        consequence.setCommand(Prefix.action + CommandLineParser.PREFIX_SEPARATOR + Action.close + " " + Prefix.proposal + CommandLineParser.PREFIX_SEPARATOR + proposalKey);
+        consequence.setSource(Source.robot);
+
+        // Persist message
+        consequence = BaseSteps.getRawCommandOperations().createRawCommand(pm, consequence);
+
+        // Create a task for that command
+        MaezelServlet.triggerCommandProcessorTask(consequence.getKey());
+        ddd ***********/
     }
 }

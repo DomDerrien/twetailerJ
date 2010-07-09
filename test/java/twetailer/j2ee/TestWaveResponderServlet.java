@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.task.step.BaseSteps;
+
 import com.google.wave.api.Blip;
 import com.google.wave.api.Event;
 import com.google.wave.api.EventType;
@@ -51,6 +53,7 @@ public class TestWaveResponderServlet {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
     }
 
     @After

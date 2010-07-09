@@ -5,6 +5,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+/**
+ * Read the application settings from a local properties file.
+ *
+ * @author Dom Derrien
+ */
 public class ApplicationSettings {
 
     private boolean useCDN = false;

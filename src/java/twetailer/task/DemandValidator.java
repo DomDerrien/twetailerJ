@@ -12,16 +12,15 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.RawCommandOperations;
+import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.HashTag;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
+import twetailer.task.step.LocationSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
@@ -32,15 +31,22 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Define the task with is invoked by methods in DemandSteps
+ * every time a Demand is updated significantly. If the Demand
+ * instance is valid, the task "/maezel/processPublishedDemand"
+ * is scheduled to broadcast it to the matching SaleAssociate
+ * in the area.
+ *
+ * @see twetailer.dto.Demand
+ * @see twetailer.task.step.DemandSteps
+ * @see twetailer.task.DemandProcessor
+ *
+ * @author Dom Derrien
+ */
 public class DemandValidator {
 
     private static Logger log = Logger.getLogger(DemandValidator.class.getName());
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -53,9 +59,10 @@ public class DemandValidator {
      * @param demandKey Identifier of the demand to process
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(Long demandKey) throws DataSourceException {
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+    public static void process(Long demandKey) throws DataSourceException, InvalidIdentifierException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             process(pm, demandKey);
         }
@@ -78,19 +85,22 @@ public class DemandValidator {
      * @param demandKey Identifier of the demand to process
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(PersistenceManager pm, Long demandKey) throws DataSourceException {
-        Demand demand = demandOperations.getDemand(pm, demandKey, null);
+    public static void process(PersistenceManager pm, Long demandKey) throws DataSourceException, InvalidIdentifierException {
+        Demand demand = BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
         if (CommandSettings.State.opened.equals(demand.getState())) {
             Date nowDate = DateUtils.getNowDate();
             Long nowTime = nowDate.getTime() - 60 * 1000L; // Minus 1 minute
             try {
-                Consumer consumer = consumerOperations.getConsumer(pm, demand.getOwnerKey());
+                Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
                 Locale locale = consumer.getLocale();
                 String message = null;
 
                 // Temporary filter
                 filterHashTags(pm, consumer, demand);
+
+                // System.err.println("========================\n now: " + nowTime + "\n exp: " + demand.getExpirationDate() + "\n due: " + demand.getDueDate() + "\n========================");
 
                 String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                 if ((demand.getCriteria() == null || demand.getCriteria().size() == 0) && (demand.getHashTags() == null || demand.getHashTags().size() == 0)) {
@@ -150,28 +160,28 @@ public class DemandValidator {
                             // as done in ListCommandProcess.getLocation()
                             // ** It might be overkill to create 2 additional tasks if everything can be done here **
                             //
-                            Location location = locationOperations.getLocation(pm, locationKey);
+                            Location location = LocationSteps.getLocation(pm, locationKey);
                             if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                 location = LocaleValidator.getGeoCoordinates(location);
                                 if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                                     message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { demandRef, location.getPostalCode(), location.getCountryCode() }, locale);
                                 }
                                 else {
-                                    location = locationOperations.updateLocation(pm, location);
+                                    location = BaseSteps.getLocationOperations().updateLocation(pm, location);
                                 }
                             }
                             // Save the location key as the latest reference used by the consumer
                             if (message == null && consumer.getAutomaticLocaleUpdate() && !location.getKey().equals(consumer.getLocationKey())) {
                                 consumer.setLocationKey(location.getKey());
-                                consumerOperations.updateConsumer(pm, consumer);
+                                BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
                             }
                         }
-                        catch (DataSourceException ex) {
+                        catch (InvalidIdentifierException ex) {
                             message = LabelExtractor.get("dv_report_unable_to_get_locale_information", new Object[] { demandRef }, locale);
                         }
                    }
                 }
-                if (message != null) {
+                if (!Source.api.equals(demand.getSource()) && message != null) {
                     log.warning("Invalid state for the demand: " + demand.getKey() + " -- message: " + message);
                     communicateToConsumer(
                             new RawCommand(demand.getSource()),
@@ -184,7 +194,7 @@ public class DemandValidator {
                     demand.setState(CommandSettings.State.published);
 
                     // Create a task for that demand
-                    Queue queue = _baseOperations.getQueue();
+                    Queue queue = BaseSteps.getBaseOperations().getQueue();
                     log.warning("Preparing the task: /maezel/processPublishedDemand?key=" + demandKey.toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
@@ -192,7 +202,7 @@ public class DemandValidator {
                                 method(Method.GET)
                     );
                 }
-                demand = demandOperations.updateDemand(pm, demand);
+                demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information for consumer: " + demand.getOwnerKey() + " -- ex: " + ex.getMessage());

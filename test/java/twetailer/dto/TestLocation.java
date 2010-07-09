@@ -87,7 +87,7 @@ public class TestLocation {
     public void testSetCountryCode() {
         Location object = new Location();
 
-        assertNull(object.getCountryCode());
+        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, object.getCountryCode());
 
         object.setCountryCode(Locale.CANADA.getCountry());
         assertEquals(Locale.CANADA.getCountry(), object.getCountryCode());

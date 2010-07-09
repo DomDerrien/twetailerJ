@@ -3,7 +3,6 @@ package twetailer.j2ee.restlet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +20,22 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.dto.Entity;
-import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.MaezelServlet;
 import twetailer.j2ee.MockLoginServlet;
-import twetailer.j2ee.TestBaseRestlet;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.labs.taskqueue.MockQueue;
 import com.google.appengine.api.labs.taskqueue.Queue;
 
 import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestConsumerRestlet {
@@ -55,16 +52,12 @@ public class TestConsumerRestlet {
     public void setUp() throws Exception {
         ops = new ConsumerRestlet();
         user = MockLoginServlet.buildMockOpenIdUser();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
-        ConsumerRestlet.demandRestlet = new DemandRestlet();
-
-        ConsumerRestlet._baseOperations = new BaseOperations();
-        ConsumerRestlet.consumerOperations = ConsumerRestlet._baseOperations.getConsumerOperations();
-        ConsumerRestlet.demandOperations = ConsumerRestlet._baseOperations.getDemandOperations();
-        ConsumerRestlet.proposalOperations = ConsumerRestlet._baseOperations.getProposalOperations();
     }
 
     @Test
@@ -74,40 +67,41 @@ public class TestConsumerRestlet {
         assertNull(null);
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testCreateResource() throws DataSourceException {
+    @Test(expected=ReservedOperationException.class)
+    public void testCreateResource() throws DataSourceException, ReservedOperationException {
         ops.createResource(new GenericJsonObject(), user);
     }
 
+    /**** ddd
     @Test
     @SuppressWarnings("unchecked")
     public void testGetResourceI() throws DataSourceException, ClientException {
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         final Long resourceId = 12345L;
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(Long key) {
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(resourceId, key);
                 Consumer temp = new Consumer();
                 temp.setKey(resourceId);
                 return temp;
             }
-        };
+        });
         JsonObject resource = ops.getResource(null, resourceId.toString(), user);
         assertEquals(resourceId.longValue(), resource.getLong(Entity.KEY));
     }
 
     @Test
     public void testGetResourceII() throws DataSourceException, ClientException {
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(Long key) {
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
                 Consumer temp = new Consumer();
                 temp.setKey(MockLoginServlet.DEFAULT_CONSUMER_KEY);
                 return temp;
             }
-        };
+        });
         JsonObject resource = ops.getResource(null, "current", user);
         assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
     }
@@ -118,7 +112,7 @@ public class TestConsumerRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.EMAIL, email);
         final Long resourceId = 12345L;
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -130,7 +124,7 @@ public class TestConsumerRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
+        });
         JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
@@ -142,7 +136,7 @@ public class TestConsumerRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.JABBER_ID, jabberId);
         final Long resourceId = 12345L;
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.JABBER_ID, key);
@@ -154,7 +148,7 @@ public class TestConsumerRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
+        });
         JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
@@ -166,7 +160,7 @@ public class TestConsumerRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.TWITTER_ID, twitterId);
         final Long resourceId = 12345L;
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -178,7 +172,7 @@ public class TestConsumerRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
+        });
         JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(1, resources.size());
         assertEquals(resourceId.longValue(), resources.getJsonObject(0).getLong(Entity.KEY));
@@ -187,13 +181,13 @@ public class TestConsumerRestlet {
     @Test
     public void testDelegateResourcesSelectionIV() throws DataSourceException {
         JsonObject parameters = new GenericJsonObject();
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 fail("Call not expected!");
                 return null;
             }
-        };
+        });
         JsonArray resources = ops.delegateResourceSelection(new MockPersistenceManager(), parameters);
         assertEquals(0, resources.size());
     }
@@ -238,6 +232,7 @@ public class TestConsumerRestlet {
 
         assertNull(attribute);
     }
+    ***/
 
     @Test
     public void testFilterOutInvalidValueIIa() throws DataSourceException {
@@ -325,30 +320,28 @@ public class TestConsumerRestlet {
     @Test(expected=RuntimeException.class)
     public void testScheduleConsolidationTasksII() throws DataSourceException, ClientException {
         final String email = "unit@test.ca";
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
                 assertEquals(email, (String) value);
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
     @Test
     public void testScheduleConsolidationTasksIIa() throws DataSourceException, ClientException {
         final String email = "unit@test.ca";
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
                 assertEquals(email, (String) value);
                 return new ArrayList<Consumer>();
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
@@ -359,7 +352,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setEmail(email);
         consumer.setKey(consumerKey);
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -374,16 +367,15 @@ public class TestConsumerRestlet {
                 assertEquals("~" + email, consumer.getEmail());
                 return consumer;
             }
-        };
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
                 return new ArrayList<Long>();
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
     }
 
@@ -394,7 +386,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setEmail(email);
         consumer.setKey(consumerKey);
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -409,16 +401,15 @@ public class TestConsumerRestlet {
                 assertEquals("~" + email, consumer.getEmail());
                 return consumer;
             }
-        };
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
                 return new ArrayList<Long>();
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, consumerKey);
     }
 
@@ -429,7 +420,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setJabberId(jabberId);
         consumer.setKey(consumerKey);
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.JABBER_ID, key);
@@ -443,16 +434,15 @@ public class TestConsumerRestlet {
                 assertEquals("~" + jabberId, consumer.getJabberId());
                 return consumer;
             }
-        };
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
                 return new ArrayList<Long>();
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.JABBER_ID, jabberId, 0L);
     }
 
@@ -463,7 +453,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setTwitterId(twitterId);
         consumer.setKey(consumerKey);
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -477,16 +467,15 @@ public class TestConsumerRestlet {
                 assertEquals("~" + twitterId, consumer.getTwitterId());
                 return consumer;
             }
-        };
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
                 assertEquals(consumerKey, (Long) value);
                 return new ArrayList<Long>();
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.TWITTER_ID, twitterId, 0L);
     }
 
@@ -497,7 +486,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setEmail(email);
         consumer.setKey(consumerKey);
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Consumer.EMAIL, key);
@@ -511,9 +500,9 @@ public class TestConsumerRestlet {
                 assertEquals("~" + email, consumer.getEmail());
                 return consumer;
             }
-        };
+        });
         final Long demandKey = 12345L;;
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -522,14 +511,14 @@ public class TestConsumerRestlet {
                 keys.add(demandKey);
                 return keys;
             }
-        };
+        });
         final MockQueue queue = new MockQueue();
-        ConsumerRestlet._baseOperations = new BaseOperations() {
+        BaseSteps.setMockBaseOperations(new BaseOperations() {
             @Override
             public Queue getQueue() {
                 return queue;
             }
-        };
+        });
         ConsumerRestlet.scheduleConsolidationTasks(Consumer.EMAIL, email, 0L);
         assertEquals(1, queue.getHistory().size());
     }
@@ -538,7 +527,6 @@ public class TestConsumerRestlet {
     public void testUpdateResourceI() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
         MockLoginServlet.updateConsumerKey(user, consumerKey);
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
         ops.updateResource(null, "0", user);
     }
 
@@ -548,14 +536,13 @@ public class TestConsumerRestlet {
         MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
                 return consumer;
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
@@ -566,7 +553,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -577,8 +564,7 @@ public class TestConsumerRestlet {
                 assertEquals(consumerKey, consumer.getKey());
                 return consumer;
             }
-        };
-        ConsumerRestlet._baseOperations = new MockBaseOperations();
+        });
         ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
     }
 
@@ -593,7 +579,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -610,8 +596,7 @@ public class TestConsumerRestlet {
                 assertEquals(email, (String) value);
                 return new ArrayList<Consumer>();
             }
-       };
-       ConsumerRestlet._baseOperations = new MockBaseOperations();
+       });
        ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
@@ -626,7 +611,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -643,8 +628,7 @@ public class TestConsumerRestlet {
                 assertEquals(jabberId, (String) value);
                 return new ArrayList<Consumer>();
             }
-       };
-       ConsumerRestlet._baseOperations = new MockBaseOperations();
+       });
        ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
@@ -659,7 +643,7 @@ public class TestConsumerRestlet {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setOpenID(user.getClaimedId());
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -676,8 +660,7 @@ public class TestConsumerRestlet {
                 assertEquals(twitterId, (String) value);
                 return new ArrayList<Consumer>();
             }
-       };
-       ConsumerRestlet._baseOperations = new MockBaseOperations();
+       });
        ops.updateResource(parameters, consumerKey.toString(), user);
     }
 
@@ -719,7 +702,7 @@ public class TestConsumerRestlet {
         // Consumer without Demands
         //
         final Long consumerKey = 12345L;
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -731,8 +714,8 @@ public class TestConsumerRestlet {
             public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
                 assertEquals(consumerKey, consumer.getKey());
             }
-        };
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -740,11 +723,12 @@ public class TestConsumerRestlet {
                 List<Long> demandKeys = new ArrayList<Long>();
                 return demandKeys;
             }
-        };
+        });
 
         ops.delegateResourceDeletion(new MockPersistenceManager(), consumerKey);
     }
 
+    /******* dd
     @Test
     @SuppressWarnings("serial")
     public void testDelegateDeletionResourceII() throws DataSourceException, ClientException {
@@ -752,7 +736,7 @@ public class TestConsumerRestlet {
         // Consumer with Demands, themselves without Proposals
         //
         final Long consumerKey = 12345L;
-        ConsumerRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -764,10 +748,10 @@ public class TestConsumerRestlet {
             public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
                 assertEquals(consumerKey, consumer.getKey());
             }
-        };
+        });
         final Long demandKey1 = 2222L;
         final Long demandKey2 = 3333L;
-        ConsumerRestlet.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(Demand.OWNER_KEY, key);
@@ -777,7 +761,7 @@ public class TestConsumerRestlet {
                 demandKeys.add(demandKey2);
                 return demandKeys;
             }
-        };
+        });
         ConsumerRestlet.demandRestlet = new DemandRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long dKey, Long cKey, boolean stopRecursion) throws DataSourceException{
@@ -789,4 +773,5 @@ public class TestConsumerRestlet {
 
         ops.delegateResourceDeletion(new MockPersistenceManager(), consumerKey);
     }
+    ddd ********/
 }

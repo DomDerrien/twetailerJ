@@ -8,11 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -24,18 +22,15 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.DemandOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
-import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
-import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.MockLoginServlet;
-import twetailer.validator.CommandSettings.State;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -56,17 +51,12 @@ public class TestProposalRestlet {
     public void setUp() throws Exception {
         ops = new ProposalRestlet();
         user = MockLoginServlet.buildMockOpenIdUser();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
-        ProposalRestlet._baseOperations = new BaseOperations();
-        ProposalRestlet.consumerOperations = ProposalRestlet._baseOperations.getConsumerOperations();
-        ProposalRestlet.demandOperations = ProposalRestlet._baseOperations.getDemandOperations();
-        ProposalRestlet.proposalOperations = ProposalRestlet._baseOperations.getProposalOperations();
-        ProposalRestlet.saleAssociateOperations = ProposalRestlet._baseOperations.getSaleAssociateOperations();
-
-        LoginServlet.saleAssociateOperations = ProposalRestlet._baseOperations.getSaleAssociateOperations();
     }
 
     @Test
@@ -80,7 +70,7 @@ public class TestProposalRestlet {
     @Test(expected=ClientException.class)
     public void testCreateResourceI() throws DataSourceException, ClientException {
         final JsonObject proposedParameters = new GenericJsonObject();
-        LoginServlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -88,7 +78,7 @@ public class TestProposalRestlet {
                 List<Long> saleAssociateKeys = new ArrayList<Long>();
                 return saleAssociateKeys;
             }
-        };
+        });
 
         ops.createResource(proposedParameters, user);
     }
@@ -99,7 +89,7 @@ public class TestProposalRestlet {
         final JsonObject proposedParameters = new GenericJsonObject();
         final Source source = Source.simulated;
         final Long saleAssociateKey = 34567L;
-        LoginServlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -116,8 +106,8 @@ public class TestProposalRestlet {
                 saleAssociate.setConsumerKey(MockLoginServlet.DEFAULT_CONSUMER_KEY);
                 return saleAssociate;
             }
-        };
-        ProposalRestlet.proposalOperations = new ProposalOperations() {
+        });
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) throws ClientException {
                 assertFalse(pm.isClosed());
@@ -129,7 +119,7 @@ public class TestProposalRestlet {
                 temp.setSource(source);
                 return temp;
             }
-        };
+        });
 
         JsonObject returnedProposal = ops.createResource(proposedParameters, user);
         assertNotNull(returnedProposal);
@@ -144,13 +134,14 @@ public class TestProposalRestlet {
         ops.deleteResource("12345", user);
     }
 
+    /***** ddd
     @Test
     @Ignore
     @SuppressWarnings({ "unchecked", "serial" })
     public void testDeleteResourceI() throws DataSourceException, ClientException {
         final Long proposalKey = 12345L;
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        LoginServlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -167,7 +158,7 @@ public class TestProposalRestlet {
                 saleAssociate.setConsumerKey(MockLoginServlet.DEFAULT_CONSUMER_KEY);
                 return saleAssociate;
             }
-        };
+        });
         ops.deleteResource(proposalKey.toString(), user);
         new ProposalRestlet() {
             @Override
@@ -184,7 +175,7 @@ public class TestProposalRestlet {
         final Long proposalKey = 12345L;
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         final Long saleAssociateKey = 34567L;
-        LoginServlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -201,7 +192,7 @@ public class TestProposalRestlet {
                 saleAssociate.setConsumerKey(MockLoginServlet.DEFAULT_CONSUMER_KEY);
                 return saleAssociate;
             }
-        };
+        });
         new ProposalRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key, SaleAssociate saleAssociate, boolean stopRecursion) {
@@ -376,7 +367,7 @@ public class TestProposalRestlet {
                 return proposal;
             }
         };
-        LoginServlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -385,7 +376,7 @@ public class TestProposalRestlet {
                 saleAssociateKeys.add(saleAssociateKey);
                 return saleAssociateKeys;
             }
-        };
+        });
 
         ops.getResource(null, proposalKey.toString(), user);
     }
@@ -593,4 +584,5 @@ public class TestProposalRestlet {
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         ops.getResource(null, proposalKey.toString(), user);
     }
+    ddd *****/
 }

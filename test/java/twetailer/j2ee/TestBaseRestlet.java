@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.task.CommandProcessor;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
@@ -81,13 +82,14 @@ public class TestBaseRestlet {
     @BeforeClass
     public static void setUpBeforeClass() {
         // MockLogger injection done in MockBaseRestlet defined above ;)
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     OpenIdUser user;
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
         user = MockLoginServlet.buildMockOpenIdUser();
         helper.setUp();
     }
@@ -1186,7 +1188,7 @@ public class TestBaseRestlet {
                 assertEquals(OpenIdUser.ATTR_NAME, name);
                 OpenIdUser user = (OpenIdUser) value;
                 assertEquals("http://open.id", user.getClaimedId());
-                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_TWETAILER_ID));
+                assertEquals(1L, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID));
             }
         };
 
@@ -1442,7 +1444,6 @@ public class TestBaseRestlet {
                 throw new DatastoreTimeoutException("Done in purpose");
             }
         }.doDelete(mockRequest, mockResponse);
-        System.err.println("**** " + stream.getStream().toString());
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
     }

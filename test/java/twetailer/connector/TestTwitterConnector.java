@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import twitter4j.DirectMessage;
-import twitter4j.MockDirectMessage;
 import twitter4j.MockTwitter;
 import twitter4j.Status;
 import twitter4j.Twitter;

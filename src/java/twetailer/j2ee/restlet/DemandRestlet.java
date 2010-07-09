@@ -1,56 +1,41 @@
 package twetailer.j2ee.restlet;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.ProposalOperations;
-import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
-import twetailer.dto.Entity;
 import twetailer.dto.Proposal;
+import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
-import twetailer.task.CommandProcessor;
-import twetailer.validator.ApplicationSettings;
+import twetailer.task.step.BaseSteps;
+import twetailer.task.step.DemandSteps;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
 
+/**
+ * Restlet entry point for the Demand entity control.
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class DemandRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(DemandRestlet.class.getName());
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -63,27 +48,87 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        // Create the Demand
-        parameters.put(Command.SOURCE, Source.api.toString());
-        Demand demand = demandOperations.createDemand(parameters, LoginServlet.getConsumerKey(loggedUser));
+    public JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long demandKey = Long.valueOf(resourceId);
+            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
+            QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
+            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            Demand demand = DemandSteps.getDemand(pm, demandKey, ownerKey, pointOfView, saleAssociateKey);
 
-        // Create a task for that demand validation
-        Queue queue = CommandProcessor._baseOperations.getQueue();
-        log.warning("Preparing the task: /maezel/validateOpenDemand?key=" + demand.getKey().toString());
-        queue.add(
-                url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
-                    param(Proposal.KEY, demand.getKey().toString()).
-                    method(Method.GET)
-        );
-
-        return demand.toJson();
+            return DemandSteps.anonymizeDemand(pm, pointOfView, demand.toJson(), saleAssociateKey);
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    @SuppressWarnings("unchecked")
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
+            QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
+            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
+
+            JsonArray resources;
+            if (onlyKeys) {
+                // Get the keys
+                resources = new GenericJsonArray((List) DemandSteps.getDemandKeys(pm, parameters, ownerKey, pointOfView, saleAssociateKey));
+            }
+            else { // full detail
+                // Get the demands
+                resources = JsonUtils.toJson(DemandSteps.getDemands(pm, parameters, ownerKey, pointOfView, saleAssociateKey));
+                resources = DemandSteps.anonymizeDemands(pointOfView, resources, saleAssociateKey);
+            }
+            return resources;
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Override
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            // Create the Demand
+            parameters.put(Command.SOURCE, Source.api.toString());
+
+            Demand demand = DemandSteps.createDemand(pm, parameters, LoginServlet.getConsumer(loggedUser));
+
+            return demand.toJson();
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Override
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            // Update the Demand
+            Long demandKey = Long.valueOf(resourceId);
+            Demand demand = DemandSteps.updateDemand(pm, demandKey, parameters, LoginServlet.getConsumer(loggedUser));
+
+            return demand.toJson();
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**** Dom: refactoring limit
+     * @throws DataSourceException ***/
+
+    @Override
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException, ReservedOperationException, DataSourceException {
         if (isAPrivilegedUser(loggedUser)) {
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Long demandKey = Long.valueOf(resourceId);
                 delegateResourceDeletion(pm, demandKey, LoginServlet.getConsumerKey(loggedUser), false);
@@ -93,7 +138,7 @@ public class DemandRestlet extends BaseRestlet {
                 pm.close();
             }
         }
-        throw new ClientException("Restricted access!");
+        throw new ReservedOperationException(Action.delete, "Restricted access!");
     }
 
     /**
@@ -105,114 +150,22 @@ public class DemandRestlet extends BaseRestlet {
      * @param stopRecursion Should be <code>false</code> if the associated Proposals need to be affected too
      * @return Serialized list of the Consumer instances matching the given criteria
 
-     * @throws DataSourceException If the query to the back-end fails
+     * @throws InvalidIdentifierException If the query to the back-end fails
+     * @throws DataSourceException If the deletion operation fails
      *
      * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
      */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long demandKey, Long consumerKey, boolean stopRecursion) throws DataSourceException{
+    protected void delegateResourceDeletion(PersistenceManager pm, Long demandKey, Long consumerKey, boolean stopRecursion) throws InvalidIdentifierException, DataSourceException{
         // Delete consumer's demands
-        demandOperations.deleteDemand(pm, demandKey, consumerKey);
+        BaseSteps.getDemandOperations().deleteDemand(pm, demandKey, consumerKey);
         if (!stopRecursion) {
             // Clean-up the attached proposals
-            List<Proposal> proposals = proposalOperations.getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
+            List<Proposal> proposals = BaseSteps.getProposalOperations().getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
             for (Proposal proposal: proposals) {
                 proposal.setState(State.cancelled);
                 proposal.setDemandKey(0L); // To cut the link
-                proposalOperations.updateProposal(pm, proposal);
+                BaseSteps.getProposalOperations().updateProposal(pm, proposal);
             }
         }
-    }
-
-    @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        return demandOperations.getDemand(
-                Long.valueOf(resourceId),
-                isAPrivilegedUser(loggedUser) ? null : LoginServlet.getConsumerKey(loggedUser)
-        ).toJson();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-
-        String pointOfView = parameters.getString("pointOfView");
-        boolean onlyKeys = "onlyKeys".equals(parameters.getString("detailLevel"));
-        int maximumResults = parameters.containsKey("maximumResults") ? (int) parameters.getLong("maximumResults") : 0;
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-           }
-            catch (ParseException e) { } // Date not set, too bad.
-        }
-
-        Map<String, Object> queryDemands = new HashMap<String, Object>();
-        queryDemands.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
-        if (lastModificationDate != null) {
-            queryDemands.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-        }
-
-        JsonArray resources;
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
-        try {
-            if ("SA".equals(pointOfView)) {
-                Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
-                if (saleAssociateKey == null) {
-                    throw new ReservedOperationException(Action.list, Demand.class.getName());
-                }
-                queryDemands.put(Demand.SALE_ASSOCIATE_KEYS, saleAssociateKey);
-                if (onlyKeys) {
-                    // Get the keys
-                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, queryDemands, maximumResults));
-                }
-                else { // full detail
-                    // Get the demands
-                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, queryDemands, maximumResults));
-
-                    pm.close();
-                    pm = _baseOperations.getPersistenceManager();
-
-                    // Get the keys of the proposals owned by the requester
-                    Map<String, Object> queryProposals = new HashMap<String, Object>();
-                    queryProposals.put(Command.OWNER_KEY, saleAssociateKey);
-                    queryProposals.put(Command.STATE_COMMAND_LIST, Boolean.TRUE);
-                    ArrayList validProposalKeys = new ArrayList(proposalOperations.getProposalKeys(pm, queryProposals, 0));
-
-                    // Filter out information that don't belong to the requester
-                    for (int i=0; i<resources.size(); i++) {
-                        JsonObject demand = resources.getJsonObject(i);
-                        // Clean-up the list of sale associate identifiers
-                        demand.remove(Demand.SALE_ASSOCIATE_KEYS);
-                        // Remove all proposal keys that don't belong to the requester or that are not in a valid state for the listing
-                        JsonArray attachedProposalKeys = demand.getJsonArray(Demand.PROPOSAL_KEYS);
-                        for (int j=0; j<(attachedProposalKeys == null ? 0 : attachedProposalKeys.size()); j++) {
-                            if (!validProposalKeys.contains(attachedProposalKeys.getLong(j))) {
-                                attachedProposalKeys.remove(j);
-                                j--; // To account for the list size reduction
-                            }
-                        }
-                    }
-                }
-            }
-            else { // consumer point-of-view
-                Long consumerKey = LoginServlet.getConsumerKey(loggedUser);
-                queryDemands.put(Command.OWNER_KEY, consumerKey);
-                if (onlyKeys) {
-                    resources = new GenericJsonArray((List) demandOperations.getDemandKeys(pm, queryDemands, maximumResults));
-                }
-                else { // full detail
-                    resources = JsonUtils.toJson((List) demandOperations.getDemands(pm, queryDemands, maximumResults));
-                }
-            }
-        }
-        finally {
-            pm.close();
-        }
-        return resources;
-    }
-
-    @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
     }
 }

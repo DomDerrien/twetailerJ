@@ -2,6 +2,7 @@ package twetailer.task.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -19,12 +20,12 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
@@ -40,6 +41,7 @@ import twetailer.dto.Store;
 import twetailer.task.CommandLineParser;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
@@ -76,7 +78,7 @@ public class TestCancelCommandProcessor {
         final Long consumerKey = 73824L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -90,10 +92,7 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -121,7 +120,7 @@ public class TestCancelCommandProcessor {
         final Long consumerKey = 73824L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -136,9 +135,9 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) {
                 assertEquals(locationKey, key);
@@ -146,11 +145,7 @@ public class TestCancelCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -178,15 +173,12 @@ public class TestCancelCommandProcessor {
         final Long consumerKey = 73824L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
-                throw new RuntimeException("Done in purpose");
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -226,37 +218,45 @@ public class TestCancelCommandProcessor {
     @Test
     public void testProcessCommandCancelV() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 2222L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 3333L;
         final Long proposalKey = 5555L;
         final Long storeKey = 66666L;
         final String name = "sgrognegneu";
+        final Long demandKey = 7878L;
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                Consumer saConsumerRecord = new Consumer();
+                saConsumerRecord.setKey(saConsumerRecordKey);
+                saConsumerRecord.setPreferredConnection(Source.simulated);
+                return saConsumerRecord;
+            }
+        });
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setStoreKey(storeKey);
                 return proposal;
             }
             @Override
@@ -265,9 +265,9 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, proposal.getState());
                 return proposal;
             }
-        };
+        });
         // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -276,12 +276,27 @@ public class TestCancelCommandProcessor {
                 store.setName(name);
                 return store;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
-        CommandProcessor.storeOperations = storeOperations;
+        });
+        // DemandOperations mock
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.published);
+                demand.addProposalKey(proposalKey);
+                demand.addSaleAssociateKey(saleAssociateKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(State.published, demand.getState());
+                assertEquals(0, demand.getProposalKeys().size());
+                return demand;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -294,6 +309,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -306,38 +322,39 @@ public class TestCancelCommandProcessor {
     @Test
     public void testProcessCommandCancelVI() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 2222L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 3333L;
         final Long proposalKey = 5555L;
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
-        // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
-                throw new RuntimeException("Done in purpose");
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                Consumer saConsumerRecord = new Consumer();
+                saConsumerRecord.setKey(saConsumerRecordKey);
+                saConsumerRecord.setPreferredConnection(Source.simulated);
+                return saConsumerRecord;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        // ProposalOperations mock
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose");
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -350,6 +367,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -364,7 +382,7 @@ public class TestCancelCommandProcessor {
         final State state = State.closed;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -378,10 +396,7 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -407,7 +422,7 @@ public class TestCancelCommandProcessor {
         final State state = State.cancelled;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -421,10 +436,7 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -434,40 +446,30 @@ public class TestCancelCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(434343L);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        Locale locale = Locale.ENGLISH;
-        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
-        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel }, locale), sentText);
+        // Demand tweet is sent, because there's no harm trying to cancel again an already cancelled demand ;)
     }
 
     @Test
     public void testProcessCommandCancelXIII() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
-        final State state = State.markedForDeletion;
+        // final State state = State.markedForDeletion;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
+            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
-                Demand demand = new Demand();
-                demand.setKey(demandKey);
-                demand.setState(state);
-                return demand;
+                throw new InvalidIdentifierException("Done in purpose because the state is markedForDeletion");
             }
-            @Override
-            public Demand updateDemand(PersistenceManager pm, Demand demand) {
-                assertEquals(State.cancelled, demand.getState());
-                return demand;
-            }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -481,10 +483,7 @@ public class TestCancelCommandProcessor {
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        Locale locale = Locale.ENGLISH;
-        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
-        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel }, locale), sentText);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_demand_id", Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -492,10 +491,11 @@ public class TestCancelCommandProcessor {
         final Long proposalKey = 5555L;
         final State state = State.closed;
         final Long consumerKey = 3333L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 3333L;
 
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
                 assertEquals(proposalKey, key);
@@ -509,28 +509,28 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, proposal.getState());
                 return proposal;
             }
-        };
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                Consumer saConsumerRecord = new Consumer();
+                saConsumerRecord.setKey(saConsumerRecordKey);
+                saConsumerRecord.setPreferredConnection(Source.simulated);
+                return saConsumerRecord;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -543,6 +543,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -559,16 +560,21 @@ public class TestCancelCommandProcessor {
         final Long proposalKey = 5555L;
         final State state = State.cancelled;
         final Long consumerKey = 3333L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 3333L;
+        final Long demandKey = 7878L;
+        final Long storeKey= 8989L;
 
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setState(state);
+                proposal.setDemandKey(demandKey);
+                proposal.setStoreKey(storeKey);
                 return proposal;
             }
             @Override
@@ -576,28 +582,60 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, proposal.getState());
                 return proposal;
             }
-        };
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
+                saleAssociate.setStoreKey(storeKey);
                 return saleAssociate;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                Consumer saConsumerRecord = new Consumer();
+                saConsumerRecord.setKey(saConsumerRecordKey);
+                saConsumerRecord.setPreferredConnection(Source.simulated);
+                return saConsumerRecord;
+            }
+        });
+        // DemandOperations mock
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.published);
+                demand.addProposalKey(proposalKey);
+                demand.addSaleAssociateKey(saleAssociateKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(State.published, demand.getState());
+                assertEquals(0, demand.getProposalKeys().size());
+                assertEquals(saleAssociateKey, demand.getSaleAssociateKeys().get(0));
+                return demand;
+            }
+        });
+        // StoreOperations mock
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(storeKey);
+                return store;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -610,61 +648,52 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        Locale locale = Locale.ENGLISH;
-        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
-        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalRef, stateLabel }, locale), sentText);
+        // No harm to cancel an already cancelled proposal
     }
 
     @Test
     public void testProcessCommandCancelXVI() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
-        final State state = State.markedForDeletion;
+        // final State state = State.markedForDeletion;
         final Long consumerKey = 3333L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 4444L;
 
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
-                Proposal proposal = new Proposal();
-                proposal.setKey(proposalKey);
-                proposal.setState(state);
-                return proposal;
+                throw new InvalidIdentifierException("Done in purpose for a state marked for deletion");
             }
-            @Override
-            public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
-                assertEquals(State.cancelled, proposal.getState());
-                return proposal;
-            }
-        };
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                Consumer saConsumerRecord = new Consumer();
+                saConsumerRecord.setKey(saConsumerRecordKey);
+                saConsumerRecord.setPreferredConnection(Source.simulated);
+                return saConsumerRecord;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -677,15 +706,13 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        Locale locale = Locale.ENGLISH;
-        String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
-        String stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { state.toString() }, locale);
-        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_state", new Object[] { proposalRef, stateLabel }, locale), sentText);
+        assertEquals(LabelExtractor.get("cp_command_cancel_invalid_proposal_id", Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -695,7 +722,7 @@ public class TestCancelCommandProcessor {
         final Long consumerKey = 73824L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -710,10 +737,7 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -739,9 +763,11 @@ public class TestCancelCommandProcessor {
         final Long demandKey = 5555L;
         final State state = State.confirmed;
         final Long consumerKey = 73824L;
+        final Long proposalKey = 4332L;
+        final Long saleAssociateKey = 64533L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -749,6 +775,8 @@ public class TestCancelCommandProcessor {
                 demand.setKey(demandKey);
                 demand.setState(state);
                 demand.setOwnerKey(consumerKey);
+                demand.addProposalKey(proposalKey);
+                demand.addSaleAssociateKey(saleAssociateKey);
                 return demand;
             }
             @Override
@@ -756,18 +784,41 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, demand.getState());
                 return demand;
             }
-        };
+        });
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
-                return new ArrayList<Proposal>();
+            public Proposal getProposal(PersistenceManager pm, Long key, Long saKey, Long sKey) {
+                assertEquals(proposalKey, key);
+                Proposal proposal = new Proposal();
+                proposal.setKey(proposalKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setOwnerKey(saleAssociateKey);
+                proposal.setSource(Source.api);
+                return proposal;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.proposalOperations = proposalOperations;
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                return saleAssociate;
+            }
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -780,6 +831,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setPreferredConnection(Source.simulated);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -793,12 +845,14 @@ public class TestCancelCommandProcessor {
         final Long proposalKey = 5555L;
         final State state = State.declined;
         final Long consumerKey = 3333L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 4444L;
         final Long storeKey = 55555L;
         final String name = "sgrognegneu";
+        final Long demandKey = 543652L;
 
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
                 assertEquals(proposalKey, key);
@@ -806,6 +860,8 @@ public class TestCancelCommandProcessor {
                 proposal.setKey(proposalKey);
                 proposal.setState(state);
                 proposal.setOwnerKey(saleAssociateKey);
+                proposal.setDemandKey(demandKey);
+                proposal.setStoreKey(storeKey);
                 return proposal;
             }
             @Override
@@ -813,27 +869,52 @@ public class TestCancelCommandProcessor {
                 assertEquals(State.cancelled, proposal.getState());
                 return proposal;
             }
-        };
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                Consumer saConsumerRecord = new Consumer();
+                saConsumerRecord.setKey(saConsumerRecordKey);
+                saConsumerRecord.setPreferredConnection(Source.simulated);
+                return saConsumerRecord;
+            }
+        });
+        // DemandOperations mock
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand demand = new Demand();
+                demand.setKey(demandKey);
+                demand.setState(State.published);
+                demand.addProposalKey(proposalKey);
+                demand.addSaleAssociateKey(saleAssociateKey);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(State.published, demand.getState());
+                assertEquals(0, demand.getProposalKeys().size());
+                assertEquals(saleAssociateKey, demand.getSaleAssociateKeys().get(0));
+                return demand;
+            }
+        });
         // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -842,12 +923,7 @@ public class TestCancelCommandProcessor {
                 store.setName(name);
                 return store;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
-        CommandProcessor.storeOperations = storeOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -860,6 +936,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -878,7 +955,7 @@ public class TestCancelCommandProcessor {
         final Long originalRawCommandId = 88888L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
                 assertEquals(demandKey, key);
@@ -888,6 +965,8 @@ public class TestCancelCommandProcessor {
                 demand.setOwnerKey(consumerKey);
                 demand.setState(state);
                 demand.setSource(Source.simulated);
+                demand.addSaleAssociateKey(saleAssociateKey);
+                demand.addProposalKey(proposalKey);
                 return demand;
             }
             @Override
@@ -897,9 +976,9 @@ public class TestCancelCommandProcessor {
                 assertEquals(consumerKey, demand.getCancelerKey());
                 return demand;
             }
-        };
+        });
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 Proposal proposal = new Proposal();
@@ -919,9 +998,9 @@ public class TestCancelCommandProcessor {
                 assertEquals(consumerKey, proposal.getCancelerKey());
                 return proposal;
             }
-        };
+        });
         // RawCommandOperations mock
-        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(originalRawCommandId, key);
@@ -929,23 +1008,28 @@ public class TestCancelCommandProcessor {
                 rawCommand.setKey(saleAssociateKey);
                 return rawCommand;
             }
-        };
+        });
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 return saleAssociate;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(saleAssociateKey);
+                return consumer;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -958,6 +1042,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -971,9 +1056,11 @@ public class TestCancelCommandProcessor {
         final Long consumerKey = 11L;
         final Long demandKey = 5555L;
         final State state = State.confirmed;
+        final Long saleAssociateKey = 54645L;
+        final Long proposalKey = 658763L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
                 assertEquals(demandKey, key);
@@ -983,6 +1070,8 @@ public class TestCancelCommandProcessor {
                 demand.setOwnerKey(consumerKey);
                 demand.setState(state);
                 demand.setSource(Source.simulated);
+                demand.addSaleAssociateKey(saleAssociateKey);
+                demand.addProposalKey(proposalKey);
                 return demand;
             }
             @Override
@@ -992,18 +1081,35 @@ public class TestCancelCommandProcessor {
                 assertEquals(consumerKey, demand.getCancelerKey());
                 return demand;
             }
-        };
+        });
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 throw new DataSourceException("Done in purpose!");
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.proposalOperations = proposalOperations;
+        });
+        // SaleAssociateOperations mock
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                return saleAssociate;
+            }
+        });
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(saleAssociateKey);
+                return consumer;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1016,6 +1122,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
@@ -1036,9 +1143,9 @@ public class TestCancelCommandProcessor {
         final String name = "Store name";
 
         // ProposalOperations mock
-        final ProposalOperations proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertEquals(saleAssociateKey, ownerKey);
                 Proposal proposal = new Proposal();
@@ -1047,38 +1154,41 @@ public class TestCancelCommandProcessor {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setState(state);
                 proposal.setSource(Source.simulated);
+                proposal.setStoreKey(storeKey);
                 return proposal;
             }
             @Override
             public Proposal updateProposal(PersistenceManager pm, Proposal proposal) {
                 assertEquals(proposalKey, proposal.getKey());
                 assertEquals(State.cancelled, proposal.getState());
-                assertEquals(saleAssociateKey, proposal.getCancelerKey());
+                assertEquals(consumerKey, proposal.getCancelerKey());
                 return proposal;
             }
-        };
+        });
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+            public Demand getDemand(PersistenceManager pm, Long key, Long oKey) {
                 assertEquals(demandKey, key);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setOwnerKey(consumerKey);
                 demand.setRawCommandId(originalRawCommandId);
                 demand.setSource(Source.simulated);
+                demand.addProposalKey(proposalKey);
+                demand.addSaleAssociateKey(saleAssociateKey);
                 return demand;
             }
             @Override
             public Demand updateDemand(PersistenceManager pm, Demand demand) {
                 assertEquals(demandKey, demand.getKey());
-                assertEquals(State.published, demand.getState());
-                assertEquals(saleAssociateKey, demand.getCancelerKey());
+                assertEquals(State.published, demand.getState());  // Back in the open mode ;)
+                assertNull(demand.getCancelerKey());
                 return demand;
             }
-        };
+        });
         // RawCommandOperations mock
-        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(originalRawCommandId, key);
@@ -1087,9 +1197,9 @@ public class TestCancelCommandProcessor {
                 rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
-        };
+        });
         // ConsumerOperations mock
-        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1097,28 +1207,21 @@ public class TestCancelCommandProcessor {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
+                saleAssociate.setConsumerKey(consumerKey);
                 return saleAssociate;
             }
-        };
+        });
         // StoreOperations mock
-        final StoreOperations storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -1127,15 +1230,7 @@ public class TestCancelCommandProcessor {
                 store.setName(name);
                 return store;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.consumerOperations = consumerOperations;
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.proposalOperations = proposalOperations;
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
-        CommandProcessor.storeOperations = storeOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1148,6 +1243,7 @@ public class TestCancelCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 

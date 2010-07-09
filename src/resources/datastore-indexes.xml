@@ -26,17 +26,27 @@
     <!--
      Demand
       -->
+    <!-- To get all demands for the user -->
     <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="ownerKey" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <!-- To get all active demands for the user -->
     <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="ownerKey" direction="asc"/>
         <property name="stateCmdList" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <!-- To get all recently updated demands for the user -->
+    <datastore-index kind="Demand" ancestor="false" source="manual">
+        <property name="ownerKey" direction="asc"/>
+        <property name="modificationDate" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all recently updated and still active demands for the user -->
     <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="ownerKey" direction="asc"/>
         <property name="stateCmdList" direction="asc"/>
@@ -44,9 +54,18 @@
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <!-- For the CRON job trying to attach demands to new sale associates -->
     <datastore-index kind="Demand" ancestor="false" source="manual">
         <property name="state" direction="asc"/>
         <property name="modificationDate" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get actives demands that have received a proposal from the identified sale associate -->
+    <datastore-index kind="Demand" ancestor="false" source="manual">
+        <property name="saleAssociateKeys" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="modificationDate" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 

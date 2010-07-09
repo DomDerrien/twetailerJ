@@ -2,6 +2,7 @@ package twetailer.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -9,10 +10,16 @@ import javax.jdo.Query;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Location;
 import twetailer.validator.LocaleValidator;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Location entities
+ *
+ * @author Dom Derrien
+ */
 public class LocationOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(LocationOperations.class.getName());
 
@@ -92,14 +99,10 @@ public class LocationOperations extends BaseOperations {
                 // Try to retrieve from its postal and country codes
                 locations = getLocations(pm, location.getPostalCode(), location.getCountryCode());
             }
-            else if (location.getLatitude() != Location.INVALID_COORDINATE && location.getLongitude() != Location.INVALID_COORDINATE) {
-                // Try to retrieve from the geo-coordinates
-                locations = getLocations(pm, location.getLatitude(), location.getLongitude());
-            }
-            else {
+            else if (location.getLatitude() == Location.INVALID_COORDINATE || location.getLongitude() == Location.INVALID_COORDINATE) {
                 throw new IllegalArgumentException("Location object should have a valid pair of {postal; country} or {latitude; longitude}.");
             }
-            if (0 < locations.size()) {
+            if (locations != null && 0 < locations.size()) {
                 return locations.get(0);
             }
         }
@@ -115,11 +118,11 @@ public class LocationOperations extends BaseOperations {
      * @param key Identifier of the location
      * @return First location matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved location does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      *
      * @see LocationOperations#getLocation(PersistenceManager, Long)
      */
-    public Location getLocation(Long key) throws DataSourceException {
+    public Location getLocation(Long key) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getLocation(pm, key);
@@ -136,18 +139,18 @@ public class LocationOperations extends BaseOperations {
      * @param key Identifier of the location
      * @return First location matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the location cannot be retrieved
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      */
-    public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+    public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the Location instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the Location instance");
         }
         getLogger().warning("Get Location instance with id: " + key);
         try {
             return pm.getObjectById(Location.class, key);
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving location for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 
@@ -197,6 +200,50 @@ public class LocationOperations extends BaseOperations {
     }
 
     /**
+     * Use the given pairs {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of locations matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Location> getLocations(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query query = pm.newQuery(Location.class);
+        Object[] values = prepareQuery(query, parameters, limit);
+        getLogger().warning("Select location(s) with: " + query.toString());
+        // Select the corresponding resources
+        List<Location> locations = (List<Location>) query.executeWithArray(values);
+        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return locations;
+    }
+
+    /**
+     * Use the given pairs {attribute; value} to get the corresponding Location identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of location identifiers matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getLocationKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query query = pm.newQuery("select " + Location.KEY + " from " + Location.class.getName());
+        Object[] values = prepareQuery(query, parameters, limit);
+        getLogger().warning("Select location(s) with: " + query.toString());
+        // Select the corresponding resources
+        List<Long> locationKeys = (List<Long>) query.executeWithArray(values);
+        locationKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+        return locationKeys;
+    }
+
+    /**
      * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
@@ -229,7 +276,7 @@ public class LocationOperations extends BaseOperations {
      * @return Collection of locations matching the given criteria
      *
      * @throws DataSourceException If given value cannot matched a data store type
-     */
+     * /
     @SuppressWarnings("unchecked")
     public List<Location> getLocations(PersistenceManager pm, Double latitude, Double longitude) throws DataSourceException {
         // Prepare the query
@@ -243,6 +290,12 @@ public class LocationOperations extends BaseOperations {
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
         return locations;
     }
+    */
+
+    private static final double ONE_MI_IN_KM = 1.609344;
+    private static final double EQUATORIAL_CIRCUMFERENCE_IN_KM = 40075.11d;
+    private static final double ONE_EQUATORIAL_DEGREE_IN_KM = 360.0d / EQUATORIAL_CIRCUMFERENCE_IN_KM;
+    private static final double EQUATORIAL_RADIUS_IN_KM = EQUATORIAL_CIRCUMFERENCE_IN_KM / 2.0d / Math.PI;
 
     /**
      * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
@@ -261,29 +314,30 @@ public class LocationOperations extends BaseOperations {
     public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
         // The vertical gap is consistent between parallels
         if (LocaleValidator.MILE_UNIT.equals(rangeUnit)) {
-            range = range * 1.8;
+            range = range * ONE_MI_IN_KM;
         }
-        range = range * 0.53 / 59;
-        Double latitude = location.getLatitude();
-        Double topLatitude = latitude + range;
-        Double bottomLatitude = latitude - range;
+        double latitudeDelta = range * ONE_EQUATORIAL_DEGREE_IN_KM;
+        double latitude = location.getLatitude();
+        double topLatitude = latitude + latitudeDelta;
+        double bottomLatitude = latitude - latitudeDelta;
 
         // The horizontal gap is latitude dependent for the meridians
-        Double leftLongitude = -180.0D;
-        Double rightLongitude = +180.0D;
+        double leftLongitude = -180.0D;
+        double rightLongitude = +180.0D;
         if(latitude < 89.9D) {
-            range = range / Math.abs(Math.cos(latitude));
-            Double longitude = location.getLongitude();
-            leftLongitude = longitude - range;
-            rightLongitude = longitude + range;
+            double longitudeDelta = Math.abs(range * Math.toDegrees(Math.asin(1 / (Math.cos(Math.toRadians(latitude)) * EQUATORIAL_RADIUS_IN_KM))));
+
+            double longitude = location.getLongitude();
+            leftLongitude = longitude - longitudeDelta;
+            rightLongitude = longitude + longitudeDelta;
         }
         // FIXME: take into account that the value can be greater than 360° and smaller than 0°
         // FIXME: that means two request have to be done at the limit...
 
-        log.finest("Box limits [left; rigth] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
+        log.finest("Box limits [left; right] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
 
         /****************************************************************************************************************
-         * Ideal case not feasible because of App Engine limitation:  Only one inequality filter per query is supported.
+         * Ideal case not feasible because of App Engine limitation:  Only _one_ inequality filter per query!
          * // Prepare the query
          * Query query = pm.newQuery(Location.class);
          * query.setFilter(

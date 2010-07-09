@@ -13,6 +13,7 @@
     import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="twetailer.validator.ApplicationSettings"
+    import="twetailer.validator.CommandSettings.State"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
     import="twetailer.dto.Location"
@@ -35,7 +36,7 @@
     // Get the logged user record
     OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
     Consumer consumer = LoginServlet.getConsumer(loggedUser);
-    Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser);
+    Long saleAssociateKey = consumer.getSaleAssociateKey();
 
     // Redirects non sale associates
     if (saleAssociateKey == null) {
@@ -53,7 +54,7 @@
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
         @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
         @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
         @import "/css/console.css";
     </style><%
     }
@@ -62,7 +63,7 @@
         @import "/js/dojo/dojo/resources/dojo.css";
         @import "/js/dojo/dijit/themes/tundra/tundra.css";
         @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
+        @import "/js/dojo/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
         @import "/css/console.css";
     </style><%
     } // endif (useCDN)
@@ -115,40 +116,51 @@
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
         </jsp:include>
         <div dojoType="dijit.layout.BorderContainer" gutters="false" region="center">
-            <div dojoType="dijit.layout.ContentPane" region="top" style="text-align:right;margin:10px 10px 0 10px;">
-                <button
-                    busyLabel="<%= LabelExtractor.get(ResourceFileId.third, "refreshing_button_state", locale) %>"
-                    dojoType="dojox.form.BusyButton"
-                    id="refreshButton"
-                    onclick="twetailer.GolfAssociate.loadNewDemands();"
-                ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
+            <div dojoType="dijit.layout.ContentPane" region="top" style="margin:10px 10px 0 10px;">
+                <div style="float:right;">
+                    <select dojoType="dijit.form.FilteringSelect" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
+                        <option value="*" selected="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_stateSelector_anyState", locale) %></option>
+                        <option value="<%= State.opened %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_opened", locale) %></option>
+                        <option value="<%= State.invalid %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_invalid", locale) %></option>
+                        <option value="<%= State.published %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_published", locale) %></option>
+                        <option value="<%= State.confirmed %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_confirmed", locale) %></option>
+                    </select>
+                    <button
+                        busyLabel="<%= LabelExtractor.get(ResourceFileId.third, "refreshing_button_state", locale) %>"
+                        dojoType="dojox.form.BusyButton"
+                        iconClass="silkIcon silkIconRefresh"
+                        id="refreshButton"
+                        onclick="twetailer.GolfAssociate.loadNewDemands();"
+                    ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
+                </div>
             </div>
             <div dojoType="dijit.Menu" id="demandListCellMenu" style="display: none;">
-                <div dojoType="dijit.MenuItem" iconClass="silkIcon silkIconAdd" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", locale) %></div>
-                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconRemove"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", locale) %></div>
+                <div dojoType="dijit.MenuItem" iconClass="silkIcon silkIconProposalAdd" onClick="twetailer.GolfAssociate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createProposal", new String[] { "" }, locale) %></div>
+                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconProposalRemove"><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_declineDemand", new String[] { "" }, locale) %></div>
             </div>
             <table
-                dojoType="dojox.grid.DataGrid"
+                dojoType="dojox.grid.EnhancedGrid"
                 errorMessage="&lt;span class='dojoxGridError'&gt;<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loadingError", locale) %>&lt;/span&gt;"
                 id="demandList"
-                errorMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_dataGrid_loading", locale) %>"
                 region="center"
                 rowMenu="cellMenu"
                 rowsPerPage="20"
+                sortFields="[{attribute: '<%= Demand.MODIFICATION_DATE %>',descending:true}]"
                 style="font-size:larger;margin:10px;border:1px solid lightgrey;"
             >
                 <thead>
                     <tr>
-                           <th field="<%= Demand.KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
-                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
-                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
-                           <th field="<%= Demand.LOCATION_KEY %>"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
-                           <th field="<%= Demand.QUANTITY %>" styles="text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
-                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfCommon.displayProposalKeys"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
-                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" width="40%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
-                           <th field="state"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
-                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
-                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
+                           <!-- IMPORTANT: update the call to _grid.setSortIndex() in GolfConsumer.js if you change the place of the column 'modificationDate' -->
+                           <th field="<%= Demand.KEY %>" formatter="twetailer.GolfAssociate.displayDemandKey" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
+                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
+                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
+                           <th field="<%= Demand.LOCATION_KEY %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
+                           <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
+                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfAssociate.displayProposalKeys" styles="padding:2px 5px;" width="200px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
+                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" styles="padding:2px 5px;" width="40%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.STATE %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
+                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
+                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
                            <!--th
                                cellType="dojox.grid.cells.Select"
                                editable="true"
@@ -171,67 +183,75 @@
         dojoType="dijit.Dialog"
         execute="twetailer.GolfAssociate.updateProposal"
         id="proposalForm"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_formTitle_creation", locale) %>"
     >
         <fieldset class="entityInformation">
-            <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandInfo", locale) %></legend>
-            <table class="demandForm">
+            <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_demandInfo", locale) %></legend>
+            <table class="demandForm" width="100%">
                 <tr>
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandKey", locale) %></td>
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandKey", locale) %></td>
                     <td><input dojoType="dijit.form.NumberTextBox" id="demand.key" name="demandKey" readonly="true" style="width:6em;" type="text" /> </td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="demand.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandQuantity", locale) %></label></td>
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandState", locale) %></td>
+                    <td><input dojoType="dijit.form.TextBox" id="demand.state" readonly="true" type="text" /> </td>
+                </tr>
+                <tr>
+                    <td align="right"><label for="demand.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandQuantity", locale) %></label></td>
                     <td><input dojoType="dijit.form.NumberTextBox" id="demand.quantity" readonly="true" style="width:3em;" type="text" /> </td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_demandCriteria", locale) %></label></td>
+                    <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCriteria", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.criteria" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
             </table>
         </fieldset>
         <fieldset class="entityInformation">
-            <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalInfo", locale) %></legend>
-            <table class="demandForm">
-                <tr class="existingProposalAttribute">
+            <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalInfo", locale) %></legend>
+            <table class="demandForm" width="100%">
+                <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalKey", locale) %></td>
                     <td><input dojoType="dijit.form.NumberTextBox" id="proposal.key" name="key" readonly="true" style="width:6em;" type="text" /> </td>
                 </tr>
-                <tr class="existingProposalAttribute">
+                <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalState", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.state" readonly="true" type="text" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalTime", locale) %></label></td>
                     <td>
-                        <input dojoType="dijit.form.DateTextBox" id="proposal.date" name="date" required="true" type="text" value="2010-10-07" />
-                        <input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T12:00:00" />
+                        <input dojoType="dijit.form.DateTextBox" id="proposal.date" name="date" required="true" type="text" />
+                        <input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T07:00:00" />
                     </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalPrice", locale) %></label></td>
-                    <td><input constraints="{min:0,max:999,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" required="true" style="width:7em;" type="text" /></td>
+                    <td>$<input constraints="{min:0,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" required="true" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.total"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalTotal", locale) %></label></td>
-                    <td><input class="rightAlign" constraints="{min:0,max:999,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" style="width:7em;" type="text" /></td>
+                    <td>$<input constraints="{min:0,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalCriteria", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="proposal.criteria" name="criteria" required="true" style="width:25em;" type="text" /></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.criteria" name="criteria" style="width:25em;" type="text" /></td>
                 </tr>
-                <tr class="existingProposalAttribute">
+                <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalModificationDate", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').isValid();" type="submit"><%= LabelExtractor.get(ResourceFileId.third, "update_button", locale) %></button>
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconCancel" id="proposalFormCancelButton" onclick="twetailer.GolfAssociate.cancelProposal();"><%= LabelExtractor.get(ResourceFileId.third, "cancel_button", locale) %></button>
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "close_button", locale) %></button>
+                        <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').isValid();" type="submit"></button>
+                        <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.GolfAssociate.cancelProposal();"></button>
+                        <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.GolfAssociate.closeProposal();"></button>
                     </td>
                 </tr>
             </table>
         </fieldset>
+        <div style="text-align:center;">
+            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "ga_closeDialog_button", locale) %></button>
+        </div>
     </div>
 
     <div
@@ -269,7 +289,7 @@
         // dojo.require("dijit.form.CheckBox");
         // dojo.require("dijit.form.ComboBox");
         dojo.require("dijit.form.DateTextBox");
-        // dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.NumberSpinner");
         dojo.require("dijit.form.NumberTextBox");
         // dojo.require("dijit.form.Textarea");
@@ -277,8 +297,7 @@
         dojo.require("dijit.form.TimeTextBox");
         dojo.require("dojox.form.BusyButton");
         dojo.require("dojox.form.Rating");
-        // dojo.require("dojox.grid.EnhancedDataGrid");
-        dojo.require("dojox.grid.DataGrid");
+        dojo.require("dojox.grid.EnhancedGrid");
         // dojo.require("dojox.layout.ExpandoPane");
         // dojo.require("dojox.secure");
         // dojo.require("dojox.widget.Portlet");

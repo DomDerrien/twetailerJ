@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.TestMailConnector;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -31,6 +32,7 @@ public class TestCatchAllMailHandlerServlet {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
         helper.setUp();
     }
 

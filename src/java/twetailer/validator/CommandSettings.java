@@ -12,6 +12,12 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Define various enumerations and methods used to understand
+ * and process the text-based commands.
+ *
+ * @author Dom Derrien
+ */
 public class CommandSettings {
 
     public enum Prefix {
@@ -25,6 +31,7 @@ public class CommandSettings {
         locale,
         name,
         phoneNumber,
+        pointOfView,
         price,
         proposal,
         quantity,

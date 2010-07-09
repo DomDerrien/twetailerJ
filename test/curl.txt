@@ -1,0 +1,97 @@
+##########################################################################
+#
+# /API/Consumer/current: get Consumer information about the logged user
+#
+# /API/SaleAssociate/current: get SaleAssociate information about the logged user, if she's a sale associate
+#
+# /API/Demand/<id>: get identified Demand information
+# Parameters:
+#  - pointOfView=CONSUMER: (default) get Demand information if the logged user owns the Demand
+#  - pointOfView=SALE_ASSOCIATE: get Demand information if the logged user is a SaleAssociate who created a Proposal for this Demand -- some information being anonymized
+#  - pointOfView=ANONYMOUS: forbidden
+#
+# /API/Demand: use the given parameters to select Demands and return the corresponding information
+# Parameters:
+#  - onlyKeys: make the query returning only the identifiers of the selected Demands
+#  - anyState: do not limit the Demand selection among the active ones
+#  - maximumResults=<number>: limit the number of Demand information returned
+#  - pointOfView=CONSUMER: (default) get a set of Demand records created by the logged user
+#  - pointOfView=SALE_ASSOCIATE: get a set of Demand records for which the logged user has created a Proposal -- some information being anonymized
+#  - pointOfView=ANONYMOUS: get a set of Demand records for the specified location & range -- many information being anonymized
+#
+# /API/Location/<id>: get identified Location information
+#
+# /API/Location: use the given parameters to select Locations and return the corresponding information
+# Parameters:
+#  - onlyKeys: make the query returning only the identifiers of the selected Locations
+#  - hasStore: limit the selection to location with a Store
+#  - postalCode=<code>&countryCode=<code>: get the identified Location information
+#  - postalCode=<code>&countryCode=<code>&range=<number>&rangeUnit=<code>: get a set of Location records within the specified distance around the identified point
+#  - latitude=<value>&longitude=<value>&countryCode=<code>&range=<number>&rangeUnit=<code>: get a set of Location records within the specified distance around the identified point
+#
+# /API/Proposal/<id>: get identified Proposal information
+# Parameters:
+#  - pointOfView=CONSUMER: get Proposal information if the logged user owns the Demand associated to this Proposal -- some information anonymized
+#  - pointOfView=SALE_ASSOCIATE: (default) get Proposal information if the logged user owns it
+#  - pointOfView=ANONYMOUS: forbidden
+#
+# /API/Proposal: use the given parameters to select Proposals and return the corresponding information
+# Parameters:
+#  - onlyKeys: make the query returning only the identifiers of the selected Proposals
+#  - anyState: do not limit the Proposal selection among the active ones
+#  - maximumResults=<number>: limit the number of Demand information returned
+#  - pointOfView=CONSUMER: get a set of Proposal records if the logged user created the associated Demands -- some information being anonymized
+#  - pointOfView=SALE_ASSOCIATE: (default) get a set of Proposal records owned by the logged user
+#  - pointOfView=ANONYMOUS: get a set of Proposal records for the specified location & range -- many information being anonymized
+#
+# /API/Store/<id>: get identified Store information
+#
+# /API/Store: use the given parameters to select Stores and return the corresponding information
+# Parameters:
+#  - onlyKeys=<*>: make the query returning only the identifiers of the selected Stores
+#  - locationKeys=[<id0>, <id1>, etc.]: identifiers of the Locations where the Stores should be looked-up
+#
+##########################################################################
+
+#
+# curl parameters:
+# - Methods: (default: "--request GET"), "--request POST", "--request PUT", "--request DELETE"
+# - Source: http://curl.haxx.se/docs/manpage.html
+#
+# Twetailer API parameters:
+# - /API: path of the REST API, protected by OpenID 
+# - /shortcut: temporary shortcut, protected only by the given counsumerKey (passed as: shortId=<id>)
+# - /<entity>: entity name identifying the resource to manipulate; a value in {Consumer, SaleAssociate, Demand, Proposal, Store, Location}
+# - modificationDate=<iso-formatted-date>: allows to get only the most recently updated entities, useful to reduce the amount of data exchanged
+# - maximunResults=<integer>:
+# - anyState=<any-value>: to get entities whatever their state--by default, only active entities are returned
+# - onlyKeys=<any-value>: to get only the keys of the selected entities--by default, full records (sometimes filtered) are returned
+#
+
+# To expose information about the response
+curl --compressed --write-out "\nResponse code: %{http_code}\nSize download: %{size_download}\nTime total: %{time_total}\n" --request <optional_method> --data_binary <optional_parameters> <url>
+
+# Get the root index.jsp file
+curl --request GET http://localhost:9999/
+
+# Get information about the "logged" user
+curl --request GET http://localhost:9999/API/Consumer/current
+curl --request GET http://localhost:9999/shortcut/Consumer/current?shortId=1
+
+# Get the list of demands created by identified owner
+curl --request GET http://localhost:9999/API/Demand
+curl --request GET http://localhost:9999/shortcut/Demand?shortId=1
+
+# Get the list of recent demands created by identified owner
+curl --request GET "http://localhost:9999/API/Demand?modificationDate=2010-06-18T03:30:00&maximumResults=10"
+curl --request GET "http://localhost:9999/API/Demand?postalCode=H8P3R8&countryCode=CA"
+curl --request GET "http://localhost:9999/API/Demand?latitude=45.486&longitude=-73.794&range=15.1&rangeUnit=km&countryCode=CA"
+curl --request GET "http://localhost:9999/shortcut/Demand?shortId=1&modificationDate=2010-06-18T03:30:00&maximumResults=10"
+
+# Create a new location record
+curl --request POST --header "Content-Type: application/json" http://localhost:9999/API/Location --data "{'postalCode':'h2c3n6','countryCode':'CA'}"
+curl --request POST --header "Content-Type: application/json" http://localhost:9999/shortcut/Location?shortId=1 --data "{'postalCode':'h2c3n6','countryCode':'CA'}"
+
+# Update the identified location record
+curl --request PUT --header "Content-Type: application/json" http://localhost:9999/API/Location/<id> --data "{'key':<id>,'postalCode':'h2c3n6','countryCode':'CA'}"
+curl --request PUT --header "Content-Type: application/json" http://localhost:9999/shortcut/Location/<id>?shortId=1 --data "{'key':<id>,'postalCode':'h2c3n6','countryCode':'CA'}"

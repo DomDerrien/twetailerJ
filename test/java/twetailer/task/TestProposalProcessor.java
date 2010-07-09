@@ -19,10 +19,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
@@ -36,6 +36,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
@@ -51,19 +52,14 @@ public class TestProposalProcessor {
 
     @Before
     public void setUp() throws Exception {
-        ProposalProcessor._baseOperations = new MockBaseOperations();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
+
         BaseConnector.resetLastCommunicationInSimulatedMode();
     }
 
     @After
     public void tearDown() {
-        ProposalProcessor._baseOperations = new BaseOperations();
-        ProposalProcessor.proposalOperations = ProposalProcessor._baseOperations.getProposalOperations();
-        ProposalProcessor.locationOperations = ProposalProcessor._baseOperations.getLocationOperations();
-        ProposalProcessor.proposalOperations = ProposalProcessor._baseOperations.getProposalOperations();
-        ProposalProcessor.rawCommandOperations = ProposalProcessor._baseOperations.getRawCommandOperations();
-        ProposalProcessor.saleAssociateOperations = ProposalProcessor._baseOperations.getSaleAssociateOperations();
-        ProposalProcessor.storeOperations = ProposalProcessor._baseOperations.getStoreOperations();
     }
 
     @Test
@@ -71,35 +67,35 @@ public class TestProposalProcessor {
         new ProposalProcessor();
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testProcessNoProposal() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testProcessNoProposal() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 12345L;
 
         // ProposalOperations mock
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                throw new DataSourceException("Done in purpose");
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneValidProposalIa() throws DataSourceException {
+    public void testProcessOneValidProposalIa() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = null;
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "$";
+//        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -110,9 +106,9 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -120,11 +116,11 @@ public class TestProposalProcessor {
                 assertNotSame(0, proposal.getCriteria().size());
                 return proposal;
             }
-        };
+        });
 
         final Long rawCommandKey = 111L;
         final Source source = Source.simulated;
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -133,7 +129,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
@@ -142,9 +138,9 @@ public class TestProposalProcessor {
         demand.setState(State.published);
         demand.setSource(source);
         demand.setRawCommandId(rawCommandKey);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
@@ -154,19 +150,19 @@ public class TestProposalProcessor {
                 assertTrue(demand.getProposalKeys().contains(proposalKey));
                 return demand;
             }
-        };
+        });
 
         final Consumer consumer = new Consumer();
         consumer.setKey(ownerKey);
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final String name = "sgrognegneu";
-        ProposalProcessor.storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -175,7 +171,7 @@ public class TestProposalProcessor {
                 store.setName(name);
                 return store;
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
@@ -199,18 +195,18 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneValidProposalIb() throws DataSourceException {
+    public void testProcessOneValidProposalIb() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 0.0D;
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-        final String currency = "$";
+//        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -221,9 +217,9 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -231,11 +227,11 @@ public class TestProposalProcessor {
                 assertNotSame(0, proposal.getCriteria().size());
                 return proposal;
             }
-        };
+        });
 
         final Long rawCommandKey = 111L;
         final Source source = Source.simulated;
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -244,7 +240,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
@@ -253,9 +249,9 @@ public class TestProposalProcessor {
         demand.setState(State.published);
         demand.setSource(source);
         demand.setRawCommandId(rawCommandKey);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
@@ -265,19 +261,19 @@ public class TestProposalProcessor {
                 assertTrue(demand.getProposalKeys().contains(proposalKey));
                 return demand;
             }
-        };
+        });
 
         final Consumer consumer = new Consumer();
         consumer.setKey(ownerKey);
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final String name = "sgrognegneu";
-        ProposalProcessor.storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -286,7 +282,7 @@ public class TestProposalProcessor {
                 store.setName(name);
                 return store;
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
@@ -310,18 +306,18 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneValidProposalIIa() throws DataSourceException {
+    public void testProcessOneValidProposalIIa() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = null;
-        final String currency = "$";
+//        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -332,9 +328,9 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -342,11 +338,11 @@ public class TestProposalProcessor {
                 assertNotSame(0, proposal.getCriteria().size());
                 return proposal;
             }
-        };
+        });
 
         final Long rawCommandKey = 111L;
         final Source source = Source.simulated;
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -355,7 +351,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
@@ -364,9 +360,9 @@ public class TestProposalProcessor {
         demand.setState(State.published);
         demand.setSource(source);
         demand.setRawCommandId(rawCommandKey);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
@@ -376,19 +372,19 @@ public class TestProposalProcessor {
                 assertTrue(demand.getProposalKeys().contains(proposalKey));
                 return demand;
             }
-        };
+        });
 
         final Consumer consumer = new Consumer();
         consumer.setKey(ownerKey);
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final String name = "sgrognegneu";
-        ProposalProcessor.storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -397,7 +393,7 @@ public class TestProposalProcessor {
                 store.setName(name);
                 return store;
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
@@ -421,18 +417,18 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneValidProposalIIb() throws DataSourceException {
+    public void testProcessOneValidProposalIIb() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 0.0D;
-        final String currency = "$";
+//        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -443,9 +439,9 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -453,11 +449,11 @@ public class TestProposalProcessor {
                 assertNotSame(0, proposal.getCriteria().size());
                 return proposal;
             }
-        };
+        });
 
         final Long rawCommandKey = 111L;
         final Source source = Source.simulated;
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -466,7 +462,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
@@ -475,9 +471,9 @@ public class TestProposalProcessor {
         demand.setState(State.published);
         demand.setSource(source);
         demand.setRawCommandId(rawCommandKey);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
@@ -487,19 +483,19 @@ public class TestProposalProcessor {
                 assertTrue(demand.getProposalKeys().contains(proposalKey));
                 return demand;
             }
-        };
+        });
 
         final Consumer consumer = new Consumer();
         consumer.setKey(ownerKey);
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final String name = "sgrognegneu";
-        ProposalProcessor.storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -508,7 +504,7 @@ public class TestProposalProcessor {
                 store.setName(name);
                 return store;
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
@@ -532,18 +528,18 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneValidProposalIII() throws DataSourceException {
+    public void testProcessOneValidProposalIII() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 37.95D;
-        final String currency = "$";
+//        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -554,9 +550,9 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -564,11 +560,11 @@ public class TestProposalProcessor {
                 assertNotSame(0, proposal.getCriteria().size());
                 return proposal;
             }
-        };
+        });
 
         final Long rawCommandKey = 111L;
         final Source source = Source.simulated;
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -577,7 +573,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long ownerKey = 6666L;
         final Demand demand = new Demand();
@@ -586,9 +582,9 @@ public class TestProposalProcessor {
         demand.setState(State.published);
         demand.setSource(source);
         demand.setRawCommandId(rawCommandKey);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
@@ -598,19 +594,19 @@ public class TestProposalProcessor {
                 assertTrue(demand.getProposalKeys().contains(proposalKey));
                 return demand;
             }
-        };
+        });
 
         final Consumer consumer = new Consumer();
         consumer.setKey(ownerKey);
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final String name = "sgrognegneu";
-        ProposalProcessor.storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -619,7 +615,7 @@ public class TestProposalProcessor {
                 store.setName(name);
                 return store;
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
@@ -643,11 +639,11 @@ public class TestProposalProcessor {
                 expectedMessage,
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneInvalidProposal() throws DataSourceException {
+    public void testProcessOneInvalidProposal() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -664,24 +660,24 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
                 return proposal;
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneValidProposalWithFailureGettingDemand() throws DataSourceException {
+    public void testProcessOneValidProposalWithFailureGettingDemand() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -698,32 +694,32 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
                 return proposal;
             }
-        };
+        });
 
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
-                throw new DataSourceException("Done in purpose");
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose!");
             }
-        };
+        });
 
         ProposalProcessor.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    @SuppressWarnings("serial")
-    public void testProcessOneValidProposalWithFailureToSendMessageToConsumer() throws DataSourceException {
+    @SuppressWarnings({ "serial", "deprecation" })
+    public void testProcessOneValidProposalWithFailureToSendMessageToConsumer() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Date demandExpirationDate = new Date();
@@ -742,19 +738,19 @@ public class TestProposalProcessor {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
                 return proposal;
             }
-        };
+        });
 
         final Long rawCommandKey = 111L;
         final Source source = Source.twitter; // To be able to simulate the failure
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -763,7 +759,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long consumerKey = 12590L;
         final Demand demand = new Demand();
@@ -774,9 +770,9 @@ public class TestProposalProcessor {
         demand.setState(State.published);
         demand.setSource(source);
         demand.setRawCommandId(rawCommandKey);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
@@ -786,19 +782,19 @@ public class TestProposalProcessor {
                 assertEquals(demandKey, demand.getKey());
                 return demand;
             }
-        };
+        });
 
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final String name = "sgrognegneu";
-        ProposalProcessor.storeOperations = new StoreOperations() {
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
@@ -807,7 +803,7 @@ public class TestProposalProcessor {
                 store.setName(name);
                 return store;
             }
-        };
+        });
 
         final Twitter mockTwitterAccount = (new Twitter() {
             @Override
@@ -819,16 +815,16 @@ public class TestProposalProcessor {
 
         ProposalProcessor.process(proposalKey);
 
-        assertTrue(((MockBaseOperations) ProposalProcessor._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
-    public void testProcessOneValidProposalForAnInvalidDemandButWithCommunicationFailure() throws DataSourceException {
+    public void testProcessOneValidProposalForAnInvalidDemandButWithCommunicationFailure() throws DataSourceException, InvalidIdentifierException {
         final Long rawCommandKey = 111L;
         final Source source = Source.mail; // To be able to simulate the failure
-        ProposalProcessor.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -837,7 +833,7 @@ public class TestProposalProcessor {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
@@ -856,52 +852,61 @@ public class TestProposalProcessor {
         proposal.setTotal(total);
         proposal.setRawCommandId(rawCommandKey);
 
-        ProposalProcessor.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
                 return proposal;
             }
-        };
+        });
 
         final Long consumerKey = 12590L;
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setEmail("@@@@");
-        ProposalProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 return consumer;
             }
-        };
+        });
 
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(consumerKey);
         demand.setState(State.invalid);
         demand.setSource(source);
-        ProposalProcessor.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 return demand;
             }
-        };
+        });
 
         final Long saleAssociateKey = 444L;
         final SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setKey(saleAssociateKey);
-        saleAssociate.setEmail("@@@@");
-        saleAssociate.setPreferredConnection(Source.mail);
-        ProposalProcessor.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 return saleAssociate;
             }
-        };
+        });
+
+        final String name = "the store!";
+        final Store store = new Store();
+        store.setKey(storeKey);
+        store.setName(name);
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                return store;
+            }
+        });
 
         ProposalProcessor.process(proposalKey);
     }

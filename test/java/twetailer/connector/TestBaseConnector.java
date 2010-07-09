@@ -18,7 +18,6 @@ import twetailer.ClientException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
-import twetailer.dto.SaleAssociate;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -172,31 +171,6 @@ public class TestBaseConnector {
     }
 
     @Test
-    public void testCommunicateToSaleAssociateI() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), new String[0]);
-    }
-
-    @Test
-    public void testCommunicateToSaleAssociateII() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.twitter), new SaleAssociate(), new String[0]);
-    }
-
-    @Test
-    public void testCommunicateToSaleAssociateIII() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.jabber), new SaleAssociate(), new String[0]);
-    }
-
-    @Test
-    public void testCommunicateToSaleAssociateIV() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.mail), new SaleAssociate(), new String[0]);
-    }
-
-    @Test
-    public void testCommunicateToSaleAssociateV() throws ClientException {
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.mail), new SaleAssociate() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
-    }
-
-    @Test
     public void testCommunicateManyMessagesI() throws ClientException {
         BaseConnector.resetLastCommunicationInSimulatedMode();
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -206,14 +180,14 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1000));
 
         String first = "first";
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), new String[] { first });
+        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[] { first });
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1));
 
         String second = "second";
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), new String[] { second });
+        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[] { second });
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
@@ -232,7 +206,7 @@ public class TestBaseConnector {
 
         String first = "first";
         String second = "second";
-        BaseConnector.communicateToSaleAssociate(new RawCommand(Source.simulated), new SaleAssociate(), new String[] { first, second });
+        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[] { first, second });
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));

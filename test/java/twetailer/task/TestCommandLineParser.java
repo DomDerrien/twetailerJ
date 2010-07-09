@@ -22,13 +22,14 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.connector.BaseConnector;
-import twetailer.dao.BaseOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -105,21 +106,13 @@ public class TestCommandLineParser {
         // Invoke the defined logic to build the list of RegEx patterns for the simplified list of prefixes
         CommandLineParser.localizedPatterns.clear();
         CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
         BaseConnector.resetLastCommunicationInSimulatedMode();
-
-        CommandProcessor._baseOperations = new BaseOperations();
-        CommandProcessor.consumerOperations = CommandProcessor._baseOperations.getConsumerOperations();
-        CommandProcessor.demandOperations = CommandProcessor._baseOperations.getDemandOperations();
-        CommandProcessor.locationOperations = CommandProcessor._baseOperations.getLocationOperations();
-        CommandProcessor.proposalOperations = CommandProcessor._baseOperations.getProposalOperations();
-        CommandProcessor.rawCommandOperations = CommandProcessor._baseOperations.getRawCommandOperations();
-        CommandProcessor.saleAssociateOperations = CommandProcessor._baseOperations.getSaleAssociateOperations();
-        CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
-        // CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
         CommandLineParser.localizedPrefixes = new HashMap<Locale, JsonObject>();
         CommandLineParser.localizedActions = new HashMap<Locale, JsonObject>();
@@ -783,13 +776,12 @@ public class TestCommandLineParser {
         assertNotNull(response);
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "first second"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + CommandLineParser.PREFIX_SEPARATOR + "2025-01-01"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "4.0" + LocaleValidator.KILOMETER_UNIT));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        // State.published: not printed anymore ;)
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "ZZZ " + Locale.CANADA.getCountry()));
     }
 
@@ -819,7 +811,6 @@ public class TestCommandLineParser {
         assertNotNull(response);
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "1"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "first second"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "12345"));
@@ -827,7 +818,7 @@ public class TestCommandLineParser {
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.store.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "67890"));
         assertTrue(response.contains("sgrognegneu"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        // State.published: not printed anymore ;)
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$35.33"));
     }
 
@@ -849,13 +840,12 @@ public class TestCommandLineParser {
         assertNotNull(response);
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.expiration.toString()).getString(1) + CommandLineParser.PREFIX_SEPARATOR + "2025-01-01"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.range.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "4.0" + LocaleValidator.KILOMETER_UNIT));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        // State.published: not printed anymore ;)
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.locale.toString()).getString(0)));
         assertTrue(response.contains("#demo"));
     }
@@ -896,13 +886,12 @@ public class TestCommandLineParser {
         assertNotNull(response);
         assertNotSame(0, response.length());
         JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-        JsonObject states = CommandLineParser.localizedStates.get(locale);
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.proposal.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.tags.toString()).getString(0)));
         assertFalse(response.contains(prefixes.getJsonArray(Prefix.reference.toString()).getString(0)));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.price.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$25.99"));
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.quantity.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "3"));
-        assertTrue(response.contains(prefixes.getJsonArray(Prefix.state.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + states.getString(State.published.toString())));
+        // State.published: not printed anymore ;)
         assertTrue(response.contains(prefixes.getJsonArray(Prefix.total.toString()).getString(0) + CommandLineParser.PREFIX_SEPARATOR + "$35.33"));
         assertTrue(response.contains("#demo"));
     }
@@ -1017,6 +1006,8 @@ public class TestCommandLineParser {
                 "action:supply tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
                 Locale.ENGLISH
         );
+        // Cannot be tested by importing the tags for a SaleAssociate because the tags should be set manually
+        /*
         SaleAssociate saleAssociate = new SaleAssociate(data);
         assertNotNull(saleAssociate.getCriteria());
         assertEquals(4, saleAssociate.getCriteria().size());
@@ -1024,6 +1015,7 @@ public class TestCommandLineParser {
         assertTrue(saleAssociate.getCriteria().contains("two"));
         assertTrue(saleAssociate.getCriteria().contains("four"));
         assertTrue(saleAssociate.getCriteria().contains("five"));
+        */
     }
 
     @Test

@@ -11,9 +11,12 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dao.LocationOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Location;
 import twetailer.j2ee.MockLoginServlet;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -34,11 +37,12 @@ public class TestLocationRestlet {
     public void setUp() throws Exception {
         ops = new LocationRestlet();
         user = MockLoginServlet.buildMockOpenIdUser();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
-        LocationRestlet.locationOperations = new LocationOperations();
     }
 
     @Test
@@ -50,12 +54,12 @@ public class TestLocationRestlet {
 
     @Test
     public void testCreateResource() throws DataSourceException, ClientException {
-        LocationRestlet.locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(JsonObject location) {
                 return new Location();
             }
-        };
+        });
         ops.createResource(null, user);
     }
 
@@ -65,12 +69,12 @@ public class TestLocationRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testGetResource() throws DataSourceException {
+    public void testGetResource() throws InvalidIdentifierException {
         ops.getResource(null, "resourceId", user);
     }
 
     @Test(expected=RuntimeException.class)
-    public void testSelectResources() throws DataSourceException {
+    public void testSelectResources() throws DataSourceException, ClientException {
         ops.selectResources(new GenericJsonObject(), null);
     }
 

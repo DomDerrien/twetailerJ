@@ -23,6 +23,11 @@ import com.amazonaws.ipnreturnurlvalidation.SignatureUtilsForOutbound;
 import com.amazonaws.utils.PropertyBundle;
 import com.amazonaws.utils.PropertyKeys;
 
+/**
+ * Wrapper for the Amazon FPS library
+ *
+ * @author Dom Derrien
+ */
 public class AmazonFPS {
 
     public static final String CALLER_REFERENCE = "callerReference";

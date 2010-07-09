@@ -11,6 +11,15 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define a virtual Twetailer store that collects supplied tags in an area,
+ * made available for the search engine indexation process
+ *
+ * @see twetailer.dto.Store
+ * @see twetailer.j2ee.DirectoryServlet
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Seed implements TransferObject {
 

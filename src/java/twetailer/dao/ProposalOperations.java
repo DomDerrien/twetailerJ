@@ -11,12 +11,19 @@ import javax.jdo.Query;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
-import twetailer.task.CommandProcessor;
+import twetailer.task.step.BaseSteps;
+import twetailer.validator.CommandSettings.State;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Proposal entities
+ *
+ * @author Dom Derrien
+ */
 public class ProposalOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(ProposalOperations.class.getName());
 
@@ -111,11 +118,11 @@ public class ProposalOperations extends BaseOperations {
      * @param storeKey Identifier of the proposal owner's store
      * @return First proposal matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved proposal does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      *
      * @see ProposalOperations#getProposal(PersistenceManager, Long, Long)
      */
-    public Proposal getProposal(Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+    public Proposal getProposal(Long key, Long ownerKey, Long storeKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getProposal(pm, key, ownerKey, storeKey);
@@ -134,26 +141,29 @@ public class ProposalOperations extends BaseOperations {
      * @param storeKey Identifier of the proposal owner's store
      * @return First proposal matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved proposal does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      */
-    public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws DataSourceException {
+    public Proposal getProposal(PersistenceManager pm, Long key, Long ownerKey, Long storeKey) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the Proposal instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the Proposal instance");
         }
         getLogger().warning("Get Proposal instance with id: " + key);
         try {
             Proposal proposal = pm.getObjectById(Proposal.class, key);
             if (ownerKey != null && ownerKey != 0L && !ownerKey.equals(proposal.getOwnerKey()) && (storeKey == null || storeKey == 0L)) {
-                throw new DataSourceException("Mismatch of owner identifiers [" + ownerKey + "/" + proposal.getOwnerKey() + "]");
+                throw new InvalidIdentifierException("Mismatch of owner identifiers [" + ownerKey + "/" + proposal.getOwnerKey() + "]");
             }
             if (storeKey != null && storeKey != 0L && !storeKey.equals(proposal.getStoreKey()) && (ownerKey == null || ownerKey == 0L)) {
-                throw new DataSourceException("Mismatch of store identifiers [" + storeKey + "/" + proposal.getStoreKey() + "]");
+                throw new InvalidIdentifierException("Mismatch of store identifiers [" + storeKey + "/" + proposal.getStoreKey() + "]");
+            }
+            if (State.markedForDeletion.equals(proposal.getState())) {
+                throw new InvalidIdentifierException("Invalid key; entity marked for deletion.");
             }
             proposal.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return proposal;
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving proposal for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving proposal for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 
@@ -283,7 +293,7 @@ public class ProposalOperations extends BaseOperations {
     public List<Proposal> getProposals(List<Location> locations, int limit) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return getProposals(pm, locations, limit);
+            return getProposals(pm, new HashMap<String, Object>(), locations, limit);
         }
         finally {
             pm.close();
@@ -296,20 +306,19 @@ public class ProposalOperations extends BaseOperations {
      * Note that this command only return Proposal not canceled, not marked-for-deletion, not closed (see Proposal.stateCmdList attribute and Proposal.setState() method).
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param queryParameters Map of attributes and values to match
      * @param locations list of locations where expected proposals should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of proposals matching the given criteria
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
-    public List<Proposal> getProposals(PersistenceManager pm, List<Location> locations, int limit) throws DataSourceException {
+    public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> queryParameters, List<Location> locations, int limit) throws DataSourceException {
         List<Proposal> selection = new ArrayList<Proposal>();
         for (Location location: locations) {
             // Select the corresponding resources
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put(Proposal.LOCATION_KEY, location.getKey());
-            parameters.put(Proposal.STATE_COMMAND_LIST, Boolean.TRUE);
-            List<Proposal> proposals = CommandProcessor.proposalOperations.getProposals(pm, parameters, limit);
+            queryParameters.put(Proposal.LOCATION_KEY, location.getKey());
+            List<Proposal> proposals = BaseSteps.getProposalOperations().getProposals(pm, queryParameters, limit);
             // Copy into the list to be returned
             selection.addAll(proposals);
             if (limit != 0) {
@@ -348,11 +357,11 @@ public class ProposalOperations extends BaseOperations {
      * @param storeKey Identifier of the proposal owner's store
      * @return Updated resource
      *
-     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Proposal record
      *
      * @see ProposalOperations#updateProposal(PersistenceManager, Proposal)
      */
-    public Proposal updateProposal(JsonObject parameters, Long ownerKey, Long storeKey) throws DataSourceException {
+    public Proposal updateProposal(JsonObject parameters, Long ownerKey, Long storeKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return updateProposal(pm, parameters, ownerKey, storeKey);
@@ -372,11 +381,11 @@ public class ProposalOperations extends BaseOperations {
      * @param storeKey Identifier of the proposal owner's store
      * @return Updated resource
      *
-     * @throws DataSourceException If the identified resource does not belong to the issuing owner
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Proposal record
      *
      * @see ProposalOperations#updateProposal(PersistenceManager, Proposal)
      */
-    public Proposal updateProposal(PersistenceManager pm, JsonObject parameters, Long ownerKey, Long storeKey) throws DataSourceException {
+    public Proposal updateProposal(PersistenceManager pm, JsonObject parameters, Long ownerKey, Long storeKey) throws InvalidIdentifierException {
         // Get the original proposal
         Proposal updatedProposal = getProposal(pm, parameters.getLong(Proposal.KEY), ownerKey, storeKey);
         // Merge with the updates
@@ -421,11 +430,11 @@ public class ProposalOperations extends BaseOperations {
      * @param key Identifier of the proposal
      * @param ownerKey Identifier of the proposal owner
      *
-     * @throws DataSourceException If the retrieved proposal does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Proposal record
      *
      * @see ProposalOperations#deleteProposal(PersistenceManager, Long, Long)
      */
-    public void deleteProposal(Long key, Long ownerKey) throws DataSourceException {
+    public void deleteProposal(Long key, Long ownerKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             deleteProposal(pm, key, ownerKey);
@@ -442,12 +451,12 @@ public class ProposalOperations extends BaseOperations {
      * @param key Identifier of the proposal
      * @param ownerKey Identifier of the proposal owner
      *
-     * @throws DataSourceException If the retrieved proposal does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Proposal record
      *
      * @see ProposalOperations#getProposals(PersistenceManager, Long, Long, Long)
      * @see ProposalOperations#deleteProposal(PersistenceManager, Proposal)
      */
-    public void deleteProposal(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+    public void deleteProposal(PersistenceManager pm, Long key, Long ownerKey) throws InvalidIdentifierException {
         Proposal proposal = getProposal(pm, key, ownerKey, null);
         deleteProposal(pm, proposal);
     }

@@ -23,10 +23,10 @@ import org.junit.Test;
 import twetailer.DataSourceException;
 import twetailer.connector.TestMailConnector;
 import twetailer.connector.TwitterConnector;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
+import twetailer.task.step.BaseSteps;
 import twitter4j.MockTwitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -44,17 +44,16 @@ public class TestTwitterMailNotifHandlerServlet {
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
-
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
         helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        TwitterMailNotificationHandlerServlet._baseOperations = new BaseOperations();
-        TwitterMailNotificationHandlerServlet.consumerOperations = TwitterMailNotificationHandlerServlet._baseOperations.getConsumerOperations();
     }
 
     @Test
@@ -90,7 +89,7 @@ public class TestTwitterMailNotifHandlerServlet {
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
         final Long consumerKey = 8888L;
-        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -104,8 +103,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
+        });
 
         servlet.doPost(request, null);
 
@@ -145,7 +143,7 @@ public class TestTwitterMailNotifHandlerServlet {
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
         final Long consumerKey = 8888L;
-        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -162,8 +160,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 fail("Call not expected!");
                 return consumer;
             }
-        };
-        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
+        });
 
         servlet.doPost(request, null);
 
@@ -202,7 +199,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
-        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -214,8 +211,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 fail("Call not expected!");
                 return consumer;
             }
-        };
-        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
+        });
 
         servlet.doPost(request, null);
 
@@ -254,7 +250,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         TwitterMailNotificationHandlerServlet servlet = new TwitterMailNotificationHandlerServlet();
 
-        TwitterMailNotificationHandlerServlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -266,8 +262,7 @@ public class TestTwitterMailNotifHandlerServlet {
                 fail("Call not expected!");
                 return consumer;
             }
-        };
-        TwitterMailNotificationHandlerServlet._baseOperations = new MockBaseOperations();
+        });
 
         servlet.doPost(request, null);
 

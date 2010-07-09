@@ -210,29 +210,29 @@ public class TestCommand {
 
     @Test
     public void testGetSerializedTagsI() {
-        assertEquals("", Command.getSerializedTags(null));
+        assertEquals(Command.EMPTY_STRING, Command.getSerializedTags(null));
     }
 
     @Test
     public void testGetSerializedTagsII() {
-        assertEquals("", Command.getSerializedTags(new ArrayList<String>()));
+        assertEquals(Command.EMPTY_STRING, Command.getSerializedTags(new ArrayList<String>()));
     }
 
     @Test
     public void testGetSerializedTagsIII() {
-        assertEquals("", Command.getSerializedTags("Not important!", null));
+        assertEquals(Command.EMPTY_STRING, Command.getSerializedTags("Not important!", "Not important!", null));
     }
 
     @Test
     public void testGetSerializedTagsIV() {
-        assertEquals("", Command.getSerializedTags("Not important!", new ArrayList<String>()));
+        assertEquals(Command.EMPTY_STRING, Command.getSerializedTags("Not important!", "Not important!", new ArrayList<String>()));
     }
 
     @Test
     public void testGetSerializedHashTagsI() {
         Command command = new Command();
 
-        assertEquals("", command.getSerializedHashTags());
+        assertEquals(Command.EMPTY_STRING, command.getSerializedHashTags());
     }
 
     @Test
@@ -253,7 +253,7 @@ public class TestCommand {
         command.addHashTag("three");
 
         assertEquals("one two three", Command.getSerializedTags(command.getHashTags()));
-        assertEquals("#one #two #three", Command.getSerializedTags("#", command.getHashTags()));
+        assertEquals("#one #two #three", Command.getSerializedTags(Command.HASH, Command.SPACE, command.getHashTags()));
     }
 
     @Test

@@ -3,6 +3,17 @@ package twetailer.dto;
 import java.util.Arrays;
 import java.util.List;
 
+//
+// TODO: move this class in Settings and have the list as an attribute there
+//
+
+/**
+ * Define the list of supported hash tags
+ *
+ * @see twetailer.dto.Commnad
+ *
+ * @author Dom Derrien
+ */
 public class HashTag {
 
     public final static String DEMO = "demo";

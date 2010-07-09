@@ -7,7 +7,6 @@ package twetailer.j2ee;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
@@ -16,12 +15,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.SaleAssociate;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.OpenIdServletFilter;
@@ -211,11 +210,7 @@ public class LoginServlet extends HttpServlet {
         request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
     }
 
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    public static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-
-    protected static final String AUTHENTICATED_CONSUMER_TWETAILER_ID = "authConsumer_tId";
+    protected static final String AUTHENTICATED_CONSUMER_ID = "authConsumer_tId";
 
     /**
      * Save the Consumer key as attribute of the OpenID user record
@@ -224,9 +219,10 @@ public class LoginServlet extends HttpServlet {
      */
     protected static void attachConsumerToSession(OpenIdUser user) {
         // Create only if does not yet exist, otherwise return the existing instance
-        Consumer consumer = consumerOperations.createConsumer((OpenIdUser) user);
+        Consumer consumer = BaseSteps.getConsumerOperations().createConsumer((OpenIdUser) user);
+        // TODO: put this Consumer record in MemCache
         // Attached the consumer identifier to the OpenID user record
-        user.setAttribute(AUTHENTICATED_CONSUMER_TWETAILER_ID, consumer.getKey());
+        user.setAttribute(AUTHENTICATED_CONSUMER_ID, consumer.getKey());
     }
 
     /**
@@ -236,7 +232,7 @@ public class LoginServlet extends HttpServlet {
      * @return The key of the Consumer instance attached to the OpenID user
      */
     public static Long getConsumerKey(OpenIdUser user) {
-        return (Long) user.getAttribute(AUTHENTICATED_CONSUMER_TWETAILER_ID);
+        return (Long) user.getAttribute(AUTHENTICATED_CONSUMER_ID);
     }
 
     /**
@@ -245,11 +241,11 @@ public class LoginServlet extends HttpServlet {
      * @param user OpenID user to create a Consumer instance for
      * @return Corresponding Consumer instance
      *
-     * @throws DataSourceException If the data retrieval fails
+     * @throws InvalidIdentifierException If the Consumer instance retrieval fails
      *
      * @see LoginServlet#getConsumer(PersistenceManager, OpenIdUser)
      */
-    public static Consumer getConsumer(OpenIdUser user) throws DataSourceException {
+    public static Consumer getConsumer(OpenIdUser user) throws InvalidIdentifierException {
         PersistenceManager pm = BaseOperations.getPersistenceManagerHelper();
         try {
             return getConsumer(user, pm);
@@ -267,14 +263,15 @@ public class LoginServlet extends HttpServlet {
      *           Should stay open for future usage of the connection
      * @return Corresponding Consumer instance
      *
-     * @throws DataSourceException If the data retrieval fails
+     * @throws InvalidIdentifierException If the Consumer instance retrieval fails
      */
-    public static Consumer getConsumer(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
-        return consumerOperations.getConsumer(pm, getConsumerKey(user));
+    public static Consumer getConsumer(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException {
+        // TODO: try to get the Consumer record from MemCache
+        return BaseSteps.getConsumerOperations().getConsumer(pm, getConsumerKey(user));
     }
 
     protected static final String AUTHENTICATED_SALE_ASSOCIATE_ID = "authSA_tId";
-    protected static final String NO_SALE_ASSOCIATE_ATTACHED = "authSA_none";
+    protected static final String SALE_ASSOCIATION_ALREADY_CHECKED = "authSA_alreadyChecked";
 
     /**
      * Get the key of the SaleAssociate instance for the OpenID user
@@ -282,13 +279,18 @@ public class LoginServlet extends HttpServlet {
      * @param user OpenID user to create a SaleAssociate instance for
      * @return Corresponding SaleAssociate key
      *
-     * @throws DataSourceException If the data retrieval fails
+     * @throws InvalidIdentifierException If the SaleAssociate instance retrieval fails
      *
      * @see LoginServlet#getSaleAssociateKey(PersistenceManager, OpenIdUser)
      */
-    public static Long getSaleAssociateKey(OpenIdUser user) throws DataSourceException {
-        // Delay the PersistenceManager instance creation because it's possible it's not required, because the SaleAssociate key has already been retreived for this session!
-        return getSaleAssociateKey(user, null);
+    public static Long getSaleAssociateKey(OpenIdUser user) throws InvalidIdentifierException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            return getSaleAssociateKey(user, pm);
+        }
+        finally {
+            pm.close();
+        }
     }
 
     /**
@@ -299,32 +301,15 @@ public class LoginServlet extends HttpServlet {
      *           Should stay open for future usage of the connection
      * @return Corresponding SaleAssociate key
      *
-     * @throws DataSourceException If the data retrieval fails
+     * @throws InvalidIdentifierException If the Consumer instance retrieval fails
      */
-    public static Long getSaleAssociateKey(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
-        boolean noSaleAssociateAttached = user.getAttribute(NO_SALE_ASSOCIATE_ATTACHED) != null; // "attribute != null" means: attribute already set with Boolean.TRUE
-        Long saleAssociateKey = (Long) user.getAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID);
-        if (!noSaleAssociateAttached && saleAssociateKey == null) {
-            // TODO: Use MemCache to limit the number of {consumerKey, saleAssociateKey} association lookup
-            PersistenceManager localPM = pm == null ? BaseOperations.getPersistenceManagerHelper() : null;
-            try {
-                Long consumerKey = getConsumerKey(user);
-                List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm == null ? localPM : pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                if (0 < saleAssociateKeys.size()) {
-                    user.setAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID, saleAssociateKeys.get(0));
-                    saleAssociateKey = saleAssociateKeys.get(0);
-                }
-                else {
-                    user.setAttribute(NO_SALE_ASSOCIATE_ATTACHED, Boolean.TRUE);
-                    saleAssociateKey = null;
-                }
-            }
-            finally {
-                if (pm == null) {
-                    localPM.close();
-                }
-            }
+    public static Long getSaleAssociateKey(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException {
+        if (user.getAttribute(SALE_ASSOCIATION_ALREADY_CHECKED) != null) {
+            return (Long) user.getAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID);
         }
+        Long saleAssociateKey = getConsumer(user, pm).getSaleAssociateKey();
+        user.setAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID, saleAssociateKey);
+        user.setAttribute(SALE_ASSOCIATION_ALREADY_CHECKED, Boolean.TRUE); // Won't be null at the next request
         return saleAssociateKey;
     }
 
@@ -334,11 +319,12 @@ public class LoginServlet extends HttpServlet {
      * @param user OpenID user to create a SaleAssociate instance for
      * @return Corresponding SaleAssociate instance or <code>null</code> if none is attached to the OpenID user
      *
-     * @throws DataSourceException If the data retrieval fails
+     * @throws InvalidIdentifierException If the SaleAssociate instance retrieval fails
+     * @throws ReservedOperationException
      *
      * @see LoginServlet#getSaleAssociate(PersistenceManager, OpenIdUser)
      */
-    public static SaleAssociate getSaleAssociate(OpenIdUser user) throws DataSourceException {
+    public static SaleAssociate getSaleAssociate(OpenIdUser user) throws InvalidIdentifierException, ReservedOperationException {
         PersistenceManager pm = BaseOperations.getPersistenceManagerHelper();
         try {
             return getSaleAssociate(user, pm);
@@ -356,10 +342,17 @@ public class LoginServlet extends HttpServlet {
      *           Should stay open for future usage of the connection
      * @return Corresponding SaleAssociate instance or <code>null</code> if none is attached to the OpenID user
      *
-     * @throws DataSourceException If the data retrieval fails
+     * @throws InvalidIdentifierException If the SaleAssociate instance retrieval fails
+     * @throws ReservedOperationException
      */
-    public static SaleAssociate getSaleAssociate(OpenIdUser user, PersistenceManager pm) throws DataSourceException {
-        Long saleAssociateKey = getSaleAssociateKey(user, pm);
-        return saleAssociateKey == null ? null : saleAssociateOperations.getSaleAssociate(pm, saleAssociateKey);
+    public static SaleAssociate getSaleAssociate(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException, ReservedOperationException {
+        // TODO: try to get the SaleAssociate record from MemCache
+        try {
+            Long saleAssociateKey = getSaleAssociateKey(user, pm);
+            return BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
+        }
+        catch (Exception ex) {
+            throw new ReservedOperationException("Cannot get the SaleAssociate record!");
+        }
     }
 }

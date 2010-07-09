@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javamocks.io.MockOutputStream;
 
@@ -30,8 +29,28 @@ import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
+/**
+ * Base class for all Twetailer REST servlet interaction model.
+ *
+ * Define the common servlet entry points and delegate the command
+ * process to the derived classes.
+ *
+ * Only the derived classes appear as servlet entry points (as defined
+ * in the <code>web.xml</code> configuration file). The path for the
+ * derived class should be determined by the entity each one controls
+ * (like "/Consumer" for the ConsumerRestlet).
+ *
+ * @see twetailer.j2ee.restlet.*
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public abstract class BaseRestlet extends HttpServlet {
+
+    public static final String ANY_STATE_PARAMETER_KEY = "anyState";
+    public static final String ONLY_KEYS_PARAMETER_KEY = "onlyKeys";
+    public static final String MAXIMUM_RESULTS_PARAMETER_KEY = "maximumResults";
+
     /**
      * Get the logging handler
      *

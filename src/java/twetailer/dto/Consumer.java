@@ -6,11 +6,19 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.LocaleValidator;
 
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define the attributes of a Twetailer consumer
+ *
+ * @see twetailer.dto.SaleAssociate
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Consumer extends Entity {
 
@@ -79,6 +87,16 @@ public class Consumer extends Entity {
     private String phoneNumber;
 
     public final static String PHONE_NUMBER = "phoneNb";
+
+    @Persistent
+    private Source preferredConnection = Source.mail;
+
+    public final static String PREFERRED_CONNECTION = "preferredConnection";
+
+    @Persistent
+    private Long saleAssociateKey;
+
+    public final static String SALE_ASSOCIATE_KEY = "saleAssociateKey";
 
     @Persistent
     private String twitterId;
@@ -171,12 +189,35 @@ public class Consumer extends Entity {
         this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
+    public Source getPreferredConnection() {
+        if (preferredConnection == null) {
+            return Source.mail;
+        }
+        return preferredConnection;
+    }
+
+    public void setPreferredConnection(Source preferredConnection) {
+        this.preferredConnection = preferredConnection;
+    }
+
+    public void setPreferredConnection(String preferredConnection) {
+        this.preferredConnection = Source.valueOf(preferredConnection);
+    }
+
+    public Long getSaleAssociateKey() {
+        return saleAssociateKey;
+    }
+
+    public void setSaleAssociateKey(Long saleAssociateKey) {
+        this.saleAssociateKey = saleAssociateKey;
+    }
+
     public String getTwitterId() {
         return twitterId;
     }
 
     public void setTwitterId(String twitterId) {
-        // Note: no normalization because the Twitter identifier is case sensitive!
+        // Note: no normalisation because the Twitter identifier is case sensitive!
         this.twitterId = twitterId == null || twitterId.length() == 0 ? null : twitterId;
     }
 
@@ -190,6 +231,8 @@ public class Consumer extends Entity {
         out.put(NAME, getName());
         out.put(OPEN_ID, getOpenID());
         out.put(PHONE_NUMBER, getPhoneNumber());
+        out.put(PREFERRED_CONNECTION, getPreferredConnection().toString());
+        if (getSaleAssociateKey() != null) { out.put(SALE_ASSOCIATE_KEY, getSaleAssociateKey()); }
         out.put(TWITTER_ID, getTwitterId());
         return out;
     }
@@ -202,8 +245,16 @@ public class Consumer extends Entity {
         if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); }
+        if (getKey() == null && in.containsKey(OPEN_ID)) {
+            // Cannot change once set at creation time
+            setOpenID(in.getString(OPEN_ID));
+        }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
+        if (getKey() == null && in.containsKey(SALE_ASSOCIATE_KEY)) {
+            // Cannot change once set at creation time
+            setSaleAssociateKey(in.getLong(SALE_ASSOCIATE_KEY));
+        }
         if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
 
         // Shortcut

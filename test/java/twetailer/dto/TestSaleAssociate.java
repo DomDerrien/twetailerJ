@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.connector.BaseConnector.Source;
+import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -29,7 +29,8 @@ import domderrien.jsontools.JsonParser;
 
 public class TestSaleAssociate {
 
-    private static LocalServiceTestHelper  helper;
+    private static LocalServiceTestHelper helper;
+    private static Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -63,17 +64,10 @@ public class TestSaleAssociate {
     Long consumerKey = 67890L;
     Long creatorKey = 12345L;
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
-    String email = "d.d@d.dom";
-    String imId = "ddd";
     Boolean isStoreAdmin = Boolean.TRUE;
-    String language = Locale.FRENCH.getLanguage();
     Long locationKey = 12345L;
-    String name = "dom";
-    String openID = "http://dom.my-openid.org";
-    String phoneNumber = "514-123-4567 #890";
     Long storeKey = 54321L;
     Long score = 5L;
-    String twitterId = "Ryan";
 
     @Test
     public void testAccessors() {
@@ -81,78 +75,65 @@ public class TestSaleAssociate {
 
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
-        object.setCriteria(criteria);
-        object.setEmail(email);
-        object.setJabberId(imId);
+        object.setCriteria(criteria, collator);
         object.setIsStoreAdmin(isStoreAdmin);
-        object.setLanguage(language);
         object.setLocationKey(locationKey);
-        object.setName(name);
-        object.setOpenID(openID);
-        object.setPhoneNumber(phoneNumber);
         object.setStoreKey(storeKey);
         object.setScore(score);
-        object.setTwitterId(twitterId);
 
         assertEquals(consumerKey, object.getConsumerKey());
         assertEquals(creatorKey, object.getCreatorKey());
         assertEquals(criteria, object.getCriteria());
-        assertEquals(email, object.getEmail());
-        assertEquals(imId, object.getJabberId());
         assertEquals(isStoreAdmin, object.getIsStoreAdmin());
-        assertEquals(language, object.getLanguage());
         assertEquals(locationKey, object.getLocationKey());
-        assertEquals(name, object.getName());
-        assertEquals(name, object.getName());
         assertEquals(storeKey, object.getStoreKey());
         assertEquals(score, object.getScore());
-        assertEquals(twitterId, object.getTwitterId());
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testResetCriteriaI() {
         SaleAssociate object = new SaleAssociate();
 
-        object.addCriterion(null);
+        object.addCriterion(null, collator);
         assertEquals(0, object.getCriteria().size());
 
-        object.addCriterion("");
+        object.addCriterion("", collator);
         assertEquals(0, object.getCriteria().size());
 
-        object.addCriterion("first");
+        object.addCriterion("first", collator);
         assertEquals(1, object.getCriteria().size());
 
-        object.addCriterion("first"); // Add it twice
+        object.addCriterion("first", collator); // Add it twice
         assertEquals(1, object.getCriteria().size());
 
-        object.addCriterion("FiRsT"); // Add it twice, mixed case
+        object.addCriterion("FiRsT", collator); // Add it twice, mixed case
         assertEquals(1, object.getCriteria().size());
 
-        object.addCriterion("second");
+        object.addCriterion("second", collator);
         assertEquals(2, object.getCriteria().size());
 
-        object.removeCriterion("first"); // Remove first
+        object.removeCriterion("first", collator); // Remove first
         assertEquals(1, object.getCriteria().size());
 
-        object.addCriterion("Troisième");
+        object.addCriterion("Troisième", collator);
         assertEquals(2, object.getCriteria().size());
 
-        object.addCriterion("TROISIÈME");
+        object.addCriterion("TROISIÈME", collator);
         assertEquals(2, object.getCriteria().size());
 
-        object.removeCriterion("TROISIÈME"); // Remove mixed case and disparate accents
+        object.removeCriterion("TROISIÈME", collator); // Remove mixed case and disparate accents
         assertEquals(1, object.getCriteria().size());
 
-        object.removeCriterion(null);
+        object.removeCriterion(null, collator);
         assertEquals(1, object.getCriteria().size());
 
-        object.removeCriterion("");
+        object.removeCriterion("", collator);
         assertEquals(1, object.getCriteria().size());
 
         object.resetCriteria(); // Reset all
         assertEquals(0, object.getCriteria().size());
 
-        object.setCriteria(null); // Failure!
+        object.setCriteria(null, collator); // Failure!
     }
 
     @Test
@@ -160,21 +141,14 @@ public class TestSaleAssociate {
         SaleAssociate object = new SaleAssociate();
 
         object.resetLists(); // To force the criteria list creation
-        object.addCriterion("first");
+        object.addCriterion("first", collator);
         assertEquals(1, object.getCriteria().size());
 
         object.resetLists(); // To be sure there's no error
-        object.removeCriterion("first"); // Remove first
+        object.removeCriterion("first", collator); // Remove first
 
         object.resetLists(); // To be sure there's no error
         object.resetCriteria(); // Reset all
-    }
-
-    @Test
-    public void testGetLocale() {
-        SaleAssociate object = new SaleAssociate();
-        object.setLanguage(language);
-        assertEquals(Locale.FRENCH, object.getLocale());
     }
 
     @Test
@@ -183,34 +157,21 @@ public class TestSaleAssociate {
 
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
-        object.setCriteria(criteria);
-        object.setEmail(email);
-        object.setJabberId(imId);
+        object.setCriteria(new ArrayList<String>(), collator); // Only null or empty list can be transfered, actual supplied keywords must be transfered manually
         object.setIsStoreAdmin(isStoreAdmin);
-        object.setLanguage(language);
         object.setLocationKey(locationKey);
-        object.setName(name);
-        object.setOpenID(openID);
-        object.setPhoneNumber(phoneNumber);
         object.setStoreKey(storeKey);
         object.setScore(score);
-        object.setTwitterId(twitterId);
 
         SaleAssociate clone = new SaleAssociate(object.toJson());
 
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(creatorKey, clone.getCreatorKey());
-        assertEquals(criteria, clone.getCriteria());
-        assertEquals(email, clone.getEmail());
-        assertEquals(imId, clone.getJabberId());
+        assertEquals(0, clone.getCriteria().size());
         assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
-        assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
-        assertEquals(name, clone.getName());
-        assertEquals(name, clone.getName());
         assertEquals(storeKey, clone.getStoreKey());
         assertEquals(score, clone.getScore());
-        assertEquals(twitterId, clone.getTwitterId());
     }
 
     @Test
@@ -225,7 +186,6 @@ public class TestSaleAssociate {
         assertNull(object.getLocationKey());
         assertNull(object.getStoreKey());
         assertNull(object.getScore());
-        assertNull(object.getTwitterId());
 
         SaleAssociate clone = new SaleAssociate(object.toJson());
 
@@ -235,14 +195,15 @@ public class TestSaleAssociate {
         assertNull(clone.getLocationKey());
         assertNull(clone.getStoreKey());
         assertNull(clone.getScore());
-        assertNull(clone.getTwitterId());
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testSetPreferredConnection() {
+    public void testJsonCommandsIII() {
         SaleAssociate object = new SaleAssociate();
 
-        object.setPreferredConnection((Source) null);
+        object.setCriteria(criteria, collator); // Supplied keywords must be transfered manually
+
+        new SaleAssociate(object.toJson());
     }
 
     @Test
@@ -257,9 +218,9 @@ public class TestSaleAssociate {
     @Test
     public void testGetSerialized() {
         SaleAssociate saleAssociate = new SaleAssociate();
-        saleAssociate.addCriterion("one");
-        saleAssociate.addCriterion("two");
-        saleAssociate.addCriterion("three");
+        saleAssociate.addCriterion("one", collator);
+        saleAssociate.addCriterion("two", collator);
+        saleAssociate.addCriterion("three", collator);
 
         assertEquals("one two three", saleAssociate.getSerializedCriteria());
     }
@@ -274,17 +235,5 @@ public class TestSaleAssociate {
         assertFalse(saleAssociate.getIsStoreAdmin());
         saleAssociate.setIsStoreAdmin(true);
         assertTrue(saleAssociate.getIsStoreAdmin());
-    }
-
-    @Test
-    public void testGetLocatorI() {
-        assertNotNull(new SaleAssociate().getCollator());
-    }
-
-    @Test
-    public void testGetLocatorII() {
-        SaleAssociate saleAssociate = new SaleAssociate();
-        Collator collator = saleAssociate.getCollator();
-        assertEquals(collator, saleAssociate.getCollator());
     }
 }

@@ -11,12 +11,27 @@ import com.google.appengine.api.datastore.Text;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define the attributes of a sale associate proposal
+ *
+ * @see twetailer.dto.Command
+ * @see twetailer.dto.Demamd
+ * @see twetailer.dto.Payment
+ * @see twetailer.dto.SaleAssociate
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Proposal extends Command {
 
     private Text AWSCBUIURL;
 
     public static final String AWSCBUIURL_KEY = "AWSCBUIURL";
+
+    @Persistent
+    private Long consumerKey;
+
+    public static final String CONSUMER_KEY = "consumerKey";
 
     @Persistent
     private Long demandKey;
@@ -77,6 +92,17 @@ public class Proposal extends Command {
         AWSCBUIURL = aWSCBUIURL == null || aWSCBUIURL.length() == 0 ? null : new Text(aWSCBUIURL);
     }
 
+    public Long getConsumerKey() {
+        return consumerKey;
+    }
+
+    public void setConsumerKey(Long consumerKey) {
+        if (consumerKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'consumerKey'");
+        }
+        this.consumerKey = consumerKey;
+    }
+
     public Long getDemandKey() {
         return demandKey;
     }
@@ -120,6 +146,7 @@ public class Proposal extends Command {
         if (AWSCBUIURL != null) {
             out.put(AWSCBUIURL_KEY, getAWSCBUIURL());
         }
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         out.put(PRICE, getPrice());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
@@ -130,14 +157,19 @@ public class Proposal extends Command {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
-        if (in.containsKey(DEMAND_KEY)) { setDemandKey(in.getLong(DEMAND_KEY)); }
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (getKey() == null && in.containsKey(DEMAND_KEY)) {
+            setDemandKey(in.getLong(DEMAND_KEY)); // Can only be set at creation time
+        }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }
-        if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
+        // if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); } // Set by the system from the SaleAssociate own storeKey
         if (in.containsKey(TOTAL)) { setTotal(in.getDouble(TOTAL)); }
 
         // Shortcut
         if (in.containsKey(PROPOSAL_KEY)) { setKey(in.getLong(PROPOSAL_KEY)); }
-        if (in.containsKey(DEMAND_REFERENCE)) { setDemandKey(in.getLong(DEMAND_REFERENCE)); }
+        if (getKey() == null && in.containsKey(DEMAND_REFERENCE)) {
+            setDemandKey(in.getLong(DEMAND_REFERENCE)); // Shortcut; can only be set at creation time
+        }
 
         return this;
     }

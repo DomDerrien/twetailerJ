@@ -7,11 +7,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.util.logging.MockLogger;
 
-import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -22,9 +22,11 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -45,6 +47,7 @@ public class TestStoreOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -118,7 +121,7 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testGetI() throws DataSourceException {
+    public void testGetI() throws InvalidIdentifierException {
         StoreOperations ops = new StoreOperations();
         Store item = ops.createStore(new Store());
 
@@ -127,18 +130,18 @@ public class TestStoreOperations {
         assertEquals(item.getKey(), selected.getKey());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetII() throws InvalidIdentifierException {
         new StoreOperations().getStore(null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetIII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIII() throws InvalidIdentifierException {
         new StoreOperations().getStore(0L);
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetIV() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIV() throws InvalidIdentifierException {
         new StoreOperations().getStore(888L);
     }
 
@@ -213,7 +216,7 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testGetsExtendedI() throws DataSourceException {
+    public void testGetsExtendedI() throws InvalidIdentifierException, DataSourceException {
         //
         // Get all stores from one location
         //
@@ -248,7 +251,7 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testGetsExtendedII() throws DataSourceException {
+    public void testGetsExtendedII() throws DataSourceException, InvalidIdentifierException {
         //
         // Get just one store from one location
         //
@@ -282,7 +285,7 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testGetsExtendedIII() throws DataSourceException {
+    public void testGetsExtendedIII() throws DataSourceException, InvalidIdentifierException {
         //
         // Get limited number of stores from many locations
         //
@@ -336,7 +339,7 @@ public class TestStoreOperations {
                 return pm; // Return always the same object to be able to verify it has been closed
             }
             @Override
-            public List<Store> getStores(PersistenceManager pm, List<Location> locations, int limit) {
+            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
                 throw new RuntimeException("Done in purpose");
             }
         };
@@ -372,7 +375,7 @@ public class TestStoreOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testDeleteWithFailureI() throws DataSourceException {
+    public void testDeleteWithFailureI() throws DataSourceException, InvalidIdentifierException {
         StoreOperations ops = new StoreOperations() {
             @Override
             public void deleteStore(PersistenceManager pm, Long key) {
@@ -383,11 +386,11 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testDeleteI() throws DataSourceException {
+    public void testDeleteI() throws DataSourceException, InvalidIdentifierException {
         final Long storeKey = 54657L;
         StoreOperations ops = new StoreOperations() {
             @Override
-            public Store getStore(PersistenceManager pm, Long key) throws DataSourceException {
+            public Store getStore(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(storeKey, key);
                 Store store = new Store();
                 store.setKey(storeKey);
@@ -402,7 +405,7 @@ public class TestStoreOperations {
     }
 
     @Test
-    public void testDeleteII() throws DataSourceException {
+    public void testDeleteII() throws DataSourceException, InvalidIdentifierException {
         final String name = "name";
         Store toBeCreated = new Store();
         toBeCreated.setName(name);

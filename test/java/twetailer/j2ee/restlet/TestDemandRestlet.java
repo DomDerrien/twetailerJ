@@ -23,17 +23,17 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dto.Command;
-import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Proposal;
 import twetailer.j2ee.MockLoginServlet;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -54,14 +54,12 @@ public class TestDemandRestlet {
     public void setUp() throws Exception {
         ops = new DemandRestlet();
         user = MockLoginServlet.buildMockOpenIdUser();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
-        DemandRestlet._baseOperations = new BaseOperations();
-        DemandRestlet.consumerOperations = DemandRestlet._baseOperations.getConsumerOperations();
-        DemandRestlet.demandOperations = DemandRestlet._baseOperations.getDemandOperations();
-        DemandRestlet.proposalOperations = DemandRestlet._baseOperations.getProposalOperations();
     }
 
     @Test
@@ -78,7 +76,7 @@ public class TestDemandRestlet {
         final JsonObject proposedParameters = new GenericJsonObject();
         final Source source = Source.simulated;
         final Long resourceId = 12345L;
-        DemandRestlet.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 return proposedPM;
@@ -95,7 +93,7 @@ public class TestDemandRestlet {
                 temp.setSource(source);
                 return temp;
             }
-        };
+        });
 
         JsonObject returnedDemand = ops.createResource(proposedParameters, user);
         assertTrue(proposedPM.isClosed());
@@ -106,6 +104,7 @@ public class TestDemandRestlet {
         assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), returnedDemand.getLong(Command.OWNER_KEY));
     }
 
+    /**** ddd
     @Test(expected=RuntimeException.class)
     public void testCreateResourceIII() throws DataSourceException, ClientException {
         final JsonObject proposedParameters = new GenericJsonObject();
@@ -117,6 +116,7 @@ public class TestDemandRestlet {
         };
         ops.createResource(proposedParameters, user);
     }
+    ddd *******/
 
     @Test(expected=ClientException.class)
     public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
@@ -158,12 +158,12 @@ public class TestDemandRestlet {
         // Just Demand deletion
         //
         final Long demandKey = 12345L;
-        DemandRestlet.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+            public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
             }
-        };
+        });
 
         ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, MockLoginServlet.DEFAULT_CONSUMER_KEY, true);
     }
@@ -174,13 +174,13 @@ public class TestDemandRestlet {
         // Demand without Proposals
         //
         final Long demandKey = 12345L;
-        DemandRestlet.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+            public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
             }
-        };
-        DemandRestlet.proposalOperations = new ProposalOperations() {
+        });
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public List<Proposal> getProposals(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(Proposal.DEMAND_KEY, key);
@@ -188,7 +188,7 @@ public class TestDemandRestlet {
                 List<Proposal> proposals = new ArrayList<Proposal>();
                 return proposals;
             }
-        };
+        });
 
         ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, MockLoginServlet.DEFAULT_CONSUMER_KEY, false);
     }
@@ -199,15 +199,15 @@ public class TestDemandRestlet {
         // Demand without Proposals
         //
         final Long demandKey = 12345L;
-        DemandRestlet.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws DataSourceException {
+            public void deleteDemand(PersistenceManager pm, Long key, Long ownerKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
             }
-        };
+        });
         final Long proposalKey1 = 2222L;
         final Long proposalKey2 = 33333L;
-        DemandRestlet.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public List<Proposal> getProposals(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
                 assertEquals(Proposal.DEMAND_KEY, key);
@@ -226,14 +226,14 @@ public class TestDemandRestlet {
                 assertTrue(proposal.getKey() == proposalKey1 || proposal.getKey() == proposalKey2);
                 return proposal;
             }
-        };
+        });
 
         ops.delegateResourceDeletion(new MockPersistenceManager(), demandKey, MockLoginServlet.DEFAULT_CONSUMER_KEY, false);
     }
 
     @Ignore
     @Test(expected=RuntimeException.class)
-    public void testGetResource() throws DataSourceException {
+    public void testGetResource() throws DataSourceException, ClientException {
         ops.getResource(null, "12345", user);
     }
 
@@ -243,7 +243,7 @@ public class TestDemandRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testUpdateResource() throws DataSourceException {
+    public void testUpdateResource() throws DataSourceException, ClientException {
         ops.updateResource(null, "12345", user);
     }
 }

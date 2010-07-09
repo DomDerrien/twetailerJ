@@ -2,6 +2,11 @@ package twetailer;
 
 import twetailer.validator.CommandSettings.Action;
 
+/**
+ * To report issues related to inadequate access rights
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class ReservedOperationException extends ClientException {
 

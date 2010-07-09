@@ -16,6 +16,21 @@ import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Base class for all Twetailer entities (Seed excepted) stored in the back-end infrastructure
+ *
+ * @see twetailer.dto.Command
+ * @see twetailer.dto.Consumer
+ * @see twetailer.dto.Location
+ * @see twetailer.dto.Payment
+ * @see twetailer.dto.RawCommand
+ * @see twetailer.dto.SaleAssociate
+ * @see twetailer.dto.Seed
+ * @see twetailer.dto.Settings
+ * @see twetailer.dto.Store
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class Entity implements TransferObject {
@@ -152,17 +167,9 @@ public class Entity implements TransferObject {
         if (in.containsKey(KEY)) {
             setKey(in.getLong(KEY));
         }
-        if (in.containsKey(CREATION_DATE)) {
-            try {
-                Date creationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
-                setCreationDate(creationDate);
-            }
-            catch (ParseException e) {
-                // Ignored error, the date stays not set
-            }
-        }
+        // if (in.containsKey(CREATION_DATE)) { ... } // Cannot be set manually
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
-        if (in.containsKey(MARKED_FOR_DELETION)) { setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION)); }
+        // if (in.containsKey(MARKED_FOR_DELETION)) { ... } // Cannot be set manually
         updateModificationDate();
         return this;
     }

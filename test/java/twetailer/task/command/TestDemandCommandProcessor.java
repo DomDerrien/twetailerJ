@@ -2,14 +2,9 @@ package twetailer.task.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
@@ -19,22 +14,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
-import twetailer.dao.MockBaseOperations;
-import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandLineParser;
-import twetailer.task.CommandProcessor;
-import twetailer.task.RobotResponder;
 import twetailer.task.TestCommandProcessor;
-import twetailer.validator.CommandSettings.Action;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
@@ -69,7 +60,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -84,20 +75,16 @@ public class TestDemandCommandProcessor {
                 assertEquals(State.opened, demand.getState());
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 Location location = new Location();
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -125,7 +112,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -140,20 +127,16 @@ public class TestDemandCommandProcessor {
                 assertEquals(State.opened, demand.getState());
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 Location location = new Location();
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -181,7 +164,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -196,20 +179,16 @@ public class TestDemandCommandProcessor {
                 assertEquals(State.opened, demand.getState());
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 Location location = new Location();
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -236,7 +215,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -245,10 +224,7 @@ public class TestDemandCommandProcessor {
                 demand.setState(State.confirmed); // Too late to update it
                 return demand;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -279,7 +255,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -293,9 +269,9 @@ public class TestDemandCommandProcessor {
                 assertEquals(State.opened, demand.getState());
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
@@ -306,11 +282,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -336,7 +308,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) {
                 assertEquals(demandKey, key);
@@ -350,22 +322,18 @@ public class TestDemandCommandProcessor {
                 assertEquals(State.opened, demand.getState());
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
             }
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
-                throw new DataSourceException("Done in purpose");
+            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -385,6 +353,7 @@ public class TestDemandCommandProcessor {
         assertTrue(sentText.contains(demandKey.toString()));
     }
 
+    /***** ddd
     @Test
     public void testProcessFirstNewDemandI() throws Exception {
         final Long demandKey = 2222L;
@@ -392,7 +361,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 return new ArrayList<Demand>();
@@ -412,9 +381,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 Location location = new Location();
@@ -428,11 +397,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -459,7 +424,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 return new ArrayList<Demand>();
@@ -478,9 +443,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
@@ -491,11 +456,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -523,7 +484,7 @@ public class TestDemandCommandProcessor {
         final String countryCode = "CA";
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 return new ArrayList<Demand>();
@@ -543,9 +504,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 fail("Call not expected!");
@@ -560,11 +521,7 @@ public class TestDemandCommandProcessor {
                 location.setCountryCode(countryCode);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -595,7 +552,7 @@ public class TestDemandCommandProcessor {
         final String countryCode = "CA";
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 return new ArrayList<Demand>();
@@ -615,9 +572,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 assertEquals(locationKey.longValue(), command.getLong(Demand.LOCATION_KEY));
@@ -636,11 +593,7 @@ public class TestDemandCommandProcessor {
                 location.setCountryCode(countryCode);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -669,7 +622,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 Demand demand = new Demand() {
@@ -698,9 +651,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
@@ -711,11 +664,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -741,7 +690,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 Demand demand = new Demand();
@@ -767,9 +716,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
@@ -780,11 +729,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -810,7 +755,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 34354L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 Demand demand = new Demand();
@@ -836,9 +781,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
@@ -849,11 +794,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -880,7 +821,7 @@ public class TestDemandCommandProcessor {
         final Long consumerKey = 54682L;
 
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 Demand demand = new Demand();
@@ -906,9 +847,9 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject command) {
                 throw new IllegalArgumentException("Done in purpose");
@@ -919,11 +860,7 @@ public class TestDemandCommandProcessor {
                 location.setKey(locationKey);
                 return location;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -953,16 +890,16 @@ public class TestDemandCommandProcessor {
         final Long demandKey = 5555L;
 
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject parameters) {
                 Location location = new Location();
                 location.setKey(locationKey);
                 return location;
             }
-        };
+        });
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 List<Demand> demands = new ArrayList<Demand>();
@@ -974,11 +911,7 @@ public class TestDemandCommandProcessor {
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1008,25 +941,21 @@ public class TestDemandCommandProcessor {
         final Long demandKey = 5555L;
 
         // LocationOperations mock
-        final LocationOperations locationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location createLocation(PersistenceManager pm, JsonObject parameters) {
                 Location location = new Location();
                 location.setKey(locationKey);
                 return location;
             }
-        };
+        });
         // DemandOperations mock
-        final DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long demandKey, Long consumerKey) {
                 throw new RuntimeException("Done in purpose");
             }
-        };
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.demandOperations = demandOperations;
-        CommandProcessor.locationOperations = locationOperations;
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -1049,4 +978,5 @@ public class TestDemandCommandProcessor {
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_demand_invalid_demand_id", Locale.ENGLISH), sentText);
     }
+    ddd ****/
 }

@@ -1,41 +1,19 @@
 package twetailer.j2ee.restlet;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javamocks.util.logging.MockLogger;
-
-import javax.jdo.MockPersistenceManager;
-import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import twetailer.ClientException;
-import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.ProposalOperations;
-import twetailer.dao.SaleAssociateOperations;
-import twetailer.dto.Consumer;
-import twetailer.dto.Proposal;
-import twetailer.dto.SaleAssociate;
+import twetailer.dao.MockBaseOperations;
 import twetailer.j2ee.MockLoginServlet;
-import twetailer.j2ee.TestBaseRestlet;
+import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
-
-import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
-import domderrien.jsontools.JsonObject;
 
 public class TestSaleAssociateRestlet {
 
@@ -51,17 +29,12 @@ public class TestSaleAssociateRestlet {
     public void setUp() throws Exception {
         ops = new SaleAssociateRestlet();
         user = MockLoginServlet.buildMockOpenIdUser();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
     public void tearDown() throws Exception {
-        SaleAssociateRestlet.consumerRestlet = new ConsumerRestlet();
-        SaleAssociateRestlet.proposalRestlet = new ProposalRestlet();
-
-        SaleAssociateRestlet._baseOperations = new BaseOperations();
-        SaleAssociateRestlet.consumerOperations = SaleAssociateRestlet._baseOperations.getConsumerOperations();
-        SaleAssociateRestlet.demandOperations = SaleAssociateRestlet._baseOperations.getDemandOperations();
-        SaleAssociateRestlet.proposalOperations = SaleAssociateRestlet._baseOperations.getProposalOperations();
     }
 
     @Test
@@ -71,6 +44,7 @@ public class TestSaleAssociateRestlet {
         assertNull(null);
     }
 
+    /***** ddd
     @Test(expected=ClientException.class)
     public void testCreateResourceI() throws DataSourceException, ClientException {
         ops.createResource(null, user);
@@ -80,7 +54,6 @@ public class TestSaleAssociateRestlet {
     public void testCreateResourceII() throws DataSourceException, ClientException {
         user.setAttribute("info", null);
         ops.createResource(null, user);
-    }
 
     @Test(expected=ClientException.class)
     @SuppressWarnings("unchecked")
@@ -150,15 +123,15 @@ public class TestSaleAssociateRestlet {
         JsonObject data = new GenericJsonObject();
         data.put(SaleAssociate.STORE_KEY, storeKey);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, Consumer consumer) {
                 assertNull(consumer.getKey());
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
                 assertEquals(consumerKey.longValue(), parameters.getLong(SaleAssociate.CONSUMER_KEY));
@@ -166,7 +139,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -186,7 +159,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -194,8 +167,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -210,7 +183,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -230,7 +203,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -238,8 +211,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -251,7 +224,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -270,7 +243,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -278,8 +251,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -291,7 +264,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -312,7 +285,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -326,8 +299,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -342,7 +315,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -363,7 +336,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -377,8 +350,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -397,7 +370,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -418,7 +391,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -433,8 +406,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -451,7 +424,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -472,7 +445,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -487,8 +460,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -505,7 +478,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -525,7 +498,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -533,8 +506,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -555,7 +528,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(email, saleAssociate.getEmail());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -577,7 +550,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -592,8 +565,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -618,7 +591,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(email, saleAssociate.getEmail());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -639,7 +612,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -658,8 +631,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -667,7 +640,7 @@ public class TestSaleAssociateRestlet {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -688,7 +661,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -707,8 +680,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -727,7 +700,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -748,7 +721,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -762,8 +735,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -776,7 +749,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -797,7 +770,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -818,8 +791,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             boolean getSaleAssociatesCalled = false;
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
@@ -834,7 +807,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -855,7 +828,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.EMAIL, key);
@@ -867,8 +840,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -889,7 +862,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(email, saleAssociate.getEmail());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -911,7 +884,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.EMAIL, email);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -930,8 +903,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -952,7 +925,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(email, saleAssociate.getEmail());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -973,7 +946,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -987,8 +960,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1003,7 +976,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1024,7 +997,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1038,8 +1011,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1058,7 +1031,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1079,7 +1052,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1094,8 +1067,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1112,7 +1085,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1133,7 +1106,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1148,8 +1121,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1166,7 +1139,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1186,7 +1159,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1194,8 +1167,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1216,7 +1189,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(twitterId, saleAssociate.getTwitterId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1238,7 +1211,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1253,8 +1226,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1279,7 +1252,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(twitterId, saleAssociate.getTwitterId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1300,7 +1273,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1319,8 +1292,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1328,7 +1301,7 @@ public class TestSaleAssociateRestlet {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1349,7 +1322,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1368,8 +1341,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1388,7 +1361,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1409,7 +1382,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1423,8 +1396,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1437,7 +1410,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1458,7 +1431,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1479,8 +1452,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             boolean getSaleAssociatesCalled = false;
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
@@ -1495,7 +1468,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1516,7 +1489,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.TWITTER_ID, key);
@@ -1528,8 +1501,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1550,7 +1523,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(twitterId, saleAssociate.getTwitterId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1573,7 +1546,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.TWITTER_ID, twitterId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1592,8 +1565,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -1614,7 +1587,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(twitterId, saleAssociate.getTwitterId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1660,7 +1633,7 @@ public class TestSaleAssociateRestlet {
         //
         final Long saleAssociateKey = 11111L;
         final Long consumerKey = 2222L;
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
@@ -1701,7 +1674,7 @@ public class TestSaleAssociateRestlet {
         //
         final Long saleAssociateKey = 11111L;
         final Long consumerKey = 22222L;
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
@@ -1759,7 +1732,7 @@ public class TestSaleAssociateRestlet {
         final Long storeKey = 12345L;
         JsonObject data = new GenericJsonObject();
         data.put(SaleAssociate.STORE_KEY, storeKey);
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.STORE_KEY, key);
@@ -1793,7 +1766,7 @@ public class TestSaleAssociateRestlet {
         JsonObject parameters = new GenericJsonObject();
         parameters.put(SaleAssociate.STORE_KEY, saleAssociateKey);
 
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.STORE_KEY, key);
@@ -1826,7 +1799,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1840,8 +1813,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1856,7 +1829,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -1877,7 +1850,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1891,8 +1864,8 @@ public class TestSaleAssociateRestlet {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -1911,7 +1884,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1932,7 +1905,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -1947,8 +1920,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -1965,7 +1938,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -1986,7 +1959,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2001,8 +1974,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -2019,7 +1992,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -2039,7 +2012,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -2047,8 +2020,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -2069,7 +2042,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(jabberId, saleAssociate.getJabberId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -2091,7 +2064,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2106,8 +2079,8 @@ public class TestSaleAssociateRestlet {
                 List<Consumer> consumers = new ArrayList<Consumer>();
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -2132,7 +2105,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(jabberId, saleAssociate.getJabberId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -2153,7 +2126,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2172,8 +2145,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2181,7 +2154,7 @@ public class TestSaleAssociateRestlet {
                 List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -2202,7 +2175,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2221,8 +2194,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 if (SaleAssociate.CONSUMER_KEY.equals(key)) {
@@ -2241,7 +2214,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociate.setKey(saleAssociateKey);
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -2262,7 +2235,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -2276,8 +2249,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2290,7 +2263,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -2311,7 +2284,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2332,8 +2305,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             boolean getSaleAssociatesCalled = false;
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
@@ -2348,7 +2321,7 @@ public class TestSaleAssociateRestlet {
                 saleAssociates.add(saleAssociate);
                 return saleAssociates;
             }
-        };
+        });
 
         ops.delegateResourceCreation(new MockPersistenceManager(), data);
     }
@@ -2369,7 +2342,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.STORE_KEY, storeKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.JABBER_ID, key);
@@ -2381,8 +2354,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2403,7 +2376,7 @@ public class TestSaleAssociateRestlet {
                 assertEquals(jabberId, saleAssociate.getJabberId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
@@ -2426,7 +2399,7 @@ public class TestSaleAssociateRestlet {
         data.put(SaleAssociate.CONSUMER_KEY, consumerKey);
         data.put(SaleAssociate.JABBER_ID, jabberId);
 
-        SaleAssociateRestlet.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
@@ -2445,8 +2418,8 @@ public class TestSaleAssociateRestlet {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        SaleAssociateRestlet.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(SaleAssociate.CONSUMER_KEY, key);
@@ -2467,9 +2440,10 @@ public class TestSaleAssociateRestlet {
                 assertEquals(jabberId, saleAssociate.getJabberId());
                 return saleAssociate;
             }
-        };
+        });
 
         JsonObject resource = ops.delegateResourceCreation(new MockPersistenceManager(), data);
         assertEquals(saleAssociateKey.longValue(), resource.getLong(SaleAssociate.KEY));
     }
+    ddd ***/
 }

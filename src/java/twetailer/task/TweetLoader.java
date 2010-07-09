@@ -11,14 +11,11 @@ import javax.jdo.PersistenceManager;
 import twetailer.DataSourceException;
 import twetailer.connector.TwitterConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.RawCommandOperations;
-import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
@@ -26,13 +23,19 @@ import twitter4j.TwitterException;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
+/**
+ * Define the <code>cron</code> job logic which load
+ * the new direct messages (DM) sent to the Twetailer
+ * account on Twitter.
+ *
+ * Each DM is used to create a RawCommand that is
+ * scheduled for the task "/maezel/processCommand".
+ *
+ * @author Dom Derrien
+ */
 public class TweetLoader {
-    private static Logger log = Logger.getLogger(TweetLoader.class.getName());
 
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    protected static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
+    private static Logger log = Logger.getLogger(TweetLoader.class.getName());
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -48,14 +51,14 @@ public class TweetLoader {
      * @throws DataSourceException
      */
     public static Long loadDirectMessages() {
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Settings settings = settingsOperations.getSettings(pm);
+            Settings settings = BaseSteps.getSettingsOperations().getSettings(pm);
             Long sinceId = settings.getLastProcessDirectMessageId();
             Long lastId = loadDirectMessages(pm, sinceId);
             if (!lastId.equals(sinceId)) {
                 settings.setLastProcessDirectMessageId(lastId);
-                settings = settingsOperations.updateSettings(pm, settings);
+                settings = BaseSteps.getSettingsOperations().updateSettings(pm, settings);
             }
             return lastId;
         }
@@ -102,7 +105,7 @@ public class TweetLoader {
 
             // Get Twetailer account
             twitter4j.User sender = dm.getSender();
-            Consumer consumer = consumerOperations.createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
+            Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
 
             log.warning("DM emitter: " + consumer.getTwitterId());
             RawCommand rawCommand = new RawCommand(Source.twitter);
@@ -121,10 +124,10 @@ public class TweetLoader {
 
         // Create a task per command
         for(RawCommand rawCommand: extractedCommands) {
-            rawCommand = rawCommandOperations.createRawCommand(pm, rawCommand);
+            rawCommand = BaseSteps.getRawCommandOperations().createRawCommand(pm, rawCommand);
             log.warning("RawCommand created: " + rawCommand.getKey().toString());
 
-            Queue queue = _baseOperations.getQueue();
+            Queue queue = BaseSteps.getBaseOperations().getQueue();
             log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").

@@ -76,6 +76,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="ga_closeDialog_button" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Close Dialog</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="reset_button" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -111,6 +119,15 @@
             </tuv>
         </tu>
 
+        <tu tuid="openLink_button" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>Open link</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="refresh_button" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -140,6 +157,57 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Decline</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="shared_locale_view_map_link" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>View on a Map</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="shared_map_preview_dialog_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Locale Preview</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="shared_invalid_locale_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: postal code
+                {1}: country code
+            </note>
+            <tuv xml:lang="en">
+                <seg>Cannot get the geo location for {0}&#160;{1}. This is probably an invalid postal code.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="shared_cannot_get_geocoordinates_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Cannot get your geo-coordinates from the browser. You have to set the postal and country codes manually.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="shared_cannot_resolve_geocoordinates_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Cannot get the postal code and country code for the location resolved by your browser. You have to manually specify these codes.</seg>
             </tuv>
         </tu>
 
@@ -184,6 +252,56 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Language Selector</seg>
+            </tuv>
+        </tu>
+
+        <!-- ============ -->
+        <!-- Postal codes -->
+        <!-- ============ -->
+
+        <tu tuid="location_postalCode_regExp_CA" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                DO NOT TRANSLATE!
+                Regular expression used to determine a valid Canadian postal code
+            </note>
+            <tuv xml:lang="en">
+                <seg>[a-z,A-Z][0-9][a-z,A-Z] *[0-9][a-z,A-Z][0-9]</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="location_postalCode_invalid_CA" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>Message displayed when a Canadian postal code is invalid</note>
+            <tuv xml:lang="en">
+                <seg>Canadian postal code format: A0A 0A0, where A is a letter and 0 is a digit.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="location_postalCode_regExp_US" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                DO NOT TRANSLATE!
+                Regular expression used to determine a valid US zipcode
+            </note>
+            <tuv xml:lang="en">
+                <seg>[0-9][0-9][0-9][0-9][0-9]</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="location_postalCode_invalid_US" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>Message displayed when a Canadian postal code is invalid</note>
+            <tuv xml:lang="en">
+                <seg>US Zipcode format: 5 digits only.</seg>
             </tuv>
         </tu>
 
@@ -698,6 +816,26 @@
             </tuv>
         </tu>
 
+        <tu tuid="error_client_not_authenticated" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>Displayed in response to a HTTP status code 401 // Unauthorized</note>
+            <tuv xml:lang="en">
+                <seg>Your authentication token expired. Please, log in again.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="error_user_access_forbidden" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>Displayed in response to a HTTP status code 403 // Forbidden</note>
+            <tuv xml:lang="en">
+                <seg>Access to this page is reserved. You're about to be redirected to the corresponding page for Consumers.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="error_server_side_twitter_not_responding" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -944,30 +1082,12 @@
             </tuv>
         </tu>
 
-        <tu tuid="sep_advanced_form_locale_view_map" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <note/>
-            <tuv xml:lang="en">
-                <seg>View Locale on a Map</seg>
-            </tuv>
-        </tu>
-
         <tu tuid="sep_advanced_form_locale_hint" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Postal code and coutry code, to generate "H1X 2C6 CA" or "94523 US".</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="sep_locale_map_preview" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <note/>
-            <tuv xml:lang="en">
-                <seg>Locale Preview</seg>
+                <seg>Postal code and country code, to generate "H1X 2C6 CA" or "94523 US".</seg>
             </tuv>
         </tu>
 
@@ -1196,22 +1316,9 @@
             </tuv>
         </tu>
 
-        <tu tuid="sep_advanced_form_invalid_locale_message" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-tier">dojotk</prop>
-            <note>
-                {0}: postal code
-                {1}: country code
-            </note>
-            <tuv xml:lang="en">
-                <seg>Cannot get the geo location for {0}&#160;{1}. This is probably an invalid postal code.</seg>
-            </tuv>
-        </tu>
-
-        <!-- ========================== -->
-        <!-- Search engine landing page -->
-        <!-- ========================== -->
+        <!-- ============= -->
+        <!-- Golf consoles -->
+        <!-- ============= -->
 
         <tu tuid="ga_localized_page_name" datatype="Text">
             <prop type="x-version">1</prop>
@@ -1237,6 +1344,42 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Sorry, an error occured during the data loading...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandInfo" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label used a <fieldset/> label and introducing the demand attributes</note>
+            <tuv xml:lang="en">
+                <seg>Demand Information</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_proposalInfo" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label used a <fieldset/> label and introducing the proposal attributes</note>
+            <tuv xml:lang="en">
+                <seg>Proposal Information</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeInfo" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label used a <fieldset/> label and introducing the store attributes</note>
+            <tuv xml:lang="en">
+                <seg>Store Information</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_stateSelector_anyState" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label of a column header in the table of Demands</note>
+            <tuv xml:lang="en">
+                <seg>Any state</seg>
             </tuv>
         </tu>
 
@@ -1343,9 +1486,24 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
-            <note>Label of an item in the contextual menu for the table of Demands</note>
+            <note>
+                Action item for consumers
+            </note>
             <tuv xml:lang="en">
                 <seg>Create Demand</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_updateDemand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for consumers
+                {0}: demand key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Update Demand {0}</seg>
             </tuv>
         </tu>
 
@@ -1353,9 +1511,24 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
-            <note>Label of an item in the contextual menu for the table of Demands</note>
+            <note>
+                Action item for sale associates
+            </note>
             <tuv xml:lang="en">
                 <seg>Create Proposal</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_updateProposal" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for sale associates
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Update Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1364,7 +1537,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
-                Label of an item in the contextual menu for the table of Demands
+                Action item for consumers
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
@@ -1375,22 +1548,122 @@
         <tu tuid="ga_cmenu_declineDemand" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <note>Label of an item in the contextual menu for the table of Demands</note>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for sale associates
+                {0}: demand key
+            </note>
             <tuv xml:lang="en">
-                <seg>Decline Demand</seg>
+                <seg>Decline Demand {0}</seg>
             </tuv>
         </tu>
 
-        <tu tuid="ga_proposalForm_demandInfo" datatype="Text">
+        <tu tuid="ga_cmenu_declineProposal" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for consumers
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Decline Proposal {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_confirmProposal" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for consumers
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Confirm Proposal {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_cancelDemand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for consumers
+                {0}: demand key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Cancel Demand {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_cancelProposal" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for sale associates
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Cancel Proposal {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_closeDemand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for consumers
+                {0}: demand key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Close Demand {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_closeProposal" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                Action item for sale associates
+                {0}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>Close Proposal {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_cmenu_detectLocale" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label of an option to use browser capabilities to detect locale</note>
+            <tuv xml:lang="en">
+                <seg>Detect Locale</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_formTitle_creation" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Demand Information</seg>
+                <seg>Prepare your Tee-off request</seg>
             </tuv>
         </tu>
 
-        <tu tuid="ga_proposalForm_demandKey" datatype="Text">
+        <tu tuid="ga_demandForm_formTitle_edition" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Update your Tee-off request</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandKey" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -1399,7 +1672,16 @@
             </tuv>
         </tu>
 
-        <tu tuid="ga_proposalForm_demandQuantity" datatype="Text">
+        <tu tuid="ga_demandForm_demandState" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>State:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandQuantity" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -1408,7 +1690,61 @@
             </tuv>
         </tu>
 
-        <tu tuid="ga_proposalForm_demandCriteria" datatype="Text">
+        <tu tuid="ga_demandForm_demandTime" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Tee-off time:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandRegion" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Region:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandPostalCode" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Postal code:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandCountryCode" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Country:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandRange" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Distance around:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandModificationDate" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Last modification date:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandCriteria" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
@@ -1417,12 +1753,30 @@
             </tuv>
         </tu>
 
-        <tu tuid="ga_proposalForm_proposalInfo" datatype="Text">
+        <tu tuid="ga_proposalForm_formTitle_creation" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Proposal Information</seg>
+                <seg>Propose an open time slot</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_proposalForm_formTitle_edition" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Update your proposal</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_proposalForm_formTitle_view" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>View proposal details</seg>
             </tuv>
         </tu>
 
@@ -1498,7 +1852,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="ga_alert_askConfirmationOfProposalCancelling" datatype="Text">
+        <tu tuid="ga_alert_cancelPublishedProposal" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <note>
@@ -1506,7 +1860,76 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The Proposal:{0} you created and that has been communicated to the Demand:{1} owner is going to be cancelled. Do you want to continue?</seg>
+                <seg>The Proposal:{0} has already been communicated to the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_alert_cancelConfirmedDemand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: demand key
+                {1}: proposal key
+            </note>
+            <tuv xml:lang="en">
+                <seg>You have already confirmed the Demand:{0} with the Proposal:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_alert_cancelConfirmedProposal" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                {0}: proposal key
+                {1}: demand key
+            </note>
+            <tuv xml:lang="en">
+                <seg>The Proposal:{0} has already been accepted by the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeForm_storeKey" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Store Id:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeForm_storeName" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Name:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeForm_storeAddress" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Address:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeForm_storePhoneNumber" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Phone #:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeForm_storeUrl" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Website:</seg>
             </tuv>
         </tu>
 

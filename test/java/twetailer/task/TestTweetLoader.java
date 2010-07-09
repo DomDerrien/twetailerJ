@@ -19,7 +19,6 @@ import twetailer.DataSourceException;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.MockSettingsOperations;
@@ -28,9 +27,9 @@ import twetailer.dao.SettingsOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.task.step.BaseSteps;
 import twitter4j.DirectMessage;
 import twitter4j.MockDirectMessage;
-import twitter4j.internal.http.MockHttpResponse;
 import twitter4j.MockResponseList;
 import twitter4j.MockTwitter;
 import twitter4j.MockUser;
@@ -39,6 +38,7 @@ import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import twitter4j.internal.http.MockHttpResponse;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -58,16 +58,15 @@ public class TestTweetLoader {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
+        BaseSteps.setMockSettingsOperations(new MockSettingsOperations());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-
-        TweetLoader._baseOperations = new BaseOperations();
-        TweetLoader.consumerOperations = TweetLoader._baseOperations.getConsumerOperations();
-        TweetLoader.rawCommandOperations = TweetLoader._baseOperations.getRawCommandOperations();
-        TweetLoader.settingsOperations = TweetLoader._baseOperations.getSettingsOperations();
     }
 
     @Test
@@ -77,12 +76,12 @@ public class TestTweetLoader {
 
     @Test(expected=RuntimeException.class)
     public void testProcessBatchWithFailure() throws DataSourceException {
-        TweetLoader.settingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        };
+        });
 
         TweetLoader.loadDirectMessages();
     }
@@ -98,8 +97,6 @@ public class TestTweetLoader {
             }
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.settingsOperations = new MockSettingsOperations();
 
         TweetLoader.loadDirectMessages();
 
@@ -123,8 +120,6 @@ public class TestTweetLoader {
             }
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.settingsOperations = new MockSettingsOperations();
 
         TweetLoader.loadDirectMessages();
 
@@ -143,8 +138,6 @@ public class TestTweetLoader {
             }
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.settingsOperations = new MockSettingsOperations();
 
         try {
             TweetLoader.loadDirectMessages();
@@ -198,7 +191,7 @@ public class TestTweetLoader {
         // Inject the fake Twitter account
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
-        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
                 int twitterId = twitterAccount.getId();
@@ -208,21 +201,17 @@ public class TestTweetLoader {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
         // RawCommandOperations mock
         final Long rawCommandKey = 8888L;
-        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(senderScreenName, rawCommand.getEmitterId());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
-        // TweetLoader mock
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.consumerOperations = consumerOperations;
-        TweetLoader.rawCommandOperations = rawCommandOperations;
+        });
 
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages(new MockPersistenceManager(), 1L);
@@ -281,7 +270,7 @@ public class TestTweetLoader {
         // Inject the fake Twitter account
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
-        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
                 int twitterId = twitterAccount.getId();
@@ -291,21 +280,17 @@ public class TestTweetLoader {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
         // RawCommandOperations mock
         final Long rawCommandKey = 8888L;
-        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(senderScreenName, rawCommand.getEmitterId());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
-        // TweetLoader mock
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.consumerOperations = consumerOperations;
-        TweetLoader.rawCommandOperations = rawCommandOperations;
+        });
 
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages(new MockPersistenceManager(), 1L);
@@ -349,7 +334,7 @@ public class TestTweetLoader {
         // Inject the fake Twitter account
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
-        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
                 int twitterId = twitterAccount.getId();
@@ -359,20 +344,15 @@ public class TestTweetLoader {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
         // RawCommandOperations mock
-        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(Source.twitter, rawCommand.getSource());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
-        // TweetLoader mock
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.consumerOperations = consumerOperations;
-        TweetLoader.rawCommandOperations = rawCommandOperations;
-        TweetLoader.settingsOperations = new MockSettingsOperations();
+        });
 
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages();
@@ -416,7 +396,7 @@ public class TestTweetLoader {
         // Inject the fake Twitter account
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
         // ConsumerOperations mock
-        final ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer createConsumer(PersistenceManager pm, User twitterAccount) {
                 int twitterId = twitterAccount.getId();
@@ -426,20 +406,15 @@ public class TestTweetLoader {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
-        };
+        });
         // RawCommandOperations mock
-        final RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(Source.twitter, rawCommand.getSource());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
-        };
-        // TweetLoader mock
-        TweetLoader._baseOperations = new MockBaseOperations();
-        TweetLoader.consumerOperations = consumerOperations;
-        TweetLoader.rawCommandOperations = rawCommandOperations;
-        TweetLoader.settingsOperations = new MockSettingsOperations();
+        });
 
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages();
@@ -451,12 +426,12 @@ public class TestTweetLoader {
 
     @Test
     public void testFailingLoadDirectMessagesI() {
-        TweetLoader.settingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {
                 throw new DataSourceException("Done in purpose");
             }
-        };
+        });
 
         assertEquals(new Long(-1L), TweetLoader.loadDirectMessages());
 
@@ -465,12 +440,12 @@ public class TestTweetLoader {
     @Test
     @SuppressWarnings("serial")
     public void testFailingLoadDirectMessagesII() throws TwitterException {
-        TweetLoader.settingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {
                 return new Settings();
             }
-        };
+        });
 
         // To inject the mock account
         TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {

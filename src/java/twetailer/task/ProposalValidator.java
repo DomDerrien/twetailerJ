@@ -1,7 +1,7 @@
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
+import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
 import java.util.List;
@@ -12,14 +12,14 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.ProposalOperations;
-import twetailer.dao.SaleAssociateOperations;
+import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.dto.Consumer;
 import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 
@@ -29,13 +29,21 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Define the task with is invoked by methods in ProposalSteps
+ * every time a Proposal is updated significantly. If the Proposal
+ * instance is valid, the task "/maezel/processPublishedProposal"
+ * is scheduled to broadcast it to the corresponding Demand owner.
+ *
+ * @see twetailer.dto.Proposal
+ * @see twetailer.task.step.ProposalSteps
+ * @see twetailer.task.ProposalProcessor
+ *
+ * @author Dom Derrien
+ */
 public class ProposalValidator {
-    private static Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
+    private static Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -48,9 +56,10 @@ public class ProposalValidator {
      * @param proposalKey Identifier of the proposal to process
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(Long proposalKey) throws DataSourceException {
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+    public static void process(Long proposalKey) throws DataSourceException, InvalidIdentifierException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             process(pm, proposalKey);
         }
@@ -68,19 +77,21 @@ public class ProposalValidator {
      * @param proposalKey Identifier of the proposal to process
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(PersistenceManager pm, Long proposalKey) throws DataSourceException {
-        Proposal proposal = proposalOperations.getProposal(pm, proposalKey, null, null);
+    public static void process(PersistenceManager pm, Long proposalKey) throws DataSourceException, InvalidIdentifierException {
+        Proposal proposal = BaseSteps.getProposalOperations().getProposal(pm, proposalKey, null, null);
         if (CommandSettings.State.opened.equals(proposal.getState())) {
             Date nowDate = DateUtils.getNowDate();
             Long nowTime = nowDate.getTime() - 60*1000; // Minus 1 minute
             try {
-                SaleAssociate saleAssociate = saleAssociateOperations.getSaleAssociate(pm, proposal.getOwnerKey());
-                Locale locale = saleAssociate.getLocale();
+                SaleAssociate saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
+                Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
+                Locale locale = saConsumerRecord.getLocale();
                 String message = null;
 
                 // Temporary filter
-                filterHashTags(pm, saleAssociate, proposal);
+                filterHashTags(pm, saConsumerRecord, proposal);
 
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                 if (proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
@@ -105,19 +116,19 @@ public class ProposalValidator {
                     }
                     else {
                         try {
-                            demandOperations.getDemand(pm, demandKey, null);
+                            BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
                         }
-                        catch (DataSourceException ex) {
+                        catch (InvalidIdentifierException ex) {
                             String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
                             message = LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposalRef, demandRef }, locale);
                         }
                    }
                 }
-                if (message != null) {
+                if (!Source.api.equals(proposal.getSource()) && message != null) {
                     log.warning("Invalid state for the proposal: " + proposal.getKey() + " -- message: " + message);
-                    communicateToSaleAssociate(
+                    communicateToConsumer(
                             new RawCommand(proposal.getSource()),
-                            saleAssociate,
+                            saConsumerRecord,
                             new String[] { message }
                     );
                     proposal.setState(CommandSettings.State.invalid);
@@ -126,7 +137,7 @@ public class ProposalValidator {
                     proposal.setState(CommandSettings.State.published);
 
                     // Create a task for that proposal
-                    Queue queue = _baseOperations.getQueue();
+                    Queue queue = BaseSteps.getBaseOperations().getQueue();
                     log.warning("Preparing the task: /maezel/processPublishedProposal?key=" + proposalKey.toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
@@ -134,7 +145,7 @@ public class ProposalValidator {
                                 method(Method.GET)
                     );
                 }
-                proposal = proposalOperations.updateProposal(pm, proposal);
+                proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information for sale associate: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());
@@ -146,7 +157,7 @@ public class ProposalValidator {
     }
 
     // Temporary method filtering out non #demo tags
-    protected static void filterHashTags(PersistenceManager pm, SaleAssociate saleAssociate, Proposal proposal) throws ClientException, DataSourceException {
+    protected static void filterHashTags(PersistenceManager pm, Consumer saConsumerRecord, Proposal proposal) throws ClientException, DataSourceException {
         if (proposal.getHashTags() != null) {
             List<String> hashTags = proposal.getHashTags();
             if (hashTags.size() != 0) {
@@ -164,12 +175,12 @@ public class ProposalValidator {
                     }
                 }
                 if (0 < serializedHashTags.length()) {
-                    Locale locale = saleAssociate.getLocale();
+                    Locale locale = saConsumerRecord.getLocale();
                     String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                     String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { serializedHashTags.trim() }, locale);
-                    communicateToSaleAssociate(
+                    communicateToConsumer(
                             new RawCommand(proposal.getSource()),
-                            saleAssociate,
+                            saConsumerRecord,
                             new String[] { LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, locale) }
                     );
                     for (String tag: serializedHashTags.split(" ")) {

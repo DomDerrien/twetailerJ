@@ -10,8 +10,13 @@ import twetailer.task.TweetLoader;
 import com.google.appengine.api.datastore.Text;
 
 /**
- * @author Dom Derrien
+ * Collect the attributes produced by asynchronous connectors, an
+ * object that will process by the task "/maezel/processCommand"
  *
+ * @see twetailer.task.CommandProcessor
+ * @see twetailer.j2ee.MaezelServlet
+ *
+ * @author Dom Derrien
  */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class RawCommand extends Entity {

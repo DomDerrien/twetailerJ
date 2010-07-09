@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.MockOpenIdUserManager;
@@ -24,6 +25,7 @@ public class TestLogoutServlet {
 
     @Before
     public void setUp() throws Exception {
+        BaseSteps.resetOperationControllers(true);
     }
 
     @After

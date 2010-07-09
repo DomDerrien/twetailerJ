@@ -14,6 +14,11 @@ import twitter4j.conf.ConfigurationContext;
 import twitter4j.http.AccessToken;
 import twitter4j.http.OAuthAuthorization;
 
+/**
+ * Definition of the methods specific to communication via Twitter
+ *
+ * @author Dom Derrien
+ */
 public class TwitterConnector {
     private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
 

@@ -6,30 +6,26 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.SaleAssociateOperations;
-import twetailer.dao.SeedOperations;
-import twetailer.dao.StoreOperations;
+import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.dto.Seed;
 import twetailer.j2ee.BaseRestlet;
+import twetailer.task.step.BaseSteps;
+import twetailer.validator.CommandSettings.Action;
 
 import com.dyuproject.openid.OpenIdUser;
 
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Restlet entry point for the Seed entity control.
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class SeedRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(StoreRestlet.class.getName());
-
-    protected static SaleAssociateRestlet saleAssociateRestlet = new SaleAssociateRestlet();
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    protected static SeedOperations seedOperations = _baseOperations.getSeedOperations();
-    protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -42,19 +38,19 @@ public class SeedRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws InvalidIdentifierException, ReservedOperationException {
         if (isAPrivilegedUser(loggedUser)) {
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Seed seed = null;
                 try {
-                    seed = seedOperations.getSeed(pm, parameters.getString(Seed.COUNTRY), parameters.getString(Seed.REGION), parameters.getString(Seed.CITY));
+                    seed = BaseSteps.getSeedOperations().getSeed(pm, parameters.getString(Seed.COUNTRY), parameters.getString(Seed.REGION), parameters.getString(Seed.CITY));
                     seed.fromJson(parameters);
-                    seed = seedOperations.updateSeed(pm, seed);
+                    seed = BaseSteps.getSeedOperations().updateSeed(pm, seed);
                 }
-                catch(DataSourceException ex) {}
+                catch(InvalidIdentifierException ex) {}
                 if (seed == null) {
-                    seed = seedOperations.createSeed(pm, new Seed(parameters));
+                    seed = BaseSteps.getSeedOperations().createSeed(pm, new Seed(parameters));
                 }
                 return seed.toJson();
             }
@@ -62,7 +58,7 @@ public class SeedRestlet extends BaseRestlet {
                 pm.close();
             }
         }
-        throw new ClientException("Restricted access!");
+        throw new ReservedOperationException(Action.list, "Restricted access!");
     }
 
     @Override

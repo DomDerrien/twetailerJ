@@ -9,16 +9,17 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.ProposalOperations;
+import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.MaezelServlet;
+import twetailer.task.step.BaseSteps;
+import twetailer.task.step.ConsumerSteps;
 import twetailer.validator.ApplicationSettings;
+import twetailer.validator.CommandSettings.Action;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -29,16 +30,14 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
 
+/**
+ * Restlet entry point for the Consumer entity control.
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class ConsumerRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(ConsumerRestlet.class.getName());
-
-    protected static DemandRestlet demandRestlet = new DemandRestlet();
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -51,15 +50,66 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
-        // Consumer instances are created automatically when users log in
-        throw new RuntimeException("Not yet implemented!");
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Consumer consumer = null;
+            if ("current".equals(resourceId)) {
+                consumer = LoginServlet.getConsumer(loggedUser, pm);
+            }
+            else if (isAPrivilegedUser(loggedUser)) {
+                consumer = ConsumerSteps.getConsumer(pm, Long.valueOf(resourceId));
+            }
+            else {
+                throw new ReservedOperationException("Restricted access!");
+            }
+
+            return consumer.toJson();
+        }
+        finally {
+            pm.close();
+        }
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    @SuppressWarnings("unchecked")
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            if (!isAPrivilegedUser(loggedUser)) {
+                throw new ReservedOperationException("Restricted access!");
+            }
+
+            boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
+
+            JsonArray resources;
+            if (onlyKeys) {
+                // Get the keys
+                resources = new GenericJsonArray((List) ConsumerSteps.getConsumerKeys(pm, parameters));
+            }
+            else { // full detail
+                // Get the demands
+                resources = JsonUtils.toJson(ConsumerSteps.getConsumers(pm, parameters));
+            }
+            return resources;
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Override
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ReservedOperationException {
+        // Consumer instances are created automatically when users log in
+        throw new ReservedOperationException("Consumer instances are created automatically by the connectors");
+    }
+
+    /**** Dom: refactoring limit ***/
+
+    @Override
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException, ReservedOperationException {
         if (isAPrivilegedUser(loggedUser)) {
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Long consumerKey = Long.valueOf(resourceId);
                 delegateResourceDeletion(pm, consumerKey);
@@ -69,7 +119,7 @@ public class ConsumerRestlet extends BaseRestlet {
                 pm.close();
             }
         }
-        throw new ClientException("Restricted access!");
+        throw new ReservedOperationException(Action.delete, "Restricted access!");
     }
 
     /**
@@ -79,73 +129,19 @@ public class ConsumerRestlet extends BaseRestlet {
      * @param consumerKey Identifier of the resource to delete
      * @return Serialized list of the Consumer instances matching the given criteria
 
-     * @throws DataSourceException If the query to the back-end fails
+     * @throws InvalidIdentifierException If the query to the back-end fails
      *
      * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
      */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long consumerKey) throws DataSourceException{
+    protected void delegateResourceDeletion(PersistenceManager pm, Long consumerKey) throws InvalidIdentifierException{
         // Delete the consumer account
-        Consumer consumer = consumerOperations.getConsumer(pm, consumerKey);
-        consumerOperations.deleteConsumer(pm, consumer);
+        Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
+        BaseSteps.getConsumerOperations().deleteConsumer(pm, consumer);
         // Delete consumer's demands
-        List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, consumerKey, 0);
-        for (Long demandKey: demandKeys) {
-            demandRestlet.delegateResourceDeletion(pm, demandKey, consumerKey, false);
-        }
-    }
-
-    @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        Consumer consumer = null;
-        if ("current".equals(resourceId)) {
-            consumer = consumerOperations.getConsumer(LoginServlet.getConsumerKey(loggedUser));
-        }
-        else if (isAPrivilegedUser(loggedUser)) {
-            consumer = consumerOperations.getConsumer(Long.valueOf(resourceId));
-        }
-        else {
-            throw new ClientException("Restricted access!");
-        }
-        return consumer.toJson();
-    }
-
-    @Override
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (isAPrivilegedUser(loggedUser)) {
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
-            try {
-                return delegateResourceSelection(pm, parameters);
-            }
-            finally {
-                pm.close();
-            }
-        }
-        throw new ClientException("Restricted access!");
-    }
-
-    /**
-     * Retrieve the Consumer instances based on the specified criteria.
-     *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param parameters Attribute coming from a client over HTTP
-     * @return Serialized list of the Consumer instances matching the given criteria
-
-     * @throws DataSourceException If the query to the back-end fails
-     */
-    protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException {
-        if (parameters.containsKey(Consumer.EMAIL)) {
-            // Expects only one Consumer record matching the given e-mail address
-            return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.EMAIL, parameters.getString(Consumer.EMAIL), 1));
-        }
-        if (parameters.containsKey(Consumer.JABBER_ID)) {
-            // Expects only one Consumer record matching the given Jabber/XMPP identifier
-            return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.JABBER_ID, parameters.getString(Consumer.JABBER_ID), 1));
-        }
-        if (parameters.containsKey(Consumer.TWITTER_ID)) {
-            // Expects only one Consumer record matching the given Twitter name
-            return JsonUtils.toJson(consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, parameters.getString(Consumer.TWITTER_ID), 1));
-        }
-        return new GenericJsonArray();
+//        List<Long> demandKeys = BaseSteps.getDemandOperations().getDemandKeys(pm, Demand.OWNER_KEY, consumerKey, 0);
+//        for (Long demandKey: demandKeys) {
+//            demandRestlet.delegateResourceDeletion(pm, demandKey, consumerKey, false);
+//        }
     }
 
     @Override
@@ -173,13 +169,13 @@ public class ConsumerRestlet extends BaseRestlet {
             newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
         }
 
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         Consumer consumer;
         try {
             // Update the consumer account
-            consumer = consumerOperations.getConsumer(pm, consumerKey);
+            consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
             consumer.fromJson(parameters);
-            consumer = consumerOperations.updateConsumer(pm, consumer);
+            consumer = BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
         }
         finally {
             pm.close();
@@ -258,9 +254,9 @@ public class ConsumerRestlet extends BaseRestlet {
             if (!Consumer.EMAIL.equals(topic) && !Consumer.JABBER_ID.equals(topic) && !Consumer.TWITTER_ID.equals(topic)) {
                 throw new IllegalArgumentException("Not supported field identifier: " + topic);
             }
-            PersistenceManager pm = _baseOperations.getPersistenceManager();
+            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
-                List<Consumer> consumers = consumerOperations.getConsumers(pm, topic, identifier, 1);
+                List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(pm, topic, identifier, 1);
                 if (0 < consumers.size()) {
                     // Reset other consumer field
                     Consumer otherConsumer = consumers.get(0);
@@ -268,11 +264,11 @@ public class ConsumerRestlet extends BaseRestlet {
                         if (Consumer.EMAIL.equals(topic)) { otherConsumer.setEmail("~" + otherConsumer.getEmail()); }
                         else if (Consumer.JABBER_ID.equals(topic)) { otherConsumer.setJabberId("~" + otherConsumer.getJabberId()); }
                         else /* if (Consumer.TWITTER_ID.equals(topic)) */ { otherConsumer.setTwitterId("~" + otherConsumer.getTwitterId()); }
-                        otherConsumer = consumerOperations.updateConsumer(pm, otherConsumer);
+                        otherConsumer = BaseSteps.getConsumerOperations().updateConsumer(pm, otherConsumer);
 
                         // Schedule tasks to migrate demands to this new consumer
-                        List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherConsumer.getKey(), 1);
-                        Queue queue = _baseOperations.getQueue();
+                        List<Long> demandKeys = BaseSteps.getDemandOperations().getDemandKeys(pm, Demand.OWNER_KEY, otherConsumer.getKey(), 1);
+                        Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
                             log.warning("Preparing the task: /maezel/consolidateConsumerAccounts?key=" + demandKey.toString() + "&ownerKey=" + consumerKey.toString());
                             queue.add(

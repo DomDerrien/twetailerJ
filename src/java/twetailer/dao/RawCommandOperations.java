@@ -5,8 +5,14 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.RawCommand;
 
+/**
+ * Controller defining various methods used for the CRUD operations on RawCommand entities
+ *
+ * @author Dom Derrien
+ */
 public class RawCommandOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(RawCommandOperations.class.getName());
 
@@ -50,11 +56,11 @@ public class RawCommandOperations extends BaseOperations {
      * @param key Identifier of the rawCommand
      * @return First rawCommand matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved rawCommand does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid RawCommand record
      *
      * @see RawCommandOperations#getRawCommand(PersistenceManager, Long)
      */
-    public RawCommand getRawCommand(Long key) throws DataSourceException {
+    public RawCommand getRawCommand(Long key) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getRawCommand(pm, key);
@@ -71,18 +77,18 @@ public class RawCommandOperations extends BaseOperations {
      * @param key Identifier of the rawCommand
      * @return First rawCommand matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved rawCommand does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid RawCommand record
      */
-    public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+    public RawCommand getRawCommand(PersistenceManager pm, Long key) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the RawCommand instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the RawCommand instance");
         }
         getLogger().warning("Get RawCommand instance with id: " + key);
         try {
             return pm.getObjectById(RawCommand.class, key);
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 
@@ -121,11 +127,11 @@ public class RawCommandOperations extends BaseOperations {
      *
      * @param rawCommandKey Identifier of the raw command
      *
-     * @throws DataSourceException If the raw command record retrieval fails
+     * @throws InvalidIdentifierException If the given identifier does not match a valid RawCommand record
      *
      * @see RawCommandOperations#deleteRawCommand(PersistenceManager, Long)
      */
-    public void deleteRawCommand(Long rawCommandKey) throws DataSourceException {
+    public void deleteRawCommand(Long rawCommandKey) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             deleteRawCommand(pm, rawCommandKey);
@@ -141,12 +147,12 @@ public class RawCommandOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param rawCommandKey Identifier of the raw command
      *
-     * @throws DataSourceException If the raw command record retrieval fails
+     * @throws InvalidIdentifierException If the given identifier does not match a valid RawCommand record
      *
      * @see RawCommandOperations#getRawCommands(PersistenceManager, Long)
      * @see RawCommandOperations#deleteRawCommand(PersistenceManager, RawCommand)
      */
-    public void deleteRawCommand(PersistenceManager pm, Long rawCommandKey) throws DataSourceException {
+    public void deleteRawCommand(PersistenceManager pm, Long rawCommandKey) throws InvalidIdentifierException {
         RawCommand rawCommand = getRawCommand(pm, rawCommandKey);
         deleteRawCommand(pm, rawCommand);
     }

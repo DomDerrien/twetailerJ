@@ -139,7 +139,7 @@ body {
     color: yellow;
 }
 
-#navigation>ul>li>a.active {
+#navigation>ul>li>span.active {
     color: lightgreen;
 }
 
@@ -175,40 +175,84 @@ body {
     width:18px;
 }
 
+.silkIconView {
+    background-image:url(/images/page_white.png);
+}
+
+.silkIconDemandView {
+    background-image:url(/images/page_white_go.png);
+}
+
+.silkIconProposalView {
+    background-image:url(/images/page_white_come.png);
+}
+
 .silkIconAccept {
     background-image:url(/images/accept.png);
+}
+
+.silkIconDemandAccept {
+    background-image:url(/images/page_white_go_accept.png);
+}
+
+.silkIconProposalAccept {
+    background-image:url(/images/page_white_come_accept.png);
 }
 
 .silkIconAdd {
     background-image:url(/images/add.png);
 }
 
+.silkIconDemandAdd {
+    background-image:url(/images/page_white_go_add.png);
+}
+
+.silkIconProposalAdd {
+    background-image:url(/images/page_white_come_add.png);
+}
+
 .silkIconCancel {
     background-image:url(/images/cancel.png);
 }
 
-.silkIconDemand {
-    background-image:url(/images/page_white_go.png);
+.silkIconDemandCancel {
+    background-image:url(/images/page_white_go_cancel.png);
+}
+
+.silkIconProposalCancel {
+    background-image:url(/images/page_white_come_cancel.png);
+}
+
+.silkIconUpdate {
+    background-image:url(/images/page_white_edit.png);
+}
+
+.silkIconDemandUpdate {
+    background-image:url(/images/page_white_go_edit.png);
+}
+
+.silkIconProposalUpdate {
+    background-image:url(/images/page_white_come_edit.png);
 }
 
 .silkIconDemandList {
     background-image:url(/images/page_white_go_list.png);
 }
 
-.silkIconHelp {
-    background-image:url(/images/help.png);
-}
-
-.silkIconProposal {
-    background-image:url(/images/page_white_come.png);
-}
-
 .silkIconProposalList {
     background-image:url(/images/page_white_come_list.png);
 }
 
-.silkIconUpdate {
-    background-image:url(/images/page_white_edit.png);
+.silkIconDemandConfirmed {
+    background-image:url(/images/page_white_go_gold.png);
+}
+
+.silkIconProposalConfirmed {
+    background-image:url(/images/page_white_come_gold.png);
+}
+
+.silkIconHelp {
+    background-image:url(/images/help.png);
 }
 
 .silkIconProfile {
@@ -223,6 +267,21 @@ body {
     background-image:url(/images/asterisk_orange.png);
 }
 
+.silkIconRefresh {
+    background-image:url(/images/arrow_refresh.png);
+}
+
+.silkIconGPS {
+    background-image:url(/images/gps.png);
+}
+
+.silkIconGMaps {
+    background-image:url(/images/icons/GMaps.png);
+}
+
+.silkIconLinkOpen {
+    background-image:url(/images/layout_link.png);
+}
 /**
  * Login page settings
  */
@@ -297,4 +356,11 @@ body {
 	color: red;
 	border-bottom: 2px dotted red;
 	text-shadow: #bbb 2px 2px 2px;
+}
+
+/**
+ * Entity Pane
+ */
+.demandForm>tbody>tr>td {
+	vertical-align: top;
 }

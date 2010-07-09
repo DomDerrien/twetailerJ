@@ -8,6 +8,14 @@ import com.amazonaws.fps.model.TransactionStatus;
 
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Define the attribute for the payment operation attached to a confirmed proposal/demand
+ *
+ * @see twetailer.dto.Demand
+ * @see twetailer.dto.Proposal
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 
 public class Payment extends Entity {

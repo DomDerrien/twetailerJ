@@ -7,23 +7,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.ProposalOperations;
-import twetailer.dao.RawCommandOperations;
-import twetailer.dao.SaleAssociateOperations;
-import twetailer.dao.SettingsOperations;
-import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -44,34 +37,37 @@ import twetailer.task.command.LanguageCommandProcessor;
 import twetailer.task.command.ListCommandProcessor;
 import twetailer.task.command.ProposeCommandProcessor;
 import twetailer.task.command.SupplyCommandProcessor;
-import twetailer.task.command.WWWCommandProcessor;
-import twetailer.task.command.WishCommandProcessor;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
+import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonObject;
 
-public class CommandProcessor {
-    // private static Logger log = Logger.getLogger(CommandProcessor.class.getName());
+/**
+ * Define the logic of the main Twetailer task:<ul>
+ * <li> Get the identified RawCommand instance which contains the text-based command; </li>
+ * <li> Extract the command parameters (delegated to the CommandLineParser); </li>
+ * <li> Dispatch the command to specialised task processor (!list, !propose, !confirm, etc.); </li>
+ * <li> Offer the method to generate the text-based responses. </li></ul>
+ *
+ * @see twetailer.task.CommandLineParser
+ * @see twetailer.task.connector.*
+ *
+ * @author Dom Derrien
+ */
 
-    // References made public for the business logic located in package twetailer.task.command
-    public static BaseOperations _baseOperations = new BaseOperations();
-    public static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    public static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    public static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    public static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    public static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
-    public static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    public static StoreOperations storeOperations = _baseOperations.getStoreOperations();
-    public static SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
+public class CommandProcessor {
+
+    private static Logger log = Logger.getLogger(CommandProcessor.class.getName());
 
     // Setter for injection of a MockLogger at test time
-    // protected static void setLogger(Logger mock) {
-    //     log = mock;
-    // }
+    protected static void setLogger(Logger mock) {
+        log = mock;
+    }
 
     /**
      * Helper to print the short date if the time is set for the last second of the day
@@ -104,7 +100,7 @@ public class CommandProcessor {
         // Get the labels for each demand attributes
         String action = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_action_part", locale) + space;
         String reference = anonymized || demand.getKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale) + space);
-        String state =
+        String state = State.opened.equals(demand.getState()) || State.published.equals(demand.getState()) ? "" :
             LabelExtractor.get(
                     "cp_tweet_state_part",
                     new Object[] {
@@ -120,7 +116,7 @@ public class CommandProcessor {
         String quantity = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
         String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
         String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
-        String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(demand.getProposalKeys()) }, locale) + space);
+        String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(null, Command.SEMICOLON + Command.SPACE, demand.getProposalKeys()) }, locale) + space);
         String CC = "";
         for (int i=0; i <demand.getCC().size(); i++) {
             CC += LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_cc_part", new Object[] { demand.getCC().get(i) }, locale) + space;
@@ -164,7 +160,7 @@ public class CommandProcessor {
         String action = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_propose_action_part", locale) + space;
         String reference = anonymized || proposal.getKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale) + space);
         String demand = anonymized || proposal.getDemandKey() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_demand_reference_part", new Object[] { proposal.getDemandKey() }, locale) + space);
-        String state =
+        String state = State.opened.equals(proposal.getState()) || State.published.equals(proposal.getState()) ? "" :
             LabelExtractor.get(
                     "cp_tweet_state_part",
                     new Object[] {
@@ -244,7 +240,7 @@ public class CommandProcessor {
      * @throws ClientException If the communication back with the user fails
      */
     public static void processRawCommands(Long rawCommandKey) throws DataSourceException, ClientException {
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             processRawCommands(pm, rawCommandKey);
         }
@@ -266,7 +262,7 @@ public class CommandProcessor {
      */
     protected static void processRawCommands(PersistenceManager pm, Long rawCommandKey) throws DataSourceException, ClientException {
         // Get the identified raw command
-        RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, rawCommandKey);
+        RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, rawCommandKey);
 
         // Get the record of the command emitter
         Consumer consumer = retrieveConsumer(pm, rawCommand);
@@ -289,13 +285,13 @@ public class CommandProcessor {
             communicateToConsumer(
                     rawCommand,
                     consumer,
-                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo : "" }, senderLocale) }
+                    new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo + ". " : "" }, senderLocale) }
             );
             // Save the error information for further debugging
             rawCommand.setErrorMessage(additionalInfo);
-            rawCommand = rawCommandOperations.updateRawCommand(pm, rawCommand);
+            rawCommand = BaseSteps.getRawCommandOperations().updateRawCommand(pm, rawCommand);
             // Rethrow the exception so the stack trace will be sent to the catch-all list
-            throw new ClientException(LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), additionalInfo }, Locale.ENGLISH), ex);
+            throw new ClientException(LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), additionalInfo + ". " }, Locale.ENGLISH), ex);
         }
     }
 
@@ -312,8 +308,9 @@ public class CommandProcessor {
      * @return The emitter Consumer record
 
      * @throws DataSourceException If no Consumer record match the raw command emitter
+     * @throws InvalidIdentifierException If the retreival of the Robot Consumer instance fails
      */
-    protected static Consumer retrieveConsumer(PersistenceManager pm, RawCommand rawCommand) throws DataSourceException {
+    protected static Consumer retrieveConsumer(PersistenceManager pm, RawCommand rawCommand) throws InvalidIdentifierException, DataSourceException {
         if (Source.simulated.equals(rawCommand.getSource())) {
             Consumer consumer = new Consumer();
             consumer.setName(rawCommand.getEmitterId());
@@ -321,17 +318,17 @@ public class CommandProcessor {
         }
         if (Source.robot.equals(rawCommand.getSource())) {
             Long robotKey = RobotResponder.getRobotConsumerKey(pm);
-            return consumerOperations.getConsumer(pm, robotKey);
+            return BaseSteps.getConsumerOperations().getConsumer(pm, robotKey);
         }
         List<Consumer> consumers = null;
         if (Source.twitter.equals(rawCommand.getSource())) {
-            consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, rawCommand.getEmitterId(), 1);
+            consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.TWITTER_ID, rawCommand.getEmitterId(), 1);
         }
         else if (Source.jabber.equals(rawCommand.getSource())) {
-            consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, rawCommand.getEmitterId(), 1);
+            consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.JABBER_ID, rawCommand.getEmitterId(), 1);
         }
         else if (Source.mail.equals(rawCommand.getSource())) {
-            consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, rawCommand.getEmitterId(), 1);
+            consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.EMAIL, rawCommand.getEmitterId(), 1);
         }
         else {
             throw new DataSourceException("Provider " + rawCommand.getSource() + " not yet supported");
@@ -357,11 +354,13 @@ public class CommandProcessor {
      */
     public static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action, String entityClassName) throws DataSourceException, ReservedOperationException {
         // TODO: Use MemCache to limit the number of {consumerKey, saleAssociateKey} association lookup
-        List<Long> saleAssociateKeys = saleAssociateOperations.getSaleAssociateKeys(pm, SaleAssociate.CONSUMER_KEY, consumer.getKey(), 1);
-        if (saleAssociateKeys.size() == 0) {
+        try {
+            Long saleAssociateKey = consumer.getSaleAssociateKey();
+            return BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
+        }
+        catch (Exception ex) {
             throw new ReservedOperationException(action, entityClassName);
         }
-        return saleAssociateOperations.getSaleAssociate(pm, saleAssociateKeys.get(0));
     }
 
     /**
@@ -442,14 +441,6 @@ public class CommandProcessor {
             else if (CommandSettings.isEquivalentTo(actions, Action.supply.toString(), action, collator)) {
                 command.put(Command.ACTION, Action.supply.toString());
                 SupplyCommandProcessor.processSupplyCommand(pm, consumer, rawCommand, command);
-            }
-            else if (CommandSettings.isEquivalentTo(actions, Action.wish.toString(), action, collator)) {
-                command.put(Command.ACTION, Action.wish.toString());
-                WishCommandProcessor.processWishCommand(pm, consumer, rawCommand, command);
-            }
-            else if (CommandSettings.isEquivalentTo(actions, Action.www.toString(), action, collator)) {
-                command.put(Command.ACTION, Action.www.toString());
-                WWWCommandProcessor.processWWWCommand(pm, consumer, rawCommand, command);
             }
             else {
                 communicateToConsumer(

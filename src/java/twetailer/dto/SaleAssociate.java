@@ -3,26 +3,29 @@ package twetailer.dto;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.LocaleValidator;
-
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define the attributes of a Twetailer sale associate, in addition to the ones associated to his consumer profile
+ *
+ * @see twetailer.dto.Consumer
+ * @see twetailer.dto.Store
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class SaleAssociate extends Entity {
 
     /*** SaleAssociate ***/
-    private Collator collator;
-
     @Persistent
     private Long consumerKey;
 
@@ -36,49 +39,21 @@ public class SaleAssociate extends Entity {
     @Persistent
     private List<String> criteria = new ArrayList<String>();
 
-    public final static String  CRITERIA = Demand.CRITERIA;
-    public static final String CRITERIA_ADD = Demand.CRITERIA_ADD;
-    public static final String CRITERIA_REMOVE = Demand.CRITERIA_REMOVE;
+    public final static String  CRITERIA = Command.CRITERIA;
+    public static final String CRITERIA_ADD = Command.CRITERIA_ADD;
+    public static final String CRITERIA_REMOVE = Command.CRITERIA_REMOVE;
 
     @Persistent
-    private String email;
+    private List<String> hashTags = new ArrayList<String>();
 
-    public final static String EMAIL = Consumer.EMAIL;
-
-    @Persistent
-    private String jabberId;
-
-    public final static String JABBER_ID = Consumer.JABBER_ID;
+    public static final String HASH_TAGS = Command.HASH_TAGS;
+    public static final String HASH_TAGS_ADD = Command.HASH_TAGS_ADD;
+    public static final String HASH_TAGS_REMOVE = Command.HASH_TAGS_REMOVE;
 
     @Persistent
     private Boolean isStoreAdmin;
 
     public final static String IS_STORE_ADMIN = "isStoreAdmin";
-
-    @Persistent
-    private String language = LocaleValidator.DEFAULT_LANGUAGE;
-
-    public final static String LANGUAGE = Consumer.LANGUAGE;
-
-    @Persistent
-    private String name;
-
-    public final static String NAME = Consumer.NAME;
-
-    @Persistent
-    private String openID;
-
-    public final static String OPEN_ID = Consumer.OPEN_ID;
-
-    @Persistent
-    private String phoneNumber;
-
-    public final static String PHONE_NUMBER = Consumer.PHONE_NUMBER;
-
-    @Persistent
-    private Source preferredConnection = Source.twitter;
-
-    public final static String PREFERRED_CONNECTION = "preferredConnection";
 
     // Shortcut
     public final static String SALEASSOCIATE_KEY = "saleAssociateKey";
@@ -89,14 +64,9 @@ public class SaleAssociate extends Entity {
     public final static String STORE_KEY = Store.STORE_KEY;
 
     // Not persistent
-    private Long score;
+    private Long score = 0L;
 
     public final static String SCORE = "score";
-
-    @Persistent
-    private String twitterId;
-
-    public final static String TWITTER_ID = Consumer.TWITTER_ID;
 
     /** Default constructor */
     public SaleAssociate() {
@@ -114,17 +84,11 @@ public class SaleAssociate extends Entity {
     }
 
     /**
-     * Provided to reproduce the JDO behavior with Unit tests
+     * Provided to reproduce the JDO behaviour with Unit tests
      */
     protected void resetLists() {
         criteria = null;
-    }
-
-    protected Collator getCollator() {
-        if (collator == null) {
-            collator = LocaleValidator.getCollator(getLocale());
-        }
-        return collator;
+        hashTags = null;
     }
 
     public Long getConsumerKey() {
@@ -149,8 +113,8 @@ public class SaleAssociate extends Entity {
         this.creatorKey = creatorKey;
     }
 
-    public void addCriterion(String criterion) {
-        removeCriterion(criterion);
+    public void addCriterion(String criterion, Collator collator) {
+        removeCriterion(criterion, collator);
         if (criterion == null || criterion.length() == 0) {
             return;
         }
@@ -167,14 +131,14 @@ public class SaleAssociate extends Entity {
         criteria = new ArrayList<String>();
     }
 
-    public void removeCriterion(String criterion) {
+    public void removeCriterion(String criterion, Collator collator) {
         if (criteria == null|| criterion == null || criterion.length() == 0) {
             return;
         }
         String normalizedCriterion = LocaleValidator.toUnicode(criterion);
         for(String item: criteria) {
             String normalizedItem = LocaleValidator.toUnicode(item);
-            if (getCollator().compare(normalizedCriterion, normalizedItem) == 0) {
+            if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
                 criteria.remove(item);
                 break;
             }
@@ -189,32 +153,52 @@ public class SaleAssociate extends Entity {
         return criteria;
     }
 
-    public void setCriteria(List<String> criteria) {
+    public void setCriteria(List<String> criteria, Collator collator) {
         if (criteria == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
         }
         this.criteria = null;
         for (String criterion: criteria) {
-            addCriterion(criterion);
+            addCriterion(criterion, collator);
         }
     }
 
-    public String getEmail() {
-        return email;
+    public String getSerializedHashTags() {
+        return Command.getSerializedTags(Command.HASH, Command.SPACE, hashTags);
     }
 
-    public void setEmail(String email) {
-        // Normalize the email address because it's case unsensitive
-        this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
+    public List<String> getHashTags() {
+        return hashTags;
     }
 
-    public String getJabberId() {
-        return jabberId;
+    public void setHashTags(List<String> hashTags) {
+        if (hashTags == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'hashTags' of type List<String>");
+        }
+        this.hashTags = hashTags;
     }
 
-    public void setJabberId(String jabberId) {
-        // Normalize the Jabber identifier because it's case unsensitive
-        this.jabberId = jabberId == null || jabberId.length() == 0 ? null : jabberId.toLowerCase();
+    public void addHashTag(String hashTag) {
+        if (hashTags == null) {
+            hashTags = new ArrayList<String>();
+        }
+        if (!hashTags.contains(hashTag)) {
+            hashTags.add(hashTag);
+        }
+    }
+
+    public void resetHashTags() {
+        if (hashTags == null) {
+            return;
+        }
+        hashTags = new ArrayList<String>();
+    }
+
+    public void removeHashTag(String hashTag) {
+        if (hashTags == null) {
+            return;
+        }
+        hashTags.remove(hashTag);
     }
 
     public Boolean getIsStoreAdmin() {
@@ -227,58 +211,6 @@ public class SaleAssociate extends Entity {
 
     public boolean isStoreAdmin() {
         return Boolean.TRUE.equals(isStoreAdmin);
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = LocaleValidator.checkLanguage(language);
-    }
-
-    public Locale getLocale() {
-        return LocaleValidator.getLocale(language);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null || name.length() == 0 ? null : name;
-    }
-
-    public String getOpenID() {
-        return openID;
-    }
-
-    public void setOpenID(String openID) {
-        // Note: no normalization because the OpenID identifier is case sensitive!
-        this.openID = openID == null || openID.length() == 0 ? null : openID;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
-    }
-
-    public Source getPreferredConnection() {
-        return preferredConnection;
-    }
-
-    public void setPreferredConnection(Source preferredConnection) {
-        if (preferredConnection == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'preferredConnection'");
-        }
-        this.preferredConnection = preferredConnection;
-    }
-
-    public void setPreferredConnection(String preferredConnection) {
-        setPreferredConnection(Source.valueOf(preferredConnection));
     }
 
     public Long getStoreKey() {
@@ -303,75 +235,68 @@ public class SaleAssociate extends Entity {
         this.score = score;
     }
 
-    public String getTwitterId() {
-        return twitterId == null || twitterId.length() == 0 ? null : twitterId;
-    }
-
-    public void setTwitterId(String twitterId) {
-        // Note: no normalization because the Twitter identifier is case sensitive!
-        this.twitterId = twitterId;
-    }
-
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
-        if (getCreatorKey() != null) { out.put(CREATOR_KEY, getCreatorKey()); }
-        if (getCriteria() != null) {
+        out.put(CONSUMER_KEY, getConsumerKey());
+        out.put(CREATOR_KEY, getCreatorKey());
+        if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
                 jsonArray.add(criterion);
             }
             out.put(CRITERIA, jsonArray);
         }
-        out.put(EMAIL, getEmail());
-        out.put(JABBER_ID, getJabberId());
-        out.put(IS_STORE_ADMIN, isStoreAdmin());
-        out.put(LANGUAGE, getLanguage());
-        out.put(NAME, getName());
-        out.put(OPEN_ID, getOpenID());
-        out.put(PHONE_NUMBER, getPhoneNumber());
-        out.put(PREFERRED_CONNECTION, getPreferredConnection().toString());
-        if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
-        if (getScore() != null) { out.put(SCORE, getScore()); }
-        out.put(TWITTER_ID, getTwitterId());
+        if (getHashTags() != null && 0 < getHashTags().size()) {
+            JsonArray jsonArray = new GenericJsonArray();
+            for(String hashTag: getHashTags()) {
+                jsonArray.add(hashTag);
+            }
+            out.put(HASH_TAGS, jsonArray);
+        }
+        if (isStoreAdmin()) {
+            out.put(IS_STORE_ADMIN, Boolean.TRUE);
+        }
+        out.put(STORE_KEY, getStoreKey());
+        out.put(SCORE, getScore());
         return out;
     }
 
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
-        if (in.containsKey(CREATOR_KEY)) { setCreatorKey(in.getLong(CREATOR_KEY)); }
-        if (in.containsKey(CRITERIA)) {
-            resetCriteria();
-            JsonArray jsonArray = in.getJsonArray(CRITERIA);
+        if (getKey() == null && in.containsKey(CONSUMER_KEY)) {
+            // Cannot change once set at creation time
+            setConsumerKey(in.getLong(CONSUMER_KEY)); 
+        }
+        if (getKey() == null && in.containsKey(CREATOR_KEY)) {
+            // Cannot change once set at creation time
+            setCreatorKey(in.getLong(CREATOR_KEY));
+        }
+        if (in.containsKey(CRITERIA) || in.containsKey(CRITERIA_ADD) || in.containsKey(CRITERIA_REMOVE)) {
+            throw new IllegalArgumentException("Supplied tags should be updated manually to ensure there's no locale-dependend duplicate");
+        }
+        if (in.containsKey(HASH_TAGS)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS);
+            resetHashTags();
             for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
+                addHashTag(jsonArray.getString(i));
             }
         }
-        Demand.removeDuplicates(in, CRITERIA_ADD, CRITERIA_REMOVE);
-        if (in.containsKey(CRITERIA_REMOVE)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
+        Command.removeDuplicates(in, HASH_TAGS_ADD, HASH_TAGS_REMOVE);
+        if (in.containsKey(HASH_TAGS_REMOVE)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS_REMOVE);
             for (int i=0; i<jsonArray.size(); ++i) {
-                removeCriterion(jsonArray.getString(i));
+                removeHashTag(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(CRITERIA_ADD)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
+        if (in.containsKey(HASH_TAGS_ADD)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS_ADD);
             for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
+                addHashTag(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
-        if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
-        if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); }
-        if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
-        if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
-        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
 
         // Shortcut
         if (in.containsKey(SALEASSOCIATE_KEY)) { setKey(in.getLong(SALEASSOCIATE_KEY)); }

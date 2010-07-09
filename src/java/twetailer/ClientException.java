@@ -5,6 +5,12 @@ import java.text.ParseException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Base class reporting issues related to incorrect submitted data
+ * or incorrect access rights
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class ClientException extends Exception implements TransferObject {
 

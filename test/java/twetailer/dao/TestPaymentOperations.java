@@ -19,7 +19,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Payment;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -37,6 +39,7 @@ public class TestPaymentOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -80,23 +83,23 @@ public class TestPaymentOperations {
         assertTrue(pm.isClosed());
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetWithFailureI() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetWithFailureI() throws InvalidIdentifierException {
         new PaymentOperations().getPayment(543543L);
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testGetWithFailureII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetWithFailureII() throws InvalidIdentifierException {
         new PaymentOperations().getPayment(null);
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testGetWithFailureIII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetWithFailureIII() throws InvalidIdentifierException {
         new PaymentOperations().getPayment(0L);
     }
 
     @Test(expected=RuntimeException.class)
-    public void testGetWithFailureIV() throws DataSourceException {
+    public void testGetWithFailureIV() throws InvalidIdentifierException {
         new PaymentOperations() {
             @Override
             public Payment getPayment(PersistenceManager pm, Long key) {
@@ -106,7 +109,7 @@ public class TestPaymentOperations {
     }
 
     @Test
-    public void testGetI() throws DataSourceException {
+    public void testGetI() throws InvalidIdentifierException {
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         PaymentOperations ops = new PaymentOperations() {
             @Override
@@ -138,7 +141,7 @@ public class TestPaymentOperations {
     }
 
     @Test
-    public void testUpdateI() throws DataSourceException {
+    public void testUpdateI() throws InvalidIdentifierException {
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         PaymentOperations ops = new PaymentOperations() {
             @Override

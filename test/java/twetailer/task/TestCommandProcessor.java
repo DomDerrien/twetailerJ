@@ -14,8 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
@@ -26,11 +24,13 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.MockBaseOperations;
+import twetailer.dao.MockSettingsOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
@@ -39,6 +39,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Store;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
@@ -105,6 +106,8 @@ public class TestCommandProcessor {
         // Invoke the defined logic to build the list of RegEx patterns for the simplified list of prefixes
         CommandLineParser.localizedPatterns.clear();
         CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
     }
 
     @After
@@ -112,16 +115,6 @@ public class TestCommandProcessor {
         helper.tearDown();
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
-
-        CommandProcessor._baseOperations = new BaseOperations();
-        CommandProcessor.consumerOperations = CommandProcessor._baseOperations.getConsumerOperations();
-        CommandProcessor.demandOperations = CommandProcessor._baseOperations.getDemandOperations();
-        CommandProcessor.locationOperations = CommandProcessor._baseOperations.getLocationOperations();
-        CommandProcessor.proposalOperations = CommandProcessor._baseOperations.getProposalOperations();
-        CommandProcessor.rawCommandOperations = CommandProcessor._baseOperations.getRawCommandOperations();
-        CommandProcessor.saleAssociateOperations = CommandProcessor._baseOperations.getSaleAssociateOperations();
-        CommandProcessor.settingsOperations = CommandProcessor._baseOperations.getSettingsOperations();
-        CommandProcessor.storeOperations = CommandProcessor._baseOperations.getStoreOperations();
 
         CommandLineParser.localizedPrefixes = new HashMap<Locale, JsonObject>();
         CommandLineParser.localizedActions = new HashMap<Locale, JsonObject>();
@@ -136,19 +129,19 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testRetrieveConsumerI() throws DataSourceException {
+    public void testRetrieveConsumerI() throws InvalidIdentifierException, DataSourceException {
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
         assertNotNull(CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
     }
 
     @Test
-    public void testRetrieveConsumerII() throws DataSourceException {
+    public void testRetrieveConsumerII() throws DataSourceException, InvalidIdentifierException {
         final String emitterId = "emitter";
         final Consumer consumer = new Consumer();
 
         // Mock RawCommandOperations
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.TWITTER_ID, key);
@@ -157,8 +150,7 @@ public class TestCommandProcessor {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        CommandProcessor.consumerOperations = consumerOperations;
+        });
 
         RawCommand rawCommand = new RawCommand(Source.twitter);
         rawCommand.setEmitterId(emitterId);
@@ -167,12 +159,12 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testRetrieveConsumerIII() throws DataSourceException {
+    public void testRetrieveConsumerIII() throws DataSourceException, InvalidIdentifierException {
         final String emitterId = "emitter";
         final Consumer consumer = new Consumer();
 
         // Mock RawCommandOperations
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.JABBER_ID, key);
@@ -181,8 +173,7 @@ public class TestCommandProcessor {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        CommandProcessor.consumerOperations = consumerOperations;
+        });
 
         RawCommand rawCommand = new RawCommand(Source.jabber);
         rawCommand.setEmitterId(emitterId);
@@ -191,12 +182,12 @@ public class TestCommandProcessor {
     }
 
     @Test(expected=DataSourceException.class)
-    public void testRetrieveConsumerIV() throws DataSourceException {
+    public void testRetrieveConsumerIV() throws DataSourceException, InvalidIdentifierException {
         final String emitterId = "emitter";
         final Consumer consumer = new Consumer();
 
         // Mock RawCommandOperations
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 // assertEquals(Consumer.FACEBOOK_ID, key);
@@ -205,8 +196,7 @@ public class TestCommandProcessor {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        CommandProcessor.consumerOperations = consumerOperations;
+        });
 
         RawCommand rawCommand = new RawCommand(Source.facebook); // Unsupported source
         rawCommand.setEmitterId(emitterId);
@@ -215,17 +205,16 @@ public class TestCommandProcessor {
     }
 
     @Test(expected=DataSourceException.class)
-    public void testRetrieveConsumerV() throws DataSourceException {
+    public void testRetrieveConsumerV() throws DataSourceException, InvalidIdentifierException {
         final String emitterId = "emitter";
 
         // Mock RawCommandOperations
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 return new ArrayList<Consumer>();
             }
-        };
-        CommandProcessor.consumerOperations = consumerOperations;
+        });
 
         RawCommand rawCommand = new RawCommand(Source.twitter);
         rawCommand.setEmitterId(emitterId);
@@ -234,17 +223,17 @@ public class TestCommandProcessor {
     }
 
     @Test(expected=DataSourceException.class)
-    public void testRetrieveConsumerVI() throws DataSourceException {
+    public void testRetrieveConsumerVI() throws DataSourceException, InvalidIdentifierException {
         CommandProcessor.retrieveConsumer(new MockPersistenceManager(), new RawCommand());
     }
 
     @Test
-    public void testRetrieveConsumerVII() throws DataSourceException {
+    public void testRetrieveConsumerVII() throws DataSourceException, InvalidIdentifierException {
         final String emitterId = "emitter";
         final Consumer consumer = new Consumer();
 
         // Mock RawCommandOperations
-        ConsumerOperations consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
                 assertEquals(Consumer.EMAIL, key);
@@ -253,8 +242,7 @@ public class TestCommandProcessor {
                 consumers.add(consumer);
                 return consumers;
             }
-        };
-        CommandProcessor.consumerOperations = consumerOperations;
+        });
 
         RawCommand rawCommand = new RawCommand(Source.mail);
         rawCommand.setEmitterId(emitterId);
@@ -263,36 +251,35 @@ public class TestCommandProcessor {
     }
 
     @Test
-    public void testRetrieveConsumerVIII() throws DataSourceException {
+    public void testRetrieveConsumerVIII() throws DataSourceException, InvalidIdentifierException {
         final Long robotKey = 12345L;
         RobotResponder.setRobotConsumerKey(robotKey);
 
         final Consumer consumer = new Consumer();
         consumer.setKey(robotKey);
-        CommandProcessor.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) {
                 assertEquals(robotKey, key);
                 return consumer;
             }
-        };
+        });
 
         RawCommand rawCommand = new RawCommand(Source.robot);
 
         assertEquals(consumer, CommandProcessor.retrieveConsumer(new MockPersistenceManager(), rawCommand));
     }
 
-    @Test(expected=DataSourceException.class)
+    @Test(expected=InvalidIdentifierException.class)
     public void testProcessRawCommandWithNoMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(0L, key.longValue());
-                throw new DataSourceException("Done in purpose");
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        });
 
         CommandProcessor.processRawCommands(0L);
     }
@@ -301,7 +288,7 @@ public class TestCommandProcessor {
     public void testProcessRawCommandWithIncompleteMessageI() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
@@ -318,8 +305,7 @@ public class TestCommandProcessor {
                 // rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        });
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
 
@@ -334,7 +320,7 @@ public class TestCommandProcessor {
     public void testProcessRawCommandWithIncompleteMessageII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
@@ -351,17 +337,15 @@ public class TestCommandProcessor {
                 // rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        });
         // Mock DemandOperations
         final IllegalArgumentException exception = new IllegalArgumentException("Done in purpose");
-        DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) {
                 throw exception;
             }
-        };
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
 
@@ -376,7 +360,7 @@ public class TestCommandProcessor {
     public void testProcessRawCommandWithIncompleteMessageIII() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long commandKey = 12345L;
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
@@ -393,17 +377,15 @@ public class TestCommandProcessor {
                 // rawCommand.setSource(Source.simulated);
                 return rawCommand;
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        });
         // Mock DemandOperations
         final IllegalArgumentException exception = new IllegalArgumentException("Done in purpose");
-        DemandOperations demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
                 throw exception;
             }
-        };
-        CommandProcessor.demandOperations = demandOperations;
+        });
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
 
@@ -418,7 +400,7 @@ public class TestCommandProcessor {
     public void testProcessRawCommandWithSimpleMessage() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final Long rawCommandKey = 1345L;
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -433,8 +415,8 @@ public class TestCommandProcessor {
                 assertEquals("? demand", rawCommand.getCommand());
                 return rawCommand;
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        });
+        BaseSteps.setMockSettingsOperations(new MockSettingsOperations());
 
         CommandProcessor.processRawCommands(rawCommandKey);
 
@@ -445,7 +427,7 @@ public class TestCommandProcessor {
     public void testProcessRawCommandWithUnsupportedAction() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final String action = "grrrrr";
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
@@ -453,8 +435,7 @@ public class TestCommandProcessor {
                 rawCommand.setCommand("!" + action + " ref:10 wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
                 return rawCommand;
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
+        });
 
         CommandProcessor.processRawCommands(0L);
 
@@ -468,7 +449,7 @@ public class TestCommandProcessor {
         final String action = Action.propose.toString();
 
         // Mock RawCommandOperations
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(0L, key.longValue());
@@ -476,16 +457,14 @@ public class TestCommandProcessor {
                 rawCommand.setCommand("!" + action + " wii console");
                 return rawCommand;
             }
-        };
+        });
         // Mock SaleAssociateOperations
-        SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
                 return new ArrayList<Long>();
             }
-        };
-        CommandProcessor.rawCommandOperations = rawCommandOperations;
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
 
         CommandProcessor.processRawCommands(0L);
 

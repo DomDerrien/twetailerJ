@@ -11,14 +11,12 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.RawCommandOperations;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 
@@ -27,14 +25,19 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Define the task that validate the given location coordinates with
+ * a third party service. If the validation is successful, the command
+ * that required it is scheduled for another processing with the
+ * task "/maezel/processCommand". If the location is invalid, a message
+ * is sent to the Command initiator via the same communication channel
+ * used to create the Command.
+ *
+ * @author Dom Derrien
+ */
 public class LocationValidator {
 
     private static Logger log = Logger.getLogger(DemandValidator.class.getName());
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -50,9 +53,10 @@ public class LocationValidator {
      * @param commandKey Identifier of the raw command to re-process if the location is correct
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(String postalCode, String countryCode, Long consumerKey, Long commandKey) throws DataSourceException {
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+    public static void process(String postalCode, String countryCode, Long consumerKey, Long commandKey) throws DataSourceException, InvalidIdentifierException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             process(pm, postalCode, countryCode, consumerKey, commandKey);
         }
@@ -71,9 +75,10 @@ public class LocationValidator {
      * @param commandKey Identifier of the raw command to re-process if the location is correct
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(PersistenceManager pm, String postalCode, String countryCode, Long consumerKey, Long commandKey) throws DataSourceException {
-        List<Location> locations = locationOperations.getLocations(pm, postalCode, countryCode);
+    public static void process(PersistenceManager pm, String postalCode, String countryCode, Long consumerKey, Long commandKey) throws DataSourceException, InvalidIdentifierException {
+        List<Location> locations = BaseSteps.getLocationOperations().getLocations(pm, postalCode, countryCode);
         Location location = null;
         if (locations.size() == 0) {
             location = new Location();
@@ -87,8 +92,8 @@ public class LocationValidator {
             location = LocaleValidator.getGeoCoordinates(location);
             if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                 log.warning("Invalid location for the command: " + commandKey + " -- [" + postalCode + " " + countryCode + "]");
-                RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, commandKey);
-                Consumer consumer = consumerOperations.getConsumer(pm, consumerKey);
+                RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, commandKey);
+                Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
                 Locale locale = consumer.getLocale();
                 try {
                     communicateToConsumer(
@@ -109,14 +114,14 @@ public class LocationValidator {
                 return;
             }
             if (locations.size() == 0) {
-                location = locationOperations.createLocation(pm, location);
+                location = BaseSteps.getLocationOperations().createLocation(pm, location);
             }
             else {
-                location = locationOperations.updateLocation(pm, location);
+                location = BaseSteps.getLocationOperations().updateLocation(pm, location);
             }
         }
         // Create a task to re-process the raw command
-        Queue queue = _baseOperations.getQueue();
+        Queue queue = BaseSteps.getBaseOperations().getQueue();
         log.warning("Preparing the task: /maezel/processCommand?key=" + commandKey.toString());
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").

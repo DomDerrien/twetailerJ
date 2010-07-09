@@ -18,6 +18,16 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define the attributes of a consumer request
+ *
+ * @see twetailer.dto.Command
+ * @see twetailer.dto.Consumer
+ * @see twetailer.dto.Payment
+ * @see twetailer.dto.Proposal
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 
 public class Demand extends Command {
@@ -128,6 +138,7 @@ public class Demand extends Command {
         if (proposalKeys == null) {
             throw new IllegalArgumentException("Cannot nuulify the attribute 'proposalKeys' of type List<Long>");
         }
+        updateModificationDate(); // To highlight the demand update
         this.proposalKeys = proposalKeys;
     }
 
@@ -136,6 +147,7 @@ public class Demand extends Command {
             proposalKeys = new ArrayList<Long>();
         }
         if (!proposalKeys.contains(proposalKey)) {
+            updateModificationDate(); // To highlight the demand update
             proposalKeys.add(proposalKey);
         }
     }
@@ -144,6 +156,7 @@ public class Demand extends Command {
         if (proposalKeys == null) {
             return;
         }
+        updateModificationDate(); // To highlight the demand update
         proposalKeys = new ArrayList<Long>();
     }
 
@@ -151,7 +164,10 @@ public class Demand extends Command {
         if (proposalKeys == null) {
             return;
         }
-        proposalKeys.remove(proposalKey);
+        if (proposalKeys.contains(proposalKey)) {
+            updateModificationDate(); // To highlight the demand update
+            proposalKeys.remove(proposalKey);
+        }
     }
 
     public Double getRange() {
@@ -244,7 +260,7 @@ public class Demand extends Command {
                 setExpirationDate(DEFAULT_EXPIRATION_DELAY); // Default to an expiration 30 days in the future
             }
         }
-        else if (!in.containsKey(KEY) && in.containsKey(DUE_DATE)) {
+        else if (getKey() == null && getDueDate() != null) {
             // To push the given dueDate as the default expirationDate if the exchange is about a demand to be created
             setExpirationDate(getDueDate());
         }

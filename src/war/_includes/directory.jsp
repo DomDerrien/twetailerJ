@@ -257,7 +257,7 @@
                         <option value="<%= Locale.CANADA.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                         <option value="<%= Locale.US.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
                     </select>
-                    <button dojoType="dijit.form.Button" onclick="twetailer.Directory.showMap();" title="<%= LabelExtractor.get(ResourceFileId.third, "sep_advanced_form_locale_view_map", locale) %>">
+                    <button dojoType="dijit.form.Button" onclick="twetailer.Directory.showMap();" title="<%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %>">
                         <img src="/images/icons/GMaps.png" width="16" height="16" />
                     </button>
                 </td>
@@ -392,8 +392,8 @@
 
     <div
         dojoType="dijit.Dialog"
-        id="locationMap"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "sep_locale_map_preview", locale) %>"
+        id="locationMapDialog"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "shared_map_preview_dialog_title", locale) %>"
     >
         <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
     </div>
@@ -431,7 +431,7 @@
     });
     </script>
 
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>"></script>
+    <script async="true" defer="true" src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 
     <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];

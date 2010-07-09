@@ -2,8 +2,9 @@ package twetailer.task.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 
@@ -17,9 +18,10 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.MockBaseOperations;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -27,6 +29,8 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
+import twetailer.task.step.BaseSteps;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
@@ -36,6 +40,8 @@ import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestSupplyCommandProcessor {
+
+    private static Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -64,33 +70,32 @@ public class TestSupplyCommandProcessor {
         command.put(Command.ACTION, Action.supply.toString());
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                final Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -98,12 +103,14 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
+        Locale locale = Locale.ENGLISH;
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_supply_empty_tag_list", Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_tag_hashtag_list", locale), sentText);
     }
 
     @Test
@@ -113,19 +120,12 @@ public class TestSupplyCommandProcessor {
         command.put(Command.ACTION, Action.supply.toString());
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
@@ -138,14 +138,20 @@ public class TestSupplyCommandProcessor {
                 };
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                final Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -153,12 +159,14 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
+        Locale locale = Locale.ENGLISH;
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_supply_empty_tag_list", Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_tag_hashtag_list", locale), sentText);
     }
 
     @Test
@@ -168,35 +176,34 @@ public class TestSupplyCommandProcessor {
         command.put(Command.ACTION, Action.supply.toString());
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
         final String tag1 = "tag1";
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
-                saleAssociate.addCriterion(tag1);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
+                saleAssociate.addCriterion(tag1, collator);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                final Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -204,12 +211,18 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        Locale locale = Locale.ENGLISH;
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { tag1 }, Locale.ENGLISH), sentText);
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_hashtag_list", locale), sentText);
     }
 
     @Test
@@ -219,6 +232,7 @@ public class TestSupplyCommandProcessor {
         command.put(Command.ACTION, Action.supply.toString());
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
         final String tag1 = "tag1";
@@ -226,32 +240,30 @@ public class TestSupplyCommandProcessor {
         final String tag3 = "tag3";
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
-                saleAssociate.addCriterion(tag1);
-                saleAssociate.addCriterion(tag2);
-                saleAssociate.addCriterion(tag3);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
+                saleAssociate.addCriterion(tag1, collator);
+                saleAssociate.addCriterion(tag2, collator);
+                saleAssociate.addCriterion(tag3, collator);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                final Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -259,14 +271,19 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
         Locale locale = Locale.ENGLISH;
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag2 + " " + tag3 }, locale);
         assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 3 }, locale), sentText);
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_hashtag_list", locale), sentText);
     }
 
     @Test
@@ -280,6 +297,7 @@ public class TestSupplyCommandProcessor {
         command.put(SaleAssociate.CRITERIA, tagList);
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
         final String tag1 = "tag1";
@@ -287,32 +305,30 @@ public class TestSupplyCommandProcessor {
         final String tag3 = "tag3";
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
-                saleAssociate.addCriterion(tag1);
-                saleAssociate.addCriterion(tag2);
-                saleAssociate.addCriterion(tag3);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
+                saleAssociate.addCriterion(tag1, collator);
+                saleAssociate.addCriterion(tag2, collator);
+                saleAssociate.addCriterion(tag3, collator);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                final Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -320,12 +336,18 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        Locale locale = Locale.ENGLISH;
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
         assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { newTag }, Locale.ENGLISH), sentText);
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_hashtag_list", locale), sentText);
     }
 
     @Test
@@ -339,6 +361,7 @@ public class TestSupplyCommandProcessor {
         command.put(SaleAssociate.CRITERIA_ADD, tagList);
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
         final String tag1 = "tag1";
@@ -346,32 +369,30 @@ public class TestSupplyCommandProcessor {
         final String tag3 = "tag3";
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
-                saleAssociate.addCriterion(tag1);
-                saleAssociate.addCriterion(tag2);
-                saleAssociate.addCriterion(tag3);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
+                saleAssociate.addCriterion(tag1, collator);
+                saleAssociate.addCriterion(tag2, collator);
+                saleAssociate.addCriterion(tag3, collator);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertTrue(consumerKey == key || saConsumerRecordKey == key);
+                final Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setPreferredConnection(Source.simulated);
+                return consumer;
+            }
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -379,14 +400,19 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
         Locale locale = Locale.ENGLISH;
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag2 + " " + tag3 + " " + newTag }, locale);
         assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 4 }, locale), sentText);
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_hashtag_list", locale), sentText);
     }
 
     @Test
@@ -400,6 +426,7 @@ public class TestSupplyCommandProcessor {
         command.put(SaleAssociate.CRITERIA_REMOVE, tagList);
 
         final Long consumerKey = 111L;
+        final Long saConsumerRecordKey = 76325L;
         final Long saleAssociateKey = 222L;
         final Long storeKey = 333L;
         final String tag1 = "tag1";
@@ -407,32 +434,20 @@ public class TestSupplyCommandProcessor {
         final String tag3 = "tag3";
 
         // SaleAssociateOperations mock
-        final SaleAssociateOperations saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(SaleAssociate.CONSUMER_KEY, key);
-                assertEquals(consumerKey, (Long) value);
-                List<Long> saleAssociateKeys = new ArrayList<Long>();
-                saleAssociateKeys.add(saleAssociateKey);
-                return saleAssociateKeys;
-            }
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
                 saleAssociate.setStoreKey(storeKey);
-                saleAssociate.setConsumerKey(consumerKey);
-                saleAssociate.addCriterion(tag1);
-                saleAssociate.addCriterion(tag2);
-                saleAssociate.addCriterion(tag3);
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
+                saleAssociate.addCriterion(tag1, collator);
+                saleAssociate.addCriterion(tag2, collator);
+                saleAssociate.addCriterion(tag3, collator);
                 return saleAssociate;
             }
-        };
-
-        // CommandProcessor mock
-        CommandProcessor._baseOperations = new MockBaseOperations();
-        CommandProcessor.saleAssociateOperations = saleAssociateOperations;
+        });
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -440,13 +455,18 @@ public class TestSupplyCommandProcessor {
         // Consumer mock
         Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
+        consumer.setSaleAssociateKey(saleAssociateKey);
 
         CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
         Locale locale = Locale.ENGLISH;
+        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
+        assertNotNull(sentText);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag3 }, locale);
         assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 2 }, locale), sentText);
+
+        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
+        assertNotNull(sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_empty_hashtag_list", locale), sentText);
     }
 }

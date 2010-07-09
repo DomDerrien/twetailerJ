@@ -5,6 +5,11 @@ import java.text.ParseException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * To report issues related to the access to protected resources
+ *
+ * @author Dom Derrien
+ */
 @SuppressWarnings("serial")
 public class SecurityException extends Exception implements TransferObject {
 

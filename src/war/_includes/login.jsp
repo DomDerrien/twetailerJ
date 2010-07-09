@@ -15,10 +15,8 @@
     import="twetailer.dao.BaseOperations"
     import="twetailer.dao.SettingsOperations"
     import="twetailer.j2ee.LoginServlet"
+    import="twetailer.task.step.BaseSteps"
     import="twetailer.validator.ApplicationSettings"
-%><%!
-    protected BaseOperations _baseOperations = new BaseOperations();
-    protected SettingsOperations settingsOperations = _baseOperations.getSettingsOperations();
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
@@ -30,7 +28,7 @@
     String localeId = LocaleController.getLocaleId(request);
 
     // Try to get the seed city list
-    String seedCityList = (String) settingsOperations.getFromCache("/suppliesTagCloud/seedCityList");
+    String seedCityList = (String) BaseSteps.getSettingsOperations().getFromCache("/suppliesTagCloud/seedCityList");
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>

@@ -1,11 +1,13 @@
 package twetailer.task.command;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
 import javax.jdo.MockPersistenceManager;
+import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,12 +18,14 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
@@ -128,10 +132,25 @@ public class TestLanguageCommandProcessor {
         criteria.add(Locale.FRENCH.getLanguage());
         command.put(Demand.CRITERIA_ADD, criteria);
 
+        // ConsumerOperations mock
+        final Long consumerKey = 76325L;
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(consumerKey, consumer.getKey());
+                assertEquals(Locale.FRENCH.getLanguage(), consumer.getLanguage());
+                return consumer;
+            }
+        });
+
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);

@@ -4,9 +4,14 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
-import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Payment;
 
+/**
+ * Controller defining various methods used for the CRUD operations on Payment entities
+ *
+ * @author Dom Derrien
+ */
 public class PaymentOperations extends BaseOperations {
     private static Logger log = Logger.getLogger(PaymentOperations.class.getName());
 
@@ -50,11 +55,11 @@ public class PaymentOperations extends BaseOperations {
      * @param key Identifier of the payment
      * @return First payment matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved payment does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Payment record
      *
      * @see PaymentOperations#getPayment(PersistenceManager, Long)
      */
-    public Payment getPayment(Long key) throws DataSourceException {
+    public Payment getPayment(Long key) throws InvalidIdentifierException {
         PersistenceManager pm = getPersistenceManager();
         try {
             return getPayment(pm, key);
@@ -72,18 +77,18 @@ public class PaymentOperations extends BaseOperations {
      * @param key Identifier of the payment
      * @return First payment matching the given criteria or <code>null</code>
      *
-     * @throws DataSourceException If the retrieved payment does not belong to the specified user
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Payment record
      */
-    public Payment getPayment(PersistenceManager pm, Long key) throws DataSourceException {
+    public Payment getPayment(PersistenceManager pm, Long key) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
-            throw new IllegalArgumentException("Invalid key; cannot retrieve the Payment instance");
+            throw new InvalidIdentifierException("Invalid key; cannot retrieve the Payment instance");
         }
         getLogger().warning("Get Payment instance with id: " + key);
         try {
             return pm.getObjectById(Payment.class, key);
         }
         catch(Exception ex) {
-            throw new DataSourceException("Error while retrieving payment for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+            throw new InvalidIdentifierException("Error while retrieving payment for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
     }
 

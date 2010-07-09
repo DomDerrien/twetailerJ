@@ -25,8 +25,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.dto.Consumer;
 import twetailer.j2ee.LoginServlet;
+import twetailer.task.step.BaseSteps;
 import twitter4j.MockUser;
 import twitter4j.TwitterException;
 
@@ -51,6 +53,7 @@ public class TestConsumerOperations {
     @Before
     public void setUp() throws Exception {
         helper.setUp();
+        BaseSteps.resetOperationControllers(false); // Use helper!
     }
 
     @After
@@ -248,7 +251,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testGetI() throws DataSourceException {
+    public void testGetI() throws InvalidIdentifierException {
         final long key = 1234L;
         final PersistenceManager pm = new MockPersistenceManager() {
             @Override
@@ -271,8 +274,8 @@ public class TestConsumerOperations {
         }
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testGetII() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetII() throws InvalidIdentifierException {
         final long key = 1234L;
         final PersistenceManager pm = new MockPersistenceManager() {
             @Override
@@ -296,7 +299,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testGetIV() throws DataSourceException {
+    public void testGetIV() throws InvalidIdentifierException {
         final long key = 1234L;
         final Consumer selected = new Consumer();
         final PersistenceManager pm = new MockPersistenceManager() {
@@ -319,14 +322,14 @@ public class TestConsumerOperations {
         assertTrue(ops.getPersistenceManager().isClosed());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetV() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetV() throws InvalidIdentifierException {
         ConsumerOperations ops = new ConsumerOperations();
         ops.getConsumer(new MockPersistenceManager(), null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetVI() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetVI() throws InvalidIdentifierException {
         ConsumerOperations ops = new ConsumerOperations();
         ops.getConsumer(new MockPersistenceManager(), 0L);
     }
@@ -507,7 +510,6 @@ public class TestConsumerOperations {
     }
 
     @Test
-    @SuppressWarnings("serial")
     public void testCreateIV() throws DataSourceException, TwitterException {
         final String name = "displayName";
         final String screenName = "screenName";
@@ -1068,7 +1070,7 @@ public class TestConsumerOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testDeleteWithFailureI() throws DataSourceException {
+    public void testDeleteWithFailureI() throws InvalidIdentifierException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public void deleteConsumer(PersistenceManager pm, Long key) {
@@ -1079,7 +1081,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testDeleteI() throws DataSourceException {
+    public void testDeleteI() throws InvalidIdentifierException {
         final Long consumerKey = 54657L;
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -1098,7 +1100,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testDeleteII() throws DataSourceException {
+    public void testDeleteII() throws InvalidIdentifierException {
         final String name = "name";
         Consumer toBeCreated = new Consumer();
         toBeCreated.setName(name);

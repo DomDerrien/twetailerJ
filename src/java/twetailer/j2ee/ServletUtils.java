@@ -6,6 +6,11 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Utility class with shared methods for the servlet entry points
+ *
+ * @author Dom Derrien
+ */
 public class ServletUtils {
 
     /**

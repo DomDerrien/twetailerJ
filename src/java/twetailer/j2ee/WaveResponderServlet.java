@@ -10,6 +10,18 @@ import com.google.wave.api.RobotMessageBundle;
 import com.google.wave.api.TextView;
 import com.google.wave.api.Wavelet;
 
+/**
+ * Entry point processing Google Wave messages.
+ * Received information are stored in a RawCommand instance
+ * that the task "/maezel/processCommand" will process
+ * asynchrounously.
+ *
+ * @see twetailer.dto.RawCommand
+ * @see twetailer.j2ee.MaezelServlet
+ *
+ * @author Dom Derrien
+ */
+
 @SuppressWarnings("serial")
 public class WaveResponderServlet extends AbstractRobotServlet {
     private static Logger log = Logger.getLogger(WaveResponderServlet.class.getName());

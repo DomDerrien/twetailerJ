@@ -1,6 +1,5 @@
 package twetailer.validator;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +16,12 @@ import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import domderrien.jsontools.JsonObject;
 
+/**
+ * Control the access to third party services used to
+ * validate location coordinates.
+ *
+ * @author Dom Derrien
+ */
 public class LocaleValidator {
 
     private static Logger log = Logger.getLogger(LocaleValidator.class.getName());
@@ -217,7 +222,7 @@ public class LocaleValidator {
      * @see LocaleValidator#getLocale(String)
      */
     public static String checkLanguage(String language) {
-        if (language != null) {
+        if (language != null && 2 < language.length()) {
             language = language.substring(0, 2);
         }
         if (FRENCH_LANGUAGE.equalsIgnoreCase(language)) { return FRENCH_LANGUAGE; }

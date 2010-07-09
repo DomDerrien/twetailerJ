@@ -1,8 +1,8 @@
 package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,11 +32,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
-import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
@@ -53,15 +52,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
 import twetailer.payment.AmazonFPS;
-import twetailer.task.CommandProcessor;
-import twetailer.task.MockCommandProcessor;
-import twetailer.task.MockDemandProcessor;
-import twetailer.task.MockDemandValidator;
-import twetailer.task.MockLocationValidator;
-import twetailer.task.MockProposalProcessor;
-import twetailer.task.MockProposalValidator;
-import twetailer.task.MockRobotResponder;
-import twetailer.task.MockTweetLoader;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
@@ -99,13 +90,13 @@ public class TestMaezelServlet {
     @Before
     public void setUp() throws Exception {
         servlet = new MaezelServlet();
-        servlet._baseOperations = new MockBaseOperations();
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
         helper.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
-        servlet.settingsOperations = new SettingsOperations();
         helper.tearDown();
         JabberConnector.injectMockXMPPService(null);
     }
@@ -188,7 +179,7 @@ public class TestMaezelServlet {
         };
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 return new Settings();
@@ -197,11 +188,7 @@ public class TestMaezelServlet {
             public Settings updateSettings(PersistenceManager pm, Settings settings) {
                 return settings;
             }
-        };
-
-        // Inject mock operators
-        MockTweetLoader.injectMocks(servlet._baseOperations);
-        MockTweetLoader.injectMocks(mockSettingsOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -224,7 +211,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockCommandProcessor.restoreOperations();
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
@@ -232,14 +218,14 @@ public class TestMaezelServlet {
     public void testDoGetProcessCommand() throws IOException {
         // Inject RawCommandOperations mock
         final Long commandKey = 12345L;
-        RawCommandOperations rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws DataSourceException {
+            public RawCommand getRawCommand(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(commandKey, key);
-                throw new DataSourceException("Done in purpose");
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
-        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+        });
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 return new Settings();
@@ -248,10 +234,7 @@ public class TestMaezelServlet {
             public Settings updateSettings(PersistenceManager pm, Settings settings) {
                 return settings;
             }
-        };
-        MockCommandProcessor.injectMocks(servlet._baseOperations);
-        MockCommandProcessor.injectMocks(mockSettingsOperations);
-        MockCommandProcessor.injectMocks(rawCommandOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -281,7 +264,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':false"));
 
         // Clean-up
-        MockCommandProcessor.restoreOperations();
     }
 
     @Test
@@ -293,7 +275,7 @@ public class TestMaezelServlet {
         final Double longitude = -73.3D;
 
         // Inject LocationOperations mock
-        final LocationOperations mockLocationOperations = new LocationOperations() {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) {
                 Location location = new Location();
@@ -302,9 +284,7 @@ public class TestMaezelServlet {
                 locations.add(location);
                 return locations;
             }
-        };
-        MockLocationValidator.injectMocks(servlet._baseOperations);
-        MockLocationValidator.injectMocks(mockLocationOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -342,14 +322,13 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockLocationValidator.restoreOperations();
     }
 
     @Test
     public void testDoGetValidateOpenDemand() throws IOException {
         final Long demandKey= 12345L;
         // Inject DemandOperations mock
-        final DemandOperations mockDemandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
                 assertEquals(demandKey, key);
@@ -358,9 +337,7 @@ public class TestMaezelServlet {
                 demand.setState(State.invalid);
                 return demand;
             }
-        };
-        MockDemandValidator.injectMocks(servlet._baseOperations);
-        MockDemandValidator.injectMocks(mockDemandOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -386,14 +363,13 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockDemandValidator.restoreOperations();
     }
 
     @Test
     public void testDoGetValidateOpenProposal() throws IOException {
         final Long proposalKey= 12345L;
         // Inject ProposalOperations mock
-        final ProposalOperations mockProposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
                 assertEquals(proposalKey, key);
@@ -402,9 +378,7 @@ public class TestMaezelServlet {
                 proposal.setState(State.invalid);
                 return proposal;
             }
-        };
-        MockProposalValidator.injectMocks(servlet._baseOperations);
-        MockProposalValidator.injectMocks(mockProposalOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -430,14 +404,13 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockProposalValidator.restoreOperations();
     }
 
     @Test
     public void testDoGetValidatePublishedDemand() throws IOException {
         final Long demandKey= 12345L;
         // Inject DemandOperations mock
-        final DemandOperations mockDemandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) {
                 assertEquals(demandKey, key);
@@ -446,9 +419,7 @@ public class TestMaezelServlet {
                 demand.setState(State.invalid);
                 return demand;
             }
-        };
-        MockDemandProcessor.injectMocks(servlet._baseOperations);
-        MockDemandProcessor.injectMocks(mockDemandOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -480,21 +451,18 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockDemandProcessor.restoreOperation();
     }
 
     @Test
     public void testDoGetValidatePublishedDemands() throws IOException {
         final Long demandKey= 12345L;
         // Inject DemandOperations mock
-        final DemandOperations mockDemandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
                 return new ArrayList<Demand>();
             }
-        };
-        MockDemandProcessor.injectMocks(servlet._baseOperations);
-        MockDemandProcessor.injectMocks(mockDemandOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -520,14 +488,13 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockDemandProcessor.restoreOperation();
     }
 
     @Test
     public void testDoGetValidatePublishedProposal() throws IOException {
         final Long proposalKey= 12345L;
         // Inject ProposalOperations mock
-        final ProposalOperations mockProposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
             public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) {
                 assertEquals(proposalKey, key);
@@ -536,9 +503,7 @@ public class TestMaezelServlet {
                 proposal.setState(State.invalid);
                 return proposal;
             }
-        };
-        MockProposalProcessor.injectMocks(servlet._baseOperations);
-        MockProposalProcessor.injectMocks(mockProposalOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -564,21 +529,18 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockProposalProcessor.restoreOperation();
     }
 
     @Test
     public void testDoGetProcessDemandForRobot() throws IOException {
         final Long proposalKey= 12345L;
         // Inject SaleAssociateOperations mock
-        final SettingsOperations mockSettingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 return new Settings();
             }
-        };
-        MockRobotResponder.injectMocks(servlet._baseOperations);
-        MockRobotResponder.injectMocks(mockSettingsOperations);
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -604,7 +566,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockProposalProcessor.restoreOperation();
     }
 
     @Test
@@ -632,17 +593,15 @@ public class TestMaezelServlet {
             }
         };
 
-        CommandProcessor._baseOperations = new MockBaseOperations() {
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
             @Override
             public PersistenceManager getPersistenceManager() {
                 throw new DatastoreTimeoutException("Done in purpose!");
             }
-        };
+        });
 
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
-
-        CommandProcessor._baseOperations = new BaseOperations();
     }
 
     @Test
@@ -1712,7 +1671,7 @@ public class TestMaezelServlet {
         final Settings settings = new Settings();
 
         // Prepare mock SettingsOperations
-        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 return settings;
@@ -1724,8 +1683,7 @@ public class TestMaezelServlet {
                 assertEquals(saleAssociateKey, updatedSettings.getRobotSaleAssociateKey());
                 return updatedSettings;
             }
-        };
-        servlet.settingsOperations = mockSettingsOperations;
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -1757,7 +1715,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockCommandProcessor.restoreOperations();
     }
 
     @Test
@@ -1766,7 +1723,7 @@ public class TestMaezelServlet {
         final Long saleAssociateKey = 45654L;
 
         // Prepare mock SettingsOperations
-        SettingsOperations mockSettingsOperations = new SettingsOperations() {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
@@ -1776,8 +1733,7 @@ public class TestMaezelServlet {
                 fail("Call not expected");
                 return null;
             }
-        };
-        servlet.settingsOperations = mockSettingsOperations;
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -1815,7 +1771,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':false"));
 
         // Clean-up
-        MockCommandProcessor.restoreOperations();
     }
 
     @Test
@@ -1826,7 +1781,7 @@ public class TestMaezelServlet {
         demand.setKey(demandKey);
 
         // Prepare mock DemandOperations
-        DemandOperations mockDemandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
                 assertEquals(demandKey, key);
@@ -1838,8 +1793,7 @@ public class TestMaezelServlet {
                 assertEquals(consumerKey, updatedDemand.getOwnerKey());
                 return updatedDemand;
             }
-        };
-        servlet.demandOperations = mockDemandOperations;
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -1871,7 +1825,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockCommandProcessor.restoreOperations();
     }
 
     @Test
@@ -1882,7 +1835,7 @@ public class TestMaezelServlet {
         demand.setKey(demandKey);
 
         // Prepare mock DemandOperations
-        DemandOperations mockDemandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
@@ -1892,8 +1845,7 @@ public class TestMaezelServlet {
                 fail("Call not expected");
                 return null;
             }
-        };
-        servlet.demandOperations = mockDemandOperations;
+        });
 
         // Prepare mock servlet parameters
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
@@ -1929,7 +1881,6 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':false"));
 
         // Clean-up
-        MockCommandProcessor.restoreOperations();
     }
 
     @Test
@@ -1962,7 +1913,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(300 / 20, queue.getHistory().size());
     }
 
@@ -1996,7 +1947,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(0, queue.getHistory().size());
     }
 
@@ -2030,7 +1981,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1, queue.getHistory().size());
     }
 
@@ -2064,7 +2015,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(100 / 20, queue.getHistory().size());
     }
 
@@ -2098,7 +2049,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1000 / 20, queue.getHistory().size());
     }
 
@@ -2144,7 +2095,7 @@ public class TestMaezelServlet {
             }
         };
 
-        servlet.paymentOperations = new PaymentOperations() {
+        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
             @Override
             public Payment createPayment(PersistenceManager pm, Payment payment) {
                 assertEquals(tokenId, payment.getAuthorizationId());
@@ -2152,7 +2103,7 @@ public class TestMaezelServlet {
                 payment.setKey(paymentKey);
                 return payment;
             }
-        };
+        });
 
         servlet.amazonFPS = new AmazonFPS() {
             @Override
@@ -2166,7 +2117,7 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("payment"));
         assertTrue(stream.contains("'" + Payment.KEY + "':" + paymentKey.toString()));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1, queue.getHistory().size());
     }
 
@@ -2212,7 +2163,7 @@ public class TestMaezelServlet {
             }
         };
 
-        servlet.paymentOperations = new PaymentOperations() {
+        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
             @Override
             public Payment createPayment(PersistenceManager pm, Payment payment) {
                 assertEquals(tokenId, payment.getAuthorizationId());
@@ -2220,7 +2171,7 @@ public class TestMaezelServlet {
                 payment.setKey(paymentKey);
                 return payment;
             }
-        };
+        });
 
         servlet.amazonFPS = new AmazonFPS() {
             @Override
@@ -2232,7 +2183,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertTrue(queue == null || 0 == queue.getHistory().size());
     }
 
@@ -2276,7 +2227,7 @@ public class TestMaezelServlet {
             }
         };
 
-        servlet.paymentOperations = new PaymentOperations() {
+        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
             @Override
             public Payment getPayment(PersistenceManager pm, Long key) {
                 assertEquals(paymentKey, key);
@@ -2292,7 +2243,7 @@ public class TestMaezelServlet {
                 assertEquals(status, payment.getStatus());
                 return payment;
             }
-        };
+        });
 
         servlet.amazonFPS = new AmazonFPS() {
             @Override
@@ -2305,7 +2256,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertTrue(queue == null || 0 == queue.getHistory().size());
     }
 
@@ -2350,7 +2301,7 @@ public class TestMaezelServlet {
             }
         };
 
-        servlet.paymentOperations = new PaymentOperations() {
+        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
             @Override
             public Payment getPayment(PersistenceManager pm, Long key) {
                 assertEquals(paymentKey, key);
@@ -2366,7 +2317,7 @@ public class TestMaezelServlet {
                 assertEquals(status, payment.getStatus());
                 return payment;
             }
-        };
+        });
 
         servlet.amazonFPS = new AmazonFPS() {
             @Override
@@ -2379,7 +2330,7 @@ public class TestMaezelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) servlet._baseOperations).getPreviousQueue();
+        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1, queue.getHistory().size());
     }
 

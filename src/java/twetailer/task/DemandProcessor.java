@@ -1,9 +1,7 @@
 package twetailer.task;
 
-
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
-import static twetailer.connector.BaseConnector.communicateToSaleAssociate;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -21,14 +19,8 @@ import javax.mail.MessagingException;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.ConsumerOperations;
-import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
-import twetailer.dao.ProposalOperations;
-import twetailer.dao.RawCommandOperations;
-import twetailer.dao.SaleAssociateOperations;
-import twetailer.dao.StoreOperations;
+import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -38,6 +30,8 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.CatchAllMailHandlerServlet;
+import twetailer.task.step.BaseSteps;
+import twetailer.task.step.LocationSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
@@ -48,18 +42,21 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
+/**
+ * Define the task with is invoked by the task "/maezel/validateOpenDemand"
+ * in order to broadcast the valid Demand to matching sale associates
+ * in the area.
+ *
+ * When everything is OK, a message is sent to sale associates according
+ * to their preferred communication channel (IMAP, XMPP, Twitter, etc.).
+ *
+ * @see twetailer.task.DemandValidator
+ *
+ * @author Dom Derrien
+ */
 public class DemandProcessor {
 
     private static Logger log = Logger.getLogger(DemandProcessor.class.getName());
-
-    protected static BaseOperations _baseOperations = new BaseOperations();
-    protected static ConsumerOperations consumerOperations = _baseOperations.getConsumerOperations();
-    protected static DemandOperations demandOperations = _baseOperations.getDemandOperations();
-    protected static LocationOperations locationOperations = _baseOperations.getLocationOperations();
-    protected static ProposalOperations proposalOperations = _baseOperations.getProposalOperations();
-    protected static SaleAssociateOperations saleAssociateOperations = _baseOperations.getSaleAssociateOperations();
-    protected static StoreOperations storeOperations = _baseOperations.getStoreOperations();
-    protected static RawCommandOperations rawCommandOperations = _baseOperations.getRawCommandOperations();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -75,7 +72,7 @@ public class DemandProcessor {
         //
         // Warning: Keep the frequency specified in the cron.xml.tmpl file in sync with the delay used in the function body
         //
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // Get the date 9 hours (8 hours as the cron job plus 1 hour for security) in the past
             Calendar now = DateUtils.getNowCalendar();
@@ -85,10 +82,10 @@ public class DemandProcessor {
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("=" + Command.STATE, State.published.toString());
             parameters.put("<" + Entity.MODIFICATION_DATE, past.getTime());
-            List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
+            List<Demand> demands = BaseSteps.getDemandOperations().getDemands(pm, parameters, 0);
             // Add the corresponding task in the queue
             if (0 < demands.size()) {
-                Queue queue = _baseOperations.getQueue();
+                Queue queue = BaseSteps.getBaseOperations().getQueue();
                 for (Demand demand: demands) {
                     // Create a task for that demand
                     log.warning("Preparing the task: /maezel/processPublishedDemand?key=" + demand.getKey().toString() + "&cronJob=true");
@@ -112,9 +109,10 @@ public class DemandProcessor {
      * @param cronJob <code>true</code> if the process has been commanded by the cron job
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(Long demandKey, boolean cronJob) throws DataSourceException {
-        PersistenceManager pm = _baseOperations.getPersistenceManager();
+    public static void process(Long demandKey, boolean cronJob) throws DataSourceException, InvalidIdentifierException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             process(pm, demandKey, cronJob);
         }
@@ -131,32 +129,38 @@ public class DemandProcessor {
      * @param cronJob <code>true</code> if the process has been commanded by the cron job
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the retrieval of the identified resources fails
      */
-    public static void process(PersistenceManager pm, Long demandKey, boolean cronJob) throws DataSourceException {
-        Demand demand = demandOperations.getDemand(pm, demandKey, null);
+    public static void process(PersistenceManager pm, Long demandKey, boolean cronJob) throws InvalidIdentifierException, DataSourceException {
+        Demand demand = BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
         int initialNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
         if (CommandSettings.State.published.equals(demand.getState())) {
-            Consumer owner = consumerOperations.getConsumer(pm, demand.getOwnerKey());
+            Consumer owner = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
             // Try to contact regular sale associates
             List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
             for(SaleAssociate saleAssociate: saleAssociates) {
+                Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                 // Communicate with the sale associate
                 try {
-                    Locale locale = saleAssociate.getLocale();
+                    Locale locale = saConsumerRecord.getLocale();
                     String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                    String tags = demand.getSerializedCriteria() == null ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
+                    String tags = demand.getSerializedCriteria().length() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
+                    String hashTags = demand.getSerializedHashTags().length() == 0 ? "" : LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale);
                     String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale);
                     String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale);
                     String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale);
-                    communicateToSaleAssociate(
-                            new RawCommand(saleAssociate.getPreferredConnection()),
-                            saleAssociate,
+                    communicateToConsumer(
+                            new RawCommand(saConsumerRecord.getPreferredConnection()),
+                            saConsumerRecord,
                             new String[] {
                                 LabelExtractor.get(
+                                    //
+                                    // TODO: format the following TMX entries as the ones for the generateTweet() methods
+                                    //
                                     demand.getQuantity() == 1 ? "dp_inform_saleAssociate_about_demand_one_item" : "dp_inform_saleAssociate_about_demand_many_items",
                                     new Object[] {
                                         demandRef,
-                                        tags,
+                                        tags.length() == 0 || hashTags.length() == 0 ? tags + hashTags : tags + " " + hashTags,
                                         expiration,
                                         dueDate,
                                         quantity
@@ -178,7 +182,7 @@ public class DemandProcessor {
                         CatchAllMailHandlerServlet.composeAndPostMailMessage(
                                 "error-notifier",
                                 "Unexpected error caught in " + DemandProcessor.class.getName(),
-                                "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saleAssociate.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
+                                "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saConsumerRecord.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
                         );
                     }
                     catch (MessagingException e) {
@@ -191,7 +195,7 @@ public class DemandProcessor {
             if (demand.getHashTags().contains(RobotResponder.ROBOT_DEMO_HASH_TAG)) {
                 if (!hasRobotAlreadyContacted(pm, demand)) {
                     // Schedule a task to transmit the proposal to the demand owner
-                    Queue queue = _baseOperations.getQueue();
+                    Queue queue = BaseSteps.getBaseOperations().getQueue();
                     log.warning("Preparing the task: /maezel/processDemandForRobot?key=" + demand.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
@@ -204,61 +208,63 @@ public class DemandProcessor {
             }
 
             // Push the updated demand into the datastore
-            demand = demandOperations.updateDemand(pm, demand);
+            demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
             // Notify the consumer about how many sale associates have been successfully contacted this time
-            try {
-                int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
-                log.warning("Sale associates contacted: " + initialNumberOfSaleAssociatesContacted + " => " + newNumberOfSaleAssociatesContacted + " (cron: " + cronJob + ")");
-                Locale locale = owner.getLocale();
-                if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
-                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
-                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                    communicateToConsumer(
-                            rawCommand,
-                            owner,
-                            new String[] {
-                                LabelExtractor.get(
-                                    "dp_inform_consumer_about_new_sale_associates_contacted",
-                                    new Object[] {
-                                        demandRef,
-                                        newNumberOfSaleAssociatesContacted,
-                                        newNumberOfSaleAssociatesContacted - initialNumberOfSaleAssociatesContacted
-                                    },
-                                    locale
-                                )
-                            }
-                    );
-                }
-                else if (cronJob && initialNumberOfSaleAssociatesContacted == 0) {
-                    RawCommand rawCommand = rawCommandOperations.getRawCommand(pm, demand.getRawCommandId());
-                    communicateToConsumer(
-                            rawCommand,
-                            owner,
-                            new String[] {
-                                LabelExtractor.get(
-                                    "dp_inform_consumer_about_no_store",
-                                    locale
-                                )
-                            }
-                    );
-                }
-            }
-            catch (ClientException ex) {
-                // Report the error
-                log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());
-                // Send an e-mail to out catch-all list
-                MockOutputStream stackTrace = new MockOutputStream();
-                ex.printStackTrace(new PrintStream(stackTrace));
+            if (!Source.api.equals(demand.getSource())) {
                 try {
-                    CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                            "error-notifier",
-                            "Unexpected error caught in " + DemandProcessor.class.getName(),
-                            "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nConsumer: " + owner.getName() + " (" + owner.getKey() + ")\n\n--\n\n" + stackTrace.toString()
-                    );
+                    int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
+                    log.warning("Sale associates contacted: " + initialNumberOfSaleAssociatesContacted + " => " + newNumberOfSaleAssociatesContacted + " (cron: " + cronJob + ")");
+                    Locale locale = owner.getLocale();
+                    if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
+                        RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
+                        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
+                        communicateToConsumer(
+                                rawCommand,
+                                owner,
+                                new String[] {
+                                    LabelExtractor.get(
+                                        "dp_inform_consumer_about_new_sale_associates_contacted",
+                                        new Object[] {
+                                            demandRef,
+                                            newNumberOfSaleAssociatesContacted,
+                                            newNumberOfSaleAssociatesContacted - initialNumberOfSaleAssociatesContacted
+                                        },
+                                        locale
+                                    )
+                                }
+                        );
+                    }
+                    else if (cronJob && initialNumberOfSaleAssociatesContacted == 0) {
+                        RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
+                        communicateToConsumer(
+                                rawCommand,
+                                owner,
+                                new String[] {
+                                    LabelExtractor.get(
+                                        "dp_inform_consumer_about_no_store",
+                                        locale
+                                    )
+                                }
+                        );
+                    }
                 }
-                catch (MessagingException e) {
-                    log.severe("Failure while trying to report an unexpected by e-mail!");
+                catch (ClientException ex) {
+                    // Report the error
+                    log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());
+                    // Send an e-mail to out catch-all list
+                    MockOutputStream stackTrace = new MockOutputStream();
+                    ex.printStackTrace(new PrintStream(stackTrace));
+                    try {
+                        CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                                "error-notifier",
+                                "Unexpected error caught in " + DemandProcessor.class.getName(),
+                                "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nConsumer: " + owner.getName() + " (" + owner.getKey() + ")\n\n--\n\n" + stackTrace.toString()
+                        );
+                    }
+                    catch (MessagingException e) {
+                        log.severe("Failure while trying to report an unexpected by e-mail!");
+                    }
                 }
             }
         }
@@ -291,23 +297,24 @@ public class DemandProcessor {
      * @return List of sale associates listening for the demand tags, within the area specified by the consumer
      *
      * @throws DataSourceException If the data manipulation fails
+     * @throws InvalidIdentifierException If the extraction of the Location for the given Demand fails
      */
-    protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand, Consumer owner) throws DataSourceException {
+    protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand, Consumer owner) throws InvalidIdentifierException, DataSourceException {
         List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
         // Get the stores around the demanded location
-        Location location = locationOperations.getLocation(pm, demand.getLocationKey());
-        List<Location> locations = locationOperations.getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), true, 0);
+        Location location = LocationSteps.getLocation(pm, demand);
+        List<Location> locations = BaseSteps.getLocationOperations().getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), true, 0);
         if (locations.size() == 0) {
             return selectedSaleAssociates;
         }
-        List<Store> stores = storeOperations.getStores(pm, locations, 0);
+        List<Store> stores = BaseSteps.getStoreOperations().getStores(pm, new HashMap<String, Object>(), locations, 0);
         if (stores.size() == 0) {
             return selectedSaleAssociates;
         }
         // Extracts all sale associates
         List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
         for (Store store: stores) {
-            List<SaleAssociate> employees = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.STORE_KEY, store.getKey(), 0);
+            List<SaleAssociate> employees = BaseSteps.getSaleAssociateOperations().getSaleAssociates(pm, SaleAssociate.STORE_KEY, store.getKey(), 0);
             saleAssociates.addAll(employees);
         }
         if (saleAssociates.size() == 0) {
@@ -316,12 +323,31 @@ public class DemandProcessor {
         // Verifies that the sale associates supply the demanded tags and that he/she has not been yet contacted
         Locale locale = owner.getLocale();
         for (SaleAssociate saleAssociate: saleAssociates) {
+            // Verifies that the sale associate has not been yet informed about this demand
             if (demand.getSaleAssociateKeys() == null || !demand.getSaleAssociateKeys().contains(saleAssociate.getKey())) {
+                List<String> suppliedHashTags = saleAssociate.getHashTags();
                 long score = 0;
-                for (String tag: demand.getCriteria()) {
-                    if (saleAssociate.getCriteria() != null && saleAssociate.getCriteria().contains(tag.toLowerCase(locale))) {
-                        ++ score;
-                        break; // TODO: check if it's useful to continue counting
+                if (suppliedHashTags != null) {
+                    if (demand.getHashTags() != null) {
+                        for (String tag: demand.getHashTags()) {
+                            if (suppliedHashTags.contains(tag.toLowerCase(locale))) {
+                                ++ score;
+                                break; // One common hash tag is enough
+                            }
+                        }
+                    }
+                }
+                if (score == 0) {
+                    List<String> suppliedTags = saleAssociate.getCriteria();
+                    if (suppliedTags != null) {
+                        if (demand.getCriteria() != null) {
+                            for (String tag: demand.getCriteria()) {
+                                if (suppliedTags.contains(tag.toLowerCase(locale))) {
+                                    ++ score;
+                                    break; // TODO: use the sale associate required score before accepting the match
+                                }
+                            }
+                        }
                     }
                 }
                 if (0 < score) {

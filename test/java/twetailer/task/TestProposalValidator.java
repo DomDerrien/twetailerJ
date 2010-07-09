@@ -23,18 +23,19 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
-import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
-import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
@@ -47,6 +48,7 @@ import domderrien.i18n.LabelExtractor;
 public class TestProposalValidator {
 
     final Long saleAssociateKey = 54321L;
+    final Long consumerKey = 33799L;
     final Source source = Source.simulated;
     final State state = State.opened;
 
@@ -70,14 +72,26 @@ public class TestProposalValidator {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setPreferredConnection(source);
+                saleAssociate.setConsumerKey(consumerKey);
                 return saleAssociate;
+            }
+        };
+        ConsumerOperations consumerOperations = new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(saleAssociateKey);
+                consumer.setPreferredConnection(source);
+                return consumer;
             }
         };
 
         // Install the mocks
-        ProposalValidator._baseOperations = new MockBaseOperations();
-        ProposalValidator.saleAssociateOperations = saleAssociateOperations;
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
+        BaseSteps.setMockConsumerOperations(consumerOperations);
+        BaseSteps.setMockSaleAssociateOperations(saleAssociateOperations);
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -86,10 +100,6 @@ public class TestProposalValidator {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-
-        ProposalValidator._baseOperations = new BaseOperations();
-        ProposalValidator.saleAssociateOperations = ProposalValidator._baseOperations.getSaleAssociateOperations();
-        ProposalValidator.proposalOperations = ProposalValidator._baseOperations.getProposalOperations();
     }
 
     @Test
@@ -97,29 +107,29 @@ public class TestProposalValidator {
         new ProposalValidator();
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testProcessNoProposal() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testProcessNoProposal() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 12345L;
 
         // ProposalOperations mock
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                throw new DataSourceException("Done in purpose");
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneProposalInIncorrectState() throws DataSourceException {
+    public void testProcessOneProposalInIncorrectState() throws DataSourceException, InvalidIdentifierException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -136,33 +146,33 @@ public class TestProposalValidator {
         proposal.setStoreKey(storeKey);
         proposal.setTotal(total);
 
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
                 return proposal;
             }
-        };
+        });
 
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessI() throws DataSourceException {
+    public void testProcessI() throws DataSourceException, InvalidIdentifierException {
         //
         // Invalid criteria
         //
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -184,7 +194,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -195,20 +205,20 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessII() throws DataSourceException {
+    public void testProcessII() throws DataSourceException, InvalidIdentifierException {
         //
         // Invalid criteria
         //
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -231,7 +241,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -242,11 +252,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIIIa_1() throws DataSourceException {
+    public void testProcessIIIa_1() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Invalid due date
@@ -254,9 +264,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -279,18 +289,18 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(proposalKey.toString()));
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIIIa_2() throws DataSourceException {
+    public void testProcessIIIa_2() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Invalid due date
@@ -298,9 +308,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -322,18 +332,18 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(proposalKey.toString()));
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIIIa_3() throws DataSourceException {
+    public void testProcessIIIa_3() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Invalid due date
@@ -341,9 +351,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -364,18 +374,18 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(proposalKey.toString()));
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIIIb() throws DataSourceException {
+    public void testProcessIIIb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -384,9 +394,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -411,7 +421,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -422,11 +432,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIV() throws DataSourceException {
+    public void testProcessIV() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -435,9 +445,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
@@ -462,7 +472,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -473,11 +483,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessV() throws DataSourceException {
+    public void testProcessV() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -487,9 +497,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -516,7 +526,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -527,11 +537,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVI() throws DataSourceException {
+    public void testProcessVI() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -541,9 +551,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -570,7 +580,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -581,11 +591,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVII() throws DataSourceException {
+    public void testProcessVII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -595,9 +605,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -624,7 +634,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -635,11 +645,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVIII() throws DataSourceException {
+    public void testProcessVIII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -649,9 +659,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -678,7 +688,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -689,11 +699,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_price_and_total", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIXa() throws DataSourceException {
+    public void testProcessIXa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -704,9 +714,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -729,7 +739,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -740,11 +750,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIXb() throws DataSourceException {
+    public void testProcessIXb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -755,9 +765,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -780,7 +790,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -791,11 +801,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessX() throws DataSourceException {
+    public void testProcessX() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -806,9 +816,9 @@ public class TestProposalValidator {
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -835,7 +845,7 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -846,11 +856,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_missing_demand_reference", new Object[] { proposalRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXI() throws DataSourceException {
+    public void testProcessXI() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -862,9 +872,9 @@ public class TestProposalValidator {
         // ProposalOperations mock
         final Long proposalKey = 67890L;
         final Long demandKey = 54321L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -891,13 +901,13 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.invalid, proposal.getState());
                 return proposal;
             }
-        };
-        ProposalValidator.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
-                throw new DataSourceException("Done in purpose");
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
@@ -909,11 +919,11 @@ public class TestProposalValidator {
                 LabelExtractor.get("pv_report_invalid_demand_reference", new Object[] { proposalRef, demandRef }, Locale.ENGLISH),
                 BaseConnector.getLastCommunicationInSimulatedMode()
         );
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXII() throws DataSourceException {
+    public void testProcessXII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -925,9 +935,9 @@ public class TestProposalValidator {
         // ProposalOperations mock
         final Long proposalKey = 67890L;
         final Long demandKey = 54321L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 assertEquals(proposalKey, key);
                 Proposal proposal = new Proposal() {
                     @Override
@@ -954,90 +964,102 @@ public class TestProposalValidator {
                 assertEquals(CommandSettings.State.published, proposal.getState());
                 return proposal;
             }
-        };
-        ProposalValidator.demandOperations = new DemandOperations() {
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXIII() throws DataSourceException {
+    public void testProcessXIII() throws DataSourceException, InvalidIdentifierException {
         //
         // Error while getting sale associate information
         //
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 return proposal;
             }
-        };
-        ProposalValidator.saleAssociateOperations = new SaleAssociateOperations() {
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws DataSourceException {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(saleAssociateKey, key);
-                throw new DataSourceException("Done in purpose");
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXIV() throws DataSourceException {
+    public void testProcessXIV() throws DataSourceException, InvalidIdentifierException {
         //
         // Error while informing about the error
         //
 
         // ProposalOperations mock
         final Long proposalKey = 67890L;
-        ProposalValidator.proposalOperations = new ProposalOperations() {
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
-            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws DataSourceException {
+            public Proposal getProposal(PersistenceManager pm, Long key, Long cKey, Long sKey) throws InvalidIdentifierException {
                 Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(Source.mail);
                 return proposal;
             }
-        };
+        });
 
-        ProposalValidator.saleAssociateOperations = new SaleAssociateOperations() {
+        final Long saConsumerRecordKey = 76325L;
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws DataSourceException {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
-                saleAssociate.setEmail("@@@@");
+                saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
-        };
+        });
+
+        final Consumer consumer = new Consumer();
+        consumer.setKey(saConsumerRecordKey);
+        consumer.setPreferredConnection(Source.simulated);
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(saConsumerRecordKey, key);
+                return consumer;
+            }
+        });
 
         // Process the test case
         ProposalValidator.process(proposalKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) ProposalValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
@@ -1048,14 +1070,14 @@ public class TestProposalValidator {
                 return null;
             }
         };
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertNull(proposal.getHashTags());
     }
 
     @Test
     public void testFilterHashTagsII() throws ClientException, DataSourceException {
         Proposal proposal = new Proposal();
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertNotNull(proposal.getHashTags());
         assertEquals(0, proposal.getHashTags().size());
     }
@@ -1064,7 +1086,7 @@ public class TestProposalValidator {
     public void testFilterHashTagsIII() throws ClientException, DataSourceException {
         Proposal proposal = new Proposal();
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
     }
@@ -1075,7 +1097,7 @@ public class TestProposalValidator {
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
     }
@@ -1087,7 +1109,7 @@ public class TestProposalValidator {
         proposal.setKey(proposalKey);
         proposal.setSource(Source.simulated);
         proposal.addHashTag("test");
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertEquals(0, proposal.getHashTags().size());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -1105,7 +1127,7 @@ public class TestProposalValidator {
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         proposal.addHashTag("unit");
         proposal.addHashTag("test");
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
 
@@ -1124,7 +1146,7 @@ public class TestProposalValidator {
         proposal.addHashTag("unit");
         proposal.addHashTag("test");
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new SaleAssociate(), proposal);
+        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
 

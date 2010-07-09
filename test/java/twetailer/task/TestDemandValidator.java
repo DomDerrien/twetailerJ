@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,19 +23,18 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
+import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -61,7 +59,7 @@ public class TestDemandValidator {
     @BeforeClass
     public static void setUpBeforeClass() {
         DemandValidator.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
 
@@ -83,8 +81,9 @@ public class TestDemandValidator {
         };
 
         // Install the mocks
-        DemandValidator._baseOperations = new MockBaseOperations();
-        DemandValidator.consumerOperations = consumerOperations;
+        BaseSteps.resetOperationControllers(true);
+        BaseSteps.setMockBaseOperations(new MockBaseOperations());
+        BaseSteps.setMockConsumerOperations(consumerOperations);
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
@@ -93,12 +92,6 @@ public class TestDemandValidator {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-
-        DemandValidator._baseOperations = new BaseOperations();
-        DemandValidator.consumerOperations = DemandValidator._baseOperations.getConsumerOperations();
-        DemandValidator.demandOperations = DemandValidator._baseOperations.getDemandOperations();
-        DemandValidator.locationOperations = DemandValidator._baseOperations.getLocationOperations();
-        DemandValidator.rawCommandOperations = DemandValidator._baseOperations.getRawCommandOperations();
     }
 
     @Test
@@ -106,28 +99,28 @@ public class TestDemandValidator {
         new DemandValidator();
     }
 
-    @Test(expected=DataSourceException.class)
-    public void testProcessNoDemand() throws DataSourceException {
+    @Test(expected=InvalidIdentifierException.class)
+    public void testProcessNoDemand() throws DataSourceException, InvalidIdentifierException {
         final Long demandKey = 12345L;
 
         // DemandOperations mock
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
-                throw new DataSourceException("Done in purpose");
+                throw new InvalidIdentifierException("Done in purpose");
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessOneDemandInIncorrectState() throws DataSourceException {
+    public void testProcessOneDemandInIncorrectState() throws DataSourceException, InvalidIdentifierException {
         final Long demandKey = 67890L;
         final Long locationKey = 12345L;
         final Double demandRange = 25.75D;
@@ -138,30 +131,30 @@ public class TestDemandValidator {
         consumerDemand.setRange(demandRange);
         consumerDemand.setState(State.invalid); // Not published
 
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long OwnerKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long OwnerKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(OwnerKey);
                 return consumerDemand;
             }
-        };
+        });
 
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessI() throws DataSourceException {
+    public void testProcessI() throws DataSourceException, InvalidIdentifierException {
         //
         // Invalid criteria
         //
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -170,13 +163,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -197,25 +190,25 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessII() throws DataSourceException {
+    public void testProcessII() throws DataSourceException, InvalidIdentifierException {
         //
         // Invalid criteria
         //
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -224,13 +217,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -251,18 +244,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIIIa() throws DataSourceException {
+    public void testProcessIIIa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Invalid due date
@@ -270,7 +263,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -279,13 +272,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -307,18 +300,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIVa() throws DataSourceException {
+    public void testProcessIVa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Invalid due date
@@ -326,7 +319,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -335,13 +328,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -363,18 +356,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIIIb() throws DataSourceException {
+    public void testProcessIIIb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -383,7 +376,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -392,13 +385,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -423,18 +416,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIVb() throws DataSourceException {
+    public void testProcessIVb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -443,7 +436,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -452,13 +445,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -483,18 +476,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVb() throws DataSourceException {
+    public void testProcessVb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -504,7 +497,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -513,13 +506,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -545,18 +538,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVIa() throws DataSourceException {
+    public void testProcessVIa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -566,7 +559,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -575,13 +568,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -607,18 +600,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVIb() throws DataSourceException {
+    public void testProcessVIb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -628,7 +621,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -637,13 +630,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -669,18 +662,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVII() throws DataSourceException {
+    public void testProcessVII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -690,7 +683,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -699,13 +692,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -731,18 +724,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVIIIa() throws DataSourceException {
+    public void testProcessVIIIa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -752,7 +745,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -761,13 +754,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -793,18 +786,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessVIIIb() throws DataSourceException {
+    public void testProcessVIIIb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -814,7 +807,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -823,13 +816,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -855,18 +848,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIXa() throws DataSourceException {
+    public void testProcessIXa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -877,7 +870,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -886,13 +879,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -918,18 +911,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessIXb() throws DataSourceException {
+    public void testProcessIXb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -940,7 +933,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -949,13 +942,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -981,18 +974,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessX() throws DataSourceException {
+    public void testProcessX() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1003,7 +996,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1012,13 +1005,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1044,18 +1037,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXI() throws DataSourceException {
+    public void testProcessXI() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1067,7 +1060,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1076,13 +1069,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1112,18 +1105,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXII() throws DataSourceException {
+    public void testProcessXII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1135,7 +1128,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1144,13 +1137,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1176,18 +1169,19 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
+    /**** ddd
     @Test
-    public void testProcessXIII() throws DataSourceException {
+    public void testProcessXIII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1226,7 +1220,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1235,13 +1229,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1268,18 +1262,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXIV() throws DataSourceException {
+    public void testProcessXIV() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1308,7 +1302,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1317,7 +1311,7 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // ConsumerOperations mock
         DemandValidator.consumerOperations = new ConsumerOperations() {
@@ -1338,9 +1332,9 @@ public class TestDemandValidator {
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1367,19 +1361,17 @@ public class TestDemandValidator {
                 // assertEquals(CommandSettings.State.published, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
-        System.err.println("******* out: " + BaseConnector.getLastCommunicationInSimulatedMode());
-
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXVa() throws DataSourceException {
+    public void testProcessXVa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1406,7 +1398,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1415,7 +1407,7 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // ConsumerOperations mock
         DemandValidator.consumerOperations = new ConsumerOperations() {
@@ -1438,9 +1430,9 @@ public class TestDemandValidator {
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1467,17 +1459,17 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.published, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXVb() throws DataSourceException {
+    public void testProcessXVb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1504,7 +1496,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1513,7 +1505,7 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // ConsumerOperations mock
         DemandValidator.consumerOperations = new ConsumerOperations() {
@@ -1536,9 +1528,9 @@ public class TestDemandValidator {
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1565,17 +1557,17 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.published, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXVc() throws DataSourceException {
+    public void testProcessXVc() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1602,7 +1594,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1611,7 +1603,7 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // ConsumerOperations mock
         DemandValidator.consumerOperations = new ConsumerOperations() {
@@ -1632,9 +1624,9 @@ public class TestDemandValidator {
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1661,17 +1653,17 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.published, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXVI() throws DataSourceException {
+    public void testProcessXVI() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -1686,14 +1678,14 @@ public class TestDemandValidator {
         final Long locationKey = 54321L;
         DemandValidator.locationOperations = new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws DataSourceException {
+            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 throw new DataSourceException("done in purpose");
             }
         };
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1702,13 +1694,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand() {
@@ -1735,34 +1727,35 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
+    ddd ****/
 
     @Test
-    public void testProcessXVII() throws DataSourceException {
+    public void testProcessXVII() throws DataSourceException, InvalidIdentifierException {
         //
         // Impossible to get the Demand instance
         //
 
         // ConsumerOperations mock
-        DemandValidator.consumerOperations = new ConsumerOperations() {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws DataSourceException {
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(ownerKey, key);
-                throw new DataSourceException("done in purpose");
+                throw new InvalidIdentifierException("done in purpose");
             }
-        };
+        });
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1771,13 +1764,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand();
@@ -1787,18 +1780,18 @@ public class TestDemandValidator {
                 demand.setRawCommandId(rawCommandKey);
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
     @SuppressWarnings({ "serial", "deprecation" })
-    public void testProcessXVIII() throws DataSourceException {
+    public void testProcessXVIII() throws DataSourceException, InvalidIdentifierException {
         //
         // Impossible to tweet the warnings
         //
@@ -1813,7 +1806,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1822,13 +1815,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(Source.twitter);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand();
@@ -1838,13 +1831,13 @@ public class TestDemandValidator {
                 demand.setRawCommandId(rawCommandKey);
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
 
         MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
@@ -1944,7 +1937,7 @@ public class TestDemandValidator {
     }
 
     @Test
-    public void testProcessXIXa() throws DataSourceException {
+    public void testProcessXIXa() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Invalid due date
@@ -1952,7 +1945,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -1961,13 +1954,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand();
@@ -1987,18 +1980,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXIXb() throws DataSourceException {
+    public void testProcessXIXb() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -2007,7 +2000,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -2016,13 +2009,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand();
@@ -2045,18 +2038,18 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 
     @Test
-    public void testProcessXX() throws DataSourceException {
+    public void testProcessXX() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
         // Valid due date
@@ -2065,7 +2058,7 @@ public class TestDemandValidator {
 
         // RawCommandOperations mock
         final Long rawCommandKey = 111L;
-        DemandValidator.rawCommandOperations = new RawCommandOperations() {
+        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
             public RawCommand getRawCommand(PersistenceManager pm, Long key) {
                 assertEquals(rawCommandKey, key);
@@ -2074,13 +2067,13 @@ public class TestDemandValidator {
                 rawCommand.setSource(source);
                 return rawCommand;
             }
-        };
+        });
 
         // DemandOperations mock
         final Long demandKey = 67890L;
-        DemandValidator.demandOperations = new DemandOperations() {
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws DataSourceException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
                 Demand demand = new Demand();
@@ -2103,13 +2096,13 @@ public class TestDemandValidator {
                 assertEquals(CommandSettings.State.invalid, demand.getState());
                 return demand;
             }
-        };
+        });
 
         // Process the test case
         DemandValidator.process(demandKey);
 
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(BaseConnector.getLastCommunicationInSimulatedMode().contains(demandKey.toString()));
-        assertTrue(((MockBaseOperations) DemandValidator._baseOperations).getPreviousPersistenceManager().isClosed());
+        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
     }
 }

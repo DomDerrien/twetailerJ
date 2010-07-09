@@ -7,6 +7,14 @@ import javax.jdo.annotations.Persistent;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
+/**
+ * Define the attributes of a Twetailer store, which has at least a sale associate as administrator
+ *
+ * @see twetailer.dto.Location
+ * @see twetailer.dto.SaleAssociate
+ *
+ * @author Dom Derrien
+ */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Store extends Entity {
 
@@ -32,6 +40,11 @@ public class Store extends Entity {
     private String phoneNumber;
 
     public final static String PHONE_NUMBER = "phoneNb";
+
+    @Persistent
+    private String url;
+
+    public final static String URL = "url";
 
     /** Default constructor */
     public Store() {
@@ -81,12 +94,21 @@ public class Store extends Entity {
         this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
         out.put(EMAIL, getEmail());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
+        out.put(URL, getUrl());
         return out;
     }
 
@@ -96,6 +118,7 @@ public class Store extends Entity {
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
 
         // Shortcut
         if (in.containsKey(STORE_KEY)) {setKey(in.getLong(STORE_KEY)); }
