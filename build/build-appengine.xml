@@ -21,7 +21,7 @@
 
     <property name="appengine.sdk.dir"
         description="Location of the Google App Engine SDK"
-        location="${basedir}/bin/appengine-java-sdk-1.3.4"
+        location="${basedir}/bin/appengine-java-sdk-1.3.5"
     />
 
     <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
@@ -47,17 +47,7 @@
     <!-- ============== -->
 
     <target name="clean" description="remove all created/copied files/directories at setup time" depends="base_build_control.clean, step-configuration-clean">
-        <delete file="src/war/WEB-INF/lib/appengine*.jar" />
-        <delete file="src/war/WEB-INF/lib/datanucleus*.jar" />
-        <delete file="src/war/WEB-INF/lib/geronimo*.jar" />
-        <delete file="src/war/WEB-INF/lib/jdo2*.jar" />
-        <delete file="src/war/WEB-INF/lib/amazon-fps*.jar" />
-        <delete file="src/war/WEB-INF/lib/domderrien*.jar" />
-        <delete file="src/war/WEB-INF/lib/dyuproject*.jar" />
-        <delete file="src/war/WEB-INF/lib/jetty*.jar" />
-        <delete file="src/war/WEB-INF/lib/twitter4j*.jar" />
-        <delete files="src/war/WEB-INF/lib/json*.jar" />
-        <delete files="src/war/WEB-INF/lib/wave*.jar" />
+        <delete file="src/war/WEB-INF/lib/**/*" />
     </target>
 
     <target name="init" description="get external dependencies and prepare the build environment" depends="base_build_control.init">
