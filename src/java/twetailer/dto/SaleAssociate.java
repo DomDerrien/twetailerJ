@@ -265,7 +265,7 @@ public class SaleAssociate extends Entity {
         super.fromJson(in);
         if (getKey() == null && in.containsKey(CONSUMER_KEY)) {
             // Cannot change once set at creation time
-            setConsumerKey(in.getLong(CONSUMER_KEY)); 
+            setConsumerKey(in.getLong(CONSUMER_KEY));
         }
         if (getKey() == null && in.containsKey(CREATOR_KEY)) {
             // Cannot change once set at creation time
@@ -296,7 +296,7 @@ public class SaleAssociate extends Entity {
         }
         if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
-        if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); }
+        // if (in.containsKey(SCORE)) { ... } // Cannot be set manually
 
         // Shortcut
         if (in.containsKey(SALEASSOCIATE_KEY)) { setKey(in.getLong(SALEASSOCIATE_KEY)); }

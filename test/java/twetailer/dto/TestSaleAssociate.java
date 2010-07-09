@@ -171,7 +171,7 @@ public class TestSaleAssociate {
         assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(storeKey, clone.getStoreKey());
-        assertEquals(score, clone.getScore());
+        assertEquals(Long.valueOf(0L), clone.getScore()); // Score cannot be set manually
     }
 
     @Test
@@ -180,21 +180,15 @@ public class TestSaleAssociate {
 
         object.resetLists();
 
-        assertNull(object.getConsumerKey());
-        assertNull(object.getCreatorKey());
         assertNull(object.getCriteria());
         assertNull(object.getLocationKey());
-        assertNull(object.getStoreKey());
-        assertNull(object.getScore());
+        assertEquals(Long.valueOf(0L), object.getScore()); // Always reset
 
         SaleAssociate clone = new SaleAssociate(object.toJson());
 
-        assertNull(clone.getConsumerKey());
-        assertNull(clone.getCreatorKey());
         assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
         assertNull(clone.getLocationKey());
-        assertNull(clone.getStoreKey());
-        assertNull(clone.getScore());
+        assertEquals(Long.valueOf(0L), clone.getScore()); // Always reset
     }
 
     @Test(expected=IllegalArgumentException.class)
