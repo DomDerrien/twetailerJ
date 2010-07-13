@@ -1123,15 +1123,22 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand owner name
+                {0}: demand owner name|
                 {1}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
                 {2}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
-                {3}: demand tags as defined by the entry "cp_tweet_tags_part"
-                {4}: store information as defined by the entry "cp_tweet_store_part"
+                {3}: demand tags as defined by the entry "cp_tweet_tags_part"|
+                {4}: store information as defined by the entry "cp_tweet_store_part"|
+                {5}: proposal due date|
+                {6}: proposal qty|
+                {7}: proposal unit price|
+                {8}: proposal total cost|
+                {9}: proposal tags|
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) FYI: {0} confirmed the {1} for the {2} {3}.
+                    1/3 FYI: You have been CC'ed by {0} regarding {2} confirmation of ...|
+                    2/3 {1} from {4} ...|
+                    3/3 {5} {6} {7} {8} {9}.
                 </seg>
             </tuv>
         </tu>
@@ -1310,7 +1317,7 @@
                 {1}: dynamically generated tweet
             </note>
             <tuv xml:lang="en">
-                <seg>FYI: {0} created a Demand you've been CC-ed...|{1} </seg>
+                <seg>FYI: You have been CC'ed by {0} regarding the following Demand creation ...|{1} </seg>
             </tuv>
         </tu>
 
@@ -1323,7 +1330,7 @@
                 {1}: dynamically generated tweet
             </note>
             <tuv xml:lang="en">
-                <seg>FYI: {0} updated the Demand you've been CC-ed...|{1} </seg>
+                <seg>FYI: You have been CC'ed by {0} regarding the following Demand update ...|{1} </seg>
             </tuv>
         </tu>
 
@@ -1336,7 +1343,7 @@
                 {1}: dynamically generated tweet
             </note>
             <tuv xml:lang="en">
-                <seg>FYI: {0} cancelled the Demand you've been CC-ed...|{1} </seg>
+                <seg>FYI: You have been CC'ed by {0} regarding the following Demand cancellation ...|{1} </seg>
             </tuv>
         </tu>
 
@@ -2361,13 +2368,16 @@
                 {6}: store name part as defined by the entry "cp_tweet_store_part"}|
                 {7}: proposal unit price part as defined by the entry "cp_tweet_price_part"}|
                 {8}: proposal total cost part as defined by the entry "cp_tweet_total_part"}|
+                {9}: demand owner name|
+                {10}: proposal due date|
+                {11}: proposal qty|
                 Note: In the current form, the expiration is silenced, just the due date is published.
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/3 FYI: {2} {3} {4} has been proposed ...|
-                    2/3 {0} {1} {7} {8}|
-                    3/3 From {6}.
+                    1/3 FYI: You have been CC'ed by {9} regarding a Proposal for {2} ...|
+                    2/3 {0} from {6} ...|
+                    3/3 {10} {11} {7} {8} {1}.
                 </seg>
             </tuv>
         </tu>
