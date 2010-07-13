@@ -87,7 +87,7 @@
             <prop type="x-tier">javarb</prop>
             <note>{0}: demand due date</note>
             <tuv xml:lang="en">
-                <seg>due:{0}</seg>
+                <seg>tee-off:{0}</seg>
             </tuv>
         </tu>
 
