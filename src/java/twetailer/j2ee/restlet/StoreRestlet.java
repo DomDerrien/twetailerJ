@@ -8,11 +8,11 @@ import javax.jdo.PersistenceManager;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
-import twetailer.dto.Location;
+import twetailer.ReservedOperationException;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
+import twetailer.j2ee.LoginServlet;
 import twetailer.task.step.BaseSteps;
-import twetailer.task.step.LocationSteps;
 import twetailer.task.step.StoreSteps;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -76,27 +76,45 @@ public class StoreRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit ***/
-
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (isAPrivilegedUser(loggedUser)) {
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                Store store = BaseSteps.getStoreOperations().createStore(pm, parameters);
-                Location location = LocationSteps.getLocation(pm, store);
-                if (Boolean.FALSE.equals(location.hasStore())) {
-                    location.setHasStore(Boolean.TRUE);
-                    BaseSteps.getLocationOperations().updateLocation(pm, location);
-                }
-                return store.toJson();
-            }
-            finally {
-                pm.close();
-            }
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
+            Store store = StoreSteps.createStore(
+                    pm,
+                    parameters,
+                    LoginServlet.getConsumer(loggedUser, pm),
+                    LoginServlet.getSaleAssociate(loggedUser, pm),
+                    isAPrivilegedUser
+            );
+            return store.toJson();
         }
-        throw new ClientException("Restricted access!");
+        finally {
+            pm.close();
+        }
     }
+
+    @Override
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, NumberFormatException, ReservedOperationException, InvalidIdentifierException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Store store = StoreSteps.updateStore(
+                    pm,
+                    Long.valueOf(resourceId),
+                    parameters,
+                    LoginServlet.getConsumer(loggedUser, pm),
+                    LoginServlet.getSaleAssociate(loggedUser, pm),
+                    isAPrivilegedUser(loggedUser)
+            );
+            return store.toJson();
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**** Dom: refactoring limit ***/
 
     @Override
     protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
@@ -134,10 +152,5 @@ public class StoreRestlet extends BaseRestlet {
 //        for (Long key: saleAssociateKeys) {
 //            new SaleAssociateRestlet().delegateResourceDeletion(pm, key);
 //        }
-    }
-
-    @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
     }
 }

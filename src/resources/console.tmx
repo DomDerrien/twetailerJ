@@ -1352,7 +1352,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label used a <fieldset/> label and introducing the demand attributes</note>
             <tuv xml:lang="en">
-                <seg>Demand Information</seg>
+                <seg>Round Demand Information</seg>
             </tuv>
         </tu>
 
@@ -1361,7 +1361,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label used a <fieldset/> label and introducing the proposal attributes</note>
             <tuv xml:lang="en">
-                <seg>Proposal Information</seg>
+                <seg>Tee-time Proposal Information</seg>
             </tuv>
         </tu>
 
@@ -1370,7 +1370,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label used a <fieldset/> label and introducing the store attributes</note>
             <tuv xml:lang="en">
-                <seg>Store Information</seg>
+                <seg>Golf Course Information</seg>
             </tuv>
         </tu>
 
@@ -1415,7 +1415,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label of a column header in the table of Demands</note>
             <tuv xml:lang="en">
-                <seg>CC</seg>
+                <seg>CC-ed friends</seg>
             </tuv>
         </tu>
 
@@ -1490,7 +1490,7 @@
                 Action item for consumers
             </note>
             <tuv xml:lang="en">
-                <seg>Create Demand</seg>
+                <seg>Schedule a new Round</seg>
             </tuv>
         </tu>
 
@@ -1503,7 +1503,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Update Demand {0}</seg>
+                <seg>Update Round Demand {0}</seg>
             </tuv>
         </tu>
 
@@ -1515,7 +1515,7 @@
                 Action item for sale associates
             </note>
             <tuv xml:lang="en">
-                <seg>Create Proposal</seg>
+                <seg>Create Tee-time Proposal</seg>
             </tuv>
         </tu>
 
@@ -1528,7 +1528,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Update Proposal {0}</seg>
+                <seg>Update Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1541,7 +1541,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>View Proposal {0}</seg>
+                <seg>View Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1554,7 +1554,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Decline Demand {0}</seg>
+                <seg>Decline Round Demand {0}</seg>
             </tuv>
         </tu>
 
@@ -1567,7 +1567,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Decline Proposal {0}</seg>
+                <seg>Decline Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1580,7 +1580,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Confirm Proposal {0}</seg>
+                <seg>Confirm Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1593,7 +1593,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Cancel Demand {0}</seg>
+                <seg>Cancel Round Demand {0}</seg>
             </tuv>
         </tu>
 
@@ -1606,7 +1606,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Cancel Proposal {0}</seg>
+                <seg>Cancel Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1619,7 +1619,7 @@
                 {0}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>Close Demand {0}</seg>
+                <seg>Close Round Demand {0}</seg>
             </tuv>
         </tu>
 
@@ -1632,7 +1632,7 @@
                 {0}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>Close Proposal {0}</seg>
+                <seg>Close Round Proposal {0}</seg>
             </tuv>
         </tu>
 
@@ -1650,7 +1650,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Prepare your Tee-off request</seg>
+                <seg>Prepare your Round Demand</seg>
             </tuv>
         </tu>
 
@@ -1659,7 +1659,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Update your Tee-off request</seg>
+                <seg>Update your Round Demand</seg>
             </tuv>
         </tu>
 
@@ -1695,7 +1695,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Tee-off time:</seg>
+                <seg>Round time:</seg>
             </tuv>
         </tu>
 
@@ -1750,6 +1750,24 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Demand Details:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandCC" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>CC-ed Friends:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandCC_hint" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>One coordinate per line, can be an email address or a Twitter ID (starting with '@')</seg>
             </tuv>
         </tu>
 
@@ -1860,7 +1878,7 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The Proposal:{0} has already been communicated to the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+                <seg>The Tee-time Proposal:{0} has already been communicated to the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
             </tuv>
         </tu>
 
@@ -1872,7 +1890,7 @@
                 {1}: proposal key
             </note>
             <tuv xml:lang="en">
-                <seg>You have already confirmed the Demand:{0} with the Proposal:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+                <seg>You have already confirmed the Round Demand:{0} with the Proposal:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
             </tuv>
         </tu>
 
@@ -1884,7 +1902,7 @@
                 {1}: demand key
             </note>
             <tuv xml:lang="en">
-                <seg>The Proposal:{0} has already been accepted by the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+                <seg>The Tee-time Proposal:{0} has already been accepted by the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
             </tuv>
         </tu>
 
@@ -1893,7 +1911,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Store Id:</seg>
+                <seg>Course Id:</seg>
             </tuv>
         </tu>
 
@@ -1912,6 +1930,15 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Address:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_storeForm_storeEmail" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>E-mail:</seg>
             </tuv>
         </tu>
 

@@ -187,7 +187,9 @@ public class DemandSteps extends BaseSteps {
     protected static JsonObject anonymizeDemand(QueryPointOfView pointOfView, JsonObject demand, Long saleAssociateKey,  List<Long> saleAssociateProposalKeys) {
 
         // Remove owner information
-        demand.remove(Demand.OWNER_KEY);
+        if (!QueryPointOfView.CONSUMER.equals(pointOfView)) {
+            demand.remove(Demand.OWNER_KEY);
+        }
 
         // Remove the reference to the sale associates
         JsonArray saleAssociateKeys = demand.getJsonArray(Demand.SALE_ASSOCIATE_KEYS);
@@ -446,12 +448,18 @@ public class DemandSteps extends BaseSteps {
         // Normal attribute update
         else if (State.opened.equals(currentState) || State.published.equals(currentState) || State.invalid.equals(currentState)) {
             // Detect new location
-            List<Location> locations = LocationSteps.getLocations(pm, parameters, false);
-            if (locations != null && 0 < locations.size()) {
-                Location location = locations.get(0);
-                if (!location.getKey().equals(demand.getLocationKey())) {
-                    demand.setLocationKey(location.getKey());
+            try {
+                List<Location> locations = LocationSteps.getLocations(pm, parameters, false);
+                if (locations != null && 0 < locations.size()) {
+                    Location location = locations.get(0);
+                    if (!location.getKey().equals(demand.getLocationKey())) {
+                        demand.setLocationKey(location.getKey());
+                    }
                 }
+            }
+            catch(InvalidIdentifierException ex) {
+                // Reset location reference!
+                demand.setLocationKey(null);
             }
 
             // Neutralise read-only parameters
@@ -501,6 +509,7 @@ public class DemandSteps extends BaseSteps {
         }
 
         demand.setState(State.markedForDeletion);
+        demand.setMarkedForDeletion(Boolean.TRUE);
         getDemandOperations().updateDemand(pm, demand);
     }
 }

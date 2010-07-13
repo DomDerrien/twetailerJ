@@ -58,11 +58,32 @@ public class SettingsOperations extends BaseOperations {
         }
         PersistenceManager pm = getPersistenceManager();
         try {
-            return getSettings(pm);
+            return getSettings(pm, checkCache);
         }
         finally {
             pm.close();
         }
+    }
+
+    /**
+     * Retrieve the application saved settings
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param useCache can be used to bypass the cache
+     * @return Application settings loaded from the back-end or the default values <code>null</code>
+     *
+     * @throws ClientException If the retrieved demand does not belong to the specified user
+     *
+     * @see SettingsOperations#getSettings(PersistenceManager)
+     */
+    public Settings getSettings(PersistenceManager pm, boolean checkCache) throws DataSourceException {
+        if (checkCache) {
+            Settings settings = getSettingsFromCache();
+            if (settings != null) {
+                return settings;
+            }
+        }
+        return getSettings(pm);
     }
 
     /**
@@ -134,6 +155,7 @@ public class SettingsOperations extends BaseOperations {
         List<Settings> settingsList = (List<Settings>) queryObj.execute(Settings.APPLICATION_SETTINGS_ID);
         if (settingsList.size() == 0) {
             Settings settings = new Settings();
+            updateSettings(pm, settings);
             updateSettingsInCache(settings);
             return settings;
         }

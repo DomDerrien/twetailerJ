@@ -1,5 +1,6 @@
 package twetailer.j2ee.restlet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
+import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
@@ -24,6 +26,7 @@ import twetailer.validator.CommandSettings.State;
 import com.dyuproject.openid.OpenIdUser;
 
 import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
@@ -57,7 +60,26 @@ public class DemandRestlet extends BaseRestlet {
             Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
             Demand demand = DemandSteps.getDemand(pm, demandKey, ownerKey, pointOfView, saleAssociateKey);
 
-            return DemandSteps.anonymizeDemand(pm, pointOfView, demand.toJson(), saleAssociateKey);
+            JsonObject out = DemandSteps.anonymizeDemand(pm, pointOfView, demand.toJson(), saleAssociateKey);
+
+            if (parameters.containsKey("related")) {
+                JsonArray relatedResourceNames = parameters.getJsonArray("related");
+                JsonObject relatedResources = new GenericJsonObject();
+                int idx = relatedResourceNames.size();
+                while (0 < idx) {
+                    --idx;
+                    String relatedResourceName = relatedResourceNames.getString(idx);
+                    if (Location.class.getName().contains(relatedResourceName)) {
+                        Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
+                        relatedResources.put(relatedResourceName, location.toJson());
+                    }
+                }
+                if (0 < relatedResources.size()) {
+                    out.put("related", relatedResources);
+                }
+            }
+
+            return out;
         }
         finally {
             pm.close();
@@ -81,8 +103,33 @@ public class DemandRestlet extends BaseRestlet {
             }
             else { // full detail
                 // Get the demands
-                resources = JsonUtils.toJson(DemandSteps.getDemands(pm, parameters, ownerKey, pointOfView, saleAssociateKey));
+                List<Demand> demands = DemandSteps.getDemands(pm, parameters, ownerKey, pointOfView, saleAssociateKey);
+                resources = JsonUtils.toJson(demands);
                 resources = DemandSteps.anonymizeDemands(pointOfView, resources, saleAssociateKey);
+
+                if (parameters.containsKey("related")) {
+                    JsonArray relatedResourceNames = parameters.getJsonArray("related");
+                    JsonObject relatedResources = new GenericJsonObject();
+                    int idx = relatedResourceNames.size();
+                    while (0 < idx) {
+                        --idx;
+                        String relatedResourceName = relatedResourceNames.getString(idx);
+                        if (Location.class.getName().contains(relatedResourceName)) {
+                            List<Long> locationKeys = new ArrayList<Long>();
+                            for(int i=0; i<demands.size(); i++) {
+                                Long locationKey = demands.get(i).getLocationKey();
+                                if (!locationKeys.contains(locationKey)) {
+                                    locationKeys.add(locationKey);
+                                }
+                            }
+                            List<Location> locations = BaseSteps.getLocationOperations().getLocations(pm, locationKeys);
+                            relatedResources.put(relatedResourceName, JsonUtils.toJson(locations));
+                        }
+                    }
+                    if (0 < relatedResources.size()) {
+                        resources.getJsonObject(0).put("related", relatedResources);
+                    }
+                }
             }
             return resources;
         }
@@ -98,7 +145,7 @@ public class DemandRestlet extends BaseRestlet {
             // Create the Demand
             parameters.put(Command.SOURCE, Source.api.toString());
 
-            Demand demand = DemandSteps.createDemand(pm, parameters, LoginServlet.getConsumer(loggedUser));
+            Demand demand = DemandSteps.createDemand(pm, parameters, LoginServlet.getConsumer(loggedUser, pm));
 
             return demand.toJson();
         }
@@ -113,7 +160,7 @@ public class DemandRestlet extends BaseRestlet {
         try {
             // Update the Demand
             Long demandKey = Long.valueOf(resourceId);
-            Demand demand = DemandSteps.updateDemand(pm, demandKey, parameters, LoginServlet.getConsumer(loggedUser));
+            Demand demand = DemandSteps.updateDemand(pm, demandKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
 
             return demand.toJson();
         }

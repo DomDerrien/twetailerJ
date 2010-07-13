@@ -124,7 +124,9 @@
         dijit.byId("proposal.date").attr("value", dueDate);
         dijit.byId("proposal.date").constraints.min = new Date();
         dijit.byId("proposal.time").attr("value", dueDate);
-        dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
+        if (dojo.isArray(item.criteria)) {
+            dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
+        }
         dijit.byId("demand.quantity").attr("value", item.quantity[0]);
 
         if (proposalKey == null) {
@@ -178,7 +180,9 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId("proposal.date").attr("value", dateObject);
         dijit.byId("proposal.time").attr("value", dateObject);
-        dijit.byId("proposal.criteria").attr("value", proposal.criteria.join(" "));
+        if (dojo.isArray(proposal.criteria)) {
+            dijit.byId("proposal.criteria").attr("value", proposal.criteria.join(" "));
+        }
         dijit.byId("proposal.modificationDate").attr("value", _common.displayDateTime(proposal.modificationDate));
 
         var closeableState = proposal.state == _common.STATES.CONFIRMED;

@@ -543,7 +543,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         });
-        ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
+        ops.updateResource(new GenericJsonObject(), "current", user);
     }
 
     @Test
@@ -565,7 +565,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         });
-        ops.updateResource(new GenericJsonObject(), consumerKey.toString(), user);
+        ops.updateResource(new GenericJsonObject(), "current", user);
     }
 
     @Test
@@ -597,7 +597,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        });
-       ops.updateResource(parameters, consumerKey.toString(), user);
+       ops.updateResource(parameters, "current", user);
     }
 
     @Test
@@ -629,7 +629,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        });
-       ops.updateResource(parameters, consumerKey.toString(), user);
+       ops.updateResource(parameters, "current", user);
     }
 
     @Test
@@ -661,7 +661,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        });
-       ops.updateResource(parameters, consumerKey.toString(), user);
+       ops.updateResource(parameters, "current", user);
     }
 
     @Test(expected=ClientException.class)

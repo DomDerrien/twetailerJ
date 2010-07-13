@@ -2,6 +2,7 @@ package twetailer.j2ee.restlet;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
@@ -17,8 +18,10 @@ import org.junit.Test;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dto.Consumer;
 import twetailer.dto.Store;
 import twetailer.j2ee.MockLoginServlet;
 import twetailer.task.step.BaseSteps;
@@ -58,6 +61,15 @@ public class TestStoreRestlet {
 
     @Test(expected=ClientException.class)
     public void testCreateResourceI() throws DataSourceException, ClientException {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(key);
+                return consumer;
+            }
+        });
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store createStore(PersistenceManager pm, JsonObject store) {
@@ -70,6 +82,15 @@ public class TestStoreRestlet {
 
     @Test(expected=ClientException.class)
     public void testCreateResourceII() throws DataSourceException, ClientException {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(key);
+                return consumer;
+            }
+        });
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store createStore(PersistenceManager pm, JsonObject store) {
@@ -84,6 +105,15 @@ public class TestStoreRestlet {
     @Test(expected=ClientException.class)
     @SuppressWarnings("unchecked")
     public void testCreateResourceIII() throws DataSourceException, ClientException {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(key);
+                return consumer;
+            }
+        });
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store createStore(PersistenceManager pm, JsonObject store) {
@@ -98,6 +128,15 @@ public class TestStoreRestlet {
     @Test(expected=ClientException.class)
     @SuppressWarnings("unchecked")
     public void testCreateResourceIV() throws DataSourceException, ClientException {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(key);
+                return consumer;
+            }
+        });
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store createStore(PersistenceManager pm, JsonObject store) {

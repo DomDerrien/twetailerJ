@@ -175,10 +175,10 @@
         if (locationKey == null) {
             return "";
         }
-        if (true) {
-            return locationKey;
+        var location = _locations[locationKey];
+        if (location != null) {
+            return location.postalCode + " " + location.countryCode;
         }
-        console.log("displayCriteria(" + criteria + ") is not an Array");
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_locale") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
 
@@ -204,7 +204,8 @@
         var dfd = dojo.xhrGet({
             content: {
                 pointOfView: pointOfView || _common.POINT_OF_VIEWS.CONSUMER,
-                lastModificationDate: lastModificationISODate
+                lastModificationDate: lastModificationISODate,
+                related: ["Location"]
             },
             handleAs: "json",
             load: function(response, ioArgs) {
@@ -219,12 +220,23 @@
                             // Add the updated demand into the cache
                             var resource = resources[i];
                             _demands[resource.key] = resource;
-                            // Remove the associated and possibily updated proposals from the cache
+                            // Remove the associated and possibly updated proposals from the cache
                             var proposalKeys = resource.proposalKeys;
                             var proposalKeyNb = proposalKeys == null ? 0 : proposalKeys.length;
                             for (var j=0; j<proposalKeyNb; j++) {
                                 delete _proposals[proposalKeys[j]];
                             }
+                        }
+                        if (0 < resourceNb) {
+                            // Add the locations to the cache
+                            var resource = resources[0];
+                            var locations = resource.related == null ? null : resource.related.Location;
+                            var locationNb = locations == null ? 0 : locations.length;
+                            for (var k = 0; k < locationNb; k++) {
+                                var location = locations[k];
+                                _locations[location.key] = location;
+                            }
+                            delete resource.related;
                         }
                     }
                 }
@@ -345,7 +357,8 @@
         dijit.byId("proposalFormOverlay").show();
         var dfd = dojo.xhrGet({
             content: {
-                pointOfView: pointOfView || _common.POINT_OF_VIEWS.SALE_ASSOCIATE
+                pointOfView: pointOfView || _common.POINT_OF_VIEWS.SALE_ASSOCIATE,
+                related: ["Store"]
             },
             handleAs: "json",
             load: function(response, ioArgs) {

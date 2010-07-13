@@ -156,7 +156,7 @@
                            <th field="<%= Demand.KEY %>" formatter="twetailer.GolfConsumer.displayDemandKey" styles="padding:2px 5px;" width="200px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
                            <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
                            <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.GolfCommon.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
-                           <th field="<%= Demand.LOCATION_KEY %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
+                           <th field="<%= Demand.LOCATION_KEY %>" formatter="twetailer.GolfCommon.displayLocale" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.GolfConsumer.displayProposalKeys" styles="padding:2px 5px;" width="200px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
                            <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.GolfCommon.displayCriteria" styles="padding:2px 5px;" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
@@ -269,6 +269,13 @@
                     <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCriteria", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.criteria" name="criteria" style="width:25em;" type="text" /></td>
                 </tr>
+                <tr>
+                    <td align="right"><label for="demand.cc"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCC", locale) %></label></td>
+                    <td>
+                        <textarea dojoType="dijit.form.Textarea" id="demand.cc" name="cc" style="width:25em;"></textarea><br/>
+                        <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCC_hint", locale) %></span>
+                    </td>
+                </tr>
                 <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandModificationDate", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
@@ -378,7 +385,11 @@
                 </tr>
                 <tr>
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_storeForm_storePhoneNumber", locale) %></td>
-                    <td><input dojoType="dijit.form.TextBox" id="store.phoneNumber" readonly="true" type="text" /> </td>
+                    <td><input dojoType="dijit.form.TextBox" id="store.phoneNb" readonly="true" type="text" /> </td>
+                </tr>
+                <tr>
+                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_storeForm_storeEmail", locale) %></td>
+                    <td><input dojoType="dijit.form.TextBox" id="store.email" readonly="true" style="width:10em;" type="text" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_storeForm_storeUrl", locale) %></td>

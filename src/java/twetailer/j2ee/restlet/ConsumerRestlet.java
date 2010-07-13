@@ -104,6 +104,36 @@ public class ConsumerRestlet extends BaseRestlet {
         throw new ReservedOperationException("Consumer instances are created automatically by the connectors");
     }
 
+    @Override
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long consumerKey = null;
+            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
+            if ("current".equals(resourceId)) {
+                // Get the sale associate
+                consumerKey = LoginServlet.getConsumer(loggedUser, pm).getKey();
+            }
+            else if (isAPrivilegedUser) {
+                consumerKey = Long.valueOf(resourceId);
+            }
+            else {
+                throw new ReservedOperationException("Restricted access!");
+            }
+
+            Consumer consumer = ConsumerSteps.updateConsumer(
+                    pm,
+                    consumerKey,
+                    parameters,
+                    LoginServlet.getConsumer(loggedUser, pm)
+            );
+            return consumer.toJson();
+        }
+        finally {
+            pm.close();
+        }
+    }
+
     /**** Dom: refactoring limit ***/
 
     @Override
@@ -142,70 +172,6 @@ public class ConsumerRestlet extends BaseRestlet {
 //        for (Long demandKey: demandKeys) {
 //            demandRestlet.delegateResourceDeletion(pm, demandKey, consumerKey, false);
 //        }
-    }
-
-    @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        boolean isAdminControlled = isAPrivilegedUser(loggedUser);
-
-        // Get the logged user information
-        Long consumerKey = null;
-        if (isAdminControlled) {
-            consumerKey = Long.valueOf(resourceId);
-        }
-        else {
-            consumerKey = LoginServlet.getConsumerKey(loggedUser);
-            if (!resourceId.equals(consumerKey.toString())) {
-                throw new ClientException("Consumer records can only be updated by the consumers themselves");
-            }
-        }
-
-        // Verify the information about the third party access providers
-        String openId = loggedUser.getClaimedId();
-        String newEmail = null, newJabberId = null, newTwitterId = null;
-        if (!isAdminControlled) {
-            newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
-            newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
-            newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
-        }
-
-        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-        Consumer consumer;
-        try {
-            // Update the consumer account
-            consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
-            consumer.fromJson(parameters);
-            consumer = BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
-        }
-        finally {
-            pm.close();
-        }
-
-        // Move demands to the updated account
-        if (!isAdminControlled && (newEmail != null || newJabberId != null || newTwitterId != null)) {
-            /*
-            Warning:
-            --------
-            Cannot pass the connection to the following operations because they are
-            possibly going to affect different Consumer entities! And the JDO layer
-            will throw an exception like the following one:
-                Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
-                NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
-                    Found both Element {
-                      type: "Consumer"
-                      id: 425
-                    }
-                    and Element {
-                      type: "Consumer"
-                      id: 512
-                    }
-             */
-            scheduleConsolidationTasks(Consumer.EMAIL, newEmail, consumerKey);
-            scheduleConsolidationTasks(Consumer.JABBER_ID, newJabberId, consumerKey);
-            scheduleConsolidationTasks(Consumer.TWITTER_ID, newTwitterId, consumerKey);
-        }
-
-        return consumer.toJson();
     }
 
     /**
