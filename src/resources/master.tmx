@@ -2382,6 +2382,17 @@
             </tuv>
         </tu>
 
+        <tu tuid="pp_inform_cc_about_opt_out" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Inform a CC recipient about opting out
+            </note>
+            <tuv xml:lang="en">
+                <seg>If you have received this message in error, or, prefer not to be CC'ed on future messages from this, or, any other Demand Owner, then please notify Twetailer by sending an email to support@twetailer.com</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="pp_inform_saleAssociate_demand_not_published_state" datatype="Text">
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
