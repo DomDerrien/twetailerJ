@@ -71,8 +71,8 @@ public class ProposalRestlet extends BaseRestlet {
 
             JsonObject out = ProposalSteps.anonymizeProposal(pointOfView, proposal.toJson());
 
-            if (parameters.containsKey("related")) {
-                JsonArray relatedResourceNames = parameters.getJsonArray("related");
+            if (parameters.containsKey(RELATED_RESOURCE_NAMES)) {
+                JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
                 JsonObject relatedResources = new GenericJsonObject();
                 int idx = relatedResourceNames.size();
                 while (0 < idx) {
@@ -88,7 +88,7 @@ public class ProposalRestlet extends BaseRestlet {
                     }
                 }
                 if (0 < relatedResources.size()) {
-                    out.put("related", relatedResources);
+                    out.put(RELATED_RESOURCE_NAMES, relatedResources);
                 }
             }
 
@@ -120,8 +120,8 @@ public class ProposalRestlet extends BaseRestlet {
                 resources = JsonUtils.toJson(proposals);
                 resources = ProposalSteps.anonymizeProposals(pointOfView, resources);
 
-                if (parameters.containsKey("related")) {
-                    JsonArray relatedResourceNames = parameters.getJsonArray("related");
+                if (parameters.containsKey(RELATED_RESOURCE_NAMES) && 0 < proposals.size()) {
+                    JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
                     JsonObject relatedResources = new GenericJsonObject();
                     int idx = relatedResourceNames.size();
                     while (0 < idx) {
@@ -151,7 +151,7 @@ public class ProposalRestlet extends BaseRestlet {
                         }
                     }
                     if (0 < relatedResources.size()) {
-                        resources.getJsonObject(0).put("related", relatedResources);
+                        resources.getJsonObject(0).put(RELATED_RESOURCE_NAMES, relatedResources);
                     }
                 }
             }

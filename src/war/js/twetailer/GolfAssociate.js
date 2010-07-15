@@ -209,7 +209,7 @@
         if (isNaN(data.total)) {
             delete data.total;
         }
-        data.criteria = data.criteria.split(" ");
+        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         var month = (data.date.getMonth() + 1);
         var day = data.date.getDate();
         var hours = data.time.getHours();

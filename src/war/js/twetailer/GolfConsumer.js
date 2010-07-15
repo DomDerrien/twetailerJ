@@ -163,8 +163,8 @@
         if (isNaN(data.key)) {
             delete data.key;
         }
-        data.criteria = data.criteria.split(" ");
-        data.cc = data.cc.split("\n");
+        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+        data.cc = data.cc.split(/(?:\s|\n|,|;)+/);
         var month = (data.date.getMonth() + 1);
         var day = data.date.getDate();
         var hours = data.time.getHours();
