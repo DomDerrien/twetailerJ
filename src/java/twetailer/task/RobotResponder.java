@@ -128,7 +128,7 @@ public class RobotResponder {
 
     public static Long getRobotSaleAssociateKey(PersistenceManager pm) throws DataSourceException {
         if (robotSaleAssociateKey == null) {
-            Settings settings = BaseSteps.getSettingsOperations().getSettings(pm);
+            Settings settings = BaseSteps.getSettingsOperations().getSettings(pm, true);
             robotSaleAssociateKey = settings.getRobotSaleAssociateKey();
         }
         return robotSaleAssociateKey;

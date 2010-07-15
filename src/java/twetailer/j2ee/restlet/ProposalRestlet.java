@@ -1,10 +1,7 @@
 package twetailer.j2ee.restlet;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -12,12 +9,14 @@ import javax.jdo.PersistenceManager;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
-import twetailer.dto.Entity;
+import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
@@ -27,8 +26,8 @@ import twetailer.task.step.ProposalSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
@@ -70,7 +69,30 @@ public class ProposalRestlet extends BaseRestlet {
             }
             Proposal proposal = ProposalSteps.getProposal(pm, proposalKey, ownerKey, pointOfView, saleAssociateKey, storeKey);
 
-            return ProposalSteps.anonymizeProposal(pointOfView, proposal.toJson());
+            JsonObject out = ProposalSteps.anonymizeProposal(pointOfView, proposal.toJson());
+
+            if (parameters.containsKey(RELATED_RESOURCE_NAMES)) {
+                JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
+                JsonObject relatedResources = new GenericJsonObject();
+                int idx = relatedResourceNames.size();
+                while (0 < idx) {
+                    --idx;
+                    String relatedResourceName = relatedResourceNames.getString(idx);
+                    if (Location.class.getName().contains(relatedResourceName)) {
+                        Location location = BaseSteps.getLocationOperations().getLocation(pm, proposal.getLocationKey());
+                        relatedResources.put(relatedResourceName, location.toJson());
+                    }
+                    else if (Store.class.getName().contains(relatedResourceName)) {
+                        Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
+                        relatedResources.put(relatedResourceName, store.toJson());
+                    }
+                }
+                if (0 < relatedResources.size()) {
+                    out.put(RELATED_RESOURCE_NAMES, relatedResources);
+                }
+            }
+
+            return out;
         }
         finally {
             pm.close();
@@ -79,51 +101,65 @@ public class ProposalRestlet extends BaseRestlet {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws InvalidIdentifierException, DataSourceException {
-
-        Map<String, Object> queryDemands = new HashMap<String, Object>();
-
-        if (!parameters.containsKey(ANY_STATE_PARAMETER_KEY)) {
-            queryDemands.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
-        }
-
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                queryDemands.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-            }
-            catch (ParseException e) { } // Date not set, too bad.
-        }
-
-        QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.SALE_ASSOCIATE);
-        boolean onlyKeys = parameters.containsKey(ONLY_KEYS_PARAMETER_KEY);
-        int maximumResults = (int) parameters.getLong(MAXIMUM_RESULTS_PARAMETER_KEY);
-
-        JsonArray resources;
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws InvalidIdentifierException, DataSourceException, ReservedOperationException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            if (QueryPointOfView.CONSUMER.equals(pointOfView)) {
-                throw new RuntimeException("Consumer getting a list of proposals: not yet implemented!");
+            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
+            QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
+            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
+
+            JsonArray resources;
+            if (onlyKeys) {
+                // Get the keys
+                resources = new GenericJsonArray((List) ProposalSteps.getProposalKeys(pm, parameters, ownerKey, pointOfView, saleAssociateKey));
             }
-            else if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
-                Long saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
-                queryDemands.put(Command.OWNER_KEY, saleAssociateKey);
-                if (onlyKeys) {
-                    resources = new GenericJsonArray((List) BaseSteps.getProposalOperations().getProposalKeys(pm, queryDemands, maximumResults));
+            else { // full detail
+                // Get the demands
+                List<Proposal> proposals = ProposalSteps.getProposals(pm, parameters, ownerKey, pointOfView, saleAssociateKey);
+                resources = JsonUtils.toJson(proposals);
+                resources = ProposalSteps.anonymizeProposals(pointOfView, resources);
+
+                if (parameters.containsKey(RELATED_RESOURCE_NAMES) && 0 < proposals.size()) {
+                    JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
+                    JsonObject relatedResources = new GenericJsonObject();
+                    int idx = relatedResourceNames.size();
+                    while (0 < idx) {
+                        --idx;
+                        String relatedResourceName = relatedResourceNames.getString(idx);
+                        if (Location.class.getName().contains(relatedResourceName)) {
+                            List<Long> locationKeys = new ArrayList<Long>();
+                            for(int i=0; i<proposals.size(); i++) {
+                                Long locationKey = proposals.get(i).getLocationKey();
+                                if (!locationKeys.contains(locationKey)) {
+                                    locationKeys.add(locationKey);
+                                }
+                            }
+                            List<Location> locations = BaseSteps.getLocationOperations().getLocations(pm, locationKeys);
+                            relatedResources.put(relatedResourceName, JsonUtils.toJson(locations));
+                        }
+                        else if (Store.class.getName().contains(relatedResourceName)) {
+                            List<Long> storeKeys = new ArrayList<Long>();
+                            for(int i=0; i<proposals.size(); i++) {
+                                Long storeKey = proposals.get(i).getStoreKey();
+                                if (!storeKeys.contains(storeKey)) {
+                                    storeKeys.add(storeKey);
+                                }
+                            }
+                            List<Store> stores = BaseSteps.getStoreOperations().getStores(pm, storeKeys);
+                            relatedResources.put(relatedResourceName, JsonUtils.toJson(stores));
+                        }
+                    }
+                    if (0 < relatedResources.size()) {
+                        resources.getJsonObject(0).put(RELATED_RESOURCE_NAMES, relatedResources);
+                    }
                 }
-                else { // full detail
-                    resources = JsonUtils.toJson((List) BaseSteps.getProposalOperations().getProposals(pm, queryDemands, maximumResults));
-                }
             }
-            else { // if (QueryPointOfView.anonymous.equals(pointOfView)) {
-                throw new RuntimeException("Anonymous getting a list of proposals: not yet implemented!");
-            }
+            return resources;
         }
         finally {
             pm.close();
         }
-        return resources;
     }
 
     @Override

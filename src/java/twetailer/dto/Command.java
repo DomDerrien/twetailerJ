@@ -196,7 +196,8 @@ public class Command extends Entity {
         if (cc == null) {
             cc = new ArrayList<String>();
         }
-        if (!cc.contains(coordinates)) {
+        coordinates = coordinates.trim();
+        if (0 < coordinates.length() && !cc.contains(coordinates)) {
             cc.add(coordinates);
         }
     }
@@ -234,7 +235,8 @@ public class Command extends Entity {
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        if (!criteria.contains(criterion)) {
+        criterion = criterion.trim();
+        if (0 < criterion.length() && !criteria.contains(criterion)) {
             criteria.add(criterion);
         }
     }
@@ -280,7 +282,8 @@ public class Command extends Entity {
         if (hashTags == null) {
             hashTags = new ArrayList<String>();
         }
-        if (!hashTags.contains(hashTag)) {
+        hashTag = hashTag.trim();
+        if (0 < hashTag.length() && !hashTags.contains(hashTag)) {
             hashTags.add(hashTag);
         }
     }
@@ -400,7 +403,7 @@ public class Command extends Entity {
             }
             out.put(HASH_TAGS, jsonArray);
         }
-        if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
+        out.put(OWNER_KEY, getOwnerKey());
         out.put(QUANTITY, getQuantity());
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
         out.put(SOURCE, getSource().toString());

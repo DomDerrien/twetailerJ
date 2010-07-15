@@ -331,7 +331,6 @@ public class TestDemand {
         object.setSource(source);
 
         // Command
-        assertNull(object.getOwnerKey());
         assertNull(object.getRawCommandId());
 
         // Demand
@@ -343,7 +342,6 @@ public class TestDemand {
         Demand clone = new Demand(object.toJson());
 
         // Command
-        assertNull(clone.getOwnerKey());
         assertNull(clone.getRawCommandId());
 
         // Demand

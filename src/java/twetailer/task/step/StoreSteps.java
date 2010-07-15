@@ -10,8 +10,11 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
+import twetailer.dto.Consumer;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
 import domderrien.i18n.DateUtils;
@@ -74,4 +77,46 @@ public class StoreSteps extends BaseSteps {
         return queryFilters;
     }
 
+    public static Store createStore(PersistenceManager pm, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws ReservedOperationException, InvalidIdentifierException {
+        // Verify the logged user rights
+        if (!isPrivileged) {
+            throw new ReservedOperationException("Store instances can only be created by admins");
+        }
+        parameters.put(SaleAssociate.CREATOR_KEY, loggedConsumer.getKey());
+
+        Store store = getStoreOperations().createStore(pm, parameters);
+
+        Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
+        if (Boolean.FALSE.equals(location.hasStore())) {
+            location.setHasStore(Boolean.TRUE);
+            getLocationOperations().updateLocation(pm, location);
+        }
+
+        return store;
+    }
+
+    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws ReservedOperationException, InvalidIdentifierException {
+        // Verify the logged user rights
+        if (!isPrivileged && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getStoreKey().equals(storeKey)) {
+            throw new ReservedOperationException("Store instances can only be created by Store admins");
+        }
+        parameters.put(SaleAssociate.CREATOR_KEY, loggedConsumer.getKey());
+
+        Store store = getStoreOperations().getStore(pm, storeKey);
+        Long initialLocationKey = store.getLocationKey();
+
+        store.fromJson(parameters);
+        store = getStoreOperations().updateStore(pm, store);
+
+        Long newLocationKey = store.getLocationKey();
+        if (!newLocationKey.equals(initialLocationKey)) {
+            Location location = getLocationOperations().getLocation(pm, newLocationKey);
+            if (Boolean.FALSE.equals(location.hasStore())) {
+                location.setHasStore(Boolean.TRUE);
+                getLocationOperations().updateLocation(pm, location);
+            }
+        }
+
+        return store;
+    }
 }

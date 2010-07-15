@@ -1,6 +1,5 @@
 package twetailer.dto;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;

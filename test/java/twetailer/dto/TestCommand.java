@@ -125,12 +125,10 @@ public class TestCommand {
         Command object = new Command();
         object.setSource(source);
 
-        assertNull(object.getOwnerKey());
         assertNull(object.getRawCommandId());
 
         Command clone = new Command(object.toJson());
 
-        assertNull(clone.getOwnerKey());
         assertNull(clone.getRawCommandId());
     }
 

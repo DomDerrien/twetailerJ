@@ -39,6 +39,7 @@ import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class ProposalSteps extends BaseSteps {
@@ -207,11 +208,29 @@ public class ProposalSteps extends BaseSteps {
     public static JsonObject anonymizeProposal(QueryPointOfView pointOfView, JsonObject proposal) {
 
         // Remove owner information
-        proposal.remove(Proposal.OWNER_KEY);
+        if (!QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
+            proposal.remove(Proposal.OWNER_KEY);
+        }
 
         // TODO: control the cancellerKey
 
         return proposal;
+    }
+
+    /**
+     * Remove nominative information from the Proposal record
+     *
+     * @param pointOfView Identify the anonymization point of view
+     * @param proposals Array of entities to purge
+     * @return List of cleaned up Proposal instances
+     */
+    public static JsonArray anonymizeProposals(QueryPointOfView pointOfView, JsonArray proposals) {
+        int idx = proposals.size();
+        while (0 < idx) {
+            -- idx;
+            anonymizeProposal(pointOfView, proposals.getJsonObject(idx));
+        }
+        return proposals;
     }
 
     /**
@@ -545,6 +564,7 @@ public class ProposalSteps extends BaseSteps {
         }
 
         proposal.setState(State.markedForDeletion);
+        proposal.setMarkedForDeletion(Boolean.TRUE);
         getProposalOperations().updateProposal(pm, proposal);
     }
 }

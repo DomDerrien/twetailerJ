@@ -85,6 +85,54 @@ public class ConsumerSteps extends BaseSteps {
         //
         // TODO: handle the account consolidation !
         //
+        /*
+        boolean isAdminControlled = isAPrivilegedUser(loggedUser);
+
+        // Verify the information about the third party access providers
+        String openId = loggedUser.getClaimedId();
+        String newEmail = null, newJabberId = null, newTwitterId = null;
+        if (!isAdminControlled) {
+            newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
+            newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
+            newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
+        }
+
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        Consumer consumer;
+        try {
+            // Update the consumer account
+            consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
+            consumer.fromJson(parameters);
+            consumer = BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
+        }
+        finally {
+            pm.close();
+        }
+
+        // Move demands to the updated account
+        if (!isAdminControlled && (newEmail != null || newJabberId != null || newTwitterId != null)) {
+            / *
+            Warning:
+            --------
+            Cannot pass the connection to the following operations because they are
+            possibly going to affect different Consumer entities! And the JDO layer
+            will throw an exception like the following one:
+                Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
+                NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
+                    Found both Element {
+                      type: "Consumer"
+                      id: 425
+                    }
+                    and Element {
+                      type: "Consumer"
+                      id: 512
+                    }
+             * /
+            scheduleConsolidationTasks(Consumer.EMAIL, newEmail, consumerKey);
+            scheduleConsolidationTasks(Consumer.JABBER_ID, newJabberId, consumerKey);
+            scheduleConsolidationTasks(Consumer.TWITTER_ID, newTwitterId, consumerKey);
+        }
+         */
 
         // Neutralise some updates
         parameters.remove(Consumer.SALE_ASSOCIATE_KEY);

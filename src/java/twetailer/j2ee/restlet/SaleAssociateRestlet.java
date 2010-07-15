@@ -103,8 +103,40 @@ public class SaleAssociateRestlet extends BaseRestlet {
             SaleAssociate saleAssociate = SaleAssociateSteps.createSaleAssociate(
                     pm,
                     parameters,
-                    LoginServlet.getConsumer(loggedUser),
-                    isAPrivilegedUser ? null : LoginServlet.getSaleAssociate(loggedUser),
+                    LoginServlet.getConsumer(loggedUser, pm),
+                    LoginServlet.getSaleAssociate(loggedUser, pm),
+                    isAPrivilegedUser
+            );
+            return saleAssociate.toJson();
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Override
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long saleAssociateKey = null;
+            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
+            if ("current".equals(resourceId)) {
+                // Get the sale associate
+                saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+                if (saleAssociateKey == null) {
+                    throw new ReservedOperationException("Current user is not a Sale Associate!");
+                }
+            }
+            else {
+                saleAssociateKey = Long.valueOf(resourceId);
+            }
+
+            SaleAssociate saleAssociate = SaleAssociateSteps.updateSaleAssociate(
+                    pm,
+                    saleAssociateKey,
+                    parameters,
+                    LoginServlet.getConsumer(loggedUser, pm),
+                    LoginServlet.getSaleAssociate(loggedUser, pm),
                     isAPrivilegedUser
             );
             return saleAssociate.toJson();
@@ -339,71 +371,6 @@ public class SaleAssociateRestlet extends BaseRestlet {
         // Delete the attached consumer
 //        Long consumerKey = saleAssociate.getConsumerKey();
 //        consumerRestlet.delegateResourceDeletion(pm, consumerKey);
-    }
-
-    @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        /*
-        boolean isAdminControlled = isAPrivilegedUser(loggedUser);
-        String newEmail = null, newJabberId = null, newTwitterId = null;
-        SaleAssociate saleAssociate = null;
-        Long saleAssociateKey = null;
-        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-        try {
-            // Get the sale associate key
-            if (isAdminControlled) {
-                saleAssociateKey = Long.valueOf(resourceId);
-            }
-            else {
-                saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
-                if (!resourceId.equals(saleAssociateKey.toString())) {
-                    throw new ClientException("SaleAssociate records can only be updated by the associates themselves");
-                }
-            }
-
-            // Verify the information about the third party access providers
-            String openId = loggedUser.getClaimedId();
-            if (!isAdminControlled) {
-                newEmail = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
-                newJabberId = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
-                newTwitterId = ConsumerRestlet.filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
-            }
-
-            // Update the consumer account
-            saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
-            saleAssociate.fromJson(parameters);
-            saleAssociate = BaseSteps.getSaleAssociateOperations().updateSaleAssociate(pm, saleAssociate);
-        }
-        finally {
-            pm.close();
-        }
-
-        // Move demands to the updated account
-        if (!isAdminControlled && (newEmail != null || newJabberId != null || newTwitterId != null)) {
-            /*
-            Warning:
-            --------
-            Cannot pass the connection to the following operations because they are
-            possibly going to affect different Consumer entities! And the JDO layer
-            will throw an exception like the following one:
-                Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
-                NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
-                    Found both Element {
-                      type: "Consumer"
-                      id: 425
-                    }
-                    and Element {
-                      type: "Consumer"
-                      id: 512
-                    }
-             * /
-            scheduleConsolidationTasks(SaleAssociate.EMAIL, newEmail, saleAssociateKey);
-            scheduleConsolidationTasks(SaleAssociate.JABBER_ID, newJabberId, saleAssociateKey);
-            scheduleConsolidationTasks(SaleAssociate.TWITTER_ID, newTwitterId, saleAssociateKey);
-        }
-    */
-
-        return null;
     }
 
     /**

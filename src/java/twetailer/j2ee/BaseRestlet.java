@@ -50,6 +50,7 @@ public abstract class BaseRestlet extends HttpServlet {
     public static final String ANY_STATE_PARAMETER_KEY = "anyState";
     public static final String ONLY_KEYS_PARAMETER_KEY = "onlyKeys";
     public static final String MAXIMUM_RESULTS_PARAMETER_KEY = "maximumResults";
+    public static final String RELATED_RESOURCE_NAMES = "related";
 
     /**
      * Get the logging handler

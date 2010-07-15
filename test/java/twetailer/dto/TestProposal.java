@@ -211,7 +211,6 @@ public class TestProposal {
         object.setSource(source);
 
         // Command
-        assertNull(object.getOwnerKey());
         assertNull(object.getRawCommandId());
 
         // Proposal
@@ -223,7 +222,6 @@ public class TestProposal {
         Proposal clone = new Proposal(object.toJson());
 
         // Command
-        assertNull(clone.getOwnerKey());
         assertNull(clone.getRawCommandId());
 
         // Proposal

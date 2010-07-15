@@ -114,10 +114,10 @@ public class SaleAssociate extends Entity {
     }
 
     public void addCriterion(String criterion, Collator collator) {
-        removeCriterion(criterion, collator);
         if (criterion == null || criterion.length() == 0) {
             return;
         }
+        removeCriterion(criterion, collator);
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
@@ -132,7 +132,7 @@ public class SaleAssociate extends Entity {
     }
 
     public void removeCriterion(String criterion, Collator collator) {
-        if (criteria == null|| criterion == null || criterion.length() == 0) {
+        if (criteria == null || criterion == null || criterion.length() == 0) {
             return;
         }
         String normalizedCriterion = LocaleValidator.toUnicode(criterion);
@@ -182,7 +182,8 @@ public class SaleAssociate extends Entity {
         if (hashTags == null) {
             hashTags = new ArrayList<String>();
         }
-        if (!hashTags.contains(hashTag)) {
+        hashTag = hashTag.trim();
+        if (0 < hashTag.length() && !hashTags.contains(hashTag)) {
             hashTags.add(hashTag);
         }
     }

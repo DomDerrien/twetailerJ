@@ -118,7 +118,12 @@
 
             dijit.byId("demand.key").attr("value", item.key[0]);
             dijit.byId("demand.state").attr("value", _getLabel("master", "cl_state_" + item.state[0]));
-            dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
+            if (dojo.isArray(item.criteria)) {
+                dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
+            }
+            if (dojo.isArray(item.cc)) {
+                dijit.byId("demand.cc").attr("value", item.cc.join("\n"));
+            }
             dijit.byId("demand.quantity").attr("value", item.quantity[0]);
             var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
             dijit.byId("demand.date").attr("value", dueDate);
@@ -158,7 +163,8 @@
         if (isNaN(data.key)) {
             delete data.key;
         }
-        data.criteria = data.criteria.split(" ");
+        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+        data.cc = data.cc.split(/(?:\s|\n|,|;)+/);
         var month = (data.date.getMonth() + 1);
         var day = data.date.getDate();
         var hours = data.time.getHours();
@@ -296,13 +302,23 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId("proposal.date").attr("value", dateObject);
         dijit.byId("proposal.time").attr("value", dateObject);
-        dijit.byId("proposal.criteria").attr("value", proposal.criteria.join(" "));
+        if (dojo.isArray(proposal.criteria)) {
+            dijit.byId("proposal.criteria").attr("value", proposal.criteria.join(" "));
+        }
         dijit.byId("proposal.modificationDate").attr("value", _common.displayDateTime(proposal.modificationDate));
 
         var modifiableState = proposal.state == _common.STATES.PUBLISHED;
         var closeableState = proposal.state == _common.STATES.CONFIRMED;
         dijit.byId("proposalFormConfirmButton").attr("disabled", !modifiableState);
         dijit.byId("proposalFormDeclineButton").attr("disabled", !modifiableState);
+
+        var store = proposal.related.Store;
+        dijit.byId("store.key").attr("value", store.key);
+        dijit.byId("store.name").attr("value", store.name);
+        dijit.byId("store.address").attr("value", store.address);
+        dijit.byId("store.phoneNb").attr("value", store.phoneNb);
+        dijit.byId("store.email").attr("value", store.email);
+        dijit.byId("store.url").attr("value", store.url);
     };
 
     /**

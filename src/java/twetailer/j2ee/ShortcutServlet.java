@@ -138,52 +138,20 @@ public class ShortcutServlet extends HttpServlet {
         else if (DEMAND_PREFIX.equals(pathInfo)) {
             HttpServletRequest alteredRequest = new HttpRequestWrapper("", request);
             new DemandRestlet().doGet(alteredRequest, response);
-
-            /***************
-            boolean includeLocales = parameters.containsKey("includeLocales");
-
-            if (includeLocales) {
-                List<Long> locationKeys = new ArrayList<Long>();
-                for (Demand demand: demands) {
-                    Long locationKey = demand.getLocationKey();
-                    if (locationKey != null && !locationKeys.contains(locationKey)) {
-                        locationKeys.add(locationKey);
-                    }
-                }
-                if (0 < locationKeys.size()) {
-                    List<Location> locations = locationOperations.getLocations(pm, locationKeys);
-                    out.put("relatedResources", JsonUtils.toJson((List<?>) locations));
-                }
-            }
-            ****************/
         }
         else if (Pattern.matches(DEMAND_PREFIX + NUMERICAL_ID, pathInfo)) {
             String alteredPathInfo = pathInfo.substring(DEMAND_PREFIX.length());
             HttpServletRequest alteredRequest = new HttpRequestWrapper(alteredPathInfo, request);
             new DemandRestlet().doGet(alteredRequest, response);
-
-            /***************
-            boolean includeLocales = parameters.containsKey("includeLocales");
-
-            if (includeLocales) {
-                Store store = storeOperations.getStore(pm, proposal.getStoreKey());
-                out.put("relatedResource", store.toJson());
-            }
-            ****************/
+        }
+        else if (PROPOSAL_PREFIX.equals(pathInfo)) {
+            HttpServletRequest alteredRequest = new HttpRequestWrapper("", request);
+            new ProposalRestlet().doGet(alteredRequest, response);
         }
         else if (Pattern.matches(PROPOSAL_PREFIX + NUMERICAL_ID, pathInfo)) {
             String alteredPathInfo = pathInfo.substring(PROPOSAL_PREFIX.length());
             HttpServletRequest alteredRequest = new HttpRequestWrapper(alteredPathInfo, request);
             new ProposalRestlet().doGet(alteredRequest, response);
-
-            /***************
-            boolean includeLocales = parameters.containsKey("includeLocales");
-
-            if (includeLocales) {
-                Store store = storeOperations.getStore(pm, proposal.getStoreKey());
-                out.put("relatedResource", store.toJson());
-            }
-            ****************/
         }
         else if (LOCATION_PREFIX.equals(pathInfo)) {
             HttpServletRequest alteredRequest = new HttpRequestWrapper("", request);

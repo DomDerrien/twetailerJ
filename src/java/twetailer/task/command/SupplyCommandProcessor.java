@@ -43,7 +43,7 @@ public class SupplyCommandProcessor {
 
         JsonObject supplyParameters = getFreshSupplyParameters(command);
         if (0 < supplyParameters.size()) {
-            saleAssociate = SaleAssociateSteps.updateSaleAssociate(pm, saleAssociate.getKey(), supplyParameters, saleAssociate, consumer);
+            saleAssociate = SaleAssociateSteps.updateSaleAssociate(pm, saleAssociate.getKey(), supplyParameters, consumer, saleAssociate, false);
         }
 
         // Echo back the updated supplied tag list

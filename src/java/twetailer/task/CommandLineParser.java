@@ -701,7 +701,7 @@ public class CommandLineParser {
                 keywords = matcher.replaceFirst("");
             }
         }
-        return keywords.trim().split("\\s+");
+        return keywords.trim().split("(?:\\s|\\n|,|;)+");
     }
 
     /**
