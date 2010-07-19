@@ -1,0 +1,31 @@
+/**
+ * Override settings for the Golf console
+ */
+body, th, td {
+    font-size: 11pt;
+}
+
+#centerZone.loginBG {
+    background: bottom left url('/images/golf/loginBackground.png') no-repeat;
+    background-size: cover;
+    -moz-background-size: cover;
+}
+
+#centerZone.console {
+}
+
+#demandList .dojoxGridScrollbox {
+    background-image:  url("/images/golf/consoleTeeBall.png"), url("/images/golf/consoleBackground.png");
+    background-repeat: no-repeat, repeat-x;
+	background-attachment: scroll;
+    background-position: left bottom, left bottom;
+    background-color: transparent, #FFFFFF;
+}
+
+#demandForm .dijitDialogPaneContent, #proposalForm .dijitDialogPaneContent {
+    background-image: url("/images/golf/18-hole-flag.png");
+	background-repeat: no-repeat;
+    background-attachment: scroll;
+	background-position: right bottom;
+	background-color: #FFFFFF;
+}

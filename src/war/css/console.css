@@ -282,9 +282,15 @@ body {
 .silkIconLinkOpen {
     background-image:url(/images/layout_link.png);
 }
+
 /**
  * Login page settings
  */
+#centerZone.loginBG {
+    background: top left url('/images/loginBackground.png') no-repeat;
+    background-size: 100% auto;
+}
+
 #signInForm {
 	background-color: #ccc;
 	border: 1px solid black;
@@ -328,6 +334,12 @@ body {
 }
 
 /**
+ * Main console
+ */
+#centerZone.console {
+}
+
+/**
  * Information Pane
  */
 .entityInformation {
@@ -352,10 +364,19 @@ body {
     color: grey;
 }
 
+.entityInformation td {
+    height: 24px;
+    vertical-align: middle;
+}
+
 .invalidData {
 	color: red;
 	border-bottom: 2px dotted red;
 	text-shadow: #bbb 2px 2px 2px;
+}
+
+.dijitTextBox .rightAlign {
+    text-align: right;
 }
 
 /**

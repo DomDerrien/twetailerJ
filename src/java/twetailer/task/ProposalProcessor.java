@@ -93,7 +93,9 @@ public class ProposalProcessor {
                         String proposalTags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale));
                         String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                         String demandTags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale));
-                        String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale);
+                        String demandDueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale);
+                        String proposalDueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(proposal.getDueDate()) }, locale);
+                        String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale);
                         String expiration = demand.getExpirationDate().equals(demand.getDueDate()) ? "" : (LabelExtractor.get("cp_tweet_expiration_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale));
                         String pickup = store == null ? "" : (LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale));
                         String price = proposal.getPrice() == null || proposal.getPrice().equals(0.0) ? "" : LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale);
@@ -106,7 +108,7 @@ public class ProposalProcessor {
                                         proposalTags, // 1
                                         demandRef,    // 2
                                         demandTags,   // 3
-                                        dueDate,      // 4
+                                        demandDueDate,// 4
                                         expiration,   // 5
                                         pickup,       // 6
                                         price,        // 7
@@ -130,15 +132,18 @@ public class ProposalProcessor {
                             message = LabelExtractor.get(
                                     "pp_inform_cc_about_proposal",
                                     new Object[] {
-                                            proposalRef,  // 0
-                                            proposalTags, // 1
-                                            demandRef,    // 2
-                                            demandTags,   // 3
-                                            dueDate,      // 4
-                                            expiration,   // 5
-                                            pickup,       // 6
-                                            price,        // 7
-                                            total         // 8
+                                            proposal.getKey(),  // 0
+                                            proposalTags,       // 1
+                                            demand.getKey(),    // 2
+                                            demandTags,         // 3
+                                            demandDueDate,      // 4
+                                            expiration,         // 5
+                                            pickup,             // 6
+                                            price,              // 7
+                                            total,              // 8
+                                            consumer.getName(), // 9
+                                            proposalDueDate,    // 10
+                                            quantity            // 11
                                     },
                                     locale
                             );

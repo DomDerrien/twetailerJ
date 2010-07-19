@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,6 +42,7 @@ import twetailer.validator.CommandSettings.State;
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class TestProposalProcessor {
@@ -88,7 +90,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalIa() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalIa() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = null;
@@ -100,6 +102,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -199,7 +202,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalIb() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalIb() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 0.0D;
@@ -211,6 +214,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -310,7 +314,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalIIa() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalIIa() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -322,6 +326,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -421,7 +426,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalIIb() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalIIb() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -433,6 +438,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -532,7 +538,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalIII() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalIII() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -544,6 +550,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -643,7 +650,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneInvalidProposal() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneInvalidProposal() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -654,6 +661,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.invalid);
@@ -677,7 +685,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalWithFailureGettingDemand() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalWithFailureGettingDemand() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Double price = 25.75D;
@@ -688,6 +696,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -719,7 +728,7 @@ public class TestProposalProcessor {
 
     @Test
     @SuppressWarnings({ "serial", "deprecation" })
-    public void testProcessOneValidProposalWithFailureToSendMessageToConsumer() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalWithFailureToSendMessageToConsumer() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
         final Date demandExpirationDate = new Date();
@@ -732,6 +741,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);
@@ -821,7 +831,7 @@ public class TestProposalProcessor {
     }
 
     @Test
-    public void testProcessOneValidProposalForAnInvalidDemandButWithCommunicationFailure() throws DataSourceException, InvalidIdentifierException {
+    public void testProcessOneValidProposalForAnInvalidDemandButWithCommunicationFailure() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long rawCommandKey = 111L;
         final Source source = Source.mail; // To be able to simulate the failure
         BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
@@ -845,6 +855,7 @@ public class TestProposalProcessor {
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
+        proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
         proposal.setPrice(price);
         proposal.setQuantity(quantity);
         proposal.setState(State.published);

@@ -943,7 +943,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
+                {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {1}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
                 {2}: proposal tags as defined by the entry "cp_tweet_tags_part"
             </note>
@@ -978,7 +978,7 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
-                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
+                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {2}: demand tags as defined by the entry "cp_tweet_tags_part"
             </note>
             <tuv xml:lang="en">
@@ -1107,7 +1107,7 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
-                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
+                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {2}: demand tags as defined by the entry "cp_tweet_tags_part"|
                 {3}: store information as defined by the entry "cp_tweet_store_part"
             </note>
@@ -1124,21 +1124,22 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 {0}: demand owner name|
-                {1}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
-                {2}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
+                {1}: proposal reference|
+                {2}: demand reference|
                 {3}: demand tags as defined by the entry "cp_tweet_tags_part"|
                 {4}: store information as defined by the entry "cp_tweet_store_part"|
-                {5}: proposal due date|
-                {6}: proposal qty|
-                {7}: proposal unit price|
-                {8}: proposal total cost|
-                {9}: proposal tags|
+                {5}: proposal due date as defined by the entry "cp_short_date_part"|
+                {6}: proposal due time as defined by the entry "cp_short_time_part"|
+                {7}: proposal qty|
+                {8}: proposal unit price|
+                {9}: proposal total cost|
+                {10}: currency|
+                {11}: proposal tags or "none"|
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/3 FYI: You have been CC'ed by {0} regarding {2} confirmation of ...|
-                    2/3 {1} from {4} ...|
-                    3/3 {5} {6} {7} {8} {9}.
+                    FYI: You have been CC'ed by {0} for the confirmation of the demand {2} about the proposal {1} from {4}:|
+                    - date: {5} at {6}, quantity: {7}, unit price: {10}{8}, total cost: {10}{9}, additional information: {11}.
                 </seg>
             </tuv>
         </tu>
@@ -1751,6 +1752,56 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_short_date_part" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Date and time patterns:
+                - y: year
+                - M: month in the year
+                - d: day in the month
+                - E: day in the week
+                - H: hour in a day (0-23)
+                - k: hour in a day (1-24)
+                - K: hour in am/pm (0-11)
+                - h: hour in am/pm (1-12)
+                - a: am/pm marker
+                - m: minute in a hour
+                - s: second in a minute
+                - S: milliseconds
+                * If letters are 4 or more, the full form is used; otherwise a short or abbreviated form is used if available
+                * More information at: http://download.oracle.com/docs/cd/E17409_01/javase/6/docs/api/java/text/SimpleDateFormat.html
+            </note>
+            <tuv xml:lang="en">
+                <seg>EEE, MMM d</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_short_time_part" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Date and time patterns:
+                - y: year
+                - M: month in the year
+                - d: day in the month
+                - E: day in the week
+                - H: hour in a day (0-23)
+                - k: hour in a day (1-24)
+                - K: hour in am/pm (0-11)
+                - h: hour in am/pm (1-12)
+                - a: am/pm marker
+                - m: minute in a hour
+                - s: second in a minute
+                - S: milliseconds
+                * If letters are 4 or more, the full form is used; otherwise a short or abbreviated form is used if available
+                * More information at: http://download.oracle.com/docs/cd/E17409_01/javase/6/docs/api/java/text/SimpleDateFormat.html
+            </note>
+            <tuv xml:lang="en">
+                <seg>hh:mm aaa</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_tweet_dueDate_part" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -2334,15 +2385,15 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
-                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"}|
-                {1}: proposal tags part as defined by the entry "cp_tweet_tags_part"}|
-                {2}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
-                {3}: demand tags part as defined by the entry "cp_tweet_tags_part"}|
-                {4}: demand due date part as defined by the entry "cp_tweet_dueDate_part"}|
-                {5}: demand expiration date part as defined by the entry "cp_tweet_expiration_part"}|
-                {6}: store name part as defined by the entry "cp_tweet_store_part"}|
-                {7}: proposal unit price part as defined by the entry "cp_tweet_price_part"}|
-                {8}: proposal total cost part as defined by the entry "cp_tweet_total_part"}|
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: proposal tags part as defined by the entry "cp_tweet_tags_part"|
+                {2}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
+                {3}: demand tags part as defined by the entry "cp_tweet_tags_part"|
+                {4}: demand due date part as defined by the entry "cp_tweet_dueDate_part"|
+                {5}: demand expiration date part as defined by the entry "cp_tweet_expiration_part"|
+                {6}: store name part as defined by the entry "cp_tweet_store_part"|
+                {7}: proposal unit price part as defined by the entry "cp_tweet_price_part"|
+                {8}: proposal total cost part as defined by the entry "cp_tweet_total_part"|
                 Note: In the current form, the expiration is silenced, just the due date is published.
             </note>
             <tuv xml:lang="en">
@@ -2359,25 +2410,25 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform a consumer about a new proposal.|
-                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"}|
-                {1}: proposal tags part as defined by the entry "cp_tweet_tags_part"}|
-                {2}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
-                {3}: demand tags part as defined by the entry "cp_tweet_tags_part"}|
-                {4}: demand due date part as defined by the entry "cp_tweet_dueDate_part"}|
-                {5}: demand expiration date part as defined by the entry "cp_tweet_expiration_part"}|
-                {6}: store name part as defined by the entry "cp_tweet_store_part"}|
-                {7}: proposal unit price part as defined by the entry "cp_tweet_price_part"}|
-                {8}: proposal total cost part as defined by the entry "cp_tweet_total_part"}|
+                {0}: proposal key|
+                {1}: proposal tags part as defined by the entry "cp_tweet_tags_part"|
+                {2}: demand key|
+                {3}: demand tags part as defined by the entry "cp_tweet_tags_part"|
+                {4}: demand due date part as defined by the entry "cp_tweet_dueDate_part"|
+                {5}: demand expiration date part as defined by the entry "cp_tweet_expiration_part"|
+                {6}: store name part as defined by the entry "cp_tweet_store_part"|
+                {7}: proposal unit price part as defined by the entry "cp_tweet_price_part"|
+                {8}: proposal total cost part as defined by the entry "cp_tweet_total_part"|
                 {9}: demand owner name|
-                {10}: proposal due date|
-                {11}: proposal qty|
+                {10}: proposal due date as defined by the entry "cp_short_date_part"|
+                {11}: proposal due time as defined by the entry "cp_short_time_part"|
+                {12}: proposal qty|
                 Note: In the current form, the expiration is silenced, just the due date is published.
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    1/3 FYI: You have been CC'ed by {9} regarding a Proposal for {2} ...|
-                    2/3 {0} from {6} ...|
-                    3/3 {10} {11} {7} {8} {1}.
+                    FYI: You have been CC'ed by {9} regarding a new proposal {0} for demand {2} from {6}.|
+                    Details: for {10} at {11}, quantity: {12}, {7}, {8}, additional information: {1}.
                 </seg>
             </tuv>
         </tu>
@@ -2389,7 +2440,10 @@
                 Inform a CC recipient about opting out
             </note>
             <tuv xml:lang="en">
-                <seg>If you have received this message in error, or, prefer not to be CC'ed on future messages from this, or, any other Demand Owner, then please notify Twetailer by sending an email to support@twetailer.com</seg>
+                <seg>
+                    If you have received this message in error, or, prefer not to be CC'ed on future messages from this, or,
+                    any other Demand Owner, then please notify Twetailer by sending an email to support@twetailer.com
+                </seg>
             </tuv>
         </tu>
 
@@ -2398,8 +2452,8 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Inform the sale associate his proposal cannot be submitted to the demand.|
-                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"}|
-                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}|
+                {0}: proposal reference part as defined by the entry "cp_tweet_proposal_reference_part"|
+                {1}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"|
                 {2}: demand state part as defined by the entry "cp_tweet_state_part"}
             </note>
             <tuv xml:lang="en">

@@ -1,0 +1,11 @@
+/**
+ * Override settings for the Golf console
+ */
+body, th, td {
+    font-size: 11pt;
+}
+
+#centerZone.loginBG {
+    background: top left url('/images/taxi/loginBackground.png');
+    background-size: auto auto;
+}

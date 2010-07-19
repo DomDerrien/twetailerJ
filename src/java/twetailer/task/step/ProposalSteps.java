@@ -523,7 +523,7 @@ public class ProposalSteps extends BaseSteps {
 
             // Notify CC-ed
             Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
-            notifyConfirmationToCCed(pm, demand, proposalKey, store, demandOwner);
+            notifyConfirmationToCCed(pm, demand, proposal, store, demandOwner);
         }
 
         return proposal;

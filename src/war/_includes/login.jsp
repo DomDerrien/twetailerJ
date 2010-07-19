@@ -14,6 +14,7 @@
     import="domderrien.jsontools.JsonParser"
     import="twetailer.dao.BaseOperations"
     import="twetailer.dao.SettingsOperations"
+    import="twetailer.dto.HashTag"
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.task.step.BaseSteps"
     import="twetailer.validator.ApplicationSettings"
@@ -29,6 +30,18 @@
 
     // Try to get the seed city list
     String seedCityList = (String) BaseSteps.getSettingsOperations().getFromCache("/suppliesTagCloud/seedCityList");
+    
+    // Detects the vertical context
+    boolean useVertical = false;
+    String verticalId = null;
+    String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
+    if (forwardedUriAttribute != null) {
+        String[] hashtags = HashTag.getHashTagsArray();
+	    for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
+	        verticalId = hashtags[idx];
+	        useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
+	    }
+    }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
@@ -43,23 +56,25 @@
     <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <%
-    if (useCDN) {
-    %><style type="text/css">
+    <style type="text/css"><%
+	    if (useCDN) {
+	    %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
-        @import "/css/console.css";
-    </style><%
-    }
-    else { // elif (!useCDN)
-    %><style type="text/css">
+        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";<%
+	    }
+	    else { // elif (!useCDN)
+	    %>
         @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
-        @import "/css/console.css";
-    </style><%
-    } // endif (useCDN)
-    %>
-    <style type="text/css">
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";><%
+	    } // endif (useCDN)
+	    %>
+        @import "/css/console.css";<%
+        if (useVertical) {
+        %>
+        @import "/css/<%= verticalId %>/console.css";<%
+        } // endif (useVertical)
+        %>
+
     .dijitButtonText>img {
         width:32px;
         height:32px;
@@ -92,10 +107,9 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-
         <jsp:include page="/_includes/banner_open.jsp"></jsp:include>
-        <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center">
-            <table style="width: 100%; height: 100%;">
+        <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center" class="loginBG">
+            <table style="width: 100%; height: 100%; background-color: transparent;">
                 <tr>
                     <td>&nbsp;</td>
                     <td valign="middle" style="width: 40em;">
@@ -190,7 +204,8 @@
                 </ul>
             </div>
         </div>
-        <% } %><div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <% } // endif (seedCityList != null && 0 < seedCityList.length())
+        %><div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
     </div>

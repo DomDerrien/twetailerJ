@@ -864,7 +864,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) PVI: {0} a confirmé la {1} pour la {2} {3}.
+                    PVI: {0} vous fait transmettre une copie de la confirmation de la demande {2} à propos de la proposition {1} faite par {4}:|
+                    - date: {5} à {6}, quantité: {7}, prix unitaire: {8}{10}, coût total: {9}{10}, informations additionelles: {11}.
                 </seg>
             </tuv>
         </tu>
@@ -1000,7 +1001,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>FYI: {0} cancelled the Demand you've been CC-ed...|{1} </seg>
+                <seg>FYI: {0} a annulé la Demande pour laquelle vous êtes en copie...|{1} </seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_demand_invalid_demand_id" dataType="text">
@@ -1260,6 +1261,20 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>CC:{0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_short_date_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>EEE d MMM</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_short_time_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>HH:mm</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_dueDate_part" dataType="text">
@@ -1598,9 +1613,18 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/3 PVI: {2} {3} {4} a reçu...|
-                    2/3 {0} {1} {7} {8}.|
-                    3/3 Du {6}.
+                    PVI: La demande {2} de {9} a reçu la proposition {0} de la part de {6}.|
+                    Détails: pour le {10} à {11}, quantité: {12}, {7}, {8}, informations additionelles: {1}.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="pp_inform_cc_about_opt_out" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Si vous avez reçu ce message par erreur, ou preferriez ne plus être en copie des prochaine
+                    communication, veuillez communiquer avec l'équipe de Twetailer à l'adresse: support@twetailer.com.
                 </seg>
             </tuv>
         </tu>

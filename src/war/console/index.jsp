@@ -17,6 +17,7 @@
     import="twetailer.dao.BaseOperations"
     import="twetailer.dao.ConsumerOperations"
     import="twetailer.dao.LocationOperations"
+    import="twetailer.dto.HashTag"
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.j2ee.BaseRestlet"
     import="twetailer.validator.ApplicationSettings"
@@ -47,6 +48,18 @@
 
     // Get the logged user SaleAssociate key
     Long saleAssociateKey = consumer.getSaleAssociateKey();
+    
+    // Detects the vertical context
+    boolean useVertical = false;
+    String verticalId = null;
+    String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
+    if (forwardedUriAttribute != null) {
+        String[] hashtags = HashTag.getHashTagsArray();
+        for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
+            verticalId = hashtags[idx];
+            useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
+        }
+    }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
@@ -55,30 +68,33 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.third, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <%
-    if (useCDN) {
-    %><style type="text/css">
+    <style type="text/css"><%
+        if (useCDN) {
+        %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
         @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
         @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
         @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
         @import "<%= cdnBaseURL %>/dojox/layout/resources/FloatingPane.css";
-        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";
-        @import "/css/console.css";
-    </style><%
-    }
-    else { // elif (!useCDN)
-    %><style type="text/css">
+        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";<%
+        }
+        else { // elif (!useCDN)
+        %>
         @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";>
         @import "/js/dojo/dojox/grid/resources/Grid.css";
         @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
         @import "/js/dojo/dojox/layout/resources/FloatingPane.css";
-        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";
-        @import "/css/console.css";
-    </style><%
-    } // endif (useCDN)
-    %>
+        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";<%
+        } // endif (useCDN)
+        %>
+        @import "/css/console.css";<%
+        if (useVertical) {
+        %>
+        @import "/css/<%= verticalId %>/console.css";<%
+        } // endif (useVertical)
+        %>
+    </style>
 </head>
 <body class="tundra">
 

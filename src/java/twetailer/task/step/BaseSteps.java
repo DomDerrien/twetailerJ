@@ -24,8 +24,10 @@ import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
+import twetailer.dto.Proposal;
 import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 public class BaseSteps {
@@ -187,13 +189,13 @@ public class BaseSteps {
      * Sends a message to the CC-ed people with a copy of the given demand, just after a proposal confirmation
      *
      * @param demand Demand to echo to the CC-ed people
-     * @param proposalKey Identifier of the confirmed Proposal
+     * @param proposal Proposal to echo to the CC-ed people
      * @param store Place where a SaleAssociate created the Proposal
      * @param consumer Demand owner
      *
      * @throws DataSourceException If getting information about the demand location fails
      */
-    public static void notifyConfirmationToCCed(PersistenceManager pm, Demand demand, Long proposalKey, Store store, Consumer owner) throws DataSourceException {
+    public static void notifyConfirmationToCCed(PersistenceManager pm, Demand demand, Proposal proposal, Store store, Consumer owner) throws DataSourceException {
         // Prepare the message for the CC-ed
         List<String> cc = demand.getCC();
         if (cc != null && 0 < cc.size()) {
@@ -203,11 +205,30 @@ public class BaseSteps {
 
             // Compose the message
             Locale locale = owner.getLocale();
-            String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-            String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale);
+
             String demandTags = demand.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
             String pickup = LabelExtractor.get("cp_tweet_store_part", new Object[] { store.getKey(), store.getName() }, locale);
-            String messageCC = LabelExtractor.get("cp_command_confirm_forward_confirmation_to_cc", new Object[] { owner.getName(), proposalRef, demandRef, demandTags, pickup }, locale);
+            String dueDate = DateUtils.dateToCustom(proposal.getDueDate(), LabelExtractor.get("cp_short_date_part", locale), locale);
+            String dueTime = DateUtils.dateToCustom(proposal.getDueDate(), LabelExtractor.get("cp_short_time_part", locale), locale);
+
+            String messageCC = LabelExtractor.get(
+                    "cp_command_confirm_forward_confirmation_to_cc",
+                    new Object[] {
+                            owner.getName(),                // 0
+                            proposal.getKey(),              // 1
+                            demand.getKey(),                // 2
+                            demandTags,                     // 3
+                            pickup,                         // 4
+                            dueDate,                        // 5
+                            dueTime,                        // 6
+                            proposal.getQuantity(),         // 7
+                            proposal.getPrice(),            // 8
+                            proposal.getTotal(),            // 9
+                            "\\$",                          // 10
+                            proposal.getSerializedCriteria()// 11
+                    },
+                    locale
+            );
 
             // Send the message
             notifyMessageToCCed(cc, messageCC, locale);
