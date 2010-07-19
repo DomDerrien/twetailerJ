@@ -30,17 +30,17 @@
 
     // Try to get the seed city list
     String seedCityList = (String) BaseSteps.getSettingsOperations().getFromCache("/suppliesTagCloud/seedCityList");
-    
+
     // Detects the vertical context
     boolean useVertical = false;
     String verticalId = null;
     String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
     if (forwardedUriAttribute != null) {
         String[] hashtags = HashTag.getHashTagsArray();
-	    for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
-	        verticalId = hashtags[idx];
-	        useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
-	    }
+        for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
+            verticalId = hashtags[idx];
+            useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
+        }
     }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
@@ -57,17 +57,17 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <style type="text/css"><%
-	    if (useCDN) {
-	    %>
+        if (useCDN) {
+        %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
         @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";<%
-	    }
-	    else { // elif (!useCDN)
-	    %>
+        }
+        else { // elif (!useCDN)
+        %>
         @import "/js/dojo/dojo/resources/dojo.css";
         @import "/js/dojo/dijit/themes/tundra/tundra.css";><%
-	    } // endif (useCDN)
-	    %>
+        } // endif (useCDN)
+        %>
         @import "/css/console.css";<%
         if (useVertical) {
         %>
@@ -184,7 +184,7 @@
             </table>
         </div>
         <%
-        if (seedCityList != null && 0 < seedCityList.length()) {
+        if (!useVertical && seedCityList != null && 0 < seedCityList.length()) {
             JsonArray citiesNearby = new JsonParser(seedCityList).getJsonArray();
         %><div
             dojoType="dijit.layout.ContentPane"

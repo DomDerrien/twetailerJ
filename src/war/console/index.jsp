@@ -48,7 +48,7 @@
 
     // Get the logged user SaleAssociate key
     Long saleAssociateKey = consumer.getSaleAssociateKey();
-    
+
     // Detects the vertical context
     boolean useVertical = false;
     String verticalId = null;

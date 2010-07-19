@@ -40,7 +40,7 @@
     OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
     Consumer consumer = LoginServlet.getConsumer(loggedUser);
     Long saleAssociateKey = consumer.getSaleAssociateKey();
-    
+
     // Detects the vertical context
     boolean useVertical = false;
     String verticalId = null;

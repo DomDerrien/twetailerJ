@@ -43,7 +43,7 @@
     if (saleAssociateKey == null) {
         response.sendRedirect("./");
     }
-    
+
     // Detects the vertical context
     boolean useVertical = false;
     String verticalId = null;
