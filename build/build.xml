@@ -309,6 +309,7 @@
             <file name="appengine/appengine-local-runtime.jar" />
             <file name="appengine/appengine-testing.jar" />
             <!--file name="commons/commons-codec-1.3.jar" /-->
+            <file name="datanucleus/datanucleus-appengine-1.0.7.final.jar" />
             <file name="domderrien/domderrien-1.0.9.jar" />
             <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
             <file name="dyuproject/dyuproject-util-1.1.6.jar" />

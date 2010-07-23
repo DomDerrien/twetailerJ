@@ -327,6 +327,24 @@
             </tuv>
         </tu>
 
+        <tu tuid="login_call_to_ie6_users" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Message displayed to Microsoft IE 6 browser users, calling them to install a modern browser!</note>
+            <tuv xml:lang="en">
+                <seg>You are using an outdated browser!</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="login_info_to_ie6_users" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Message displayed to Microsoft IE 6 browser users, calling them to install a modern browser!</note>
+            <tuv xml:lang="en">
+                <seg>To use this site, please upgrade to a modern web browser.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="login_localized_page_keywords" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

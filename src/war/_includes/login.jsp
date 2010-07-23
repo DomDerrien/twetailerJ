@@ -113,6 +113,23 @@
                 <tr>
                     <td>&nbsp;</td>
                     <td valign="middle" style="width: 40em;">
+                        <!--[if lt IE 7]>
+                        <div style='border: 1px solid #F7941D; background: #FEEFDA; text-align: center; clear: both; height: 75px; position: relative;'>
+                            <div style='width: 640px; margin: 0 auto; text-align: left; padding: 0; overflow: hidden; color: black;'>
+                                <div style='width: 75px; float: left;'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg' alt='!'/></div>
+                                <div style='width: 275px; float: left; font-family: Arial, sans-serif;'>
+                                    <div style='font-size: 14px; font-weight: bold; margin-top: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_call_to_ie6_users", locale) %></div>
+                                    <div style='font-size: 12px; margin-top: 6px; line-height: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_info_to_ie6_users", locale) %></div>
+                                </div>
+                                <div style='width: 75px; float: left;'><a href='http://www.firefox.com' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg' style='border: none;' alt='Mozilla Firefox'/></a></div>
+                                <div style='width: 75px; float: left;'><a href='http://www.microsoft.com/windows/internet-explorer/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg' style='border: none;' alt='Microsoft Internet Explorer'/></a></div>
+                                <div style='width: 73px; float: left;'><a href='http://www.apple.com/safari/download/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg' style='border: none;' alt='Apple Safari'/></a></div>
+                                <div style='float: left;'><a href='http://www.google.com/chrome' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg' style='border: none;' alt='Google Chrome'/></a></div>
+                            </div>
+                        </div>
+                        <![endif]-->
+
+                        <![if !IE]>
                         <div id="signInForm">
                             <div style="color:#888; text-align: justify;">
                                  <%= LabelExtractor.get(ResourceFileId.third, "login_introduction_message", locale) %>
@@ -178,6 +195,7 @@
                                 <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
                             </form>
                         </div>
+                        <![endif]>
                     </td>
                     <td>&nbsp;</td>
                 </tr>
@@ -249,6 +267,15 @@
         dojo.require("dijit.layout.BorderContainer");
         dojo.require("dijit.layout.ContentPane");
         dojo.addOnLoad(function(){
+            if (1280 < parseInt(dojo.style("centerZone", "width"))) {
+                var currentBgImg = dojo.style("centerZone", "backgroundImage");
+                if (currentBgImg != null && 15 < currentBgImg.length) {
+                    var suffix = currentBgImg.substr(currentBgImg.length - 15);
+                    if (suffix.indexOf("-1024.png") != -1) {
+                        dojo.style("centerZone", "backgroundImage", currentBgImg.replace("-1024.png", "-2048.png"));
+                    }
+                }
+            }
             dojo.parser.parse();
             dojo.fadeOut({
                 node: "introFlash",

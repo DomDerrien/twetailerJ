@@ -243,6 +243,20 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="login_call_to_ie6_users" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Vous utiliser un navigateur dépassé !</seg>
+            </tuv>
+        </tu>
+        <tu tuid="login_info_to_ie6_users" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>Pour accéder au site, utiliser un navigateur moderne.</seg>
+            </tuv>
+        </tu>
         <tu tuid="login_localized_page_keywords" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

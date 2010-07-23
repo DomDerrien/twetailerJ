@@ -287,8 +287,9 @@ body {
  * Login page settings
  */
 #centerZone.loginBG {
-    background: top left url('/images/loginBackground.png') no-repeat;
-    background-size: 100% auto;
+    background: top left url('/images/loginBackground-1024.png') no-repeat;
+    background-size: cover;
+    -moz-background-size: cover;
 }
 
 #signInForm {
