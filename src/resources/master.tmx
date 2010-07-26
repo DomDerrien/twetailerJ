@@ -262,7 +262,7 @@
             <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>dueDate</seg>
+                <seg>dueDate,due-date,teeOff,tee-off</seg>
             </tuv>
         </tu>
 

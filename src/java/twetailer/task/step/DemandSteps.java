@@ -511,5 +511,11 @@ public class DemandSteps extends BaseSteps {
         demand.setState(State.markedForDeletion);
         demand.setMarkedForDeletion(Boolean.TRUE);
         getDemandOperations().updateDemand(pm, demand);
+
+        List<Proposal> proposals = BaseSteps.getProposalOperations().getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
+        for (Proposal proposal: proposals) {
+            proposal.setDemandKey(0L); // To cut the link
+            BaseSteps.getProposalOperations().updateProposal(pm, proposal);
+        }
     }
 }

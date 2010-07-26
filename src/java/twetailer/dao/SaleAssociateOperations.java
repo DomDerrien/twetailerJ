@@ -213,13 +213,18 @@ public class SaleAssociateOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(SaleAssociate.class);
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select sale associate(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<SaleAssociate> saleAssociates = (List<SaleAssociate>) queryObj.execute(value);
-        saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return saleAssociates;
+        Query query = pm.newQuery(SaleAssociate.class);
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select sale associate(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.execute(value);
+            saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return saleAssociates;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -236,13 +241,18 @@ public class SaleAssociateOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getSaleAssociateKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select sale associate(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> saleAssociateKeys = (List<Long>) queryObj.execute(value);
-        saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return saleAssociateKeys;
+        Query query = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select sale associate(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> saleAssociateKeys = (List<Long>) query.execute(value);
+            saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return saleAssociateKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -258,9 +268,14 @@ public class SaleAssociateOperations extends BaseOperations {
     public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, List<Long> saleAssociateKeys) throws DataSourceException {
         // Select the corresponding resources
         Query query = pm.newQuery(SaleAssociate.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
-        List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.execute(saleAssociateKeys);
-        saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return saleAssociates;
+        try {
+            List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.execute(saleAssociateKeys);
+            saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return saleAssociates;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -277,12 +292,17 @@ public class SaleAssociateOperations extends BaseOperations {
     public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(SaleAssociate.class);
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select sale associate(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.executeWithArray(values);
-        saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return saleAssociates;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select sale associate(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.executeWithArray(values);
+            saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return saleAssociates;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -298,13 +318,18 @@ public class SaleAssociateOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getSaleAssociateKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
-        Object[] values = prepareQuery(queryObj, parameters, limit);
-        getLogger().warning("Select sale associate(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> saleAssociateKeys = (List<Long>) queryObj.executeWithArray(values);
-        saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return saleAssociateKeys;
+        Query query = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select sale associate(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> saleAssociateKeys = (List<Long>) query.executeWithArray(values);
+            saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return saleAssociateKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

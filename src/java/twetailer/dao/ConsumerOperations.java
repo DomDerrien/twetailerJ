@@ -414,16 +414,21 @@ public class ConsumerOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Consumer> getConsumers(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Consumer.class);
-        if (Consumer.JABBER_ID.equals(attribute)) {
-            value = getSimplifiedJabberId((String) value);
+        Query query = pm.newQuery(Consumer.class);
+        try {
+            if (Consumer.JABBER_ID.equals(attribute)) {
+                value = getSimplifiedJabberId((String) value);
+            }
+            value = prepareQuery(query, attribute, value, 0);
+            getLogger().warning("Select consumer(s) with: " + query.toString());
+            // Select the corresponding consumers
+            List<Consumer> consumers = (List<Consumer>) query.execute(value);
+            consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return consumers;
         }
-        value = prepareQuery(queryObj, attribute, value, 0);
-        getLogger().warning("Select consumer(s) with: " + queryObj.toString());
-        // Select the corresponding consumers
-        List<Consumer> consumers = (List<Consumer>) queryObj.execute(value);
-        consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return consumers;
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -439,9 +444,14 @@ public class ConsumerOperations extends BaseOperations {
     public List<Consumer> getConsumers(PersistenceManager pm, List<Long> consumerKeys) throws DataSourceException {
         // Select the corresponding resources
         Query query = pm.newQuery(Consumer.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
-        List<Consumer> consumers = (List<Consumer>) query.execute(consumerKeys);
-        consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return consumers;
+        try {
+            List<Consumer> consumers = (List<Consumer>) query.execute(consumerKeys);
+            consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return consumers;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -458,12 +468,17 @@ public class ConsumerOperations extends BaseOperations {
     public List<Consumer> getConsumers(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Consumer.class);
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select consumer(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<Consumer> consumers = (List<Consumer>) query.executeWithArray(values);
-        consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return consumers;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select consumer(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Consumer> consumers = (List<Consumer>) query.executeWithArray(values);
+            consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return consumers;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -479,13 +494,18 @@ public class ConsumerOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getConsumerKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Consumer.KEY + " from " + Consumer.class.getName());
-        Object[] values = prepareQuery(queryObj, parameters, limit);
-        getLogger().warning("Select consumer(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> consumerKeys = (List<Long>) queryObj.executeWithArray(values);
-        consumerKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return consumerKeys;
+        Query query = pm.newQuery("select " + Consumer.KEY + " from " + Consumer.class.getName());
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select consumer(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> consumerKeys = (List<Long>) query.executeWithArray(values);
+            consumerKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return consumerKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

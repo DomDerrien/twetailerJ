@@ -1,6 +1,7 @@
 package twetailer.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -42,6 +43,9 @@ public class Settings implements Serializable {
     public static final String LAST_PROCESSED_DIRECT_MESSAGE_ID = "lastProcessDirectMessageId";
 
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
+
+    @Persistent
+    private Date modificationDate = null;
 
     @Persistent
     private Long robotConsumerKey = null;
@@ -95,6 +99,14 @@ public class Settings implements Serializable {
             throw new IllegalArgumentException("Cannot assign 0L or a negative value to the message identifier");
         }
         this.lastProcessDirectMessageId = lastProcessDirectMessageId;
+    }
+
+    public Date getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(Date modificationDate) {
+        this.modificationDate = modificationDate;
     }
 
     public Long getRobotConsumerKey() {

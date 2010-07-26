@@ -190,13 +190,18 @@ public class LocationOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Location> getLocations(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Location.class);
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select location(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Location> locations = (List<Location>) queryObj.execute(value);
-        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return locations;
+        Query query = pm.newQuery(Location.class);
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select location(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Location> locations = (List<Location>) query.execute(value);
+            locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return locations;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -213,12 +218,17 @@ public class LocationOperations extends BaseOperations {
     public List<Location> getLocations(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Location.class);
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select location(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<Location> locations = (List<Location>) query.executeWithArray(values);
-        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return locations;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select location(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Location> locations = (List<Location>) query.executeWithArray(values);
+            locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return locations;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -235,12 +245,17 @@ public class LocationOperations extends BaseOperations {
     public List<Long> getLocationKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery("select " + Location.KEY + " from " + Location.class.getName());
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select location(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<Long> locationKeys = (List<Long>) query.executeWithArray(values);
-        locationKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return locationKeys;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select location(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> locationKeys = (List<Long>) query.executeWithArray(values);
+            locationKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return locationKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -256,15 +271,20 @@ public class LocationOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Location> getLocations(PersistenceManager pm, String postalCode, String countryCode) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Location.class);
-        queryObj.setFilter(Location.POSTAL_CODE + " == postal && " + Location.COUNTRY_CODE + " == country");
-        queryObj.declareParameters("String postal, String country");
-        getLogger().warning("Select location(s) with: " + queryObj.toString());
-        queryObj.setOrdering("creationDate desc");
-        // Select the corresponding resources
-        List<Location> locations = (List<Location>) queryObj.execute(postalCode, countryCode);
-        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return locations;
+        Query query = pm.newQuery(Location.class);
+        try {
+            query.setFilter(Location.POSTAL_CODE + " == postal && " + Location.COUNTRY_CODE + " == country");
+            query.declareParameters("String postal, String country");
+            getLogger().warning("Select location(s) with: " + query.toString());
+            query.setOrdering("creationDate desc");
+            // Select the corresponding resources
+            List<Location> locations = (List<Location>) query.execute(postalCode, countryCode);
+            locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return locations;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -358,30 +378,35 @@ public class LocationOperations extends BaseOperations {
          ****************************************************************************************************************/
         // Prepare the query
         Query query = pm.newQuery(Location.class);
-        query.setFilter(
-                Location.COUNTRY_CODE + " == givenCountryCode && " +
-                (withStore ? Location.HAS_STORE + " == hasStoreRegistered && " : "") +
-                Location.LATITUDE + " > bottomLatitude && " +
-                Location.LATITUDE + " < topLatitude"
-        );
-        query.declareParameters("String givenCountryCode, Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
-        if (0 < limit) {
-            query.setRange(0, limit);
-        }
-        getLogger().warning("Select location(s) with: " + query.toString());
-
-        // Execute the query
-        List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.TRUE, topLatitude, bottomLatitude);
-        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
-
-        List<Location> selection = new ArrayList<Location>();
-        for (Location spot: locations) {
-            if (leftLongitude < spot.getLongitude() && spot.getLongitude() < rightLongitude) {
-                selection.add(spot);
+        try {
+            query.setFilter(
+                    Location.COUNTRY_CODE + " == givenCountryCode && " +
+                    (withStore ? Location.HAS_STORE + " == hasStoreRegistered && " : "") +
+                    Location.LATITUDE + " > bottomLatitude && " +
+                    Location.LATITUDE + " < topLatitude"
+            );
+            query.declareParameters("String givenCountryCode, Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
+            if (0 < limit) {
+                query.setRange(0, limit);
             }
-        }
+            getLogger().warning("Select location(s) with: " + query.toString());
 
-        return selection;
+            // Execute the query
+            List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.TRUE, topLatitude, bottomLatitude);
+            locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+
+            List<Location> selection = new ArrayList<Location>();
+            for (Location spot: locations) {
+                if (leftLongitude < spot.getLongitude() && spot.getLongitude() < rightLongitude) {
+                    selection.add(spot);
+                }
+            }
+
+            return selection;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -397,9 +422,14 @@ public class LocationOperations extends BaseOperations {
     public List<Location> getLocations(PersistenceManager pm, List<Long> locationKeys) throws DataSourceException {
         // Select the corresponding resources
         Query query = pm.newQuery(Location.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
-        List<Location> locations = (List<Location>) query.execute(locationKeys);
-        locations.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return locations;
+        try {
+            List<Location> locations = (List<Location>) query.execute(locationKeys);
+            locations.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return locations;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
-import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.dto.RawCommand;
 

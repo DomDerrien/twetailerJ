@@ -169,50 +169,16 @@ public class DemandRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit
-     * @throws DataSourceException ***/
-
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException, ReservedOperationException, DataSourceException {
-        if (isAPrivilegedUser(loggedUser)) {
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                Long demandKey = Long.valueOf(resourceId);
-                delegateResourceDeletion(pm, demandKey, LoginServlet.getConsumerKey(loggedUser), false);
-                return;
-            }
-            finally {
-                pm.close();
-            }
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            // Update the Demand
+            Long demandKey = Long.valueOf(resourceId);
+            DemandSteps.deleteDemand(pm, demandKey, LoginServlet.getConsumer(loggedUser, pm));
         }
-        throw new ReservedOperationException(Action.delete, "Restricted access!");
-    }
-
-    /**
-     * Delete the Demand instances based on the specified criteria.
-     *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param demandKey Identifier of the resource to delete
-     * @param consumerKey Identifier of the demand owner
-     * @param stopRecursion Should be <code>false</code> if the associated Proposals need to be affected too
-     * @return Serialized list of the Consumer instances matching the given criteria
-
-     * @throws InvalidIdentifierException If the query to the back-end fails
-     * @throws DataSourceException If the deletion operation fails
-     *
-     * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
-     */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long demandKey, Long consumerKey, boolean stopRecursion) throws InvalidIdentifierException, DataSourceException{
-        // Delete consumer's demands
-        BaseSteps.getDemandOperations().deleteDemand(pm, demandKey, consumerKey);
-        if (!stopRecursion) {
-            // Clean-up the attached proposals
-            List<Proposal> proposals = BaseSteps.getProposalOperations().getProposals(pm, Proposal.DEMAND_KEY, demandKey, 0);
-            for (Proposal proposal: proposals) {
-                proposal.setState(State.cancelled);
-                proposal.setDemandKey(0L); // To cut the link
-                BaseSteps.getProposalOperations().updateProposal(pm, proposal);
-            }
+        finally {
+            pm.close();
         }
     }
 }

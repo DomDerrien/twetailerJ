@@ -170,10 +170,15 @@ public class SeedOperations extends BaseOperations {
      */
     @SuppressWarnings("unchecked")
     public List<Seed> getAllSeeds(PersistenceManager pm) {
-        Query queryObj = pm.newQuery(Seed.class);
-        List<Seed> seeds = (List<Seed>) queryObj.execute();
-        seeds.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return seeds;
+        Query query = pm.newQuery(Seed.class);
+        try {
+            List<Seed> seeds = (List<Seed>) query.execute();
+            seeds.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return seeds;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

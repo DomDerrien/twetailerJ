@@ -10,10 +10,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.MockServletInputStream;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
@@ -23,17 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import twetailer.dto.Demand;
-import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.restlet.ConsumerRestlet;
 import twetailer.j2ee.restlet.DemandRestlet;
 import twetailer.j2ee.restlet.LocationRestlet;
 import twetailer.j2ee.restlet.ProposalRestlet;
 import twetailer.j2ee.restlet.SaleAssociateRestlet;
 import twetailer.j2ee.restlet.StoreRestlet;
-import twetailer.task.step.BaseSteps;
-import twetailer.task.step.DemandSteps;
-import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
@@ -271,49 +264,30 @@ public class ShortcutServlet extends HttpServlet {
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        long consumerKey = setMockOpenIdUser(request);
+        setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
         log.warning("Path Info: " + pathInfo);
 
-        JsonObject out = new GenericJsonObject();
         if (pathInfo == null || pathInfo.length() == 0) {
-            out.put("success", false);
-            out.put("reason", "URL not supported");
-        }
-        else if (Pattern.matches("/Demand/(\\w+)", pathInfo)) {
-            out.put("success", true);
-            try {
-                // Get the key
-                Matcher keyMatcher = Pattern.compile("/Demand/(\\w+)").matcher(pathInfo);
-                keyMatcher.matches();
-                Long key = Long.valueOf(keyMatcher.group(1));
-
-                // Delete the Demand => Cancel it!
-                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-                try {
-                    Demand demand = DemandSteps.getDemand(pm, key, consumerKey, QueryPointOfView.CONSUMER, null);
-                    demand.setState(State.cancelled);
-                    BaseSteps.getDemandOperations().updateDemand(pm, demand);
-                }
-                finally {
-                    pm.close();
-                }
-                out.put("resourceId", key);
-            }
-            catch(Exception ex) {
-                out.put("success", false);
-                out.put("reason", ex.getMessage());
-                ex.printStackTrace();
-            }
-        }
-        else {
+            JsonObject out = new GenericJsonObject();
             response.setStatus(404); // Not Found
             out.put("success", false);
             out.put("reason", "URL not supported");
+            out.toStream(response.getOutputStream(), false);
         }
-
-        out.toStream(response.getOutputStream(), false);
+        else if (Pattern.matches(DEMAND_PREFIX + NUMERICAL_ID, pathInfo)) {
+            String alteredPathInfo = pathInfo.substring(DEMAND_PREFIX.length());
+            HttpServletRequest alteredRequest = new HttpRequestWrapper(alteredPathInfo, request);
+            new DemandRestlet().doDelete(alteredRequest, response);
+        }
+        else {
+            JsonObject out = new GenericJsonObject();
+            response.setStatus(404); // Not Found
+            out.put("success", false);
+            out.put("reason", "URL not supported");
+            out.toStream(response.getOutputStream(), false);
+        }
     }
 
     @SuppressWarnings({"unchecked","deprecation"})

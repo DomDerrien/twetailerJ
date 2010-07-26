@@ -173,13 +173,18 @@ public class StoreOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Store> getStores(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Store.class);
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select stores(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Store> stores = (List<Store>) queryObj.execute(value);
-        stores.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return stores;
+        Query query = pm.newQuery(Store.class);
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select stores(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Store> stores = (List<Store>) query.execute(value);
+            stores.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return stores;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -196,13 +201,18 @@ public class StoreOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getStoreKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select store(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> storeKeys = (List<Long>) queryObj.execute(value);
-        storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return storeKeys;
+        Query query = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select store(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> storeKeys = (List<Long>) query.execute(value);
+            storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return storeKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -219,12 +229,17 @@ public class StoreOperations extends BaseOperations {
     public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Store.class);
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select store(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<Store> stores = (List<Store>) query.executeWithArray(values);
-        stores.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return stores;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select store(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Store> stores = (List<Store>) query.executeWithArray(values);
+            stores.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return stores;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -240,13 +255,18 @@ public class StoreOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getStoreKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
-        Object[] values = prepareQuery(queryObj, parameters, limit);
-        getLogger().warning("Select store(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> storeKeys = (List<Long>) queryObj.executeWithArray(values);
-        storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return storeKeys;
+        Query query = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select store(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> storeKeys = (List<Long>) query.executeWithArray(values);
+            storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return storeKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -341,9 +361,14 @@ public class StoreOperations extends BaseOperations {
     public List<Store> getStores(PersistenceManager pm, List<Long> storeKeys) throws DataSourceException {
         // Select the corresponding resources
         Query query = pm.newQuery(Store.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
-        List<Store> stores = (List<Store>) query.execute(storeKeys);
-        stores.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return stores;
+        try {
+            List<Store> stores = (List<Store>) query.execute(storeKeys);
+            stores.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return stores;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

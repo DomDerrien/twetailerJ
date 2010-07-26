@@ -147,19 +147,24 @@ public class SettingsOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public Settings getSettings(PersistenceManager pm) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Settings.class);
-        queryObj.setFilter("name == value");
-        queryObj.declareParameters("String value");
-        getLogger().warning("Select settings with: " + queryObj.toString());
-        // Select the corresponding settings
-        List<Settings> settingsList = (List<Settings>) queryObj.execute(Settings.APPLICATION_SETTINGS_ID);
-        if (settingsList.size() == 0) {
-            Settings settings = new Settings();
-            updateSettings(pm, settings);
-            updateSettingsInCache(settings);
-            return settings;
+        Query query = pm.newQuery(Settings.class);
+        try {
+            query.setFilter("name == value");
+            query.declareParameters("String value");
+            getLogger().warning("Select settings with: " + query.toString());
+            // Select the corresponding settings
+            List<Settings> settingsList = (List<Settings>) query.execute(Settings.APPLICATION_SETTINGS_ID);
+            if (settingsList.size() == 0) {
+                Settings settings = new Settings();
+                updateSettings(pm, settings);
+                updateSettingsInCache(settings);
+                return settings;
+            }
+            return settingsList.get(0);
         }
-        return settingsList.get(0);
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

@@ -2,6 +2,7 @@ package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -25,6 +26,7 @@ import twetailer.validator.CommandSettings.State;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 /**
@@ -77,7 +79,10 @@ public class RobotResponder {
                 proposal.setDemandKey(demandKey);
                 proposal.setOwnerKey(robot.getKey());
                 proposal.setPrice(0.01D);
-                proposal.setQuantity(100L);
+                proposal.setQuantity(4L);
+                Calendar tomorrow = DateUtils.getNowCalendar();
+                tomorrow.set(Calendar.DATE, tomorrow.get(Calendar.DATE) + 1);
+                proposal.setDueDate(tomorrow.getTime());
                 proposal.setSource(Source.simulated);
                 proposal.addHashTag(ROBOT_DEMO_HASH_TAG);
                 proposal.setState(State.published);

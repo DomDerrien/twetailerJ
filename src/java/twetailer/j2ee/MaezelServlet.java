@@ -4,8 +4,10 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
@@ -21,9 +23,12 @@ import twetailer.InvalidIdentifierException;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
+import twetailer.dao.DemandOperations;
+import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
@@ -48,6 +53,7 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
@@ -86,6 +92,35 @@ public class MaezelServlet extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
+            }
+            else if ("/deleteMarkedForDeletion".equals(pathInfo)) {
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+                try {
+                    DemandOperations demandOperations = BaseSteps.getDemandOperations();
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+                    parameters.put(Command.STATE, State.markedForDeletion.toString());
+                    parameters.put("<" + Entity.MODIFICATION_DATE, DateUtils.getNowDate());
+                    List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
+                    for (Demand demand: demands) {
+                        log.warning("Delete Demand " + demand.getKey().toString());
+                        demandOperations.deleteDemand(pm, demand);
+                    }
+                }
+                finally {
+                    pm.close();
+                }
+            }
+            else if ("/reloadCachedData".equals(pathInfo)) {
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+                try {
+                    SettingsOperations  settingsOperations = BaseSteps.getSettingsOperations();
+                    Settings settings = settingsOperations.getSettings(pm, false);
+                    settings.setModificationDate(DateUtils.getNowDate());
+                    settingsOperations.updateSettings(pm, settings);
+                }
+                finally {
+                    pm.close();
+                }
             }
             else if ("/setupRobotCoordinates".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();

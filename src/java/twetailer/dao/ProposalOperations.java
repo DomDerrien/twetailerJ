@@ -203,13 +203,18 @@ public class ProposalOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Proposal.class);
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select proposal(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Proposal> proposals = (List<Proposal>) queryObj.execute(value);
-        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return proposals;
+        Query query = pm.newQuery(Proposal.class);
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select proposal(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Proposal> proposals = (List<Proposal>) query.execute(value);
+            proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return proposals;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -226,13 +231,18 @@ public class ProposalOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getProposalKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select proposal(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> proposalKeys = (List<Long>) queryObj.execute(value);
-        proposalKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return proposalKeys;
+        Query query = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select proposal(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> proposalKeys = (List<Long>) query.execute(value);
+            proposalKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return proposalKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -249,12 +259,17 @@ public class ProposalOperations extends BaseOperations {
     public List<Proposal> getProposals(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Proposal.class);
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select proposal(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<Proposal> proposals = (List<Proposal>) query.executeWithArray(values);
-        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return proposals;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select proposal(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Proposal> proposals = (List<Proposal>) query.executeWithArray(values);
+            proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return proposals;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -270,13 +285,18 @@ public class ProposalOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getProposalKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
-        Object[] values = prepareQuery(queryObj, parameters, limit);
-        getLogger().warning("Select proposal(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> proposals = (List<Long>) queryObj.executeWithArray(values);
-        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return proposals;
+        Query query = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select proposal(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> proposals = (List<Long>) query.executeWithArray(values);
+            proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return proposals;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -344,9 +364,14 @@ public class ProposalOperations extends BaseOperations {
     public List<Proposal> getProposals(PersistenceManager pm, List<Long> proposalKeys) throws DataSourceException {
         // Select the corresponding resources
         Query query = pm.newQuery(Proposal.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
-        List<Proposal> proposals = (List<Proposal>) query.execute(proposalKeys);
-        proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return proposals;
+        try {
+            List<Proposal> proposals = (List<Proposal>) query.execute(proposalKeys);
+            proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return proposals;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

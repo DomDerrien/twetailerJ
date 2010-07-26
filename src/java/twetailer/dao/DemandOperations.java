@@ -194,13 +194,18 @@ public class DemandOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Demand> getDemands(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery(Demand.class);
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select demand(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Demand> demands = (List<Demand>) queryObj.execute(value);
-        demands.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return demands;
+        Query query = pm.newQuery(Demand.class);
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select demand(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Demand> demands = (List<Demand>) query.execute(value);
+            demands.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return demands;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -217,13 +222,18 @@ public class DemandOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getDemandKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
-        value = prepareQuery(queryObj, attribute, value, limit);
-        getLogger().warning("Select demand(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> demandKeys = (List<Long>) queryObj.execute(value);
-        demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return demandKeys;
+        Query query = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
+        try {
+            value = prepareQuery(query, attribute, value, limit);
+            getLogger().warning("Select demand(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> demandKeys = (List<Long>) query.execute(value);
+            demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return demandKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -240,12 +250,17 @@ public class DemandOperations extends BaseOperations {
     public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
         Query query = pm.newQuery(Demand.class);
-        Object[] values = prepareQuery(query, parameters, limit);
-        getLogger().warning("Select demand(s) with: " + query.toString());
-        // Select the corresponding resources
-        List<Demand> demands = (List<Demand>) query.executeWithArray(values);
-        demands.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return demands;
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select demand(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Demand> demands = (List<Demand>) query.executeWithArray(values);
+            demands.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return demands;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -261,13 +276,18 @@ public class DemandOperations extends BaseOperations {
     @SuppressWarnings("unchecked")
     public List<Long> getDemandKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
         // Prepare the query
-        Query queryObj = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
-        Object[] values = prepareQuery(queryObj, parameters, limit);
-        getLogger().warning("Select demand(s) with: " + queryObj.toString());
-        // Select the corresponding resources
-        List<Long> demandKeys = (List<Long>) queryObj.executeWithArray(values);
-        demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return demandKeys;
+        Query query = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            getLogger().warning("Select demand(s) with: " + query.toString());
+            // Select the corresponding resources
+            List<Long> demandKeys = (List<Long>) query.executeWithArray(values);
+            demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return demandKeys;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**
@@ -335,9 +355,14 @@ public class DemandOperations extends BaseOperations {
     public List<Demand> getDemands(PersistenceManager pm, List<Long> demandKeys) throws DataSourceException {
         // Select the corresponding resources
         Query query = pm.newQuery(Demand.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
-        List<Demand> demands = (List<Demand>) query.execute(demandKeys);
-        demands.size(); // FIXME: remove workaround for a bug in DataNucleus
-        return demands;
+        try {
+            List<Demand> demands = (List<Demand>) query.execute(demandKeys);
+            demands.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return demands;
+        }
+        finally {
+            query.closeAll();
+        }
     }
 
     /**

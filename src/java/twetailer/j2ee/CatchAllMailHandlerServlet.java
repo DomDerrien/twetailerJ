@@ -61,6 +61,12 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             return;
         }
 
+        if (MailComposerServlet.responderEndpoints.contains(pathInfo)) {
+            log.warning("Forwarding to: MailComposerServlet.processMailedRequest()");
+            MailComposerServlet.processMailedRequest(request, response);
+            return;
+        }
+
         forwardUnexpectedMailMessage(request, response);
     }
 

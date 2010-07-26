@@ -79,16 +79,18 @@ public class MailConnector {
     protected static InternetAddress prepareInternetAddress(String charsetEncoding, String name, String email) {
         InternetAddress address = new InternetAddress();
         address.setAddress(email);
-        try {
-            address.setPersonal(name, charsetEncoding);
-        }
-        catch (UnsupportedEncodingException e) {
-            // Too bad! The recipient will only see the e-mail address
+        if (name != null && 0 < name.length()) {
+            try {
+                address.setPersonal(name, charsetEncoding);
+            }
+            catch (UnsupportedEncodingException e) {
+                // Too bad! The recipient will only see the e-mail address
 
-            // Note for the testers:
-            //   Don't know how to generate a UnsupportedEncodingException by just
-            //   injecting a corrupted UTF-8 sequence and/or a wrong character set
+                // Note for the testers:
+                //   Don't know how to generate a UnsupportedEncodingException by just
+                //   injecting a corrupted UTF-8 sequence and/or a wrong character set
 
+            }
         }
         return address;
     }
@@ -141,8 +143,13 @@ public class MailConnector {
         MimeBodyPart textPart = new MimeBodyPart();
         MimeBodyPart htmlPart = new MimeBodyPart();
 
+        // TODO: send a default message in case "content" is null or empty
+
         textPart.setContent(content, "text/plain; charset=UTF-8");
-        htmlPart.setContent(content.replaceAll(BaseConnector.MESSAGE_SEPARATOR, "<br/>"), "text/html; charset=UTF-8");
+        if (content != null && 0 < content.length() && content.charAt(0) != '<') {
+            content = content.replaceAll(BaseConnector.MESSAGE_SEPARATOR, "<br/>");
+        }
+        htmlPart.setContent(content, "text/html; charset=UTF-8");
 
         MimeMultipart multipart = new MimeMultipart("alternative");
         multipart.addBodyPart(textPart);

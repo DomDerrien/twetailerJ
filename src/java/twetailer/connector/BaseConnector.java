@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
-import twetailer.dto.SaleAssociate;
 import twitter4j.TwitterException;
 
 /**
