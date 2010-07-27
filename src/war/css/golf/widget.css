@@ -1,0 +1,86 @@
+/**
+ * Override settings for the Golf widget
+ */
+body, th, td {
+    font-size: 11pt;
+}
+
+body>div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+	padding: 10px;
+    background-color: #5ddc1e;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+#introFlash {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border: 0 none;
+    padding: 0;
+    background: white url('/images/loading.gif') no-repeat center center;
+    z-index: 999;
+}
+
+#introFlash>div {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+}
+
+#introFlash>div>span {
+    background-color: #F9F9F9;
+    border: 1px solid #BFBFBF;
+    padding: 4px;
+    line-height: 30px;
+}
+
+#form label {
+    color: white;
+    font-weight: bold;
+    padding-right:10px;
+    white-space: nowrap;
+}
+
+#form span.hint {
+    color: green;
+    font-size: 11px;
+	line-height: 8px;
+}
+
+#callToAction {
+    font-size: larger;
+    color: green;
+    text-align: left;
+	margin:0 10px;
+	border-bottom:2px solid green;
+}
+
+#continueLink {
+	font-size: larger;
+	font-weight: bold;
+	text-align: center;
+}
+
+#continueLink a {
+	color: white;
+}
+
+#notice {
+    color: green;
+    text-align: center;
+}
+
+#notice>a>img{
+    vertical-align: middle;
+}

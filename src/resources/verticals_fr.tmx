@@ -14,6 +14,14 @@
                 <seg>Français</seg>
             </tuv>
         </tu>
+        <tu tuid="golf_product_name" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>ezToff</seg>
+            </tuv>
+        </tu>
         <tu tuid="golf_cp_tweet_demand_action_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

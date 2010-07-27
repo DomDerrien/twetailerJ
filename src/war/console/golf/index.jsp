@@ -93,7 +93,7 @@
     <div id="topBar"></div>
 
     <div id="introFlash">
-        <div><span><%= LabelExtractor.get(ResourceFileId.third, "ui_splash_screen_message", locale) %></span></div>
+        <div><span><%= LabelExtractor.get(ResourceFileId.third, "console_splash_screen_message", locale) %></span></div>
     </div>
 
     <%

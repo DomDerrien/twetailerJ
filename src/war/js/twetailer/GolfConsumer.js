@@ -85,11 +85,13 @@
         demandForm.reset();
 
         if (freshForm) {
-            var now = new Date();
+            var yesterday = new Date();
             var tomorrow = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            dijit.byId("demand.date").attr("value", tomorrow);
-            dijit.byId("demand.date").constraints.min = now;
+            var dateField = dijit.byId("demand.date");
+            dateField.set("value", tomorrow);
+            // dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
             var lastDemand = _common.getLastDemand();
             if (lastDemand != null) {
                 _common.setLocation(lastDemand.locationKey[0], dijit.byId("demand.postalCode"), dijit.byId("demand.countryCode"));

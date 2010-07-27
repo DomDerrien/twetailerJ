@@ -51,12 +51,21 @@
             </tuv>
         </tu>
 
-        <tu tuid="ui_splash_screen_message" datatype="Text">
+        <tu tuid="console_splash_screen_message" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Message printed while the application dependencies are loaded, while the console is being built</note>
             <tuv xml:lang="en">
                 <seg>Please, wait while the Console is being built...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="widget_splash_screen_message" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Message printed while the application dependencies are loaded, while the widget is being built</note>
+            <tuv xml:lang="en">
+                <seg>Please, wait...</seg>
             </tuv>
         </tu>
 
@@ -1975,6 +1984,208 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Website:</seg>
+            </tuv>
+        </tu>
+
+        <!-- =========== -->
+        <!-- Golf widget -->
+        <!-- =========== -->
+
+        <tu tuid="gw_step_1_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Step 1: specify your tee-time</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_range_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Within (km):</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_postalCode_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>PostalCode:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_teeOffDate_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Tee-Off Date:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_teeOffTime_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Tee-Off Time:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_playerNb_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Players:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_cartOptions_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Cart Options:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_motorCartOptions_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Motor Cart(s)</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_pullCartOptions_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Pull Cart(s)</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_continue_link" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Continue »</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_notice" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Member of the <a href="http://ezToff.com/" target="_blank"><img src="/images/golf/EZTOFF-small-logo.png" title="ezToff" /></a> network.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_step_2_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Step 2: share by-email</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_your_email_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Your e-mail address (required):</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_your_email_hint" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>The system needs your e-mail address to forward tee-time proposals. ezToff values your privacy and will never share your e-mail address without your consent.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_email_buddy_1_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>E-mail address of your first partner:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_email_buddy_2_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>E-mail address of your second partner:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_email_buddy_3_label" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>E-mail address of your third partner:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_email_buddy_hint" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>If you specify the e-mail address of your partners, they'll be CC'ed each time your receive a notification.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_send_link" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Send »</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_back_link" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>« Back</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_continue_link" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Continue »</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="gw_step_3_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Step 3: booking confirmation</seg>
             </tuv>
         </tu>
 
