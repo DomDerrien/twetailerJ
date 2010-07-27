@@ -10,9 +10,9 @@
     import="com.dyuproject.openid.OpenIdUser"
     import="com.dyuproject.openid.RelyingParty"
     import="domderrien.i18n.LabelExtractor"
-    import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
-    import="twetailer.validator.ApplicationSettings"
+    import="domderrien.i18n.LocaleController"
+    import="twetailer.connector.BaseConnector.Source"
     import="twetailer.dao.BaseOperations"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
@@ -23,7 +23,7 @@
     import="twetailer.dto.SaleAssociate"
     import="twetailer.j2ee.BaseRestlet"
     import="twetailer.j2ee.LoginServlet"
-    import="twetailer.connector.BaseConnector.Source"
+    import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
@@ -74,7 +74,7 @@
         else { // elif (!useCDN)
         %>
         @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";>
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";
         @import "/js/dojo/dojox/grid/resources/Grid.css";
         @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
         @import "/js/dojo/dojox/layout/resources/FloatingPane.css";
@@ -116,6 +116,8 @@
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
         <jsp:include page="/_includes/banner_protected.jsp">
+            <jsp:param name="verticalId" value="twetailer" />
+            <jsp:param name="localeId" value="<%= localeId %>" />
             <jsp:param name="pageForAssociate" value="<%= Boolean.TRUE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />

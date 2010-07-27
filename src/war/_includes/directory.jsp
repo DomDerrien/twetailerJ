@@ -111,7 +111,10 @@
     ></script><% } %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/_includes/banner_open.jsp"></jsp:include>
+        <jsp:include page="/_includes/banner_open.jsp">
+            <jsp:param name="verticalId" value="" />
+            <jsp:param name="localeId" value="<%= localeId %>" />
+        </jsp:include>
         <div
             design="sidebar"
             dojoType="dijit.layout.BorderContainer"

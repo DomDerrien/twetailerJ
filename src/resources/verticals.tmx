@@ -30,6 +30,16 @@
         <!-- Golf related labels -->
         <!-- =================== -->
 
+        <tu tuid="golf_product_name" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Name of the entire application</note>
+            <tuv xml:lang="en">
+                <seg>ezToff</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="golf_cp_tweet_demand_action_part" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

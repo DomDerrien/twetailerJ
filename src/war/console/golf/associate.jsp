@@ -75,7 +75,7 @@
         else { // elif (!useCDN)
         %>
         @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";>
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";
         @import "/js/dojo/dojox/grid/resources/Grid.css";
         @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
         @import "/js/dojo/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
@@ -118,6 +118,8 @@
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
         <jsp:include page="/_includes/banner_protected.jsp">
+            <jsp:param name="verticalId" value="golf" />
+            <jsp:param name="localeId" value="<%= localeId %>" />
             <jsp:param name="pageForAssociate" value="<%= Boolean.TRUE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />

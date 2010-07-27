@@ -7,8 +7,8 @@
     import="java.util.Locale"
     import="java.util.ResourceBundle"
     import="domderrien.i18n.LabelExtractor"
-    import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="domderrien.i18n.LocaleController"
     import="domderrien.jsontools.JsonArray"
     import="domderrien.jsontools.JsonObject"
     import="domderrien.jsontools.JsonParser"
@@ -41,6 +41,9 @@
             verticalId = hashtags[idx];
             useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
         }
+    }
+    if (!useVertical) {
+        verticalId = "";
     }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
@@ -107,7 +110,10 @@
     %>
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
-        <jsp:include page="/_includes/banner_open.jsp"></jsp:include>
+        <jsp:include page="/_includes/banner_open.jsp">
+            <jsp:param name="verticalId" value="<%= verticalId %>" />
+            <jsp:param name="localeId" value="<%= localeId %>" />
+        </jsp:include>
         <div dojoType="dijit.layout.ContentPane" id="centerZone" region="center" class="loginBG">
             <table style="width: 100%; height: 100%; background-color: transparent;">
                 <tr>

@@ -4,6 +4,20 @@
 body, th, td {
     font-size: 11pt;
 }
+	
+#brand {
+}
+
+#brand>h1 {
+    margin: 0;
+    padding: 10px 1em;
+    min-height: 62px;
+}
+
+#headerZone {
+	background-color: #5ddc1e;
+    font-size: 9pt;
+}
 
 #centerZone.loginBG {
     background: bottom left url('/images/golf/loginBackground.png') no-repeat;

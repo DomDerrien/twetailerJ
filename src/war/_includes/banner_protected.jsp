@@ -14,12 +14,14 @@
     import="domderrien.jsontools.JsonObject"
     import="domderrien.jsontools.JsonParser"
     import="domderrien.i18n.LocaleController"
+    import="twetailer.dto.HashTag"
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
 %><%
     // Locale detection
-    Locale locale = LocaleController.getLocale(request);
+    String localeId = request.getParameter("localeId");
+    Locale locale = LocaleController.getLocale(localeId);
 
     // Get the current page url
     String queryString = request.getQueryString();
@@ -37,23 +39,18 @@
     boolean pageForAssociate = Boolean.valueOf(request.getParameter("pageForAssociate"));
     boolean isLoggedUserAssociate = Boolean.valueOf(request.getParameter("isLoggedUserAssociate"));
     String consumerName = request.getParameter("consumerName");
+
+    String verticalId = request.getParameter("verticalId");
 %>
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
-            <div id="brand">
-                <h1>
-                    <img
-                        alt="<%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                        id="logo"
-                        src="/images/logo/twitter-bird-and-cart-toLeft.png"
-                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                    />
-                    <a
-                        href="http://www.twetailer.com/"
-                        title="<%= LabelExtractor.get("product_name", locale) %> <%= LabelExtractor.get("product_ascii_logo", locale) %>"
-                    ><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
-                </h1>
-                <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>
-            </div>
+            <div id="brand"><%
+                if (HashTag.GOLF.equals(verticalId)) {
+                   %><jsp:include page="/_includes/brands/golf.jsp"><jsp:param name="localeId" value="<%= localeId %>" /></jsp:include><%
+                }
+                else { // if ("".equals(verticalId)) {
+                   %><jsp:include page="/_includes/brands/default.jsp"><jsp:param name="localeId" value="<%= localeId %>" /></jsp:include><%
+                }
+            %></div>
             <div id="navigation">
                 <ul>
                     <!--  Normal order because they are left aligned -->
