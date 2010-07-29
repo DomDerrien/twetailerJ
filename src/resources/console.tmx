@@ -1668,7 +1668,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Label of an option to use browser capabilities to detect locale</note>
             <tuv xml:lang="en">
-                <seg>Detect Locale</seg>
+                <seg>Guess your postal code from the geo-coordinates offered by your browser</seg>
             </tuv>
         </tu>
 
@@ -2059,7 +2059,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Motor Cart(s)</seg>
+                <seg>Golf Cart/Buggy</seg>
             </tuv>
         </tu>
 

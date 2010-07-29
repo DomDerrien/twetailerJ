@@ -2,20 +2,6 @@
  * Override settings for the Golf widget
  */
 body, th, td {
-    font-size: 11pt;
-}
-
-body>div {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-	padding: 10px;
-    background-color: #5ddc1e;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
 }
 
 #introFlash {
@@ -45,14 +31,128 @@ body>div {
     line-height: 30px;
 }
 
-#form label {
-    color: white;
-    font-weight: bold;
-    padding-right:10px;
-    white-space: nowrap;
+#centerZone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 5px;
+    background-color: #5ddc1e;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
 }
 
-#form span.hint {
+.silkIcon {
+    background-repeat:no-repeat;
+    text-align:center;
+    height:18px;
+    width:18px;
+}
+
+.silkIconAccept {
+    background-image:url(/images/accept.png);
+}
+
+.silkIconAdd {
+    background-image:url(/images/add.png);
+}
+
+.silkIconDelete {
+    background-image:url(/images/delete.png);
+}
+
+.silkIconGPS {
+    background-image:url(/images/gps.png);
+}
+
+.silkIconGMaps {
+    background-image:url(/images/icons/GMaps.png);
+}
+
+.progressBar {
+	height: 30px;
+	padding: 0 0 0 7px;
+	background-color: green;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+.progressBar .step {
+    padding-top: 6px;
+    color: green;
+	width: 24px;
+	height: 24px;
+	float: left;
+	width: 14%;
+	vertical-align: middle;
+	text-align:center;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.progressBar .transition {
+    background-image: url('/images/golf/step-transition.png');
+	background-position: right center;
+}
+
+.progressBar .active {
+    background-image: url('/images/golf/ball-green.png');
+}
+
+.progressBar .inactive {
+    background-image: url('/images/golf/ball-grey.png');
+}
+
+.progressBar .goal {
+    background-image: url('/images/golf/flag-small.png');
+}
+
+.progressBar .activeGoal {
+    background-image: url('/images/golf/flag-small.png'), url('/images/golf/ball-green-small.png');
+}
+
+.content>table {
+	width: 100%;
+}
+
+.content>table>tbody>tr>td {
+	vertical-align: middle;
+}
+
+.content>table>tbody>tr>td, label, .comment {
+    padding: 5px 0;
+}
+
+input {
+	height: 20px;
+}
+
+label, .title, .comment {
+	color: white;
+}
+
+.comment input {
+	color: black;
+}
+
+label, .title {
+    font-weight: bold;
+}
+
+.title {
+    font-size: larger;
+    padding: 10px 0 5px 0;
+}
+
+.hint {
+    font-size: smaller;
+    color: darkgreen;
+}
+
+/*
+span.hint {
     color: green;
     font-size: 11px;
 	line-height: 8px;
@@ -68,7 +168,6 @@ body>div {
 
 #continueLink {
 	font-size: larger;
-	font-weight: bold;
 	text-align: center;
 }
 
@@ -84,3 +183,4 @@ body>div {
 #notice>a>img{
     vertical-align: middle;
 }
+*/

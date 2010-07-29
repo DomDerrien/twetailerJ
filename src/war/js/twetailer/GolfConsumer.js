@@ -171,7 +171,7 @@
         var day = data.date.getDate();
         var hours = data.time.getHours();
         var minutes = data.time.getMinutes();
-        data.dueDate =
+        data.dueDate = // ISO format
               data.date.getFullYear() +
               (month < 10 ? "-0" : "-") + month +
               (day < 10 ? "-0" : "-") + day +
