@@ -48,6 +48,9 @@
     boolean useVertical = false;
     String verticalId = null;
     String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
+    if (forwardedUriAttribute == null) {
+        forwardedUriAttribute = request.getRequestURI();
+    }
     if (forwardedUriAttribute != null) {
         String[] hashtags = HashTag.getHashTagsArray();
         for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
