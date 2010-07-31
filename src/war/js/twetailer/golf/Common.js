@@ -1,6 +1,6 @@
 (function() { // To limit the scope of the private variables
 
-    var module = dojo.provide("twetailer.GolfCommon");
+    var module = dojo.provide("twetailer.golf.Common");
 
     dojo.require("twetailer.Common");
 
@@ -28,6 +28,14 @@
         // Return the shortcut on domderrien.i18n.LabelExtractor.getFrom()
         return _getLabel;
     };
+
+    /**
+     * Helper to generate an ISO formatted date without the timezome
+     *
+     * @param {Date} date to be formatted
+     * @return ISO representation of the given date
+     */
+    module.toISOString = _common.toISOString;
 
     /**
      * Date formatter
@@ -145,25 +153,13 @@
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
 
-    var _previouslySelectedCountryCode = null;
-
     /**
      * Helper modifying on the fly the constraints for the postal code field
      *
-     * @param {Object} countryCode New country code
-     * @param {Object} postalCodeFieldId Identifier of the postal code field
+     * @param {String} countryCode New country code
+     * @param {String} postalCodeFieldId Identifier of the postal code field
      */
-    module.updatePostalCodeFieldConstraints = function(countryCode, postalCodeFieldId) {
-        if (_previouslySelectedCountryCode != countryCode) {
-            var pcField = dijit.byId(postalCodeFieldId);
-            if (pcField != null) {
-                pcField.attr("regExp", _getLabel("console", "location_postalCode_regExp_" + countryCode));
-                pcField.attr("invalidMessage", _getLabel("console", "location_postalCode_invalid_" + countryCode));
-                pcField.focus();
-            }
-            _previouslySelectedCountryCode = countryCode;
-        }
-    }
+    module.updatePostalCodeFieldConstraints = _common.updatePostalCodeFieldConstraints;
 
     /**
      * Locale formatter with a lookup in the Location list

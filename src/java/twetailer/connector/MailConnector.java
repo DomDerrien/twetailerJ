@@ -76,7 +76,7 @@ public class MailConnector {
      * @param email E-mail address
      * @return address Fetched InternetAddress instance
      */
-    protected static InternetAddress prepareInternetAddress(String charsetEncoding, String name, String email) {
+    public static InternetAddress prepareInternetAddress(String charsetEncoding, String name, String email) {
         InternetAddress address = new InternetAddress();
         address.setAddress(email);
         if (name != null && 0 < name.length()) {

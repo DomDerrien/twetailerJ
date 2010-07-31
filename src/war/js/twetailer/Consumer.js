@@ -1,6 +1,6 @@
 (function() { // To limit the scope of the private variables
 
-    var module = dojo.provide("twetailer.Console");
+    var module = dojo.provide("twetailer.Consumer");
 
     dojo.require("domderrien.i18n.LabelExtractor");
 
@@ -9,9 +9,7 @@
         _consoleBundleName = "console",
         _getLabel,
         _consumer,
-        _debugMode = null,
-        _debugCK,
-        _debugCOI;
+        _queryPointOfView = _common.POINT_OF_VIEWS.CONSUMER;
 
     /**
      * Module initializer
@@ -25,10 +23,8 @@
         _getLabel = module._labelExtractor.getFrom;
 
         // Get debug parameters
-        var requestParameters = dojo.queryToObject(window.location.search.slice(1));
-        _debugMode = requestParameters["debugMode"];
-        _debugCK = requestParameters["debugConsumerKey"];
-        _debugCOI = requestParameters["debugConsumerOpenId"];
+        // var requestParameters = dojo.queryToObject(window.location.search.slice(1));
+        // _debugMode = requestParameters["debugMode"];
 
         // TODO:
         // - hide the sale associate link if the consumer is not a sale associate
@@ -43,9 +39,6 @@
      * @private
      */
     module._reportClientError = function(message, ioArgs) {
-        if (_debugMode != null) {
-            console.log("Client error message: " + message + "\nurl: " + ioArgs.url);
-        }
         alert(_getLabel(_consoleBundleName, "error_client_side_communication_failed"));
         // dojo.analytics.addData("ClientError", "[" + message + "][" + ioArgs.url + "]");
     };
@@ -59,9 +52,6 @@
      * @private
      */
     module._reportServerError = function(response, ioArgs) {
-        if (_debugMode != null) {
-            console.log("Server error message: " + message + "\nurl: " + ioArgs.url);
-        }
         var message = "Unexpected failure while communicating over the URL: " + ioArgs.url + ".\n";
         if (response != null) {
             if (response.isException === true) {
@@ -147,7 +137,7 @@
                 }
             },
             error: module._reportClientError,
-            url: "/API/maezel/processVerificationCode" + (_debugMode == null ? "" : "?debugMode=" + _debugMode + "&debugConsumerKey=" + _debugCK + "&debugConsumerOpenId=" + _debugCOI)
+            url: "/API/maezel/processVerificationCode"
         });
     };
 
@@ -195,7 +185,7 @@
                 _setFormElementValue(form, _consumer);
             },
             error: module._reportClientError,
-            url: "/API/Consumer/" + _consumer.key + (_debugMode == null ? "" : "?debugMode=" + _debugMode + "&debugConsumerKey=" + _debugCK + "&debugConsumerOpenId=" + _debugCOI)
+            url: "/API/Consumer/" + _consumer.key
         });
     };
 

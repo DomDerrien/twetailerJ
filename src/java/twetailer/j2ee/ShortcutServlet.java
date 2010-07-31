@@ -59,6 +59,10 @@ public class ShortcutServlet extends HttpServlet {
         log = mockLogger;
     }
 
+    protected static Logger getLogger() {
+        return log;
+    }
+
     protected static OpenIdUser buildMockOpenIdUser(Long consumerKey) {
         OpenIdUser user = OpenIdUser.populate(
                 "http://www.yahoo.com",
@@ -118,7 +122,7 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
+        getLogger().warning("Path Info: " + pathInfo);
 
         if ((CONSUMER_PREFIX + CURRENT_ID).equals(pathInfo)) {
             HttpServletRequest alteredRequest = new HttpRequestWrapper(CURRENT_ID, request);
@@ -179,7 +183,7 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
+        getLogger().warning("Path Info: " + pathInfo);
 
         if (CONSUMER_PREFIX.equals(pathInfo)) {
             HttpServletRequest alteredRequest = new HttpRequestWrapper("", request);
@@ -220,7 +224,7 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
+        getLogger().warning("Path Info: " + pathInfo);
 
         if (pathInfo == null || pathInfo.length() == 0) {
             JsonObject out = new GenericJsonObject();
@@ -267,7 +271,7 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
+        getLogger().warning("Path Info: " + pathInfo);
 
         if (pathInfo == null || pathInfo.length() == 0) {
             JsonObject out = new GenericJsonObject();

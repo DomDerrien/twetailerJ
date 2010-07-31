@@ -63,6 +63,8 @@ public class Consumer extends Entity {
 
     public final static String EMAIL = "email";
 
+    public final static String EMAIL_REGEXP_VALIDATOR = "[\\w\\._%+-]+@[\\w\\.-]+\\.\\w{2,4}";
+
     @Persistent
     private String jabberId;
 

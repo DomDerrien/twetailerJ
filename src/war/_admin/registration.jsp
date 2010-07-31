@@ -118,7 +118,7 @@
                             </div>
                             <div>
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
-                                <select dojoType="dijit.form.FilteringSelect" name="countryCode">
+                                <select dojoType="dojox.form.DropDownSelect" name="countryCode">
                                     <option value="CA" selected="true">Canada</option>
                                     <option value="US">United States of America</option>
                                 </select>
@@ -263,9 +263,9 @@
         dojo.require("dijit.layout.ContentPane");
         dojo.require("dijit.layout.StackContainer");
         dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.TextBox");
+        dojo.require("dojox.form.DropDownSelect");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({

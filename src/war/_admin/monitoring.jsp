@@ -158,7 +158,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.language">Language:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="consumer.language"
                                     name="language"
@@ -185,7 +185,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.preferredConnection">Phone number:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="consumer.preferredConnection"
                                     name="preferredConnection"
@@ -519,7 +519,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.source">Source:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="demand.source"
                                     name="source"
@@ -539,7 +539,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.state">State:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="demand.state"
                                     name="state"
@@ -592,7 +592,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.rangeUnit">Range unit:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="demand.rangeUnit"
                                     name="rangeUnit"
@@ -702,7 +702,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.source">Source:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="proposal.source"
                                     name="source"
@@ -722,7 +722,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.state">State:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.FilteringSelect"
+                                    dojoType="dojox.form.DropDownSelect"
                                     hasDownArrow="true"
                                     id="proposal.state"
                                     name="state"
@@ -878,11 +878,11 @@
         dojo.require("dijit.form.CheckBox");
         dojo.require("dijit.form.ComboBox");
         dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.NumberTextBox");
         dojo.require("dijit.form.Textarea");
         dojo.require("dijit.form.TextBox");
+        dojo.require("dojox.form.DropDownSelect");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({

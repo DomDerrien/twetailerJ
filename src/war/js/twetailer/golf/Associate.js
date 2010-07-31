@@ -1,11 +1,11 @@
 (function() { // To limit the scope of the private variables
 
-    var module = dojo.provide("twetailer.GolfAssociate");
+    var module = dojo.provide("twetailer.golf.Associate");
 
-    dojo.require("twetailer.GolfCommon");
+    dojo.require("twetailer.golf.Common");
 
     /* Set of local variables */
-    var _common = twetailer.GolfCommon,
+    var _common = twetailer.golf.Common,
         _getLabel,
         _grid,
         _gridCellNode,
@@ -37,9 +37,9 @@
 
     var _demandViewDecoration = "<span class='dijitReset dijitInline silkIcon silkIconDemandView'></span>${0}";
 
-    var _proposalCreateDecoration = "<a href='#' onclick='twetailer.GolfAssociate.displayProposalForm(${0},null);return false;' title='${1}'><span class='dijitReset dijitInline silkIcon silkIconProposalAdd'></span>${1}</a>";
-    var _proposalUpdateDecoration = "<a href='#' onclick='twetailer.GolfAssociate.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalUpdate'></span>${0}</a>";
-    var _proposalViewDecoration = "<a href='#' onclick='twetailer.GolfAssociate.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalView'></span>${0}</a>";
+    var _proposalCreateDecoration = "<a href='#' onclick='twetailer.golf.Associate.displayProposalForm(${0},null);return false;' title='${1}'><span class='dijitReset dijitInline silkIcon silkIconProposalAdd'></span>${1}</a>";
+    var _proposalUpdateDecoration = "<a href='#' onclick='twetailer.golf.Associate.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalUpdate'></span>${0}</a>";
+    var _proposalViewDecoration = "<a href='#' onclick='twetailer.golf.Associate.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalView'></span>${0}</a>";
 
     /**
      * Override of the formatter to be able to place the Demand icon before demand key
@@ -210,17 +210,7 @@
             delete data.total;
         }
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
-        var month = (data.date.getMonth() + 1);
-        var day = data.date.getDate();
-        var hours = data.time.getHours();
-        var minutes = data.time.getMinutes();
-        data.dueDate =
-              data.date.getFullYear() +
-              (month < 10 ? "-0" : "-") + month +
-              (day < 10 ? "-0" : "-") + day +
-              (hours < 10 ? "T0" : "T") + hours +
-              (minutes < 10 ? ":0" : ":") + minutes +
-              ":00";
+        data.dueDate = _common.toISOString(data.date, data.time);
         data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
 
         var dfd = _common.updateRemoteProposal(data, data.key);

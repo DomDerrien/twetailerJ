@@ -5,6 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javamocks.util.logging.MockLogger;
 
 import javax.jdo.MockPersistenceManager;
@@ -19,13 +23,18 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
+import twetailer.dao.ProposalOperations;
 import twetailer.dto.Command;
+import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.Proposal;
 import twetailer.j2ee.MockLoginServlet;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 
@@ -110,8 +119,45 @@ public class TestDemandRestlet {
     }
     ddd *******/
 
-    @Test(expected=ClientException.class)
+    @Test
     public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long consumerKey) {
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, consumerKey);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        });
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long demandKey, Long ownerKey) {
+                assertEquals(Long.valueOf("12345"), demandKey);
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, ownerKey);
+                Demand demand = new Demand();
+                demand.setOwnerKey(ownerKey);
+                demand.setKey(demandKey);
+                demand.setState(State.cancelled);
+                return demand;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(Long.valueOf("12345"), demand.getKey());
+                assertEquals(State.markedForDeletion, demand.getState());
+                assertTrue(demand.getMarkedForDeletion());
+                return demand;
+            }
+        });
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
+            @Override
+            public List<Proposal >getProposals(PersistenceManager pm, String name, Object value, int limit) {
+                assertEquals(Proposal.DEMAND_KEY, name);
+                assertEquals(Long.valueOf("12345"), (Long) value);
+                return new ArrayList<Proposal>();
+            }
+        });
+
         ops.deleteResource("12345", user);
     }
 

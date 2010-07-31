@@ -11,6 +11,9 @@
     import="com.dyuproject.openid.RelyingParty"
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="twetailer.dto.Consumer"
+    import="twetailer.dto.Demand"
+    import="twetailer.dto.Location"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
 %><%
@@ -26,6 +29,7 @@
     }
     Locale locale = LocaleValidator.getLocale(localeId);
 
+    // Get the widget parameters
     String referralId = request.getParameter("referralId");
     String postalCode = request.getParameter("postalCode");
     String countryCode = request.getParameter("countryCode");
@@ -39,6 +43,9 @@
     String fontSize = request.getParameter("font-size");
     String fontSizeTitle = request.getParameter("font-size-title");
     String fontFamily = request.getParameter("font-family");
+
+    // Regular expression for e-mail address validation
+    String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <style type="text/css"><%
@@ -100,12 +107,23 @@
                 <div class="step transition">&nbsp;</div>
                 <div class="step goal">&nbsp;</div>
             </div>
-            <div class="content">
+            <div dojoType="dijit.form.Form" id="form1" class="content">
                 <div class="title">When do you want to play?</div>
                 <table cellpadding="0" cellspacing="0">
                     <tr id="postalCodeRow" style="display:none;">
-                        <td><label id="postalCode">Postal code:</label></td>
-                        <td><input dojoType="dijit.form.TextBox" id="postalCode" name="postalCode" required="true" style="width:100%;" type="text" /></td>
+                        <td><label for="postalCode">Postal code:</label></td>
+                        <td>
+                            <input
+                                dojoType="dijit.form.ValidationTextBox"
+                                id="postalCode"
+                                name="postalCode"
+                                regExp="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_regExp_CA", locale) %>"
+                                required="true"
+                                style="width:100%;"
+                                trim="true"
+                                type="text"
+                            />
+                        </td>
                         <td width="24">
                             <button
                                 dojoType="dijit.form.Button"
@@ -118,26 +136,34 @@
                         </td>
                     </tr>
                     <tr id="countryCodeRow" style="display:none;">
-                        <td><label id="countryCode">Country:</label></td>
+                        <td><label for="countryCode">Country:</label></td>
                         <td colspan="2">
-                            <select dojoType="dojox.form.DropDownSelect" name="countryCode" id="countryCode" hasDownArrow="true" style="width:100%;">
+                            <select
+                                dojoType="dojox.form.DropDownSelect"
+                                id="countryCode"
+                                hasDownArrow="true"
+                                name="countryCode"
+                                onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'postalCode');"
+                                required="true"
+                                style="width:100%;"
+                            >
                                 <option value="<%= Locale.CANADA.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                                 <option value="<%= Locale.US.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <td><label id="date">Date:</label></td>
-                        <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
+                        <td><label for="date">Date:</label></td>
+                        <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
                     </tr>
                     <tr>
-                        <td><label id="time">Time:</label></td>
+                        <td><label for="time">Time:</label></td>
                         <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T07:00"/></td>
                     </tr>
                     <tr>
-                        <td><label id="quantity">For:</label></td>
+                        <td><label for="quantity">For:</label></td>
                         <td colspan="2" style="vertical-align:top;">
-                            <input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" type="text" value="4" />
+                            <input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="4" />
                             <label for="quantity">players</label>
                         </td>
                     </tr>
@@ -148,7 +174,7 @@
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
-                                onclick="javascript:localModule.switchPane('pane1','pane2');"
+                                onclick="javascript:localModule.switchPane(1, 2);"
                                 style="color:black;"
                                 title="Share your contact details"
                             >Next &raquo;</button>
@@ -169,13 +195,23 @@
                 <div class="step transition">&nbsp;</div>
                 <div class="step goal">&nbsp;</div>
             </div>
-            <div class="content">
+            <div dojoType="dijit.form.Form" id="form2" class="content">
                 <div class="title">20 golf courses will be contacted on your behalf. How do we reach you?</div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="vertical-align:top;"><label id="email0">Your email:</label></td>
+                        <td style="vertical-align:top;"><label for="email0">Your email:</label></td>
                         <td style="text-align: right;">
-                            <input constraints="{}" dojoType="dijit.form.TextBox" id="email0" name="email0" required="true" style="width:100%;" type="text" />
+                            <input
+                                dojoType="dijit.form.ValidationTextBox"
+                                id="email0"
+                                invalidMessage="Invalid Email Address"
+                                name="email0"
+                                regExp="<%= emailRegExp %>"
+                                required="true"
+                                style="width:100%;"
+                                trim="true"
+                                type="text"
+                            />
                             <br />
                             <span class="hint"><i>e.g.</i> yourname@gmail.com</span>
                         </td>
@@ -186,7 +222,19 @@
                     <tbody id="friendList">
                         <tr id="friendRow1">
                             <td><label for="email1">Email:</label></td>
-                            <td><input constraints="{}" dojoType="dijit.form.TextBox" id="email1" name="email1" required="true" style="width:100%;" type="text" /></td>
+                            <td style="text-align: right;">
+                                <input
+                                    dojoType="dijit.form.ValidationTextBox"
+                                    id="email1"
+                                    invalidMessage="Invalid Email Address"
+                                    name="email1"
+                                    regExp="<%= emailRegExp %>"
+                                    required="false"
+                                    style="width:100%;"
+                                    trim="true"
+                                    type="text"
+                                />
+                            </td>
                             <td>
                                 <button
                                     dojoType="dijit.form.Button"
@@ -206,11 +254,11 @@
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane('pane2','pane1');">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(2, 1);">&laquo; back</a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
-                                onclick="javascript:localModule.switchPane('pane2','pane3');"
+                                onclick="javascript:localModule.switchPane(2, 3);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %>"
                             >Next &raquo;</button>
@@ -231,28 +279,28 @@
                 <div class="step transition">&nbsp;</div>
                 <div class="step goal">&nbsp;</div>
             </div>
-            <div class="content">
+            <div dojoType="dijit.form.Form" id="form3" class="content">
                 <div class="title">Extras:</div>
                 <div style="margin-left:20px;">
-                    <div>
-                        <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="motorCart" name="motorCart" style="width:6em;" type="text" value="0" />
-                        <label for="motorCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_motorCartOptions_label", locale) %></label>
-                    </div>
                     <div>
                         <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="pullCart" name="pullCart" style="width:6em;" type="text" value="0" />
                         <label for="pullCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_pullCartOptions_label", locale) %></label>
                     </div>
+                    <div>
+                        <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="motorCart" name="motorCart" style="width:6em;" type="text" value="0" />
+                        <label for="motorCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_motorCartOptions_label", locale) %></label>
+                    </div>
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane('pane3','pane2');">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(3, 2);">&laquo; back</a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconAccept"
                                 onclick="javascript:localModule.sendRequest();"
                                 style="color:black;"
-                                title="<%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %>"
+                                title="Send tee-off reservation request"
                             >Send request</button>
                             <br />
                             <span class="hint">Broadcast your request</span>
@@ -277,7 +325,7 @@
                 <div class="comment">If you have not receive an email from ezToff after 20 minutes, please check our <a href="http://ezToff.com/faq-<%= localeId %>">FAQ</a> or contact <a href="mailto:support@eztoff.com">support@eztoff.com</a>.</div>
                 <table cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane('pane4','pane1');">&laquo; Schedule another tee-off</a></td>
+                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(4, 1);">&laquo; Schedule another tee-off</a></td>
                     </tr>
                 </table>
             </div>
@@ -298,7 +346,7 @@
         dojo.require("dojo.parser");
         dojo.require("dijit.form.Button");
         dojo.require("dijit.form.DateTextBox");
-        // dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.Form");
         dojo.require("dijit.form.NumberSpinner");
         // dojo.require("dijit.form.NumberTextBox");
         dojo.require("dijit.form.Textarea");
@@ -322,33 +370,51 @@
     });
 
     var localModule = {};
+    localModule._getLabel = null;
     localModule.init = function() {
+        localModule._getLabel = twetailer.Common.init("<%= localeId %>", "detectLocationButton");
+
         var yesterday = new Date();
         var tomorrow = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         tomorrow.setDate(tomorrow.getDate() + 1);
         var dateField = dijit.byId("date");
         dateField.set("value", tomorrow);
-        // dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
+        dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
 
         <% if (postalCode == null || postalCode.length() == 0) {
         %>dojo.style("postalCodeRow", "display", "");
+        dijit.byId("postalCode").focus();
         dojo.style("countryCodeRow", "display", "");<%
         }
         else {
-        %>dijit.byId("postalCode").set("value", "<%= postalCode %>");<%
+        %>dijit.byId("postalCode").set("value", "<%= postalCode %>");
+        dijit.byId("quantity").focus();<%
         } %>
         dijit.byId("countryCode").set("value", "<%= countryCode %>");
-
-        var supportGeoLocation = navigator.geolocation;
-        dijit.byId("detectLocationButton").set("disabled", !supportGeoLocation);
     };
-    localModule.switchPane = function(source, target) {
+    localModule.switchPane = function(sourceIdx, targetIdx) {
+        if (sourceIdx < targetIdx) {
+            var form = dijit.byId("form" + sourceIdx);
+            if (!form.isValid()) {
+                return;
+            }
+        }
         // create two animations
-        var anim1 = dojo.fx.wipeOut({ node: source, easing: dojo.fx.easing.expoOut });
-        var anim2 = dojo.fx.wipeIn({ node: target, easing: dojo.fx.easing.expoIn });
+        var anim1 = dojo.fx.wipeOut({ node: "pane" + sourceIdx, easing: dojo.fx.easing.expoOut });
+        var anim2 = dojo.fx.wipeIn({ node: "pane" + targetIdx, easing: dojo.fx.easing.expoIn });
         // and play them at the same moment
         dojo.fx.combine([anim1, anim2]).play();
+        switch(targetIdx) {
+        case 1: <% if (postalCode == null || postalCode.length() == 0) {
+                    %>dijit.byId("postalCode").focus();<%
+                }
+                else {
+                    %>dijit.byId("quantity").focus();<%
+                } %> break;
+        case 2: dijit.byId("email0").focus(); break;
+        case 3: dijit.byId("pullCart").focus(); break;
+        }
     }
     localModule.getBrowserLocation = function() {
         var eventName = "browserLocationCodeAvailable";
@@ -368,11 +434,11 @@
             button.set("title", "Remove this email address");
             localModule._friendRowNb ++;
             var fIdx = localModule._friendRowNb;
-            // var n = dojo.create("tr", { id: "friendRow" + fIdx, innerHTML: localModule._friendRowDefinition.join(fIdx) }, dojo.byId("friendList"));
             var row = dojo.create("tr", { id: "friendRow" + fIdx }, dojo.byId("friendList"));
             dojo.create("label", { forAttr: "email" + fIdx, innerHTML: "Email:" }, dojo.create("td", null, row));
-            dojo.create("td", null, row).appendChild(new dijit.form.TextBox({ id: "email" + fIdx, name: "email" + fIdx, required: false, style: "width:100%" }).domNode);
+            dojo.create("td", null, row).appendChild(new dijit.form.ValidationTextBox({ id: "email" + fIdx, invalidMessage: "Invalid Email Address", name: "email" + fIdx, required: false, style: "width:100%", trim: true }).domNode);
             dojo.create("td", null, row).appendChild(new dijit.form.Button({ iconClass: "silkIcon silkIconAdd", id: "friendButton" + fIdx, onClick: function() { localModule.manageFriendRow(fIdx); }, showLabel: false, title: "Add another email address" }).domNode);
+            dijit.byId("email" + fIdx).set("regExp", dijit.byId('email1').get("regExp")); // Work-aroud: otherwise, it seems the regExp value is missinterpreted!
         }
         else {
             var fIdx = localModule._friendRowNb;
@@ -390,12 +456,48 @@
         }
     }
     localModule.sendRequest = function() {
+        var parameters = {
+            referralId: "<%= referralId %>",
+            <%= Consumer.LANGUAGE %>: "<%= localeId %>",
+            <%= Consumer.EMAIL %>: dijit.byId("email0").get("value"),
+            <%= Location.POSTAL_CODE %>: dijit.byId("postalCode").get("value"),
+            <%= Location.COUNTRY_CODE %>: dijit.byId("countryCode").get("value"),
+            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId("date").get("value"), dijit.byId("time").get("value")),
+            <%= Demand.RANGE %>: dijit.byId("range").get("value"),
+            <%= Demand.RANGE_UNIT %>: "<%= LocaleValidator.DEFAULT_RANGE_UNIT %>",
+            <%= Demand.QUANTITY %>: dijit.byId("quantity").get("value"),
+            <%= Demand.CRITERIA %>:["{pullCart:" + dijit.byId("pullCart").get("value") + ",golfCart:" + dijit.byId("motorCart").get("value") + "}" ] // No space to avoid the split server-side
+        };
+        var cc = [];
+        for (var i=1; i<=localModule._friendRowNb; i++) {
+            var email = dijit.byId("email" + i);
+            if (0 < email.length) {
+                cc.push(email);
+            }
+        }
+        if (0 < cc.length) {
+            parameters.<%= Demand.CC %> = cc;
+        }
         dijit.byId("widgetOverlay").show();
-        setTimeout(function() {
-            localModule.switchPane('pane3','pane4');
-            dijit.byId("widgetOverlay").hide();
-        },
-        2000);
+        var dfd = dojo.xhrPost({
+            headers: { "content-type": "application/json; charset=utf-8" },
+            postData: dojo.toJson(parameters),
+            handleAs: "json",
+            load: function(response, ioArgs) {
+                if (response !== null && response.success) {
+                    localModule.switchPane(3, 4);
+                }
+                else {
+                    alert(response.message+"\nurl: "+ioArgs.url);
+                }
+                dijit.byId('widgetOverlay').hide();
+            },
+            error: function(message, ioArgs) {
+                dijit.byId("widgetOverlay").hide();
+                twetailer.Common.handleError(message, ioArgs);
+            },
+            url: "/3rdParty/Demand"
+        });
     }
     </script>
 

@@ -3,6 +3,8 @@ package twetailer.task.command;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.jdo.MockPersistenceManager;
@@ -145,6 +147,16 @@ public class TestDeleteCommandProcessor {
                 demand.setKey(demandKey);
                 demand.setState(state);
                 return demand;
+            }
+        });
+
+        // ProposalOperations mock
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
+            @Override
+            public List<Proposal >getProposals(PersistenceManager pm, String name, Object value, int limit) {
+                assertEquals(Proposal.DEMAND_KEY, name);
+                assertEquals(demandKey, (Long) value);
+                return new ArrayList<Proposal>();
             }
         });
 

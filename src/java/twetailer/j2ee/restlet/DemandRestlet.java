@@ -8,20 +8,15 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.InvalidIdentifierException;
-import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
-import twetailer.dto.Proposal;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.DemandSteps;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
 
 import com.dyuproject.openid.OpenIdUser;
 

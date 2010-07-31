@@ -303,18 +303,20 @@ public class DemandSteps extends BaseSteps {
             }
         }
 
-        // Inherits some attributes from the last created demand
-        List<Demand> lastDemands = getDemands(pm, lastDemandQueryParameters, owner.getKey(), QueryPointOfView.CONSUMER, null);
-        if (0 < lastDemands.size()) {
-            Demand lastDemand = lastDemands.get(0);
-            if (!parameters.containsKey(Demand.LOCATION_KEY) && lastDemand.getLocationKey() != null) { parameters.put(Demand.LOCATION_KEY, lastDemand.getLocationKey()); }
-            if (!parameters.containsKey(Demand.RANGE) && lastDemand.getRange() != null)              { parameters.put(Demand.RANGE, lastDemand.getRange()); }
-            if (!parameters.containsKey(Demand.RANGE_UNIT) && lastDemand.getRangeUnit() != null)     { parameters.put(Demand.RANGE_UNIT, lastDemand.getRangeUnit()); }
-        }
+        if (!parameters.containsKey(Demand.LOCATION_KEY) || !parameters.containsKey(Demand.RANGE) || !parameters.containsKey(Demand.RANGE_UNIT)) {
+            // Inherits some attributes from the last created demand
+            List<Demand> lastDemands = getDemands(pm, lastDemandQueryParameters, owner.getKey(), QueryPointOfView.CONSUMER, null);
+            if (0 < lastDemands.size()) {
+                Demand lastDemand = lastDemands.get(0);
+                if (!parameters.containsKey(Demand.LOCATION_KEY) && lastDemand.getLocationKey() != null) { parameters.put(Demand.LOCATION_KEY, lastDemand.getLocationKey()); }
+                if (!parameters.containsKey(Demand.RANGE) && lastDemand.getRange() != null)              { parameters.put(Demand.RANGE, lastDemand.getRange()); }
+                if (!parameters.containsKey(Demand.RANGE_UNIT) && lastDemand.getRangeUnit() != null)     { parameters.put(Demand.RANGE_UNIT, lastDemand.getRangeUnit()); }
+            }
 
-        // Fall back on the Consumer's location
-        if (!parameters.containsKey(Demand.LOCATION_KEY) && owner.getLocationKey() != null) {
-            parameters.put(Demand.LOCATION_KEY, owner.getLocationKey());
+            // Fall back on the Consumer's location
+            if (!parameters.containsKey(Demand.LOCATION_KEY) && owner.getLocationKey() != null) {
+                parameters.put(Demand.LOCATION_KEY, owner.getLocationKey());
+            }
         }
 
         Demand demand = getDemandOperations().createDemand(pm, parameters, owner.getKey());

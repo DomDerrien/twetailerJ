@@ -1,4 +1,6 @@
 http://twetailer.appspot.com/
+http://twetailer.appspot.com/widget/golf.jsp
+http://twetailer.appspot.com/widget/sample.jsp
 http://twetailer.appspot.com/directory/ca/on/toronto
 http://twetailer.appspot.com/directory/ca/qc/montreal
 http://twetailer.appspot.com/directory/us/ca/los_angeles

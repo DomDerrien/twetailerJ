@@ -64,6 +64,27 @@
     }
 
     /**
+     * Helper to generate an ISO formatted date without the timezome
+     *
+     * @param {Date} date date part to be formatted
+     * @param {Date} timee time part to be formatted
+     * @return ISO representation of the given date
+     */
+    module.toISOString = function(date, time) {
+        // return dojo.date.stamp.toISOString(date, {}); // Contains the timezone gap
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hours = time == null ? 0 : time.getHours();
+        var minutes = time == null ? 0 : time.getMinutes();
+        return date.getFullYear() +
+              (month < 10 ? "-0" : "-") + month +
+              (day < 10 ? "-0" : "-") + day +
+              (hours < 10 ? "T0" : "T") + hours +
+              (minutes < 10 ? ":0" : ":") + minutes +
+              ":00";
+    }
+
+    /**
      * Helper verifying the HTTP status code and acting accordingly.
      * Worse case, the given message is displayed with the request URL.
      *
@@ -86,6 +107,26 @@
             return;
         }
         alert(message+"\nurl: "+ioArgs.url);
+    }
+
+    var _previouslySelectedCountryCode = null;
+
+    /**
+     * Helper modifying on the fly the constraints for the postal code field
+     *
+     * @param {String} countryCode New country code
+     * @param {String} postalCodeFieldId Identifier of the postal code field
+     */
+    module.updatePostalCodeFieldConstraints = function(countryCode, postalCodeFieldId) {
+        if (_previouslySelectedCountryCode != countryCode) {
+            var pcField = dijit.byId(postalCodeFieldId);
+            if (pcField != null) {
+                pcField.attr("regExp", _getLabel("console", "location_postalCode_regExp_" + countryCode));
+                pcField.attr("invalidMessage", _getLabel("console", "location_postalCode_invalid_" + countryCode));
+                pcField.focus();
+            }
+            _previouslySelectedCountryCode = countryCode;
+        }
     }
 
     /**

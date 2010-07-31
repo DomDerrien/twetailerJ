@@ -1,11 +1,11 @@
 (function() { // To limit the scope of the private variables
 
-    var module = dojo.provide("twetailer.GolfConsumer");
+    var module = dojo.provide("twetailer.golf.Consumer");
 
-    dojo.require("twetailer.GolfCommon");
+    dojo.require("twetailer.golf.Common");
 
     /* Set of local variables */
-    var _common = twetailer.GolfCommon,
+    var _common = twetailer.golf.Common,
         _getLabel,
         _grid,
         _gridCellNode,
@@ -35,7 +35,7 @@
         dfd.addCallback(function(response) { _common.processDemandList(response.resources, _grid); });
     };
 
-    var _demandUpdateDecoration = "<a href='#' onclick='twetailer.GolfConsumer.displayDemandForm(false,${0});return false;' title='${1}'><span class='dijitReset dijitInline silkIcon silkIconDemandUpdate'></span>${2}</a>";
+    var _demandUpdateDecoration = "<a href='#' onclick='twetailer.golf.Consumer.displayDemandForm(false,${0});return false;' title='${1}'><span class='dijitReset dijitInline silkIcon silkIconDemandUpdate'></span>${2}</a>";
 
     /**
      * Override of the formatter to be able to place the "Update Demand" link around the demand key
@@ -53,7 +53,7 @@
         return updateLabel;
     };
 
-    var _proposalViewDecoration = "<a href='#' onclick='twetailer.GolfConsumer.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalView'></span>${0}</a>";
+    var _proposalViewDecoration = "<a href='#' onclick='twetailer.golf.Consumer.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalView'></span>${0}</a>";
 
     /**
      * Override of the formatter to be able to place the "Create Proposal" link in front of the proposal key list
@@ -91,7 +91,8 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             var dateField = dijit.byId("demand.date");
             dateField.set("value", tomorrow);
-            // dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
+            dateField.constraints.min = yesterday;
+
             var lastDemand = _common.getLastDemand();
             if (lastDemand != null) {
                 _common.setLocation(lastDemand.locationKey[0], dijit.byId("demand.postalCode"), dijit.byId("demand.countryCode"));
@@ -167,17 +168,7 @@
         }
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.cc = data.cc.split(/(?:\s|\n|,|;)+/);
-        var month = (data.date.getMonth() + 1);
-        var day = data.date.getDate();
-        var hours = data.time.getHours();
-        var minutes = data.time.getMinutes();
-        data.dueDate = // ISO format
-              data.date.getFullYear() +
-              (month < 10 ? "-0" : "-") + month +
-              (day < 10 ? "-0" : "-") + day +
-              (hours < 10 ? "T0" : "T") + hours +
-              (minutes < 10 ? ":0" : ":") + minutes +
-              ":00";
+        data.dueDate = _common.toISOString(data.date, data.time);
         data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
 
         var dfd = _common.updateRemoteDemand(data, data.key);

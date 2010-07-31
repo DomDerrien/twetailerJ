@@ -97,6 +97,16 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>3rdParty</servlet-name>
+        <servlet-class>twetailer.j2ee.ThirdPartyEntryPointServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>3rdParty</servlet-name>
+        <url-pattern>/3rdParty/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>shortcut</servlet-name>
         <servlet-class>twetailer.j2ee.ShortcutServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
