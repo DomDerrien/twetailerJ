@@ -163,13 +163,13 @@ public class ProposalValidator {
             if (hashTags.size() != 0) {
                 String serializedHashTags = "";
                 String hashTag = hashTags.get(0);
-                if (hashTags.size() == 1 && !HashTag.getHashTagsList().contains(hashTag)) {
+                if (hashTags.size() == 1 && !HashTag.isSupportedHashTag(hashTag)) {
                     serializedHashTags = hashTag;
                 }
                 else { // if (1 < hashTags.size()) {
                     for(int i = 0; i < hashTags.size(); ++i) {
                         hashTag = hashTags.get(i);
-                        if (!HashTag.getHashTagsList().contains(hashTag)) {
+                        if (!HashTag.isSupportedHashTag(hashTag)) {
                             serializedHashTags += " " + hashTag;
                         }
                     }

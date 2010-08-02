@@ -17,7 +17,6 @@
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
     import="twetailer.dto.Location"
-    import="twetailer.dto.HashTag"
     import="twetailer.dto.Seed"
     import="twetailer.dto.Store"
     import="twetailer.dto.SaleAssociate"
@@ -42,18 +41,6 @@
     // Redirects non sale associates
     if (saleAssociateKey == null) {
         response.sendRedirect("./");
-    }
-
-    // Detects the vertical context
-    boolean useVertical = false;
-    String verticalId = null;
-    String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
-    if (forwardedUriAttribute != null) {
-        String[] hashtags = HashTag.getHashTagsArray();
-        for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
-            verticalId = hashtags[idx];
-            useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
-        }
     }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
@@ -81,12 +68,7 @@
         @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";<%
         } // endif (useCDN)
         %>
-        @import "/css/console.css";<%
-        if (useVertical) {
-        %>
-        @import "/css/<%= verticalId %>/console.css";<%
-        } // endif (useVertical)
-        %>
+        @import "/css/console.css";
     </style>
 </head>
 <body class="tundra">

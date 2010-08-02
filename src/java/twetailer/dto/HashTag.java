@@ -1,6 +1,6 @@
 package twetailer.dto;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 //
@@ -16,34 +16,26 @@ import java.util.List;
  */
 public class HashTag {
 
-    public final static String DEMO = "demo";
-    public final static String GOLF = "golf";
-    public final static String TAXI = "taxi";
-
-    private final static String[] VALID_HASHTAGS_ARRAY = new String[] {
-        DEMO,
-        GOLF,
-        TAXI
-    };
-
-    private static List<String> VALID_HASHTAGS_LIST = Arrays.asList(VALID_HASHTAGS_ARRAY);
-
-    public static String[] getHashTagsArray() {
-        return VALID_HASHTAGS_ARRAY;
+    public enum RegisteredHashTag {
+        demo,
+        golf,
+        taxi
     }
 
-    public static List<String> getHashTagsList() {
-        return VALID_HASHTAGS_LIST;
+    private static List<String> supportedHashTags;
+
+    public static List<String> getSupportedHashTags() {
+        if (supportedHashTags == null) {
+            supportedHashTags = new ArrayList<String>(RegisteredHashTag.values().length);
+            RegisteredHashTag[] registeredValues = RegisteredHashTag.values();
+            for(int i=0; i<registeredValues.length; i++) {
+                supportedHashTags.add(registeredValues[i].toString());
+            }
+        }
+        return supportedHashTags;
     }
 
-    public static String getVocabularySetIdentifier(Command command) {
-        String identifier = "";
-        if (command.getHashTags().contains(HashTag.DEMO)) {
-            // Demo hash tag has no effect
-        }
-        if (command.getHashTags().contains(HashTag.GOLF)) {
-            identifier = "golf_";
-        }
-        return identifier;
+    public static boolean isSupportedHashTag(String hashTag) {
+        return getSupportedHashTags().contains(hashTag.toLowerCase());
     }
 }

@@ -13,11 +13,11 @@ import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
+import twetailer.dto.HashTag.RegisteredHashTag;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -58,7 +58,7 @@ public class RobotResponder {
         }
     }
 
-    public final static String ROBOT_DEMO_HASH_TAG = HashTag.DEMO;
+    public final static String ROBOT_DEMO_HASH_TAG = RegisteredHashTag.demo.toString();
 
     public static void processDemand(PersistenceManager pm, Long demandKey) throws DataSourceException, InvalidIdentifierException {
         //

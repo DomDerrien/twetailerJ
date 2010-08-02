@@ -17,7 +17,6 @@
     import="twetailer.dao.BaseOperations"
     import="twetailer.dao.ConsumerOperations"
     import="twetailer.dao.LocationOperations"
-    import="twetailer.dto.HashTag"
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.j2ee.BaseRestlet"
     import="twetailer.validator.ApplicationSettings"
@@ -48,18 +47,6 @@
 
     // Get the logged user SaleAssociate key
     Long saleAssociateKey = consumer.getSaleAssociateKey();
-
-    // Detects the vertical context
-    boolean useVertical = false;
-    String verticalId = null;
-    String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
-    if (forwardedUriAttribute != null) {
-        String[] hashtags = HashTag.getHashTagsArray();
-        for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
-            verticalId = hashtags[idx];
-            useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
-        }
-    }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
@@ -88,12 +75,7 @@
         @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";<%
         } // endif (useCDN)
         %>
-        @import "/css/console.css";<%
-        if (useVertical) {
-        %>
-        @import "/css/<%= verticalId %>/console.css";<%
-        } // endif (useVertical)
-        %>
+        @import "/css/console.css";
     </style>
 </head>
 <body class="tundra">

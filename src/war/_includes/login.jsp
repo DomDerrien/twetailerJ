@@ -4,6 +4,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     import="java.util.Enumeration"
+    import="java.util.List"
     import="java.util.Locale"
     import="java.util.ResourceBundle"
     import="domderrien.i18n.LabelExtractor"
@@ -36,10 +37,12 @@
     String verticalId = null;
     String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
     if (forwardedUriAttribute != null) {
-        String[] hashtags = HashTag.getHashTagsArray();
-        for (int idx=0; !useVertical && idx<hashtags.length; idx++) {
-            verticalId = hashtags[idx];
-            useVertical = forwardedUriAttribute.startsWith("/console/" + verticalId);
+        List<String> hashTags = HashTag.getSupportedHashTags();
+        for (String hashTag: hashTags) {
+            verticalId = hashTag;
+            if (forwardedUriAttribute.startsWith("/console/" + verticalId)) {
+                break;
+            }
         }
     }
     if (!useVertical) {

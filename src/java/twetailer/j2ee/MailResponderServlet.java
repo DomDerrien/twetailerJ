@@ -70,9 +70,9 @@ public class MailResponderServlet extends HttpServlet {
         responderEndpoints.add("maezel@twetailer.appspotmail.com");
         responderEndpoints.add("hub@twetailer.appspotmail.com");
 
-        String[] hashTags = HashTag.getHashTagsArray();
-        for (int idx=0; idx<hashTags.length; idx ++) {
-            responderEndpoints.add(hashTags[idx] + "@twetailer.appspotmail.com");
+        List<String> hashTags = HashTag.getSupportedHashTags();
+        for (String hashTag: hashTags) {
+            responderEndpoints.add(hashTag + "@twetailer.appspotmail.com");
         }
     }
 
@@ -155,7 +155,7 @@ public class MailResponderServlet extends HttpServlet {
 
             // Add vertical information
             String toBase = to.substring(0, to.indexOf('@'));
-            if (HashTag.getHashTagsList().contains(toBase)) {
+            if (HashTag.isSupportedHashTag(toBase)) {
                 command += " #" + toBase;
             }
 

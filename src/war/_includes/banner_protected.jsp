@@ -14,7 +14,7 @@
     import="domderrien.jsontools.JsonObject"
     import="domderrien.jsontools.JsonParser"
     import="domderrien.i18n.LocaleController"
-    import="twetailer.dto.HashTag"
+    import="twetailer.dto.HashTag.RegisteredHashTag"
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
@@ -44,7 +44,7 @@
 %>
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
             <div id="brand"><%
-                if (HashTag.GOLF.equals(verticalId)) {
+                if (RegisteredHashTag.golf.toString().equals(verticalId)) {
                    %><jsp:include page="/_includes/brands/golf.jsp"><jsp:param name="localeId" value="<%= localeId %>" /></jsp:include><%
                 }
                 else { // if ("".equals(verticalId)) {
