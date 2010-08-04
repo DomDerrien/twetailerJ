@@ -86,7 +86,7 @@ public class MailResponderServlet extends HttpServlet {
         String subject = null;
         String language = null;
         Exception exception = null;
-        String command = null;
+        String command = "";
 
         // Prepare the message to persist
         RawCommand rawCommand = new RawCommand(Source.mail);
@@ -133,6 +133,7 @@ public class MailResponderServlet extends HttpServlet {
             }
             if (to == null) {
                 log.warning("**** Email '" + messageId + "' not addressed to Twetailer!");
+                // Put a tracker here...
                 return;
             }
             StringBuilder ccList = new StringBuilder();
@@ -164,7 +165,7 @@ public class MailResponderServlet extends HttpServlet {
             rawCommand.setEmitterId(email.toLowerCase());
             rawCommand.setToId(to.toLowerCase());
             rawCommand.setSubject(subject);
-            command = extractFirstLine(MailConnector.getText(mailMessage));
+            command = extractFirstLine(MailConnector.getText(mailMessage)) + command;
             rawCommand.setCommand(command);
 
             log.warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);

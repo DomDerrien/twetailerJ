@@ -96,6 +96,11 @@ public class Command extends Entity {
     public static final String HASH_TAGS_REMOVE = "\\-hashTags";
 
     @Persistent
+    private String metaData;
+
+    public static final String META_DATA = "metaData";
+
+    @Persistent
     private Long ownerKey;
 
     public static final String OWNER_KEY = "ownerKey";
@@ -177,6 +182,14 @@ public class Command extends Entity {
         this.cancelerKey = cancelerKey;
     }
 
+    public String getSerializedCC(String defaultLabel) {
+        String out = getSerializedCC();
+        if (out.length() == 0) {
+            return defaultLabel;
+        }
+        return out;
+    }
+
     public String getSerializedCC() {
         return getSerializedTags(cc);
     }
@@ -214,6 +227,14 @@ public class Command extends Entity {
             return;
         }
         cc.remove(coordinates);
+    }
+
+    public String getSerializedCriteria(String defaultLabel) {
+        String out = getSerializedCriteria();
+        if (out.length() == 0) {
+            return defaultLabel;
+        }
+        return out;
     }
 
     public String getSerializedCriteria() {
@@ -263,6 +284,14 @@ public class Command extends Entity {
         this.dueDate = dueDate;
     }
 
+    public String getSerializedHashTags(String defaultLabel) {
+        String out = getSerializedHashTags();
+        if (out.length() == 0) {
+            return defaultLabel;
+        }
+        return out;
+    }
+
     public String getSerializedHashTags() {
         return getSerializedTags(HASH, SPACE, hashTags);
     }
@@ -300,6 +329,14 @@ public class Command extends Entity {
             return;
         }
         hashTags.remove(hashTag);
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
     }
 
     public Long getOwnerKey() {
@@ -403,6 +440,7 @@ public class Command extends Entity {
             }
             out.put(HASH_TAGS, jsonArray);
         }
+        if (getMetaData() != null) { out.put(META_DATA, getMetaData()); }
         out.put(OWNER_KEY, getOwnerKey());
         out.put(QUANTITY, getQuantity());
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
@@ -485,6 +523,7 @@ public class Command extends Entity {
                 addHashTag(jsonArray.getString(i));
             }
         }
+        if (in.containsKey(META_DATA)) { setMetaData(in.getString(META_DATA)); }
         if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }

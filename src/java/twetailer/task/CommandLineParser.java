@@ -86,7 +86,7 @@ public class CommandLineParser {
             // Read http://www.regular-expressions.info/unicode.html for explanations on \p{M} used to handle accented characters
             preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|\\p{M}]+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
-            preparePattern(prefixes, patterns, Prefix.cc, "[^\\:]+", separatorFromOtherPrefix);
+            preparePattern(prefixes, patterns, Prefix.cc, "[\\w\\d\\.\\_\\-\\@]+", "(?:\\s|$)");
             preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.expiration, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags

@@ -41,7 +41,7 @@ public class Entity implements TransferObject {
     public static final String KEY = "key";
 
     @Persistent
-    private Date creationDate = DateUtils.getNowDate();
+    private Date creationDate;
 
     public static final String CREATION_DATE = "creationDate";
 
@@ -56,14 +56,15 @@ public class Entity implements TransferObject {
     public static final String MARKED_FOR_DELETION = "markedForDeletion";
 
     @Persistent
-    private Date modificationDate = DateUtils.getNowDate();
+    private Date modificationDate;
 
     public static final String MODIFICATION_DATE = "modificationDate";
 
     /** Default constructor */
     public Entity() {
-        setCreationDate(DateUtils.getNowDate());
-        setModificationDate(DateUtils.getNowDate());
+        Date now = DateUtils.getNowDate();
+        setCreationDate(now);
+        setModificationDate(now);
     }
 
     /**
@@ -110,8 +111,9 @@ public class Entity implements TransferObject {
     }
 
     public void resetCoreDates() {
-        setCreationDate(DateUtils.getNowDate());
-        setModificationDate(getCreationDate());
+        Date now = DateUtils.getNowDate();
+        setCreationDate(now);
+        setModificationDate(now);
     }
 
     public Long getLocationKey() {
@@ -138,7 +140,8 @@ public class Entity implements TransferObject {
     }
 
     public void updateModificationDate() {
-        setModificationDate(DateUtils.getNowDate());
+        Date now = DateUtils.getNowDate();
+        setModificationDate(now);
     }
 
     public void setModificationDate(Date modificationDate) {

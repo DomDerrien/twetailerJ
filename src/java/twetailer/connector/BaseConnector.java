@@ -28,7 +28,8 @@ public class BaseConnector {
         jabber,
         facebook,
         mail,
-        api
+        api,
+        widget
     }
 
     // Setter for injection of a MockLogger at test time

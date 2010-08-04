@@ -127,7 +127,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                     InternetAddress senderAddress = MailConnector.prepareInternetAddress("UTF-8", email, email);
                     Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
 
-                    in.put(Demand.SOURCE, Source.mail.toString());
+                    in.put(Demand.SOURCE, Source.widget.toString());
                     DemandSteps.createDemand(pm, in, consumer);
 
                     // TODO: call generateTweet

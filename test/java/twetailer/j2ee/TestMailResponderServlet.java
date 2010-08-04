@@ -85,7 +85,7 @@ public class TestMailResponderServlet {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
-                assertEquals(message, rawCommand.getCommand());
+                assertEquals(message + " cc:unit@test.net", rawCommand.getCommand());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
@@ -133,7 +133,7 @@ public class TestMailResponderServlet {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
-                assertEquals("", rawCommand.getCommand());
+                assertEquals("cc:unit@test.net", rawCommand.getCommand());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
             }
@@ -408,7 +408,7 @@ public class TestMailResponderServlet {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
-                assertEquals(message, rawCommand.getCommand());
+                assertEquals(message + " cc:unit@test.net", rawCommand.getCommand());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertEquals(LabelExtractor.get("error_datastore_timeout", Locale.ENGLISH), rawCommand.getErrorMessage());
                 rawCommand.setKey(rawCommandKey);
@@ -499,7 +499,7 @@ public class TestMailResponderServlet {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
-                assertEquals(message, rawCommand.getCommand());
+                assertEquals(message + " cc:unit@test.net", rawCommand.getCommand());
                 assertNotNull(rawCommand.getErrorMessage());
                 assertEquals(LabelExtractor.get("error_unexpected", new Object[] { 0L, "" }, Locale.ENGLISH), rawCommand.getErrorMessage());
                 rawCommand.setKey(rawCommandKey);
@@ -554,7 +554,7 @@ public class TestMailResponderServlet {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
-                assertEquals(message, rawCommand.getCommand());
+                assertEquals(message + " cc:unit@test.net", rawCommand.getCommand());
                 assertNull(rawCommand.getErrorMessage());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;
@@ -615,7 +615,7 @@ public class TestMailResponderServlet {
             @Override
             public RawCommand createRawCommand(PersistenceManager pm, RawCommand rawCommand) {
                 assertEquals(from, rawCommand.getEmitterId());
-                assertEquals(message, rawCommand.getCommand());
+                assertEquals(message + " cc:unit@test.net", rawCommand.getCommand());
                 assertNull(rawCommand.getErrorMessage());
                 rawCommand.setKey(rawCommandKey);
                 return rawCommand;

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+    <header creationtool="domderrien.i18n" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="domderrien"
+    ></header>
+    <body>
+        <tu tuid="bundle_language" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Français</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_creation_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-) Listing newly created {0}... </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_tweet_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">3</prop>
+            <tuv xml:lang="fr">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_demand_creation_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-) Listing newly created {0}... </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_tweet_demand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">3</prop>
+            <tuv xml:lang="fr">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;--&lt;br /&gt;
+                    Twetailer connects consumers to retailers electronically and transparently, conveys back proposals as soon as they are filled.
+                    Twetailer is not responsible for the content of the proposals, nor the time, nor the price.
+                    Retailers can change their terms anytime.&lt;/p&gt;
+                    &lt;p&gt;Signed by &lt;a href="http://twetailer.com/"&gt;Twetailer.com&lt;/a&gt;, powered by &lt;a href="http://anothersocialeconomy.com/"&gt;AnotherSocialEconomy.com&lt;/a&gt;.&lt;/p&gt;
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;--&lt;br /&gt;
+                    ezToff connects golf players to golf courses electronically and transparently, conveys back proposals as soon as they are filled.
+                    ezToff is not responsible for the content of the proposals, nor the time, nor the price.
+                    Golf courses can change their terms anytime.&lt;/p&gt;
+                    &lt;p&gt;Signed by &lt;a href="http://ezToff.com/"&gt;ezToff.com&lt;/a&gt;, powered by &lt;a href="http://anothersocialeconomy.com/"&gt;AnotherSocialEconomy.com&lt;/a&gt;.&lt;/p&gt;
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_creation_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;Your demand have been just created with:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;Tags: {7} {8}&lt;/li&gt;
+                        &lt;li&gt;Quantity: {6};&lt;/li&gt;
+                        &lt;li&gt;Due date: {3};&lt;/li&gt;
+                        &lt;li&gt;Where: {5};&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {1}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;You CC'ed: {9}.&lt;/p&gt;
+                    &lt;p&gt;Your demand is going to be broadcasted to {10} stores.
+                    Twetailer will notify you as soon as proposals are received.&lt;/p&gt;
+                    &lt;p&gt;Click here to cancel your demand: &lt;a href="maito:assistant@twetailer.appspotmail.com?subject={11}\u0026body={12}"&gt;cancel demand # {1}&lt;/a&gt;.&lt;/p&gt;
+                    &lt;p&gt;Thanks for using Twetailer to shop online in your local area.&lt;/p&gt;
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_creation_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;Your tee-off request have been just created with:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Where: {5};&lt;/li&gt;
+                        &lt;li&gt;Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {1}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;You CC'ed: {9}.&lt;/p&gt;
+                    &lt;p&gt;Your request is going to be broadcasted to {10} golf courses.
+                    ezToff will notify you as soon as proposals are received.&lt;/p&gt;
+                    &lt;p&gt;Click here to cancel your request: &lt;a href="maito:assistant@twetailer.appspotmail.com?subject={11}\u0026body={12}"&gt;cancel request # {0}&lt;/a&gt;.&lt;/p&gt;
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;You have been CC'ed by {0} regarding the tee-off request:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Where: {5};&lt;/li&gt;
+                        &lt;li&gt;Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {1}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;CC'ed people are: {9}.&lt;/p&gt;
+                    &lt;p&gt;The request is going to be broadcasted to {10} golf courses.
+                    ezToff will notify you as soon as proposals are received.
+                    {0} alone will be able to confirm the proposals.
+                    &lt;/p&gt;
+                    {12}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_creation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;A new tee-off request has been posted in your area:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {1};&lt;/li&gt;
+                        &lt;li&gt;Round for {3} players, with {9} pull cart(s), and {10} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {0}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;Please, use the &lt;a href="http://twetailer.appspot.com/console/golf/associate.jsp"&gt;ezToff reservation desk&lt;/a&gt;
+                    to propose an availble round departure time.&lt;/p&gt;
+                    &lt;p&gt;Thanks for using ezToff to propose your tee-off times.&lt;/p&gt;
+                    {8}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_update_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;Your tee-off request have been successfully updated. It's now:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Where: {5};&lt;/li&gt;
+                        &lt;li&gt;Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {1}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;You CC'ed: {9}.&lt;/p&gt;
+                    &lt;p&gt;Your request is going to be broadcasted to  golf courses.
+                    ezToff will notify you as soon as proposals are received.&lt;/p&gt;
+                    &lt;p&gt;Click here to cancel your request: &lt;a href="maito:assistant@twetailer.appspotmail.com?subject={11}\u0026body={12}"&gt;cancel request # {0}&lt;/a&gt;.&lt;/p&gt;
+                    &lt;p&gt;Thanks for booking your tee-offs with ezToff.&lt;/p&gt;
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;{0} updated the following tee-off request which is now:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Where: {5};&lt;/li&gt;
+                        &lt;li&gt;Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {1}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;CC'ed people are: {9}.&lt;/p&gt;
+                    &lt;p&gt;The request is going to be broadcasted to  golf courses.
+                    ezToff will notify you as soon as proposals are received.
+                    {0} alone will be able to confirm the proposals.&lt;/p&gt;
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+    </body>
+</tmx>

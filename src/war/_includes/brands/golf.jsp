@@ -16,7 +16,7 @@ Locale locale = LocaleController.getLocale(localeId);
                 <h1>
                     <a
                         href="http://ezToff.com/"
-                        title="<%= LabelExtractor.get(ResourceFileId.fourth, "golf_product_name", locale) %>"
+                        title="<%= LabelExtractor.get(ResourceFileId.master, "golf_product_name", locale) %>"
                     ><img src="/images/golf/EZTOFF-logo.png" /></a>&nbsp;
                 </h1>
                 <span id="mantra"><%= LabelExtractor.get("product_mantra", locale) %></span>

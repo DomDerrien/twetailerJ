@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+    <header creationtool="developers" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="Twetailer">
+    </header>
+    <body>
+
+        <!-- =================== -->
+        <!-- Default definitions -->
+        <!-- =================== -->
+
+        <tu tuid="bundle_language" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                IMPORTANT: Native transcription of the language (e.g. Dansk, Deutsch, English).
+                IMPORTANT: "English" should not be just translated!
+                IMPORTANT: If the rest of the xml:lang attribute is left with the value "en", it's crucial
+                           to update the one of this entry with the correct value (e.g. fr, it, zh_CN, etc.).
+            </note>
+            <tuv xml:lang="en">
+                <seg>English</seg>
+            </tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!-- ................... -->
+        <!-- =================== -->
+
+        <tu tuid="short_core_demand_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand creation.|
+                {0}: demand reference produced by the entry "short_core_demand_reference"
+                {1}: short message produced for the demand as defined by the entry "short_core_demand_details"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-) Listing newly created {0}... </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_tweet_demand" datatype="Text">
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: action as defined by the entry "short_core_demand_action"
+                {1}: demand reference as defined by the entry "short_core_demand_reference"
+                {2}: state as defined by the entry "short_core_demand_state", inserted only if the state is not open or published.
+                {3}: due date as defined by the entry "short_core_demand_dueDate"
+                {4}: expiration date (not printed if equals to due date) as defined by the entry "short_core_demand_expirationDate"
+                {5}: locale (postal and country codes) as defined by the entry "short_core_location_details"
+                {6}: range as defined by the entry "short_core_demand_details"
+                {7}: quantity as defined by the entry "short_core_quantity_details"
+                {8}: tags as defined by the entry "short_core_demand_tags"
+                {9}: hashtags as defined by the entry "short_core_demand_hashTags"
+                {10}: proposal keys as defined by the entry "short_core_demand_proposalKeys", inserted only if proposals have been attached to the demand
+                {11}: cc-ed ids as defined by the entry "short_core_demand_cced", inserted only if there's at least one CC'ed user
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_demand_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand creation.|
+                {0}: demand reference produced by the entry "short_golf_demand_reference"
+                {1}: short message produced for the demand as defined by the entry "short_golf_demand_details"
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-) Listing newly created {0}... </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_tweet_demand" datatype="Text">
+            <prop type="x-version">3</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
+                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
+                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
+                {0}: action as defined by the entry "short_golf_demand_action"
+                {1}: demand reference as defined by the entry "short_golf_demand_reference"
+                {2}: state as defined by the entry "short_golf_demand_state", inserted only if the state is not open or published.
+                {3}: due date as defined by the entry "short_golf_demand_dueDate"
+                {4}: expiration date (not printed if equals to due date) as defined by the entry "short_golf_demand_expirationDate"
+                {5}: locale (postal and country codes) as defined by the entry "short_golf_location_details"
+                {6}: range as defined by the entry "short_golf_demand_details"
+                {7}: quantity as defined by the entry "short_golf_quantity_details"
+                {8}: tags as defined by the entry "short_golf_demand_tags"
+                {9}: hashtags as defined by the entry "short_golf_demand_hashTags"
+                {10}: proposal keys as defined by the entry "short_golf_demand_proposalKeys", inserted only if proposals have been attached to the demand
+                {11}: cc-ed ids as defined by the entry "short_golf_demand_cced", inserted only if there's at least one CC'ed user
+            </note>
+            <tuv xml:lang="en">
+                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_footer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Piece of text inserted at the end of all long messages</note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>--<br/>
+                    Twetailer connects consumers to retailers electronically and transparently, conveys back proposals as soon as they are filled.
+                    Twetailer is not responsible for the content of the proposals, nor the time, nor the price.
+                    Retailers can change their terms anytime.</p>
+                    <p>Signed by <a href="http://twetailer.com/">Twetailer.com</a>, powered by <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_footer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Piece of text inserted at the end of all long messages</note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>--<br/>
+                    ezToff connects golf players to golf courses electronically and transparently, conveys back proposals as soon as they are filled.
+                    ezToff is not responsible for the content of the proposals, nor the time, nor the price.
+                    Golf courses can change their terms anytime.</p>
+                    <p>Signed by <a href="http://ezToff.com/">ezToff.com</a>, powered by <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand creation.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: state
+                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: expiration date, can be equals to the due date
+                {5}: locale (postal and country codes) and range as defined by entry "long_core_location_area_details"
+                {6}: quantity
+                {7}: tags
+                {8}: hashtags
+                {9}: cc-ed ids as defined by the entry "short_core_demand_cced"
+                {10}: number of stores pinged
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_core_demand_cancelCommand"
+                {13}: message footer as defined by the entry "long_core_footer"
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Your demand have been just created with:</p>
+                    <ul>
+                        <li>Tags: {7} {8}</li>
+                        <li>Quantity: {6};</li>
+                        <li>Due date: {3};</li>
+                        <li>Where: {5};</li>
+                        <li>Request reference #: {1}</li>
+                    </ul>
+                    <p>You CC'ed: {9}.</p>
+                    <p>Your demand is going to be broadcasted to {10} stores.
+                    Twetailer will notify you as soon as proposals are received.</p>
+                    <p>Click here to cancel your demand: <a href="maito:assistant@twetailer.appspotmail.com?subject={11}\u0026body={12}">cancel demand # {1}</a>.</p>
+                    <p>Thanks for using Twetailer to shop online in your local area.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_demand_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand creation.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: state
+                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: expiration date, can be equals to the due date
+                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
+                {6}: quantity
+                {7}: tags
+                {8}: hashtags
+                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
+                {10}: number of stores pinged
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
+                {13}: message footer as defined by the entry "long_golf_footer"
+                {14}: number of pull cart asked
+                {15}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Your tee-off request have been just created with:</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Where: {5};</li>
+                        <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <li>Request reference #: {1}</li>
+                    </ul>
+                    <p>You CC'ed: {9}.</p>
+                    <p>Your request is going to be broadcasted to <!-- {10} --> golf courses.
+                    ezToff will notify you as soon as proposals are received.</p>
+                    <p>Click here to cancel your request: <a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}">cancel request # {1}</a>.</p>
+                    <p>Thanks for booking your tee-offs with ezToff.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_demand_creation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: state
+                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: expiration date, can be equals to the due date
+                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
+                {6}: quantity
+                {7}: tags
+                {8}: hashtags
+                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
+                {10}: number of stores pinged
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
+                {13}: message footer as defined by the entry "long_golf_footer"
+                {14}: number of pull cart asked
+                {15}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>You have been CC'ed by {0} regarding the tee-off request:</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Where: {5};</li>
+                        <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <li>Request reference #: {1}</li>
+                    </ul>
+                    <p>CC'ed people are: {9}.</p>
+                    <p>The request is going to be broadcasted to <!-- {10} --> golf courses.
+                    ezToff will notify you as soon as proposals are received.
+                    {0} alone will be able to confirm the proposals.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_demand_creation_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing sale associates about the demand creation.|
+                {0}: sale associate name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {3}: expiration date, can be equals to the due date
+                {4}: quantity
+                {5}: tags
+                {6}: hashtags
+                {7}: email thread subject
+                {8}: content of the automatic response to propose a round departure time, as defined by yhe entry "long_golf_proposal_createCommand"
+                {9}: content of the automatic response to decline the demand, as defined by yhe entry "long_golf_demand_declineCommand"
+                {10}: message footer as defined by the entry "long_golf_footer"
+                {11}: number of pull cart asked
+                {12}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>A new tee-off request has been posted in your area:</p>
+                    <ul>
+                        <li>When: {2};</li>
+                        <li>Round for {4} players, with {11} pull cart(s), and {12} golf cart(s).</li>
+                        <li>Request reference #: {1}</li>
+                    </ul>
+                    <p>Please, use the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff reservation desk</a>
+                    to propose an availble round departure time.</p>
+                    <p>Thanks for using ezToff to propose your tee-off times.</p>
+                    {10}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_demand_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand update.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: state
+                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: expiration date, can be equals to the due date
+                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
+                {6}: quantity
+                {7}: tags
+                {8}: hashtags
+                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
+                {10}: number of stores pinged
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
+                {13}: message footer as defined by the entry "long_golf_footer"
+                {14}: number of pull cart asked
+                {15}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Your tee-off request have been successfully updated. It's now:</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Where: {5};</li>
+                        <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <li>Request reference #: {1}</li>
+                    </ul>
+                    <p>You CC'ed: {9}.</p>
+                    <p>Your request is going to be broadcasted to <!-- {10} --> golf courses.
+                    ezToff will notify you as soon as proposals are received.</p>
+                    <p>Click here to cancel your request: <a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}">cancel request # {1}</a>.</p>
+                    <p>Thanks for booking your tee-offs with ezToff.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_demand_update_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand update.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: state
+                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: expiration date, can be equals to the due date
+                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
+                {6}: quantity
+                {7}: tags
+                {8}: hashtags
+                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
+                {10}: number of stores pinged
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
+                {13}: message footer as defined by the entry "long_golf_footer"
+                {14}: number of pull cart asked
+                {15}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>{0} updated the following tee-off request which is now:</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Where: {5};</li>
+                        <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <li>Request reference #: {1}</li>
+                    </ul>
+                    <p>CC'ed people are: {9}.</p>
+                    <p>The request is going to be broadcasted to <!-- {10} --> golf courses.
+                    ezToff will notify you as soon as proposals are received.
+                    {0} alone will be able to confirm the proposals.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {0}: proposal owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: state
+                {4}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {5}: quantity
+                {6}: tags
+                {7}: hashtags
+                {8}: currency sign
+                {9}: unit price
+                (10}: total price
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the proposal, as defined by yhe entry "long_golf_proposal_cancelCommand"
+                {13}: message footer as defined by the entry "long_golf_footer"
+                {14}: number of pull cart asked
+                {15}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Your proposal for the tee-off reference # {2} have been just created with:</p>
+                    <ul>
+                        <li>When: {4};</li>
+                        <li>Round for {5} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <li>Unit price: {8}{9} per player.</li>
+                        <li>Total cost: {8}{10}.</li>
+                        <li>Additional information: {7}.</li>
+                        <li>Proposal reference #: {1}.</li>
+                    </ul>
+                    <p>Your request is going to be sent to the tee-off request initiator.
+                    ezToff will notify you as soon as the initiator confirms your proposal.</p>
+                    <p>Click here to cancel your proposal: <a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}">cancel proposal # {1}</a>.</p>
+                    <p>Thanks for booking your tee-offs with ezToff.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {0}: proposal owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: state
+                {4}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {5}: quantity
+                {6}: tags
+                {7}: hashtags
+                {8}: currency sign
+                {9}: unit price
+                (10}: total price
+                {11}: email thread subject
+                {12}: content of the automatic response cancelling the proposal, as defined by yhe entry "long_golf_proposal_cancelCommand"
+                {13}: message footer as defined by the entry "long_golf_footer"
+                {14}: number of pull cart asked
+                {15}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Your proposal for the tee-off reference # {2} have been just updated with:</p>
+                    <ul>
+                        <li>When: {4};</li>
+                        <li>Round for {5} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <li>Unit price: {8}{9} per player.</li>
+                        <li>Total cost: {8}{10}.</li>
+                        <li>Additional information: {7}.</li>
+                        <li>Proposal reference #: {1}.</li>
+                    </ul>
+                    <p>Your request is going to be sent to the tee-off request initiator.
+                    ezToff will notify you as soon as the initiator confirms your proposal.</p>
+                    <p>Click here to cancel your proposal: <a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}">cancel proposal # {1}</a>.</p>
+                    <p>Thanks for booking your tee-offs with ezToff.</p>
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+
+    </body>
+</tmx>
