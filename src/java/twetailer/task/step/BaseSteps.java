@@ -1,6 +1,7 @@
 package twetailer.task.step;
 
 import static twetailer.connector.BaseConnector.communicateToCCed;
+import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.List;
 import java.util.Locale;
@@ -8,8 +9,12 @@ import java.util.Locale;
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MessageGenerator;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -25,10 +30,13 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.RawCommand;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 public class BaseSteps {
 
@@ -86,37 +94,193 @@ public class BaseSteps {
     public static void setMockSettingsOperations(SettingsOperations settingsOperations) { BaseSteps.settingsOperations = settingsOperations; }
     public static void setMockStoreOperations(StoreOperations storeOperations) { BaseSteps.storeOperations = storeOperations; }
 
-    /**
-     * Sends a message to the CC-ed people with a copy of the given demand, just after the creation
-     *
-     * @param demand Demand to echo to the CC-ed people
-     * @param consumer Demand owner
-     *
-     * @throws DataSourceException If getting information about the demand location fails
-     */
-    public static void notifyCreationToCCed(PersistenceManager pm, Demand demand, Consumer owner) throws DataSourceException {
-        // Prepare the message for the CC-ed
+    public static void confirmUpdate(PersistenceManager pm, RawCommand rawCommand, Demand demand, Consumer owner) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+
         List<String> cc = demand.getCC();
-        if (cc != null && 0 < cc.size()) {
-            //
-            // TODO: get the #hashtag to decide which label set to use!
-            //
+        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
+            boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
+            Locale locale = Locale.ENGLISH; // owner.getLocale(); // TODO
 
-            // Compose the message
-            Locale locale = owner.getLocale();
-            Location location;
-            try {
-                location = LocationSteps.getLocation(pm, demand);
-            }
-            catch (InvalidIdentifierException e) {
-                location = null;
-            }
-            String tweet = CommandProcessor.generateTweet(demand, location, false, locale);
-            String messageCC = LabelExtractor.get("cp_command_demand_forward_creation_to_cc", new Object[] { owner.getName(), tweet }, locale);
+            Location location = LocationSteps.getLocation(pm, demand);
 
-            // Send the message
-            notifyMessageToCCed(cc, messageCC, locale);
+            // Prepare the request parameters
+            String[] parameters = new String[] {
+                    owner.getName(), // 0
+                    demand.getKey().toString(), //1
+                    demand.getState().toString(), // 2
+                    demand.getDueDate().toString(), // 3
+                    demand.getModificationDate().toString(), // 4
+                    location.getPostalCode() + " (" + location.getCountryCode() + ") within " + demand.getRange() + " " + demand.getRangeUnit(), // 5
+                    demand.getQuantity().toString(), // 6
+                    demand.getSerializedCriteria("none"), // 7
+                    demand.getSerializedHashTags("none"), // 8
+                    demand.getSerializedCC("none"), // 9
+                    "<unknown>", // 10
+                    Source.widget.equals(demand.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
+                    "cancel demand:" + demand.getKey().toString(), // 12
+                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
+                    "0", //14
+                    "0" // 15
+            };
+
+            // Send the operation confirmation to the owner
+            if (!Source.api.equals(demand.getSource())) {
+                String message = MessageGenerator.getMessage(
+                        demand.getSource(),
+                        demand.getHashTags(),
+                        isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck,
+                        parameters,
+                        locale
+                );
+                communicateToConsumer(rawCommand, owner, new String[] { message });
+            }
+
+            // Send a notification to the CC'ed users
+            if (cc != null && 0 < cc.size()) {
+                String message = MessageGenerator.getMessage(
+                        demand.getSource(),
+                        demand.getHashTags(),
+                        isNewDemand ? MessageId.demandCreationCpy : MessageId.demandUpdateCpy,
+                        parameters,
+                        locale
+                );
+                notifyMessageToCCed(cc, message, locale);
+            }
         }
+    }
+
+    public static void notifyAvailability(PersistenceManager pm, Demand demand, Consumer associate) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+        Locale locale = associate.getLocale();
+
+        String[] parameters = new String[] {
+                associate.getName(), // 0
+                demand.getKey().toString(), // 1
+                demand.getDueDate().toString(), // 2
+                demand.getExpirationDate().toString(), // 3
+                demand.getQuantity().toString(), // 4
+                demand.getSerializedCriteria("none"), // 5
+                demand.getSerializedHashTags("none"), // 6
+                LabelExtractor.get("mc_mail_subject_response_default", locale), // 7
+                "propose demand:" + demand.getKey().toString() + " due:[update-date-time] total:$[amount] meta:{pull:[0],buggy:[0]} tags:[extra-info]", // 8
+                "decline demand:" + demand.getKey().toString(), // 9
+                LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 10
+                "0", //11
+                "0" // 12
+        };
+
+        String message = MessageGenerator.getMessage(
+                associate.getPreferredConnection(),
+                demand.getHashTags(),
+                MessageId.demandCreationNot,
+                parameters,
+                locale
+        );
+
+        communicateToConsumer(new RawCommand(associate.getPreferredConnection()), associate, new String[] { message });
+    }
+
+    public static void confirmUpdate(PersistenceManager pm, RawCommand rawCommand, Proposal proposal, SaleAssociate owner, Consumer associate) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+
+        if (!Source.api.equals(proposal.getSource())) {
+            boolean isNewProposal = proposal.getCreationDate().getTime() == proposal.getModificationDate().getTime();
+            Locale locale = Locale.ENGLISH; // owner.getLocale(); // TODO
+
+            String[] parameters = new String[] {
+                    associate.getName(), // 0
+                    proposal.getKey().toString(), // 1
+                    proposal.getDemandKey().toString(), // 2
+                    proposal.getState().toString(), // 3
+                    proposal.getDueDate().toString(), // 4
+                    proposal.getQuantity().toString(), // 5
+                    proposal.getSerializedCriteria("none"), // 6
+                    proposal.getSerializedHashTags("none"), // 7
+                    "$", // 8
+                    proposal.getPrice().toString(), // 9
+                    proposal.getTotal().toString(), // 10
+                    Source.widget.equals(proposal.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
+                    "cancel proposal:" + proposal.getKey().toString(), // 12
+                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
+                    "0", //14
+                    "0" // 15
+            };
+
+            String message = MessageGenerator.getMessage(
+                    proposal.getSource(),
+                    proposal.getHashTags(),
+                    isNewProposal ? MessageId.proposalCreationAck: MessageId.proposalUpdateAck,
+                    parameters,
+                    locale
+            );
+            communicateToConsumer(rawCommand, associate, new String[] { message });
+        }
+    }
+
+    public static void notifyAvailability(PersistenceManager pm, Proposal proposal, Demand demand, Consumer consumer) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+
+        List<String> cc = demand.getCC();
+        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
+            Locale locale = consumer.getLocale();
+            Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
+            Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
+
+            String[] parameters = new String[] {
+                    consumer.getName(), // 0
+                    demand.getKey().toString(), // 1
+                    demand.getDueDate().toString(), // 2
+                    demand.getExpirationDate().toString(), // 3
+                    demand.getQuantity().toString(), // 4
+                    demand.getSerializedCriteria("none"), // 5
+                    demand.getSerializedHashTags("none"), // 6
+                    proposal.getKey().toString(), // 7
+                    proposal.getDueDate().toString(), // 8
+                    proposal.getQuantity().toString(), // 9
+                    proposal.getSerializedCriteria("none"), // 10
+                    proposal.getSerializedHashTags("none"), // 11
+                    "$", // 12
+                    proposal.getPrice().toString(), // 13
+                    proposal.getTotal().toString(), // 14
+                    store.getKey().toString(), // 15
+                    store.getName(), // 16
+                    store.getAddress(), // 17
+                    store.getUrl(), // 18
+                    store.getPhoneNumber(), // 19
+                    location.getPostalCode(), // 20
+                    location.getCountryCode(), // 21
+                    LabelExtractor.get("mc_mail_subject_response_default", locale), // 22
+                    "confirm proposal:" + proposal.getKey().toString(), // 23
+                    "decline proposal:" + proposal.getKey().toString(), // 24
+                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 25
+                    "0", // 26
+                    "0" // 27
+            };
+
+            // Send the proposal details to the owner
+            if (!Source.api.equals(demand.getSource())) {
+                String message = MessageGenerator.getMessage(
+                        consumer.getPreferredConnection(),
+                        demand.getHashTags(),
+                        MessageId.proposalCreationNot,
+                        parameters,
+                        locale
+                );
+                communicateToConsumer(new RawCommand(consumer.getPreferredConnection()), consumer, new String[] { message });
+            }
+
+            // Send the proposal details to the CC'ed users
+            if (cc != null && 0 < cc.size()) {
+                String message = MessageGenerator.getMessage(
+                        consumer.getPreferredConnection(),
+                        demand.getHashTags(),
+                        MessageId.proposalCreationCpy,
+                        parameters,
+                        locale
+                );
+                notifyMessageToCCed(cc, message, locale);
+            }
+        }
+    }
+
+    public static void notifyCreationToCCed(PersistenceManager pm, Demand demand, Consumer owner) throws DataSourceException {
     }
 
     /**

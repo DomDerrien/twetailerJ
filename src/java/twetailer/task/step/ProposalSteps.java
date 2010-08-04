@@ -17,7 +17,9 @@ import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.InvalidStateException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -39,6 +41,7 @@ import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
@@ -493,6 +496,34 @@ public class ProposalSteps extends BaseSteps {
             demand.setState(State.confirmed);
             getDemandOperations().updateDemand(pm, demand);
 
+            // Echo back the successful confirmation
+            Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
+            Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
+            Locale locale = demandOwner.getLocale();
+
+            String[] messageParts = new String[] {
+                    null, // 0
+                    proposal.getKey().toString(), // 1
+                    proposal.getDemandKey().toString(), // 2
+                    proposal.getDueDate().toString(), // 3
+                    proposal.getQuantity().toString(), // 4
+                    proposal.getSerializedCriteria("none"), // 5
+                    proposal.getSerializedHashTags("none"), // 6
+                    "$", // 7
+                    proposal.getPrice().toString(), // 8
+                    proposal.getTotal().toString(), // 9
+                    store.getKey().toString(), // 10
+                    store.getName(), // 11
+                    store.getAddress(), // 12
+                    store.getUrl(), // 13
+                    store.getPhoneNumber(), // 14
+                    location.getPostalCode(), // 15
+                    location.getCountryCode(), // 16
+                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 17
+                    "0", // 18
+                    "0" // 19
+            };
+
             Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
             if (proposal.getOwnerKey().equals(robotKey)) {
                 // Schedule the automatic Proposal closing by the Robot
@@ -502,27 +533,39 @@ public class ProposalSteps extends BaseSteps {
                 // Inform the sale associate of the successful confirmation
                 SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
                 Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
-                RawCommand rawCommand = null;
-                if (Source.api.equals(proposal.getSource())) {
-                    rawCommand = new RawCommand(saConsumerRecord.getPreferredConnection());
-                }
-                else {
-                    rawCommand = getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
-                }
+                RawCommand rawCommand = proposal.getRawCommandId() == null ? new RawCommand(saConsumerRecord.getPreferredConnection()) : getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
 
-                Locale locale = saConsumerRecord.getLocale();
-                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
-                String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
+                messageParts[0] = saConsumerRecord.getName();
+                String message = MessageGenerator.getMessage(
+                        rawCommand.getSource(),
+                        proposal.getHashTags(),
+                        MessageId.proposalConfirmationAck,
+                        messageParts,
+                        saConsumerRecord.getLocale()
+                );
                 communicateToConsumer(
                         rawCommand,
                         saConsumerRecord,
-                        new String[] { LabelExtractor.get("cp_command_confirm_inform_about_confirmation", new Object[] { proposalRef, tags, demandRef }, locale) }
+                        new String[] { message }
                 );
             }
 
             // Notify CC-ed
-            Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
+            List<String> cc = demand.getCC();
+            if (cc != null && 0 < cc.size()) {
+                RawCommand rawCommand = proposal.getRawCommandId() == null ? new RawCommand(demandOwner.getPreferredConnection()) : getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
+
+                messageParts[0] = demandOwner.getName();
+                String message = MessageGenerator.getMessage(
+                        rawCommand.getSource(),
+                        proposal.getHashTags(),
+                        MessageId.proposalConfirmationAck,
+                        messageParts,
+                        locale
+                );
+
+                notifyMessageToCCed(cc, message, locale);
+            }
             notifyConfirmationToCCed(pm, demand, proposal, store, demandOwner);
         }
 

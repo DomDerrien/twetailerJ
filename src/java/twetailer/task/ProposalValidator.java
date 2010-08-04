@@ -94,7 +94,7 @@ public class ProposalValidator {
                 filterHashTags(pm, saConsumerRecord, proposal);
 
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
-                if (proposal.getCriteria() == null || proposal.getCriteria().size() == 0) {
+                if ((proposal.getCriteria() == null || proposal.getCriteria().size() == 0) && (proposal.getHashTags() == null || proposal.getHashTags().size() == 0)) {
                     message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getDueDate() == null || proposal.getDueDate().getTime() < nowTime) {
@@ -124,17 +124,23 @@ public class ProposalValidator {
                         }
                    }
                 }
-                if (!Source.api.equals(proposal.getSource()) && message != null) {
+                RawCommand rawCommand = proposal.getRawCommandId() == null ? new RawCommand(proposal.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
+                if (message != null) {
                     log.warning("Invalid state for the proposal: " + proposal.getKey() + " -- message: " + message);
-                    communicateToConsumer(
-                            new RawCommand(proposal.getSource()),
-                            saConsumerRecord,
-                            new String[] { message }
-                    );
                     proposal.setState(CommandSettings.State.invalid);
+                    proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
+
+                    if (!Source.api.equals(proposal.getSource())) {
+                        communicateToConsumer(
+                                rawCommand,
+                                saConsumerRecord,
+                                new String[] { message }
+                        );
+                    }
                 }
                 else {
                     proposal.setState(CommandSettings.State.published);
+                    proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
 
                     // Create a task for that proposal
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
@@ -142,10 +148,12 @@ public class ProposalValidator {
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).
-                                method(Method.GET)
+                                method(Method.GET).
+                                countdownMillis(5000)
                     );
+
+                    BaseSteps.confirmUpdate(pm, rawCommand, proposal, saleAssociate, saConsumerRecord);
                 }
-                proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information for sale associate: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());

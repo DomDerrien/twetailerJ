@@ -24,7 +24,7 @@
 
     <property name="app.release"
         description="Planned release of this build"
-        value="22"
+        value="23"
     />
 
     <property name="app.companyName"
@@ -74,7 +74,7 @@
     />
 
     <property name="app.fourthLocalizedLabelBaseFilename"
-        value="verticals"
+        value="communications"
     />
 
     <property name="app.sessionTimeout"

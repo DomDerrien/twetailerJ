@@ -13,6 +13,7 @@
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
+    import="twetailer.dto.HashTag.RegisteredHashTag"
     import="twetailer.dto.Location"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
@@ -82,7 +83,7 @@
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
@@ -206,6 +207,7 @@
                                 id="email0"
                                 invalidMessage="Invalid Email Address"
                                 name="email0"
+                                placeHolder="email@example.com"
                                 regExp="<%= emailRegExp %>"
                                 required="true"
                                 style="width:100%;"
@@ -228,6 +230,7 @@
                                     id="email1"
                                     invalidMessage="Invalid Email Address"
                                     name="email1"
+                                    placeHolder="email@example.com"
                                     regExp="<%= emailRegExp %>"
                                     required="false"
                                     style="width:100%;"
@@ -436,9 +439,9 @@
             var fIdx = localModule._friendRowNb;
             var row = dojo.create("tr", { id: "friendRow" + fIdx }, dojo.byId("friendList"));
             dojo.create("label", { forAttr: "email" + fIdx, innerHTML: "Email:" }, dojo.create("td", null, row));
-            dojo.create("td", null, row).appendChild(new dijit.form.ValidationTextBox({ id: "email" + fIdx, invalidMessage: "Invalid Email Address", name: "email" + fIdx, required: false, style: "width:100%", trim: true }).domNode);
+            dojo.create("td", null, row).appendChild(new dijit.form.ValidationTextBox({ id: "email" + fIdx, invalidMessage: "Invalid Email Address", name: "email" + fIdx, placeHolder: "email@example.com", required: false, style: "width:100%", trim: true }).domNode);
             dojo.create("td", null, row).appendChild(new dijit.form.Button({ iconClass: "silkIcon silkIconAdd", id: "friendButton" + fIdx, onClick: function() { localModule.manageFriendRow(fIdx); }, showLabel: false, title: "Add another email address" }).domNode);
-            dijit.byId("email" + fIdx).set("regExp", dijit.byId('email1').get("regExp")); // Work-aroud: otherwise, it seems the regExp value is missinterpreted!
+            dijit.byId("email" + fIdx).set("regExp", dijit.byId('email1').get("regExp")); // Workaroud: otherwise, it seems the regExp value is missinterpreted!
         }
         else {
             var fIdx = localModule._friendRowNb;
@@ -466,7 +469,8 @@
             <%= Demand.RANGE %>: dijit.byId("range").get("value"),
             <%= Demand.RANGE_UNIT %>: "<%= LocaleValidator.DEFAULT_RANGE_UNIT %>",
             <%= Demand.QUANTITY %>: dijit.byId("quantity").get("value"),
-            <%= Demand.CRITERIA %>:["{pullCart:" + dijit.byId("pullCart").get("value") + ",golfCart:" + dijit.byId("motorCart").get("value") + "}" ] // No space to avoid the split server-side
+            <%= Demand.HASH_TAGS %>: ["<%= RegisteredHashTag.golf.toString() %>"],
+            <%= Demand.META_DATA %>:"{pullCart:" + dijit.byId("pullCart").get("value") + ",golfCart:" + dijit.byId("motorCart").get("value") + "}"
         };
         var cc = [];
         for (var i=1; i<=localModule._friendRowNb; i++) {

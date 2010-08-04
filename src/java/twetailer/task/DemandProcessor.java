@@ -142,33 +142,8 @@ public class DemandProcessor {
                 Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                 // Communicate with the sale associate
                 try {
-                    Locale locale = saConsumerRecord.getLocale();
-                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                    String tags = demand.getSerializedCriteria().length() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale);
-                    String hashTags = demand.getSerializedHashTags().length() == 0 ? "" : LabelExtractor.get("cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale);
-                    String expiration = LabelExtractor.get("cp_tweet_expiration_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale);
-                    String dueDate = LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale);
-                    String quantity = LabelExtractor.get("cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale);
-                    communicateToConsumer(
-                            new RawCommand(saConsumerRecord.getPreferredConnection()),
-                            saConsumerRecord,
-                            new String[] {
-                                LabelExtractor.get(
-                                    //
-                                    // TODO: format the following TMX entries as the ones for the generateTweet() methods
-                                    //
-                                    demand.getQuantity() == 1 ? "dp_inform_saleAssociate_about_demand_one_item" : "dp_inform_saleAssociate_about_demand_many_items",
-                                    new Object[] {
-                                        demandRef,
-                                        tags.length() == 0 || hashTags.length() == 0 ? tags + hashTags : tags + " " + hashTags,
-                                        expiration,
-                                        dueDate,
-                                        quantity
-                                    },
-                                    locale
-                                )
-                            }
-                    );
+                    BaseSteps.notifyAvailability(pm, demand, saConsumerRecord);
+
                     // Keep track of the notification to not ping him/her another time
                     demand.addSaleAssociateKey(saleAssociate.getKey());
                 }
@@ -211,13 +186,14 @@ public class DemandProcessor {
             demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
             // Notify the consumer about how many sale associates have been successfully contacted this time
-            if (!Source.api.equals(demand.getSource())) {
+            boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
+            if (!isNewDemand && !Source.api.equals(demand.getSource())) {
                 try {
                     int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
                     log.warning("Sale associates contacted: " + initialNumberOfSaleAssociatesContacted + " => " + newNumberOfSaleAssociatesContacted + " (cron: " + cronJob + ")");
                     Locale locale = owner.getLocale();
                     if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
-                        RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
+                        RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                         String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                         communicateToConsumer(
                                 rawCommand,

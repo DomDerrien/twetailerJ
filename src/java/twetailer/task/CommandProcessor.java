@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
@@ -20,7 +19,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.dto.HashTag;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
@@ -62,13 +60,6 @@ import domderrien.jsontools.JsonObject;
 
 public class CommandProcessor {
 
-    private static Logger log = Logger.getLogger(CommandProcessor.class.getName());
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
-
     /**
      * Helper to print the short date if the time is set for the last second of the day
      *
@@ -93,7 +84,7 @@ public class CommandProcessor {
      * @return Serialised command
      */
     public static String generateTweet(Demand demand, Location location, boolean anonymized, Locale locale) {
-        String labelKeyPrefix = HashTag.getVocabularySetIdentifier(demand);
+        String labelKeyPrefix = ""; // "golf";
         ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
 
         final String space = Command.SPACE;
@@ -152,7 +143,7 @@ public class CommandProcessor {
      * @return Serialised command
      */
     public static String generateTweet(Proposal proposal, Store store, boolean anonymized, Locale locale) {
-        String labelKeyPrefix = HashTag.getVocabularySetIdentifier(proposal);
+        String labelKeyPrefix = ""; // "golf";
         ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
 
         final String space = Command.SPACE;

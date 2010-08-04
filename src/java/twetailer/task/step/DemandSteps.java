@@ -322,7 +322,6 @@ public class DemandSteps extends BaseSteps {
         Demand demand = getDemandOperations().createDemand(pm, parameters, owner.getKey());
 
         // Related workflow step
-        notifyCreationToCCed(pm, demand, owner);
         MaezelServlet.triggerValidationTask(demand);
 
         return demand;

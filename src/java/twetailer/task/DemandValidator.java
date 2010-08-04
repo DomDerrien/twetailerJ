@@ -181,17 +181,23 @@ public class DemandValidator {
                         }
                    }
                 }
-                if (!Source.api.equals(demand.getSource()) && message != null) {
+                RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
+                if (message != null) {
                     log.warning("Invalid state for the demand: " + demand.getKey() + " -- message: " + message);
-                    communicateToConsumer(
-                            new RawCommand(demand.getSource()),
+                    demand.setState(CommandSettings.State.invalid);
+                    demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
+
+                    if (!Source.api.equals(demand.getSource())) {
+                        communicateToConsumer(
+                            rawCommand,
                             consumer,
                             new String[] { message }
-                    );
-                    demand.setState(CommandSettings.State.invalid);
+                        );
+                    }
                 }
                 else {
                     demand.setState(CommandSettings.State.published);
+                    demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
                     // Create a task for that demand
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
@@ -199,10 +205,12 @@ public class DemandValidator {
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
                                 param(Demand.KEY, demandKey.toString()).
-                                method(Method.GET)
+                                method(Method.GET).
+                                countdownMillis(5000)
                     );
+
+                    BaseSteps.confirmUpdate(pm, rawCommand, demand, consumer);
                 }
-                demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
             }
             catch (DataSourceException ex) {
                 log.warning("Cannot get information for consumer: " + demand.getOwnerKey() + " -- ex: " + ex.getMessage());

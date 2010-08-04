@@ -161,7 +161,8 @@
                     <p>Hi {0},</p>
                     <p>Your demand have been just created with:</p>
                     <ul>
-                        <li>Tags: {7} {8}</li>
+                        <li>Tags: {7};</li>
+                        <li>Category(ies): {8};</li>
                         <li>Quantity: {6};</li>
                         <li>Due date: {3};</li>
                         <li>Where: {5};</li>
@@ -207,6 +208,8 @@
                         <li>When: {3};</li>
                         <li>Where: {5};</li>
                         <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <!--li>Additional information: {6}.</li-->
+                        <!--li>Category(ies): {7}.</li-->
                         <li>Request reference #: {1}</li>
                     </ul>
                     <p>You CC'ed: {9}.</p>
@@ -248,6 +251,8 @@
                         <li>When: {3};</li>
                         <li>Where: {5};</li>
                         <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <!--li>Additional information: {6}.</li-->
+                        <!--li>Category(ies): {7}.</li-->
                         <li>Request reference #: {1}</li>
                     </ul>
                     <p>CC'ed people are: {9}.</p>
@@ -285,6 +290,8 @@
                     <ul>
                         <li>When: {2};</li>
                         <li>Round for {4} players, with {11} pull cart(s), and {12} golf cart(s).</li>
+                        <!--li>Additional information: {6}.</li-->
+                        <!--li>Category(ies): {7}.</li-->
                         <li>Request reference #: {1}</li>
                     </ul>
                     <p>Please, use the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff reservation desk</a>
@@ -325,6 +332,8 @@
                         <li>When: {3};</li>
                         <li>Where: {5};</li>
                         <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <!--li>Additional information: {6}.</li-->
+                        <!--li>Category(ies): {7}.</li-->
                         <li>Request reference #: {1}</li>
                     </ul>
                     <p>You CC'ed: {9}.</p>
@@ -366,6 +375,8 @@
                         <li>When: {3};</li>
                         <li>Where: {5};</li>
                         <li>Round for {6} players, with {14} pull cart(s), and {15} golf cart(s).</li>
+                        <!--li>Additional information: {6}.</li-->
+                        <!--li>Category(ies): {7}.</li-->
                         <li>Request reference #: {1}</li>
                     </ul>
                     <p>CC'ed people are: {9}.</p>
@@ -396,8 +407,8 @@
                 {11}: email thread subject
                 {12}: content of the automatic response cancelling the proposal, as defined by yhe entry "long_golf_proposal_cancelCommand"
                 {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart asked
-                {15}: number of golf cart asked
+                {14}: number of pull cart proposed
+                {15}: number of golf cart proposed
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -408,7 +419,8 @@
                         <li>Round for {5} players, with {14} pull cart(s), and {15} golf cart(s).</li>
                         <li>Unit price: {8}{9} per player.</li>
                         <li>Total cost: {8}{10}.</li>
-                        <li>Additional information: {7}.</li>
+                        <li>Additional information: {6}.</li>
+                        <li>Category(ies): {7}.</li>
                         <li>Proposal reference #: {1}.</li>
                     </ul>
                     <p>Your request is going to be sent to the tee-off request initiator.
@@ -439,8 +451,8 @@
                 {11}: email thread subject
                 {12}: content of the automatic response cancelling the proposal, as defined by yhe entry "long_golf_proposal_cancelCommand"
                 {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart asked
-                {15}: number of golf cart asked
+                {14}: number of pull cart proposed
+                {15}: number of golf cart proposed
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -451,7 +463,8 @@
                         <li>Round for {5} players, with {14} pull cart(s), and {15} golf cart(s).</li>
                         <li>Unit price: {8}{9} per player.</li>
                         <li>Total cost: {8}{10}.</li>
-                        <li>Additional information: {7}.</li>
+                        <li>Additional information: {6}.</li>
+                        <li>Category(ies): {7}.</li>
                         <li>Proposal reference #: {1}.</li>
                     </ul>
                     <p>Your request is going to be sent to the tee-off request initiator.
@@ -459,6 +472,212 @@
                     <p>Click here to cancel your proposal: <a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}">cancel proposal # {1}</a>.</p>
                     <p>Thanks for booking your tee-offs with ezToff.</p>
                     {13}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_creation_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about a proposal creation.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: demand reference
+                {2}: demand due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {3}: demand expiration date, can be equals to the due date
+                {4}: demand quantity
+                {5}: demand tags
+                {6}: demand hashtags
+                {7}: proposal reference
+                {8}: proposal due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {9}: proposal quantity
+                {10}: proposal tags
+                {11}: proposal hashtags
+                {12}: currency sign
+                {13}: unit price
+                (14}: total price
+                {15}: store reference
+                {16}: store name
+                {17}: store address
+                {18}: store website
+                {9}: store phone number
+                {20}: store postal code
+                {21}: store country code
+                {22}: email thread subject
+                {23}: content of the automatic response to confirm the proposal, as defined by yhe entry "long_golf_proposal_confirmCommand"
+                {24}: content of the automatic response to decline the proposal, as defined by yhe entry "long_golf_proposal_declineCommand"
+                {25}: message footer as defined by the entry "long_golf_footer"
+                {26}: number of pull cart asked
+                {27}: number of golf cart asked
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Your tee-off request # {1} received the proposal:</p>
+                    <ul>
+                        <li>When: {2};</li>
+                        <li>Round for {4} player(s);</li>
+                        <li>Request reference #: {1}.</li>
+                    </ul>
+                    <p>New proposal from <a href="{19}">{16}</a>, located at: {17}</p>
+                    <ul>
+                        <li>When: {8};</li>
+                        <li>Round for {9} players, with {26} pull cart(s), and {27} golf cart(s).</li>
+                        <li>Unit price: {12}{13}/player;</li>
+                        <li>Total cost: {12}{14};</li>
+                        <li>Additional information: {10}.</li>
+                        <!--li>Category(ies): {11}.</li-->
+                        <li>Proposal reference #: {7}</li>
+                    </ul>
+                    <p>More proposals from golf courses may still arrive. What do you want to do with this one?</p>
+                    <ul>
+                        <li><a href="maito:golf@twetailer.appspotmail.com?subject={22}\u0026body={23}">Confirm this proposal</a>, or</li>
+                        <li><a href="maito:golf@twetailer.appspotmail.com?subject={22}\u0026body={24}">Decline this proposal</a>.</li>
+                    </ul>
+                    <p>Note that the golf course can cancel non confirmed proposal anytime.</p>
+                    <p>Thanks for using ezToff to book your tee-off times.</p>
+                    {25}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_confirmation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the proposal confirmation.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: proposal due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: proposal quantity
+                {5}: proposal tags
+                {6}: proposal hashtags
+                {7}: currency sign
+                {8}: unit price
+                (9}: total price
+                {10}: store reference
+                {11}: store name
+                {12}: store address
+                {13}: store website
+                {14}: store phone number
+                {15}: store postal code
+                {16}: store country code
+                {17}: message footer as defined by the entry "long_golf_footer"
+                {18}: number of pull cart proposed
+                {19}: number of golf cart proposed
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>The confirmation of the proposal has been transmitted to {11}.</p>
+                    <p>Confirmed proposal:</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Round for {4} players, with {18} pull cart(s), and {19} golf cart(s).</li>
+                        <li>Unit price: {7}{8}/player;</li>
+                        <li>Total cost: {7}{9};</li>
+                        <li>Additional information: {5}.</li>
+                        <!--li>Category(ies): {6}.</li-->
+                        <li>Proposal reference #: {1}</li>
+                        <li>Tee-off request  reference #: {2}</li>
+                    </ul>
+                    <p>The golf courses is going to keep the round departure for you.</p>
+                    <p>Thanks for using ezToff to book your tee-off times.</p>
+                    {17}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_confirmation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the cc'ed about a proposal confirmation.|
+                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: proposal due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: proposal quantity
+                {5}: proposal tags
+                {6}: proposal hashtags
+                {7}: currency sign
+                {8}: unit price
+                (9}: total price
+                {10}: store reference
+                {11}: store name
+                {12}: store address
+                {13}: store website
+                {14}: store phone number
+                {15}: store postal code
+                {16}: store country code
+                {17}: message footer as defined by the entry "long_golf_footer"
+                {18}: number of pull cart proposed
+                {19}: number of golf cart proposed
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi,</p>
+                    <p>{0} has confirmed the following proposal and this was transmitted to {11}.</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Round for {4} players, with {18} pull cart(s), and {19} golf cart(s).</li>
+                        <li>Unit price: {7}{8}/player;</li>
+                        <li>Total cost: {7}{9};</li>
+                        <li>Additional information: {5}.</li>
+                        <!--li>Category(ies): {6}.</li-->
+                        <li>Proposal reference #: {1}</li>
+                        <li>Tee-off request  reference #: {2}</li>
+                    </ul>
+                    <p>The golf courses is going to keep the round departure for you.</p>
+                    {17}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_confirmation_associateNotf" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about a proposal confirmation.|
+                {0}: proposal owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
+                {1}: proposal reference
+                {2}: demand reference
+                {3}: proposal due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
+                {4}: proposal quantity
+                {5}: proposal tags
+                {6}: proposal hashtags
+                {7}: currency sign
+                {8}: unit price
+                (9}: total price
+                {10}: store reference
+                {11}: store name
+                {12}: store address
+                {13}: store website
+                {14}: store phone number
+                {15}: store postal code
+                {16}: store country code
+                {17}: message footer as defined by the entry "long_golf_footer"
+                {18}: number of pull cart proposed
+                {19}: number of golf cart proposed
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>The following proposal has been confirmed.</p>
+                    <ul>
+                        <li>When: {3};</li>
+                        <li>Round for {4} players, with {18} pull cart(s), and {19} golf cart(s).</li>
+                        <li>Unit price: {7}{8}/player;</li>
+                        <li>Total cost: {7}{9};</li>
+                        <li>Additional information: {5}.</li>
+                        <!--li>Category(ies): {6}.</li-->
+                        <li>Proposal reference #: {1}</li>
+                        <li>Tee-off request  reference #: {2}</li>
+                    </ul>
+                    <p>Please reserve it for the ezToff customer.</p>
+                    <p>Thanks for managing your tee-off requests with ezToff.</p>
+                    {17}
                 </seg>
             </tuv>
         </tu>

@@ -193,5 +193,155 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="long_golf_proposal_creation_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;Your proposal for the tee-off reference # {2} have been just created with:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {4};&lt;/li&gt;
+                        &lt;li&gt;Round for {5} players, with {14} pull cart(s), and {15} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Unit price: {8}{9} per player.&lt;/li&gt;
+                        &lt;li&gt;Total cost: {8}{10}.&lt;/li&gt;
+                        &lt;li&gt;Additional information: {6}.&lt;/li&gt;
+                        &lt;li&gt;Category(ies): {7}.&lt;/li&gt;
+                        &lt;li&gt;Proposal reference #: {1}.&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;Your request is going to be sent to the tee-off request initiator.
+                    ezToff will notify you as soon as the initiator confirms your proposal.&lt;/p&gt;
+                    &lt;p&gt;Click here to cancel your proposal: &lt;a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}"&gt;cancel proposal # {1}&lt;/a&gt;.&lt;/p&gt;
+                    &lt;p&gt;Thanks for booking your tee-offs with ezToff.&lt;/p&gt;
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_update_ackToOwner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;Your proposal for the tee-off reference # {2} have been just updated with:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {4};&lt;/li&gt;
+                        &lt;li&gt;Round for {5} players, with {14} pull cart(s), and {15} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Unit price: {8}{9} per player.&lt;/li&gt;
+                        &lt;li&gt;Total cost: {8}{10}.&lt;/li&gt;
+                        &lt;li&gt;Additional information: {6}.&lt;/li&gt;
+                        &lt;li&gt;Category(ies): {7}.&lt;/li&gt;
+                        &lt;li&gt;Proposal reference #: {1}.&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;Your request is going to be sent to the tee-off request initiator.
+                    ezToff will notify you as soon as the initiator confirms your proposal.&lt;/p&gt;
+                    &lt;p&gt;Click here to cancel your proposal: &lt;a href="maito:golf@twetailer.appspotmail.com?subject={11}\u0026body={12}"&gt;cancel proposal # {1}&lt;/a&gt;.&lt;/p&gt;
+                    &lt;p&gt;Thanks for booking your tee-offs with ezToff.&lt;/p&gt;
+                    {13}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_creation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;Your tee-off request # {1} received the proposal:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {2};&lt;/li&gt;
+                        &lt;li&gt;Round for {4} player(s);&lt;/li&gt;
+                        &lt;li&gt;Request reference #: {1}.&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;New proposal from &lt;a href="19"&gt;{16}&lt;/a&gt;, located at: {17}&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {8};&lt;/li&gt;
+                        &lt;li&gt;Round for {9} players, with {26} pull cart(s), and {27} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Unit price: {12}{13}/player;&lt;/li&gt;
+                        &lt;li&gt;Total cost: {12}{14};&lt;/li&gt;
+
+
+                        &lt;li&gt;Proposal reference #: {7}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;More proposals from golf courses may still arrive. What do you want to do with this one?&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;&lt;a href="maito:golf@twetailer.appspotmail.com?subject={22}\u0026body={23}"&gt;Confirm this proposal&lt;/a&gt;, or&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="maito:golf@twetailer.appspotmail.com?subject={22}\u0026body={24}"&gt;Decline this proposal&lt;/a&gt;.&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;Note that the golf course can cancel non confirmed proposal anytime.&lt;/p&gt;
+                    &lt;p&gt;Thanks for using ezToff to book your tee-off times.&lt;/p&gt;
+                    {25}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;The confirmation of the proposal has been transmitted to {11}.&lt;/p&gt;
+                    &lt;p&gt;Confirmed proposal:&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Round for {4} players, with {18} pull cart(s), and {19} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Unit price: {7}{8}/player;&lt;/li&gt;
+                        &lt;li&gt;Total cost: {7}{9};&lt;/li&gt;
+                        &lt;li&gt;Additional information: {5}.&lt;/li&gt;
+
+                        &lt;li&gt;Proposal reference #: {1}&lt;/li&gt;
+                        &lt;li&gt;Tee-off request  reference #: {2}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;The golf courses is going to keep the round departure for you.&lt;/p&gt;
+                    &lt;p&gt;Thanks for using ezToff to book your tee-off times.&lt;/p&gt;
+                    {17}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi,&lt;/p&gt;
+                    &lt;p&gt;{0} has confirmed the following proposal and this was transmitted to {11}.&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Round for {4} players, with {18} pull cart(s), and {19} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Unit price: {7}{8}/player;&lt;/li&gt;
+                        &lt;li&gt;Total cost: {7}{9};&lt;/li&gt;
+                        &lt;li&gt;Additional information: {5}.&lt;/li&gt;
+
+                        &lt;li&gt;Proposal reference #: {1}&lt;/li&gt;
+                        &lt;li&gt;Tee-off request  reference #: {2}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;The golf courses is going to keep the round departure for you.&lt;/p&gt;
+                    {17}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_associateNotf" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    &lt;p&gt;Hi {0},&lt;/p&gt;
+                    &lt;p&gt;The following proposal has been confirmed.&lt;/p&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;When: {3};&lt;/li&gt;
+                        &lt;li&gt;Round for {4} players, with {18} pull cart(s), and {19} golf cart(s).&lt;/li&gt;
+                        &lt;li&gt;Unit price: {7}{8}/player;&lt;/li&gt;
+                        &lt;li&gt;Total cost: {7}{9};&lt;/li&gt;
+                        &lt;li&gt;Additional information: {5}.&lt;/li&gt;
+
+                        &lt;li&gt;Proposal reference #: {1}&lt;/li&gt;
+                        &lt;li&gt;Tee-off request  reference #: {2}&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;p&gt;Please reserve it for the ezToff customer.&lt;/p&gt;
+                    &lt;p&gt;Thanks for managing your tee-off requests with ezToff.&lt;/p&gt;
+                    {17}
+                </seg>
+            </tuv>
+        </tu>
     </body>
 </tmx>
