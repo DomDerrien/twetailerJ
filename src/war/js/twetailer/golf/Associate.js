@@ -214,7 +214,7 @@
         data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
 
         var dfd = _common.updateRemoteProposal(data, data.key);
-        dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 2000); });
+        dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });
     };
 
     /**

@@ -407,7 +407,7 @@
         var anim1 = dojo.fx.wipeOut({ node: "pane" + sourceIdx, easing: dojo.fx.easing.expoOut });
         var anim2 = dojo.fx.wipeIn({ node: "pane" + targetIdx, easing: dojo.fx.easing.expoIn });
         // and play them at the same moment
-        dojo.fx.combine([anim1, anim2]).play();
+        dojo.fx.chain([anim1, anim2]).play();
         switch(targetIdx) {
         case 1: <% if (postalCode == null || postalCode.length() == 0) {
                     %>dijit.byId("postalCode").focus();<%
