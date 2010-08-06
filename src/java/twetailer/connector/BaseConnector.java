@@ -85,7 +85,8 @@ public class BaseConnector {
             Source.twitter.equals(source) ? consumer.getTwitterId() :
                 Source.jabber.equals(source) ? consumer.getJabberId() :
                     Source.mail.equals(source) ? consumer.getEmail() :
-                        null;
+                        Source.widget.equals(source) ? consumer.getEmail() :
+                            null;
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
             communicateToUser(source, false, userId, userName, rawCommand.getSubject(), messages, consumer.getLocale());
@@ -151,7 +152,7 @@ public class BaseConnector {
                 throw new CommunicationException("Cannot communicate by IM to the consumer: " + userId, Source.jabber, ex);
             }
         }
-        else if (Source.mail.equals(source)) {
+        else if (Source.mail.equals(source) || Source.widget.equals(source)) {
             try {
                 StringBuilder mailMessage = new StringBuilder();
                 for (String message: messages) {

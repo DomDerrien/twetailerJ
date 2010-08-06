@@ -94,6 +94,8 @@ public class BaseSteps {
     public static void setMockSettingsOperations(SettingsOperations settingsOperations) { BaseSteps.settingsOperations = settingsOperations; }
     public static void setMockStoreOperations(StoreOperations storeOperations) { BaseSteps.storeOperations = storeOperations; }
 
+    public static String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
+
     public static void confirmUpdate(PersistenceManager pm, RawCommand rawCommand, Demand demand, Consumer owner) throws DataSourceException, InvalidIdentifierException, CommunicationException {
 
         List<String> cc = demand.getCC();
@@ -117,7 +119,7 @@ public class BaseSteps {
                     demand.getSerializedCC("none"), // 9
                     "<unknown>", // 10
                     Source.widget.equals(demand.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
-                    "cancel demand:" + demand.getKey().toString(), // 12
+                    ("cancel demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 12
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
                     "0", //14
                     "0" // 15
@@ -161,8 +163,8 @@ public class BaseSteps {
                 demand.getSerializedCriteria("none"), // 5
                 demand.getSerializedHashTags("none"), // 6
                 LabelExtractor.get("mc_mail_subject_response_default", locale), // 7
-                "propose demand:" + demand.getKey().toString() + " due:[update-date-time] total:$[amount] meta:{pull:[0],buggy:[0]} tags:[extra-info]", // 8
-                "decline demand:" + demand.getKey().toString(), // 9
+                ("propose demand:" + demand.getKey().toString() + " due:[update-date-time] total:$[amount] meta:{pull:[0],buggy:[0]} tags:[extra-info]").replaceAll(" ", "+").replaceAll("\n", "%0A"), // 8
+                ("decline demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 9
                 LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 10
                 "0", //11
                 "0" // 12
@@ -198,7 +200,7 @@ public class BaseSteps {
                     proposal.getPrice().toString(), // 9
                     proposal.getTotal().toString(), // 10
                     Source.widget.equals(proposal.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
-                    "cancel proposal:" + proposal.getKey().toString(), // 12
+                    ("cancel proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 12
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
                     "0", //14
                     "0" // 15
@@ -242,13 +244,13 @@ public class BaseSteps {
                     store.getKey().toString(), // 15
                     store.getName(), // 16
                     store.getAddress(), // 17
-                    store.getUrl(), // 18
+                    store.getUrl().startsWith("http://") ? store.getUrl() : "http://" + store.getUrl(), // 18
                     store.getPhoneNumber(), // 19
                     location.getPostalCode(), // 20
                     location.getCountryCode(), // 21
                     LabelExtractor.get("mc_mail_subject_response_default", locale), // 22
-                    "confirm proposal:" + proposal.getKey().toString(), // 23
-                    "decline proposal:" + proposal.getKey().toString(), // 24
+                    ("confirm proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 23
+                    ("decline proposal:" + proposal.getKey().toString()  +automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 24
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 25
                     "0", // 26
                     "0" // 27
@@ -406,7 +408,7 @@ public class BaseSteps {
      * @param message Information to convey to the CC-ed user
      * @param locale Identifier of the language to use
      */
-    protected static void notifyMessageToCCed(List<String> coordinates, String message, Locale locale) {
+    public static void notifyMessageToCCed(List<String> coordinates, String message, Locale locale) {
         for (String coordinate: coordinates) {
             try {
                 communicateToCCed(coordinate, message, locale);

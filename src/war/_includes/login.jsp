@@ -41,6 +41,7 @@
         for (String hashTag: hashTags) {
             verticalId = hashTag;
             if (forwardedUriAttribute.startsWith("/console/" + verticalId)) {
+                useVertical = true;
                 break;
             }
         }

@@ -16,7 +16,6 @@ import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
-import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
@@ -76,7 +75,6 @@ public class ProposalProcessor {
         if (State.published.equals(proposal.getState())) {
             try {
                 Demand demand = BaseSteps.getDemandOperations().getDemand(pm, proposal.getDemandKey(), null);
-                Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
                 if (State.published.equals(demand.getState())) {
 
                     // Update the demand

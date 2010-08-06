@@ -18,7 +18,9 @@ import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.InvalidStateException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -34,6 +36,7 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -339,8 +342,9 @@ public class DemandSteps extends BaseSteps {
      * @throws DataSourceException if the retrieval of the last created demand or of the location information fail
      * @throws InvalidIdentifierException if there's an issue with the Demand identifier is invalid
      * @throws InvalidStateException if the Demand is not update-able
+     * @throws CommunicationException if the notification of a successful closing fails
      */
-    public static Demand updateDemand(PersistenceManager pm, Long demandKey, JsonObject parameters, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
+    public static Demand updateDemand(PersistenceManager pm, Long demandKey, JsonObject parameters, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
         Demand demand = getDemandOperations().getDemand(pm, demandKey, owner.getKey());
         State currentState = demand.getState();
@@ -354,29 +358,77 @@ public class DemandSteps extends BaseSteps {
                 // Only one Proposal is still associated with the Demand
                 Long saleAssociateKey = demand.getSaleAssociateKeys().get(0);
                 Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), saleAssociateKey, null);
+
+                Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
+                String[] messageParts = new String[] {
+                        null, // 0
+                        demand.getKey().toString(), //1
+                        demand.getState().toString(), // 2
+                        demand.getDueDate().toString(), // 3
+                        demand.getModificationDate().toString(), // 4
+                        demand.getQuantity().toString(), // 5
+                        demand.getSerializedCriteria("none"), // 6
+                        demand.getSerializedHashTags("none"), // 7
+                        demand.getSerializedCC("none"), // 8
+                        proposal.getKey().toString(), // 9
+                        proposal.getDemandKey().toString(), // 10
+                        proposal.getDueDate().toString(), // 11
+                        proposal.getQuantity().toString(), // 12
+                        proposal.getSerializedCriteria("none"), // 13
+                        proposal.getSerializedHashTags("none"), // 14
+                        "$", // 15
+                        proposal.getPrice().toString(), // 16
+                        proposal.getTotal().toString(), // 17
+                        location.getPostalCode(), // 18
+                        location.getCountryCode(), // 19
+                        null, // 20
+                        null, // 21
+                        null, // 22
+                        "0", // 20
+                        "0" // 21
+                };
+
+                if (!Source.api.equals(demand.getSource())) {
+                    Locale locale = owner.getLocale();
+                    messageParts[0] = owner.getName();
+                    messageParts[22] = LabelExtractor.get("mc_mail_subject_response_default", locale);
+                    String message = MessageGenerator.getMessage(
+                            demand.getSource(),
+                            proposal.getHashTags(),
+                            MessageId.demandClosingAck,
+                            messageParts,
+                            locale
+                    );
+                    communicateToConsumer(
+                            new RawCommand(demand.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            owner,
+                            new String[] { message }
+                    );
+                }
+
                 if (!State.closed.equals(proposal.getState())) {
                     // Only one SaleAssociate is still associated with the Demand
                     SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
                     Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
 
-                    // Get the corresponding rawCommant
-                    RawCommand rawCommand = null;
-                    if (Source.api.equals(proposal.getSource())) {
-                        rawCommand = new RawCommand(saConsumerRecord.getPreferredConnection());
-                    }
-                    else {
-                        rawCommand = getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
-                    }
-
                     // Inform Proposal owner about the closing
                     Locale locale = saConsumerRecord.getLocale();
-                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale);
-                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    messageParts[0] = saConsumerRecord.getName();
+                    messageParts[22] = LabelExtractor.get("mc_mail_subject_response_default", locale);
+                    messageParts[23] = ("close proposal:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
+                    messageParts[24] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
+                    String message = MessageGenerator.getMessage(
+                            proposal.getSource(),
+                            proposal.getHashTags(),
+                            MessageId.demandClosingNot,
+                            messageParts,
+                            locale
+                    );
                     try {
                         communicateToConsumer(
-                                rawCommand,
+                                new RawCommand(saConsumerRecord.getPreferredConnection()),
                                 saConsumerRecord,
-                                new String[] { LabelExtractor.get("cp_command_close_demand_closed_proposal_to_close", new Object[] { demandRef, proposalRef }, locale) }
+                                new String[] { message }
                         );
                     }
                     catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process
