@@ -47,9 +47,6 @@ public class CloseCommandProcessor {
             Long entityKey = command.getLong(Demand.REFERENCE);
             try {
                 DemandSteps.updateDemand(pm, entityKey, getFreshCloseParameters(), consumer);
-                // Echo back the specified demand
-                String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { entityKey }, locale);
-                message = LabelExtractor.get("cp_command_close_acknowledge_demand_closing", new Object[] { demandRef }, locale);
             }
             catch(InvalidIdentifierException ex) {
                 message = LabelExtractor.get("cp_command_close_invalid_demand_id", locale);
@@ -60,11 +57,13 @@ public class CloseCommandProcessor {
                 stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
                 message = LabelExtractor.get("cp_command_close_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
             }
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    new String[] { message }
-            );
+            if (message != null) {
+                communicateToConsumer(
+                        rawCommand,
+                        consumer,
+                        new String[] { message }
+                );
+            }
             return;
         }
 
@@ -75,9 +74,6 @@ public class CloseCommandProcessor {
             try {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.close, Demand.class.getName());
                 ProposalSteps.updateProposal(pm, entityKey, getFreshCloseParameters(), saleAssociate, consumer);
-                // Echo back the specified proposal
-                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { entityKey }, locale);
-                message = LabelExtractor.get("cp_command_close_acknowledge_proposal_closing", new Object[] { proposalRef }, locale);
             }
             catch(InvalidIdentifierException ex) {
                 message = LabelExtractor.get("cp_command_close_invalid_proposal_id", locale);
@@ -91,11 +87,13 @@ public class CloseCommandProcessor {
             catch(ReservedOperationException ex) {
                 message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
             }
-            communicateToConsumer(
-                    rawCommand,
-                    consumer,
-                    new String[] { message }
-            );
+            if (message != null) {
+                communicateToConsumer(
+                        rawCommand,
+                        consumer,
+                        new String[] { message }
+                );
+            }
             return;
         }
 

@@ -312,8 +312,9 @@ public class ProposalSteps extends BaseSteps {
      * @throws DataSourceException if the retrieval of the last created proposal or of the location information fail
      * @throws InvalidIdentifierException if there's an issue with the Proposal identifier is invalid
      * @throws InvalidStateException if the Proposal is not update-able
+     * @throws CommunicationException if the communication of the update confirmation fails
      */
-    public static Proposal updateProposal(PersistenceManager pm, Long proposalKey, JsonObject parameters, SaleAssociate owner, Consumer saConsumerRecord) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
+    public static Proposal updateProposal(PersistenceManager pm, Long proposalKey, JsonObject parameters, SaleAssociate owner, Consumer saConsumerRecord) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
         Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, owner.getKey(), owner.getStoreKey());
         State currentState = proposal.getState();
@@ -326,27 +327,75 @@ public class ProposalSteps extends BaseSteps {
             if (State.confirmed.equals(currentState) && State.closed.toString().equals(proposedState)) {
                 // Get the associated demand
                 Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), null);
+
+                Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
+                String[] messageParts = new String[] {
+                        null, // 0
+                        demand.getKey().toString(), //1
+                        demand.getState().toString(), // 2
+                        demand.getDueDate().toString(), // 3
+                        demand.getModificationDate().toString(), // 4
+                        demand.getQuantity().toString(), // 5
+                        demand.getSerializedCriteria("none"), // 6
+                        demand.getSerializedHashTags("none"), // 7
+                        demand.getSerializedCC("none"), // 8
+                        proposal.getKey().toString(), // 9
+                        proposal.getDemandKey().toString(), // 10
+                        proposal.getDueDate().toString(), // 11
+                        proposal.getQuantity().toString(), // 12
+                        proposal.getSerializedCriteria("none"), // 13
+                        proposal.getSerializedHashTags("none"), // 14
+                        "$", // 15
+                        proposal.getPrice().toString(), // 16
+                        proposal.getTotal().toString(), // 17
+                        location.getPostalCode(), // 18
+                        location.getCountryCode(), // 19
+                        null, // 20
+                        null, // 21
+                        null, // 22
+                        "0", // 20
+                        "0" // 21
+                };
+
+                if (!Source.api.equals(demand.getSource())) {
+                    Locale locale = saConsumerRecord.getLocale();
+                    messageParts[0] = saConsumerRecord.getName();
+                    messageParts[22] = LabelExtractor.get("mc_mail_subject_response_default", locale);
+                    String message = MessageGenerator.getMessage(
+                            demand.getSource(),
+                            proposal.getHashTags(),
+                            MessageId.proposalClosingAck,
+                            messageParts,
+                            locale
+                    );
+                    communicateToConsumer(
+                            new RawCommand(proposal.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            saConsumerRecord,
+                            new String[] { message }
+                    );
+                }
+
                 if (!State.closed.equals(demand.getState())) {
                     Consumer demandOwner = getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
 
-                    // Get the corresponding rawCommant
-                    RawCommand rawCommand = null;
-                    if (Source.api.equals(demand.getSource())) {
-                        rawCommand = new RawCommand(demandOwner.getPreferredConnection());
-                    }
-                    else {
-                        rawCommand = getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
-                    }
-
                     // Inform Proposal owner about the closing
                     Locale locale = demandOwner.getLocale();
-                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
+                    messageParts[0] = demandOwner.getName();
+                    messageParts[22] = LabelExtractor.get("mc_mail_subject_response_default", locale);
+                    messageParts[23] = ("close demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
+                    messageParts[24] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
+                    String message = MessageGenerator.getMessage(
+                            proposal.getSource(),
+                            proposal.getHashTags(),
+                            MessageId.demandClosingNot,
+                            messageParts,
+                            locale
+                    );
                     try {
                         communicateToConsumer(
-                                rawCommand,
+                                new RawCommand(demandOwner.getPreferredConnection()),
                                 demandOwner,
-                                new String[] { LabelExtractor.get("cp_command_close_proposal_closed_demand_to_close", new Object[] { proposalRef, demandRef }, locale) }
+                                new String[] { message }
                         );
                     }
                     catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process
@@ -485,9 +534,12 @@ public class ProposalSteps extends BaseSteps {
                 // Schedule the other proposal cancellation
                 MaezelServlet.triggerProposalCancellationTask(proposalKeys, demandOwner.getKey(), proposalKey);
 
-                // Clean-up the list of associated proposals and sale associates
-                proposalKeys.clear();
-                proposalKeys.add(proposalKey);
+                // Clean-up the list of associated proposals
+                demand.resetProposalKeys();
+                demand.addProposalKey(proposalKey);
+            }
+            List<Long> saleAssociateKeys = demand.getSaleAssociateKeys();
+            if (1 < saleAssociateKeys.size()) {
                 demand.resetSaleAssociateKeys();
                 demand.addSaleAssociateKey(proposal.getOwnerKey());
             }
@@ -519,10 +571,28 @@ public class ProposalSteps extends BaseSteps {
                     store.getPhoneNumber(), // 14
                     location.getPostalCode(), // 15
                     location.getCountryCode(), // 16
-                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 17
-                    "0", // 18
-                    "0" // 19
+                    LabelExtractor.get("mc_mail_subject_response_default", locale), // 17
+                    ("close demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 18
+                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 19
+                    "0", // 20
+                    "0" // 21
             };
+
+            if (!Source.api.equals(demand.getSource())) {
+                messageParts[0] = demandOwner.getName();
+                String message = MessageGenerator.getMessage(
+                        demand.getSource(),
+                        proposal.getHashTags(),
+                        MessageId.proposalConfirmationAck,
+                        messageParts,
+                        demandOwner.getLocale()
+                );
+                communicateToConsumer(
+                        new RawCommand(demand.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                        demandOwner,
+                        new String[] { message }
+                );
+            }
 
             Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
             if (proposal.getOwnerKey().equals(robotKey)) {
@@ -539,12 +609,12 @@ public class ProposalSteps extends BaseSteps {
                 String message = MessageGenerator.getMessage(
                         rawCommand.getSource(),
                         proposal.getHashTags(),
-                        MessageId.proposalConfirmationAck,
+                        MessageId.proposalConfirmationNot,
                         messageParts,
                         saConsumerRecord.getLocale()
                 );
                 communicateToConsumer(
-                        rawCommand,
+                        new RawCommand(saConsumerRecord.getPreferredConnection()),
                         saConsumerRecord,
                         new String[] { message }
                 );
@@ -559,14 +629,13 @@ public class ProposalSteps extends BaseSteps {
                 String message = MessageGenerator.getMessage(
                         rawCommand.getSource(),
                         proposal.getHashTags(),
-                        MessageId.proposalConfirmationAck,
+                        MessageId.proposalConfirmationCpy,
                         messageParts,
                         locale
                 );
 
                 notifyMessageToCCed(cc, message, locale);
             }
-            notifyConfirmationToCCed(pm, demand, proposal, store, demandOwner);
         }
 
         return proposal;

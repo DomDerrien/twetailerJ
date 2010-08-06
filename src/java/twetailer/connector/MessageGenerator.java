@@ -1,9 +1,16 @@
 package twetailer.connector;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dto.Demand;
+import twetailer.dto.Entity;
+import twetailer.dto.Location;
+import twetailer.dto.Proposal;
+import twetailer.dto.Store;
 import twetailer.dto.HashTag.RegisteredHashTag;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -37,8 +44,10 @@ public class MessageGenerator {
         proposalDeclinationAck,
         /** Identifier of the message sent to CC'ed users to inform about the proposal declination */
         proposalDeclinationCpy,
-        /** Identifier of the message sent to the demand owner to confirm the demand cancellation */
+        /** Identifier of the message sent to the demand owner to confirm the demand closing */
         demandClosingAck,
+        /** Identifier of the message sent to the owner of the proposal attached to the demand, to invite him to close it too */
+        demandClosingNot,
 
         /** Identifier of the message sent to the proposal owner to confirm the proposal creation */
         proposalCreationAck,
@@ -58,8 +67,10 @@ public class MessageGenerator {
         proposalCancellationNot,
         /** Identifier of the message sent to the CC'ed users to inform about the proposal cancellation */
         proposalCancellationCpy,
-        /** Identifier of the message sent to the proposal owner to confirm the proposal deletion */
-        proposalDeletionAck
+        /** Identifier of the message sent to the proposal owner to confirm the proposal closing*/
+        proposalClosingAck,
+        /** Identifier of the message sent to the owner of the demand attached to the proposal, to invite him to close it too */
+        proposalClosingNot
     }
 
     public static boolean needShortMessage(Source source) {
@@ -99,6 +110,10 @@ public class MessageGenerator {
         case proposalConfirmationAck: return "proposal_confirmation_ackToConsumer";
         case proposalConfirmationCpy: return "proposal_confirmation_ackToCCed";
         case proposalConfirmationNot: return "proposal_confirmation_associateNotif";
+        case demandClosingAck:        return "demand_closing_ackToOwner";
+        case demandClosingNot:        return "demand_closing_associateNotif";
+        case proposalClosingAck:      return "proposal_closing_ackToOwner";
+        case proposalClosingNot:      return "proposal_closing_consumerNotif";
         default: throw new IllegalArgumentException("The case for the message identifier '" + identifier.toString() + "' is missing!");
         }
     }
@@ -108,4 +123,39 @@ public class MessageGenerator {
         String out = LabelExtractor.get(ResourceFileId.fourth, prefix + translateMessageId(identifier), parameters, locale);
         return out;
     }
+
+    /*
+    public static String getMessage(Source source, List<String> hashTags, MessageId identifier, Locale locale) {
+        String prefix = (needShortMessage(source) ? SHORT_MESSAGE_PREFIX : LONG_MESSAGE_PREFIX) + getVerticalPrefix(hashTags);
+        String out = LabelExtractor.get(ResourceFileId.fourth, prefix + translateMessageId(identifier), null / * parameters * /, locale);
+        return out;
+    }
+
+    private static Map<String, String> parameters = new HashMap<String, String>();
+
+    public MessageGenerator fetch(Demand demand) {
+        parameters.put("demand.key", demand.getKey().toString());
+        return this;
+    }
+
+    public MessageGenerator fetch(Proposal proposal) {
+        parameters.put("proposal.key", proposal.getKey().toString());
+        return this;
+    }
+
+    public MessageGenerator fetch(Store store) {
+        parameters.put("store.key", store.getKey().toString());
+        return this;
+    }
+
+    public MessageGenerator fetch(Location location, Entity origin) {
+        String prefix = origin.getClass().getName();
+        parameters.put(prefix + ".location.key", location.getKey().toString());
+        return this;
+    }
+
+    static {
+        new MessageGenerator().fetch(new Demand()).fetch(new Proposal()).fetch(new Store()).fetch(new Location(), new Demand());
+    }
+    */
 }
