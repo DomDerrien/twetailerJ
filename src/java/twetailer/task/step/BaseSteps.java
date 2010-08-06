@@ -251,9 +251,10 @@ public class BaseSteps {
                     LabelExtractor.get("mc_mail_subject_response_default", locale), // 22
                     ("confirm proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 23
                     ("decline proposal:" + proposal.getKey().toString()  +automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 24
-                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 25
-                    "0", // 26
-                    "0" // 27
+                    ("cancel demand:" + proposal.getDemandKey().toString()  +automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 25
+                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 26
+                    "0", // 27
+                    "0" // 28
             };
 
             // Send the proposal details to the owner
