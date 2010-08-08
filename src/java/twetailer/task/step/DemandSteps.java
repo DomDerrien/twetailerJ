@@ -415,7 +415,7 @@ public class DemandSteps extends BaseSteps {
                     Locale locale = saConsumerRecord.getLocale();
                     messageParts[0] = saConsumerRecord.getName();
                     messageParts[20] = LabelExtractor.get("mc_mail_subject_response_default", locale);
-                    messageParts[21] = ("close proposal:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
+                    messageParts[21] = ("close proposal:" + proposal.getKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
                     messageParts[22] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
                     String message = MessageGenerator.getMessage(
                             proposal.getSource(),
