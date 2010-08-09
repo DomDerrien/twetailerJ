@@ -391,7 +391,7 @@ public class DemandSteps extends BaseSteps {
                 if (!Source.api.equals(demand.getSource())) {
                     Locale locale = owner.getLocale();
                     messageParts[0] = owner.getName();
-                    messageParts[22] = LabelExtractor.get("mc_mail_subject_response_default", locale);
+                    messageParts[22] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
                     String message = MessageGenerator.getMessage(
                             demand.getSource(),
                             proposal.getHashTags(),

@@ -360,7 +360,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     &lt;p&gt;Hi {0},&lt;/p&gt;
-                    &lt;p&gt;The Request# {1) for the &lt;strong&gt;{11}&lt;/strong&gt; reservation under &lt;strong&gt;ezToff Proposal# {9}&lt;/strong&gt; has been &lt;strong&gt;closed&lt;/strong&gt;. Please &lt;a href="mailto:golf@twetailer.appspotmail.com?body={21}&amp;subject={20}"&gt;&lt;strong&gt;close&lt;/strong&gt;&lt;/a&gt; your matching proposal {9} in order to better your Rating.&lt;/p&gt;
+                    &lt;p&gt;The Request# {1} for the &lt;strong&gt;{11}&lt;/strong&gt; reservation under &lt;strong&gt;ezToff Proposal# {9}&lt;/strong&gt; has been &lt;strong&gt;closed&lt;/strong&gt;. Please &lt;a href="mailto:golf@twetailer.appspotmail.com?body={21}&amp;subject={20}"&gt;&lt;strong&gt;close&lt;/strong&gt;&lt;/a&gt; your matching proposal {9} in order to better your Rating.&lt;/p&gt;
                     {22}
                     &lt;p&gt;Reference#: {1}, Proposal#: {9}.&lt;/p&gt;
                 </seg>
