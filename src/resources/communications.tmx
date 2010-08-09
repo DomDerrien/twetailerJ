@@ -248,7 +248,6 @@
                 {15}: number of golf cart asked
                 {16}: locale
                 {17}: range
-  
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -373,7 +372,6 @@
                 {15}: number of golf cart asked
                 {16}: locale
                 {17}: range
-                 
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -512,8 +510,8 @@
                 {24}: content of the automatic response to decline the proposal, as defined by the entry "long_golf_proposal_declineCommand"
                 {25}: content of the automatic response to cancel the demand, as defined by the entry "long_golf_demand_cancelCommand"
                 {26}: message footer as defined by the entry "long_golf_footer"
-                {27}: number of pull cart asked (DOM, I'm assuming this is the Proposal?)
-                {28}: number of golf cart asked (DOM, I'm assuming this is the Proposal?)
+                {27}: number of pull cart asked
+                {28}: number of golf cart asked
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -528,8 +526,8 @@
                         <li>Total cost: <strong>{12}{14}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:golf@twetailer.appspotmail.com?body={23}&amp;subject={22}">confirm this proposal# {7}</a></strong>, <a href="mailto:golf@twetailer.appspotmail.com?body={24}&amp;subject={22}">decline</a> it, or, simply wait to see if any others come in.</p>
-                    <p>More course information: <br>
-                     Address: {17}, {20} {21}<br>
+                    <p>More course information: <br/>
+                     Address: {17}, {20} {21}<br/>
                      Telephone: {19}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
                     <a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
@@ -577,8 +575,8 @@
                     <p>Thank you for the confirmation &amp; have a great game!</p>
                     <p>Don't forget to send an email to
                     <strong><a href="mailto:golf@twetailer.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> your request after your game, so we can better your Rating.</p>
-                    <p>More course information: <br>
-                     Address: {12}, {15} {16}<br>
+                    <p>More course information: <br/>
+                     Address: {12}, {15} {16}<br/>
                      Telephone: {14}</p>
                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
                     <a href="mailto:assistant@twetailer.appspotmail.com?body={18}&amp;subject={17}">cancel</a>, or, if you've received this message in error, click
@@ -624,9 +622,9 @@
                     <p><strong>{0}</strong> has chosen to keep you notified regarding their <strong>confirmed {3} tee-off</strong> at <strong><a href="{13}">{11}</a></strong>.</p>
                     <p>The reservation is under <strong>ezToff Proposal# {1}</strong>.</p>
                     <p>Have a great game!</p>
-                    <p>More course information: <br>
-                     Address: {12}, {15} {16}<br>
-                     Telephone: {14}</p>
+                    <p>More course information: <br/>
+                    Address: {12}, {15} {16}<br/>
+                    Telephone: {14}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
                     <a href="mailto:assistant@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">There's been some kind of mistake</a> :-(
@@ -726,9 +724,9 @@
                 <seg>
                     <p>Hi {0},</p>
                     <p>The reservation under <strong>ezToff Proposal# {9}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
-                    <p>If you enjoyed using ezToff, please recommend us to your fellow golfers, or, simply CC them next time.</P>
+                    <p>If you enjoyed using ezToff, please recommend us to your fellow golfers, or, simply CC them next time.</p>
                     {22}
-                    <p>Reference#: {1}.  
+                    <p>Reference#: {1}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -760,7 +758,7 @@
                 {19}: demand location country code
                 {20}: mail message subject for the embedded command
                 {21}: mail message body for the "close proposal" command
-                {22}: message footer as defined by long_golf_footer 
+                {22}: message footer as defined by long_golf_footer
                 {23}: number of pull carts
                 {24}: number of golf carts
             </note>
@@ -847,7 +845,6 @@
                 {24}: number of golf carts
                 {25}: store name
                 {26}: store website
- 
             </note>
             <tuv xml:lang="en">
                 <seg>

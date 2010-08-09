@@ -122,7 +122,9 @@ public class BaseSteps {
                     ("cancel demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 12
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
                     "0", //14
-                    "0" // 15
+                    "0", // 15
+                    location.getPostalCode() + " " + location.getCountryCode(),
+                    demand.getRange().toString() + " " + demand.getRangeUnit()
             };
 
             // Send the operation confirmation to the owner
