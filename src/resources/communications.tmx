@@ -298,7 +298,7 @@
                         <li>Golf carts: <strong>{12}</strong></li>
                         <li>Options: <strong>{5}</strong></li>
                     </ul>
-                    <p>If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff Reservation Desk</a> and click "Create Tea-time Proposal" for <strong>Reference {1}</strong>.</p>
+                    <p>If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff Reservation Desk</a> and click "Create Tee-time Proposal" for <strong>Reference {1}</strong>.</p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
                     {10}
                     <p>Request#: {1}.</p>
