@@ -677,7 +677,10 @@
                         <li>Unit price: <strong>{7}{8}</strong> per player</li>
                         <li>Total cost: <strong>{7}{9}</strong></li>
                     </ul>
-                    <p>For your records, this was your Proposal# {1}. Thanks for managing your tee-off requests with ezToff.</p>
+
+                    <p>Please <a href="mailto:golf@twetailer.appspotmail.com?body={21}&amp;subject={20}"><strong>close</strong></a> this Proposal {9} once the Golfer has teed-off in order to better your Rating.</p>
+
+                    <p>Thanks for managing your tee-off requests with ezToff.</p>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking
                     <a href="mailto:assistant@twetailer.appspotmail.com?body={18}&amp;subject={17}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {1}">There's been some kind of mistake</a> :-(
