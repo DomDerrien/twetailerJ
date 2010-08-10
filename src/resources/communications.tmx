@@ -292,7 +292,7 @@
                     <p>Hi <strong>{0}</strong>,</p>
                     <p>A new tee-off request for <strong>{2}</strong> has been posted in your area. Can you accommodate:</p>
                     <ul>
-                        <li>Players: <strong>{6}</strong></li>
+                        <li>Players: <strong>{4}</strong></li>
                         <li>Pull carts: <strong>{11}</strong></li>
                         <li>Golf carts: <strong>{12}</strong></li>
                         <li>Options: <strong>{5}</strong></li>
