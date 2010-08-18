@@ -117,9 +117,15 @@ public class SaleAssociate extends Entity {
         if (criterion == null || criterion.length() == 0) {
             return;
         }
-        removeCriterion(criterion, collator);
         if (criteria == null) {
             criteria = new ArrayList<String>();
+        }
+        String normalizedCriterion = LocaleValidator.toUnicode(criterion);
+        for(String item: criteria) {
+            String normalizedItem = LocaleValidator.toUnicode(item);
+            if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
+                return;
+            }
         }
         criteria.add(criterion);
     }

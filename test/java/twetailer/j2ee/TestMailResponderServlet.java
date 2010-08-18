@@ -327,7 +327,7 @@ public class TestMailResponderServlet {
     @Test
     public void testExtractFirstLineIII() {
         String out = "blah-blah-blah";
-        String in = " \r\n \t " + out + " \t \r\n \t subsequent message part being ignored";
+        String in = " \r\n \t " + out + " \t \r\n\r\n subsequent message part being ignored";
 
         assertEquals(out, MailResponderServlet.extractFirstLine(in));
     }
@@ -646,5 +646,33 @@ public class TestMailResponderServlet {
         CatchAllMailHandlerServlet.foolNextMessagePost();
 
         new MailResponderServlet().doPost(request, null);
+    }
+
+    @Test
+    public void testExtractFirstLineIV() {
+        // no soft line break, one empty line for the hard line break
+        String test = "`Take some more tea,' the March Hare said to Alice, very earnestly.\r\n\r\n`I've had nothing yet,' Alice replied in an offended tone, `so \r\nI can't take more.'\r\n";
+        assertEquals("`Take some more tea,' the March Hare said to Alice, very earnestly.", MailResponderServlet.extractFirstLine(test));
+    }
+
+    @Test
+    public void testExtractFirstLineV() {
+        // few soft line breaks, one empty line for the hard line break
+        String test = "`Take some more tea,'\r\nthe March Hare said\r\nto Alice, very\r\nearnestly.\r\n\r\n`I've had nothing yet,' Alice replied in an offended tone, `so \r\nI can't take more.'\r\n";
+        assertEquals("`Take some more tea,' the March Hare said to Alice, very earnestly.", MailResponderServlet.extractFirstLine(test));
+    }
+
+    @Test
+    public void testExtractFirstLineVI() {
+        // few soft line breaks, signature separator (short) for the hard line break
+        String test = "`Take some more tea,'\r\nthe March Hare said\r\nto Alice, very\r\nearnestly.\r\n--\r\n`I've had nothing yet,' Alice replied in an offended tone, `so \r\nI can't take more.'\r\n";
+        assertEquals("`Take some more tea,' the March Hare said to Alice, very earnestly.", MailResponderServlet.extractFirstLine(test));
+    }
+
+    @Test
+    public void testExtractFirstLineVII() {
+        // few soft line breaks, signature separator (standard) for the hard line break
+        String test = "`Take some more tea,'\r\nthe March Hare said\r\nto Alice, very\r\nearnestly.\r\n-- \r\n`I've had nothing yet,' Alice replied in an offended tone, `so \r\nI can't take more.'\r\n";
+        assertEquals("`Take some more tea,' the March Hare said to Alice, very earnestly.", MailResponderServlet.extractFirstLine(test));
     }
 }
