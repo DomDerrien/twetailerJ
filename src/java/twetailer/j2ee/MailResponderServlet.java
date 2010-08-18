@@ -277,6 +277,27 @@ public class MailResponderServlet extends HttpServlet {
      * @return series of significant characters
      */
     protected static String extractFirstLine(String in) {
+        /* Sample of a text/plain message with: format=flowed
+
+        !supply this is just a simple test to propose a command line going over 78 
+        characters, which it's going to be wrapped on many lines separated by a
+        soft line break.
+
+        Read http://tools.ietf.org/html/rfc3676 for instructions
+        on text/plain message. Keep in mind that a "soft line break"
+        is a SP CRLF sequence, while a "hard line break" is just CRLF.
+        */
+
+        // Warning: GMail, at least, send text/plain messages with delsp=yes,
+        // the SP is automatically remove before the CRLF! It's then not possible
+        // to detect the soft line breaks...
+
+        // Solution: our policy is to consider the following cases as hard line breaks
+        // 1) <text | SP>+ <CRLF>* EOM => end of message
+        // 2) <text | SP>+ CRLF CRLF => one empty line detected
+        // 3) <text | SP>+ CRLF -- <SP>*   => signature separator detected
+
+        if (in != null) { log.warning("###\nReceived string:\n"+in.replace(' ', '_')+"\n###"); }
         if (in == null || in.length() == 0) {
             return in;
         }
@@ -287,18 +308,45 @@ public class MailResponderServlet extends HttpServlet {
             begin ++;
             cursor = in.charAt(begin);
         }
-        // Detect the end-of-line
+        // Detect the hard line break
         int end = in.indexOf('\n', begin);
-        if (end == -1) {
-            end = in.length();
+        while (true) {
+            if (end == -1) {
+                end = in.length();
+                break;
+            }
+            else if (end == in.length() - 1) {
+                break;
+            }
+            else if (end + 1 < in.length() && in.charAt(end + 1) == '\n') {
+                break;
+            }
+            else if (end + 2 < in.length() && in.charAt(end + 1) == '\r' && in.charAt(end + 2) == '\n') {
+                break;
+            }
+            else if (end + 3 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == '\n') {
+                break;
+            }
+            else if (end + 4 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == ' ' && in.charAt(end + 4) == '\n') {
+                break;
+            }
+            else if (end + 4 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == '\r' && in.charAt(end + 4) == '\n') {
+                break;
+            }
+            else if (end + 5 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == ' ' && in.charAt(end + 4) == '\r' && in.charAt(end + 5) == '\n') {
+                break;
+            }
+            else {
+                end = in.indexOf('\n', end + 1);
+            }
         }
         // Trim trailing separators
         cursor = in.charAt(end - 1);
-        while (cursor == ' ' || cursor == '\t' || cursor == '\r') { // || cursor == '\n') { // \n excluded from the list because this the searched separator for the end of the command line!
+        while (cursor == ' ' || cursor == '\t' || cursor == '\r' || cursor == '\n') {
             end --;
             cursor = in.charAt(end - 1);
         }
         // Return the short message
-        return in.substring(begin, end);
+        return in.substring(begin, end).replaceAll("\r\n", " ");
     }
 }
