@@ -1852,12 +1852,21 @@
             </tuv>
         </tu>
 
+        <tu tuid="ga_proposalForm_proposalQuantity" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Number of Places:</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="ga_proposalForm_proposalPrice" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Price:</seg>
+                <seg>Round Price:</seg>
             </tuv>
         </tu>
 

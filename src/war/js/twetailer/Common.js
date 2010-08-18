@@ -57,7 +57,7 @@
         _supportGeoLocation = navigator.geolocation;
         var getCoordinatesButton = dijit.byId(getGeoButtonId);
         if (getCoordinatesButton != null) {
-            getCoordinatesButton.attr("disabled", !_supportGeoLocation);
+            getCoordinatesButton.set("disabled", !_supportGeoLocation);
         }
 
         return _getLabel;
@@ -121,8 +121,8 @@
         if (_previouslySelectedCountryCode != countryCode) {
             var pcField = dijit.byId(postalCodeFieldId);
             if (pcField != null) {
-                pcField.attr("regExp", _getLabel("console", "location_postalCode_regExp_" + countryCode));
-                pcField.attr("invalidMessage", _getLabel("console", "location_postalCode_invalid_" + countryCode));
+                pcField.set("regExp", _getLabel("console", "location_postalCode_regExp_" + countryCode));
+                pcField.set("invalidMessage", _getLabel("console", "location_postalCode_invalid_" + countryCode));
                 pcField.focus();
             }
             _previouslySelectedCountryCode = countryCode;

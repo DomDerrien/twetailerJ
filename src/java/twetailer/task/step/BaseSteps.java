@@ -166,7 +166,7 @@ public class BaseSteps {
                 demand.getSerializedCriteria("none"), // 5
                 demand.getSerializedHashTags("none"), // 6
                 LabelExtractor.get("mc_mail_subject_response_default", locale), // 7
-                ("propose demand:" + demand.getKey().toString() + " #golf due:" + proposedDate + "T??:?? total:$? meta:{pull:?,buggy:?} info:?" + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 8
+                ("propose demand:" + demand.getKey().toString() + " hashTag:golf due:" + proposedDate + "T??:?? total:$? meta:{pull:?,buggy:?} info:?" + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 8
                 ("decline demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 9
                 LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 10
                 "0", //11

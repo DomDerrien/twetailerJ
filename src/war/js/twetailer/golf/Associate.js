@@ -118,36 +118,37 @@
         var proposalForm = dijit.byId("proposalForm");
         proposalForm.reset();
 
-        dijit.byId("demand.key").attr("value", item.key[0]);
-        dijit.byId("demand.state").attr("value", _getLabel("master", "cl_state_" + item.state[0]));
+        dijit.byId("demand.key").set("value", item.key[0]);
+        dijit.byId("demand.state").set("value", _getLabel("master", "cl_state_" + item.state[0]));
         var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
-        dijit.byId("proposal.date").attr("value", dueDate);
+        dijit.byId("proposal.date").set("value", dueDate);
         dijit.byId("proposal.date").constraints.min = new Date();
-        dijit.byId("proposal.time").attr("value", dueDate);
+        dijit.byId("proposal.time").set("value", dueDate);
         if (dojo.isArray(item.criteria)) {
-            dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
+            dijit.byId("demand.criteria").set("value", item.criteria.join(" "));
         }
-        dijit.byId("demand.quantity").attr("value", item.quantity[0]);
+        dijit.byId("demand.quantity").set("value", item.quantity[0]);
+        dijit.byId("proposal.quantity").set("value", item.quantity[0]);
 
         if (proposalKey == null) {
-            proposalForm.attr("title", _getLabel("console", "ga_cmenu_createProposal"));
-            dijit.byId("proposalFormSubmitButton").attr("label", _getLabel("console", "ga_cmenu_createProposal"));
+            proposalForm.set("title", _getLabel("console", "ga_cmenu_createProposal"));
+            dijit.byId("proposalFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_createProposal"));
 
             dojo.query(".updateButton").style("display", "");
             dojo.query(".existingAttribute").style("display", "none");
             dojo.query(".closeButton").style("display", "none");
         }
         else {
-            proposalForm.attr("title", _getLabel("console", "ga_cmenu_viewProposal", [proposalKey]));
-            dijit.byId("proposalFormSubmitButton").attr("label", _getLabel("console", "ga_cmenu_updateProposal", [proposalKey]));
-            dijit.byId("proposalFormCancelButton").attr("label", _getLabel("console", "ga_cmenu_cancelProposal", [proposalKey]));
-            dijit.byId("proposalFormCloseButton").attr("label", _getLabel("console", "ga_cmenu_closeProposal", [proposalKey]));
+            proposalForm.set("title", _getLabel("console", "ga_cmenu_viewProposal", [proposalKey]));
+            dijit.byId("proposalFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_updateProposal", [proposalKey]));
+            dijit.byId("proposalFormCancelButton").set("label", _getLabel("console", "ga_cmenu_cancelProposal", [proposalKey]));
+            dijit.byId("proposalFormCloseButton").set("label", _getLabel("console", "ga_cmenu_closeProposal", [proposalKey]));
             dojo.query(".existingAttribute").style("display", "");
 
             _loadProposal(proposalKey);
         }
         proposalForm.show();
-        dijit.byId('proposal.price').focus();
+        dijit.byId('proposal.total').focus();
     };
 
     /**
@@ -173,17 +174,18 @@
      * @param {Proposal} proposal Object to represent
      */
     var _fetchProposal = function(proposal) {
-        dijit.byId("proposal.key").attr("value", proposal.key);
-        dijit.byId("proposal.state").attr("value", _getLabel("master", "cl_state_" + proposal.state));
-        dijit.byId("proposal.price").attr("value", proposal.price);
-        dijit.byId("proposal.total").attr("value", proposal.total);
+        dijit.byId("proposal.key").set("value", proposal.key);
+        dijit.byId("proposal.state").set("value", _getLabel("master", "cl_state_" + proposal.state));
+        dijit.byId("proposal.price").set("value", proposal.price);
+        dijit.byId("proposal.total").set("value", proposal.total);
+        dijit.byId("proposal.quantity").set("value", proposal.quantity);
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
-        dijit.byId("proposal.date").attr("value", dateObject);
-        dijit.byId("proposal.time").attr("value", dateObject);
+        dijit.byId("proposal.date").set("value", dateObject);
+        dijit.byId("proposal.time").set("value", dateObject);
         if (dojo.isArray(proposal.criteria)) {
-            dijit.byId("proposal.criteria").attr("value", proposal.criteria.join(" "));
+            dijit.byId("proposal.criteria").set("value", proposal.criteria.join(" "));
         }
-        dijit.byId("proposal.modificationDate").attr("value", _common.displayDateTime(proposal.modificationDate));
+        dijit.byId("proposal.modificationDate").set("value", _common.displayDateTime(proposal.modificationDate));
 
         var closeableState = proposal.state == _common.STATES.CONFIRMED;
         if (closeableState) {
@@ -194,7 +196,7 @@
             dojo.query(".updateButton").style("display", "");
             dojo.query(".closeButton").style("display", "none");
         }
-        dijit.byId("proposalFormSubmitButton").attr("disabled", proposal.state == _common.STATES.DECLINED);
+        dijit.byId("proposalFormSubmitButton").set("disabled", proposal.state == _common.STATES.DECLINED);
     };
 
     /**
@@ -210,6 +212,7 @@
             delete data.total;
         }
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+        data.quantity = parseInt(data.quantity);
         data.dueDate = _common.toISOString(data.date, data.time);
         data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
 
@@ -225,7 +228,7 @@
     module.cancelProposal = function() {
         dijit.byId("proposalForm").hide();
 
-        var proposalKey = dijit.byId("proposal.key").attr("value");
+        var proposalKey = dijit.byId("proposal.key").get("value");
         var proposal = _common.getCachedProposal(proposalKey);
 
         var messageId = proposal.state == _common.STATES.CONFIRMED ?
@@ -249,7 +252,7 @@
     module.closeProposal = function() {
         dijit.byId("proposalForm").hide();
 
-        var proposalKey = dijit.byId("proposal.key").attr("value");
+        var proposalKey = dijit.byId("proposal.key").get("value");
         var data = { state: _common.STATES.CLOSED };
 
         var dfd = _common.updateRemoteProposal(data, proposalKey);

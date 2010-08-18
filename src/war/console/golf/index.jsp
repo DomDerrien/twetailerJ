@@ -338,6 +338,10 @@
                     </td>
                 </tr>
                 <tr>
+                    <td align="right"><label for="proposal.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalQuantity", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.quantity" readonly="true" style="width:5em;" type="text" /> </td>
+                </tr>
+                <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalPrice", locale) %></label></td>
                     <td>$<input dojoType="dijit.form.TextBox" id="proposal.price" readonly="true" style="width:7em;" type="text" /></td>
                 </tr>

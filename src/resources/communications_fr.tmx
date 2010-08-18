@@ -153,8 +153,9 @@
                     &lt;/ul&gt;
                     &lt;p&gt;
                         If &lt;strong&gt;you can accommodate&lt;/strong&gt; the request, then launch the &lt;a href="http://twetailer.appspot.com/console/golf/associate.jsp"&gt;ezToff Reservation Desk&lt;/a&gt;
-                        and click "Create Tee-time Proposal" for &lt;strong&gt;Reference {1}&lt;/strong&gt;. You can also compose the Proposal by clicking
-                        &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={8}.&amp;subject={7}"&gt;Compose Proposal&lt;/a&gt;—do not forget to replace the question marks by accurate values.
+                        and click "Create Tee-time Proposal" for &lt;strong&gt;Reference {1}&lt;/strong&gt;.
+                        Alternatively, you can also send an email to create a tee-off Proposal by clicking
+                        <a href="mailto:eztoff@twetailer.appspotmail.com?body={8}.&amp;subject={7}">Create Proposal</a> and replacing the ? place holders.
                     &lt;/p&gt;
                     &lt;p&gt;If you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(&lt;/p&gt;
                     {10}
@@ -217,7 +218,7 @@
                         &lt;li&gt;Pull carts: &lt;strong&gt;{14}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Golf carts: &lt;strong&gt;{15}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Options: &lt;strong&gt;{6}&lt;/strong&gt;&lt;/li&gt;
-                        &lt;li&gt;Unit price: &lt;strong&gt;{8}{9}&lt;/strong&gt; per player&lt;/li&gt;
+                        &lt;li&gt;Round price: &lt;strong&gt;{8}{9}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{8}{10}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel proposal&lt;/a&gt;, or,
@@ -240,7 +241,7 @@
                         &lt;li&gt;Pull carts: &lt;strong&gt;{14}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Golf carts: &lt;strong&gt;{15}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Options: &lt;strong&gt;{6}&lt;/strong&gt;&lt;/li&gt;
-                        &lt;li&gt;Unit price: &lt;strong&gt;{8}{9}&lt;/strong&gt; per player&lt;/li&gt;
+                        &lt;li&gt;Round price: &lt;strong&gt;{8}{9}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{8}{10}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel proposal&lt;/a&gt;, or,
@@ -263,7 +264,7 @@
                         &lt;li&gt;Pull carts: &lt;strong&gt;{27}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Golf carts: &lt;strong&gt;{28}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Options: &lt;strong&gt;{10}&lt;/strong&gt;&lt;/li&gt;
-                        &lt;li&gt;Unit price: &lt;strong&gt;{12}{13}&lt;/strong&gt; per player&lt;/li&gt;
+                        &lt;li&gt;Round price: &lt;strong&gt;{12}{13}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{12}{14}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;Please &lt;strong&gt;&lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={23}&amp;subject={22}"&gt;confirm this proposal# {7}&lt;/a&gt;&lt;/strong&gt;, &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={24}&amp;subject={22}"&gt;decline&lt;/a&gt; it, or, simply wait to see if any others come in.&lt;/p&gt;
@@ -332,7 +333,7 @@
                         &lt;li&gt;Pull carts: &lt;strong&gt;{21}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Golf carts: &lt;strong&gt;{22}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Options: &lt;strong&gt;{5}&lt;/strong&gt;&lt;/li&gt;
-                        &lt;li&gt;Unit price: &lt;strong&gt;{7}{8}&lt;/strong&gt; per player&lt;/li&gt;
+                        &lt;li&gt;Round price: &lt;strong&gt;{7}{8}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{7}{9}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
 

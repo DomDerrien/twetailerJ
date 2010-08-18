@@ -1442,11 +1442,18 @@
                 <seg>Informations supplémentaires :</seg>
             </tuv>
         </tu>
+        <tu tuid="ga_proposalForm_proposalQuantity" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Nombre de places :</seg>
+            </tuv>
+        </tu>
         <tu tuid="ga_proposalForm_proposalPrice" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Coût :</seg>
+                <seg>Coût d'un départ :</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalTotal" dataType="text">

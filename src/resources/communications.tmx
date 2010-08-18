@@ -299,8 +299,9 @@
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff Reservation Desk</a>
-                        and click "Create Tee-time Proposal" for <strong>Reference {1}</strong>. You can also compose the Proposal by clicking
-                        <a href="mailto:eztoff@twetailer.appspotmail.com?body={8}.&amp;subject={7}">Compose Proposal</a>—do not forget to replace the question marks by accurate values.
+                        and click "Create Tee-time Proposal" for <strong>Reference {1}</strong>.
+                        Alternatively, you can also send an email to create a tee-off Proposal by clicking
+                        <a href="mailto:eztoff@twetailer.appspotmail.com?body={8}.&amp;subject={7}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
                     {10}
@@ -427,7 +428,7 @@
                         <li>Pull carts: <strong>{14}</strong></li>
                         <li>Golf carts: <strong>{15}</strong></li>
                         <li>Options: <strong>{6}</strong></li>
-                        <li>Unit price: <strong>{8}{9}</strong> per player</li>
+                        <li>Round price: <strong>{8}{9}</strong> per player</li>
                         <li>Total cost: <strong>{8}{10}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
@@ -470,7 +471,7 @@
                         <li>Pull carts: <strong>{14}</strong></li>
                         <li>Golf carts: <strong>{15}</strong></li>
                         <li>Options: <strong>{6}</strong></li>
-                        <li>Unit price: <strong>{8}{9}</strong> per player</li>
+                        <li>Round price: <strong>{8}{9}</strong> per player</li>
                         <li>Total cost: <strong>{8}{10}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
@@ -526,7 +527,7 @@
                         <li>Pull carts: <strong>{27}</strong></li>
                         <li>Golf carts: <strong>{28}</strong></li>
                         <li>Options: <strong>{10}</strong></li>
-                        <li>Unit price: <strong>{12}{13}</strong> per player</li>
+                        <li>Round price: <strong>{12}{13}</strong> per player</li>
                         <li>Total cost: <strong>{12}{14}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:eztoff@twetailer.appspotmail.com?body={23}&amp;subject={22}">confirm this proposal# {7}</a></strong>, <a href="mailto:eztoff@twetailer.appspotmail.com?body={24}&amp;subject={22}">decline</a> it, or, simply wait to see if any others come in.</p>
@@ -676,7 +677,7 @@
                         <li>Pull carts: <strong>{21}</strong></li>
                         <li>Golf carts: <strong>{22}</strong></li>
                         <li>Options: <strong>{5}</strong></li>
-                        <li>Unit price: <strong>{7}{8}</strong> per player</li>
+                        <li>Round price: <strong>{7}{8}</strong> per player</li>
                         <li>Total cost: <strong>{7}{9}</strong></li>
                     </ul>
 

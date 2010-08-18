@@ -414,8 +414,8 @@
     module.setLocation = function(locationKey, postalCodeField, countryCodeField) {
         var location = _locations[locationKey];
         if (location != null) {
-            postalCodeField.attr("value", location.postalCode);
-            countryCodeField.attr("value", location.countryCode);
+            postalCodeField.set("value", location.postalCode);
+            countryCodeField.set("value", location.countryCode);
             return;
         }
     }
@@ -423,8 +423,8 @@
     module.getBrowserLocation = function(overlayId) {
         var eventName = "browserLocationCodeAvailable";
         var handle = dojo.subscribe(eventName, function(postalCode, countryCode) {
-            dijit.byId("demand.postalCode").attr("value", postalCode);
-            dijit.byId("demand.countryCode").attr("value", countryCode);
+            dijit.byId("demand.postalCode").set("value", postalCode);
+            dijit.byId("demand.countryCode").set("value", countryCode);
             dijit.byId("demand.postalCode").focus();
             dojo.unsubscribe(handle);
         })
@@ -432,15 +432,15 @@
     }
 
     module.showDemandLocaleMap = function() {
-        var postalCode = dijit.byId("demand.postalCode").attr("value");
-        var countryCode = dijit.byId("demand.countryCode").attr("value");
+        var postalCode = dijit.byId("demand.postalCode").get("value");
+        var countryCode = dijit.byId("demand.countryCode").get("value");
         _common.showMap(postalCode, countryCode);
     }
 
     module.showStoreLocaleMap = function() {
         alert("Not yet implemented!");
-//        var postalCode = dijit.byId("demand.postalCode").attr("value");
-//        var countryCode = dijit.byId("demand.countryCode").attr("value");
+//        var postalCode = dijit.byId("demand.postalCode").get("value");
+//        var countryCode = dijit.byId("demand.countryCode").get("value");
 //        _common.showMap(postalCode, countryCode);
     }
 })(); // End of the function limiting the scope of the private variables

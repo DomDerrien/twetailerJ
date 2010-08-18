@@ -96,10 +96,10 @@
             var lastDemand = _common.getLastDemand();
             if (lastDemand != null) {
                 _common.setLocation(lastDemand.locationKey[0], dijit.byId("demand.postalCode"), dijit.byId("demand.countryCode"));
-                dijit.byId("demand.range").attr("value", lastDemand.range[0]);
-                dijit.byId("demand.rangeUnit").attr("value", lastDemand.rangeUnit[0]);
+                dijit.byId("demand.range").set("value", lastDemand.range[0]);
+                dijit.byId("demand.rangeUnit").set("value", lastDemand.rangeUnit[0]);
             }
-            dijit.byId("demandFormSubmitButton").attr("label", _getLabel("console", "ga_cmenu_createDemand"));
+            dijit.byId("demandFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_createDemand"));
 
             dojo.query(".updateButton").style("display", "");
             dojo.query(".existingAttribute").style("display", "none");
@@ -119,26 +119,26 @@
                 return;
             }
 
-            dijit.byId("demand.key").attr("value", item.key[0]);
-            dijit.byId("demand.state").attr("value", _getLabel("master", "cl_state_" + item.state[0]));
+            dijit.byId("demand.key").set("value", item.key[0]);
+            dijit.byId("demand.state").set("value", _getLabel("master", "cl_state_" + item.state[0]));
             if (dojo.isArray(item.criteria)) {
-                dijit.byId("demand.criteria").attr("value", item.criteria.join(" "));
+                dijit.byId("demand.criteria").set("value", item.criteria.join(" "));
             }
             if (dojo.isArray(item.cc)) {
-                dijit.byId("demand.cc").attr("value", item.cc.join("\n"));
+                dijit.byId("demand.cc").set("value", item.cc.join("\n"));
             }
-            dijit.byId("demand.quantity").attr("value", item.quantity[0]);
+            dijit.byId("demand.quantity").set("value", item.quantity[0]);
             var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
-            dijit.byId("demand.date").attr("value", dueDate);
+            dijit.byId("demand.date").set("value", dueDate);
             dijit.byId("demand.date").constraints.min = new Date();
-            dijit.byId("demand.time").attr("value", dueDate);
+            dijit.byId("demand.time").set("value", dueDate);
             _common.setLocation(item.locationKey[0], dijit.byId("demand.postalCode"), dijit.byId("demand.countryCode"));
-            dijit.byId("demand.range").attr("value", item.range[0]);
-            dijit.byId("demand.rangeUnit").attr("value", item.rangeUnit[0]);
-            dijit.byId("demand.modificationDate").attr("value", _common.displayDateTime(item.modificationDate));
-            dijit.byId("demandFormSubmitButton").attr("label", _getLabel("console", "ga_cmenu_updateDemand", [item.key]));
-            dijit.byId("demandFormCancelButton").attr("label", _getLabel("console", "ga_cmenu_cancelDemand", [item.key]));
-            dijit.byId("demandFormCloseButton").attr("label", _getLabel("console", "ga_cmenu_closeDemand", [item.key]));
+            dijit.byId("demand.range").set("value", item.range[0]);
+            dijit.byId("demand.rangeUnit").set("value", item.rangeUnit[0]);
+            dijit.byId("demand.modificationDate").set("value", _common.displayDateTime(item.modificationDate));
+            dijit.byId("demandFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_updateDemand", [item.key]));
+            dijit.byId("demandFormCancelButton").set("label", _getLabel("console", "ga_cmenu_cancelDemand", [item.key]));
+            dijit.byId("demandFormCloseButton").set("label", _getLabel("console", "ga_cmenu_closeDemand", [item.key]));
 
             dojo.query(".existingAttribute").style("display", "");
             var closeableState = item.state == _common.STATES.CONFIRMED;
@@ -150,7 +150,7 @@
                 dojo.query(".updateButton").style("display", "");
                 dojo.query(".closeButton").style("display", "none");
             }
-            dijit.byId("demandFormSubmitButton").attr("disabled", item.state == _common.STATES.DECLINED);
+            dijit.byId("demandFormSubmitButton").set("disabled", item.state == _common.STATES.DECLINED);
         }
 
         demandForm.show();
@@ -184,7 +184,7 @@
     module.cancelDemand = function(formId, keyFieldId) {
         dijit.byId(formId).hide();
 
-        var demandKey = dijit.byId(keyFieldId).attr("value");
+        var demandKey = dijit.byId(keyFieldId).get("value");
         var demand = _common.getCachedDemand(demandKey);
 
         if(demand.state == _common.STATES.CONFIRMED) {
@@ -211,7 +211,7 @@
     module.closeDemand = function(formId, keyFieldId) {
         dijit.byId(formId).hide();
 
-        var demandKey = dijit.byId(keyFieldId).attr("value");
+        var demandKey = dijit.byId(keyFieldId).get("value");
         var data = { state: _common.STATES.CLOSED };
 
         var dfd = _common.updateRemoteDemand(data, demandKey);
@@ -241,15 +241,15 @@
         var proposalForm = dijit.byId("proposalForm");
         proposalForm.reset();
 
-        dijit.byId("associatedDemand.key").attr("value", item.key);
-        dijit.byId("associatedDemand.modificationDate").attr("value", _common.displayDateTime(item.modificationDate));
+        dijit.byId("associatedDemand.key").set("value", item.key);
+        dijit.byId("associatedDemand.modificationDate").set("value", _common.displayDateTime(item.modificationDate));
 
-        dijit.byId("proposal.key").attr("value", proposalKey);
+        dijit.byId("proposal.key").set("value", proposalKey);
 
-        dijit.byId("proposalFormConfirmButton").attr("label", _getLabel("console", "ga_cmenu_confirmProposal", [proposalKey]));
-        dijit.byId("proposalFormDeclineButton").attr("label", _getLabel("console", "ga_cmenu_declineProposal", [proposalKey]));
-        dijit.byId("proposalFormCancelButton").attr("label", _getLabel("console", "ga_cmenu_cancelDemand", [item.key]));
-        dijit.byId("proposalFormCloseButton").attr("label", _getLabel("console", "ga_cmenu_closeDemand", [item.key]));
+        dijit.byId("proposalFormConfirmButton").set("label", _getLabel("console", "ga_cmenu_confirmProposal", [proposalKey]));
+        dijit.byId("proposalFormDeclineButton").set("label", _getLabel("console", "ga_cmenu_declineProposal", [proposalKey]));
+        dijit.byId("proposalFormCancelButton").set("label", _getLabel("console", "ga_cmenu_cancelDemand", [item.key]));
+        dijit.byId("proposalFormCloseButton").set("label", _getLabel("console", "ga_cmenu_closeDemand", [item.key]));
 
         var closeableState = item.state == _common.STATES.CONFIRMED;
         if (closeableState) {
@@ -289,29 +289,30 @@
      * @param {Proposal} proposal Object to represent
      */
     var _fetchProposal = function(proposal) {
-        dijit.byId("proposal.state").attr("value", _getLabel("master", "cl_state_" + proposal.state));
-        dijit.byId("proposal.price").attr("value", proposal.price);
-        dijit.byId("proposal.total").attr("value", proposal.total);
+        dijit.byId("proposal.state").set("value", _getLabel("master", "cl_state_" + proposal.state));
+        dijit.byId("proposal.quantity").set("value", proposal.quantity);
+        dijit.byId("proposal.price").set("value", proposal.price);
+        dijit.byId("proposal.total").set("value", proposal.total);
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
-        dijit.byId("proposal.date").attr("value", dateObject);
-        dijit.byId("proposal.time").attr("value", dateObject);
+        dijit.byId("proposal.date").set("value", dateObject);
+        dijit.byId("proposal.time").set("value", dateObject);
         if (dojo.isArray(proposal.criteria)) {
-            dijit.byId("proposal.criteria").attr("value", proposal.criteria.join(" "));
+            dijit.byId("proposal.criteria").set("value", proposal.criteria.join(" "));
         }
-        dijit.byId("proposal.modificationDate").attr("value", _common.displayDateTime(proposal.modificationDate));
+        dijit.byId("proposal.modificationDate").set("value", _common.displayDateTime(proposal.modificationDate));
 
         var modifiableState = proposal.state == _common.STATES.PUBLISHED;
         var closeableState = proposal.state == _common.STATES.CONFIRMED;
-        dijit.byId("proposalFormConfirmButton").attr("disabled", !modifiableState);
-        dijit.byId("proposalFormDeclineButton").attr("disabled", !modifiableState);
+        dijit.byId("proposalFormConfirmButton").set("disabled", !modifiableState);
+        dijit.byId("proposalFormDeclineButton").set("disabled", !modifiableState);
 
         var store = proposal.related.Store;
-        dijit.byId("store.key").attr("value", store.key);
-        dijit.byId("store.name").attr("value", store.name);
-        dijit.byId("store.address").attr("value", store.address);
-        dijit.byId("store.phoneNb").attr("value", store.phoneNb);
-        dijit.byId("store.email").attr("value", store.email);
-        dijit.byId("store.url").attr("value", store.url);
+        dijit.byId("store.key").set("value", store.key);
+        dijit.byId("store.name").set("value", store.name);
+        dijit.byId("store.address").set("value", store.address);
+        dijit.byId("store.phoneNb").set("value", store.phoneNb);
+        dijit.byId("store.email").set("value", store.email);
+        dijit.byId("store.url").set("value", store.url);
     };
 
     /**
@@ -320,7 +321,7 @@
     module.confirmProposal = function() {
         dijit.byId("proposalForm").hide();
 
-        var proposalKey = dijit.byId("proposal.key").attr("value");
+        var proposalKey = dijit.byId("proposal.key").get("value");
         var data = {
             state: _common.STATES.CONFIRMED,
             pointOfView: _queryPointOfView
@@ -336,7 +337,7 @@
     module.declineProposal = function() {
         dijit.byId("proposalForm").hide();
 
-        var proposalKey = dijit.byId("proposal.key").attr("value");
+        var proposalKey = dijit.byId("proposal.key").get("value");
         var data = {
             state: _common.STATES.DECLINED,
             pointOfView: _queryPointOfView
