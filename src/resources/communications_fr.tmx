@@ -109,7 +109,7 @@
                     &lt;p&gt;We're anonymously broadcasting your request - reference# {1}, to &lt;strong&gt;{10}&lt;/strong&gt; relevant golf courses
                     and will communicate their proposals, as soon as possible, to you and &lt;strong&gt;{9}&lt;/strong&gt; on your behalf.&lt;/p&gt;
                     &lt;p&gt;If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel Request&lt;/a&gt;, or,
+                    &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel Request&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {13}
@@ -130,7 +130,7 @@
                         &lt;li&gt;Options: &lt;strong&gt;{7}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;We're anonymously broadcasting their request - reference# {1}, to &lt;strong&gt;{10}&lt;/strong&gt; relevant golf courses and will communicate their proposals, as soon as possible, to them and &lt;strong&gt;{9}&lt;/strong&gt; on their behalf.&lt;/p&gt;
-                    &lt;p&gt;If for any reason, you're no longer interested in being notified, you can send an email by clicking &lt;a href="mailto:assistant@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;Please remove&lt;/a&gt;, or,
+                    &lt;p&gt;If for any reason, you're no longer interested in being notified, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;Please remove&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {13}
@@ -146,12 +146,16 @@
                     &lt;p&gt;Hi &lt;strong&gt;{0}&lt;/strong&gt;,&lt;/p&gt;
                     &lt;p&gt;A new tee-off request for &lt;strong&gt;{2}&lt;/strong&gt; has been posted in your area. Can you accommodate:&lt;/p&gt;
                     &lt;ul&gt;
-                        &lt;li&gt;Players: &lt;strong&gt;{6}&lt;/strong&gt;&lt;/li&gt;
+                        &lt;li&gt;Players: &lt;strong&gt;{4}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Pull carts: &lt;strong&gt;{11}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Golf carts: &lt;strong&gt;{12}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Options: &lt;strong&gt;{5}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
-                    &lt;p&gt;If &lt;strong&gt;you can accommodate&lt;/strong&gt; the request, then launch the &lt;a href="http://twetailer.appspot.com/console/golf/associate.jsp"&gt;ezToff Reservation Desk&lt;/a&gt; and click "Create Tea-time Proposal" for &lt;strong&gt;Reference {1}&lt;/strong&gt;.&lt;/p&gt;
+                    &lt;p&gt;
+                        If &lt;strong&gt;you can accommodate&lt;/strong&gt; the request, then launch the &lt;a href="http://twetailer.appspot.com/console/golf/associate.jsp"&gt;ezToff Reservation Desk&lt;/a&gt;
+                        and click "Create Tee-time Proposal" for &lt;strong&gt;Reference {1}&lt;/strong&gt;. You can also compose the Proposal by clicking
+                        &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={8}.&amp;subject={7}"&gt;Compose Proposal&lt;/a&gt;—do not forget to replace the question marks by accurate values.
+                    &lt;/p&gt;
                     &lt;p&gt;If you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(&lt;/p&gt;
                     {10}
                     &lt;p&gt;Request#: {1}.&lt;/p&gt;
@@ -172,7 +176,7 @@
                         &lt;li&gt;Options: &lt;strong&gt;{7}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;We're anonymously broadcasting your request - reference# {1}, to &lt;strong&gt;{10}&lt;/strong&gt; relevant golf courses and will communicate their proposals, as soon as possible, to you and &lt;strong&gt;{9}&lt;/strong&gt; on your behalf.&lt;/p&gt;
-                    &lt;p&gt;If for any reason, you're no longer interested in this request, you can send an email by clicking &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel Request&lt;/a&gt;, or,
+                    &lt;p&gt;If for any reason, you're no longer interested in this request, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel Request&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {13}
@@ -193,7 +197,7 @@
                         &lt;li&gt;Options: &lt;strong&gt;{7}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
                     &lt;p&gt;We're anonymously broadcasting their request - reference# {1}, to &lt;strong&gt;{10}&lt;/strong&gt; relevant golf courses and will communicate their proposals, as soon as possible, to them and &lt;strong&gt;{9}&lt;/strong&gt; on their behalf.&lt;/p&gt;
-                    &lt;p&gt;If for any reason, you're no longer interested in being notified, you can send an email by clicking &lt;a href="mailto:assistant@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;Please remove&lt;/a&gt;, or,
+                    &lt;p&gt;If for any reason, you're no longer interested in being notified, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;Please remove&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {13}
@@ -216,7 +220,7 @@
                         &lt;li&gt;Unit price: &lt;strong&gt;{8}{9}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{8}{10}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
-                    &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel proposal&lt;/a&gt;, or,
+                    &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel proposal&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {13}
@@ -239,7 +243,7 @@
                         &lt;li&gt;Unit price: &lt;strong&gt;{8}{9}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{8}{10}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
-                    &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel proposal&lt;/a&gt;, or,
+                    &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel proposal&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {13}
@@ -253,7 +257,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     &lt;p&gt;Hi &lt;strong&gt;{0}&lt;/strong&gt;,&lt;/p&gt;
-                    &lt;p&gt;&lt;a href="{18}"&gt;&lt;strong&gt;{16}&lt;/strong&gt;&lt;/a&gt; has proposed a &lt;strong&gt;{2}&lt;/strong&gt; tee-off off for:&lt;/p&gt;
+                    &lt;p&gt;&lt;strong&gt;&lt;a href="{18}"&gt;{16}&lt;/a&gt;&lt;/strong&gt; has proposed a &lt;strong&gt;{8}&lt;/strong&gt; tee-off off for:&lt;/p&gt;
                     &lt;ul&gt;
                         &lt;li&gt;Players: &lt;strong&gt;{9}&lt;/strong&gt;&lt;/li&gt;
                         &lt;li&gt;Pull carts: &lt;strong&gt;{27}&lt;/strong&gt;&lt;/li&gt;
@@ -262,12 +266,12 @@
                         &lt;li&gt;Unit price: &lt;strong&gt;{12}{13}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{12}{14}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
-                    &lt;p&gt;Please &lt;a href="mailto:golf@twetailer.appspotmail.com?body={23}&amp;subject={22}"&gt;&lt;strong&gt;confirm this proposal# {7}&lt;/strong&gt;&lt;/a&gt;, &lt;a href="mailto:golf@twetailer.appspotmail.com?body={24}&amp;subject={22}"&gt;decline&lt;/a&gt; it, or, simply wait to see if any others come in.&lt;/p&gt;
+                    &lt;p&gt;Please &lt;strong&gt;&lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={23}&amp;subject={22}"&gt;confirm this proposal# {7}&lt;/a&gt;&lt;/strong&gt;, &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={24}&amp;subject={22}"&gt;decline&lt;/a&gt; it, or, simply wait to see if any others come in.&lt;/p&gt;
                     &lt;p&gt;More course information: &lt;br /&gt;
-                    Address: {17}, {20} {21}&lt;br /&gt;
-                    Telephone: {19}&lt;/p&gt;
+                     Address: {17}, {20} {21}&lt;br /&gt;
+                     Telephone: {19}&lt;/p&gt;
                     &lt;p&gt;If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel Request&lt;/a&gt;, or,
+                    &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}"&gt;Cancel Request&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {26}
@@ -281,15 +285,15 @@
             <tuv xml:lang="fr">
                 <seg>
                     &lt;p&gt;Hi {0},&lt;/p&gt;
-                    &lt;p&gt;&lt;a href="{13}"&gt;&lt;strong&gt;{11}&lt;/strong&gt;&lt;/a&gt; has reserved your &lt;strong&gt;{3}&lt;/strong&gt; tee-off under &lt;strong&gt;ezToff Proposal# {1}&lt;/strong&gt;.&lt;/p&gt;
+                    &lt;p&gt;&lt;strong&gt;&lt;a href="{13}"&gt;{11}&lt;/a&gt;&lt;/strong&gt; has reserved your &lt;strong&gt;{3}&lt;/strong&gt; tee-off under &lt;strong&gt;ezToff Proposal# {1}&lt;/strong&gt;.&lt;/p&gt;
                     &lt;p&gt;Thank you for the confirmation &amp; have a great game!&lt;/p&gt;
                     &lt;p&gt;Don't forget to send an email to
-                    &lt;a href="mailto:golf@twetailer.appspotmail.com?body={19}&amp;subject={17}"&gt;&lt;strong&gt;close&lt;/strong&gt;&lt;/a&gt; your request after your game, so we can better your Rating.&lt;/p&gt;
+                    &lt;strong&gt;&lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={19}&amp;subject={17}"&gt;close&lt;/a&gt;&lt;/strong&gt; your request after your game, so we can better your Rating.&lt;/p&gt;
                     &lt;p&gt;More course information: &lt;br /&gt;
-                    Address: {12}, {15} {16}&lt;br /&gt;
-                    Telephone: {14}&lt;/p&gt;
-                    &lt;p&gt;If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={18}&amp;subject={17}"&gt;cancel&lt;/a&gt;, or, if you've received this message in error, click
+                     Address: {12}, {15} {16}&lt;br /&gt;
+                     Telephone: {14}&lt;/p&gt;
+                   &lt;p&gt;If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={18}&amp;subject={17}"&gt;cancel&lt;/a&gt;, or, if you've received this message in error, click
                     &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding reference {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {20}
@@ -309,7 +313,7 @@
                     Address: {12}, {15} {16}&lt;br /&gt;
                     Telephone: {14}&lt;/p&gt;
                     &lt;p&gt;If for any reason, you're no longer interested in being notified, you can send an email by clicking
-                    &lt;a href="mailto:assistant@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {2}"&gt;Please remove&lt;/a&gt;, or,
+                    &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {2}"&gt;Please remove&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {2}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {20}
@@ -331,9 +335,12 @@
                         &lt;li&gt;Unit price: &lt;strong&gt;{7}{8}&lt;/strong&gt; per player&lt;/li&gt;
                         &lt;li&gt;Total cost: &lt;strong&gt;{7}{9}&lt;/strong&gt;&lt;/li&gt;
                     &lt;/ul&gt;
-                    &lt;p&gt;For your records, this was your Proposal# {1}. Thanks for managing your tee-off requests with ezToff.&lt;/p&gt;
+
+                    &lt;p&gt;Please &lt;strong&gt;&lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={19}&amp;subject={17}"&gt;close&lt;/a&gt;&lt;/strong&gt; this Proposal {1} once the Golfer has teed-off in order to better your Rating.&lt;/p&gt;
+
+                    &lt;p&gt;Thanks for managing your tee-off requests with ezToff.&lt;/p&gt;
                     &lt;p&gt;If for any reason, you can longer offer this tee-off, you can send an email by clicking
-                    &lt;a href="mailto:assistant@twetailer.appspotmail.com?body={18}&amp;subject={17}"&gt;Cancel proposal&lt;/a&gt;, or,
+                    &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={19}&amp;subject={17}"&gt;Cancel proposal&lt;/a&gt;, or,
                     if you've received this message in error, click &lt;a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {1}"&gt;There's been some kind of mistake&lt;/a&gt; :-(
                     &lt;/p&gt;
                     {20}
@@ -360,7 +367,8 @@
             <tuv xml:lang="fr">
                 <seg>
                     &lt;p&gt;Hi {0},&lt;/p&gt;
-                    &lt;p&gt;The Request# {1} for the &lt;strong&gt;{11}&lt;/strong&gt; reservation under &lt;strong&gt;ezToff Proposal# {9}&lt;/strong&gt; has been &lt;strong&gt;closed&lt;/strong&gt;. Please &lt;a href="mailto:golf@twetailer.appspotmail.com?body={21}&amp;subject={20}"&gt;&lt;strong&gt;close&lt;/strong&gt;&lt;/a&gt; your matching proposal {9} in order to better your Rating.&lt;/p&gt;
+                    &lt;p&gt;The Request# {1} for the &lt;strong&gt;{11}&lt;/strong&gt; reservation under &lt;strong&gt;ezToff Proposal# {9}&lt;/strong&gt; has been &lt;strong&gt;closed&lt;/strong&gt;.
+                    Please &lt;strong&gt;&lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={21}&amp;subject={20}"&gt;close&lt;/a&gt;&lt;/strong&gt; your matching proposal {9} in order to better your Rating.&lt;/p&gt;
                     {22}
                     &lt;p&gt;Reference#: {1}, Proposal#: {9}.&lt;/p&gt;
                 </seg>
@@ -384,7 +392,10 @@
             <tuv xml:lang="fr">
                 <seg>
                     &lt;p&gt;Hi {0},&lt;/p&gt;
-                    &lt;p&gt;&lt;strong&gt;&lt;a href="{26}"&gt;{25}&lt;/a&gt;&lt;/strong&gt; has &lt;strong&gt;closed their Proposal# {9}&lt;/strong&gt;. Please &lt;a href="mailto:golf@twetailer.appspotmail.com?body={21}&amp;subject={20}"&gt;close your corresponding Request {1}&lt;/a&gt; to better your Rating.&lt;/p&gt;
+                    &lt;p&gt;
+                        &lt;strong&gt;&lt;a href="{26}"&gt;{25}&lt;/a&gt;&lt;/strong&gt; has &lt;strong&gt;closed their Proposal# {9}&lt;/strong&gt;.
+                       Please &lt;a href="mailto:eztoff@twetailer.appspotmail.com?body={21}&amp;subject={20}"&gt;close your corresponding Request {1}&lt;/a&gt; to better your Rating.
+                   &lt;/p&gt;
                     {22}
                 </seg>
             </tuv>

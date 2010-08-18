@@ -56,7 +56,7 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
 
     public static List<String> responderEndpoints = new ArrayList<String>();
     static {
-        responderEndpoints.add("twitter@twetailer.appspotmail.com");
+        responderEndpoints.add("twitter@" + MailResponderServlet.MAIL_DOMAIN_NAME);
     }
 
     protected static void processTwitterNotification(HttpServletRequest request, HttpServletResponse response) {

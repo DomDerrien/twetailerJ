@@ -32,7 +32,7 @@ public class MailComposerServlet extends HttpServlet {
 
     public static List<String> responderEndpoints = new ArrayList<String>();
     static {
-        responderEndpoints.add("composer@twetailer.appspotmail.com");
+        responderEndpoints.add("composer@" + MailResponderServlet.MAIL_DOMAIN_NAME);
     }
 
     @Override

@@ -162,7 +162,7 @@
             return;
         }
         var subject = _getLabel("console", "sep_email_subject", [ _cityName ]);
-        window.open("mailto:maezel@twetailer.appspotmail.com?subject" + subject + "&body=" + escape(demand), "email_window");
+        window.open("mailto:assistant@twetailer.appspotmail.com?subject" + subject + "&body=" + escape(demand), "email_window");
     };
 
     module.postThruGTalk = function() {

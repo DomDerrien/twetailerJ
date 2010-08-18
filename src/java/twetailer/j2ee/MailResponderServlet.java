@@ -64,16 +64,18 @@ public class MailResponderServlet extends HttpServlet {
         processMailedRequest(request, response);
     }
 
+    public static final String MAIL_DOMAIN_NAME = "twetailer.appspotmail.com";
+
     public static List<String> responderEndpoints = new ArrayList<String>();
     static {
-        responderEndpoints.add("assistant@twetailer.appspotmail.com");
-        responderEndpoints.add("maezel@twetailer.appspotmail.com");
-        responderEndpoints.add("hub@twetailer.appspotmail.com");
+        responderEndpoints.add("assistant@" + MAIL_DOMAIN_NAME);
 
         List<String> hashTags = HashTag.getSupportedHashTags();
         for (String hashTag: hashTags) {
-            responderEndpoints.add(hashTag + "@twetailer.appspotmail.com");
+            responderEndpoints.add(hashTag + "@" + MAIL_DOMAIN_NAME);
         }
+
+        responderEndpoints.add("eztoff@" + MAIL_DOMAIN_NAME);
     }
 
     private static final String MESSAGE_ID_LIST = "mailMessageIds";
@@ -157,7 +159,7 @@ public class MailResponderServlet extends HttpServlet {
             // Add vertical information
             String toBase = to.substring(0, to.indexOf('@'));
             if (HashTag.isSupportedHashTag(toBase)) {
-                command += " #" + toBase;
+                command += " #" + HashTag.getSupportedHashTag(toBase); // To change 'eztoff' in 'golf', for example
             }
 
             // Fill up the message to persist
@@ -279,7 +281,7 @@ public class MailResponderServlet extends HttpServlet {
     protected static String extractFirstLine(String in) {
         /* Sample of a text/plain message with: format=flowed
 
-        !supply this is just a simple test to propose a command line going over 78 
+        !supply this is just a simple test to propose a command line going over 78
         characters, which it's going to be wrapped on many lines separated by a
         soft line break.
 
@@ -297,7 +299,6 @@ public class MailResponderServlet extends HttpServlet {
         // 2) <text | SP>+ CRLF CRLF => one empty line detected
         // 3) <text | SP>+ CRLF -- <SP>*   => signature separator detected
 
-        if (in != null) { log.warning("###\nReceived string:\n"+in.replace(' ', '_')+"\n###"); }
         if (in == null || in.length() == 0) {
             return in;
         }

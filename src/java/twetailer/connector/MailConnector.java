@@ -41,7 +41,7 @@ public class MailConnector {
     /**
      * Use the Google App Engine API to get the Mail message carried by the HTTP request
      *
-     * @param request Request parameters submitted by the Google App Engine in response to the reception of an mail message sent to maezel@twetailer.appspotmail.com
+     * @param request Request parameters submitted by the Google App Engine in response to the reception of an mail message sent to a valid engine entry point
      * @return Extracted mail message information
      *
      * @throws IOException If the HTTP request stream parsing fails
