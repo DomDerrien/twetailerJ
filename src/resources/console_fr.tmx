@@ -1446,7 +1446,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Nombre de places :</seg>
+                <seg>Nombre de joueurs :</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalPrice" dataType="text">

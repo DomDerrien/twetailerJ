@@ -382,7 +382,7 @@ public class ProposalSteps extends BaseSteps {
                     Locale locale = demandOwner.getLocale();
                     messageParts[0] = demandOwner.getName();
                     messageParts[22] = LabelExtractor.get("mc_mail_subject_response_default", locale);
-                    messageParts[23] = ("close demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
+                    messageParts[23] = ("close demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A");
                     messageParts[24] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
                     String message = MessageGenerator.getMessage(
                             proposal.getSource(),
@@ -581,8 +581,8 @@ public class ProposalSteps extends BaseSteps {
 
             if (!Source.api.equals(demand.getSource())) {
                 messageParts[0] = demandOwner.getName();
-                messageParts[18] = ("cancel demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
-                messageParts[19] = ("close demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
+                messageParts[18] = ("cancel demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A");
+                messageParts[19] = ("close demand:" + proposal.getDemandKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A");
                 String message = MessageGenerator.getMessage(
                         demand.getSource(),
                         proposal.getHashTags(),
@@ -609,8 +609,8 @@ public class ProposalSteps extends BaseSteps {
                 RawCommand rawCommand = proposal.getRawCommandId() == null ? new RawCommand(saConsumerRecord.getPreferredConnection()) : getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
 
                 messageParts[0] = saConsumerRecord.getName();
-                messageParts[18] = ("cancel proposal:" + proposal.getKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
-                messageParts[19] = ("close proposal:" + proposal.getKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A");
+                messageParts[18] = ("cancel proposal:" + proposal.getKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A");
+                messageParts[19] = ("close proposal:" + proposal.getKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A");
                 String message = MessageGenerator.getMessage(
                         rawCommand.getSource(),
                         proposal.getHashTags(),

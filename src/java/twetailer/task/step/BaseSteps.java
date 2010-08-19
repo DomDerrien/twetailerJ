@@ -119,7 +119,7 @@ public class BaseSteps {
                     demand.getSerializedCC("none"), // 9
                     "<unknown>", // 10
                     Source.widget.equals(demand.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
-                    ("cancel demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 12
+                    ("cancel demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 12
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
                     "0", //14
                     "0", // 15
@@ -166,8 +166,8 @@ public class BaseSteps {
                 demand.getSerializedCriteria("none"), // 5
                 demand.getSerializedHashTags("none"), // 6
                 LabelExtractor.get("mc_mail_subject_response_default", locale), // 7
-                ("propose demand:" + demand.getKey().toString() + " hashTag:golf due:" + proposedDate + "T??:?? total:$? meta:{pull:?,buggy:?} info:?" + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 8
-                ("decline demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 9
+                ("propose demand:" + demand.getKey().toString() + " hashTag:golf players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}" + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 8
+                ("decline demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 9
                 LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 10
                 "0", //11
                 "0" // 12
@@ -203,7 +203,7 @@ public class BaseSteps {
                     proposal.getPrice().toString(), // 9
                     proposal.getTotal().toString(), // 10
                     Source.widget.equals(proposal.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
-                    ("cancel proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 12
+                    ("cancel proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 12
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
                     "0", //14
                     "0" // 15
@@ -252,9 +252,9 @@ public class BaseSteps {
                     location.getPostalCode(), // 20
                     location.getCountryCode(), // 21
                     LabelExtractor.get("mc_mail_subject_response_default", locale), // 22
-                    ("confirm proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 23
-                    ("decline proposal:" + proposal.getKey().toString()  +automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 24
-                    ("cancel demand:" + proposal.getDemandKey().toString()  +automatedResponseFooter).replaceAll(" ", "+").replaceAll("\n", "%0A"), // 25
+                    ("confirm proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 23
+                    ("decline proposal:" + proposal.getKey().toString()  +automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 24
+                    ("cancel demand:" + proposal.getDemandKey().toString()  +automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 25
                     LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 26
                     "0", // 27
                     "0" // 28
