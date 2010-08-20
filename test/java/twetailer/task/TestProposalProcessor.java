@@ -17,6 +17,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -90,6 +91,7 @@ public class TestProposalProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessOneValidProposalIa() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
@@ -202,6 +204,7 @@ public class TestProposalProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessOneValidProposalIb() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
@@ -314,6 +317,7 @@ public class TestProposalProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessOneValidProposalIIa() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
@@ -426,6 +430,7 @@ public class TestProposalProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessOneValidProposalIIb() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
@@ -538,6 +543,7 @@ public class TestProposalProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessOneValidProposalIII() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;
         final Long demandKey = 12345L;
@@ -727,6 +733,7 @@ public class TestProposalProcessor {
     }
 
     @Test
+    @Ignore
     @SuppressWarnings({ "serial", "deprecation" })
     public void testProcessOneValidProposalWithFailureToSendMessageToConsumer() throws DataSourceException, InvalidIdentifierException, ParseException {
         final Long proposalKey = 67890L;

@@ -207,6 +207,8 @@
         <antcall target="step-jsunit-unzip" />
         <available property="jscoverage.already.expanded" file="${temp.dir}/jscoverage.exe" />
         <antcall target="step-jscoverage-unzip" />
+
+
         <available property="pskill.already.expanded" file="${temp.dir}/pskill.exe" />
         <antcall target="step-pskill-unzip" />
         <!-- Setup documentation environment -->
@@ -289,7 +291,7 @@
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${app.languageListFilename}.properties file -->
         <filelist dir="deps/lib">
-            <file name="domderrien/domderrien-1.0.9.jar" />
+            <file name="domderrien/domderrien-1.5.0.jar" />
             <file name="xml/xalan-2.7.0.jar" />
             <file name="xml/xercesImpl-2.4.0.jar" />
             <file name="xml/xml-apis-1.3.02.jar" />
@@ -302,23 +304,23 @@
     <path id="java.compile.classpath">
         <filelist dir="deps/lib">
             <file name="amazon/amazon-fps-2008-09-17-java-library-for-gae.jar" />
-            <file name="appengine/appengine-api-1.0-sdk-1.3.5.jar" />
-            <file name="appengine/appengine-api-labs-1.3.5.jar" />
+            <file name="appengine/appengine-api-1.0-sdk-1.3.6.jar" />
+            <file name="appengine/appengine-api-labs-1.3.6.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-api-labs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
             <file name="appengine/appengine-testing.jar" />
             <!--file name="commons/commons-codec-1.3.jar" /-->
             <file name="datanucleus/datanucleus-appengine-1.0.7.final.jar" />
-            <file name="domderrien/domderrien-1.0.9.jar" />
+            <file name="domderrien/domderrien-1.5.0.jar" />
             <file name="dyuproject/dyuproject-openid-1.1.6.jar" />
             <file name="dyuproject/dyuproject-util-1.1.6.jar" />
             <file name="dyuproject/dyuproject-web-1.1.6.jar" />
             <file name="dyuproject/jetty-util-6.1.19.jar" />
             <file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
             <file name="jdo/jdo2-api-2.3-eb.jar" />
-            <file name="junit/junit-4.7.jar" />
-            <file name="twitter4j/twitter4j-core-2.1.2.jar" />
+            <file name="junit/junit-4.8.2.jar" />
+            <file name="twitter4j/twitter4j-core-2.1.3.jar" />
             <file name="wave/wave-robot-api-20090916.jar" />
             <file name="xml/xalan-2.7.0.jar" />
             <file name="xml/xercesImpl-2.4.0.jar" />
@@ -572,6 +574,7 @@
         <move file="${temp.dir}/dojo-release-1.4.0-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
         <move file="${temp.dir}/dojo-release-1.4.0-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
         <move file="${temp.dir}/dojo-release-1.4.0-src/util" todir="src/war/js/dojo" overwrite="yes" />
+
     </target>
 
     <target name="step-cobertura-unzip" unless="cobertura.already.expanded">

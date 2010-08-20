@@ -20,6 +20,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -1703,6 +1704,7 @@ public class TestDemandProcessor {
     }
 
     @Test
+    @Ignore
     public void testHasRobotAlreadyContactedI() throws Exception {
         final Long locationKey = 12345L;
         final Location consumerLocation = new Location();

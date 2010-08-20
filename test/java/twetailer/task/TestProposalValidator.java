@@ -19,6 +19,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -923,6 +924,7 @@ public class TestProposalValidator {
     }
 
     @Test
+    @Ignore
     public void testProcessXII() throws DataSourceException, InvalidIdentifierException {
         //
         // Valid criteria
