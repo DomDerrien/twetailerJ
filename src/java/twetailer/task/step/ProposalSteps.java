@@ -25,7 +25,6 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
-import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
@@ -33,7 +32,6 @@ import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MaezelServlet;
-import twetailer.payment.AmazonFPS;
 import twetailer.task.CommandLineParser;
 import twetailer.task.RobotResponder;
 import twetailer.validator.CommandSettings.Action;
@@ -47,7 +45,9 @@ import domderrien.jsontools.JsonObject;
 
 public class ProposalSteps extends BaseSteps {
 
+    /* legacy *
     protected static AmazonFPS amazonFPS = new AmazonFPS();
+    */
 
     public static Proposal getProposal(PersistenceManager pm, Long proposalKey, Long ownerKey, QueryPointOfView pointOfView, Long saleAssociateKey, Long storeKey) throws ReservedOperationException, InvalidIdentifierException {
         Proposal output = null;
@@ -57,10 +57,11 @@ public class ProposalSteps extends BaseSteps {
 
             try {
                 // Verify the Demand owner
-                Demand demand = getDemandOperations().getDemand(pm, output.getDemandKey(), ownerKey);
+                getDemandOperations().getDemand(pm, output.getDemandKey(), ownerKey);
 
                 // Get payment related URL
                 if (State.confirmed.equals(output.getState())) {
+                    /* legacy *
                     //
                     // TODO: verify the store record to check if it accepts AWS FPS payment
                     // TODO: verify that the proposal has a total cost value
@@ -81,6 +82,7 @@ public class ProposalSteps extends BaseSteps {
                     catch (Exception ex) {
                         throw new DataSourceException("Cannot compute the AWS FPS Co-Branded Service URL", ex);
                     }
+                    */
                 }
             }
             catch (Exception ex) {

@@ -33,7 +33,6 @@ import twetailer.dto.Location;
 import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.Settings;
-import twetailer.payment.AmazonFPS;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
 import twetailer.task.DemandValidator;
@@ -47,7 +46,6 @@ import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
-import com.amazonaws.fps.model.TransactionStatus;
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions;
@@ -71,8 +69,6 @@ import domderrien.jsontools.JsonParser;
 @SuppressWarnings("serial")
 public class MaezelServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
-
-    protected AmazonFPS amazonFPS = new AmazonFPS();
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
@@ -270,6 +266,7 @@ public class MaezelServlet extends HttpServlet {
                     pm.close();
                 }
             }
+            /* legacy *
             else if ("/cbuiEndPoint".equals(pathInfo)) {
                 if (amazonFPS.verifyCoBrandedServiceResponse(request.getParameterMap())) {
                     Payment payment = new Payment();
@@ -319,6 +316,7 @@ public class MaezelServlet extends HttpServlet {
                     pm.close();
                 }
             }
+            */
             else {
                 throw new ClientException("Unsupported query path: " + pathInfo);
             }

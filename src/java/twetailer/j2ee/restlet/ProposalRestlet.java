@@ -20,7 +20,6 @@ import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
-import twetailer.payment.AmazonFPS;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.ProposalSteps;
 
@@ -40,8 +39,6 @@ import domderrien.jsontools.JsonUtils;
 @SuppressWarnings("serial")
 public class ProposalRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(DemandRestlet.class.getName());
-
-    protected static AmazonFPS amazonFPS = new AmazonFPS();
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {

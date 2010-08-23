@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.amazonaws.fps.model.TransactionStatus;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -46,7 +45,6 @@ public class TestPayment {
     String reference = "4435243.4343.65765";
     String requestId = "64654";
     String transactionId = "7653454";
-    TransactionStatus status = TransactionStatus.PENDING;
 
     @Test
     public void testAccessors() {
@@ -56,13 +54,11 @@ public class TestPayment {
         object.setReference(reference);
         object.setRequestId(requestId);
         object.setTransactionId(transactionId);
-        object.setStatus(status);
 
         assertEquals(authorizationId, object.getAuthorizationId());
         assertEquals(reference, object.getReference());
         assertEquals(requestId, object.getRequestId());
         assertEquals(transactionId, object.getTransactionId());
-        assertEquals(status, object.getStatus());
     }
 
     @Test
@@ -73,7 +69,6 @@ public class TestPayment {
         object.setReference(reference);
         object.setRequestId(requestId);
         object.setTransactionId(transactionId);
-        object.setStatus(status);
 
         JsonObject json = object.toJson();
 
@@ -81,7 +76,6 @@ public class TestPayment {
         assertEquals(reference, json.getString(Payment.REFERENCE));
         assertEquals(requestId, json.getString(Payment.REQUEST_ID));
         assertEquals(transactionId, json.getString(Payment.TRANSACTION_ID));
-        assertEquals(status.value(), json.getString(Payment.STATUS));
     }
 
     @Test
@@ -94,7 +88,6 @@ public class TestPayment {
         assertNull(json.getString(Payment.REFERENCE));
         assertNull(json.getString(Payment.REQUEST_ID));
         assertNull(json.getString(Payment.TRANSACTION_ID));
-        assertNull(json.getString(Payment.STATUS));
     }
 
     @Test

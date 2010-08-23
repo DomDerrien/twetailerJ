@@ -1,13 +1,11 @@
 package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +37,6 @@ import twetailer.connector.TwitterConnector;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
-import twetailer.dao.PaymentOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SettingsOperations;
@@ -47,11 +44,9 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
-import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
-import twetailer.payment.AmazonFPS;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -63,7 +58,6 @@ import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.amazonaws.fps.model.TransactionStatus;
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
@@ -2051,291 +2045,5 @@ public class TestMaezelServlet {
 
         MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1000 / 20, queue.getHistory().size());
-    }
-
-    @Test
-    public void testDoGetCBUIEndPointI() throws IOException {
-        //
-        // Correct signature
-        //
-        final Long consumerKey = 11L;
-        final Long demandKey = 22L;
-        final Long proposalKey = 33L;
-        final Long paymentKey = 44L;
-        final String tokenId = "6543243/4324e/ewew";
-        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
-
-        // Prepare mock servlet parameters
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getPathInfo() {
-                return "/cbuiEndPoint";
-            }
-            @Override
-            public String getParameter(String name) {
-                if (AmazonFPS.TOKEN_ID.equals(name)) {
-                    return tokenId;
-                }
-                if (AmazonFPS.CALLER_REFERENCE.equals(name)) {
-                    return reference;
-                }
-                fail("Parameter query for " + name + " not expected");
-                return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
-            }
-       };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-
-        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
-            @Override
-            public Payment createPayment(PersistenceManager pm, Payment payment) {
-                assertEquals(tokenId, payment.getAuthorizationId());
-                assertEquals(reference, payment.getReference());
-                payment.setKey(paymentKey);
-                return payment;
-            }
-        });
-
-        servlet.amazonFPS = new AmazonFPS() {
-            @Override
-            public boolean verifyCoBrandedServiceResponse(Map<String, ?> requestParameters) throws SignatureException {
-                return true;
-            }
-        };
-
-        servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'success':true"));
-        assertTrue(stream.contains("payment"));
-        assertTrue(stream.contains("'" + Payment.KEY + "':" + paymentKey.toString()));
-
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
-        assertEquals(1, queue.getHistory().size());
-    }
-
-    @Test
-    public void testDoGetCBUIEndPointII() throws IOException {
-        //
-        // Wrong signature
-        //
-        final Long consumerKey = 11L;
-        final Long demandKey = 22L;
-        final Long proposalKey = 33L;
-        final Long paymentKey = 44L;
-        final String tokenId = "6543243/4324e/ewew";
-        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
-
-        // Prepare mock servlet parameters
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getPathInfo() {
-                return "/cbuiEndPoint";
-            }
-            @Override
-            public String getParameter(String name) {
-                if (AmazonFPS.TOKEN_ID.equals(name)) {
-                    return tokenId;
-                }
-                if (AmazonFPS.CALLER_REFERENCE.equals(name)) {
-                    return reference;
-                }
-                fail("Parameter query for " + name + " not expected");
-                return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
-            }
-       };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-
-        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
-            @Override
-            public Payment createPayment(PersistenceManager pm, Payment payment) {
-                assertEquals(tokenId, payment.getAuthorizationId());
-                assertEquals(reference, payment.getReference());
-                payment.setKey(paymentKey);
-                return payment;
-            }
-        });
-
-        servlet.amazonFPS = new AmazonFPS() {
-            @Override
-            public boolean verifyCoBrandedServiceResponse(Map<String, ?> requestParameters) throws SignatureException {
-                return false;
-            }
-        };
-
-        servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'success':false"));
-
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
-        assertTrue(queue == null || 0 == queue.getHistory().size());
-    }
-
-    @Test
-    public void testDoGetMakePaymentI() throws IOException {
-        //
-        // Payment is a success
-        //
-        final Long consumerKey = 11L;
-        final Long demandKey = 22L;
-        final Long proposalKey = 33L;
-        final Long paymentKey = 44L;
-        final String tokenId = "6543243/4324e/ewew";
-        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
-        final TransactionStatus status = TransactionStatus.SUCCESS;
-
-        // Prepare mock servlet parameters
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getPathInfo() {
-                return "/makePayment";
-            }
-            @Override
-            public String getParameter(String name) {
-                if (Payment.KEY.equals(name)) {
-                    return paymentKey.toString();
-                }
-                fail("Parameter query for " + name + " not expected");
-                return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
-            }
-       };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-
-        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
-            @Override
-            public Payment getPayment(PersistenceManager pm, Long key) {
-                assertEquals(paymentKey, key);
-                Payment payment = new Payment();
-                payment.setKey(paymentKey);
-                payment.setReference(reference);
-                payment.setAuthorizationId(tokenId);
-                return payment;
-            }
-            @Override
-            public Payment updatePayment(PersistenceManager pm, Payment payment) {
-                assertEquals(paymentKey, payment.getKey());
-                assertEquals(status, payment.getStatus());
-                return payment;
-            }
-        });
-
-        servlet.amazonFPS = new AmazonFPS() {
-            @Override
-            public Payment makePayRequest(Payment payment) {
-                payment.setStatus(status);
-                return payment;
-            }
-        };
-
-        servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'success':true"));
-
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
-        assertTrue(queue == null || 0 == queue.getHistory().size());
-    }
-
-    @Test
-    public void testDoGetMakePaymentII() throws IOException {
-        //
-        // Payment is pending
-        // So same task schedule in some times
-        //
-        final Long consumerKey = 11L;
-        final Long demandKey = 22L;
-        final Long proposalKey = 33L;
-        final Long paymentKey = 44L;
-        final String tokenId = "6543243/4324e/ewew";
-        final String reference = Payment.getReference(consumerKey, demandKey, proposalKey);
-        final TransactionStatus status = TransactionStatus.PENDING;
-
-        // Prepare mock servlet parameters
-        HttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public String getPathInfo() {
-                return "/makePayment";
-            }
-            @Override
-            public String getParameter(String name) {
-                if (Payment.KEY.equals(name)) {
-                    return paymentKey.toString();
-                }
-                fail("Parameter query for " + name + " not expected");
-                return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
-            }
-       };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-
-        BaseSteps.setMockPaymentOperations(new PaymentOperations() {
-            @Override
-            public Payment getPayment(PersistenceManager pm, Long key) {
-                assertEquals(paymentKey, key);
-                Payment payment = new Payment();
-                payment.setKey(paymentKey);
-                payment.setReference(reference);
-                payment.setAuthorizationId(tokenId);
-                return payment;
-            }
-            @Override
-            public Payment updatePayment(PersistenceManager pm, Payment payment) {
-                assertEquals(paymentKey, payment.getKey());
-                assertEquals(status, payment.getStatus());
-                return payment;
-            }
-        });
-
-        servlet.amazonFPS = new AmazonFPS() {
-            @Override
-            public Payment makePayRequest(Payment payment) {
-                payment.setStatus(status);
-                return payment;
-            }
-        };
-
-        servlet.doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'success':true"));
-
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
-        assertEquals(1, queue.getHistory().size());
-    }
-
-    @Test
-    public void testGetCoBrandedServiceURL() {
-        assertNotNull(MaezelServlet.getCoBrandedServiceEndPointURL());
     }
 }

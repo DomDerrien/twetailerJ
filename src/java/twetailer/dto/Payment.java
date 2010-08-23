@@ -4,8 +4,6 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import com.amazonaws.fps.model.TransactionStatus;
-
 import domderrien.jsontools.JsonObject;
 
 /**
@@ -40,10 +38,12 @@ public class Payment extends Entity {
 
     public final static String TRANSACTION_ID = "transactionId";
 
-    @Persistent
+    /* legacy *
+    @ Persistent
     private TransactionStatus status;
 
     public final static String STATUS = "status";
+    */
 
     /** Default constructor */
     public Payment() {
@@ -94,6 +94,7 @@ public class Payment extends Entity {
         this.transactionId = transactionId;
     }
 
+    /* legacy *
     public TransactionStatus getStatus() {
         return status;
     }
@@ -104,6 +105,7 @@ public class Payment extends Entity {
         }
         this.status = status;
     }
+    */
 
     public JsonObject toJson() {
         JsonObject out = super.toJson();
@@ -111,7 +113,9 @@ public class Payment extends Entity {
         if (getReference() != null) { out.put(REFERENCE, getReference()); }
         if (getRequestId() != null) { out.put(REQUEST_ID, getRequestId()); }
         if (getTransactionId() != null) { out.put(TRANSACTION_ID, getTransactionId()); }
+        /* legacy *
         if (getStatus() != null) { out.put(STATUS, getStatus().value()); }
+        */
         return out;
     }
 
