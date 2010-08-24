@@ -1,9 +1,12 @@
 package twetailer.dto;
 
+import java.text.DecimalFormatSymbols;
+
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 
 import com.google.appengine.api.datastore.Text;
@@ -32,6 +35,11 @@ public class Proposal extends Command {
     private Long consumerKey;
 
     public static final String CONSUMER_KEY = "consumerKey";
+
+    @Persistent
+    private String currencyCode = DecimalFormatSymbols.getInstance(LocaleValidator.DEFAULT_LOCALE).getCurrencySymbol();
+
+    public static final String CURRENCY_CODE = "currencyCode";
 
     @Persistent
     private Long demandKey;
@@ -75,7 +83,7 @@ public class Proposal extends Command {
     }
 
     /**
-     * Provided to reproduce the JDO behavior with Unit tests
+     * Provided to reproduce the JDO behaviour with Unit tests
      */
     protected void resetLists() {
         super.resetLists();
@@ -101,6 +109,14 @@ public class Proposal extends Command {
             throw new IllegalArgumentException("Cannot nullify the attribute 'consumerKey'");
         }
         this.consumerKey = consumerKey;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     public Long getDemandKey() {
@@ -146,6 +162,7 @@ public class Proposal extends Command {
         if (AWSCBUIURL != null) {
             out.put(AWSCBUIURL_KEY, getAWSCBUIURL());
         }
+        out.put(CURRENCY_CODE, getCurrencyCode());
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         out.put(PRICE, getPrice());
@@ -157,6 +174,7 @@ public class Proposal extends Command {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
+        if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (getKey() == null && in.containsKey(DEMAND_KEY)) {
             setDemandKey(in.getLong(DEMAND_KEY)); // Can only be set at creation time

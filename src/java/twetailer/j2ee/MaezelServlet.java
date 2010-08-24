@@ -30,7 +30,6 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
-import twetailer.dto.Payment;
 import twetailer.dto.Proposal;
 import twetailer.dto.Settings;
 import twetailer.task.CommandProcessor;

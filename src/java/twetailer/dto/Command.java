@@ -98,7 +98,7 @@ public class Command extends Entity {
     @Persistent
     private String metaData;
 
-    public static final String META_DATA = "metaData";
+    public static final String META_DATA = "metadata";
 
     @Persistent
     private Long ownerKey;
@@ -183,11 +183,10 @@ public class Command extends Entity {
     }
 
     public String getSerializedCC(String defaultLabel) {
-        String out = getSerializedCC();
-        if (out.length() == 0) {
+        if (getCC() == null || getCC().size() == 0) {
             return defaultLabel;
         }
-        return out;
+        return getSerializedCC();
     }
 
     public String getSerializedCC() {
@@ -230,11 +229,10 @@ public class Command extends Entity {
     }
 
     public String getSerializedCriteria(String defaultLabel) {
-        String out = getSerializedCriteria();
-        if (out.length() == 0) {
+        if (getCriteria() == null || getCriteria().size() == 0) {
             return defaultLabel;
         }
-        return out;
+        return getSerializedCriteria();
     }
 
     public String getSerializedCriteria() {
@@ -285,11 +283,10 @@ public class Command extends Entity {
     }
 
     public String getSerializedHashTags(String defaultLabel) {
-        String out = getSerializedHashTags();
-        if (out.length() == 0) {
+        if (getHashTags() == null || getHashTags().size() == 0) {
             return defaultLabel;
         }
-        return out;
+        return getSerializedHashTags();
     }
 
     public String getSerializedHashTags() {

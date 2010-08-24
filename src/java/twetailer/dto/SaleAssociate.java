@@ -151,6 +151,13 @@ public class SaleAssociate extends Entity {
         }
     }
 
+    public String getSerializedCriteria(String defaultLabel) {
+        if (getCriteria() == null || getCriteria().size() == 0) {
+            return defaultLabel;
+        }
+        return getSerializedCriteria();
+    }
+
     public String getSerializedCriteria() {
         return Command.getSerializedTags(criteria);
     }
