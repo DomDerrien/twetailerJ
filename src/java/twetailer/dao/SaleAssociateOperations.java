@@ -2,7 +2,6 @@ package twetailer.dao;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -21,12 +20,6 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class SaleAssociateOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(SaleAssociateOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the SaleAssociate instance with the given parameters
@@ -58,7 +51,6 @@ public class SaleAssociateOperations extends BaseOperations {
      * @see SaleAssociateOperations#createSaleAssociate(PersistenceManager, SaleAssociate)
      */
     public SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters) {
-        getLogger().warning("Create sale associate with: " + parameters.toString());
         // Creates new sale associate record and persist it
         SaleAssociate newSaleAssociate = new SaleAssociate(parameters);
         // Persist it
@@ -166,7 +158,6 @@ public class SaleAssociateOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the SaleAssociate instance");
         }
-        getLogger().warning("Get SaleAssociate instance with id: " + key);
         try {
             SaleAssociate saleAssociate = pm.getObjectById(SaleAssociate.class, key);
             saleAssociate.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -216,7 +207,6 @@ public class SaleAssociateOperations extends BaseOperations {
         Query query = pm.newQuery(SaleAssociate.class);
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select sale associate(s) with: " + query.toString());
             // Select the corresponding resources
             List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.execute(value);
             saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -244,7 +234,6 @@ public class SaleAssociateOperations extends BaseOperations {
         Query query = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select sale associate(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> saleAssociateKeys = (List<Long>) query.execute(value);
             saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -294,7 +283,6 @@ public class SaleAssociateOperations extends BaseOperations {
         Query query = pm.newQuery(SaleAssociate.class);
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select sale associate(s) with: " + query.toString());
             // Select the corresponding resources
             List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.executeWithArray(values);
             saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -321,7 +309,6 @@ public class SaleAssociateOperations extends BaseOperations {
         Query query = pm.newQuery("select " + SaleAssociate.KEY + " from " + SaleAssociate.class.getName());
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select sale associate(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> saleAssociateKeys = (List<Long>) query.executeWithArray(values);
             saleAssociateKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -405,7 +392,6 @@ public class SaleAssociateOperations extends BaseOperations {
      */
 
     public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
-        getLogger().warning("Delete sale associate with id: " + saleAssociate.getKey());
         pm.deletePersistent(saleAssociate);
     }
 }

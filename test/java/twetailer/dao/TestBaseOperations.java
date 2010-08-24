@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-
-import javamocks.util.logging.MockLogger;
 
 import javax.jdo.MockQuery;
 import javax.jdo.PersistenceManager;
@@ -43,7 +40,6 @@ public class TestBaseOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseOperations.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
@@ -60,15 +56,6 @@ public class TestBaseOperations {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-    }
-
-    @Test
-    public void testGetLogger() throws IOException {
-        Logger log1 = new BaseOperations().getLogger();
-        assertNotNull(log1);
-        Logger log2 = new BaseOperations().getLogger();
-        assertNotNull(log2);
-        assertEquals(log1, log2);
     }
 
     @Test

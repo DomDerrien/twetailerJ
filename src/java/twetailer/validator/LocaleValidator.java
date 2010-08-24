@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.Collator;
 import java.util.Locale;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import twetailer.dto.Location;
@@ -24,18 +23,11 @@ import domderrien.jsontools.JsonObject;
  */
 public class LocaleValidator {
 
-    private static Logger log = Logger.getLogger(LocaleValidator.class.getName());
-
     public static final String KILOMETER_UNIT = "km";
     public static final String MILE_UNIT = "mi";
     public static final String ALTERNATE_MILE_UNIT = "miles";
     public static final String DEFAULT_RANGE_UNIT = KILOMETER_UNIT;
     public static final Double DEFAULT_RANGE = 25.0D;
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
 
     /**
      * Use 3rd party service to resolve the geo-coordinates of the given location
@@ -76,7 +68,6 @@ public class LocaleValidator {
      */
     protected static Double[] getGeoCoordinates(String postalCode, String countryCode) {
         Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
-        log.warning("Try to resolve: " + postalCode + " " + countryCode);
         // Test case
         if (RobotResponder.ROBOT_POSTAL_CODE.equals(postalCode)) {
             coordinates[0] = 90.0D;

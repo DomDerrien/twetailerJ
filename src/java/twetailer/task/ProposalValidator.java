@@ -144,7 +144,6 @@ public class ProposalValidator {
 
                     // Create a task for that proposal
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
-                    log.warning("Preparing the task: /maezel/processPublishedProposal?key=" + proposalKey.toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).

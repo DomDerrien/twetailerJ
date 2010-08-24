@@ -122,7 +122,6 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        getLogger().warning("Path Info: " + pathInfo);
 
         if ((CONSUMER_PREFIX + CURRENT_ID).equals(pathInfo)) {
             HttpServletRequest alteredRequest = new HttpRequestWrapper(CURRENT_ID, request);
@@ -183,7 +182,6 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        getLogger().warning("Path Info: " + pathInfo);
 
         if (CONSUMER_PREFIX.equals(pathInfo)) {
             HttpServletRequest alteredRequest = new HttpRequestWrapper("", request);
@@ -224,7 +222,6 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        getLogger().warning("Path Info: " + pathInfo);
 
         if (pathInfo == null || pathInfo.length() == 0) {
             JsonObject out = new GenericJsonObject();
@@ -271,7 +268,6 @@ public class ShortcutServlet extends HttpServlet {
         setMockOpenIdUser(request);
 
         String pathInfo = request.getPathInfo();
-        getLogger().warning("Path Info: " + pathInfo);
 
         if (pathInfo == null || pathInfo.length() == 0) {
             JsonObject out = new GenericJsonObject();

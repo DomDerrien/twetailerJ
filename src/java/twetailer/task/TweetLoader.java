@@ -115,7 +115,6 @@ public class TweetLoader {
             rawCommand.setCommand(message);
 
             extractedCommands.add(rawCommand);
-            log.warning("DM added to the queue for the RawCommand creation");
 
             if (lastId < dmId) {
                 lastId = dmId;
@@ -125,16 +124,13 @@ public class TweetLoader {
         // Create a task per command
         for(RawCommand rawCommand: extractedCommands) {
             rawCommand = BaseSteps.getRawCommandOperations().createRawCommand(pm, rawCommand);
-            log.warning("RawCommand created: " + rawCommand.getKey().toString());
 
             Queue queue = BaseSteps.getBaseOperations().getQueue();
-            log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );
-            log.warning("Job add to the task queue");
         }
 
         return Long.valueOf(lastId);

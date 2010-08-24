@@ -1,7 +1,6 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -29,17 +28,6 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class SaleAssociateRestlet extends BaseRestlet {
-    private static Logger log = Logger.getLogger(SaleAssociateRestlet.class.getName());
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
@@ -405,7 +393,6 @@ public class SaleAssociateRestlet extends BaseRestlet {
                         List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherSaleAssociate.getKey(), 1);
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
-                            log.warning("Preparing the task: /maezel/consolidateSaleAssociateAccounts?key=" + demandKey.toString() + "&ownerKey=" + saleAssociateKey.toString());
                             queue.add(
                                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateSaleAssociateAccounts").
                                     param(Demand.KEY, demandKey.toString()).

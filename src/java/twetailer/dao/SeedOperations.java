@@ -1,7 +1,6 @@
 package twetailer.dao;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -16,12 +15,6 @@ import twetailer.dto.Seed;
  * @author Dom Derrien
  */
 public class SeedOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(SeedOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Seed instance with the given parameters
@@ -138,7 +131,6 @@ public class SeedOperations extends BaseOperations {
         if (key == null || key.length() == 0) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Seed instance");
         }
-        getLogger().warning("Get Seed instance with id: " + key);
         try {
             return pm.getObjectById(Seed.class, key);
         }

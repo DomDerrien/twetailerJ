@@ -3,13 +3,10 @@ package twetailer.j2ee.restlet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
 
@@ -44,7 +41,6 @@ public class TestProposalRestlet {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        ProposalRestlet.setLogger(new MockLogger("test", null));
     }
 
     @Before
@@ -57,13 +53,6 @@ public class TestProposalRestlet {
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testGetLogger() {
-        ops.getLogger();
-        assertTrue(true);
-        assertNull(null);
     }
 
     @Ignore

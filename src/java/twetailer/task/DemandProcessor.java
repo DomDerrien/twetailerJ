@@ -88,7 +88,6 @@ public class DemandProcessor {
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
                 for (Demand demand: demands) {
                     // Create a task for that demand
-                    log.warning("Preparing the task: /maezel/processPublishedDemand?key=" + demand.getKey().toString() + "&cronJob=true");
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
                                 param(Demand.KEY, demand.getKey().toString()).
@@ -148,8 +147,6 @@ public class DemandProcessor {
                     demand.addSaleAssociateKey(saleAssociate.getKey());
                 }
                 catch (ClientException ex) {
-                    // Report the error
-                    log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
                     // Send an e-mail to out catch-all list
                     MockOutputStream stackTrace = new MockOutputStream();
                     ex.printStackTrace(new PrintStream(stackTrace));
@@ -171,7 +168,6 @@ public class DemandProcessor {
                 if (!hasRobotAlreadyContacted(pm, demand)) {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
-                    log.warning("Preparing the task: /maezel/processDemandForRobot?key=" + demand.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
                                 param(Demand.KEY, demand.getKey().toString()).
@@ -190,7 +186,6 @@ public class DemandProcessor {
             if (!isNewDemand && !Source.api.equals(demand.getSource())) {
                 try {
                     int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
-                    log.warning("Sale associates contacted: " + initialNumberOfSaleAssociatesContacted + " => " + newNumberOfSaleAssociatesContacted + " (cron: " + cronJob + ")");
                     Locale locale = owner.getLocale();
                     if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
                         RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
@@ -226,8 +221,6 @@ public class DemandProcessor {
                     }
                 }
                 catch (ClientException ex) {
-                    // Report the error
-                    log.warning("Cannot communicate with consumer -- ex: " + ex.getMessage());
                     // Send an e-mail to out catch-all list
                     MockOutputStream stackTrace = new MockOutputStream();
                     ex.printStackTrace(new PrintStream(stackTrace));
@@ -327,7 +320,6 @@ public class DemandProcessor {
                     }
                 }
                 if (0 < score) {
-                    log.warning("Sale Asssociate " + saleAssociate.getKey() + " selected for the demand: " + demand.getKey());
                     saleAssociate.setScore(score);
                     selectedSaleAssociates.add(saleAssociate);
                 }

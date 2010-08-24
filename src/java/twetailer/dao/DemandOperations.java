@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -23,12 +22,6 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class DemandOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(DemandOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Demand instance with the given parameters
@@ -64,7 +57,6 @@ public class DemandOperations extends BaseOperations {
      * @see DemandOperations#createDemand(PersistenceManager, Demand)
      */
     public Demand createDemand(PersistenceManager pm, JsonObject parameters, Long ownerKey) throws ClientException {
-        getLogger().warning("Create demand for owner id: " + ownerKey + " with: " + parameters.toString());
         // Creates new demand record and persist it
         Demand newDemand = new Demand(parameters);
         // Updates the identifier of the creator owner
@@ -141,7 +133,6 @@ public class DemandOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Demand instance");
         }
-        getLogger().warning("Get Demand instance with id: " + key);
         try {
             Demand demand = pm.getObjectById(Demand.class, key);
             if (ownerKey != null && !ownerKey.equals(demand.getOwnerKey())) {
@@ -197,7 +188,6 @@ public class DemandOperations extends BaseOperations {
         Query query = pm.newQuery(Demand.class);
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select demand(s) with: " + query.toString());
             // Select the corresponding resources
             List<Demand> demands = (List<Demand>) query.execute(value);
             demands.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -225,7 +215,6 @@ public class DemandOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select demand(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> demandKeys = (List<Long>) query.execute(value);
             demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -252,7 +241,6 @@ public class DemandOperations extends BaseOperations {
         Query query = pm.newQuery(Demand.class);
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select demand(s) with: " + query.toString());
             // Select the corresponding resources
             List<Demand> demands = (List<Demand>) query.executeWithArray(values);
             demands.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -279,7 +267,6 @@ public class DemandOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Demand.KEY + " from " + Demand.class.getName());
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select demand(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> demandKeys = (List<Long>) query.executeWithArray(values);
             demandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus

@@ -2,7 +2,6 @@ package twetailer.dao;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -20,12 +19,6 @@ import twetailer.dto.Settings;
  * @author Dom Derrien
  */
 public class SettingsOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(SettingsOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Retrieve the application saved settings
@@ -151,7 +144,6 @@ public class SettingsOperations extends BaseOperations {
         try {
             query.setFilter("name == value");
             query.declareParameters("String value");
-            getLogger().warning("Select settings with: " + query.toString());
             // Select the corresponding settings
             List<Settings> settingsList = (List<Settings>) query.execute(Settings.APPLICATION_SETTINGS_ID);
             if (settingsList.size() == 0) {

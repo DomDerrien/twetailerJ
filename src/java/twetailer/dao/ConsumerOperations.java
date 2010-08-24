@@ -3,7 +3,6 @@ package twetailer.dao;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -20,12 +19,6 @@ import domderrien.i18n.LabelExtractor;
  * @author Dom Derrien
  */
 public class ConsumerOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(ConsumerOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Consumer instance if it does not yet exist, or get the existing one
@@ -369,7 +362,6 @@ public class ConsumerOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Consumer instance");
         }
-        getLogger().warning("Get Consumer instance with id: " + key);
         try {
             return pm.getObjectById(Consumer.class, key);
         }
@@ -420,7 +412,6 @@ public class ConsumerOperations extends BaseOperations {
                 value = getSimplifiedJabberId((String) value);
             }
             value = prepareQuery(query, attribute, value, 0);
-            getLogger().warning("Select consumer(s) with: " + query.toString());
             // Select the corresponding consumers
             List<Consumer> consumers = (List<Consumer>) query.execute(value);
             consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -470,7 +461,6 @@ public class ConsumerOperations extends BaseOperations {
         Query query = pm.newQuery(Consumer.class);
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select consumer(s) with: " + query.toString());
             // Select the corresponding resources
             List<Consumer> consumers = (List<Consumer>) query.executeWithArray(values);
             consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -497,7 +487,6 @@ public class ConsumerOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Consumer.KEY + " from " + Consumer.class.getName());
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select consumer(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> consumerKeys = (List<Long>) query.executeWithArray(values);
             consumerKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -581,7 +570,6 @@ public class ConsumerOperations extends BaseOperations {
      */
 
     public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
-        getLogger().warning("Delete consumer with id: " + consumer.getKey());
         pm.deletePersistent(consumer);
     }
 }

@@ -1,7 +1,5 @@
 package twetailer.dao;
 
-import java.util.logging.Logger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.InvalidIdentifierException;
@@ -13,12 +11,6 @@ import twetailer.dto.Payment;
  * @author Dom Derrien
  */
 public class PaymentOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(PaymentOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Payment instance with the given parameters
@@ -83,7 +75,6 @@ public class PaymentOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Payment instance");
         }
-        getLogger().warning("Get Payment instance with id: " + key);
         try {
             return pm.getObjectById(Payment.class, key);
         }

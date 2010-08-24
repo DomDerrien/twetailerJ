@@ -1,13 +1,8 @@
 package twetailer.j2ee.restlet;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import javamocks.util.logging.MockLogger;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import twetailer.dao.MockBaseOperations;
 import twetailer.j2ee.MockLoginServlet;
@@ -22,7 +17,6 @@ public class TestSaleAssociateRestlet {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        SaleAssociateRestlet.setLogger(new MockLogger("test", null));
     }
 
     @Before
@@ -35,13 +29,6 @@ public class TestSaleAssociateRestlet {
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testGetLogger() {
-        ops.getLogger();
-        assertTrue(true);
-        assertNull(null);
     }
 
     /***** ddd

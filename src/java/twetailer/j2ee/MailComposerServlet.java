@@ -51,6 +51,15 @@ public class MailComposerServlet extends HttpServlet {
             String subject = mailMessage.getSubject();
             String body = MailConnector.getText(mailMessage);
 
+            if (body.startsWith("[[[")) {
+                int endOfFirstLine = body.indexOf("]]]");
+                String[] redirection = body.substring(3, endOfFirstLine).split("---");
+                name = redirection[0];
+                email = redirection[1];
+                subject = redirection[2];
+                body = body.substring(endOfFirstLine + 3);
+            }
+
             log.warning("Redirects email to: " + name);
             MailConnector.sendMailMessage(true, email, name, subject, body, Locale.ENGLISH);
         }

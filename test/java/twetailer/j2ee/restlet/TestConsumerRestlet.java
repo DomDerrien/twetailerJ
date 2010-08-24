@@ -2,13 +2,10 @@ package twetailer.j2ee.restlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javamocks.util.logging.MockLogger;
 
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
@@ -45,7 +42,6 @@ public class TestConsumerRestlet {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        ConsumerRestlet.setLogger(new MockLogger("test", null));
     }
 
     @Before
@@ -58,13 +54,6 @@ public class TestConsumerRestlet {
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testGetLogger() {
-        ops.getLogger();
-        assertTrue(true);
-        assertNull(null);
     }
 
     @Test(expected=ReservedOperationException.class)

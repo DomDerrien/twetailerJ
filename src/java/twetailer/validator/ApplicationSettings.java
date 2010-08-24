@@ -213,7 +213,7 @@ public class ApplicationSettings {
             }
         }
         catch(Exception ex) {
-            log.warning("Application settings cannot be loaded. Relying on default ones");
+            log.severe("Application settings cannot be loaded. Relying on default ones");
         }
     }
 

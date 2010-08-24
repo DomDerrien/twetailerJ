@@ -40,7 +40,6 @@ public class TestSaleAssociateOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseOperations.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
@@ -53,15 +52,6 @@ public class TestSaleAssociateOperations {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-    }
-
-    @Test
-    public void testGetLogger() throws IOException {
-        Logger log1 = new SaleAssociateOperations().getLogger();
-        assertNotNull(log1);
-        Logger log2 = new SaleAssociateOperations().getLogger();
-        assertNotNull(log2);
-        assertEquals(log1, log2);
     }
 
     @Test(expected=RuntimeException.class)

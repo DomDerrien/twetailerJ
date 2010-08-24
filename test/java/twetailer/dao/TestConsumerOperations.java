@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.MockQuery;
@@ -46,7 +44,6 @@ public class TestConsumerOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseOperations.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 

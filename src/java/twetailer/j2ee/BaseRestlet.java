@@ -53,13 +53,6 @@ public abstract class BaseRestlet extends HttpServlet {
     public static final String RELATED_RESOURCE_NAMES = "related";
 
     /**
-     * Get the logging handler
-     *
-     * @return Reference on the local Logger instance
-     */
-    abstract protected Logger getLogger();
-
-    /**
      * Create the resource with the given attributes
      *
      * @param parameters HTTP request parameters
@@ -178,7 +171,6 @@ public abstract class BaseRestlet extends HttpServlet {
         ServletUtils.configureHttpParameters(request, response);
 
         String pathInfo = request.getPathInfo();
-        getLogger().fine("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
@@ -222,7 +214,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(getLogger(), ex, "doGet", pathInfo);
+            out = processException(ex, "doGet", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -233,7 +225,6 @@ public abstract class BaseRestlet extends HttpServlet {
         ServletUtils.configureHttpParameters(request, response);
 
         String pathInfo = request.getPathInfo();
-        getLogger().finer("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
@@ -264,7 +255,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(getLogger(), ex, "doPost", pathInfo);
+            out = processException(ex, "doPost", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -275,7 +266,6 @@ public abstract class BaseRestlet extends HttpServlet {
         ServletUtils.configureHttpParameters(request, response);
 
         String pathInfo = request.getPathInfo();
-        getLogger().finer("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
@@ -312,7 +302,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(getLogger(), ex, "doPut", pathInfo);
+            out = processException(ex, "doPut", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -322,7 +312,6 @@ public abstract class BaseRestlet extends HttpServlet {
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String pathInfo = request.getPathInfo();
-        getLogger().finer("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
@@ -330,7 +319,7 @@ public abstract class BaseRestlet extends HttpServlet {
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
             if (loggedUser == null) {
-                response.setStatus(401); // Unauthorized
+                response.setStatus(401); // Unauthorised
                 out.put("success", false);
                 out.put("reason", "Unauthorized");
             }
@@ -358,13 +347,13 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(getLogger(), ex, "doDelete", pathInfo);
+            out = processException(ex, "doDelete", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
     }
 
-    protected static JsonObject processException(Logger logger, Exception ex, String methodName, String pathInfo) {
+    protected static JsonObject processException(Exception ex, String methodName, String pathInfo) {
         String message = "Unexpected exception during BaseRESTServlet." + methodName + "() operation";
         // Special case
         if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
@@ -372,7 +361,6 @@ public abstract class BaseRestlet extends HttpServlet {
             message = "Google App Engine datastore is overloaded or having trouble. Please, submit the same request in few minutes.";
         }
         // Prepare the exception report
-        logger.warning(methodName + "().exception: " + ex);
         JsonObject out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
         // Send an e-mail to out catch-all list
         MockOutputStream stackTrace = new MockOutputStream();
@@ -385,7 +373,7 @@ public abstract class BaseRestlet extends HttpServlet {
             );
         }
         catch (MessagingException e) {
-            logger.severe("Failure while trying to report an unexpected by e-mail!");
+            Logger.getLogger(BaseRestlet.class.getName()).severe("Failure while trying to report an unexpected by e-mail!");
         }
         return out;
     }

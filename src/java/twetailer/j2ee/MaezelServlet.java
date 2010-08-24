@@ -80,7 +80,6 @@ public class MaezelServlet extends HttpServlet {
         ServletUtils.configureHttpParameters(request, response);
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         TaskOptions retryOptions = null;
@@ -97,7 +96,6 @@ public class MaezelServlet extends HttpServlet {
                     parameters.put("<" + Entity.MODIFICATION_DATE, DateUtils.getNowDate());
                     List<Demand> demands = demandOperations.getDemands(pm, parameters, 0);
                     for (Demand demand: demands) {
-                        log.warning("Delete Demand " + demand.getKey().toString());
                         demandOperations.deleteDemand(pm, demand);
                     }
                 }
@@ -277,7 +275,6 @@ public class MaezelServlet extends HttpServlet {
 
                     // Create a task to make the payment with the received token
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
-                    log.warning("Preparing the task: /maezel/makePayment?key=" + payment.getKey().toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/makePayment").
                                 param(Payment.KEY, payment.getKey().toString()).
@@ -302,7 +299,6 @@ public class MaezelServlet extends HttpServlet {
                     if (TransactionStatus.PENDING.equals(payment.getStatus())) {
                         // Validate the payment again in 15 minutes
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
-                        log.warning("Preparing the task: /maezel/makePayment?key=" + payment.getKey().toString());
                         queue.add(
                                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/makePayment").
                                     param(Payment.KEY, payment.getKey().toString()).
@@ -324,11 +320,9 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             // Prepare the exception report
-            log.warning("doGet().exception: " + ex);
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doGet() operation", ex);
             // Reschedule the task if possible
             if(ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException && retryOptions != null) {
-                log.warning("Schedule another attempt for the task: /maezel/" + pathInfo);
                 BaseSteps.getBaseOperations().getQueue().add(retryOptions.method(Method.GET));
             }
             // Send an e-mail to out catch-all list
@@ -354,7 +348,6 @@ public class MaezelServlet extends HttpServlet {
         ServletUtils.configureHttpParameters(request, response);
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         JsonObject in = null;
@@ -469,7 +462,6 @@ public class MaezelServlet extends HttpServlet {
         }
         catch(Exception ex) {
             // Prepare the exception report
-            log.warning("doPost().exception: " + ex);
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maezel.doPost() operation", ex);
             // Send an e-mail to out catch-all list
             MockOutputStream stackTrace = new MockOutputStream();
@@ -538,7 +530,6 @@ public class MaezelServlet extends HttpServlet {
     public static void triggerCommandProcessorTask(Long rawCommandKey) {
         // Create a task for that command
         Queue queue = BaseSteps.getBaseOperations().getQueue();
-        log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommandKey.toString());
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                     param(Command.KEY, rawCommandKey.toString()).
@@ -557,7 +548,6 @@ public class MaezelServlet extends HttpServlet {
         Long demandKey = demand.getKey();
         // Create a task for that demand validation
         Queue queue = BaseSteps.getBaseOperations().getQueue();
-        log.warning("Preparing the task: /maezel/validateOpenDemand?key=" + demandKey.toString());
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenDemand").
                     param(Proposal.KEY, demandKey.toString()).
@@ -576,7 +566,6 @@ public class MaezelServlet extends HttpServlet {
         Long proposalKey = proposal.getKey();
         // Create a task for that proposal validation
         Queue queue = BaseSteps.getBaseOperations().getQueue();
-        log.warning("Preparing the task: /maezel/validateOpenProposal?key=" + proposalKey.toString());
         queue.add(
                 url(ApplicationSettings.get().getServletApiPath() + "/maezel/validateOpenProposal").
                     param(Proposal.KEY, proposalKey.toString()).
@@ -597,7 +586,6 @@ public class MaezelServlet extends HttpServlet {
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         for(Long proposalKey: proposalKeys) {
             if(!proposalKey.equals(preservedProposalKey)) {
-                log.warning("Preparing the task: /maezel/cancelPublishedProposal?key=" + proposalKey.toString() + "&cancellerKey=" + demand.getOwnerKey().toString());
                 queue.add(
                         url(ApplicationSettings.get().getServletApiPath() + "/maezel/cancelPublishedProposal").
                             param(Proposal.CANCELER_KEY, cancellerKey.toString()).

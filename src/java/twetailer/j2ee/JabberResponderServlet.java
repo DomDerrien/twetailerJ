@@ -79,8 +79,6 @@ public class JabberResponderServlet extends HttpServlet {
             rawCommand.setEmitterId(jabberId);
             rawCommand.setCommand(command);
 
-            log.warning("Instant message sent by: " + jabberId + "\nWith the command: " + command);
-
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 // Creation only occurs if the corresponding Consumer instance is not retrieved
@@ -96,7 +94,6 @@ public class JabberResponderServlet extends HttpServlet {
 
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
-            log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).

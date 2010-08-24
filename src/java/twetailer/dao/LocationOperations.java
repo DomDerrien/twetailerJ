@@ -21,12 +21,6 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class LocationOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(LocationOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Location instance with the given parameters
@@ -58,7 +52,6 @@ public class LocationOperations extends BaseOperations {
      * @see LocationOperations#createLocation(PersistenceManager, Location)
      */
     public Location createLocation(PersistenceManager pm, JsonObject parameters) {
-        getLogger().warning("Create location with: " + parameters.toString());
         // Creates new location record and persist it
         Location newLocation = new Location(parameters);
         // Persist it
@@ -145,7 +138,6 @@ public class LocationOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Location instance");
         }
-        getLogger().warning("Get Location instance with id: " + key);
         try {
             return pm.getObjectById(Location.class, key);
         }
@@ -193,7 +185,6 @@ public class LocationOperations extends BaseOperations {
         Query query = pm.newQuery(Location.class);
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select location(s) with: " + query.toString());
             // Select the corresponding resources
             List<Location> locations = (List<Location>) query.execute(value);
             locations.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -220,7 +211,6 @@ public class LocationOperations extends BaseOperations {
         Query query = pm.newQuery(Location.class);
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select location(s) with: " + query.toString());
             // Select the corresponding resources
             List<Location> locations = (List<Location>) query.executeWithArray(values);
             locations.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -247,7 +237,6 @@ public class LocationOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Location.KEY + " from " + Location.class.getName());
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select location(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> locationKeys = (List<Long>) query.executeWithArray(values);
             locationKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -275,7 +264,6 @@ public class LocationOperations extends BaseOperations {
         try {
             query.setFilter(Location.POSTAL_CODE + " == postal && " + Location.COUNTRY_CODE + " == country");
             query.declareParameters("String postal, String country");
-            getLogger().warning("Select location(s) with: " + query.toString());
             query.setOrdering("creationDate desc");
             // Select the corresponding resources
             List<Location> locations = (List<Location>) query.execute(postalCode, countryCode);
@@ -304,7 +292,6 @@ public class LocationOperations extends BaseOperations {
         queryObj.setFilter(Location.LATITUDE + " == lat && " + Location.LONGITUDE + " == long");
         queryObj.declareParameters("Double lat, Double long");
         queryObj.setOrdering("creationDate desc");
-        getLogger().warning("Select location(s) with: " + queryObj.toString());
         // Select the corresponding resources
         List<Location> locations = (List<Location>) queryObj.execute(latitude, longitude);
         locations.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -354,7 +341,7 @@ public class LocationOperations extends BaseOperations {
         // FIXME: take into account that the value can be greater than 360° and smaller than 0°
         // FIXME: that means two request have to be done at the limit...
 
-        log.finest("Box limits [left; right] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
+        Logger.getLogger(LocationOperations.class.getName()).finest("Box limits [left; right] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
 
         /****************************************************************************************************************
          * Ideal case not feasible because of App Engine limitation:  Only _one_ inequality filter per query!
@@ -389,7 +376,6 @@ public class LocationOperations extends BaseOperations {
             if (0 < limit) {
                 query.setRange(0, limit);
             }
-            getLogger().warning("Select location(s) with: " + query.toString());
 
             // Execute the query
             List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.TRUE, topLatitude, bottomLatitude);

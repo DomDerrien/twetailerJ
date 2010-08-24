@@ -1,13 +1,7 @@
 package twetailer.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import javamocks.util.logging.MockLogger;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -33,7 +27,6 @@ public class TestSettingsOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseOperations.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
@@ -46,15 +39,6 @@ public class TestSettingsOperations {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-    }
-
-    @Test
-    public void testGetLogger() throws IOException {
-        Logger log1 = new SettingsOperations().getLogger();
-        assertNotNull(log1);
-        Logger log2 = new SettingsOperations().getLogger();
-        assertNotNull(log2);
-        assertEquals(log1, log2);
     }
 
     @Test

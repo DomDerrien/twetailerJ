@@ -1,7 +1,7 @@
 package twetailer.validator;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import javamocks.io.MockInputStream;
-import javamocks.util.logging.MockLogger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +26,6 @@ public class TestLocaleValidator {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        LocaleValidator.setLogger(new MockLogger("test", null));
     }
 
     @Before

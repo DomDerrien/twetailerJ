@@ -1,6 +1,5 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
@@ -21,13 +20,8 @@ import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
-
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
-
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
@@ -183,7 +177,6 @@ public class DemandValidator {
                 }
                 RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                 if (message != null) {
-                    log.warning("Invalid state for the demand: " + demand.getKey() + " -- message: " + message);
                     demand.setState(CommandSettings.State.invalid);
                     demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
@@ -201,7 +194,6 @@ public class DemandValidator {
 
                     // Create a task for that demand
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
-                    log.warning("Preparing the task: /maezel/processPublishedDemand?key=" + demandKey.toString());
                     queue.add(
                             url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
                                 param(Demand.KEY, demandKey.toString()).

@@ -110,7 +110,6 @@ public class MailResponderServlet extends HttpServlet {
                 }
                 if (lastMailMessageIds == null) {
                     lastMailMessageIds = new ArrayList<String>();
-                    log.warning("**** Create list in MemCache to store the last mail message identifiers.");
                 }
                 lastMailMessageIds.add(messageId);
                 BaseSteps.getSettingsOperations().setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
@@ -134,8 +133,8 @@ public class MailResponderServlet extends HttpServlet {
                 }
             }
             if (to == null) {
-                log.warning("**** Email '" + messageId + "' not addressed to Twetailer!");
                 // Put a tracker here...
+                log.warning("**** Email '" + messageId + "' not addressed to Twetailer!");
                 return;
             }
             StringBuilder ccList = new StringBuilder();
@@ -143,7 +142,6 @@ public class MailResponderServlet extends HttpServlet {
             if (recipients != null && 0 < recipients.length) {
                 // TODO: push this code below to fallback on the consumer locale
                 Locale locale = language == null ? Locale.ENGLISH : new Locale(language);
-                log.warning("Language for the CC prefix: " + language);
                 CommandLineParser.loadLocalizedSettings(locale);
                 JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
                 String ccPrefix = prefixes.getJsonArray(Prefix.cc.toString()).getString(0);
@@ -189,7 +187,6 @@ public class MailResponderServlet extends HttpServlet {
 
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
-            log.warning("Preparing the task: /maezel/processCommand?key=" + rawCommand.getKey().toString());
             queue.add(
                     url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).

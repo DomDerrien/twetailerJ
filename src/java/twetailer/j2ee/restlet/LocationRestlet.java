@@ -1,7 +1,5 @@
 package twetailer.j2ee.restlet;
 
-import java.util.logging.Logger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -24,17 +22,6 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class LocationRestlet extends BaseRestlet {
-    private static Logger log = Logger.getLogger(LocationRestlet.class.getName());
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException {

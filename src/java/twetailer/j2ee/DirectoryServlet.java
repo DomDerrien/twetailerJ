@@ -2,7 +2,6 @@ package twetailer.j2ee;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
 
@@ -40,12 +39,6 @@ import domderrien.jsontools.JsonObject;
  */
 @SuppressWarnings("serial")
 public class DirectoryServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
-
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
-        log = mockLogger;
-    }
 
     public final static String MEMCACHE_PREFIX = "/suppliesTagCloud";
     public final static String SEED_CITY_LIST_ID = "/seedCityList";
@@ -55,10 +48,8 @@ public class DirectoryServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
 
         boolean bypassCache = Boolean.valueOf(request.getParameter("bypassMemCache"));
-        log.warning("Bypass cache: " + bypassCache);
 
         String seedCityList = (String) BaseSteps.getSettingsOperations().getFromCache(MEMCACHE_PREFIX + SEED_CITY_LIST_ID);
         if (seedCityList == null || seedCityList.length() == 0 || bypassCache) {
@@ -66,7 +57,6 @@ public class DirectoryServlet extends HttpServlet {
             try {
                 // Get the seed cities
                 List<Seed> seeds = BaseSteps.getSeedOperations().getAllSeeds(pm);
-                log.warning("Seed#: " + seeds.size());
                 JsonArray citiesNearby = new GenericJsonArray();
                 for(Seed anySeed: seeds) {
                     citiesNearby.add(anySeed.toJson());
@@ -90,7 +80,6 @@ public class DirectoryServlet extends HttpServlet {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Seed targetedSeed = BaseSteps.getSeedOperations().getSeed(pm, pathInfo);
-                log.warning("Retreived seed: " + targetedSeed.toJson().toString());
 
                 JsonObject envelope = targetedSeed.toJson();
 

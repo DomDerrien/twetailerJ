@@ -8,10 +8,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javamocks.util.logging.MockLogger;
 
 import javax.servlet.MockServletInputStream;
 import javax.servlet.MockServletOutputStream;
@@ -45,17 +41,6 @@ public class TestBaseRestlet {
 
     @SuppressWarnings("serial")
     class MockBaseRestlet extends BaseRestlet {
-        private Logger _logger;
-        @Override
-        protected Logger getLogger() {
-            if(_logger == null) {
-                _logger = new MockLogger(MockBaseRestlet.class.getName(), null);
-            }
-            return _logger;
-        }
-        protected void setLogger(Logger logger) {
-            _logger = logger;
-        }
         @Override
         protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
             return null;
@@ -81,7 +66,6 @@ public class TestBaseRestlet {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        // MockLogger injection done in MockBaseRestlet defined above ;)
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
@@ -364,12 +348,6 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        mockRestlet.setLogger(new MockLogger("Not important", null) {
-            @Override
-            public Level getLevel() {
-                return Level.INFO;
-            }
-        });
 
         mockRestlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
@@ -623,12 +601,6 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        mockRestlet.setLogger(new MockLogger("Not important", null) {
-            @Override
-            public Level getLevel() {
-                return Level.INFO;
-            }
-        });
 
         mockRestlet.doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
@@ -865,12 +837,6 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        mockRestlet.setLogger(new MockLogger("Not important", null) {
-            @Override
-            public Level getLevel() {
-                return Level.INFO;
-            }
-        });
 
         mockRestlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));
@@ -1097,12 +1063,6 @@ public class TestBaseRestlet {
             }
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet();
-        mockRestlet.setLogger(new MockLogger("Not important", null) {
-            @Override
-            public Level getLevel() {
-                return Level.INFO;
-            }
-        });
 
         mockRestlet.doDelete(mockRequest, mockResponse);
         assertTrue(stream.contains("isException"));

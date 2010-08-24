@@ -1,7 +1,6 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
@@ -43,16 +42,6 @@ import domderrien.jsontools.JsonParser;
  */
 @SuppressWarnings("serial")
 public class ThirdPartyEntryPointServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
-
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
-        log = mockLogger;
-    }
-
-    protected static Logger getLogger() {
-        return log;
-    }
 
     private final static String DEMAND_PREFIX = "/Demand";
     private final static String LOCATION_PREFIX = "/Location";
@@ -64,7 +53,6 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         ServletUtils.configureHttpParameters(request, response);
 
         String pathInfo = request.getPathInfo();
-        getLogger().fine("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
@@ -95,7 +83,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(getLogger(), ex, "doGet", pathInfo);
+            out = BaseRestlet.processException(ex, "doGet", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -105,7 +93,6 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String pathInfo = request.getPathInfo();
-        getLogger().warning("Path Info: " + pathInfo);
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
@@ -149,7 +136,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(getLogger(), ex, "doPost", pathInfo);
+            out = BaseRestlet.processException(ex, "doPost", pathInfo);
         }
 
         out.toStream(response.getOutputStream(), false);

@@ -5,11 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -32,7 +27,6 @@ public class TestPaymentOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseOperations.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
     }
 
@@ -45,15 +39,6 @@ public class TestPaymentOperations {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-    }
-
-    @Test
-    public void testGetLogger() throws IOException {
-        Logger log1 = new PaymentOperations().getLogger();
-        assertNotNull(log1);
-        Logger log2 = new PaymentOperations().getLogger();
-        assertNotNull(log2);
-        assertEquals(log1, log2);
     }
 
     @Test(expected=RuntimeException.class)

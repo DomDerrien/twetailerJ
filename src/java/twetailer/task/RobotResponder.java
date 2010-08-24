@@ -4,7 +4,6 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -36,13 +35,6 @@ import domderrien.i18n.LabelExtractor;
  * @author Dom Derrien
  */
 public class RobotResponder {
-
-    private static Logger log = Logger.getLogger(RobotResponder.class.getName());
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
 
     public static final String ROBOT_NAME = "Jack the Troll";
     public static final String ROBOT_POSTAL_CODE = "H0H0H0";
@@ -98,7 +90,6 @@ public class RobotResponder {
                 proposal = BaseSteps.getProposalOperations().createProposal(pm, proposal);
                 // Schedule a task to transmit the proposal to the demand owner
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
-                log.warning("Preparing the task: /maezel/processPublishedProposal?key=" + proposal.getKey().toString());
                 queue.add(
                         url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
                             param(Proposal.KEY, proposal.getKey().toString()).

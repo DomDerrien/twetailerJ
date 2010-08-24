@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -25,12 +24,6 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class ProposalOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(ProposalOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Proposal instance with the given parameters
@@ -67,7 +60,6 @@ public class ProposalOperations extends BaseOperations {
      */
     public Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate saleAssociate) throws ClientException {
         Long saleAssociateKey = saleAssociate.getKey();
-        getLogger().warning("Create proposal for sale associate id: " + saleAssociateKey + " with: " + parameters.toString());
         // Creates new proposal record and persist it
         Proposal newProposal = new Proposal(parameters);
         // Updates the identifier of the creator owner
@@ -147,7 +139,6 @@ public class ProposalOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Proposal instance");
         }
-        getLogger().warning("Get Proposal instance with id: " + key);
         try {
             Proposal proposal = pm.getObjectById(Proposal.class, key);
             if (ownerKey != null && ownerKey != 0L && !ownerKey.equals(proposal.getOwnerKey()) && (storeKey == null || storeKey == 0L)) {
@@ -206,7 +197,6 @@ public class ProposalOperations extends BaseOperations {
         Query query = pm.newQuery(Proposal.class);
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select proposal(s) with: " + query.toString());
             // Select the corresponding resources
             List<Proposal> proposals = (List<Proposal>) query.execute(value);
             proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -234,7 +224,6 @@ public class ProposalOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select proposal(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> proposalKeys = (List<Long>) query.execute(value);
             proposalKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -261,7 +250,6 @@ public class ProposalOperations extends BaseOperations {
         Query query = pm.newQuery(Proposal.class);
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select proposal(s) with: " + query.toString());
             // Select the corresponding resources
             List<Proposal> proposals = (List<Proposal>) query.executeWithArray(values);
             proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -288,7 +276,6 @@ public class ProposalOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Proposal.KEY + " from " + Proposal.class.getName());
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select proposal(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> proposals = (List<Long>) query.executeWithArray(values);
             proposals.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -493,7 +480,6 @@ public class ProposalOperations extends BaseOperations {
      * @param key Identifier of the proposal
      */
     public void deleteProposal(PersistenceManager pm, Proposal proposal) {
-        getLogger().warning("Delete proposal with id: " + proposal.getKey());
         pm.deletePersistent(proposal);
     }
 }

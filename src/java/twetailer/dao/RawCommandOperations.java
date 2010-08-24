@@ -1,7 +1,5 @@
 package twetailer.dao;
 
-import java.util.logging.Logger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.InvalidIdentifierException;
@@ -13,12 +11,6 @@ import twetailer.dto.RawCommand;
  * @author Dom Derrien
  */
 public class RawCommandOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(RawCommandOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the RawCommand instance with the given parameters
@@ -82,7 +74,6 @@ public class RawCommandOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the RawCommand instance");
         }
-        getLogger().warning("Get RawCommand instance with id: " + key);
         try {
             return pm.getObjectById(RawCommand.class, key);
         }
@@ -164,7 +155,6 @@ public class RawCommandOperations extends BaseOperations {
      */
 
     public void deleteRawCommand(PersistenceManager pm, RawCommand rawCommand) {
-        getLogger().warning("Delete raw command with id: " + rawCommand.getKey());
         pm.deletePersistent(rawCommand);
     }
 }

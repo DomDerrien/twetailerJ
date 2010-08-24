@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -22,12 +21,6 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class StoreOperations extends BaseOperations {
-    private static Logger log = Logger.getLogger(StoreOperations.class.getName());
-
-    @Override
-    protected Logger getLogger() {
-        return log;
-    }
 
     /**
      * Create the Store instance with the given parameters
@@ -59,7 +52,6 @@ public class StoreOperations extends BaseOperations {
      * @see StoreOperations#createStore(PersistenceManager, Store)
      */
     public Store createStore(PersistenceManager pm, JsonObject parameters) {
-        getLogger().warning("Create store with: " + parameters.toString());
         // Creates new store record and persist it
         Store newStore = new Store(parameters);
         // Persist it
@@ -128,7 +120,6 @@ public class StoreOperations extends BaseOperations {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Store instance");
         }
-        getLogger().warning("Get Store instance with id: " + key);
         try {
             return pm.getObjectById(Store.class, key);
         }
@@ -176,7 +167,6 @@ public class StoreOperations extends BaseOperations {
         Query query = pm.newQuery(Store.class);
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select stores(s) with: " + query.toString());
             // Select the corresponding resources
             List<Store> stores = (List<Store>) query.execute(value);
             stores.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -204,7 +194,6 @@ public class StoreOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
         try {
             value = prepareQuery(query, attribute, value, limit);
-            getLogger().warning("Select store(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> storeKeys = (List<Long>) query.execute(value);
             storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -231,7 +220,6 @@ public class StoreOperations extends BaseOperations {
         Query query = pm.newQuery(Store.class);
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select store(s) with: " + query.toString());
             // Select the corresponding resources
             List<Store> stores = (List<Store>) query.executeWithArray(values);
             stores.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -258,7 +246,6 @@ public class StoreOperations extends BaseOperations {
         Query query = pm.newQuery("select " + Store.KEY + " from " + Store.class.getName());
         try {
             Object[] values = prepareQuery(query, parameters, limit);
-            getLogger().warning("Select store(s) with: " + query.toString());
             // Select the corresponding resources
             List<Long> storeKeys = (List<Long>) query.executeWithArray(values);
             storeKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
@@ -444,7 +431,6 @@ public class StoreOperations extends BaseOperations {
      */
 
     public void deleteStore(PersistenceManager pm, Store store) {
-        getLogger().warning("Delete store with id: " + store.getKey());
         pm.deletePersistent(store);
     }
 }

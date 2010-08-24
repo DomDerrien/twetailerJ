@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
@@ -22,21 +21,6 @@ import com.google.appengine.api.labs.taskqueue.QueueFactory;
  * @author Dom Derrien
  */
 public class BaseOperations {
-    private static Logger _log = Logger.getLogger(BaseOperations.class.getName());
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        _log = mock;
-    }
-
-    /**
-     * Get the logging handler
-     *
-     * @return Reference on the local Logger instance
-     */
-    protected Logger getLogger() {
-        return _log;
-    }
 
     private static PersistenceManagerFactory pmfInstance = null;
 

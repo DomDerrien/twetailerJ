@@ -44,25 +44,21 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
     protected void dispatchMailMessage(HttpServletRequest request, HttpServletResponse response) {
         String pathInfo = request.getPathInfo();
-        log.warning("Path Info: " + pathInfo);
         if (pathInfo != null && 0 < pathInfo.length()) {
             pathInfo = pathInfo.substring(1); // To remove the leading '/'
         }
 
         if (TwitterMailNotificationHandlerServlet.responderEndpoints.contains(pathInfo)) {
-            log.warning("Forwarding to: TwitterMailNotificationHandlerServlet.processTwitterNotification()");
             TwitterMailNotificationHandlerServlet.processTwitterNotification(request, response);
             return;
         }
 
         if (MailResponderServlet.responderEndpoints.contains(pathInfo)) {
-            log.warning("Forwarding to: MailResponderServlet.processMailedRequest()");
             MailResponderServlet.processMailedRequest(request, response);
             return;
         }
 
         if (MailComposerServlet.responderEndpoints.contains(pathInfo)) {
-            log.warning("Forwarding to: MailComposerServlet.processMailedRequest()");
             MailComposerServlet.processMailedRequest(request, response);
             return;
         }
@@ -117,8 +113,6 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             foolMessagePost = false;
             throw new MessagingException("Done in purpose!");
         }
-
-        log.warning("Message to be sent to: " + from + " with the subject: " + subject + "\n***\n" + body + "\n***");
 
         Properties properties = new Properties();
         Session session = Session.getDefaultInstance(properties, null);

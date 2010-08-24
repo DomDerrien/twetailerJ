@@ -1,9 +1,5 @@
 package twetailer.j2ee.restlet;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import javamocks.util.logging.MockLogger;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,7 +26,6 @@ public class TestLocationRestlet {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        LocationRestlet.setLogger(new MockLogger("test", null));
     }
 
     @Before
@@ -43,13 +38,6 @@ public class TestLocationRestlet {
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testGetLogger() {
-        ops.getLogger();
-        assertTrue(true);
-        assertNull(null);
     }
 
     @Test
