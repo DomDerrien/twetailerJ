@@ -1,10 +1,22 @@
 package twetailer.j2ee.restlet;
 
+import static org.junit.Assert.assertEquals;
+
+import javax.jdo.PersistenceManager;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
+import twetailer.ClientException;
+import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
+import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Consumer;
+import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.MockLoginServlet;
 import twetailer.task.step.BaseSteps;
 
@@ -31,12 +43,30 @@ public class TestSaleAssociateRestlet {
     public void tearDown() throws Exception {
     }
 
-    /***** ddd
-    @Test(expected=ClientException.class)
+    @Test(expected=ReservedOperationException.class)
     public void testCreateResourceI() throws DataSourceException, ClientException {
+        final Long saleAssociateKey = 45354L;
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(key);
+                consumer.setSaleAssociateKey(saleAssociateKey);
+                return consumer;
+            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+                assertEquals(saleAssociateKey, key);
+                return new SaleAssociate();
+            }
+        });
         ops.createResource(null, user);
     }
 
+    /***** ddd
     @Test(expected=ClientException.class)
     public void testCreateResourceII() throws DataSourceException, ClientException {
         user.setAttribute("info", null);

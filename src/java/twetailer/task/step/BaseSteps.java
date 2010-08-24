@@ -96,94 +96,6 @@ public class BaseSteps {
 
     public static String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
 
-    public static void confirmUpdate(PersistenceManager pm, RawCommand rawCommand, Demand demand, Consumer owner) throws DataSourceException, InvalidIdentifierException, CommunicationException {
-
-        List<String> cc = demand.getCC();
-        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
-            boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
-            Locale locale = Locale.ENGLISH; // owner.getLocale(); // TODO
-
-            Location location = LocationSteps.getLocation(pm, demand);
-
-            // Prepare the request parameters
-            String[] parameters = new String[] {
-                    owner.getName(), // 0
-                    demand.getKey().toString(), //1
-                    demand.getState().toString(), // 2
-                    demand.getDueDate().toString(), // 3
-                    demand.getModificationDate().toString(), // 4
-                    location.getPostalCode() + " (" + location.getCountryCode() + ") within " + demand.getRange() + " " + demand.getRangeUnit(), // 5
-                    demand.getQuantity().toString(), // 6
-                    demand.getSerializedCriteria("none"), // 7
-                    demand.getSerializedHashTags("none"), // 8
-                    demand.getSerializedCC("none"), // 9
-                    "<unknown>", // 10
-                    Source.widget.equals(demand.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
-                    ("cancel demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 12
-                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
-                    "0", //14
-                    "0", // 15
-                    location.getPostalCode() + " " + location.getCountryCode(),
-                    demand.getRange().toString() + " " + demand.getRangeUnit()
-            };
-
-            // Send the operation confirmation to the owner
-            if (!Source.api.equals(demand.getSource())) {
-                String message = MessageGenerator.getMessage(
-                        demand.getSource(),
-                        demand.getHashTags(),
-                        isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck,
-                        parameters,
-                        locale
-                );
-                communicateToConsumer(rawCommand, owner, new String[] { message });
-            }
-
-            // Send a notification to the CC'ed users
-            if (cc != null && 0 < cc.size()) {
-                String message = MessageGenerator.getMessage(
-                        demand.getSource(),
-                        demand.getHashTags(),
-                        isNewDemand ? MessageId.demandCreationCpy : MessageId.demandUpdateCpy,
-                        parameters,
-                        locale
-                );
-                notifyMessageToCCed(cc, message, locale);
-            }
-        }
-    }
-
-    public static void notifyAvailability(PersistenceManager pm, Demand demand, Consumer associate) throws DataSourceException, InvalidIdentifierException, CommunicationException {
-        Locale locale = associate.getLocale();
-
-        String proposedDate = DateUtils.dateToYMD(demand.getDueDate());
-        String[] parameters = new String[] {
-                associate.getName(), // 0
-                demand.getKey().toString(), // 1
-                demand.getDueDate().toString(), // 2
-                demand.getExpirationDate().toString(), // 3
-                demand.getQuantity().toString(), // 4
-                demand.getSerializedCriteria("none"), // 5
-                demand.getSerializedHashTags("none"), // 6
-                LabelExtractor.get("mc_mail_subject_response_default", locale), // 7
-                ("propose demand:" + demand.getKey().toString() + " players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}" + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 8
-                ("decline demand:" + demand.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 9
-                LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 10
-                "0", //11
-                "0" // 12
-        };
-
-        String message = MessageGenerator.getMessage(
-                associate.getPreferredConnection(),
-                demand.getHashTags(),
-                MessageId.demandCreationNot,
-                parameters,
-                locale
-        );
-
-        communicateToConsumer(new RawCommand(associate.getPreferredConnection()), associate, new String[] { message });
-    }
-
     public static void confirmUpdate(PersistenceManager pm, RawCommand rawCommand, Proposal proposal, SaleAssociate owner, Consumer associate) throws DataSourceException, InvalidIdentifierException, CommunicationException {
 
         if (!Source.api.equals(proposal.getSource())) {
@@ -281,7 +193,7 @@ public class BaseSteps {
                         parameters,
                         locale
                 );
-                notifyMessageToCCed(cc, message, locale);
+                notifyMessageToCCed(cc, "Copy of Twetailer Notification",  message, locale);
             }
         }
     }
@@ -318,7 +230,7 @@ public class BaseSteps {
             String messageCC = LabelExtractor.get("cp_command_demand_forward_update_to_cc", new Object[] { owner.getName(), tweet }, locale);
 
             // Send the message
-            notifyMessageToCCed(cc, messageCC, locale);
+            notifyMessageToCCed(cc, "Copy of Twetailer Notification", messageCC, locale);
         }
     }
 
@@ -351,7 +263,7 @@ public class BaseSteps {
             String messageCC = LabelExtractor.get("cp_command_demand_forward_cancel_to_cc", new Object[] { owner.getName(), tweet }, locale);
 
             // Send the message
-            notifyMessageToCCed(cc, messageCC, locale);
+            notifyMessageToCCed(cc, "Copy of Twetailer Notification", messageCC, locale);
         }
     }
 
@@ -401,7 +313,7 @@ public class BaseSteps {
             );
 
             // Send the message
-            notifyMessageToCCed(cc, messageCC, locale);
+            notifyMessageToCCed(cc, "Copy of Twetailer Notification", messageCC, locale);
         }
     }
 
@@ -409,13 +321,14 @@ public class BaseSteps {
      * Sends a message to the CC-ed people
      *
      * @param coordinates List of email addresses or Twitted identifier
+     * @param e-mail subject, for thread-aware mail readers
      * @param message Information to convey to the CC-ed user
      * @param locale Identifier of the language to use
      */
-    public static void notifyMessageToCCed(List<String> coordinates, String message, Locale locale) {
+    public static void notifyMessageToCCed(List<String> coordinates, String subject, String message, Locale locale) {
         for (String coordinate: coordinates) {
             try {
-                communicateToCCed(coordinate, message, locale);
+                communicateToCCed(coordinate, subject, message, locale);
             }
             catch (ClientException e) { } // Too bad, cannot contact the CC-ed person... Don't block the next sending!
         }

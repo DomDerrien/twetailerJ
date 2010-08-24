@@ -18,9 +18,12 @@ import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
 
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -141,7 +144,7 @@ public class DemandProcessor {
                 Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                 // Communicate with the sale associate
                 try {
-                    BaseSteps.notifyAvailability(pm, demand, saConsumerRecord);
+                    notifyAvailability(demand, saConsumerRecord);
 
                     // Keep track of the notification to not ping him/her another time
                     demand.addSaleAssociateKey(saleAssociate.getKey());
@@ -326,5 +329,47 @@ public class DemandProcessor {
             }
         }
         return selectedSaleAssociates;
+    }
+
+    /**
+     * Send a message to the identified sale associate about the demand ready to be proposed
+     *
+     * @param demand New or updated demand to be presented to the sale associate
+     * @param associate Associate record of the sale associate to be contacted
+     *
+     * @throws CommunicationException If the communication with the demand owner fails
+     */
+    public static void notifyAvailability(Demand demand, Consumer associate) throws CommunicationException {
+
+        // TODO: check if it's worth caching the MessageGenerator instance for the associate's locale, so we can save on the time to serialize the demand and the commands -- Note the associate name field will have to be updated
+
+        Locale locale = associate.getLocale();
+        final String proposedDate = DateUtils.dateToYMD(demand.getDueDate());
+        final String mailSubject = "ezToff Notification about Request:" + demand.getKey();
+        final String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
+        final String createProposal = "propose demand:" + demand.getKey().toString() + " players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}";
+        final String declineDemand = "decline demand:" + demand.getKey().toString();
+
+        MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+        msgGen.
+            put("proposal>owner>name", associate.getName()).
+            fetch(demand).
+            put("message>footer", msgGen.getRawMessage(MessageId.messageFooter)).
+            put("control>threadSubject", msgGen.put("control.threadSubject", mailSubject)).
+            put("control>createProposal", (createProposal + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A")).
+            put("control>declineDemand", (declineDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+
+        // TODO: place 'automatedResponseFooter' loaded by msgGen.getRawMessage()
+        // TODO: load default 'threadSubject' and inject a the demand key
+        // TODO: add 'long_command_create_proposal' in the TMX
+        // TODO: add 'long_command_decline_demand' in the TMX
+
+        RawCommand rawCommand = new RawCommand(associate.getPreferredConnection());
+        rawCommand.setSubject(mailSubject);
+        communicateToConsumer(
+                rawCommand,
+                associate,
+                new String[] { msgGen.getMessage(MessageId.demandCreationNot) }
+        );
     }
 }

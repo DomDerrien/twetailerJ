@@ -9,6 +9,7 @@ import javax.jdo.Query;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
@@ -61,6 +62,10 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(loggedUser.getNickname());
         newConsumer.setEmail(address);
+        if (newConsumer.getName() == null && newConsumer.getEmail() != null) {
+            newConsumer.setName(newConsumer.getEmail());
+        }
+        newConsumer.setPreferredConnection(Source.mail);
         return createConsumer(pm, newConsumer);
     }
 
@@ -116,6 +121,10 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(identifier);
         newConsumer.setJabberId(identifier);
+        if (newConsumer.getName() == null && newConsumer.getJabberId() != null) {
+            newConsumer.setName(newConsumer.getJabberId());
+        }
+        newConsumer.setPreferredConnection(Source.jabber);
         return createConsumer(pm, newConsumer);
     }
 
@@ -167,6 +176,10 @@ public class ConsumerOperations extends BaseOperations {
         newConsumer.setName(twitterUser.getName());
         newConsumer.setAddress(twitterUser.getLocation());
         newConsumer.setTwitterId(identifier);
+        if (newConsumer.getName() == null && newConsumer.getTwitterId() != null) {
+            newConsumer.setName(newConsumer.getTwitterId());
+        }
+        newConsumer.setPreferredConnection(Source.twitter);
         return createConsumer(pm, newConsumer);
     }
 
@@ -213,6 +226,10 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(senderAddress.getPersonal());
         newConsumer.setEmail(email);
+        if (newConsumer.getName() == null && newConsumer.getEmail() != null) {
+            newConsumer.setName(newConsumer.getEmail());
+        }
+        newConsumer.setPreferredConnection(Source.mail);
         return createConsumer(pm, newConsumer);
     }
 
@@ -297,6 +314,10 @@ public class ConsumerOperations extends BaseOperations {
         newConsumer.setEmail(email);
         newConsumer.setOpenID(openID);
         newConsumer.setLanguage(language);
+        if (newConsumer.getName() == null && newConsumer.getEmail() != null) {
+            newConsumer.setName(newConsumer.getEmail());
+        }
+        newConsumer.setPreferredConnection(Source.mail);
         return createConsumer(pm, newConsumer);
     }
 

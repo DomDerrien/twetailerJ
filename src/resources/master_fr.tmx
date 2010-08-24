@@ -38,14 +38,6 @@
                 <seg>ezToff</seg>
             </tuv>
         </tu>
-        <tu tuid="product_ascii_logo" dataType="text">
-            <prop type="x-tier">dojotk</prop>
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>&lt;(^v^)&gt;</seg>
-            </tuv>
-        </tu>
         <tu tuid="product_mantra" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
@@ -59,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Droits réservés \u00a9 2009-2010 &lt;a href="http://www.milstein-assoc.com/"&gt;Milstein &amp; associates inc.&lt;/a&gt;</seg>
+                <seg>Droits réservés \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp;amp; associates inc.</a></seg>
             </tuv>
         </tu>
         <tu tuid="display_name_pattern" dataType="text">

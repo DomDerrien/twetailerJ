@@ -108,15 +108,6 @@
             </tuv>
         </tu>
 
-        <tu tuid="product_ascii_logo" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">dojotk</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en">
-                <seg>&lt;(^v^)&gt;</seg>
-            </tuv>
-        </tu>
-
         <tu tuid="product_mantra" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
@@ -272,7 +263,7 @@
             <prop type="x-tier">dojotk</prop>
             <note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>dueDate,due-date,teeOff,tee-off</seg>
+                <seg>dueDate,due-date,teeOff,tee-off,teeTime,tee-time</seg>
             </tuv>
         </tu>
 
@@ -346,7 +337,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the price attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>price,cost</seg>
+                <seg>price,cost,unitPrice,unit-price,roundPrice,round-price</seg>
             </tuv>
         </tu>
 
@@ -424,7 +415,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the total attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>totalCost,tc</seg>
+                <seg>totalCost,tc,total-cost</seg>
             </tuv>
         </tu>
 

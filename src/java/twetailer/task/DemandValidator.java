@@ -1,5 +1,7 @@
 package twetailer.task;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
@@ -10,9 +12,12 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.HashTag;
@@ -20,8 +25,13 @@ import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
+
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
@@ -201,7 +211,7 @@ public class DemandValidator {
                                 countdownMillis(5000)
                     );
 
-                    BaseSteps.confirmUpdate(pm, rawCommand, demand, consumer);
+                    confirmUpdate(rawCommand, demand, LocationSteps.getLocation(pm, demand), consumer);
                 }
             }
             catch (DataSourceException ex) {
@@ -243,6 +253,79 @@ public class DemandValidator {
                     for (String tag: serializedHashTags.split(" ")) {
                         demand.removeHashTag(tag);
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Prepare the messages sent to the demand owner and to the CC'ed users to notify them
+     * about the new demand state.
+     *
+     * @param rawCommand rawCommand at the origin of the demand creation or update
+     * @param demand Demand instance just validate after its creation or update
+     * @param location Location attached to the demand
+     * @param owner Demand owner
+     *
+     * @throws CommunicationException If the communication with the demand owner fails
+     */
+    public static void confirmUpdate(RawCommand rawCommand, Demand demand, Location location, Consumer owner) throws CommunicationException {
+
+        List<String> cc = demand.getCC();
+        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
+            boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
+            Locale locale = owner.getLocale();
+
+            MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+            msgGen.
+                put("demand>owner>name", owner.getName()).
+                fetch(demand).
+                fetch(location, "demand").
+                put("message>footer", msgGen.getRawMessage(MessageId.messageFooter));
+
+            if (!Source.api.equals(demand.getSource())) {
+                final String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
+                final String cancelDemand = "cancel demand:" + demand.getKey().toString();
+                final String updateDemand = "update demand:" + demand.getKey().toString();
+
+                msgGen.
+                    put("control>threadSubject", msgGen.put("control.threadSubject", "ezToff Notification about Request:" + demand.getKey())).
+                    put("control>cancelDemand", (cancelDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A")).
+                    put("control>updateDemand", (updateDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
+                    msgGen.put("control>threadSubject", rawCommand.getSubject());
+                }
+
+                // TODO: place 'automatedResponseFooter' loaded by msgGen.getRawMessage()
+                // TODO: load default 'threadSubject' and inject a the demand key
+                // TODO: add 'long_command_cancel_demand' in the TMX
+                // TODO: add 'long_command_update_demand' in the TMX
+
+                communicateToConsumer(
+                        rawCommand,
+                        owner,
+                        new String[] { msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck) }
+                );
+            }
+
+            // Send a notification to the CC'ed users
+            if (cc != null && 0 < cc.size()) {
+                msgGen.
+                    remove("control>threadSubject").
+                    remove("control>cancelDemand").
+                    remove("control>updateDemand");
+                String message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationCpy: MessageId.demandUpdateCpy);
+
+                for (String coordinate: cc) {
+                    try {
+                        communicateToCCed(
+                                coordinate,
+                                "Copy of ezToff Notification about Request:" + demand.getKey(),
+                                message,
+                                locale
+                        );
+                    }
+                    catch (ClientException e) { } // Too bad, cannot contact the CC-ed person... Don't block the next sending!
                 }
             }
         }

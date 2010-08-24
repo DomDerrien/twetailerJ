@@ -36,7 +36,6 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
-import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -359,50 +358,22 @@ public class DemandSteps extends BaseSteps {
                 Long saleAssociateKey = demand.getSaleAssociateKeys().get(0);
                 Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), saleAssociateKey, null);
 
-                Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
-                String[] messageParts = new String[] {
-                        null, // 0
-                        demand.getKey().toString(), //1
-                        demand.getState().toString(), // 2
-                        demand.getDueDate().toString(), // 3
-                        demand.getModificationDate().toString(), // 4
-                        demand.getQuantity().toString(), // 5
-                        demand.getSerializedCriteria("none"), // 6
-                        demand.getSerializedHashTags("none"), // 7
-                        demand.getSerializedCC("none"), // 8
-                        proposal.getKey().toString(), // 9
-                        proposal.getDemandKey().toString(), // 10
-                        proposal.getDueDate().toString(), // 11
-                        proposal.getQuantity().toString(), // 12
-                        proposal.getSerializedCriteria("none"), // 13
-                        proposal.getSerializedHashTags("none"), // 14
-                        "$", // 15
-                        proposal.getPrice().toString(), // 16
-                        proposal.getTotal().toString(), // 17
-                        location.getPostalCode(), // 18
-                        location.getCountryCode(), // 19
-                        null, // 20
-                        null, // 21
-                        null, // 22
-                        "0", // 20
-                        "0" // 21
-                };
-
                 if (!Source.api.equals(demand.getSource())) {
+                    Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
+
                     Locale locale = owner.getLocale();
-                    messageParts[0] = owner.getName();
-                    messageParts[22] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
-                    String message = MessageGenerator.getMessage(
-                            demand.getSource(),
-                            proposal.getHashTags(),
-                            MessageId.demandClosingAck,
-                            messageParts,
-                            locale
-                    );
+                    MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                    msgGen.
+                        put("demand>owner>name", owner.getName()).
+                        fetch(demand).
+                        fetch(location, "demand").
+                        fetch(proposal).
+                        put("message>footer", msgGen.getRawMessage(MessageId.messageFooter));
+
                     communicateToConsumer(
                             new RawCommand(demand.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
                             owner,
-                            new String[] { message }
+                            new String[] { msgGen.getMessage(MessageId.demandClosingAck) }
                     );
                 }
 
@@ -413,22 +384,20 @@ public class DemandSteps extends BaseSteps {
 
                     // Inform Proposal owner about the closing
                     Locale locale = saConsumerRecord.getLocale();
-                    messageParts[0] = saConsumerRecord.getName();
-                    messageParts[20] = LabelExtractor.get("mc_mail_subject_response_default", locale);
-                    messageParts[21] = ("close proposal:" + proposal.getKey().toString() + BaseSteps.automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A");
-                    messageParts[22] = LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale);
-                    String message = MessageGenerator.getMessage(
-                            proposal.getSource(),
-                            proposal.getHashTags(),
-                            MessageId.demandClosingNot,
-                            messageParts,
-                            locale
-                    );
+                    MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                    msgGen.
+                        put("proposal>owner>name", saConsumerRecord.getName()).
+                        fetch(demand).
+                        fetch(proposal).
+                        put("message>footer", msgGen.getRawMessage(MessageId.messageFooter)).
+                        put("control>threadSubject", "ezToff Notification about Request:" + proposal.getDemandKey()).
+                        put("control>closeProposal", ("close proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+
                     try {
                         communicateToConsumer(
                                 new RawCommand(saConsumerRecord.getPreferredConnection()),
                                 saConsumerRecord,
-                                new String[] { message }
+                                new String[] { msgGen.getMessage(MessageId.demandClosingNot) }
                         );
                     }
                     catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process

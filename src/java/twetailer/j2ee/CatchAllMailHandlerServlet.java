@@ -122,6 +122,9 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("catch-all@twetailer.com"));
         messageToForward.setSubject("Fwd: (" + from + ") " + subject);
         MailConnector.setContentAsPlainTextAndHtml(messageToForward, body);
+
+        log.warning("Reporting to catch-all@twetailer.com (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
+
         Transport.send(messageToForward);
     }
 

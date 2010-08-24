@@ -30,79 +30,107 @@
         <!-- ................... -->
         <!-- =================== -->
 
-        <tu tuid="short_core_demand_creation_ackToOwner" datatype="Text">
+        <tu tuid="common_currencySymbol_CAD" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <note>
-                Message confirming a successful demand creation.|
-                {0}: demand reference produced by the entry "short_core_demand_reference"
-                {1}: short message produced for the demand as defined by the entry "short_core_demand_details"
-            </note>
-            <tuv xml:lang="en">
-                <seg>:-) Listing newly created {0}... </seg>
-            </tuv>
+            <tuv xml:lang="en"><seg>$</seg></tuv>
         </tu>
 
-        <tu tuid="short_core_tweet_demand" datatype="Text">
-            <prop type="x-version">3</prop>
-            <prop type="x-tier">javarb</prop>
-            <note>
-                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
-                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
-                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
-                {0}: action as defined by the entry "short_core_demand_action"
-                {1}: demand reference as defined by the entry "short_core_demand_reference"
-                {2}: state as defined by the entry "short_core_demand_state", inserted only if the state is not open or published.
-                {3}: due date as defined by the entry "short_core_demand_dueDate"
-                {4}: expiration date (not printed if equals to due date) as defined by the entry "short_core_demand_expirationDate"
-                {5}: locale (postal and country codes) as defined by the entry "short_core_location_details"
-                {6}: range as defined by the entry "short_core_demand_details"
-                {7}: quantity as defined by the entry "short_core_quantity_details"
-                {8}: tags as defined by the entry "short_core_demand_tags"
-                {9}: hashtags as defined by the entry "short_core_demand_hashTags"
-                {10}: proposal keys as defined by the entry "short_core_demand_proposalKeys", inserted only if proposals have been attached to the demand
-                {11}: cc-ed ids as defined by the entry "short_core_demand_cced", inserted only if there's at least one CC'ed user
-            </note>
-            <tuv xml:lang="en">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
-            </tuv>
-        </tu>
-
-        <tu tuid="short_golf_demand_creation_ackToOwner" datatype="Text">
+        <tu tuid="common_currencyName_CAD" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <note>
-                Message confirming a successful demand creation.|
-                {0}: demand reference produced by the entry "short_golf_demand_reference"
-                {1}: short message produced for the demand as defined by the entry "short_golf_demand_details"
-            </note>
+            <tuv xml:lang="en"><seg>Canadian Dollars</seg></tuv>
+        </tu>
+
+        <tu tuid="common_currencySymbol_USD" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>$</seg></tuv>
+        </tu>
+
+        <tu tuid="common_currencyName_USD" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>American (USA) Dollars</seg></tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!-- ................... -->
+        <!-- =================== -->
+
+        <tu tuid="short_core_dateTimeFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>yyyy-MM-dd'T'HH:mm:ss</seg></tuv>
+        </tu>
+
+        <tu tuid="short_golf_dateTimeFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>yyyy-MM-dd'T'HH:mm</seg></tuv>
+        </tu>
+
+        <tu tuid="long_core_dateTimeFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>EEE, MMMM d yyyy 'at' h:mm:ss a</seg></tuv>
+        </tu>
+
+        <tu tuid="long_golf_dateTimeFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>EEE, MMMM d yyyy 'at' h:mm a</seg></tuv>
+        </tu>
+
+        <!-- =================== -->
+        <!-- ................... -->
+        <!-- =================== -->
+
+        <tu tuid="short_core_emptyListIndicator" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>[]</seg></tuv>
+        </tu>
+
+        <tu tuid="short_golf_emptyListIndicator" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>[]</seg></tuv>
+        </tu>
+
+        <tu tuid="long_core_emptyListIndicator" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>none</seg></tuv>
+        </tu>
+
+        <tu tuid="long_golf_emptyListIndicator" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>none</seg></tuv>
+        </tu>
+
+        <tu tuid="short_core_footer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Piece of text inserted at the end of all short messages</note>
             <tuv xml:lang="en">
-                <seg>:-) Listing newly created {0}... </seg>
+                <seg>
+                    Source of additional information: twetailer.com, twetailer.com/terms, and twetailer.com/privacy-policy.|
+                    Report issues at: support@twetailer.com. Twetailer is a member of AnotherSocialEconomy.com.
+                </seg>
             </tuv>
         </tu>
 
-        <tu tuid="short_golf_tweet_demand" datatype="Text">
-            <prop type="x-version">3</prop>
+        <tu tuid="short_golf_footer" datatype="Text">
+            <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <note>
-                Important: Each value is going to be inserted with a trailing space, so no need to separated the insertion points with another space
-                Tune each value printing with the corresponding TMX entry (see entries with an identifier like: cp_tweet_action_part
-                Don't worry about empty values: the entire part will be skipped (ie no risk to have a prefix without its value)
-                {0}: action as defined by the entry "short_golf_demand_action"
-                {1}: demand reference as defined by the entry "short_golf_demand_reference"
-                {2}: state as defined by the entry "short_golf_demand_state", inserted only if the state is not open or published.
-                {3}: due date as defined by the entry "short_golf_demand_dueDate"
-                {4}: expiration date (not printed if equals to due date) as defined by the entry "short_golf_demand_expirationDate"
-                {5}: locale (postal and country codes) as defined by the entry "short_golf_location_details"
-                {6}: range as defined by the entry "short_golf_demand_details"
-                {7}: quantity as defined by the entry "short_golf_quantity_details"
-                {8}: tags as defined by the entry "short_golf_demand_tags"
-                {9}: hashtags as defined by the entry "short_golf_demand_hashTags"
-                {10}: proposal keys as defined by the entry "short_golf_demand_proposalKeys", inserted only if proposals have been attached to the demand
-                {11}: cc-ed ids as defined by the entry "short_golf_demand_cced", inserted only if there's at least one CC'ed user
-            </note>
+            <note>Piece of text inserted at the end of all short messages</note>
             <tuv xml:lang="en">
-                <seg>{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}</seg>
+                <seg>
+                    Source of additional information: ezToff.com, ezToff.com/terms, and ezToff.com/privacy-policy.|
+                    Report issues at: support@ezToff.com. ezToff is a member of AnotherSocialEconomy.com.
+                </seg>
             </tuv>
         </tu>
 
@@ -138,43 +166,91 @@
             </tuv>
         </tu>
 
+        <!-- =================== -->
+        <!-- ................... -->
+        <!-- =================== -->
+
+        <tu tuid="short_core_demand_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>updateDemand}
+                {control>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, listing newly created {demand>key}...|
+                    demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
+                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
+                    quantity:{demand>quantity} tags:{demand>criteria} {demand>hashTags} {demand>metadata}
+                    proposals:{demand>proposalKeys} {demand>cc}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_demand_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>updateDemand}
+                {control>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, listing newly created {demand>key}...|
+                    request:{demand>key} tee-time:{demand>dueDate}
+                    locale:{demand>location>postalCode} {demand>location>countryCode}
+                    players:{demand>quantity} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart)
+                    tags:{demand>criteria} {demand>cc}
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="long_core_demand_creation_ackToOwner" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
-                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: state
-                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {4}: expiration date, can be equals to the due date
-                {5}: locale (postal and country codes) and range as defined by entry "long_core_location_area_details"
-                {6}: quantity
-                {7}: tags
-                {8}: hashtags
-                {9}: cc-ed ids as defined by the entry "short_core_demand_cced"
-                {10}: number of stores pinged
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_core_demand_cancelCommand"
-                {13}: message footer as defined by the entry "long_core_footer"
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>updateDemand}
+                {control>cancelDemand}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi {0},</p>
+                    <p><strong>{demand>owner>name}</strong></p>
                     <p>Your demand has just been created with:</p>
                     <ul>
-                        <li>Tags: {7} {8}</li>
-                        <li>Quantity: {6};</li>
-                        <li>Due date: {3};</li>
-                        <li>Where: {5};</li>
-                        <li>Request reference #: {1}</li>
+                        <li>Tags: {demand>criteria} {demand>hashTags}</li>
+                        <li>Quantity: {demand>quantity};</li>
+                        <li>Due date: {demand>dueDate};</li>
+                        <li>Where: {demand>location>postalCode} {demand>location>countryCode};</li>
+                        <li>Range: {demand>range} {demand>rangeUnit};</li>
+                        <li>Request reference #: {demand>key}.</li>
                     </ul>
-                    <p>You CC'ed: {9}.</p>
-                    <p>Your demand is going to be broadcasted to {10} stores. Twetailer will notify you as soon as proposals are received.</p>
-                    <p>Click here to cancel your demand: <a href="mailto:assistant@twetailer.appspotmail.com?body={12}&amp;subject={11}">cancel demand # {1}</a>.</p>
+                    <p>You CC'ed: {demand>cc}.</p>
+                    <p>Your demand is going to be broadcasted to relevant stores. Twetailer will notify you as soon as proposals are received.</p>
+                    <p>Click here to cancel your demand: <a href="mailto:assistant@twetailer.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">cancel demand # {1}</a>.</p>
                     <p>Thanks for using Twetailer to shop online in your local area.</p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -184,43 +260,110 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful demand creation.|
-                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: state
-                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {4}: expiration date, can be equals to the due date
-                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
-                {6}: quantity
-                {7}: tags
-                {8}: hashtags
-                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
-                {10}: number of stores pinged
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
-                {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart asked
-                {15}: number of golf cart asked
-                {16}: locale
-                {17}: range
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>updateDemand}
+                {control>cancelDemand}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p>We're confirming your desire to tee-off within <strong>{17}</strong> of <strong>{16}</strong>, on <strong>{3}</strong>. You've also requested:</p>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>
+                           We're confirming your desire to tee-off within <strong>{demand>range} {demand>rangeUnit}</strong> of
+                           <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>, on <strong>{demand>dueDate}</strong>.
+                           You've also requested:
+                    </p>
                     <ul>
-                        <li>Players: <strong>{6}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{7}</strong></li>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting your request - reference# {1}, to <strong>{10}</strong> relevant golf courses
-                    and will communicate their proposals, as soon as possible, to you and <strong>{9}</strong> on your behalf.</p>
+                    <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant golf courses
+                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@twetailer.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_creation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand creation ...|
+                    {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} due-date:{demand>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_demand_creation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand creation ...|
+                    {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metada} players:{demand>quantity} tee-time:{demand>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_creation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>
+                        <strong>{demand>owner>name}</strong> has choosen to notify you about the new demand
+                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>.
+                        Other information:
+                    </p>
+                    <ul>
+                        <li>Due date: <strong>{demand>dueDate}</strong></li>
+                        <li>Expiration date: {demand>expirationDate}</li>
+                        <li>Quantity: <strong>{demand>quantity}</strong></li>
+                        <li>Tags: <strong>{demand>criteria}</strong></li>
+                        <li>Metadata: {demand>metadata}</li>
+                    </ul>
+                    <p>The new request - reference# {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible, to the demand owner and to you on their behalf.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@Twetailer.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@Twetailer.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -230,40 +373,114 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing CC'ed users about the demand creation.|
-                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: state
-                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {4}: expiration date, can be equals to the due date
-                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
-                {6}: quantity
-                {7}: tags
-                {8}: hashtags
-                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
-                {10}: number of stores pinged
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
-                {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart asked
-                {15}: number of golf cart asked
-                {16}: locale
-                {17}: range
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p><strong>{0}</strong> has chosen to keep you notified regarding their desire to tee-off within <strong>{17}</strong> of <strong>{16}</strong>, on <strong>(3)</strong>. Also requested:</p>
-                    <ul>
-                        <li>Players: <strong>{6}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{7}</strong></li>
-                    </ul>
-                    <p>We're anonymously broadcasting their request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{9}</strong> on their behalf.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    <p>
+                        <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their desire to tee-off
+                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        on <strong>{demand>dueDate}</strong>.
+                        Also requested:
                     </p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    <ul>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
+                    </ul>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{demand>cc}</strong> on their behalf.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:support@ezToff.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_creation_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+                {control>threadSubject}
+                {control>createProposal}
+                {control>declineDemand}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI. Can you supply {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} due-date:{demand>dueDate}?|
+                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:? unit-price:? total-cost:? due-date:{demand>dueDate}'.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_demand_creation_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+                {control>threadSubject}
+                {control>createProposal}
+                {control>declineDemand}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI. Can you supply {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metada} players:{demand>quantity} tee-time:{demand>dueDate}?|
+                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:? metadata:{pullCart:{demand>metadata>pullCart},golfCart:{demand>metada>golfCart}} round-price:? total-cost:? tee-time:{demand>dueDate}'.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_creation_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing sale associates about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+                {control>threadSubject}
+                {control>createProposal}
+                {control>declineDemand}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>A new tee-off request for <strong>{demand>dueDate}</strong> has been posted in your area. Can you accommodate:</p>
+                    <ul>
+                        <li>Tags: <strong>{demand>criteria} {demand>hashTags}</strong></li>
+                        <li>Due date: <strong>{demand>dueDate}</strong></li>
+                        <li>Expiration date: {demand>expirationDate}</li>
+                        <li>Quantity: <strong>{demand>quantity}</strong></li>
+                        <li>Metadata: {demand>metadata}</li>
+                    </ul>
+                    <p>
+                        If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/associate.jsp">Associate Console</a>
+                        and click "Create Proposal" for <strong>Reference {demand>key}</strong>.
+                        Alternatively, you can also send an email to create a Proposal by clicking
+                        <a href="mailto:assistant@twetailer.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
+                    </p>
+                    <p>If you've received this message in error, click <a href="mailto:Support@Twetailer.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -273,39 +490,35 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing sale associates about the demand creation.|
-                {0}: sale associate name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {3}: expiration date, can be equals to the due date
-                {4}: quantity
-                {5}: tags
-                {6}: hashtags
-                {7}: email thread subject
-                {8}: content of the automatic response to propose a round departure time, as defined by yhe entry "long_golf_proposal_createCommand"
-                {9}: content of the automatic response to decline the demand, as defined by yhe entry "long_golf_demand_declineCommand"
-                {10}: message footer as defined by the entry "long_golf_footer"
-                {11}: number of pull cart asked
-                {12}: number of golf cart asked
+                Message informing sale associates about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+                {control>threadSubject}
+                {control>createProposal}
+                {control>declineDemand}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p>A new tee-off request for <strong>{2}</strong> has been posted in your area. Can you accommodate:</p>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>A new tee-off request for <strong>{demand>dueDate}</strong> has been posted in your area. Can you accommodate:</p>
                     <ul>
-                        <li>Players: <strong>{4}</strong></li>
-                        <li>Pull carts: <strong>{11}</strong></li>
-                        <li>Golf carts: <strong>{12}</strong></li>
-                        <li>Options: <strong>{5}</strong></li>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff Reservation Desk</a>
-                        and click "Create Tee-time Proposal" for <strong>Reference {1}</strong>.
+                        and click "Create Tee-time Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a tee-off Proposal by clicking
-                        <a href="mailto:eztoff@twetailer.appspotmail.com?body={8}.&amp;subject={7}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:eztoff@twetailer.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
-                    {10}
-                    <p>Request#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -857,8 +1070,8 @@
                     <p>Hi {0},</p>
                     <p>
                         <strong><a href="{26}">{25}</a></strong> has <strong>closed their Proposal# {9}</strong>.
-                       Please <a href="mailto:eztoff@twetailer.appspotmail.com?body={21}&amp;subject={20}">close your corresponding Request {1}</a> to better your Rating.
-                   </p>
+                        Please <a href="mailto:eztoff@twetailer.appspotmail.com?body={21}&amp;subject={20}">close your corresponding Request {1}</a> to better your Rating.
+                    </p>
                     {22}
                 </seg>
             </tuv>

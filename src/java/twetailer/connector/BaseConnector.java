@@ -41,18 +41,19 @@ public class BaseConnector {
      * Send the specified message to the RawCommand emitter, using the same communication channel
      *
      * @param coordinate Identifier of a CC-ed contact
+     * @param e-mail subject, for thread-aware mail readers
      * @param message Text to forward to the CC-ed contact
      * @param locale recipient's locale (expects it's good for the CC-ed contact too)
      *
      * @throws CommunicationException If the communication fails
      */
-    public static void communicateToCCed(String coordinate, String message, Locale locale) throws CommunicationException {
+    public static void communicateToCCed(String coordinate, String subject, String message, Locale locale) throws CommunicationException {
         Source source = Source.mail;
         int arobasIdx = coordinate.indexOf('@');
         if (arobasIdx == -1 || arobasIdx == 1) {
             source = Source.twitter;
         }
-        communicateToUser(source, true, coordinate, null, null, new String[] { message }, locale);
+        communicateToUser(source, true, coordinate, null, subject, new String[] { message }, locale);
     }
 
     /**

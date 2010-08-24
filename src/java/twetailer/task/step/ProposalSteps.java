@@ -641,7 +641,7 @@ public class ProposalSteps extends BaseSteps {
                         locale
                 );
 
-                notifyMessageToCCed(cc, message, locale);
+                notifyMessageToCCed(cc, "Twetailer Notification", message, locale);
             }
         }
 

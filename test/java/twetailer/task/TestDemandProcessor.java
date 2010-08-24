@@ -1450,6 +1450,8 @@ public class TestDemandProcessor {
             }
         });
 
+        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
+        
         DemandProcessor.process(demandKey, true);
 
         assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
