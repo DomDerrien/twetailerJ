@@ -49,7 +49,7 @@
     module.init = function(locale, getGeoButtonId) {
         _locale = locale;
 
-        // Get the localised resource bundle
+        // Get the localized resource bundle
         domderrien.i18n.LabelExtractor.init("twetailer", "master", locale);
         domderrien.i18n.LabelExtractor.init("twetailer", "console", locale);
         _getLabel = domderrien.i18n.LabelExtractor.getFrom;

@@ -434,7 +434,7 @@
     });
     </script>
 
-    <script async="true" defer="true" src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 
     <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];

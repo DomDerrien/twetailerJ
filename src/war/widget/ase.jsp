@@ -49,7 +49,8 @@
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
-    <style type="text/css"><%
+    <style type="text/css">
+        @import url(http://fonts.googleapis.com/css?family=Droid+Sans);<%
         if (useCDN) {
         %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
@@ -61,7 +62,7 @@
         @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
         } // endif (useCDN)
         %>
-        @import "/css/golf/widget.css";
+        @import "/css/ase/widget.css";
         body { <%
         if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %>
         label, .title, .comment { <%
@@ -74,6 +75,7 @@
         if (colorTitle != null && 0 < colorTitle.length()) { %>color:<%= colorTitle.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSizeTitle != null && 0 < fontSizeTitle.length()) { %>font-size:<%= fontSizeTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
     </style>
+
 </head>
 <body class="tundra">
     <div id="introFlash">
@@ -99,19 +101,70 @@
 
     <div id="centerZone">
         <div id="pane1">
-            <div class="progressBar">
-                <div class="step active">1</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive">2</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive">3</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive goal">&nbsp;</div>
-            </div>
             <div dojoType="dijit.form.Form" id="form1" class="content">
-                <div class="title">When do you want to play?</div>
+                <div class="brand">Community Buying Network</div>
+                <div class="title">What are you going to buy?</div>
+                <table cellpadding="0" cellspacing="0" class="form">
+                    <tr>
+                        <td style="vertical-align:top; padding-top:7px;"><label for="tags">Details:</label></td>
+                        <td>
+                            <textarea dojoType="dijit.form.Textarea" id="tags" name="tags" rows="3" style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;"></textarea><br/>
+                            <div
+                                iconClass="silkIcon silkIconHelp"
+                                dojoType="dijit.form.DropDownButton"
+                                style="float:right;margin-right:-1px;"
+                            >
+                                <span>Samples</span>
+                                <div
+                                    dojoType="dijit.TooltipDialog"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "sep_demand_samples_button", locale) %>"
+                                >
+                                    <li>Samsung HDTV UN46C9000</li>
+                                    <li>Jonas Brothers CD album </li>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="quantity">Quantity:</label></td>
+                        <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="1" /></td>
+                    </tr>
+                </table>
+                <div class="comment">
+                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
+                </div>
                 <table cellpadding="0" cellspacing="0">
-                    <tr id="postalCodeRow" style="display:none;">
+                    <tr>
+                        <td style="text-align:right;">
+                            <button
+                                dojoType="dijit.form.Button"
+                                id="next1"
+                                onclick="javascript:localModule.switchPane(1, 2);"
+                                style="color:black;"
+                                title="Where abouts?"
+                            >Next &raquo;</button>
+                            <br/>
+                            <span class="hint">Where abouts?</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="footer">
+                <div class="progressBar">
+                    <div class="step active">What</div>
+                    <div class="step inactive">Where</div>
+                    <div class="step inactive">When</div>
+                    <div class="step inactive">Who</div>
+                </div>
+                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+            </div>
+        </div>
+        <div id="pane2" style="display:none;">
+            <div dojoType="dijit.form.Form" id="form2" class="content">
+                <div class="brand">Community Buying Network</div>
+                <div class="title">Where abouts?</div>
+                <table cellpadding="0" cellspacing="0" class="form">
+                    <tr>
                         <td><label for="postalCode">Postal code:</label></td>
                         <td>
                             <input
@@ -125,7 +178,7 @@
                                 type="text"
                             />
                         </td>
-                        <td style="width:20px;padding-right:0px !important;">
+                            <td style="width:20px;padding-right:0px !important;">
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconGPS"
@@ -136,7 +189,7 @@
                             ></button>
                         </td>
                     </tr>
-                    <tr id="countryCodeRow" style="display:none;">
+                    <tr>
                         <td><label for="countryCode">Country:</label></td>
                         <td colspan="2">
                             <select
@@ -154,79 +207,111 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="date">Date:</label></td>
-                        <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
-                    </tr>
-                    <tr>
-                        <td><label for="time">Time:</label></td>
-                        <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T07:00"/></td>
-                    </tr>
-                    <tr>
-                        <td><label for="quantity">For:</label></td>
-                        <td colspan="2" style="vertical-align:top;">
-                            <input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="4" />
-                            <label for="quantity">players</label>
+                        <td><label for="countryCode">Within:</label></td>
+                        <td colspan="2">
+                            <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" /> km
                         </td>
                     </tr>
                 </table>
-                <div class="comment">Look for local golf courses within <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" /> km.</div>
+                <div class="comment">
+                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
+                </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
+                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(2, 1);">&laquo; back</a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
-                                onclick="javascript:localModule.switchPane(1, 2);"
+                                id="next2"
+                                onclick="javascript:localModule.switchPane(2, 3);"
                                 style="color:black;"
-                                title="Share your contact details"
+                                title="When would you like it by?"
                             >Next &raquo;</button>
                             <br/>
-                            <span class="hint">Your account details</span>
+                            <span class="hint">When would you like it by?</span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
+                <div class="progressBar">
+                    <div class="step inactive">What</div>
+                    <div class="step active">Where</div>
+                    <div class="step inactive">When</div>
+                    <div class="step inactive">Who</div>
+                </div>
                 <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
             </div>
         </div>
-        <div id="pane2" style="display:none;">
-            <div class="progressBar">
-                <div class="step inactive">1</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step active">2</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive">3</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive goal">&nbsp;</div>
-            </div>
-            <div dojoType="dijit.form.Form" id="form2" class="content">
-                <div class="title">20 golf courses will be contacted on your behalf. How do we reach you?</div>
+        <div id="pane3" style="display:none;">
+            <div dojoType="dijit.form.Form" id="form3" class="content">
+                <div class="brand">Community Buying Network</div>
+                <div class="title">When would you like it by?</div>
+                <table cellpadding="0" cellspacing="0" class="form">
+                    <tr>
+                        <td><label for="expirationDate">Expires:</label></td>
+                        <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="expirationDate" name="expirationDate" required="true" style="width:100%;" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="expirationTime">Time:</label></td>
+                        <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="expirationTime" name="expirationTime" required="true" style="width:100%;" type="text" value="T00:00" /></td>
+                    </tr>
+                </table>
+                <div class="comment">
+                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
+                </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="vertical-align:top;"><label for="email0">Your email:</label></td>
-                        <td style="text-align: right;">
-                            <input
-                                dojoType="dijit.form.ValidationTextBox"
-                                id="email0"
-                                invalidMessage="Invalid Email Address"
-                                name="email0"
-                                placeHolder="email@example.com"
-                                regExp="<%= emailRegExp %>"
-                                required="true"
-                                style="width:100%;"
-                                trim="true"
-                                type="text"
-                            />
-                            <br />
-                            <span class="hint"><i>e.g.</i> yourname@gmail.com</span>
+                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(3, 2);">&laquo; back</a></td>
+                        <td style="text-align:right;">
+                            <button
+                                dojoType="dijit.form.Button"
+                                id="next3"
+                                onclick="javascript:localModule.switchPane(3, 4);"
+                                style="color:black;"
+                                title="Who should we contact?"
+                            >Next &raquo;</button>
+                            <br/>
+                            <span class="hint">Who should we contact?</span>
                         </td>
                     </tr>
                 </table>
-                <div class="comment">We can also automatically notify your golf buddies, friends, etc.</div>
-                <table>
+            </div>
+            <div class="footer">
+                <div class="progressBar">
+                    <div class="step inactive">What</div>
+                    <div class="step inactive">Where</div>
+                    <div class="step active">When</div>
+                    <div class="step inactive">Who</div>
+                </div>
+                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+            </div>
+        </div>
+        <div id="pane4" style="display:none;">
+            <div dojoType="dijit.form.Form" id="form4" class="content">
+                <div class="brand">Community Buying Network</div>
+                <div class="title">Who should we contact?</div>
+                <table cellpadding="0" cellspacing="0" class="form">
                     <tbody id="friendList">
+                        <tr id="friendRow0">
+                            <td style="vertical-align:top;"><label for="email0">Email address:</label></td>
+                            <td style="text-align: right;" colspan="2">
+                                <input
+                                    dojoType="dijit.form.ValidationTextBox"
+                                    id="email0"
+                                    invalidMessage="Invalid Email Address"
+                                    name="email0"
+                                    placeHolder="email@example.com"
+                                    regExp="<%= emailRegExp %>"
+                                    required="true"
+                                    style="width:100%;"
+                                    trim="true"
+                                    type="text"
+                                />
+                            </td>
+                        </tr>
                         <tr id="friendRow1">
-                            <td><label for="email1">Email:</label></td>
+                            <td><label for="email1">CC others:</label></td>
                             <td style="text-align: right;">
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
@@ -241,12 +326,12 @@
                                     type="text"
                                 />
                             </td>
-                            <td style="width:20px;padding-left:0px !important">
+                            <td style="width:20px;padding-right:0px !important;">
                                 <button
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
                                     id="friendButton1"
-                                    onclick="javascript:localModule.manageFriendRow(1);"
+                                    onclick="localModule.manageFriendRow(1);"
                                     showLabel="false"
                                     title="Add another email address"
                                 ></button>
@@ -255,100 +340,71 @@
                     </tbody>
                 </table>
                 <div class="comment">
-                    <a href="http://eztoff.com/">ezToff</a> values your's & others' <a href="http://eztoff.com/privacy-<%= localeId %>">privacy</a>,
-                    will not share your email addresses with others & only use them to communicate between you & us.
+                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(2, 1);">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(4, 3);">&laquo; back</a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
-                                onclick="javascript:localModule.switchPane(2, 3);"
+                                id="next4"
+                                onclick="javascript:localModule.switchPane(4, 5);"
                                 style="color:black;"
-                                title="<%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %>"
+                                title="Post request"
                             >Next &raquo;</button>
                             <br/>
-                            <span class="hint">Optional extras</span>
+                            <span class="hint">Post request</span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
-                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
-            </div>
-        </div>
-        <div id="pane3" style="display:none;">
-            <div class="progressBar">
-                <div class="step inactive">1</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive">2</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step active">3</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive goal">&nbsp;</div>
-            </div>
-            <div dojoType="dijit.form.Form" id="form3" class="content">
-                <div class="title">Extras:</div>
-                <div style="margin-left:20px;">
-                    <div>
-                        <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="pullCart" name="pullCart" style="width:6em;" type="text" value="0" />
-                        <label for="pullCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_pullCartOptions_label", locale) %></label>
-                    </div>
-                    <div>
-                        <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="motorCart" name="motorCart" style="width:6em;" type="text" value="0" />
-                        <label for="motorCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_motorCartOptions_label", locale) %></label>
-                    </div>
+                <div class="progressBar">
+                    <div class="step inactive">What</div>
+                    <div class="step inactive">Where</div>
+                    <div class="step inactive">When</div>
+                    <div class="step active">Who</div>
                 </div>
-                <table cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(3, 2);">&laquo; back</a></td>
-                        <td style="text-align:right;">
-                            <button
-                                dojoType="dijit.form.Button"
-                                iconClass="silkIcon silkIconAccept"
-                                onclick="javascript:localModule.sendRequest();"
-                                style="color:black;"
-                                title="Send tee-off reservation request"
-                            >Send request</button>
-                            <br />
-                            <span class="hint">Broadcast your request</span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="footer">
                 <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
             </div>
         </div>
-        <div id="pane4" style="display:none;">
-            <div class="progressBar">
-                <div class="step inactive">1</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive">2</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step inactive">3</div>
-                <div class="step transition">&nbsp;</div>
-                <div class="step active goal">&nbsp;</div>
-            </div>
+        <div id="pane5" style="display:none;">
             <div class="content">
-                <div class="title">Thank you!</div>
-                <div class="comment">You should receive an email at joe.blow@somewhere.moon shortly.</div>
-                <div class="comment">If you have not receive an email from ezToff after 20 minutes, please check our <a href="http://ezToff.com/faq-<%= localeId %>">FAQ</a> or contact <a href="mailto:support@eztoff.com">support@eztoff.com</a>.</div>
+                <div class="brand">Community Buying Network</div>
+                <div class="title">Check your email</div>
+                <div class="comment">
+                    Thanks for shopping on the Community Buying Network.
+                    We'll be sending you an email shortly to confirm your request and
+                    hope to follow-up shortly with Proposals from local retailers.
+                </div>
                 <table cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(4, 1);">&laquo; Schedule another tee-off</a></td>
+                        <td style="text-align:center;">
+                            <button
+                                dojoType="dijit.form.Button"
+                                onclick="javascript:localModule.switchPane(5, 1);"
+                                style="color:black;"
+                                title="Make another request"
+                            >&laquo; Make another request</button>
+                        </td>
                     </tr>
                 </table>
             </div>
-        </div>
             <div class="footer">
+                <div class="progressBar">
+                    <div class="step inactive">What</div>
+                    <div class="step inactive">Where</div>
+                    <div class="step inactive">When</div>
+                    <div class="step inactive">Who</div>
+                </div>
                 <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
             </div>
+        </div>
     </div>
 
     <div
-       color="darkgreen"
+       color="darkgrey"
        dojoType="dojox.widget.Standby"
        id="widgetOverlay"
        target="centerZone"
@@ -368,6 +424,7 @@
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.TimeTextBox");
         dojo.require("dijit.form.ValidationTextBox");
+        dojo.require("dijit.TooltipDialog");
         dojo.require("dojox.form.DropDownSelect");
         dojo.require("dojox.widget.Standby");
         dojo.require("twetailer.Common");
@@ -387,26 +444,18 @@
     var localModule = {};
     localModule._getLabel = null;
     localModule.init = function() {
+
         localModule._getLabel = twetailer.Common.init("<%= localeId %>", "detectLocationButton");
 
         var yesterday = new Date();
-        var tomorrow = new Date();
+        var inOneMonth = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        var dateField = dijit.byId("date");
-        dateField.set("value", tomorrow);
+        inOneMonth.setMonth(inOneMonth.getMonth() + 1);
+        var dateField = dijit.byId("expirationDate");
+        dateField.set("value", inOneMonth);
         dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
 
-        <% if (postalCode == null || postalCode.length() == 0) {
-        %>dojo.style("postalCodeRow", "display", "");
-        dijit.byId("postalCode").focus();
-        dojo.style("countryCodeRow", "display", "");<%
-        }
-        else {
-        %>dijit.byId("postalCode").set("value", "<%= postalCode %>");
-        dijit.byId("quantity").focus();<%
-        } %>
-        dijit.byId("countryCode").set("value", "<%= countryCode %>");
+        dijit.byId("tags").focus();
     };
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
@@ -421,14 +470,10 @@
         // and play them at the same moment
         dojo.fx.chain([anim1, anim2]).play();
         switch(targetIdx) {
-        case 1: <% if (postalCode == null || postalCode.length() == 0) {
-                    %>dijit.byId("postalCode").focus();<%
-                }
-                else {
-                    %>dijit.byId("quantity").focus();<%
-                } %> break;
-        case 2: dijit.byId("email0").focus(); break;
-        case 3: dijit.byId("pullCart").focus(); break;
+        case 1: dijit.byId("tags").focus(); break;
+        case 2: dijit.byId("postalCode").focus(); break;
+        case 3: dijit.byId("next3").focus(); break;
+        case 4: dijit.byId("email0").focus(); break;
         }
     }
     localModule.getBrowserLocation = function() {
@@ -501,7 +546,7 @@
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    localModule.switchPane(3, 4);
+                    localModule.switchPane(4, 5);
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
@@ -517,9 +562,8 @@
     }
     </script>
 
-    <% if (postalCode == null || postalCode.length() == 0) {
-    %><script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
-    <% } %>
+    <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
+
     <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);

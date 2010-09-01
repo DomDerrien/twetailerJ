@@ -46,6 +46,12 @@
         frameborder="0"
         type="text/html"
     ></iframe>
+    <iframe
+        src="/widget/ase.jsp?lg=<%= localeId %>&referralId=000-000"
+        style="width:<%= width %>px;height:<%= height %>px;float:right;border:0 none;"
+        frameborder="0"
+        type="text/html"
+    ></iframe>
     <h1>ezToff widget context</h1>
     <p><a href="http://eztoff.com/"><b>ezToff</b></a> is a golf specific implementation of the <a href="http://anothersocialeconomy.com/">Another Social Economy</a> (ASE) engine.</p>
     <p>

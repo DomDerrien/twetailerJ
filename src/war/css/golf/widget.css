@@ -72,21 +72,21 @@ body, th, td {
 }
 
 .progressBar {
-	height: 30px;
-	padding: 0 0 0 7px;
-	background-color: green;
+    height: 30px;
+    padding: 0 0 0 7px;
+    background-color: green;
     border-radius: 5px;
     -moz-border-radius: 5px;
 }
 .progressBar .step {
     padding-top: 6px;
     color: green;
-	width: 24px;
-	height: 24px;
-	float: left;
-	width: 14%;
-	vertical-align: middle;
-	text-align:center;
+    width: 24px;
+    height: 24px;
+    float: left;
+    width: 14%;
+    vertical-align: middle;
+    text-align:center;
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center center;
@@ -94,31 +94,31 @@ body, th, td {
 
 .progressBar .transition {
     background-image: url('/images/golf/step-transition.png');
-	background-position: right center;
-}
-
-.progressBar .active {
-    background-image: url('/images/golf/ball-green.png');
+    background-position: right center;
 }
 
 .progressBar .inactive {
     background-image: url('/images/golf/ball-grey.png');
 }
 
-.progressBar .goal {
+.progressBar .active {
+    background-image: url('/images/golf/ball-green.png');
+}
+
+.progressBar .inactive.goal {
     background-image: url('/images/golf/flag-small.png');
 }
 
-.progressBar .activeGoal {
+.progressBar .active.goal {
     background-image: url('/images/golf/flag-small.png'), url('/images/golf/ball-green-small.png');
 }
 
 .content>table {
-	width: 100%;
+    width: 100%;
 }
 
 .content>table>tbody>tr>td {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .content>table>tbody>tr>td, label, .comment {
@@ -126,15 +126,15 @@ body, th, td {
 }
 
 input {
-	height: 20px;
+    height: 20px;
 }
 
 label, .title, .comment {
-	color: white;
+    color: white;
 }
 
 .comment input {
-	color: black;
+    color: black;
 }
 
 label, .title {
@@ -151,36 +151,19 @@ label, .title {
     color: darkgreen;
 }
 
-/*
-span.hint {
-    color: green;
-    font-size: 11px;
-	line-height: 8px;
+.footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left:0;
 }
 
-#callToAction {
-    font-size: larger;
-    color: green;
-    text-align: left;
-	margin:0 10px;
-	border-bottom:2px solid green;
-}
-
-#continueLink {
-	font-size: larger;
-	text-align: center;
-}
-
-#continueLink a {
-	color: white;
-}
-
-#notice {
-    color: green;
+.poweredBy {
+    font-size: smaller;
     text-align: center;
+    margin-bottom: 5px;
 }
 
-#notice>a>img{
-    vertical-align: middle;
+.poweredBy a, .poweredBy a:visited {
+    color: white;
 }
-*/

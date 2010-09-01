@@ -1,0 +1,201 @@
+/**
+ * Override settings for the Golf widget
+ */
+body, th, td {
+    font-family: 'Droid Sans', arial, serif;
+}
+
+#introFlash {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border: 0 none;
+    padding: 0;
+    background: white url('/images/loading.gif') no-repeat center center;
+    z-index: 999;
+}
+
+#introFlash>div {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+}
+
+#introFlash>div>span {
+    background-color: #F9F9F9;
+    border: 1px solid #BFBFBF;
+    padding: 4px;
+    line-height: 30px;
+}
+
+#centerZone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 5px;
+    background-color: lightgrey;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+.silkIcon {
+    background-repeat:no-repeat;
+    text-align:center;
+    height:18px;
+    width:18px;
+}
+
+.silkIconAccept {
+    background-image:url(/images/accept.png);
+}
+
+.silkIconAdd {
+    background-image:url(/images/add.png);
+}
+
+.silkIconDelete {
+    background-image:url(/images/delete.png);
+}
+
+.silkIconGPS {
+    background-image:url(/images/gps.png);
+}
+
+.silkIconGMaps {
+    background-image:url(/images/icons/GMaps.png);
+}
+
+.silkIconHelp {
+    background-image:url(/images/help.png);
+}
+
+#centerZone {
+    color: #222;
+}
+
+.content>table {
+    width: 100%;
+}
+
+.brand, label, .title {
+    font-weight: bold;
+}
+
+.brand {
+    color: darkred;
+    font-size: larger;
+    text-align: center;
+    text-decoration: underline;
+    padding: 10px 0 5px 0;
+}
+
+.title {
+    font-size: larger;
+    padding: 10px 0 10px 0;
+}
+
+.form {
+}
+
+.form input {
+    color: black;
+}
+
+.form>tbody>tr:nth-child(odd) {
+    background-color: darkred;
+}
+
+.form>tbody>tr:nth-child(odd) label {
+    color: white;
+}
+
+.form>tbody>tr:nth-child(even) {
+}
+
+.form>tbody>tr>td {
+    border-top: 2px solid black;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+}
+
+.form>tbody>tr>td:first-child {
+    border-left: 2px solid black;
+}
+
+.form>tbody>tr>td:last-child {
+    border-right: 2px solid black;
+    padding-right: 10px;
+}
+
+.form>tbody>tr:last-child td {
+    border-bottom: 2px solid black;
+}
+
+.comment {
+    padding: 5px;
+}
+
+.footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.progressBar {
+    height: 30px;
+}
+
+.progressBar .step {
+    font-weight: bold;
+    text-align: center;
+    height: 24px;
+    width: 25%;
+    float: left;
+}
+
+.progressBar .inactive {
+}
+
+.progressBar .active {
+    color: darkred;
+}
+
+.progressBar .inactive.goal {
+}
+
+.progressBar .active.goal {
+}
+
+.poweredBy {
+    font-size: smaller;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.poweredBy a, .poweredBy a:visited {
+    color: darkred;
+}
+
+input {
+    height: 16px;
+}
+
+label, .title, .comment {
+}
+
+.comment {
+}
+
+.hint {
+    font-size: smaller;
+    color: black;
+}
