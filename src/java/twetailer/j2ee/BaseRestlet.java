@@ -319,7 +319,7 @@ public abstract class BaseRestlet extends HttpServlet {
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
             if (loggedUser == null) {
-                response.setStatus(401); // Unauthorised
+                response.setStatus(401); // Unauthorized
                 out.put("success", false);
                 out.put("reason", "Unauthorized");
             }

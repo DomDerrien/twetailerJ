@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -22,6 +22,7 @@ import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -32,7 +33,7 @@ public class TestBaseConnector {
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseConnector.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -43,6 +44,8 @@ public class TestBaseConnector {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
+        JabberConnector.injectMockXMPPService(null);
+        MockTwitterConnector.restoreTwitterConnector();
     }
 
     @Test
@@ -50,13 +53,13 @@ public class TestBaseConnector {
         new BaseConnector();
     }
 
-    @Test(expected=ClientException.class)
-    public void testUnsupportedSource() throws ClientException {
+    @Test(expected=CommunicationException.class)
+    public void testUnsupportedSource() throws CommunicationException {
         BaseConnector.communicateToUser(null, false, null, null, null, null, Locale.ENGLISH);
     }
 
     @Test
-    public void testSimulatedSource() throws ClientException {
+    public void testSimulatedSource() throws CommunicationException {
         BaseConnector.resetLastCommunicationInSimulatedMode();
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
 
@@ -67,7 +70,7 @@ public class TestBaseConnector {
     }
 
     @Test
-    public void testFromRawCommand() throws ClientException {
+    public void testFromRawCommand() throws CommunicationException {
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
         final String message = "test";
@@ -78,7 +81,7 @@ public class TestBaseConnector {
 
     @Test
     @SuppressWarnings({ "serial", "deprecation" })
-    public void testTwitterSourceI() throws ClientException {
+    public void testTwitterSourceI() throws CommunicationException {
         final String twitterId = "tId";
         final String message = "test";
         final Twitter mockTwitterAccount = (new Twitter() {
@@ -92,13 +95,11 @@ public class TestBaseConnector {
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         BaseConnector.communicateToUser(Source.twitter, false, twitterId, null, null, new String[] { message }, Locale.ENGLISH);
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
-    @Test(expected=ClientException.class)
+    @Test(expected=CommunicationException.class)
     @SuppressWarnings({ "serial", "deprecation" })
-    public void testTwitterSourceII() throws ClientException {
+    public void testTwitterSourceII() throws CommunicationException {
         final String twitterId = "tId";
         final String message = "test";
         final Twitter mockTwitterAccount = (new Twitter() {
@@ -110,27 +111,35 @@ public class TestBaseConnector {
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         BaseConnector.communicateToUser(Source.twitter, false, twitterId, null, null, new String[] { message }, Locale.ENGLISH);
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
-    public void testJabberSource() throws ClientException {
+    public void testJabberSourceI() throws CommunicationException {
         final String jabberId = "jId";
         final String message = "test";
         BaseConnector.communicateToUser(Source.jabber, false, jabberId, null, null, new String[] { message }, Locale.ENGLISH);
     }
 
+    @Test(expected=CommunicationException.class)
+    public void testJabberSourceII() throws CommunicationException {
+        final String jabberId = "jId";
+        final String message = "test";
+        MockXMPPService mockXMPPService = new MockXMPPService();
+        mockXMPPService.setPresence(jabberId, false);
+        JabberConnector.injectMockXMPPService(mockXMPPService);
+        BaseConnector.communicateToUser(Source.jabber, false, jabberId, null, null, new String[] { message }, Locale.ENGLISH);
+    }
+
     @Test
-    public void testMailSourceI() throws ClientException {
+    public void testMailSourceI() throws CommunicationException {
         final String mailAddress = "unit@test.net";
         final String message = "test";
         final String subject = "subject";
         BaseConnector.communicateToUser(Source.mail, false, mailAddress, null, subject, new String[] { message }, Locale.ENGLISH);
     }
 
-    @Test(expected=ClientException.class)
-    public void testMailSourceII() throws ClientException {
+    @Test(expected=CommunicationException.class)
+    public void testMailSourceII() throws CommunicationException {
         final String mailAddress = "@@@";
         final String message = "test";
         final String subject = "subject";
@@ -138,7 +147,7 @@ public class TestBaseConnector {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testFacebookSource() throws ClientException {
+    public void testFacebookSource() throws CommunicationException {
         final String facebookId = "fId";
         final String message = "test";
         final String subject = "subject";
@@ -146,32 +155,42 @@ public class TestBaseConnector {
     }
 
     @Test
-    public void testCommunicateToConsumerI() throws ClientException {
+    public void testCommunicateToConsumerI() throws CommunicationException {
         BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[0]);
     }
 
     @Test
-    public void testCommunicateToConsumerII() throws ClientException {
+    public void testCommunicateToConsumerII() throws CommunicationException {
         BaseConnector.communicateToConsumer(new RawCommand(Source.twitter), new Consumer(), new String[0]);
     }
 
     @Test
-    public void testCommunicateToConsumerIII() throws ClientException {
+    public void testCommunicateToConsumerIII() throws CommunicationException {
         BaseConnector.communicateToConsumer(new RawCommand(Source.jabber), new Consumer(), new String[0]);
     }
 
     @Test
-    public void testCommunicateToConsumerIV() throws ClientException {
+    public void testCommunicateToConsumerIV() throws CommunicationException {
         BaseConnector.communicateToConsumer(new RawCommand(Source.mail), new Consumer(), new String[0]);
     }
 
     @Test
-    public void testCommunicateToConsumerV() throws ClientException {
+    public void testCommunicateToConsumerV() throws CommunicationException {
         BaseConnector.communicateToConsumer(new RawCommand(Source.mail), new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
     }
 
     @Test
-    public void testCommunicateManyMessagesI() throws ClientException {
+    public void testCommunicateToConsumerVI() throws CommunicationException {
+        BaseConnector.communicateToConsumer(new RawCommand(Source.widget), new Consumer(), new String[0]);
+    }
+
+    @Test
+    public void testCommunicateToConsumerVII() throws CommunicationException {
+        BaseConnector.communicateToConsumer(new RawCommand(Source.widget), new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
+    }
+
+    @Test
+    public void testCommunicateManyMessagesI() throws CommunicationException {
         BaseConnector.resetLastCommunicationInSimulatedMode();
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
@@ -196,7 +215,7 @@ public class TestBaseConnector {
     }
 
     @Test
-    public void testCommunicateManyMessagesII() throws ClientException {
+    public void testCommunicateManyMessagesII() throws CommunicationException {
         BaseConnector.resetLastCommunicationInSimulatedMode();
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
@@ -346,7 +365,7 @@ public class TestBaseConnector {
     }
 
     @Test
-    public void testMailMultipleMessages() throws ClientException {
+    public void testMailMultipleMessages() throws CommunicationException {
         final String mailAddress = "unit@test.net";
         final String subject = "subject";
         final String message1 = "test1";
@@ -359,5 +378,69 @@ public class TestBaseConnector {
         String message = ":-) Proposal:106004 for tags:nikon d500 has been confirmed.| Please mark, hold for Consumer with Demand reference:106002 and then !close proposal:106004, or, !flag proposal:106004 note:your-note-here.";
         List<String> output = BaseConnector.checkMessageLength(message, 140);
         assertEquals(2, output.size());
+    }
+
+    @Test
+    public void testCheckMessageLengthVIII() {
+        // Verify the trim
+        String part1 = "blah blah blah";
+        String message = part1;
+        List<String> output = BaseConnector.checkMessageLength(message, part1.length() - 2);
+        assertNotNull(output);
+        assertEquals(2, output.size());
+        assertEquals(part1.substring(0, 9), output.get(0));
+        assertEquals(part1.substring(10), output.get(1));
+    }
+
+    @Test
+    public void testCheckMessageLengthIX() {
+        // Verify the trim
+        String part1 = "blah blah\tblah";
+        String message = part1;
+        List<String> output = BaseConnector.checkMessageLength(message, part1.length() - 2);
+        assertNotNull(output);
+        assertEquals(2, output.size());
+        assertEquals(part1.substring(0, 9), output.get(0));
+        assertEquals(part1.substring(10), output.get(1));
+    }
+
+    @Test(expected=CommunicationException.class)
+    public void testCommunicateToCCedI() throws CommunicationException {
+        final String mailAddress = "jack@@@crusher";
+        final String message = "test";
+        final String subject = "subject";
+        BaseConnector.communicateToCCed(mailAddress, subject, message, Locale.ENGLISH);
+    }
+
+    @Test(expected=CommunicationException.class)
+    @SuppressWarnings({ "deprecation", "serial" })
+    public void testCommunicateToCCedII() throws CommunicationException {
+        final String twitterId = "jack_crusher";
+        final String message = "test";
+        final String subject = "subject";
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
+                throw new TwitterException("Done in purpose");
+            }
+        });
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+        BaseConnector.communicateToCCed(twitterId, subject, message, Locale.ENGLISH);
+    }
+
+    @Test(expected=CommunicationException.class)
+    @SuppressWarnings({ "deprecation", "serial" })
+    public void testCommunicateToCCedIII() throws CommunicationException {
+        final String twitterId = "@jack_crusher";
+        final String message = "test";
+        final String subject = "subject";
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
+                throw new TwitterException("Done in purpose");
+            }
+        });
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+        BaseConnector.communicateToCCed(twitterId, subject, message, Locale.ENGLISH);
     }
 }

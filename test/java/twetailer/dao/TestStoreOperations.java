@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -400,5 +401,132 @@ public class TestStoreOperations {
         assertNotNull(justCreated.getKey());
         assertEquals(name, justCreated.getName());
         ops.deleteStore(justCreated.getKey());
+    }
+
+    @Test
+    public void testGetsFromMapI() throws DataSourceException {
+        StoreOperations ops = new StoreOperations();
+
+        Store object = new Store();
+        object.setLocationKey(12345L);
+        object = ops.createStore(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Store.LOCATION_KEY, object.getLocationKey());
+
+        List<Store> selection = ops.getStores(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetKeysFromMapI() throws DataSourceException {
+        StoreOperations ops = new StoreOperations();
+
+        Store object = new Store();
+        object.setLocationKey(12345L);
+        object = ops.createStore(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Store.LOCATION_KEY, object.getLocationKey());
+
+        List<Long> selection = ops.getStoreKeys(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetsFromKeysI() throws DataSourceException {
+        StoreOperations ops = new StoreOperations();
+
+        Store object = new Store();
+        object.setLocationKey(12345L);
+        object = ops.createStore(object);
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(object.getKey());
+
+        List<Store> selection = ops.getStores(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetKeysExtendedI() throws InvalidIdentifierException, DataSourceException {
+        //
+        // Get all stores from one location
+        //
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        StoreOperations ops = new StoreOperations();
+
+        Store first = new Store();
+        first.setLocationKey(where.getKey());
+        first = ops.createStore(first);
+
+        Store second = new Store();
+        second.setLocationKey(where.getKey());
+        second = ops.createStore(second);
+
+        first = ops.getStore(first.getKey());
+        second = ops.getStore(second.getKey());
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+
+        List<Long> selection = ops.getStoreKeys(ops.getPersistenceManager(), new HashMap<String, Object>(), places, 0);
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
+        assertTrue (selection.get(0).equals(first.getKey()) && selection.get(1).equals(second.getKey()) ||
+                selection.get(1).equals(first.getKey()) && selection.get(0).equals(second.getKey()));
+        // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometimes first is returned first...
+    }
+
+    @Test
+    public void testGetKeysExtendedII() throws InvalidIdentifierException, DataSourceException {
+        //
+        // Get all stores from one location
+        //
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        StoreOperations ops = new StoreOperations();
+
+        Store first = new Store();
+        first.setLocationKey(where.getKey());
+        first = ops.createStore(first);
+
+        Location also = new Location();
+        also.setPostalCode("A0A0A0");
+        also.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        also = new LocationOperations().createLocation(also);
+
+        Store second = new Store();
+        second.setLocationKey(also.getKey());
+        second = ops.createStore(second);
+
+        first = ops.getStore(first.getKey());
+        second = ops.getStore(second.getKey());
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+        places.add(also);
+
+        List<Long> selection = ops.getStoreKeys(ops.getPersistenceManager(), new HashMap<String, Object>(), places, 2);
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
+        assertTrue (selection.get(0).equals(first.getKey()) && selection.get(1).equals(second.getKey()) ||
+                selection.get(1).equals(first.getKey()) && selection.get(0).equals(second.getKey()));
+        // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
+        // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometimes first is returned first...
     }
 }

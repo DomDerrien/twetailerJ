@@ -50,7 +50,7 @@ public class BaseConnector {
     public static void communicateToCCed(String coordinate, String subject, String message, Locale locale) throws CommunicationException {
         Source source = Source.mail;
         int arobasIdx = coordinate.indexOf('@');
-        if (arobasIdx == -1 || arobasIdx == 1) {
+        if (arobasIdx == -1 || arobasIdx == 0) { // No arobas, or at the leading character
             source = Source.twitter;
         }
         communicateToUser(source, true, coordinate, null, subject, new String[] { message }, locale);
@@ -206,7 +206,6 @@ public class BaseConnector {
     public static final int MINIMAL_MESSAGE_LENGTH = 8;
 
     private static final char SPACE_CHAR = ' ';
-    private static final char TABULATION_CHAR = '\t';
     private static final String SPACE_STR = Command.SPACE;
 
     /**
@@ -233,7 +232,7 @@ public class BaseConnector {
                 String head = separatorIdx == -1 ? message : message.substring(0, separatorIdx);
                 if (limit < head.length()) {
                     int endIdx = limit;
-                    while (head.charAt(endIdx) != SPACE_CHAR && head.charAt(endIdx) != TABULATION_CHAR) {
+                    while (head.charAt(endIdx) != SPACE_CHAR) { // All separators have been replaced by SPACE_STR!
                         -- endIdx;
                     }
                     head = head.substring(0, endIdx);

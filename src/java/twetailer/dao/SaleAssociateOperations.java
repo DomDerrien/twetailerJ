@@ -27,11 +27,9 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param parameters HTTP sale associate parameters
      * @return Just created resource
      *
-     * @throws ClientException If mandatory attributes are missing
-     *
      * @see SaleAssociateOperations#createSaleAssociate(SaleAssociate)
      */
-    public SaleAssociate createSaleAssociate(JsonObject parameters) throws ClientException {
+    public SaleAssociate createSaleAssociate(JsonObject parameters) {
         PersistenceManager pm = getPersistenceManager();
         try {
             return createSaleAssociate(pm, parameters);

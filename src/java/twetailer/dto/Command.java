@@ -393,11 +393,13 @@ public class Command extends Entity {
             throw new IllegalArgumentException("Cannot nullify the attribute 'state'");
         }
         this.state = state;
-        stateCmdList =
+        setStateCmdList(
             !State.cancelled.equals(state) &&
             !State.closed.equals(state) &&
             !State.declined.equals(state) &&
-            !State.markedForDeletion.equals(state);
+            !State.markedForDeletion.equals(state)
+        );
+        setMarkedForDeletion(State.markedForDeletion.equals(state));
     }
 
     public Boolean getStateCmdList() {

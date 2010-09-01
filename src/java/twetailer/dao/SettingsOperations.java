@@ -51,7 +51,7 @@ public class SettingsOperations extends BaseOperations {
         }
         PersistenceManager pm = getPersistenceManager();
         try {
-            return getSettings(pm, checkCache);
+            return getSettings(pm); // Skip getSettings(pm, checkCache) because the cache has already been checked.
         }
         finally {
             pm.close();

@@ -29,6 +29,7 @@ import twetailer.dto.SaleAssociate;
 import twetailer.task.RobotResponder;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -139,7 +140,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetI() throws ClientException, DataSourceException {
+    public void testGetI() throws InvalidIdentifierException {
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         ProposalOperations ops = new ProposalOperations() {
             @Override
@@ -159,7 +160,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=InvalidIdentifierException.class)
-    public void testGetIIa() throws InvalidIdentifierException, DataSourceException {
+    public void testGetIIa() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -170,7 +171,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=InvalidIdentifierException.class)
-    public void testGetIIb() throws InvalidIdentifierException, DataSourceException {
+    public void testGetIIb() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -181,7 +182,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=InvalidIdentifierException.class)
-    public void testGetIIIa() throws InvalidIdentifierException, DataSourceException {
+    public void testGetIIIa() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -192,7 +193,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=InvalidIdentifierException.class)
-    public void testGetIIIb() throws InvalidIdentifierException, DataSourceException {
+    public void testGetIIIb() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -203,7 +204,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=InvalidIdentifierException.class)
-    public void testGetIVa() throws InvalidIdentifierException, DataSourceException {
+    public void testGetIVa() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -214,7 +215,7 @@ public class TestProposalOperations {
     }
 
     @Test(expected=InvalidIdentifierException.class)
-    public void testGetIVb() throws InvalidIdentifierException, DataSourceException {
+    public void testGetIVb() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -225,7 +226,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetVa() throws ClientException, DataSourceException {
+    public void testGetVa() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -236,7 +237,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetVb() throws ClientException, DataSourceException {
+    public void testGetVb() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -247,7 +248,7 @@ public class TestProposalOperations {
     }
 
     @Test
-    public void testGetVI() throws ClientException, DataSourceException {
+    public void testGetVI() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations();
         Proposal object = new Proposal();
         object.setOwnerKey(111L);
@@ -255,6 +256,19 @@ public class TestProposalOperations {
         object = ops.createProposal(object);
 
         ops.getProposal(object.getKey(), 333L, 444L);
+    }
+
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetWithFailureI() throws InvalidIdentifierException {
+        ProposalOperations ops = new ProposalOperations();
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object.setStoreKey(222L);
+        object.setState(State.markedForDeletion);
+        object = ops.createProposal(object);
+        assertTrue(object.getMarkedForDeletion());
+
+        ops.getProposal(object.getKey(), 0L, 0L);
     }
 
     @Test(expected=RuntimeException.class)
@@ -482,6 +496,23 @@ public class TestProposalOperations {
         assertEquals(0, selection.size());
     }
 
+    @Test
+    public void testGetKeysIII() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object = ops.createProposal(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Command.OWNER_KEY, 111L);
+
+        List<Long> selection = ops.getProposalKeys(ops.getPersistenceManager(), parameters, 0);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
     @Test(expected=RuntimeException.class)
     public void testDeleteWithFailureI() throws InvalidIdentifierException {
         ProposalOperations ops = new ProposalOperations() {
@@ -673,5 +704,43 @@ public class TestProposalOperations {
         };
 
         sOps.getProposals((List<Location>) null, 0);
+    }
+
+    @Test
+    public void testGetsFromKeysI() throws DataSourceException {
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object = ops.createProposal(object);
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(object.getKey());
+
+        List<Proposal> selection = ops.getProposals(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testUpdateII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
+        ProposalOperations ops = new ProposalOperations();
+
+        Proposal object = new Proposal();
+        object.setOwnerKey(111L);
+        object = ops.createProposal(pm, object); // Gives the PersistenceManager so it won't be closed
+        object.setOwnerKey(222L);
+        assertEquals((Double) 0.0D, object.getPrice());
+
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Proposal.KEY, object.getKey());
+        parameters.put(Proposal.PRICE, 12.345D);
+
+        Proposal updated = ops.updateProposal(parameters, 111L, null);
+        assertNotNull(updated);
+        assertEquals(object.getKey(), updated.getKey());
+        assertEquals((Double) 12.345D, updated.getPrice());
     }
 }

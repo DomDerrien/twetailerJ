@@ -2,6 +2,7 @@ package twetailer.connector;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -537,8 +538,76 @@ public class TestMailConnector {
     }
 
     @Test
+    public void testSendMailMessageV() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                true, // With the twetailer-cc address
+                "testId",
+                "testName",
+                null,
+                "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
+    public void testSendMailMessageVI() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                false,
+                "testId",
+                "testName",
+                null,
+                null,
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
+    public void testSendMailMessageVII() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                false,
+                "testId",
+                "testName",
+                null,
+                "",
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
+    public void testSendMailMessageVIII() throws UnsupportedEncodingException, MessagingException {
+        MailConnector.sendMailMessage(
+                false,
+                "testId",
+                "testName",
+                null,
+                "<p style='border:2px solid red;'>test exhaustif pour voir où est<br/>la faute...</p>",
+                Locale.ENGLISH
+        );
+    }
+
+    @Test
     public void testPrepareInternetAddressI() {
-        String name = "name";
+        String email = "unit@test.ca";
+
+        InternetAddress test = MailConnector.prepareInternetAddress("UTF-8", null, email);
+
+        assertNull(test.getPersonal());
+        assertEquals(email, test.getAddress());
+    }
+
+    @Test
+    public void testPrepareInternetAddressII() {
+        String email = "unit@test.ca";
+
+        InternetAddress test = MailConnector.prepareInternetAddress("UTF-8", "", email);
+
+        assertNull(test.getPersonal());
+        assertEquals(email, test.getAddress());
+    }
+
+    @Test
+    public void testPrepareInternetAddressIII() {
+        String name = "test";
         String email = "unit@test.ca";
 
         InternetAddress test = MailConnector.prepareInternetAddress("UTF-8", name, email);
@@ -549,7 +618,7 @@ public class TestMailConnector {
 
     @Test
     @Ignore
-    public void testPrepareInternetAddressII() {
+    public void testPrepareInternetAddressIV() {
         String name = "Last with a UTF-8 sequence: ễ";
         byte[] nameBytes = name.getBytes();
         byte[] corruptedNameBytes = Arrays.copyOf(nameBytes, nameBytes.length + 1);

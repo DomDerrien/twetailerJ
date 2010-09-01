@@ -84,6 +84,8 @@ public class TestDemandProcessor {
         RobotResponder.setRobotSaleAssociateKey(null);
 
         BaseConnector.resetLastCommunicationInSimulatedMode();
+
+        MockTwitterConnector.restoreTwitterConnector();
     }
 
     @Test
@@ -1255,8 +1257,6 @@ public class TestDemandProcessor {
         DemandProcessor.process(demandKey, true);
 
         assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test(expected=DataSourceException.class)
@@ -1451,12 +1451,10 @@ public class TestDemandProcessor {
         });
 
         CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
-        
+
         DemandProcessor.process(demandKey, true);
 
         assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
@@ -1569,8 +1567,6 @@ public class TestDemandProcessor {
         DemandProcessor.process(demandKey, true);
 
         assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
@@ -2014,8 +2010,6 @@ public class TestDemandProcessor {
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         DemandProcessor.process(demandKey, true);
-
-        MockTwitterConnector.releaseTwetailerAccount(mockTwitterAccount);
     }
 
     @Test
@@ -2091,7 +2085,5 @@ public class TestDemandProcessor {
         CatchAllMailHandlerServlet.foolNextMessagePost();
 
         DemandProcessor.process(demandKey, true);
-
-        MockTwitterConnector.releaseTwetailerAccount(mockTwitterAccount);
     }
 }

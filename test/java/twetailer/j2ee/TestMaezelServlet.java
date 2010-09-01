@@ -205,7 +205,7 @@ public class TestMaezelServlet {
         assertTrue(stream.contains("'success':true"));
 
         // Clean-up
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
+        MockTwitterConnector.restoreTwitterConnector();
     }
 
     @Test

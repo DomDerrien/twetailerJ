@@ -42,6 +42,34 @@
                 <seg>American (USA) Dollars</seg>
             </tuv>
         </tu>
+        <tu tuid="short_core_dateFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>yyyy-MM-dd</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_dateFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>yyyy-MM-dd</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_dateFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>EEE, MMMM d yyyy</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_dateFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>EEE, MMMM d yyyy</seg>
+            </tuv>
+        </tu>
         <tu tuid="short_core_dateTimeFormat" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

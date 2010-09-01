@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -225,5 +226,19 @@ public class TestSettingsOperations {
         ops.updateSettings(settings);
 
         ops.getSettings(); // Data loaded from the cache
+    }
+
+    @Test
+    public void testGetSettings() throws DataSourceException {
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Settings getSettingsFromCache() {
+                Settings settings = new Settings();
+                settings.setLastProcessDirectMessageId(12345L);
+                return settings;
+            }
+        };
+        Settings settings = ops.getSettings(new MockPersistenceManager(), true);
+        assertEquals(Long.valueOf(12345L), settings.getLastProcessDirectMessageId());
     }
 }

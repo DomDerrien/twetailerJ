@@ -58,6 +58,30 @@
         <!-- ................... -->
         <!-- =================== -->
 
+        <tu tuid="short_core_dateFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>yyyy-MM-dd</seg></tuv>
+        </tu>
+
+        <tu tuid="short_golf_dateFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>yyyy-MM-dd</seg></tuv>
+        </tu>
+
+        <tu tuid="long_core_dateFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>EEE, MMMM d yyyy</seg></tuv>
+        </tu>
+
+        <tu tuid="long_golf_dateFormat" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>EEE, MMMM d yyyy</seg></tuv>
+        </tu>
+
         <tu tuid="short_core_dateTimeFormat" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

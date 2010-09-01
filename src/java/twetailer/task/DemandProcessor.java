@@ -354,7 +354,7 @@ public class DemandProcessor {
         msgGen.
             put("proposal>owner>name", associate.getName()).
             fetch(demand).
-            put("message>footer", msgGen.getRawMessage(MessageId.messageFooter)).
+            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
             put("control>threadSubject", msgGen.put("control.threadSubject", mailSubject)).
             put("control>createProposal", (createProposal + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A")).
             put("control>declineDemand", (declineDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));

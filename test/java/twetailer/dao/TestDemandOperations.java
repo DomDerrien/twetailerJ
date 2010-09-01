@@ -28,6 +28,7 @@ import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -153,6 +154,17 @@ public class TestDemandOperations {
         DemandOperations ops = new DemandOperations();
         Demand object = new Demand();
         object.setOwnerKey(111L);
+        object = ops.createDemand(object);
+
+        ops.getDemand(object.getKey(), null);
+    }
+
+    @Test(expected=InvalidIdentifierException.class)
+    public void testGetIIc() throws ClientException, DataSourceException {
+        DemandOperations ops = new DemandOperations();
+        Demand object = new Demand();
+        object.setOwnerKey(111L);
+        object.setState(State.markedForDeletion);
         object = ops.createDemand(object);
 
         ops.getDemand(object.getKey(), null);
@@ -553,5 +565,38 @@ public class TestDemandOperations {
         };
 
         sOps.getDemands((List<Location>) null, 0);
+    }
+
+    @Test
+    public void testGetKeysFromMapI() throws DataSourceException {
+        DemandOperations ops = new DemandOperations();
+
+        Demand object = new Demand();
+        object.setOwnerKey(111L);
+        object = ops.createDemand(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Demand.OWNER_KEY, object.getOwnerKey());
+
+        List<Long> selection = ops.getDemandKeys(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetsFromKeysI() throws DataSourceException {
+        DemandOperations ops = new DemandOperations();
+
+        Demand object = new Demand();
+        object = ops.createDemand(object);
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(object.getKey());
+
+        List<Demand> selection = ops.getDemands(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
     }
 }

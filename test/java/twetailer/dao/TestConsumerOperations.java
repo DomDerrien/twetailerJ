@@ -40,11 +40,12 @@ import domderrien.i18n.LabelExtractor;
 
 public class TestConsumerOperations {
 
-    private static LocalServiceTestHelper  helper;
+    private static LocalServiceTestHelper helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+        ;
     }
 
     @Before
@@ -58,7 +59,7 @@ public class TestConsumerOperations {
         helper.tearDown();
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testGetsWithFailureI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -75,7 +76,7 @@ public class TestConsumerOperations {
         final String qV = "b";
         final PersistenceManager pm = new MockPersistenceManager() {
             @Override
-            @SuppressWarnings({ "unchecked", "serial" })
+            @SuppressWarnings( { "unchecked", "serial" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -83,14 +84,17 @@ public class TestConsumerOperations {
                     public void setFilter(String pattern) {
                         assertEquals(qA + " == attributeValue", pattern);
                     }
+
                     @Override
                     public void setOrdering(String pattern) {
                         assertEquals("creationDate desc", pattern);
                     }
+
                     @Override
                     public void declareParameters(String pattern) {
                         assertEquals("String attributeValue", pattern);
                     }
+
                     @Override
                     public List<Object> execute(Object value) {
                         assertEquals(qV, value);
@@ -116,10 +120,10 @@ public class TestConsumerOperations {
         final String qA = "a";
         final String qV = "b";
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings({ "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-                return new MockQuery(){
+                return new MockQuery() {
                     @Override
                     public List<Object> execute(Object value) {
                         // Whatever the query is, no Consumer instance match
@@ -145,10 +149,10 @@ public class TestConsumerOperations {
         final String qA = "a";
         final String qV = "b";
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings({ "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-                return new MockQuery(){
+                return new MockQuery() {
                     @Override
                     public List<Object> execute(Object value) {
                         // Whatever the query is, no Consumer instance match
@@ -175,10 +179,10 @@ public class TestConsumerOperations {
         final String qV = "b";
         final Consumer selected = new Consumer();
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings({ "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-                return new MockQuery(){
+                return new MockQuery() {
                     @Override
                     public List<Object> execute(Object value) {
                         // Whatever the query is, one Consumer instance match
@@ -212,10 +216,10 @@ public class TestConsumerOperations {
         final Consumer spare3 = new Consumer();
         final Consumer spare4 = new Consumer();
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings({ "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-                return new MockQuery(){
+                return new MockQuery() {
                     @Override
                     public List<Object> execute(Object value) {
                         // Whatever the query is, one Consumer instance match
@@ -271,7 +275,7 @@ public class TestConsumerOperations {
         }
     }
 
-    @Test(expected=InvalidIdentifierException.class)
+    @Test(expected = InvalidIdentifierException.class)
     public void testGetII() throws InvalidIdentifierException {
         final long key = 1234L;
         final PersistenceManager pm = new MockPersistenceManager() {
@@ -319,19 +323,19 @@ public class TestConsumerOperations {
         assertTrue(ops.getPersistenceManager().isClosed());
     }
 
-    @Test(expected=InvalidIdentifierException.class)
+    @Test(expected = InvalidIdentifierException.class)
     public void testGetV() throws InvalidIdentifierException {
         ConsumerOperations ops = new ConsumerOperations();
         ops.getConsumer(new MockPersistenceManager(), null);
     }
 
-    @Test(expected=InvalidIdentifierException.class)
+    @Test(expected = InvalidIdentifierException.class)
     public void testGetVI() throws InvalidIdentifierException {
         ConsumerOperations ops = new ConsumerOperations();
         ops.getConsumer(new MockPersistenceManager(), 0L);
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testCreateWithFailureI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -342,7 +346,7 @@ public class TestConsumerOperations {
         ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testCreateWithFailureII() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -353,7 +357,7 @@ public class TestConsumerOperations {
         ops.createConsumer(new com.google.appengine.api.xmpp.JID("jabberId"));
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testCreateWithFailureIII() throws DataSourceException, TwitterException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -364,7 +368,7 @@ public class TestConsumerOperations {
         ops.createConsumer(new twitter4j.MockUser());
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testCreateWithFailureIV() throws DataSourceException, UnsupportedEncodingException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -375,7 +379,7 @@ public class TestConsumerOperations {
         ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"));
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testCreateWithFailureV() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -386,7 +390,7 @@ public class TestConsumerOperations {
         ops.createConsumer(new com.dyuproject.openid.OpenIdUser());
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testCreateWithFailureVI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -398,12 +402,15 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testCreateWithWorkedAroundFailure() throws DataSourceException, TwitterException, UnsupportedEncodingException {
+    public void testCreateWithWorkedAroundFailure() throws DataSourceException, TwitterException,
+            UnsupportedEncodingException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
-            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit)
+                    throws DataSourceException {
                 throw new DataSourceException("Done in purpoe");
             }
+
             @Override
             public Consumer createConsumer(PersistenceManager pm, Consumer user) {
                 return null; // Not important
@@ -420,10 +427,10 @@ public class TestConsumerOperations {
     @Test
     public void testCreateI() throws DataSourceException {
         final MockPersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings({ "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-                return new MockQuery(){
+                return new MockQuery() {
                     @Override
                     public List<Object> execute(Object value) {
                         // Whatever the query is, no Consumer instance match
@@ -450,10 +457,10 @@ public class TestConsumerOperations {
     public void testCreateII() throws DataSourceException {
         final Consumer existingConsumer = new Consumer();
         final MockPersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings({ "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "unchecked" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
-                return new MockQuery(){
+                return new MockQuery() {
                     @Override
                     public List<Object> execute(Object value) {
                         List<Object> selection = new ArrayList<Object>();
@@ -507,7 +514,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testCreateIV() throws DataSourceException, TwitterException {
+    public void testCreateIVa() throws DataSourceException, TwitterException {
         final String name = "displayName";
         final String screenName = "screenName";
         MockUser user = new MockUser(0, screenName, name);
@@ -532,6 +539,41 @@ public class TestConsumerOperations {
 
         assertEquals(screenName, consumer.getTwitterId());
         assertEquals(name, consumer.getName());
+
+        // Tries to recreate it
+        ops.createConsumer(user);
+
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    public void testCreateIVb() throws DataSourceException, TwitterException {
+        final String screenName = "screenName";
+        MockUser user = new MockUser(0, screenName, null);
+        System.err.println("*** twitter: " + user.getName());
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(screenName, consumer.getTwitterId());
+        assertEquals(screenName, consumer.getName());
 
         // Tries to recreate it
         ops.createConsumer(user);
@@ -575,7 +617,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testCreateVI() throws DataSourceException, UnsupportedEncodingException {
+    public void testCreateVIa() throws DataSourceException, UnsupportedEncodingException {
         final String email = "unit@test.net";
         final String name = "Mr Unit Test";
         javax.mail.internet.InternetAddress address = new javax.mail.internet.InternetAddress(email, name);
@@ -610,15 +652,48 @@ public class TestConsumerOperations {
     }
 
     @Test
+    public void testCreateVIb() throws DataSourceException, UnsupportedEncodingException {
+        final String email = "unit@test.net";
+        javax.mail.internet.InternetAddress address = new javax.mail.internet.InternetAddress(email, null);
+        System.err.println("address: " + address.getPersonal());
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+        };
+
+        // Verify there's no instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Create the user once
+        Consumer consumer = ops.createConsumer(address);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(email, consumer.getEmail());
+        assertEquals(email, consumer.getName());
+
+        // Tries to recreate it
+        ops.createConsumer(address);
+
+        // Verify there's still one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
     public void testCreateVII() throws DataSourceException, UnsupportedEncodingException {
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         final String openId = "unit@test";
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         user.fromJSON(json);
 
@@ -652,14 +727,12 @@ public class TestConsumerOperations {
 
     @Test
     public void testCreateVIII() throws DataSourceException, UnsupportedEncodingException {
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         final String openId = "unit@test";
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("info", new HashMap<String, String>());
@@ -696,14 +769,12 @@ public class TestConsumerOperations {
 
     @Test
     public void testCreateIX() throws DataSourceException, UnsupportedEncodingException {
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         final String openId = "unit@test";
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         Map<String, String> info = new HashMap<String, String>();
         info.put("language", "FR");
@@ -735,20 +806,19 @@ public class TestConsumerOperations {
 
         assertEquals(openId, consumer.getOpenID());
         assertEquals(Locale.FRENCH.getLanguage(), consumer.getLanguage());
-        assertEquals(LabelExtractor.get("display_name_pattern", new Object[] { "unit", "test"}, Locale.ENGLISH), consumer.getName());
+        assertEquals(LabelExtractor.get("display_name_pattern", new Object[] { "unit", "test" }, Locale.ENGLISH),
+                consumer.getName());
         assertEquals(openId, consumer.getEmail());
     }
 
     @Test
     public void testCreateX() throws DataSourceException, UnsupportedEncodingException {
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         final String openId = "unit@test";
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         Map<String, String> info = new HashMap<String, String>();
         info.put("nickname", "unit_test");
@@ -780,53 +850,6 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testCreateXI() throws DataSourceException, UnsupportedEncodingException {
-        ConsumerOperations ops = new ConsumerOperations() {
-            @Override
-            public PersistenceManager getPersistenceManager() {
-                return new MockPersistenceManagerFactory().getPersistenceManager();
-            }
-        };
-
-        // Create the user once
-        final String openId = "unit@test";
-        Consumer consumer = new Consumer();
-        consumer.setEmail(openId);
-        consumer = ops.createConsumer(consumer);
-
-        // Verify there's one instance
-        Query query = new Query(Consumer.class.getSimpleName());
-        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
-
-        // Creates the data for a user identified by its OpenID
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
-        Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
-        json.put("a", openId);
-        Map<String, String> info = new HashMap<String, String>();
-        info.put("email", openId);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("info", info);
-        json.put("g", attributes);
-        user.fromJSON(json);
-
-        // Create the second user
-        Consumer secondConsumer = ops.createConsumer(user);
-
-        // Verify there's one instance
-        query = new Query(Consumer.class.getSimpleName());
-        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
-
-        assertEquals(consumer.getKey(), secondConsumer.getKey());
-        assertEquals(openId, secondConsumer.getOpenID());
-        assertEquals(openId, secondConsumer.getEmail());
-    }
-
-    @Test
     public void testCreateXII() throws DataSourceException, UnsupportedEncodingException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -847,13 +870,11 @@ public class TestConsumerOperations {
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Creates the data for a user identified by its OpenID
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         Map<String, String> info = new HashMap<String, String>();
         info.put("email", openId);
@@ -895,13 +916,11 @@ public class TestConsumerOperations {
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Creates the data for a user identified by its OpenID
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         Map<String, String> info = new HashMap<String, String>();
         info.put("email", openId);
@@ -930,8 +949,10 @@ public class TestConsumerOperations {
             public PersistenceManager getPersistenceManager() {
                 return new MockPersistenceManagerFactory().getPersistenceManager();
             }
+
             @Override
-            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit)
+                    throws DataSourceException {
                 throw new DataSourceException("Done in purpose");
             }
         };
@@ -947,13 +968,11 @@ public class TestConsumerOperations {
         assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Creates the data for a user identified by its OpenID
-        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                "http://www.yahoo.com",
-                YadisDiscovery.IDENTIFIER_SELECT,
-                LoginServlet.YAHOO_OPENID_SERVER_URL
-        );
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
         Map<String, Object> json = new HashMap<String, Object>();
-        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
         json.put("a", openId);
         Map<String, String> info = new HashMap<String, String>();
         info.put("email", openId);
@@ -970,7 +989,7 @@ public class TestConsumerOperations {
         assertEquals(2, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testUpdateWithFailureI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -1029,26 +1048,23 @@ public class TestConsumerOperations {
         assertTrue(pm.isClosed());
     }
 
-    /* After the upgrade to the Java SDK 1.2.5, the limitation of having to use the same PM even for detached object has been removed
-    @Test(expected=javax.jdo.JDOFatalUserException.class)
-    public void testUpdateIII() throws DataSourceException {
-
-        ConsumerOperations ops = new ConsumerOperations() {
-            @Override
-            public PersistenceManager getPersistenceManager() {
-                return new MockPersistenceManagerFactory().getPersistenceManager();
-            }
-        };
-        // Create the user once
-        Consumer consumer = ops.createConsumer(new User("test", "domain"));
-
-        // Update it
-        consumer.setTwitterId(12345L);
-
-        // Persist the update
-        consumer = ops.updateConsumer(consumer); // This is going to throw the JDOFatalUserExcepion because the update should be done with the same PersistenceManager instance
-    }
-    */
+    /*
+     * After the upgrade to the Java SDK 1.2.5, the limitation of having to use the same PM even for detached object has
+     * been removed
+     *
+     * @Test(expected=javax.jdo.JDOFatalUserException.class) public void testUpdateIII() throws DataSourceException {
+     *
+     * ConsumerOperations ops = new ConsumerOperations() {
+     *
+     * @Override public PersistenceManager getPersistenceManager() { return new
+     * MockPersistenceManagerFactory().getPersistenceManager(); } }; // Create the user once Consumer consumer =
+     * ops.createConsumer(new User("test", "domain"));
+     *
+     * // Update it consumer.setTwitterId(12345L);
+     *
+     * // Persist the update consumer = ops.updateConsumer(consumer); // This is going to throw the JDOFatalUserExcepion
+     * because the update should be done with the same PersistenceManager instance }
+     */
 
     @Test
     public void testGetSimplifiedJabberIdI() {
@@ -1066,7 +1082,7 @@ public class TestConsumerOperations {
         assertEquals(base, ConsumerOperations.getSimplifiedJabberId(jabberId));
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testDeleteWithFailureI() throws InvalidIdentifierException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -1088,6 +1104,7 @@ public class TestConsumerOperations {
                 consumer.setKey(consumerKey);
                 return consumer;
             }
+
             @Override
             public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
                 assertEquals(consumerKey, consumer.getKey());
@@ -1106,5 +1123,55 @@ public class TestConsumerOperations {
         assertNotNull(justCreated.getKey());
         assertEquals(name, justCreated.getName());
         ops.deleteConsumer(justCreated.getKey());
+    }
+
+    @Test
+    public void testGetsFromKeysI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
+
+        Consumer object = new Consumer();
+        object = ops.createConsumer(object);
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(object.getKey());
+
+        List<Consumer> selection = ops.getConsumers(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetsFromMapI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
+
+        Consumer object = new Consumer();
+        object.setEmail("d.d.@d.dom");
+        object = ops.createConsumer(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Consumer.EMAIL, object.getEmail());
+
+        List<Consumer> selection = ops.getConsumers(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetKeysFromMapI() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
+
+        Consumer object = new Consumer();
+        object.setEmail("d.d.@d.dom");
+        object = ops.createConsumer(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Consumer.EMAIL, object.getEmail());
+
+        List<Long> selection = ops.getConsumerKeys(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
     }
 }

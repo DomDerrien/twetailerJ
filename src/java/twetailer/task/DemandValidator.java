@@ -281,7 +281,7 @@ public class DemandValidator {
                 put("demand>owner>name", owner.getName()).
                 fetch(demand).
                 fetch(location, "demand").
-                put("message>footer", msgGen.getRawMessage(MessageId.messageFooter));
+                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
             if (!Source.api.equals(demand.getSource())) {
                 final String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";

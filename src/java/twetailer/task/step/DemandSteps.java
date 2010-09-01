@@ -368,7 +368,7 @@ public class DemandSteps extends BaseSteps {
                         fetch(demand).
                         fetch(location, "demand").
                         fetch(proposal).
-                        put("message>footer", msgGen.getRawMessage(MessageId.messageFooter));
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
                     communicateToConsumer(
                             new RawCommand(demand.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
@@ -389,7 +389,7 @@ public class DemandSteps extends BaseSteps {
                         put("proposal>owner>name", saConsumerRecord.getName()).
                         fetch(demand).
                         fetch(proposal).
-                        put("message>footer", msgGen.getRawMessage(MessageId.messageFooter)).
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                         put("control>threadSubject", "ezToff Notification about Request:" + proposal.getDemandKey()).
                         put("control>closeProposal", ("close proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
 

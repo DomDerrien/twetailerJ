@@ -991,8 +991,8 @@
         if (data.cc != null) { data.cc = data.cc.split("\n"); }
         if (data.criteria != null) { data.criteria = data.criteria.split("\n"); }
         if (data.hashTags != null) { data.hashTags = data.hashTags.split("\n"); }
-        if (data.proposalKeys != null) { delete data.proposalKeys; } // Neutralised server-side, just removed for the bandwidth
-        if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralised server-side, just removed for the bandwidth
+        if (data.proposalKeys != null) { delete data.proposalKeys; } // Neutralized server-side, just removed for the bandwidth
+        if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralized server-side, just removed for the bandwidth
         dojo.xhrPut({
             headers: { "content-type": "application/json" },
             putData: dojo.toJson(data),

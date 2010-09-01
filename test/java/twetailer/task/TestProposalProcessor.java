@@ -63,6 +63,7 @@ public class TestProposalProcessor {
 
     @After
     public void tearDown() {
+        MockTwitterConnector.restoreTwitterConnector();
     }
 
     @Test
@@ -833,8 +834,6 @@ public class TestProposalProcessor {
         ProposalProcessor.process(proposalKey);
 
         assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test

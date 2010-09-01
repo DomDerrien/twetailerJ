@@ -49,7 +49,7 @@ import domderrien.jsontools.JsonObject;
  * Define the logic of the main Twetailer task:<ul>
  * <li> Get the identified RawCommand instance which contains the text-based command; </li>
  * <li> Extract the command parameters (delegated to the CommandLineParser); </li>
- * <li> Dispatch the command to specialised task processor (!list, !propose, !confirm, etc.); </li>
+ * <li> Dispatch the command to specialized task processor (!list, !propose, !confirm, etc.); </li>
  * <li> Offer the method to generate the text-based responses. </li></ul>
  *
  * @see twetailer.task.CommandLineParser
@@ -80,8 +80,8 @@ public class CommandProcessor {
      * @param demand Demand to process
      * @param location Place where the demand is attached to
      * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
-     * @param locale Indicator for the localised resource bundle to use
-     * @return Serialised command
+     * @param locale Indicator for the localized resource bundle to use
+     * @return Serialized command
      */
     public static String generateTweet(Demand demand, Location location, boolean anonymized, Locale locale) {
         String labelKeyPrefix = ""; // "golf";
@@ -139,8 +139,8 @@ public class CommandProcessor {
      * @param proposal Proposal to process
      * @param store Store where the Sale Associate who created the proposal works
      * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
-     * @param locale Indicator for the localised resource bundle to use
-     * @return Serialised command
+     * @param locale Indicator for the localized resource bundle to use
+     * @return Serialized command
      */
     public static String generateTweet(Proposal proposal, Store store, boolean anonymized, Locale locale) {
         String labelKeyPrefix = ""; // "golf";
@@ -197,8 +197,8 @@ public class CommandProcessor {
      *
      * @param store Store to process
      * @param location Place where the store is located
-     * @param locale Indicator for the localised resource bundle to use
-     * @return Serialised command
+     * @param locale Indicator for the localized resource bundle to use
+     * @return Serialized command
      */
     public static String generateTweet(Store store, Location location, Locale locale) {
         final String space = Command.SPACE;

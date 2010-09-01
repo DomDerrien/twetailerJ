@@ -3,14 +3,14 @@ package twetailer.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
-
-import javamocks.util.logging.MockLogger;
+import java.util.Map;
 
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
@@ -33,6 +33,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 public class TestSaleAssociateOperations {
 
@@ -90,8 +91,8 @@ public class TestSaleAssociateOperations {
     @Test
     public void testCreateI() {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
-
         SaleAssociate item = new SaleAssociateOperations().createSaleAssociate(consumer, 111L);
+
         assertNotNull(item.getKey());
         assertEquals(consumer.getKey(), item.getConsumerKey());
         assertEquals(Long.valueOf(111L), item.getStoreKey());
@@ -112,6 +113,29 @@ public class TestSaleAssociateOperations {
         };
 
         ops.createSaleAssociate(new Consumer(), 0L);
+    }
+
+    @Test
+    public void testCreateIII() {
+        SaleAssociate item = new SaleAssociate();
+        item.setConsumerKey(111L);
+        assertNull(item.getKey());
+
+        item = new SaleAssociateOperations().createSaleAssociate(item);
+
+        assertNotNull(item.getKey());
+        assertEquals((Long) 111L, item.getConsumerKey());
+    }
+
+    @Test
+    public void testCreateIV() {
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(SaleAssociate.CONSUMER_KEY, (Long) 111L);
+
+        SaleAssociate item = new SaleAssociateOperations().createSaleAssociate(parameters);
+
+        assertNotNull(item.getKey());
+        assertEquals((Long) 111L, item.getConsumerKey());
     }
 
     @Test
@@ -141,6 +165,19 @@ public class TestSaleAssociateOperations {
         new SaleAssociateOperations().getSaleAssociate(888L);
     }
 
+    @Test
+    public void testGetsI() throws ClientException, DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+
+        SaleAssociate object = new SaleAssociate();
+        object.setConsumerKey(111L);
+        object = ops.createSaleAssociate(object);
+
+        List<SaleAssociate> objects = ops.getSaleAssociates(SaleAssociate.CONSUMER_KEY, object.getConsumerKey(), 1);
+        assertNotSame(0, objects.size());
+        assertEquals(object.getKey(), objects.get(0).getKey());
+    }
+
     @Test(expected=RuntimeException.class)
     public void testGetsII() throws ClientException, DataSourceException {
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
@@ -156,6 +193,17 @@ public class TestSaleAssociateOperations {
         };
 
         ops.getSaleAssociates("test", null, 0);
+    }
+
+    @Test
+    public void testUpdateI() throws ClientException, DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate object = ops.createSaleAssociate(new SaleAssociate());
+        assertNull(object.getConsumerKey());
+        object.setConsumerKey(111L);
+        SaleAssociate updated = ops.updateSaleAssociate(object);
+        assertEquals(object.getKey(), updated.getKey());
+        assertEquals(object.getConsumerKey(), updated.getConsumerKey());
     }
 
     @Test(expected=RuntimeException.class)
@@ -268,5 +316,65 @@ public class TestSaleAssociateOperations {
             }
         };
         ops.deleteSaleAssociate(saleAssociateKey);
+    }
+
+    @Test
+    public void testGetsFromMapI() throws DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+
+        SaleAssociate object = new SaleAssociate();
+        object.setConsumerKey(111L);
+        object = ops.createSaleAssociate(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(SaleAssociate.CONSUMER_KEY, object.getConsumerKey());
+
+        List<SaleAssociate> selection = ops.getSaleAssociates(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetKeysFromMapI() throws DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+
+        SaleAssociate object = new SaleAssociate();
+        object.setConsumerKey(111L);
+        object = ops.createSaleAssociate(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(SaleAssociate.CONSUMER_KEY, object.getConsumerKey());
+
+        List<Long> selection = ops.getSaleAssociateKeys(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetsFromKeysI() throws DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+
+        SaleAssociate object = new SaleAssociate();
+        object.setConsumerKey(111L);
+        object = ops.createSaleAssociate(object);
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(object.getKey());
+
+        List<SaleAssociate> selection = ops.getSaleAssociates(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testDeleteII() throws ClientException, DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate object = ops.createSaleAssociate(new SaleAssociate());
+        assertNull(object.getConsumerKey());
+        object.setConsumerKey(111L);
+        ops.deleteSaleAssociate(ops.getPersistenceManager(), object);
     }
 }

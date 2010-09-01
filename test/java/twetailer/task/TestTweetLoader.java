@@ -67,6 +67,8 @@ public class TestTweetLoader {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
+
+        MockTwitterConnector.restoreTwitterConnector();
     }
 
     @Test
@@ -99,9 +101,6 @@ public class TestTweetLoader {
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         TweetLoader.loadDirectMessages();
-
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
@@ -122,9 +121,6 @@ public class TestTweetLoader {
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
         TweetLoader.loadDirectMessages();
-
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
@@ -139,13 +135,7 @@ public class TestTweetLoader {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        try {
-            TweetLoader.loadDirectMessages();
-        }
-        finally {
-            // Remove the fake Twitter account
-            MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
-        }
+        TweetLoader.loadDirectMessages();
     }
 
     /*****
@@ -216,9 +206,6 @@ public class TestTweetLoader {
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages(new MockPersistenceManager(), 1L);
         assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
-
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
     ****/
 
@@ -295,9 +282,6 @@ public class TestTweetLoader {
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages(new MockPersistenceManager(), 1L);
         assertNotSame(Long.valueOf(dmId), newSinceId); // Because the nessage is not processed
-
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
     ****/
 
@@ -357,9 +341,6 @@ public class TestTweetLoader {
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages();
         assertEquals(Long.valueOf(dmId), newSinceId);
-
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test
@@ -419,9 +400,6 @@ public class TestTweetLoader {
         // Test itself
         Long newSinceId = TweetLoader.loadDirectMessages();
         assertEquals(Long.valueOf(1), newSinceId); // The tweet has previously an higher number, so the same higher number is returned
-
-        // Remove the fake Twitter account
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test

@@ -92,6 +92,8 @@ public class TestDemandValidator {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
+
+        MockTwitterConnector.restoreTwitterConnector();
     }
 
     @Test
@@ -1838,8 +1840,6 @@ public class TestDemandValidator {
 
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        MockTwitterConnector.restoreTwitterConnector(mockTwitterAccount, null);
     }
 
     @Test

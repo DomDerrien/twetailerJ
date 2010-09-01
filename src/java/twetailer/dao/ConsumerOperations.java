@@ -62,9 +62,6 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(loggedUser.getNickname());
         newConsumer.setEmail(address);
-        if (newConsumer.getName() == null && newConsumer.getEmail() != null) {
-            newConsumer.setName(newConsumer.getEmail());
-        }
         newConsumer.setPreferredConnection(Source.mail);
         return createConsumer(pm, newConsumer);
     }
@@ -121,9 +118,6 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(identifier);
         newConsumer.setJabberId(identifier);
-        if (newConsumer.getName() == null && newConsumer.getJabberId() != null) {
-            newConsumer.setName(newConsumer.getJabberId());
-        }
         newConsumer.setPreferredConnection(Source.jabber);
         return createConsumer(pm, newConsumer);
     }
@@ -176,7 +170,7 @@ public class ConsumerOperations extends BaseOperations {
         newConsumer.setName(twitterUser.getName());
         newConsumer.setAddress(twitterUser.getLocation());
         newConsumer.setTwitterId(identifier);
-        if (newConsumer.getName() == null && newConsumer.getTwitterId() != null) {
+        if (newConsumer.getName() == null) {
             newConsumer.setName(newConsumer.getTwitterId());
         }
         newConsumer.setPreferredConnection(Source.twitter);
@@ -226,7 +220,7 @@ public class ConsumerOperations extends BaseOperations {
         Consumer newConsumer = new Consumer();
         newConsumer.setName(senderAddress.getPersonal());
         newConsumer.setEmail(email);
-        if (newConsumer.getName() == null && newConsumer.getEmail() != null) {
+        if (newConsumer.getName() == null) {
             newConsumer.setName(newConsumer.getEmail());
         }
         newConsumer.setPreferredConnection(Source.mail);
@@ -298,7 +292,7 @@ public class ConsumerOperations extends BaseOperations {
                     Consumer existingConsumer = consumers.get(0);
                     existingConsumer.setOpenID(openID);
                     String existingName = existingConsumer.getName();
-                    if (existingName == null || existingName.length() == 0) {
+                    if (existingName == null) { // setName("") reset the field to <code>null</code>
                         existingConsumer.setName(name);
                     }
                     existingConsumer = updateConsumer(pm, existingConsumer);

@@ -5,7 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
@@ -556,5 +559,59 @@ public class TestLocationOperations {
         finally {
             pm.close();
         }
+    }
+
+    @Test
+    public void testGetsFromMapI() throws DataSourceException {
+        LocationOperations ops = new LocationOperations();
+
+        Location object = new Location();
+        object.setCountryCode("CA");
+        object.setPostalCode("gloups");
+        object = ops.createLocation(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Location.COUNTRY_CODE, object.getCountryCode());
+
+        List<Location> selection = ops.getLocations(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
+    }
+
+    @Test
+    public void testGetKeysFromMapI() throws DataSourceException {
+        LocationOperations ops = new LocationOperations();
+
+        Location object = new Location();
+        object.setCountryCode("CA");
+        object.setPostalCode("gloups");
+        object = ops.createLocation(object);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Location.COUNTRY_CODE, object.getCountryCode());
+
+        List<Long> selection = ops.getLocationKeys(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    public void testGetsFromKeysI() throws DataSourceException {
+        LocationOperations ops = new LocationOperations();
+
+        Location object = new Location();
+        object.setCountryCode("CA");
+        object.setPostalCode("gloups");
+        object = ops.createLocation(object);
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(object.getKey());
+
+        List<Location> selection = ops.getLocations(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(1, selection.size());
+        assertEquals(object.getKey(), selection.get(0).getKey());
     }
 }
