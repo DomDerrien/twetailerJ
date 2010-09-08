@@ -43,7 +43,7 @@ public class TestMailResponderServlet {
     @BeforeClass
     public static void setUpBeforeClass() {
         MailResponderServlet.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

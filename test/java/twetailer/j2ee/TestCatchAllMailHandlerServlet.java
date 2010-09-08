@@ -27,7 +27,7 @@ public class TestCatchAllMailHandlerServlet {
     @BeforeClass
     public static void setUpBeforeClass() {
         CatchAllMailHandlerServlet.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

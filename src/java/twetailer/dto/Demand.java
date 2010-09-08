@@ -29,7 +29,6 @@ import domderrien.jsontools.TransferObject;
  * @author Dom Derrien
  */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-
 public class Demand extends Command {
 
     @Persistent
@@ -80,11 +79,14 @@ public class Demand extends Command {
 
     /**
      * Provided to reproduce the JDO behavior with Unit tests
+     *
+     * @return Object instance for chaining
      */
-    protected void resetLists() {
+    protected Demand resetLists() {
         super.resetLists();
         proposalKeys = null;
         saleAssociateKeys = null;
+        return this;
     }
 
     @Override
@@ -136,13 +138,16 @@ public class Demand extends Command {
 
     public void setProposalKeys(List<Long> proposalKeys) {
         if (proposalKeys == null) {
-            throw new IllegalArgumentException("Cannot nuulify the attribute 'proposalKeys' of type List<Long>");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'proposalKeys' of type List<Long>");
         }
         updateModificationDate(); // To highlight the demand update
         this.proposalKeys = proposalKeys;
     }
 
     public void addProposalKey(Long proposalKey) {
+        if (proposalKey == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'proposalKeys' of type List<Long>");
+        }
         if (proposalKeys == null) {
             proposalKeys = new ArrayList<Long>();
         }
@@ -152,12 +157,13 @@ public class Demand extends Command {
         }
     }
 
-    public void resetProposalKeys() {
+    public Demand resetProposalKeys() {
         if (proposalKeys == null) {
-            return;
+            return this;
         }
         updateModificationDate(); // To highlight the demand update
         proposalKeys = new ArrayList<Long>();
+        return this;
     }
 
     public void removeProposalKey(Long proposalKey) {
@@ -195,7 +201,7 @@ public class Demand extends Command {
 
     public void setSaleAssociateKeys(List<Long> saleAssociateKeys) {
         if (saleAssociateKeys == null) {
-            throw new IllegalArgumentException("Cannot nuulify the attribute 'saleAssociateKeys' of type List<Long>");
+            throw new IllegalArgumentException("Cannot nullify the attribute 'saleAssociateKeys' of type List<Long>");
         }
         this.saleAssociateKeys = saleAssociateKeys;
     }
@@ -209,11 +215,12 @@ public class Demand extends Command {
         }
     }
 
-    public void resetSaleAssociateKeys() {
+    public Demand resetSaleAssociateKeys() {
         if (saleAssociateKeys == null) {
-            return;
+            return this;
         }
         saleAssociateKeys = new ArrayList<Long>();
+        return this;
     }
 
     public void removeSaleAssociateKey(Long saleAssociateKey) {
@@ -260,7 +267,7 @@ public class Demand extends Command {
                 setExpirationDate(DEFAULT_EXPIRATION_DELAY); // Default to an expiration 30 days in the future
             }
         }
-        else if (getKey() == null && getDueDate() != null) {
+        else if (getKey() == null) { //  && getDueDate() != null) { // getDueDate() cannot be null as it falls back on getExpirationDate() which cannot be nullified
             // To push the given dueDate as the default expirationDate if the exchange is about a demand to be created
             setExpirationDate(getDueDate());
         }

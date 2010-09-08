@@ -33,7 +33,7 @@ public class TestProposal {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -62,12 +62,13 @@ public class TestProposal {
 
     String AWSCBUIURL = "Very long long text!";
     Action action = Action.cancel;
-    Long OwnerKey = 12345L;
+    Long ownerKey = 12345L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
     State state = State.closed;
 
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
+    Long consumerKey = 876432L;
     Long demandKey = 54321L;
     Long proposalKey = 98760L;
     Double price = 25.99D;
@@ -82,7 +83,7 @@ public class TestProposal {
         // Command
         object.setAction(action);
         object.setAction(action.toString());
-        object.setOwnerKey(OwnerKey);
+        object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setSource(source.toString());
@@ -91,6 +92,7 @@ public class TestProposal {
 
         // Proposal
         object.setAWSCBUIURL(AWSCBUIURL);
+        object.setConsumerKey(consumerKey);
         object.setCriteria(criteria);
         object.setDemandKey(demandKey);
         object.setPrice(price);
@@ -101,7 +103,7 @@ public class TestProposal {
         // Command
         assertEquals(action, object.getAction());
         assertEquals(action, object.getAction());
-        assertEquals(OwnerKey, object.getOwnerKey());
+        assertEquals(ownerKey, object.getOwnerKey());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
         assertEquals(state, object.getState());
@@ -109,6 +111,7 @@ public class TestProposal {
         // Proposal
         assertEquals(AWSCBUIURL, object.getAWSCBUIURL());
         assertEquals(criteria, object.getCriteria());
+        assertEquals(consumerKey, object.getConsumerKey());
         assertEquals(demandKey, object.getDemandKey());
         assertEquals(quantity, object.getQuantity());
         assertEquals(storeKey, object.getStoreKey());
@@ -172,7 +175,7 @@ public class TestProposal {
 
         // Command
         object.setAction(action);
-        object.setOwnerKey(OwnerKey);
+        object.setOwnerKey(ownerKey);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setState(state);
@@ -180,6 +183,7 @@ public class TestProposal {
         // Proposal
         object.setAWSCBUIURL(AWSCBUIURL);
         object.setCriteria(criteria);
+        object.setConsumerKey(consumerKey);
         object.setDemandKey(demandKey);
         object.setPrice(price);
         object.setQuantity(quantity);
@@ -190,13 +194,14 @@ public class TestProposal {
 
         // Command
         assertEquals(action, clone.getAction());
-        assertEquals(OwnerKey, clone.getOwnerKey());
+        assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
         assertEquals(state, clone.getState());
 
         // Proposal
         assertEquals(AWSCBUIURL, clone.getAWSCBUIURL());
+        assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(criteria, clone.getCriteria());
         assertEquals(demandKey, clone.getDemandKey());
         assertEquals(quantity, clone.getQuantity());
@@ -325,5 +330,49 @@ public class TestProposal {
         assertFalse(proposal.getStateCmdList());
         proposal.setStateCmdList(true);
         assertTrue(proposal.getStateCmdList());
+    }
+
+    @Test
+    public void testGetAWSCBUIURL() {
+        assertNull(new Proposal().getAWSCBUIURL());
+    }
+
+    @Test
+    public void testSetAWSCBUIURL() {
+        Proposal object = new Proposal();
+
+        object.setAWSCBUIURL(null);
+        assertNull(object.getAWSCBUIURL());
+        object.setAWSCBUIURL("");
+        assertNull(object.getAWSCBUIURL());
+        object.setAWSCBUIURL(AWSCBUIURL);
+        assertEquals(AWSCBUIURL, object.getAWSCBUIURL());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetConsumerKey() {
+        new Proposal().setConsumerKey(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetDemandKey() {
+        new Proposal().setDemandKey(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetStoreKey() {
+        new Proposal().setStoreKey(null);
+    }
+
+    @Test
+    public void testFromJson() {
+        Proposal object = new Proposal();
+        object.setKey(12345L);
+
+        JsonObject json = new GenericJsonObject();
+        json.put(Proposal.DEMAND_KEY, 545456L);
+
+        object.fromJson(json);
+        assertNull(object.getDemandKey());
     }
 }

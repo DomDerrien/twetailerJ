@@ -23,7 +23,7 @@ public class TestStore {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -110,5 +110,49 @@ public class TestStore {
         parameters.put(Store.STORE_KEY, key);
 
         assertEquals(key, new Store(parameters).getKey());
+    }
+
+    @Test
+    public void testGetAddress() {
+        Store store = new Store();
+        store.setAddress(null);
+        assertNull(store.getAddress());
+        store.setAddress("");
+        assertNull(store.getAddress());
+        store.setAddress("test");
+        assertEquals("test", store.getAddress());
+    }
+
+    @Test
+    public void testGetEmail() {
+        Store store = new Store();
+        store.setEmail(null);
+        assertNull(store.getEmail());
+        store.setEmail("");
+        assertNull(store.getEmail());
+        store.setEmail("test");
+        assertEquals("test", store.getEmail());
+    }
+
+    @Test
+    public void testGetName() {
+        Store store = new Store();
+        store.setName(null);
+        assertNull(store.getName());
+        store.setName("");
+        assertNull(store.getName());
+        store.setName("test");
+        assertEquals("test", store.getName());
+    }
+
+    @Test
+    public void testGetPhoneNumber() {
+        Store store = new Store();
+        store.setPhoneNumber(null);
+        assertNull(store.getPhoneNumber());
+        store.setPhoneNumber("");
+        assertNull(store.getPhoneNumber());
+        store.setPhoneNumber("test");
+        assertEquals("test", store.getPhoneNumber());
     }
 }

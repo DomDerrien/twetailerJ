@@ -50,7 +50,7 @@ public class TestLocationValidator {
     @BeforeClass
     public static void setUpBeforeClass() {
         LocationValidator.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
 

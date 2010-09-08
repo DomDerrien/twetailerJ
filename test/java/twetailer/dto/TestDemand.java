@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -37,7 +38,7 @@ public class TestDemand {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -194,6 +195,11 @@ public class TestDemand {
 
         object.resetLists(); // To be sure there's no error
         object.resetProposalKeys(); // Reset all
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testResetProposalKeysIII() {
+        new Demand().addProposalKey(null);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -446,5 +452,91 @@ public class TestDemand {
         assertFalse(demand.getStateCmdList());
         demand.setStateCmdList(true);
         assertTrue(demand.getStateCmdList());
+    }
+
+    @Test
+    public void testGetDueDate() {
+        Demand demand = new Demand();
+        Date now = DateUtils.getNowDate();
+        demand.setExpirationDate(now);
+        demand.setDueDate(null);
+        assertEquals(now, demand.getDueDate());
+    }
+
+    @Test
+    public void testRemoveProposalKeyI() {
+        Demand demand = new Demand();
+        demand.addProposalKey(12345L);
+        demand.removeProposalKey(null);
+        assertEquals(1, demand.getProposalKeys().size());
+        assertEquals(Long.valueOf(12345L), demand.getProposalKeys().get(0));
+    }
+
+    @Test
+    public void testRemoveProposalKeyII() {
+        Demand demand = new Demand();
+        demand.addProposalKey(12345L);
+        demand.removeProposalKey(54321L);
+        assertEquals(1, demand.getProposalKeys().size());
+        assertEquals(Long.valueOf(12345L), demand.getProposalKeys().get(0));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetRange() {
+        new Demand().setRange((Double) null);
+    }
+
+    @Test
+    public void testFromJsonI() {
+        Calendar now = DateUtils.getNowCalendar();
+        now.set(Calendar.MILLISECOND, 0); // as milliseconds are ignored by the ISO format
+
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Demand.EXPIRATION_DATE, DateUtils.dateToISO(now.getTime()));
+
+        assertEquals(now.getTime(), new Demand(parameters).getDueDate());
+    }
+
+    @Test
+    public void testFromJsonII() {
+        Long key = 12345L;
+        Calendar now = DateUtils.getNowCalendar();
+        now.set(Calendar.MILLISECOND, 0); // as milliseconds are ignored by the ISO format
+
+        Demand demand = new Demand();
+        Date dueDate = demand.getDueDate();
+
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Entity.KEY, key);
+        parameters.put(Demand.EXPIRATION_DATE, DateUtils.dateToISO(now.getTime()));
+
+        demand.fromJson(parameters);
+        assertEquals(dueDate, demand.getDueDate());
+    }
+
+    @Test
+    public void testFromJsonIII() {
+        Calendar now = DateUtils.getNowCalendar();
+        now.set(Calendar.MILLISECOND, 0); // as milliseconds are ignored by the ISO format
+
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Command.DUE_DATE, DateUtils.dateToISO(now.getTime()));
+
+        assertEquals(now.getTime(), new Demand(parameters).getExpirationDate());
+    }
+
+    @Test
+    public void testFromJsonIV() {
+        Long key = 12345L;
+
+        Demand demand = new Demand();
+        Date expirationDate = demand.getExpirationDate();
+        demand.setDueDate(null);
+
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Entity.KEY, key);
+
+        demand.fromJson(parameters);
+        assertEquals(expirationDate, demand.getExpirationDate());
     }
 }

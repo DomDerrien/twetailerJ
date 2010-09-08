@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.connector.BaseConnector.Source;
+
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -27,7 +29,7 @@ public class TestConsumer {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -62,6 +64,8 @@ public class TestConsumer {
     String name = "dom";
     String openID = "http://dom.my-openid.org";
     String phoneNumber = "514-123-4567 #890";
+    Source preferredConnection = Source.jabber;
+    Long saleAssociateKey = 76543453L;
     String twitterId = "Katelyn";
 
     @Test
@@ -76,6 +80,8 @@ public class TestConsumer {
         object.setName(name);
         object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
+        object.setPreferredConnection(preferredConnection);
+        object.setSaleAssociateKey(saleAssociateKey);
         object.setTwitterId(twitterId);
 
         assertEquals(address, object.getAddress());
@@ -86,6 +92,8 @@ public class TestConsumer {
         assertEquals(name, object.getName());
         assertEquals(openID, object.getOpenID());
         assertEquals(phoneNumber, object.getPhoneNumber());
+        assertEquals(preferredConnection, object.getPreferredConnection());
+        assertEquals(saleAssociateKey, object.getSaleAssociateKey());
         assertEquals(twitterId, object.getTwitterId());
     }
 
@@ -108,6 +116,8 @@ public class TestConsumer {
         object.setName(name);
         object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
+        object.setPreferredConnection(preferredConnection);
+        object.setSaleAssociateKey(saleAssociateKey);
         object.setTwitterId(twitterId);
 
         Consumer clone = new Consumer(object.toJson());
@@ -120,6 +130,8 @@ public class TestConsumer {
         assertEquals(name, clone.getName());
         assertEquals(openID, clone.getOpenID());
         assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertEquals(preferredConnection, clone.getPreferredConnection());
+        assertEquals(saleAssociateKey, clone.getSaleAssociateKey());
         assertEquals(twitterId, clone.getTwitterId());
     }
 
@@ -146,6 +158,110 @@ public class TestConsumer {
     }
 
     @Test
+    public void testSetAddress() {
+        Consumer object = new Consumer();
+        assertNull(object.getAddress());
+        object.setAddress(address);
+        assertEquals(address, object.getAddress());
+        object.setAddress("");
+        assertNull(object.getAddress());
+        object.setAddress(address);
+        assertEquals(address, object.getAddress());
+        object.setAddress(null);
+        assertNull(object.getAddress());
+    }
+
+    @Test
+    public void testSetEmailId() {
+        String emailId = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getEmail());
+        object.setEmail(emailId);
+        assertEquals(emailId.toLowerCase(), object.getEmail());
+        object.setEmail("");
+        assertNull(object.getEmail());
+        object.setEmail(emailId);
+        assertEquals(emailId.toLowerCase(), object.getEmail());
+        object.setEmail(null);
+        assertNull(object.getEmail());
+    }
+
+    @Test
+    public void testSetJabberId() {
+        String jabberId = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getJabberId());
+        object.setJabberId(jabberId);
+        assertEquals(jabberId.toLowerCase(), object.getJabberId());
+        object.setJabberId("");
+        assertNull(object.getJabberId());
+        object.setJabberId(jabberId);
+        assertEquals(jabberId.toLowerCase(), object.getJabberId());
+        object.setJabberId(null);
+        assertNull(object.getJabberId());
+    }
+
+    @Test
+    public void testSetName() {
+        String name = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getName());
+        object.setName(name);
+        assertEquals(name, object.getName());
+        object.setName("");
+        assertNull(object.getName());
+        object.setName(name);
+        assertEquals(name, object.getName());
+        object.setName(null);
+        assertNull(object.getName());
+    }
+
+    @Test
+    public void testSetOpenID() {
+        String openID = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getOpenID());
+        object.setOpenID(openID);
+        assertEquals(openID, object.getOpenID());
+        object.setOpenID("");
+        assertNull(object.getOpenID());
+        object.setOpenID(openID);
+        assertEquals(openID, object.getOpenID());
+        object.setOpenID(null);
+        assertNull(object.getOpenID());
+    }
+
+    @Test
+    public void testSetPhoneNumber() {
+        String phoneNumber = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getPhoneNumber());
+        object.setPhoneNumber(phoneNumber);
+        assertEquals(phoneNumber, object.getPhoneNumber());
+        object.setPhoneNumber("");
+        assertNull(object.getPhoneNumber());
+        object.setPhoneNumber(phoneNumber);
+        assertEquals(phoneNumber, object.getPhoneNumber());
+        object.setPhoneNumber(null);
+        assertNull(object.getPhoneNumber());
+    }
+
+    @Test
+    public void testSetTwitterId() {
+        String twitterId = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getTwitterId());
+        object.setTwitterId(twitterId);
+        assertEquals(twitterId, object.getTwitterId());
+        object.setTwitterId("");
+        assertNull(object.getTwitterId());
+        object.setTwitterId(twitterId);
+        assertEquals(twitterId, object.getTwitterId());
+        object.setTwitterId(null);
+        assertNull(object.getTwitterId());
+    }
+
+    @Test
     public void testGetAutomaticLocaleUpdate() {
         Consumer consumer = new Consumer();
         assertTrue(consumer.getAutomaticLocaleUpdate());
@@ -155,5 +271,29 @@ public class TestConsumer {
         assertFalse(consumer.getAutomaticLocaleUpdate());
         consumer.setAutomaticLocaleUpdate(true);
         assertTrue(consumer.getAutomaticLocaleUpdate());
+    }
+
+    @Test
+    public void testSetPreferredConnection() {
+        Consumer object = new Consumer();
+        assertEquals(Source.mail, object.getPreferredConnection());
+        object.setPreferredConnection(Source.jabber);
+        assertEquals(Source.jabber, object.getPreferredConnection());
+        object.setPreferredConnection((Source) null);
+        assertEquals(Source.mail, object.getPreferredConnection());
+    }
+
+    @Test
+    public void testLimitedFromJson() {
+        Long key = 12345L;
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(Entity.KEY, key);
+        parameters.put(Consumer.OPEN_ID, "test");
+        parameters.put(Consumer.SALE_ASSOCIATE_KEY, 4365443L);
+
+        Consumer object = new Consumer(parameters);
+        assertEquals(key, object.getKey());
+        assertNull(object.getOpenID());
+        assertNull(object.getSaleAssociateKey());
     }
 }

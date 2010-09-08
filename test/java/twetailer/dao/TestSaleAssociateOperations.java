@@ -41,7 +41,7 @@ public class TestSaleAssociateOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

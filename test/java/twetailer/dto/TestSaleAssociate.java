@@ -22,6 +22,7 @@ import twetailer.validator.LocaleValidator;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
@@ -34,7 +35,7 @@ public class TestSaleAssociate {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -64,6 +65,7 @@ public class TestSaleAssociate {
     Long consumerKey = 67890L;
     Long creatorKey = 12345L;
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
+    List<String> hashTags = new ArrayList<String>(Arrays.asList(new String[] {"top", "bottom"}));
     Boolean isStoreAdmin = Boolean.TRUE;
     Long locationKey = 12345L;
     Long storeKey = 54321L;
@@ -76,6 +78,7 @@ public class TestSaleAssociate {
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
         object.setCriteria(criteria, collator);
+        object.setHashTags(hashTags);
         object.setIsStoreAdmin(isStoreAdmin);
         object.setLocationKey(locationKey);
         object.setStoreKey(storeKey);
@@ -84,6 +87,7 @@ public class TestSaleAssociate {
         assertEquals(consumerKey, object.getConsumerKey());
         assertEquals(creatorKey, object.getCreatorKey());
         assertEquals(criteria, object.getCriteria());
+        assertEquals(hashTags, object.getHashTags());
         assertEquals(isStoreAdmin, object.getIsStoreAdmin());
         assertEquals(locationKey, object.getLocationKey());
         assertEquals(storeKey, object.getStoreKey());
@@ -157,7 +161,8 @@ public class TestSaleAssociate {
 
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
-        object.setCriteria(new ArrayList<String>(), collator); // Only null or empty list can be transfered, actual supplied keywords must be transfered manually
+        object.setCriteria(new ArrayList<String>(), collator); // Manual management only
+        object.setHashTags(hashTags); // Reference copied
         object.setIsStoreAdmin(isStoreAdmin);
         object.setLocationKey(locationKey);
         object.setStoreKey(storeKey);
@@ -168,6 +173,7 @@ public class TestSaleAssociate {
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(creatorKey, clone.getCreatorKey());
         assertEquals(0, clone.getCriteria().size());
+        assertEquals(hashTags, clone.getHashTags());
         assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(storeKey, clone.getStoreKey());
@@ -229,5 +235,200 @@ public class TestSaleAssociate {
         assertFalse(saleAssociate.getIsStoreAdmin());
         saleAssociate.setIsStoreAdmin(true);
         assertTrue(saleAssociate.getIsStoreAdmin());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetConsumerKey() {
+        new SaleAssociate().setConsumerKey(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetCreatorKey() {
+        new SaleAssociate().setCreatorKey(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetHashTags() {
+        new SaleAssociate().setHashTags(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetStoreKey() {
+        new SaleAssociate().setStoreKey(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetScore() {
+        new SaleAssociate().setScore(null);
+    }
+
+    @Test
+    public void testGetDefaultSerializedCriteriaI() {
+        String defaultValue = "default";
+        assertEquals(defaultValue, new SaleAssociate().getSerializedCriteria(defaultValue));
+    }
+
+    @Test
+    public void testGetDefaultSerializedCriteriaII() {
+        String defaultValue = "default";
+        assertEquals(defaultValue, new SaleAssociate().resetLists().getSerializedCriteria(defaultValue));
+    }
+
+    @Test
+    public void testManageCriteria() {
+        String defaultValue = "default";
+
+        SaleAssociate saleAssociate1 = new SaleAssociate().resetLists();
+        saleAssociate1.addCriterion("a", collator);
+        saleAssociate1.addCriterion(null, collator);
+        saleAssociate1.addCriterion("", collator);
+        saleAssociate1.addCriterion("b", collator);
+        saleAssociate1.addCriterion("a", collator);
+        assertEquals("a b", saleAssociate1.getSerializedCriteria(defaultValue));
+
+        SaleAssociate saleAssociate2 = new SaleAssociate();
+        saleAssociate2.setCriteria(saleAssociate1.getCriteria(), collator); // Real cloning
+        assertEquals(2, saleAssociate2.getCriteria().size());
+
+        saleAssociate1.removeCriterion("a", collator);
+        saleAssociate1.removeCriterion(null, collator);
+        saleAssociate1.removeCriterion("", collator);
+        saleAssociate1.removeCriterion("c", collator);
+
+        assertEquals(2, saleAssociate2.getCriteria().size()); // Size preserved because the list has been cloned
+        assertEquals(1, saleAssociate1.getCriteria().size());
+        assertEquals("b", saleAssociate1.getSerializedCriteria(defaultValue));
+
+        new SaleAssociate().resetLists().removeCriterion("z", collator); // No issue reported
+    }
+
+    @Test
+    public void testGetDefaultSerializedHashTagsI() {
+        String defaultValue = "default";
+        assertEquals(defaultValue, new SaleAssociate().getSerializedHashTags(defaultValue));
+    }
+
+    @Test
+    public void testGetDefaultSerializedHashTagsII() {
+        String defaultValue = "default";
+        assertEquals(defaultValue, new SaleAssociate().resetLists().getSerializedHashTags(defaultValue));
+    }
+
+    @Test
+    public void testGetDefaultSerializedHashTagsIII() {
+        String defaultValue = "default";
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.addHashTag("a");
+        assertEquals("#a", saleAssociate.getSerializedHashTags(defaultValue));
+    }
+
+    @Test
+    public void testManageHashTags() {
+        String defaultValue = "default";
+
+        SaleAssociate saleAssociate1 = new SaleAssociate().resetLists();
+        saleAssociate1.addHashTag("a");
+        saleAssociate1.addHashTag(null);
+        saleAssociate1.addHashTag("");
+        saleAssociate1.addHashTag("b");
+        saleAssociate1.addHashTag("a");
+        assertEquals("#a #b", saleAssociate1.getSerializedHashTags(defaultValue));
+
+        SaleAssociate saleAssociate2 = new SaleAssociate();
+        saleAssociate2.setHashTags(saleAssociate1.getHashTags()); // Copying reference
+        assertEquals(2, saleAssociate2.getHashTags().size());
+
+        saleAssociate1.removeHashTag("a");
+        saleAssociate1.removeHashTag(null);
+        saleAssociate1.removeHashTag("");
+        saleAssociate1.removeHashTag("c");
+
+        assertEquals(1, saleAssociate2.getHashTags().size());
+        assertEquals("#b", saleAssociate2.getSerializedHashTags(defaultValue));
+
+        new SaleAssociate().resetLists().removeHashTag("z"); // No issue reported
+    }
+
+    @Test
+    public void testResetHashTags() {
+        assertEquals(0, new SaleAssociate().resetHashTags().getCriteria().size());
+        assertNull(new SaleAssociate().resetLists().resetHashTags().getCriteria());
+    }
+
+    @Test
+    public void testToJson() {
+        SaleAssociate associate = new SaleAssociate();
+        associate.setConsumerKey(543543L);
+        associate.setCreatorKey(548762L);
+        associate.setStoreKey(765453543L);
+
+        JsonObject json = associate.toJson();
+        assertFalse(json.containsKey(SaleAssociate.CRITERIA));
+        assertFalse(json.containsKey(SaleAssociate.HASH_TAGS));
+
+        json = associate.resetLists().toJson();
+        assertFalse(json.containsKey(SaleAssociate.CRITERIA));
+        assertFalse(json.containsKey(SaleAssociate.HASH_TAGS));
+    }
+
+    @Test
+    public void testFromJsonI() {
+        JsonObject json = new GenericJsonObject();
+
+        json.put(Entity.KEY, 4354L);
+        json.put(SaleAssociate.CONSUMER_KEY, 6546L);
+        json.put(SaleAssociate.CREATOR_KEY, 6546L);
+
+        SaleAssociate associate = new SaleAssociate(json);
+        assertNull(associate.getConsumerKey());
+        assertNull(associate.getCreatorKey());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testFromJsonII() {
+        JsonObject json = new GenericJsonObject();
+
+        json.put(SaleAssociate.CRITERIA, "not important");
+
+        new SaleAssociate(json);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testFromJsonIII() {
+        JsonObject json = new GenericJsonObject();
+
+        json.put(SaleAssociate.CRITERIA_ADD, "not important");
+
+        new SaleAssociate(json);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testFromJsonIV() {
+        JsonObject json = new GenericJsonObject();
+
+        json.put(SaleAssociate.CRITERIA_REMOVE, "not important");
+
+        new SaleAssociate(json);
+    }
+
+    @Test
+    public void testHashTagJsonII() {
+        SaleAssociate associate = new SaleAssociate();
+        associate.addHashTag("one");
+        associate.addHashTag("two");
+        associate.addHashTag("three");
+
+        JsonObject json = new GenericJsonObject();
+        json.put(SaleAssociate.HASH_TAGS_ADD, new GenericJsonArray());
+        json.getJsonArray(SaleAssociate.HASH_TAGS_ADD).add("four");
+        json.getJsonArray(SaleAssociate.HASH_TAGS_ADD).add("five");
+
+        json.put(SaleAssociate.HASH_TAGS_REMOVE, new GenericJsonArray());
+        json.getJsonArray(SaleAssociate.HASH_TAGS_REMOVE).add("two");
+        json.getJsonArray(SaleAssociate.HASH_TAGS_REMOVE).add("four");
+
+        associate.fromJson(json);
+
+        assertEquals(3, associate.getHashTags().size());
     }
 }

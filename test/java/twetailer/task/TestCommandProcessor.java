@@ -62,7 +62,7 @@ public class TestCommandProcessor {
     @BeforeClass
     public static void setUpBeforeClass() {
         // CommandProcessor.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

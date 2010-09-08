@@ -3,6 +3,8 @@ package twetailer.dto;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,7 +19,7 @@ public class TestSettings {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -103,5 +105,11 @@ public class TestSettings {
         Settings clone = new Settings(object.toJson());
 
         assertNull(clone.getKey());
+    }
+
+    @Test
+    public void testModificationDate() {
+        Date date = new Settings().getModificationDate();
+        new Settings().setModificationDate(date);
     }
 }

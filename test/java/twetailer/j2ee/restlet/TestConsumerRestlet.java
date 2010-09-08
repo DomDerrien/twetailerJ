@@ -490,7 +490,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         });
-        final Long demandKey = 12345L;;
+        final Long demandKey = 12345L;
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
             public List<Long> getDemandKeys(PersistenceManager pm, String key, Object value, int index) {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -40,7 +41,7 @@ public class TestBaseOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @AfterClass
@@ -73,6 +74,26 @@ public class TestBaseOperations {
         PersistenceManager pm2 = new BaseOperations().getPersistenceManager();
         assertNotNull(pm2);
         assertNotSame(pm1, pm2);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithNoParameter() throws DataSourceException {
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNull(arg);
+            }
+            @Override
+            public void declareParameters(String arg) {
+                assertNull(arg);
+            }
+            @Override
+            public void setRange(long start, long size) {
+                fail("Range should stay unset to get the maximum values");
+            }
+        };
+        BaseOperations.prepareQuery(query, new HashMap<String, Object>(), 0);
     }
 
     @Test

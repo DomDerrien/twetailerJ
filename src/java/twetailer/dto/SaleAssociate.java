@@ -84,11 +84,14 @@ public class SaleAssociate extends Entity {
     }
 
     /**
-     * Provided to reproduce the JDO behaviour with Unit tests
+     * Provided to reproduce the JDO behavior with Unit tests
+     *
+     * @return Object instance for chaining
      */
-    protected void resetLists() {
+    protected SaleAssociate resetLists() {
         criteria = null;
         hashTags = null;
+        return this;
     }
 
     public Long getConsumerKey() {
@@ -130,11 +133,12 @@ public class SaleAssociate extends Entity {
         criteria.add(criterion);
     }
 
-    public void resetCriteria() {
+    public SaleAssociate resetCriteria() {
         if (criteria == null) {
-            return;
+            return this;
         }
         criteria = new ArrayList<String>();
+        return this;
     }
 
     public void removeCriterion(String criterion, Collator collator) {
@@ -176,6 +180,13 @@ public class SaleAssociate extends Entity {
         }
     }
 
+    public String getSerializedHashTags(String defaultLabel) {
+        if (getHashTags() == null || getHashTags().size() == 0) {
+            return defaultLabel;
+        }
+        return getSerializedHashTags();
+    }
+
     public String getSerializedHashTags() {
         return Command.getSerializedTags(Command.HASH, Command.SPACE, hashTags);
     }
@@ -192,24 +203,27 @@ public class SaleAssociate extends Entity {
     }
 
     public void addHashTag(String hashTag) {
+        if (hashTag == null || hashTag.length() == 0) {
+            return;
+        }
         if (hashTags == null) {
             hashTags = new ArrayList<String>();
         }
-        hashTag = hashTag.trim();
-        if (0 < hashTag.length() && !hashTags.contains(hashTag)) {
+        if (!hashTags.contains(hashTag)) {
             hashTags.add(hashTag);
         }
     }
 
-    public void resetHashTags() {
+    public SaleAssociate resetHashTags() {
         if (hashTags == null) {
-            return;
+            return this;
         }
         hashTags = new ArrayList<String>();
+        return this;
     }
 
     public void removeHashTag(String hashTag) {
-        if (hashTags == null) {
+        if (hashTags == null || hashTag == null || hashTag.length() == 0) {
             return;
         }
         hashTags.remove(hashTag);

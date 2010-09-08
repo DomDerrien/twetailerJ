@@ -66,7 +66,7 @@ public class TestLogoutServlet {
             }
         };
 
-        final RelyingParty relyingParty = RelyingParty.newInstance(TestLoginServlet.propertiesForInjection);;
+        final RelyingParty relyingParty = RelyingParty.newInstance(TestLoginServlet.propertiesForInjection);
 
         new LogoutServlet() {
             @Override
@@ -99,7 +99,7 @@ public class TestLogoutServlet {
             }
         };
 
-        final RelyingParty relyingParty = RelyingParty.newInstance(TestLoginServlet.propertiesForInjection);;
+        final RelyingParty relyingParty = RelyingParty.newInstance(TestLoginServlet.propertiesForInjection);
 
         new LogoutServlet() {
             @Override

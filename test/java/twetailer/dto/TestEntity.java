@@ -19,6 +19,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 public class TestEntity {
@@ -27,7 +28,7 @@ public class TestEntity {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -56,6 +57,7 @@ public class TestEntity {
 
     Long key = 12345L;
     Date date = new Date();
+    Long locationKey = 543654L;
     Boolean markForDeletion = Boolean.TRUE;
 
     @Test
@@ -64,11 +66,13 @@ public class TestEntity {
 
         object.setKey(key);
         object.setCreationDate(date);
+        object.setLocationKey(locationKey);
         object.setModificationDate(date);
         object.setMarkedForDeletion(markForDeletion);
 
         assertEquals(key, object.getKey());
         assertEquals(date, object.getCreationDate());
+        assertEquals(locationKey, object.getLocationKey());
         assertEquals(date, object.getModificationDate());
         assertEquals(markForDeletion, object.getMarkedForDeletion());
     }
@@ -154,6 +158,7 @@ public class TestEntity {
 
         object.setKey(key);
         object.setCreationDate(date);
+        object.setLocationKey(locationKey);
         object.setModificationDate(date);
         object.setMarkedForDeletion(markForDeletion);
 
@@ -161,6 +166,7 @@ public class TestEntity {
 
         assertEquals(key, clone.getKey());
         assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(clone.getCreationDate()));
+        assertEquals(locationKey, clone.getLocationKey());
         assertTrue(date.getTime() <= clone.getModificationDate().getTime()); // Always adjusted to the time of the un-marshalling process
         assertEquals(Boolean.FALSE, clone.getMarkedForDeletion()); // Because this flag can only be changed manually!
     }
@@ -185,5 +191,35 @@ public class TestEntity {
         assertFalse(entity.getMarkedForDeletion());
         entity.setMarkedForDeletion(true);
         assertTrue(entity.getMarkedForDeletion());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testAttemptsetLocationKey() {
+        Entity object = new Entity();
+        assertNull(object.getKey());
+
+        object.setLocationKey(null);
+    }
+
+    @Test
+    public void testToJsonI() {
+        Entity object = new Entity();
+        assertNull(object.getKey());
+        assertNull(object.getLocationKey());
+
+        JsonObject out = object.toJson();
+        assertFalse(out.containsKey(Entity.KEY));
+        assertFalse(out.containsKey(Entity.LOCATION_KEY));
+    }
+
+    @Test
+    public void testToJsonII() {
+        Entity object = new Entity();
+        object.setKey(12345L);
+        object.setLocationKey(54232L);
+
+        JsonObject out = object.toJson();
+        assertTrue(out.containsKey(Entity.KEY));
+        assertTrue(out.containsKey(Entity.LOCATION_KEY));
     }
 }

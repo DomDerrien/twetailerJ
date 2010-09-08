@@ -54,7 +54,7 @@ public class Command extends Entity {
                 }
                 return defaultValue;
             }
-            catch(IllegalArgumentException ex) { } // Will fallback on the default value ;)
+            catch(Exception ex) { } // Will fallback on the default value ;)
             return defaultValue;
         }
     }
@@ -96,7 +96,7 @@ public class Command extends Entity {
     public static final String HASH_TAGS_REMOVE = "\\-hashTags";
 
     @Persistent
-    private String metaData;
+    private String metadata;
 
     public static final String META_DATA = "metadata";
 
@@ -149,11 +149,14 @@ public class Command extends Entity {
 
     /**
      * Provided to reproduce the JDO behavior with Unit tests
+     *
+     * @return Object instance for chaining
      */
-    protected void resetLists() {
+    protected Command resetLists() {
         cc = null;
         criteria = null;
         hashTags = null;
+        return this;
     }
 
     public Action getAction() {
@@ -205,24 +208,27 @@ public class Command extends Entity {
     }
 
     public void addCoordinate(String coordinates) {
+        if (coordinates == null || coordinates.length() == 0) {
+            return;
+        }
         if (cc == null) {
             cc = new ArrayList<String>();
         }
-        coordinates = coordinates.trim();
-        if (0 < coordinates.length() && !cc.contains(coordinates)) {
+        if (!cc.contains(coordinates)) {
             cc.add(coordinates);
         }
     }
 
-    public void resetCC() {
+    public Command resetCC() {
         if (cc == null) {
-            return;
+            return this;
         }
         cc = new ArrayList<String>();
+        return this;
     }
 
     public void removeCoordinate(String coordinates) {
-        if (cc == null) {
+        if (cc == null || coordinates == null || coordinates.length() == 0) {
             return;
         }
         cc.remove(coordinates);
@@ -251,24 +257,27 @@ public class Command extends Entity {
     }
 
     public void addCriterion(String criterion) {
+        if (criterion == null || criterion.length() == 0) {
+            return;
+        }
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        criterion = criterion.trim();
-        if (0 < criterion.length() && !criteria.contains(criterion)) {
+        if (!criteria.contains(criterion)) {
             criteria.add(criterion);
         }
     }
 
-    public void resetCriteria() {
+    public Command resetCriteria() {
         if (criteria == null) {
-            return;
+            return this;
         }
         criteria = new ArrayList<String>();
+        return this;
     }
 
     public void removeCriterion(String criterion) {
-        if (criteria == null) {
+        if (criteria == null || criterion == null || criterion.length() == 0) {
             return;
         }
         criteria.remove(criterion);
@@ -283,7 +292,7 @@ public class Command extends Entity {
     }
 
     public String getSerializedHashTags(String defaultLabel) {
-        if (getHashTags() == null || getHashTags().size() == 0) {
+        if (hashTags == null || hashTags.size() == 0) {
             return defaultLabel;
         }
         return getSerializedHashTags();
@@ -305,35 +314,38 @@ public class Command extends Entity {
     }
 
     public void addHashTag(String hashTag) {
+        if (hashTag == null || hashTag.length() == 0) {
+            return;
+        }
         if (hashTags == null) {
             hashTags = new ArrayList<String>();
         }
-        hashTag = hashTag.trim();
-        if (0 < hashTag.length() && !hashTags.contains(hashTag)) {
+        if (!hashTags.contains(hashTag)) {
             hashTags.add(hashTag);
         }
     }
 
-    public void resetHashTags() {
+    public Command resetHashTags() {
         if (hashTags == null) {
-            return;
+            return this;
         }
         hashTags = new ArrayList<String>();
+        return this;
     }
 
     public void removeHashTag(String hashTag) {
-        if (hashTags == null) {
+        if (hashTags == null || hashTag == null || hashTag.length() == 0) {
             return;
         }
         hashTags.remove(hashTag);
     }
 
-    public String getMetaData() {
-        return metaData;
+    public String getMetadata() {
+        return metadata;
     }
 
-    public void setMetaData(String metaData) {
-        this.metaData = metaData;
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
     }
 
     public Long getOwnerKey() {
@@ -402,15 +414,16 @@ public class Command extends Entity {
         setMarkedForDeletion(State.markedForDeletion.equals(state));
     }
 
+    public void setState(String state) {
+        setState(State.valueOf(state));
+    }
+
     public Boolean getStateCmdList() {
         return stateCmdList == null ? Boolean.TRUE : stateCmdList;
     }
 
     protected void setStateCmdList(Boolean  stateCmdList) {
         this.stateCmdList = stateCmdList;
-    }
-    public void setState(String state) {
-        setState(State.valueOf(state));
     }
 
     public JsonObject toJson() {
@@ -439,7 +452,7 @@ public class Command extends Entity {
             }
             out.put(HASH_TAGS, jsonArray);
         }
-        if (getMetaData() != null) { out.put(META_DATA, getMetaData()); }
+        if (getMetadata() != null) { out.put(META_DATA, getMetadata()); }
         out.put(OWNER_KEY, getOwnerKey());
         out.put(QUANTITY, getQuantity());
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
@@ -522,7 +535,7 @@ public class Command extends Entity {
                 addHashTag(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(META_DATA)) { setMetaData(in.getString(META_DATA)); }
+        if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
         if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }

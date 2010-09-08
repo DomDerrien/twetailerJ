@@ -49,7 +49,8 @@ public class TestReservedOperationException {
 
     @Test
     public void testAccessorI() {
-        ReservedOperationException ex = new ReservedOperationException(Action.list);
+        ReservedOperationException ex = new ReservedOperationException(Action.list, "test");
         assertEquals(Action.list, ex.getAction());
+        assertEquals("test", ex.getEntityClassName());
     }
 }

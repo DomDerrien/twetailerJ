@@ -78,7 +78,7 @@ public class TestMaezelServlet {
     @BeforeClass
     public static void setUpBeforeClass() {
         MaezelServlet.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

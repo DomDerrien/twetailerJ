@@ -21,7 +21,7 @@ public class TestPayment {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -124,5 +124,35 @@ public class TestPayment {
     @Test
     public void testNullifyAuthorizationIdIII() {
         new Payment().setAuthorizationId("good!");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyReferenceI() {
+        new Payment().setReference(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyReferenceII() {
+        new Payment().setReference("");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyRequestIdI() {
+        new Payment().setRequestId(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyRequestIdII() {
+        new Payment().setRequestId("");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyTransactionIdI() {
+        new Payment().setTransactionId(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullifyTransactionIdII() {
+        new Payment().setTransactionId("");
     }
 }

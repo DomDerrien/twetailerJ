@@ -1159,7 +1159,7 @@ public class TestLoginServlet {
         Map<String, Object> json = new HashMap<String, Object>();
         // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
         json.put("b", "unit@test");
-        final Map<String,String> sregExtension = new HashMap<String, String>();;
+        final Map<String,String> sregExtension = new HashMap<String, String>();
         sregExtension.put("unit", "test");
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(SRegExtension.ATTR_NAME, sregExtension);
@@ -1212,7 +1212,7 @@ public class TestLoginServlet {
         Map<String, Object> json = new HashMap<String, Object>();
         // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
         json.put("b", "unit@test");
-        final Map<String,String> axSchemaExtension = new HashMap<String, String>();;
+        final Map<String,String> axSchemaExtension = new HashMap<String, String>();
         axSchemaExtension.put("unit", "test");
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(AxSchemaExtension.ATTR_NAME, axSchemaExtension);

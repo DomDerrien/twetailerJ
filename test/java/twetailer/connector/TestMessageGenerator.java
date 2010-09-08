@@ -233,7 +233,7 @@ public class TestMessageGenerator {
         Demand demand = new Demand();
         demand.setKey(key);
         demand.setDueDate(DateUtils.getNowDate());
-        demand.setMetaData(metadata);
+        demand.setMetadata(metadata);
         Map<String, Object> param = msgGen.fetch(demand).getParameters();
         assertEquals(key, param.get("demand" + MessageGenerator.FIELD_SEPARATOR + Entity.KEY));
         assertTrue(param.containsKey("demand" + MessageGenerator.FIELD_SEPARATOR + Command.DUE_DATE));
@@ -249,7 +249,7 @@ public class TestMessageGenerator {
         Demand demand = new Demand();
         demand.setKey(key);
         demand.setDueDate(DateUtils.getNowDate());
-        demand.setMetaData(metadata);
+        demand.setMetadata(metadata);
         Map<String, Object> param = msgGen.fetch(demand).getParameters();
         assertEquals(key, param.get("demand" + MessageGenerator.FIELD_SEPARATOR + Entity.KEY));
         assertTrue(param.containsKey("demand" + MessageGenerator.FIELD_SEPARATOR + Command.DUE_DATE));
@@ -265,7 +265,7 @@ public class TestMessageGenerator {
         Demand demand = new Demand();
         demand.setKey(key);
         demand.setDueDate(DateUtils.getNowDate());
-        demand.setMetaData(metadata);
+        demand.setMetadata(metadata);
         Map<String, Object> param = msgGen.fetch(demand).getParameters();
         assertEquals(key, param.get("demand" + MessageGenerator.FIELD_SEPARATOR + Entity.KEY));
         assertTrue(param.containsKey("demand" + MessageGenerator.FIELD_SEPARATOR + Command.DUE_DATE));
@@ -282,7 +282,7 @@ public class TestMessageGenerator {
         Demand demand = new Demand();
         demand.setKey(key);
         demand.setDueDate(DateUtils.getNowDate());
-        demand.setMetaData(metadata);
+        demand.setMetadata(metadata);
         Map<String, Object> param = msgGen.fetch(demand).getParameters();
         assertEquals(key, param.get("demand" + MessageGenerator.FIELD_SEPARATOR + Entity.KEY));
         assertTrue(param.containsKey("demand" + MessageGenerator.FIELD_SEPARATOR + Command.DUE_DATE));

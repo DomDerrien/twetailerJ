@@ -30,7 +30,7 @@ public class TestLocation {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -118,6 +118,9 @@ public class TestLocation {
 
         assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
 
+        object.setLatitude(null);
+        assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
+
         object.setLatitude(90.00001);
         assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
 
@@ -129,6 +132,9 @@ public class TestLocation {
     public void testSetLongitude() {
         Location object = new Location();
 
+        assertEquals(Location.INVALID_COORDINATE, object.getLongitude());
+
+        object.setLongitude(null);
         assertEquals(Location.INVALID_COORDINATE, object.getLongitude());
 
         object.setLongitude(180.00001);
@@ -329,6 +335,13 @@ public class TestLocation {
         parameters.put(Location.LONGITUDE, 123.45D);
 
         assertTrue(new Location().hasNewAttributes(parameters));
+    }
+
+    @Test
+    public void testHasAttributeForNewLocationVI() {
+        JsonObject parameters = new GenericJsonObject();
+
+        assertFalse(Location.hasAttributeForANewLocation(parameters));
     }
 
     @Test

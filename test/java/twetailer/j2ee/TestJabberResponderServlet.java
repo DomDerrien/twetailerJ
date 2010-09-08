@@ -46,7 +46,7 @@ public class TestJabberResponderServlet {
     @BeforeClass
     public static void setUpBeforeClass() {
         JabberResponderServlet.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

@@ -83,10 +83,13 @@ public class Proposal extends Command {
     }
 
     /**
-     * Provided to reproduce the JDO behaviour with Unit tests
+     * Provided to reproduce the JDO behavior with Unit tests     *
+     * @return Object instance for chaining
+
      */
-    protected void resetLists() {
+    protected Proposal resetLists() {
         super.resetLists();
+        return this;
     }
 
     public String getAWSCBUIURL() {

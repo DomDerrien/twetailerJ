@@ -1,6 +1,8 @@
 package twetailer.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import static org.junit.Assert.assertNull;
 
 import javax.cache.Cache;
@@ -28,7 +30,7 @@ public class TestSettingsOperations {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -229,7 +231,7 @@ public class TestSettingsOperations {
     }
 
     @Test
-    public void testGetSettings() throws DataSourceException {
+    public void testGetSettingsIII() throws DataSourceException {
         SettingsOperations ops = new SettingsOperations() {
             @Override
             public Settings getSettingsFromCache() {
@@ -240,5 +242,55 @@ public class TestSettingsOperations {
         };
         Settings settings = ops.getSettings(new MockPersistenceManager(), true);
         assertEquals(Long.valueOf(12345L), settings.getLastProcessDirectMessageId());
+    }
+
+    @Test
+    public void testGetSettingsIV() throws ClientException, DataSourceException {
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Settings getSettingsFromCache() {
+                return null;
+            }
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
+            }
+        };
+
+        ops.getSettings(new MockPersistenceManager(), true);
+    }
+
+    @Test
+    public void testGetSettingsV() throws ClientException, DataSourceException {
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Settings getSettingsFromCache() {
+                return new Settings();
+            }
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                fail("Call not expected!");
+                return null;
+            }
+        };
+
+        ops.getSettings(new MockPersistenceManager(), true);
+    }
+
+    @Test
+    public void testGetSettingsVI() throws ClientException, DataSourceException {
+        SettingsOperations ops = new SettingsOperations() {
+            @Override
+            public Settings getSettingsFromCache() {
+                fail("Call not expected!");
+                return null;
+            }
+            @Override
+            public Settings getSettings(PersistenceManager pm) {
+                return new Settings();
+            }
+        };
+
+        ops.getSettings(new MockPersistenceManager(), false);
     }
 }

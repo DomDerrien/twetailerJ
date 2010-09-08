@@ -309,7 +309,7 @@ public class MessageGenerator {
         parameters.put(prefix + Command.CRITERIA, command.getSerializedCriteria(emptyListIndicator));
         if (command.getDueDate() != null) { parameters.put(prefix + Command.DUE_DATE, serializeDate(command.getDueDate(), userLocale)); }
         parameters.put(prefix + Command.HASH_TAGS, command.getSerializedHashTags(emptyListIndicator));
-        String metadata = command.getMetaData();
+        String metadata = command.getMetadata();
         parameters.put(prefix + Command.META_DATA, emptyListIndicator); // Default setting
         if (metadata != null && 0 < metadata.length()) {
             try {

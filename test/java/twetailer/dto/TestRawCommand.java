@@ -20,7 +20,7 @@ public class TestRawCommand {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
@@ -47,27 +47,39 @@ public class TestRawCommand {
     }
 
     String command = "North Pole, H0H 0H0, Canada";
+    String commandId = "command";
     String emitterId = "emitter";
     Long messageId = 67890L;
     Source source = Source.simulated;
     String subject = "subject";
+    String toId = "to";
 
     @Test
     public void testAccessors() {
         RawCommand object = new RawCommand();
 
         object.setCommand(command);
+        object.setCommandId(commandId);
         object.setEmitterId(emitterId);
         object.setMessageId(messageId);
         object.setSource(source);
         object.setSource(source.toString());
         object.setSubject(subject);
+        object.setToId(toId);
 
         assertEquals(command, object.getCommand());
+        assertEquals(commandId, object.getCommandId());
         assertEquals(emitterId, object.getEmitterId());
         assertEquals(messageId, object.getMessageId());
         assertEquals(source, object.getSource());
         assertEquals(subject, object.getSubject());
+        assertEquals(toId, object.getToId());
+    }
+
+    @Test
+    public void testSetCommand() {
+        RawCommand object = new RawCommand();
+        object.setCommand(null);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -76,10 +88,38 @@ public class TestRawCommand {
         object.setSource((Source) null);
     }
 
-    @Test
-    public void testSetCommand() {
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetEmitterId() {
         RawCommand object = new RawCommand();
-        object.setCommand(null);
+        object.setEmitterId(null);
+    }
+
+    @Test
+    public void testSetErrorMessage() {
+        RawCommand object = new RawCommand();
+        object.setErrorMessage(null);
+        assertNull(object.getErrorMessage());
+        object.setErrorMessage("");
+        assertNull(object.getErrorMessage());
+        object.setErrorMessage("something");
+        assertNotNull(object.getErrorMessage());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetMessageId() {
+        RawCommand object = new RawCommand();
+        object.setMessageId(null);
+    }
+
+    @Test
+    public void testSetSubject() {
+        RawCommand object = new RawCommand();
+        object.setSubject(null);
+        assertNull(object.getSubject());
+        object.setSubject("");
+        assertNull(object.getSubject());
+        object.setSubject("something");
+        assertNotNull(object.getSubject());
     }
 
     @Test

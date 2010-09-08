@@ -88,7 +88,7 @@ public class Payment extends Entity {
     }
 
     public void setTransactionId(String transactionId) {
-        if (transactionId == null) {
+        if (transactionId == null || transactionId.length() == 0) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'transactionId'");
         }
         this.transactionId = transactionId;

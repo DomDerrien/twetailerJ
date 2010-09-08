@@ -32,7 +32,7 @@ public class TestJabberConnector {
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseConnector.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before

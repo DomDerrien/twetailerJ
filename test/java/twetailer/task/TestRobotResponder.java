@@ -48,7 +48,7 @@ public class TestRobotResponder {
     @BeforeClass
     public static void setUpBeforeClass() {
         // RobotResponder.setLogger(new MockLogger("test", null));
-        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());;
+        helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
 
