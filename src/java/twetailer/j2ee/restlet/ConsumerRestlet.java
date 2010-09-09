@@ -14,7 +14,7 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
-import twetailer.j2ee.MaezelServlet;
+import twetailer.j2ee.MaelzelServlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.ConsumerSteps;
 import twetailer.validator.ApplicationSettings;
@@ -175,7 +175,7 @@ public class ConsumerRestlet extends BaseRestlet {
         if (parameters.containsKey(topic) && parameters.containsKey(topic + "Code")) {
             try {
                 identifier = parameters.getString(topic);
-                Long code = MaezelServlet.getCode(topic, identifier, openId);
+                Long code = MaelzelServlet.getCode(topic, identifier, openId);
                 if (!code.equals(parameters.getLong(topic + "Code"))) {
                     parameters.remove(topic);
                     identifier = null;
@@ -225,7 +225,7 @@ public class ConsumerRestlet extends BaseRestlet {
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
                             queue.add(
-                                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateConsumerAccounts").
+                                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/consolidateConsumerAccounts").
                                     param(Demand.KEY, demandKey.toString()).
                                     param(Demand.OWNER_KEY, consumerKey.toString()).
                                     method(Method.GET)

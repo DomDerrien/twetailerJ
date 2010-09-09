@@ -37,11 +37,11 @@ import domderrien.i18n.LabelExtractor;
 /**
  * Entry point processing XMPP messages.
  * Received information are stored in a RawCommand instance
- * that the task "/maezel/processCommand" will process
+ * that the task "/maelzel/processCommand" will process
  * asynchronously.
  *
  * @see twetailer.dto.RawCommand
- * @see twetailer.j2ee.MaezelServlet
+ * @see twetailer.j2ee.MaelzelServlet
  *
  * @author Dom Derrien
  *
@@ -95,7 +95,7 @@ public class JabberResponderServlet extends HttpServlet {
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

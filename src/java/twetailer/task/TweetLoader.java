@@ -29,7 +29,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
  * account on Twitter.
  *
  * Each DM is used to create a RawCommand that is
- * scheduled for the task "/maezel/processCommand".
+ * scheduled for the task "/maelzel/processCommand".
  *
  * @author Dom Derrien
  */
@@ -127,7 +127,7 @@ public class TweetLoader {
 
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

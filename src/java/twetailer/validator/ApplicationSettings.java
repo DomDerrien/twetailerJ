@@ -34,11 +34,17 @@ public class ApplicationSettings {
 
     protected final static String MAIN_PAGE_URL_KEY = "mainPageURL";
 
-    public final static String DEFAULT_LOGO_URL = "http://twetailer.appspot.com/images/logo/logo-48x48.png";
+    public final static String DEFAULT_LOGO_URL = "http://anothersocialeconomy.appspot.com/images/logo/logo-48x48.png";
 
     private String logoURL = DEFAULT_LOGO_URL;
 
     protected final static String LOGO_URL_KEY = "logoURL";
+
+    public final static String DEFAULT_PRODUCT_EMAIL_DOMAIN = "anothersocialeconomy.com";
+
+    private String productEmailDomain = DEFAULT_PRODUCT_EMAIL_DOMAIN;
+
+    protected final static String PRODUCT_EMAIL_DOMAIN_KEY = "productEmailDomain";
 
     public final static String DEFAULT_PRODUCT_NAME = "";
 
@@ -46,7 +52,7 @@ public class ApplicationSettings {
 
     protected final static String PRODUCT_NAME_KEY = "productName";
 
-    public final static String DEFAULT_PRODUCT_WEBSITE = "http://www.twetailer.com/";
+    public final static String DEFAULT_PRODUCT_WEBSITE = "http://anothersocialeconomy.com/";
 
     private String productWebsite = DEFAULT_PRODUCT_WEBSITE;
 
@@ -106,6 +112,15 @@ public class ApplicationSettings {
      */
     public String getLogoURL() {
         return logoURL;
+    }
+
+    /**
+     * Get the product email domain
+     *
+     * @return Name
+     */
+    public String getProductEmailDomain() {
+        return productEmailDomain;
     }
 
     /**
@@ -192,6 +207,12 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 logoURL = DEFAULT_LOGO_URL;
+            }
+            try {
+                productEmailDomain = appSettings.getString(PRODUCT_EMAIL_DOMAIN_KEY);
+            }
+            catch(Exception ex) {
+                productEmailDomain = DEFAULT_PRODUCT_EMAIL_DOMAIN;
             }
             try {
                 productName = appSettings.getString(PRODUCT_NAME_KEY);

@@ -28,6 +28,7 @@ import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -39,11 +40,13 @@ import domderrien.i18n.LabelExtractor;
 public class TestMailResponderServlet {
 
     private static LocalServiceTestHelper  helper;
+    private static String emailDomain;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         MailResponderServlet.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+        emailDomain = ApplicationSettings.get().getProductEmailDomain();
     }
 
     @Before
@@ -169,7 +172,7 @@ public class TestMailResponderServlet {
                 "Content-Language: en\n" +
                 "Accept-Language: en, fr\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/alternative; boundary=BBBBBB\n" +
@@ -229,7 +232,7 @@ public class TestMailResponderServlet {
         stream.setData(
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/alternative; boundary=BBBBBB\n" +
@@ -344,7 +347,7 @@ public class TestMailResponderServlet {
                 "Received-SPF: pass (google.com: domain of steven.milstein@gmail.com designates 74.125.78.26 as permitted sender) client-ip=74.125.78.26;\n" +
                 "Authentication-Results: gmr-mx.google.com; spf=pass (google.com: domain of steven.milstein@gmail.com designates 74.125.78.26 as permitted sender) smtp.mail=steven.milstein@gmail.com; dkim=pass (test mode) header.i=@gmail.com\n" +
                 "Received: by ey-out-2122.google.com with SMTP id d26so774850eyd.19\n" +
-                "       for <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">; Sun, 24 Jan 2010 13:37:30 -0800 (PST) DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n" +
+                "       for <assistant@" + emailDomain + ">; Sun, 24 Jan 2010 13:37:30 -0800 (PST) DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n" +
                 "       d=gmail.com; s=gamma;\n" +
                 "       h=domainkey-signature:mime-version:received:in-reply-to:references\n" +
                 "        :date:message-id:subject:from:to:content-type;\n" +
@@ -367,12 +370,12 @@ public class TestMailResponderServlet {
                 "Message-ID: <ea8a427d1001241337r191b2e7al24f8a3c37a09b03@mail.gmail.com>\n" +
                 "Subject: Re: Delete existing Demands to work-around Expiration issue\n" +
                 "From: Steven Milstein <steven.milstein@gmail.com>\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Content-Type: multipart/alternative; boundary=0016361374dc1ccd07047defdca2\n" +
                 "\n" +
                 "!cancel ref:60014\n" +
                 "\n" +
-                "On Sun, Jan 24, 2010 at 4:34 PM, Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + "> wrote:\n" +
+                "On Sun, Jan 24, 2010 at 4:34 PM, Twetailer <assistant@" + emailDomain + "> wrote:\n" +
                 "\n" +
                 "> :-) Listing 6 active Demand(s)...\n" +
                 "> action:demand reference:66037 state:confirmed expiration:2009-12-18 locale:33009 US range:25.0mi quantity:1 #demo tags:pizza delivery http_//myloc.me/2bf50\n" +

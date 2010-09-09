@@ -29,7 +29,7 @@ import domderrien.i18n.LabelExtractor;
  * Define the task that validate the given location coordinates with
  * a third party service. If the validation is successful, the command
  * that required it is scheduled for another processing with the
- * task "/maezel/processCommand". If the location is invalid, a message
+ * task "/maelzel/processCommand". If the location is invalid, a message
  * is sent to the Command initiator via the same communication channel
  * used to create the Command.
  *
@@ -122,9 +122,9 @@ public class LocationValidator {
         }
         // Create a task to re-process the raw command
         Queue queue = BaseSteps.getBaseOperations().getQueue();
-        log.warning("Preparing the task: /maezel/processCommand?key=" + commandKey.toString());
+        log.warning("Preparing the task: /maelzel/processCommand?key=" + commandKey.toString());
         queue.add(
-                url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
                     param(Command.KEY, commandKey.toString()).
                     method(Method.GET)
         );

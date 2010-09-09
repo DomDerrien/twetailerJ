@@ -26,9 +26,9 @@
             </tuv>
         </tu>
 
-        <!-- =================== -->
-        <!-- ................... -->
-        <!-- =================== -->
+        <!-- ================================= -->
+        <!-- Fixed general purpose definitions -->
+        <!-- ================================= -->
 
         <tu tuid="common_currencySymbol_CAD" datatype="Text">
             <prop type="x-version">1</prop>
@@ -54,9 +54,9 @@
             <tuv xml:lang="en"><seg>American (USA) Dollars</seg></tuv>
         </tu>
 
-        <!-- =================== -->
-        <!-- ................... -->
-        <!-- =================== -->
+        <!-- ======================================== -->
+        <!-- Customizable general purpose definitions -->
+        <!-- ======================================== -->
 
         <tu tuid="short_core_dateFormat" datatype="Text">
             <prop type="x-version">1</prop>
@@ -64,19 +64,7 @@
             <tuv xml:lang="en"><seg>yyyy-MM-dd</seg></tuv>
         </tu>
 
-        <tu tuid="short_golf_dateFormat" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>yyyy-MM-dd</seg></tuv>
-        </tu>
-
         <tu tuid="long_core_dateFormat" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>EEE, MMMM d yyyy</seg></tuv>
-        </tu>
-
-        <tu tuid="long_golf_dateFormat" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>EEE, MMMM d yyyy</seg></tuv>
@@ -106,17 +94,7 @@
             <tuv xml:lang="en"><seg>EEE, MMMM d yyyy 'at' h:mm a</seg></tuv>
         </tu>
 
-        <!-- =================== -->
-        <!-- ................... -->
-        <!-- =================== -->
-
         <tu tuid="short_core_emptyListIndicator" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>[]</seg></tuv>
-        </tu>
-
-        <tu tuid="short_golf_emptyListIndicator" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>[]</seg></tuv>
@@ -128,53 +106,45 @@
             <tuv xml:lang="en"><seg>none</seg></tuv>
         </tu>
 
-        <tu tuid="long_golf_emptyListIndicator" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>none</seg></tuv>
-        </tu>
-
-        <tu tuid="short_core_footer" datatype="Text">
+        <tu tuid="short_core_message_footer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Piece of text inserted at the end of all short messages</note>
             <tuv xml:lang="en">
                 <seg>
-                    Source of additional information: twetailer.com, twetailer.com/terms, and twetailer.com/privacy-policy.|
-                    Report issues at: support@twetailer.com. Twetailer is a member of AnotherSocialEconomy.com.
+                    |Additional information: AnotherSocialEconomy.com. Report issues at: support@anothersocialeconomy.com.
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="short_golf_footer" datatype="Text">
+        <tu tuid="short_golf_message_footer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Piece of text inserted at the end of all short messages</note>
             <tuv xml:lang="en">
                 <seg>
-                    Source of additional information: ezToff.com, ezToff.com/terms, and ezToff.com/privacy-policy.|
-                    Report issues at: support@ezToff.com. ezToff is a member of AnotherSocialEconomy.com.
+                    |Additional information: ezToff.com. Report issues at: support@ezToff.com. ezToff.com is a member of AnotherSocialEconomy.com.
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="long_core_footer" datatype="Text">
+        <tu tuid="long_core_message_footer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Piece of text inserted at the end of all long messages</note>
             <tuv xml:lang="en">
                 <seg>
                     <p>--<br/>
-                    Please see our <a href="http://twetailer.com/terms/">terms</a>, <a href="http://twetailer.com/privacy-policy/">privacy policy</a>
-                    and don't forget, you can always email <a href="mailto:Support@Twetailer.com?subject=Inquiry from {0}">Support</a>.
-                    In the meantime, <strong>thanks for buying locally</strong> with <a href="http://Twetailer.com/">Twetailer</a>,
+                    Please see our <a href="http://anothersocialeconomy.com/terms/">terms</a>, <a href="http://anothersocialeconomy.com/privacy-policy/">privacy policy</a>
+                    and don't forget, you can always email <a href="mailto:Support@anothersocialeconomy.com?subject=Inquiry from {0}">Support</a>.
+                    In the meantime, <strong>thanks for buying locally</strong> with <a href="http://anothersocialeconomy.com/">Twetailer</a>,
                     a member of <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_footer" datatype="Text">
+        <tu tuid="long_golf_message_footer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>Piece of text inserted at the end of all long messages</note>
@@ -190,9 +160,118 @@
             </tuv>
         </tu>
 
-        <!-- =================== -->
-        <!-- ................... -->
-        <!-- =================== -->
+        <tu tuid="long_core_message_subject" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message subject of all long messages|
+                {demand>key}: identifier of the processed demand
+            </note>
+            <tuv xml:lang="en">
+                <seg>AnotherSocialEconomy notification about request: {demand>key}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_message_subject" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message subject of all long messages|
+                {demand>key}: identifier of the processed demand
+            </note>
+            <tuv xml:lang="en">
+                <seg>ezToff notification about request: {demand>key}</seg>
+            </tuv>
+        </tu>
+
+        <!-- ====================== -->
+        <!-- Pre-formatted commands -->
+        <!-- ====================== -->
+
+        <tu tuid="command_message_footer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Piece of text inserted at the end of all short pre-formatted commands</note>
+            <tuv xml:lang="en">
+                <seg>
+                    |--|This command will be sent to AnotherSocialEconomy's automated command parser.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_demand_cancel" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    cancel demand:{demand>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_demand_close" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    close demand:{demand>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_proposal_create" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    propose demand:{demand>key} qty:[] tags:[] unit-price:[] total-cost:[] due-date:[] {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_proposal_cancel" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    cancel proposal:{proposal>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_proposal_confirm" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    confirm proposal:{proposal>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_proposal_decline" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    decline proposal:{proposal>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_proposal_close" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    close proposal:{proposal>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <!-- ============================== -->
+        <!-- Customizable feedback messages -->
+        <!-- ============================== -->
 
         <tu tuid="short_core_demand_creation_ackToOwner" datatype="Text">
             <prop type="x-version">1</prop>
@@ -204,7 +283,6 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {control>threadSubject}
-                {control>updateDemand}
                 {control>cancelDemand}
                 {message>footer}
             </note>
@@ -228,7 +306,6 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {control>threadSubject}
-                {control>updateDemand}
                 {control>cancelDemand}
                 {message>footer}
             </note>
@@ -253,7 +330,6 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {control>threadSubject}
-                {control>updateDemand}
                 {control>cancelDemand}
                 {message>footer}
             </note>
@@ -271,7 +347,7 @@
                     </ul>
                     <p>You CC'ed: {demand>cc}.</p>
                     <p>Your demand is going to be broadcasted to relevant stores. Twetailer will notify you as soon as proposals are received.</p>
-                    <p>Click here to cancel your demand: <a href="mailto:assistant@twetailer.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">cancel demand # {1}</a>.</p>
+                    <p>Click here to cancel your demand: <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">cancel demand # {1}</a>.</p>
                     <p>Thanks for using Twetailer to shop online in your local area.</p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
@@ -289,7 +365,6 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {control>threadSubject}
-                {control>updateDemand}
                 {control>cancelDemand}
                 {message>footer}
             </note>
@@ -310,7 +385,7 @@
                     <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant golf courses
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@twetailer.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -383,8 +458,8 @@
                         <li>Metadata: {demand>metadata}</li>
                     </ul>
                     <p>The new request - reference# {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible, to the demand owner and to you on their behalf.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@Twetailer.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@Twetailer.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
@@ -497,12 +572,12 @@
                         <li>Metadata: {demand>metadata}</li>
                     </ul>
                     <p>
-                        If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/associate.jsp">Associate Console</a>
+                        If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp">Associate Console</a>
                         and click "Create Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a Proposal by clicking
-                        <a href="mailto:assistant@twetailer.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
                     </p>
-                    <p>If you've received this message in error, click <a href="mailto:Support@Twetailer.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
+                    <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
                 </seg>
@@ -535,10 +610,10 @@
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
-                        If <strong>you can accommodate</strong> the request, then launch the <a href="http://twetailer.appspot.com/console/golf/associate.jsp">ezToff Reservation Desk</a>
+                        If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/golf/associate.jsp">ezToff Reservation Desk</a>
                         and click "Create Tee-time Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a tee-off Proposal by clicking
-                        <a href="mailto:eztoff@twetailer.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
@@ -582,7 +657,7 @@
                         <li>Options: <strong>{7}</strong></li>
                     </ul>
                     <p>We're anonymously broadcasting your request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to you and <strong>{9}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {13}
@@ -625,7 +700,7 @@
                         <li>Options: <strong>{7}</strong></li>
                     </ul>
                     <p>We're anonymously broadcasting their request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{9}</strong> on their behalf.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {13}
@@ -668,7 +743,7 @@
                         <li>Round price: <strong>{8}{9}</strong> per player</li>
                         <li>Total cost: <strong>{8}{10}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
                     </p>
                     {13}
@@ -711,7 +786,7 @@
                         <li>Round price: <strong>{8}{9}</strong> per player</li>
                         <li>Total cost: <strong>{8}{10}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
                     </p>
                     {13}
@@ -767,12 +842,12 @@
                         <li>Round price: <strong>{12}{13}</strong> per player</li>
                         <li>Total cost: <strong>{12}{14}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@twetailer.appspotmail.com?body={23}&amp;subject={22}">confirm this proposal# {7}</a></strong>, <a href="mailto:eztoff@twetailer.appspotmail.com?body={24}&amp;subject={22}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={23}&amp;subject={22}">confirm this proposal# {7}</a></strong>, <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={24}&amp;subject={22}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
                      Address: {17}, {20} {21}<br/>
                      Telephone: {19}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@twetailer.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {26}
@@ -816,12 +891,12 @@
                     <p><strong><a href="{13}">{11}</a></strong> has reserved your <strong>{3}</strong> tee-off under <strong>ezToff Proposal# {1}</strong>.</p>
                     <p>Thank you for the confirmation &amp; have a great game!</p>
                     <p>Don't forget to send an email to
-                    <strong><a href="mailto:eztoff@twetailer.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> your request after your game, so we can better your Rating.</p>
+                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> your request after your game, so we can better your Rating.</p>
                     <p>More course information: <br/>
                      Address: {12}, {15} {16}<br/>
                      Telephone: {14}</p>
                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@twetailer.appspotmail.com?body={18}&amp;subject={17}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={18}&amp;subject={17}">cancel</a>, or, if you've received this message in error, click
                     <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding reference {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {20}
@@ -868,7 +943,7 @@
                     Address: {12}, {15} {16}<br/>
                     Telephone: {14}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
-                    <a href="mailto:eztoff@twetailer.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">Please remove</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">There's been some kind of mistake</a> :-(
                     </p>
                     {20}
@@ -918,11 +993,11 @@
                         <li>Total cost: <strong>{7}{9}</strong></li>
                     </ul>
 
-                    <p>Please <strong><a href="mailto:eztoff@twetailer.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> this Proposal {1} once the Golfer has teed-off in order to better your Rating.</p>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> this Proposal {1} once the Golfer has teed-off in order to better your Rating.</p>
 
                     <p>Thanks for managing your tee-off requests with ezToff.</p>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking
-                    <a href="mailto:eztoff@twetailer.appspotmail.com?body={19}&amp;subject={17}">Cancel proposal</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {20}
@@ -1008,7 +1083,7 @@
                 <seg>
                     <p>Hi {0},</p>
                     <p>The Request# {1} for the <strong>{11}</strong> reservation under <strong>ezToff Proposal# {9}</strong> has been <strong>closed</strong>.
-                    Please <strong><a href="mailto:eztoff@twetailer.appspotmail.com?body={21}&amp;subject={20}">close</a></strong> your matching proposal {9} in order to better your Rating.</p>
+                    Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={21}&amp;subject={20}">close</a></strong> your matching proposal {9} in order to better your Rating.</p>
                     {22}
                     <p>Reference#: {1}, Proposal#: {9}.</p>
                 </seg>
@@ -1094,7 +1169,7 @@
                     <p>Hi {0},</p>
                     <p>
                         <strong><a href="{26}">{25}</a></strong> has <strong>closed their Proposal# {9}</strong>.
-                        Please <a href="mailto:eztoff@twetailer.appspotmail.com?body={21}&amp;subject={20}">close your corresponding Request {1}</a> to better your Rating.
+                        Please <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={21}&amp;subject={20}">close your corresponding Request {1}</a> to better your Rating.
                     </p>
                     {22}
                 </seg>

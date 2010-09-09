@@ -698,7 +698,7 @@
         <tu tuid="consumer_info_hint_email" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>Hint: to attach messages exchanged with &lt;a href="mailto:maezel@twetailer.appspotmail.com"&gt;maezel@twetailer.appspotmail.com&lt;/a&gt; with your account.</seg></tuv>
+            <tuv xml:lang="en"><seg>Hint: to attach messages exchanged within the domain <b>@anothersocialeconomy.appspotmail.com</b>.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_invalid_email_message" datatype="Text">
@@ -758,10 +758,10 @@
                     Here is the confirmation code: {0}.
                     You have to reported it into the Welcome page for new Twetailer users.|
                     |
-                    Thanks for shopping with Twetailer.|
+                    Thanks for shopping with AnotherSocialEconomy.|
                     |
                     If you did not initiate this notification, it's possible someone miss-associates his account and yours.
-                    If you think someone tries to spoof your account, forward this message to abusive-notification@twetailer.appspot.com.
+                    If you think someone tries to spoof your account, forward this message to abusive-notification@anothersocialeconomy.appspot.com.
                 </seg>
             </tuv>
         </tu>
@@ -837,7 +837,7 @@
                 <seg>
                     Unexpected error while processing a request response.
                     The incident is going to be reported to Twetailer analytics system.\n\n
-                    You can send an e-mail to incident@twetailer.appspotmail.com if the issue is crucial to you.\n\n
+                    You can send an e-mail to incident@anothersocialeconomy.appspotmail.com if the issue is crucial to you.\n\n
                     Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues.
                 </seg>
             </tuv>
@@ -1277,7 +1277,7 @@
                     With the demand tags you have specified, your message should be: <span onfocus="this.select();"
                     style="padding:2px 5px;border:1px solid lightgrey;" id="demand_repetition_for_sms" tabindex="0"></span>
                     </p>
-                    Happy shopping with Twetailer.
+                    Happy shopping with AnotherSocialEconomy.
                 </seg>
             </tuv>
         </tu>
@@ -1316,7 +1316,7 @@
                         <li>Invite <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">twetailer@appspot.com</span>, and</li>
                         <li>Send the text of your demand: <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" id="demand_repetition_for_gtalk" tabindex="0"></span>!</li>
                     </ol>
-                    Happy shopping with Twetailer.
+                    Happy shopping with AnotherSocialEconomy.
                 </seg>
             </tuv>
         </tu>

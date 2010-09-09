@@ -32,7 +32,7 @@ import domderrien.i18n.LabelExtractor;
 /**
  * Define the task with is invoked by methods in ProposalSteps
  * every time a Proposal is updated significantly. If the Proposal
- * instance is valid, the task "/maezel/processPublishedProposal"
+ * instance is valid, the task "/maelzel/processPublishedProposal"
  * is scheduled to broadcast it to the corresponding Demand owner.
  *
  * @see twetailer.dto.Proposal
@@ -145,7 +145,7 @@ public class ProposalValidator {
                     // Create a task for that proposal
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedProposal").
+                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).
                                 method(Method.GET).
                                 countdownMillis(5000)

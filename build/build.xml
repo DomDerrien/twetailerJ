@@ -34,12 +34,17 @@
 
     <property name="app.productName"
         description="Product name"
-        value="Twetailer"
+        value="AnotherSocialEconomy.com"
+    />
+
+    <property name="app.productEmailDomain"
+        description="Product e-mail domain"
+        value="anothersocialeconomy.appspotmail.com"
     />
 
     <property name="app.productWebsite"
         description="Product website"
-        value="http://www.twetailer.com/"
+        value="http://anothersocialeconomy.com/"
     />
 
     <property name="app.productShortName"
@@ -155,7 +160,7 @@
 
     <property name="javadoc.docs.copyright"
         description="Piece of information inserted at the end of all HTML pages produced by JavaDoc."
-        value="Some rights resvered 2009 Twetailer."
+        value="Some rights resvered 2009, 2010 AnotherSocialEconomy."
     />
     <property name="javadoc.docs.window.title"
         description="Piece of information inserted as the title page of all HTML pages produced by JavaDoc."
@@ -377,6 +382,7 @@
             <token key="app.release" value="${app.release}" />
             <token key="app.productWebsite" value="${app.productWebsite}" />
             <token key="app.productName" value="${app.productName}" />
+            <token key="app.productEmailDomain" value="${app.productEmailDomain}" />
             <token key="app.productShortName" value="${app.productShortName}" />
             <token key="app.contextRoot" value="${app.contextRoot}" />
             <token key="app.servletApiPath" value="${app.servletApiPath}" />

@@ -1624,7 +1624,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     Si vous avez reçu ce message par erreur, ou preferriez ne plus être en copie des prochaine
-                    communication, veuillez communiquer avec l'équipe de Twetailer à l'adresse: support@twetailer.com.
+                    communication, veuillez communiquer avec l'équipe de Twetailer à l'adresse: support@anothersocialeconomy.com.
                 </seg>
             </tuv>
         </tu>
@@ -1700,7 +1700,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>Vous êtes sur le point de payer pour {0}, tel que proposé pour votre Demande '{1}'. Merci de magasiner avec Twetailer.</seg>
+                <seg>Vous êtes sur le point de payer pour {0}, tel que proposé pour votre Demande '{1}'. Merci de magasiner avec AnotherSocialEconomy.</seg>
             </tuv>
         </tu>
     </body>

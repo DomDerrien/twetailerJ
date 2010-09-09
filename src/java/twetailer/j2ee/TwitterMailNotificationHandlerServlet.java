@@ -19,6 +19,7 @@ import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
 import twetailer.dto.Consumer;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.ApplicationSettings;
 import twitter4j.TwitterException;
 
 /**
@@ -28,7 +29,7 @@ import twitter4j.TwitterException;
  * them back.
  *
  * Unresolved notifications are forwarded to the
- * "catch-all@twetailer.com" e-mail address.
+ * "catch-all@anothersocialeconomy.com" e-mail address.
  *
  * @see twetailer.j2ee.CatchAllMailHandlerServlet
  *
@@ -54,9 +55,15 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
         processTwitterNotification(request, response);
     }
 
-    public static List<String> responderEndpoints = new ArrayList<String>();
-    static {
-        responderEndpoints.add("twitter@" + MailResponderServlet.MAIL_DOMAIN_NAME);
+    protected static List<String> responderEndpoints = new ArrayList<String>();
+
+    public static List<String> getResponderEndpoints() {
+        if (responderEndpoints.size() == 0) {
+            String emailDomain = ApplicationSettings.get().getProductEmailDomain();
+
+            responderEndpoints.add("twitter@" + emailDomain);
+        }
+        return responderEndpoints;
     }
 
     protected static void processTwitterNotification(HttpServletRequest request, HttpServletResponse response) {

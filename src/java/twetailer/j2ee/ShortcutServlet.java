@@ -52,7 +52,7 @@ import domderrien.jsontools.JsonObject;
  */
 @SuppressWarnings("serial")
 public class ShortcutServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger(MaezelServlet.class.getName());
+    private static Logger log = Logger.getLogger(ShortcutServlet.class.getName());
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {

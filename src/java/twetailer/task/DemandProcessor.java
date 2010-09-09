@@ -46,7 +46,7 @@ import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 
 /**
- * Define the task with is invoked by the task "/maezel/validateOpenDemand"
+ * Define the task with is invoked by the task "/maelzel/validateOpenDemand"
  * in order to broadcast the valid Demand to matching sale associates
  * in the area.
  *
@@ -92,7 +92,7 @@ public class DemandProcessor {
                 for (Demand demand: demands) {
                     // Create a task for that demand
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processPublishedDemand").
+                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedDemand").
                                 param(Demand.KEY, demand.getKey().toString()).
                                 method(Method.GET)
                     );
@@ -172,7 +172,7 @@ public class DemandProcessor {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maezel/processDemandForRobot").
+                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processDemandForRobot").
                                 param(Demand.KEY, demand.getKey().toString()).
                                 method(Method.GET)
                     );

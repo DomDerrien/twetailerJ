@@ -672,7 +672,7 @@ public class TestCommandLineParser {
 
     @Test
     public void testParseActionIIe() throws ClientException, ParseException {
-        String url = "http://twetailer.com/";
+        String url = "http://anothersocialeconomy.com/";
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " url " + url, Locale.ENGLISH);
         assertEquals(Action.www.toString(), data.getString(Command.ACTION));
         assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());

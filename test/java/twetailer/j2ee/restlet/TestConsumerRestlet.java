@@ -24,7 +24,7 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
-import twetailer.j2ee.MaezelServlet;
+import twetailer.j2ee.MaelzelServlet;
 import twetailer.j2ee.MockLoginServlet;
 import twetailer.task.step.BaseSteps;
 
@@ -284,7 +284,7 @@ public class TestConsumerRestlet {
         String openId = "http://open.id";
         JsonObject parameters = new GenericJsonObject();
         parameters.put(topic, value);
-        parameters.put(topic + "Code", MaezelServlet.getCode(topic, value, openId)); // valid code
+        parameters.put(topic + "Code", MaelzelServlet.getCode(topic, value, openId)); // valid code
 
         String attribute = ConsumerRestlet.filterOutInvalidValue(parameters, topic, openId);
 
@@ -562,7 +562,7 @@ public class TestConsumerRestlet {
         final String email = "unit@test.ca";
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.EMAIL, email);
-        parameters.put(Consumer.EMAIL + "Code", MaezelServlet.getCode(Consumer.EMAIL, email, user.getClaimedId()));
+        parameters.put(Consumer.EMAIL + "Code", MaelzelServlet.getCode(Consumer.EMAIL, email, user.getClaimedId()));
         final Long consumerKey = 12345L;
         MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
@@ -594,7 +594,7 @@ public class TestConsumerRestlet {
         final String jabberId = "unit@test.ca";
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.JABBER_ID, jabberId);
-        parameters.put(Consumer.JABBER_ID + "Code", MaezelServlet.getCode(Consumer.JABBER_ID, jabberId, user.getClaimedId()));
+        parameters.put(Consumer.JABBER_ID + "Code", MaelzelServlet.getCode(Consumer.JABBER_ID, jabberId, user.getClaimedId()));
         final Long consumerKey = 12345L;
         MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();
@@ -626,7 +626,7 @@ public class TestConsumerRestlet {
         final String twitterId = "unit_test_ca";
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Consumer.TWITTER_ID, twitterId);
-        parameters.put(Consumer.TWITTER_ID + "Code", MaezelServlet.getCode(Consumer.TWITTER_ID, twitterId, user.getClaimedId()));
+        parameters.put(Consumer.TWITTER_ID + "Code", MaelzelServlet.getCode(Consumer.TWITTER_ID, twitterId, user.getClaimedId()));
         final Long consumerKey = 12345L;
         MockLoginServlet.updateConsumerKey(user, consumerKey);
         final Consumer consumer = new Consumer();

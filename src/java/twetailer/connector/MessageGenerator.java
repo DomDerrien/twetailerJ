@@ -42,7 +42,7 @@ public class MessageGenerator {
      * Identifiers of the message the class can handle transparently
      */
     public enum MessageId {
-        messageFooter("footer"),
+        messageFooter("message_footer"),
         emptyListIndicator("emptyListIndicator"),
         dateFormat("dateFormat"),
         dateTimeFormat("dateTimeFormat"),
@@ -167,8 +167,13 @@ public class MessageGenerator {
      * @return String ready to be sent to the end users
      */
     public static String getMessage(Source communicationChannel, List<String> hashTags, MessageId identifier, String[] parameters, Locale locale) {
-        String prefix = getChannelPrefix(communicationChannel) + getVerticalPrefix(hashTags);
-        String out = LabelExtractor.get(ResourceFileId.fourth, prefix + identifier.getTMXSuffix(), parameters, locale);
+        String out = LabelExtractor.get(
+                ResourceFileId.fourth,
+                getChannelPrefix(communicationChannel) + getVerticalPrefix(hashTags) + identifier.getTMXSuffix(),
+                getChannelPrefix(communicationChannel) + DEFAULT_VERTICAL_PREFIX + identifier.getTMXSuffix(),
+                parameters,
+                locale
+        );
         return out;
     }
 
@@ -248,7 +253,7 @@ public class MessageGenerator {
             fetchEntity(proposal, prefix);
             fetchCommand(proposal, prefix);
             // Proposal
-            parameters.put(prefix + Proposal.CURRENCY_CODE, LabelExtractor.get(ResourceFileId.fourth, "common_currencySymbol_" + proposal.getCurrencyCode(), userLocale));
+            parameters.put(prefix + Proposal.CURRENCY_CODE, LabelExtractor.get(ResourceFileId.fourth, "common_currencySymbol_" + proposal.getCurrencyCode(), (String) null, userLocale));
             parameters.put(prefix + Proposal.DEMAND_REFERENCE, proposal.getDemandKey());
             parameters.put(prefix + Proposal.PRICE, proposal.getPrice());
             parameters.put(prefix + Proposal.TOTAL, proposal.getTotal());
@@ -382,6 +387,7 @@ public class MessageGenerator {
         return LabelExtractor.get(
                 ResourceFileId.fourth,
                 channelPrefix + verticalPrefix + identifier.getTMXSuffix(),
+                channelPrefix + DEFAULT_VERTICAL_PREFIX + identifier.getTMXSuffix(),
                 parameters,
                 userLocale
         );
@@ -399,6 +405,7 @@ public class MessageGenerator {
         return LabelExtractor.get(
                 ResourceFileId.fourth,
                 channelPrefix + verticalPrefix + identifier.getTMXSuffix(),
+                channelPrefix + DEFAULT_VERTICAL_PREFIX + identifier.getTMXSuffix(),
                 parameters,
                 userLocale
         );
@@ -416,6 +423,7 @@ public class MessageGenerator {
         return LabelExtractor.get(
                 ResourceFileId.fourth,
                 channelPrefix + verticalPrefix + identifier.getTMXSuffix(),
+                channelPrefix + DEFAULT_VERTICAL_PREFIX + identifier.getTMXSuffix(),
                 parameters,
                 userLocale
         );
@@ -431,6 +439,7 @@ public class MessageGenerator {
         return LabelExtractor.get(
                 ResourceFileId.fourth,
                 channelPrefix + verticalPrefix + identifier.getTMXSuffix(),
+                channelPrefix + DEFAULT_VERTICAL_PREFIX + identifier.getTMXSuffix(),
                 (Object[]) null,
                 userLocale
         );

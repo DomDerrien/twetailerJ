@@ -31,7 +31,7 @@ import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
-import twetailer.j2ee.MaezelServlet;
+import twetailer.j2ee.MaelzelServlet;
 import twetailer.task.CommandLineParser;
 import twetailer.task.RobotResponder;
 import twetailer.validator.CommandSettings.Action;
@@ -296,7 +296,7 @@ public class ProposalSteps extends BaseSteps {
         Proposal proposal = getProposalOperations().createProposal(pm, parameters, owner);
 
         // Related workflow step
-        MaezelServlet.triggerValidationTask(proposal);
+        MaelzelServlet.triggerValidationTask(proposal);
 
         return proposal;
     }
@@ -472,7 +472,7 @@ public class ProposalSteps extends BaseSteps {
             getDemandOperations().updateDemand(pm, demand);
 
             // Related workflow step
-            MaezelServlet.triggerValidationTask(proposal);
+            MaelzelServlet.triggerValidationTask(proposal);
         }
         else {
             throw new InvalidStateException("Entity not in modifiable state", currentState.toString(), null);
@@ -534,7 +534,7 @@ public class ProposalSteps extends BaseSteps {
             List<Long> proposalKeys = demand.getProposalKeys();
             if (1 < proposalKeys.size()) {
                 // Schedule the other proposal cancellation
-                MaezelServlet.triggerProposalCancellationTask(proposalKeys, demandOwner.getKey(), proposalKey);
+                MaelzelServlet.triggerProposalCancellationTask(proposalKeys, demandOwner.getKey(), proposalKey);
 
                 // Clean-up the list of associated proposals
                 demand.resetProposalKeys();
@@ -658,7 +658,7 @@ public class ProposalSteps extends BaseSteps {
         consequence = getRawCommandOperations().createRawCommand(pm, consequence);
 
         // Create a task for that command
-        MaezelServlet.triggerCommandProcessorTask(consequence.getKey());
+        MaelzelServlet.triggerCommandProcessorTask(consequence.getKey());
     }
 
     /**

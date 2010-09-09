@@ -21,7 +21,7 @@ Locale locale = LocaleController.getLocale(localeId);
                         title="<%= LabelExtractor.get("product_name", locale) %>"
                     />
                     <a
-                        href="http://www.twetailer.com/"
+                        href="http://anothersocialeconomy.com/"
                         title="<%= LabelExtractor.get("product_name", locale) %>"
                     ><span class="bang">!</span><span class="tw">tw</span><span class="etailer">etailer</span></a>
                 </h1>

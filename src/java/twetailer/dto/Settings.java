@@ -16,7 +16,7 @@ import domderrien.jsontools.JsonObject;
  * Define the application settings as stored in the back-end storage.
  * Has only one instance!
  *
- * @see twetailer.j2ee.MaezelServlet
+ * @see twetailer.j2ee.MaelzelServlet
  *
  * @author Dom Derrien
  */

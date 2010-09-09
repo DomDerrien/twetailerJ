@@ -31,7 +31,7 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
-import twetailer.j2ee.MaezelServlet;
+import twetailer.j2ee.MaelzelServlet;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
@@ -324,7 +324,7 @@ public class DemandSteps extends BaseSteps {
         Demand demand = getDemandOperations().createDemand(pm, parameters, owner.getKey());
 
         // Related workflow step
-        MaezelServlet.triggerValidationTask(demand);
+        MaelzelServlet.triggerValidationTask(demand);
 
         return demand;
     }
@@ -450,7 +450,7 @@ public class DemandSteps extends BaseSteps {
                 }
                 else if (State.published.equals(currentState)) {
                     // Schedule the other proposal cancellation
-                    MaezelServlet.triggerProposalCancellationTask(demand.getProposalKeys(), owner.getKey(), null);
+                    MaelzelServlet.triggerProposalCancellationTask(demand.getProposalKeys(), owner.getKey(), null);
 
                     // Detach the SaleAssociates and the Proposals
                     demand.resetProposalKeys();
@@ -501,7 +501,7 @@ public class DemandSteps extends BaseSteps {
 
             // Related workflow step
             notifyUpdateToCCed(pm, demand, owner);
-            MaezelServlet.triggerValidationTask(demand);
+            MaelzelServlet.triggerValidationTask(demand);
         }
         else {
             throw new InvalidStateException("Entity not in modifiable state", currentState.toString(), null);

@@ -137,7 +137,7 @@
                 }
             },
             error: module._reportClientError,
-            url: "/API/maezel/processVerificationCode"
+            url: "/API/maelzel/processVerificationCode"
         });
     };
 

@@ -2443,7 +2443,7 @@
             <tuv xml:lang="en">
                 <seg>
                     If you have received this message in error, or, prefer not to be CC'ed on future messages from this, or,
-                    any other Demand Owner, then please notify Twetailer by sending an email to support@twetailer.com
+                    any other Demand Owner, then please notify Twetailer by sending an email to support@anothersocialeconomy.com
                 </seg>
             </tuv>
         </tu>
@@ -2551,7 +2551,7 @@
                 {0}: proposal serialized keywords without the prefix
                 {1}: demand serialized keywords without the prefix
             </note>
-            <tuv xml:lang="en"><seg>You're going to pay for {0}, as proposed for your Demand "{1}". Thank you for shopping with Twetailer.</seg></tuv>
+            <tuv xml:lang="en"><seg>You're going to pay for {0}, as proposed for your Demand "{1}". Thank you for shopping with AnotherSocialEconomy.</seg></tuv>
         </tu>
 
     </body>

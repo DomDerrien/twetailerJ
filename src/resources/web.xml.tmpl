@@ -18,7 +18,7 @@
         <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
         <init-param>
             <param-name>logMessage</param-name>
-            <param-value>Appstats available: http://twetailer.appspot.com/_admin/stats/details?time={ID}</param-value>
+            <param-value>Appstats available: http://anothersocialeconomy.appspot.com/_admin/stats/details?time={ID}</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -77,13 +77,13 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>maezel</servlet-name>
-        <servlet-class>twetailer.j2ee.MaezelServlet</servlet-class>
+        <servlet-name>maelzel</servlet-name>
+        <servlet-class>twetailer.j2ee.MaelzelServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>maezel</servlet-name>
-        <url-pattern>@app.servletApiPath@/maezel/*</url-pattern>
+        <servlet-name>maelzel</servlet-name>
+        <url-pattern>@app.servletApiPath@/maelzel/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

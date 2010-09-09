@@ -394,7 +394,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
                             queue.add(
-                                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/consolidateSaleAssociateAccounts").
+                                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/consolidateSaleAssociateAccounts").
                                     param(Demand.KEY, demandKey.toString()).
                                     param(Demand.OWNER_KEY, saleAssociateKey.toString()).
                                     method(Method.GET)

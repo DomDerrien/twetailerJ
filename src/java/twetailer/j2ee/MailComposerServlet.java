@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import twetailer.connector.MailConnector;
+import twetailer.validator.ApplicationSettings;
 
 /**
  * Entry point returning the content of the
@@ -30,9 +31,15 @@ public class MailComposerServlet extends HttpServlet {
         log = mockLogger;
     }
 
-    public static List<String> responderEndpoints = new ArrayList<String>();
-    static {
-        responderEndpoints.add("composer@" + MailResponderServlet.MAIL_DOMAIN_NAME);
+    protected static List<String> responderEndpoints = new ArrayList<String>();
+
+    public static List<String> getResponderEndpoints() {
+        if (responderEndpoints.size() == 0) {
+            String emailDomain = ApplicationSettings.get().getProductEmailDomain();
+
+            responderEndpoints.add("composer@" + emailDomain);
+        }
+        return responderEndpoints;
     }
 
     @Override

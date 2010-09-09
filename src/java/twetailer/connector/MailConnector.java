@@ -34,7 +34,7 @@ public class MailConnector {
     // Common mail properties
     //   mail.transport.protocol: smtp/pop3/imap
     //   mail.host: appspotmail.com
-    //   mail.user: twetailer
+    //   mail.user: anothersocialeconomy
     //   mail.password: ???
     //
 
@@ -60,12 +60,12 @@ public class MailConnector {
         twetailer = prepareInternetAddress(
                 "UTF-8",
                 ApplicationSettings.get().getProductName(),
-                MailResponderServlet.responderEndpoints.get(0)
+                MailResponderServlet.getResponderEndpoints().get(0)
         );
         twetailer_cc = prepareInternetAddress(
                 "UTF-8",
                 ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply
-                MailResponderServlet.responderEndpoints.get(0).replace("@", "-noreply@")
+                MailResponderServlet.getResponderEndpoints().get(0).replace("@", "-noreply@")
         );
     }
 

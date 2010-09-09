@@ -42,11 +42,11 @@ import domderrien.jsontools.JsonObject;
 /**
  * Entry point processing IMAP messages.
  * Received information are stored in a RawCommand instance
- * that the task "/maezel/processCommand" will process
+ * that the task "/maelzel/processCommand" will process
  * asynchronously.
  *
  * @see twetailer.dto.RawCommand
- * @see twetailer.j2ee.MaezelServlet
+ * @see twetailer.j2ee.MaelzelServlet
  *
  * @author Dom Derrien
  */
@@ -64,18 +64,22 @@ public class MailResponderServlet extends HttpServlet {
         processMailedRequest(request, response);
     }
 
-    public static final String MAIL_DOMAIN_NAME = "twetailer.appspotmail.com";
+    protected static List<String> responderEndpoints = new ArrayList<String>();
 
-    public static List<String> responderEndpoints = new ArrayList<String>();
-    static {
-        responderEndpoints.add("assistant@" + MAIL_DOMAIN_NAME);
+    public static List<String> getResponderEndpoints() {
+        if (responderEndpoints.size() == 0) {
+            String emailDomain = ApplicationSettings.get().getProductEmailDomain();
 
-        List<String> hashTags = HashTag.getSupportedHashTags();
-        for (String hashTag: hashTags) {
-            responderEndpoints.add(hashTag + "@" + MAIL_DOMAIN_NAME);
+            responderEndpoints.add("assistant@" + emailDomain);
+
+            List<String> hashTags = HashTag.getSupportedHashTags();
+            for (String hashTag: hashTags) {
+                responderEndpoints.add(hashTag + "@" + emailDomain);
+            }
+
+            responderEndpoints.add("eztoff@" + emailDomain);
         }
-
-        responderEndpoints.add("eztoff@" + MAIL_DOMAIN_NAME);
+        return responderEndpoints;
     }
 
     private static final String MESSAGE_ID_LIST = "mailMessageIds";
@@ -128,7 +132,7 @@ public class MailResponderServlet extends HttpServlet {
             InternetAddress[] recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.TO));
             for (int idx = 0; to == null && idx < recipients.length; idx ++) {
                 to = recipients[idx].getAddress();
-                if (!responderEndpoints.contains(to)) {
+                if (!getResponderEndpoints().contains(to)) {
                     to = null;
                 }
             }
@@ -147,7 +151,7 @@ public class MailResponderServlet extends HttpServlet {
                 String ccPrefix = prefixes.getJsonArray(Prefix.cc.toString()).getString(0);
                 for (int idx = 0; idx < recipients.length; idx ++) {
                     String ccAddress = recipients[idx].getAddress();
-                    if (!responderEndpoints.contains(ccAddress)) {
+                    if (!getResponderEndpoints().contains(ccAddress)) {
                         ccList.append(Command.SPACE).append(ccPrefix).append(CommandLineParser.PREFIX_SEPARATOR).append(ccAddress);
                     }
                 }
@@ -188,7 +192,7 @@ public class MailResponderServlet extends HttpServlet {
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maezel/processCommand").
+                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

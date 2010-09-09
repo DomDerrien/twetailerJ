@@ -51,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>#Demo (story): As Twetailer, I want to provide both Consumers and Retailers an end-to-end Demand demo, so they can better experience Twetailer. |
+                <seg>#Demo (story): As AnotherSocialEconomy, I want to provide both Consumers and Retailers an end-to-end Demand demo, so they can better experience AnotherSocialEconomy. |
                 #Demo (usage): Include #demo in your Demand Tags and Twetailer will automatically Propose and eventually Close the Demand. |
                 #Demo (rules): Reserved keyword |
                 #Demo (see also): hash |
@@ -1144,7 +1144,7 @@
             <note>Help text associated to the action 'www'</note>
             <tuv xml:lang="en">
                 <seg>WWW (story):  |
-                WWW (usage): http://twetailer.com |
+                WWW (usage): http://anothersocialeconomy.com |
                 WWW (rules):  |
                 WWW (see also): action |
                 WWW (AKA): url |

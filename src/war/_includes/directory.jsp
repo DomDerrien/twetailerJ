@@ -172,7 +172,7 @@
                                     <button dojoType="dijit.form.Button" iconClass="icon16x16 iconSMS" onclick="twetailer.Directory.postThruSMS();"><%= LabelExtractor.get(ResourceFileId.third, "sep_demand_publish_with_SMS", locale) %></button>
                                     <button dojoType="dijit.form.Button" iconClass="icon16x16 iconMail" onclick="twetailer.Directory.postThruEMail();"><%= LabelExtractor.get(ResourceFileId.third, "sep_demand_publish_with_EMail", locale) %></button>
                                     <button dojoType="dijit.form.Button" iconClass="icon16x16 iconGTalk" onclick="twetailer.Directory.postThruGTalk();"><%= LabelExtractor.get(ResourceFileId.third, "sep_demand_publish_with_GTalk", locale) %></button>
-                                    <button disabled="true" dojoType="dijit.form.Button" iconClass="icon16x16 iconTwetailer" onclick="alert('http://twetailer.appspot.com/');"><%= LabelExtractor.get(ResourceFileId.third, "sep_demand_publish_with_Console", locale) %></button>
+                                    <button disabled="true" dojoType="dijit.form.Button" iconClass="icon16x16 iconTwetailer" onclick="alert('http://anothersocialeconomy.appspot.com/');"><%= LabelExtractor.get(ResourceFileId.third, "sep_demand_publish_with_Console", locale) %></button>
                                 </td>
                             </tr>
                         </tbody>

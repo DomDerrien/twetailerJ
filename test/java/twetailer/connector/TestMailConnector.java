@@ -26,6 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.j2ee.MailResponderServlet;
+import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -35,11 +36,13 @@ import domderrien.i18n.LabelExtractor;
 public class TestMailConnector {
 
     private static LocalServiceTestHelper  helper;
+    private static String emailDomain;
 
     @BeforeClass
     public static void setUpBeforeClass() {
         BaseConnector.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+        emailDomain = ApplicationSettings.get().getProductEmailDomain();
     }
 
     @Before
@@ -63,7 +66,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Content-Language: en\n" +
                 "Accept-Language: en, fr\n" +
@@ -107,7 +110,7 @@ public class TestMailConnector {
                                         "From:\n"  :
                                         "From: " + name + "<" + from + ">\n"
                 ) +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 (
                         subject == null ?
@@ -150,7 +153,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: text/html; charset=UTF-8\n" +
@@ -191,7 +194,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: application/octet-stream\n" +
@@ -231,7 +234,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/alternative; boundary=" + boundary + "\n" +
@@ -278,7 +281,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/mixed; boundary=\"" + boundary + "\"\n" +
@@ -326,7 +329,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/mixed; boundary=\"" + boundary + "\"\n" +
@@ -378,7 +381,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/mixed; boundary=\"" + boundary + "\"\n" +
@@ -432,7 +435,7 @@ public class TestMailConnector {
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
                 "From: " + name + "<" + from + ">\n" +
-                "To: Twetailer <assistant@" + MailResponderServlet.MAIL_DOMAIN_NAME + ">\n" +
+                "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
                 "Subject: Twetailer\n" +
                 "Content-Type: multipart/mixed; boundary=\"" + boundary + "-111\"\n" +

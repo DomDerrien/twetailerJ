@@ -242,7 +242,7 @@
                 <seg>
                     Les usagers de Twetailer (consommateurs et détaillants) peuvent
                     accéder de manière confidentielle à leur données avec la Console
-                    Twetailer. Vous avez accès à la Console avec des coordonnées
+                    AnotherSocialEconomy. Vous avez accès à la Console avec des coordonnées
                     existentes (votre fournisseur vérifiera votre identité, Twetailer
                     ne saura rien des mots de passe). La Console permet aussi de consolider
                     les comptes pour utiliser plusieurs moyens de communication (Twitter,
@@ -276,10 +276,10 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Pour pouvoir utiliser la console de Twetailer, vous devez &lt;u&gt;être préalablement authentifié&lt;/u&gt;.
+                    Pour pouvoir utiliser la console de Twetailer, vous devez <u>être préalablement authentifié</u>.
                     Pour faciliter la gestion des coordonnées de connection, Twetailer s'appuie sur  OpenID, protocole grâce
                     auquel vous utilisez  une de vos identités électroniques.
-                    Consulter le site &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; (en anglais)
+                    Consulter le site <a href="http://openid.net/" target="_blank">OpendId.net</a> (en anglais)
                     pour plus d'informations sur OpenID.
                 </seg>
             </tuv>
@@ -408,14 +408,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    &lt;p&gt;
+                    <p>
                     Twetailer est une création de Steven Milstein et Dom Derrien.
-                    Twetailer est mise en œuvre par Milstein &amp; Associates inc.
-                    &lt;/p&gt;
-                    &lt;p&gt;
+                    Twetailer est mise en œuvre par Milstein &amp;amp; Associates inc.
+                    </p>
+                    <p>
                     Pour de plus amples renseignement, vous pouvez joindre la
-                    communauté de Twetailer à: &lt;a href="http://twetailer.cyn.in/"&gt;twetailer.cyn.in&lt;/a&gt;.
-                    &lt;/p&gt;
+                    communauté de Twetailer à: <a href="http://twetailer.cyn.in/">twetailer.cyn.in</a>.
+                    </p>
                 </seg>
             </tuv>
         </tu>
@@ -577,7 +577,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Info: pour associer à votre compte les courriers électroniques que vous enverrez à &lt;a href="mailto:maezel@twetailer.appspotmail.com"&gt;maezel@twetailer.appspotmail.com&lt;/a&gt;.</seg>
+                <seg>Info: pour associer à votre compte les courriers électroniques que vous enverrez dans le domaine <b>@anothersocialeconomy.appspotmail.com</b>.</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_invalid_email_message" dataType="text">
@@ -598,7 +598,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Info: pour associer à votre compte les messages instantannés que vous enverrez à &lt;a href="xmpp://twetailer@appspot.com"&gt;twetailer@appspot.com&lt;/a&gt;.</seg>
+                <seg>Info: pour associer à votre compte les messages instantannés que vous enverrez à <a href="xmpp://twetailer@appspot.com">twetailer@appspot.com</a>.</seg>
             </tuv>
         </tu>
         <tu tuid="consumer_info_label_twitter" dataType="text">
@@ -613,8 +613,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Info: pour associer à votre compte les messages directs que vous enverrez à &lt;a href="http://twitter.com/twetailer" target="_blank"&gt;twitter.com/twetailer&lt;/a&gt;.&lt;br/&gt;
-                    Note: vous devez &lt;b&gt;suivre @twetailer&lt;/b&gt; sur Twitter pour que la communication par messages directs soit possibles (nécessaire pour des raisons de discretion).
+                    Info: pour associer à votre compte les messages directs que vous enverrez à <a href="http://twitter.com/twetailer" target="_blank">twitter.com/twetailer</a>.<br />
+                    Note: vous devez <b>suivre @twetailer</b> sur Twitter pour que la communication par messages directs soit possibles (nécessaire pour des raisons de discretion).
                 </seg>
             </tuv>
         </tu>
@@ -638,12 +638,12 @@
             <tuv xml:lang="fr">
                 <seg>
                     Voici le code de confirmation: {0}.
-                    Vous devez reporter ce code dans la page « Votre profil » de la console Web de Twetailer.|
+                    Vous devez reporter ce code dans la page « Votre profil » de la console Web de AnotherSocialEconomy|
                     |
-                    Merci de magasiner avec Twetailer.|
+                    Merci de magasiner avec AnotherSocialEconony.|
                     |
                     Si vous n'avez pas demandé ce code de confirmation, il est possible que quelqu'un s'est trompé en assignant votre compte au sien.
-                    Si vous pensez que quelqu'un essaye de détourner votre compte, transmettez ce message à abusive-notification@twetailer.appspot.com.
+                    Si vous pensez que quelqu'un essaye de détourner votre compte, transmettez ce message à abusive-notification@anothersocialeconomy.appspot.com.
                 </seg>
             </tuv>
         </tu>
@@ -687,9 +687,9 @@
                     Il s'est produit une erreur imprévue durant le
                     processus de votre demande de traitement. Cet incident
                     va être rapporter au système d'analyse de fautes de
-                    Twetailer.\n\n
+                    AnotherSocialEconomy.\n\n
                     Vous pouvez aussi envoyez un courriel à
-                    incident@twetailer.appspotmail.com si le problème est bloquant pour vous.\n\n
+                    incident@anothersocialeconomy.appspotmail.com si le problème est bloquant pour vous.\n\n
                     Suivez nos communications sur Twitter (@twetailer) pour le suivi des défaillances critiques.
                 </seg>
             </tuv>
@@ -753,7 +753,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Requiert un object de type &lt;code&gt;Array&lt;/code&gt;!</seg>
+                <seg>Requiert un object de type <code>Array</code>!</seg>
             </tuv>
         </tu>
         <tu tuid="error_invalid_locale" dataType="text">
@@ -795,8 +795,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Wii Console manette de jeu rose&lt;br&gt;&lt;/br&gt;
-                    Nikon D5000 localité:H1P 2X3 CA distance:25km&lt;br&gt;&lt;/br&gt;
+                    Wii Console manette de jeu rose<br />
+                    Nikon D5000 localité:H1P 2X3 CA distance:25km<br />
                     Camp de jour pour un enfant de 8 ans localité:H2P1C4 CA expiration:2010-08-31
                 </seg>
             </tuv>
@@ -953,7 +953,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mots-clés pour la région de : &lt;a href="{1}"&gt;{0}&lt;/a&gt;</seg>
+                <seg>Mots-clés pour la région de : <a href="{1}">{0}</a></seg>
             </tuv>
         </tu>
         <tu tuid="sep_tag_cloud_disclaimer" dataType="text">
@@ -996,27 +996,27 @@
                 <seg>
                     Le service de message court (aussi appelé SMS) est un système qui permet aux
                     usagers de téléphones cellulaires d'envoyer de simple message texte à d'autres
-                    personnes.&lt;br /&gt;
+                    personnes.<br />
                     Au Canada et aux États Unis d'Amérique, vous pouvez communiquer par SMS avec
                     Twetailer grâce à son accès à Twitter.
-                    &lt;ul&gt;
-                        &lt;li&gt;Au Canada, envoyez votre message au numéro court : &lt;b&gt;21212&lt;/b&gt;.&lt;/li&gt;
-                        &lt;li&gt;Aux États-Unis, envoyez votre message au numéro court: &lt;b&gt;40404&lt;/b&gt;.&lt;/li&gt;
-                    &lt;/ul&gt;
+                    <ul>
+                        <li>Au Canada, envoyez votre message au numéro court : <b>21212</b>.</li>
+                        <li>Aux États-Unis, envoyez votre message au numéro court: <b>40404</b>.</li>
+                    </ul>
                     Twetailer n'est ouvert qu'au Canada et aux États-Unis d'Amérique pour le moment, mais si d'autres
-                    utilisateurs veulent s'essayer,&lt;br /&gt; reportez-vous à la
-                    &lt;a href="http://help.twitter.com/entries/14014-twitter-phone-faqs" target="_blank"&gt;page
-                    ressource de Twitter&lt;/a&gt; pour une liste à jour des numéros courts dans les autres pays.
-                    &lt;p&gt;
+                    utilisateurs veulent s'essayer,<br /> reportez-vous à la
+                    <a href="http://help.twitter.com/entries/14014-twitter-phone-faqs" target="_blank">page
+                    ressource de Twitter</a> pour une liste à jour des numéros courts dans les autres pays.
+                    <p>
                     Pour des raisons de vie privée, toutes les informations concernant
                     vos transactions avec Twetailer sont envoyées par
-                    &lt;a href="http://help.twitter.com/entries/14606-what-is-a-direct-message-dm" target="_blank"&gt;Message
-                    Direct&lt;/a&gt;.&lt;br /&gt;
+                    <a href="http://help.twitter.com/entries/14606-what-is-a-direct-message-dm" target="_blank">Message
+                    Direct</a>.<br />
                     N'oubliez donc pas de préfixer tous vos messages avec :
-                    &lt;span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;d twetailer&lt;/span&gt;.&lt;br /&gt;
-                    Dans le cas présent, le message serait : &lt;span id="demand_repetition_for_sms" onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;&lt;/span&gt;
-                    &lt;/p&gt;
-                    Bon magasinage avec Twetailer.
+                    <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">d twetailer</span>.<br />
+                    Dans le cas présent, le message serait : <span id="demand_repetition_for_sms" onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"></span>
+                    </p>
+                    Bon magasinage avec AnotherSocialEconomy.
                 </seg>
             </tuv>
         </tu>
@@ -1033,27 +1033,27 @@
             <tuv xml:lang="fr">
                 <seg>
                     Google Talk (aussi juste appelé GTalk) est un système de messagerie instantannée
-                    reposant sur le standard &lt;a href="http://fr.wikipedia.org/wiki/Extensible_Messaging_and_Presence_Protocol" target="_blank"&gt;XMPP&lt;/a&gt;.&lt;br /&gt;
-                    Vous pouvez utiliser l'outil &lt;a href="http://www.google.com/talk/intl/fr/" target="_blank"&gt;GTalk pour Windows&lt;/a&gt;,
-                    ou un autre parmi la &lt;a href="http://www.google.com/talk/intl/fr/otherclients.html" target="_blank"&gt;liste des applications tiers&lt;/a&gt;
+                    reposant sur le standard <a href="http://fr.wikipedia.org/wiki/Extensible_Messaging_and_Presence_Protocol" target="_blank">XMPP</a>.<br />
+                    Vous pouvez utiliser l'outil <a href="http://www.google.com/talk/intl/fr/" target="_blank">GTalk pour Windows</a>,
+                    ou un autre parmi la <a href="http://www.google.com/talk/intl/fr/otherclients.html" target="_blank">liste des applications tiers</a>
                     pour Windows, OSX ou Linux.
-                    &lt;p&gt;
+                    <p>
                     Les utilsateurs de téléphones mobiles ont d'autres choix :
-                    &lt;/p&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;Avec les téléphones intelligents basés sur le &lt;a href="http://code.google.com/android/" target="_blank"&gt;système Android&lt;/a&gt;, GTalk est pré-installé.&lt;/li&gt;
-                        &lt;li&gt;Avec les téléphones BlackBerry, il y a l'outil officiel &lt;a href="http://mobileapps.blackberry.com/devicesoftware/entry.do?code=gtalk" target="_blank"&gt;GTalk pour BlackBerry&lt;/a&gt;,&lt;/li&gt;
-                        &lt;li&gt;Avec les téléphones Nokia, il est possible d'utiliser l'outil du &lt;a href="http://betalabs.nokia.com/apps/nokia-messaging-chat" target="_blank"&gt;betalabs.nokia.com&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;Enfin, les téléphones compatibles J2ME peuvent utiliser &lt;a href="http://nimbuzz.com/fr/" target="_blank"&gt;Nimbuzz&lt;/a&gt;.&lt;/li&gt;
-                    &lt;/ul&gt;
-                    &lt;p&gt;
+                    </p>
+                    <ul>
+                        <li>Avec les téléphones intelligents basés sur le <a href="http://code.google.com/android/" target="_blank">système Android</a>, GTalk est pré-installé.</li>
+                        <li>Avec les téléphones BlackBerry, il y a l'outil officiel <a href="http://mobileapps.blackberry.com/devicesoftware/entry.do?code=gtalk" target="_blank">GTalk pour BlackBerry</a>,</li>
+                        <li>Avec les téléphones Nokia, il est possible d'utiliser l'outil du <a href="http://betalabs.nokia.com/apps/nokia-messaging-chat" target="_blank">betalabs.nokia.com</a></li>
+                        <li>Enfin, les téléphones compatibles J2ME peuvent utiliser <a href="http://nimbuzz.com/fr/" target="_blank">Nimbuzz</a>.</li>
+                    </ul>
+                    <p>
                     Quand GTalk est installé et fonctionnne :
-                    &lt;/p&gt;
-                    &lt;ol&gt;
-                        &lt;li&gt;Invitez &lt;span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;twetailer@appspot.com&lt;/span&gt;, et&lt;/li&gt;
-                        &lt;li&gt;Tapez simplement le texte de votre demande : &lt;span id="demand_repetition_for_gtalk" onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"&gt;&lt;/span&gt;&lt;/li&gt;
-                    &lt;/ol&gt;
-                    Bon magasinage avec Twetailer.
+                    </p>
+                    <ol>
+                        <li>Invitez <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">twetailer@appspot.com</span>, et</li>
+                        <li>Tapez simplement le texte de votre demande : <span id="demand_repetition_for_gtalk" onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0"></span></li>
+                    </ol>
+                    Bon magasinage avec AnothersocialEconomy.
                 </seg>
             </tuv>
         </tu>
@@ -1077,7 +1077,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twetailer &amp; Golf - Bureau de réservation</seg>
+                <seg>Twetailer &amp;amp; Golf - Bureau de réservation</seg>
             </tuv>
         </tu>
         <tu tuid="ga_dataGrid_loading" dataType="text">
@@ -1621,7 +1621,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Member of the &lt;a href="http://ezToff.com/" target="_blank"&gt;&lt;img src="/images/golf/EZTOFF-small-logo.png" title="ezToff"&gt;&lt;/img&gt;&lt;/a&gt; network.</seg>
+                <seg>Member of the <a href="http://ezToff.com/" target="_blank"><img src="/images/golf/EZTOFF-small-logo.png" title="ezToff"></img></a> network.</seg>
             </tuv>
         </tu>
         <tu tuid="gw_step_2_title" dataType="text">

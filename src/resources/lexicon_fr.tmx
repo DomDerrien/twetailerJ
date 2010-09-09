@@ -28,7 +28,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>#Demo (story): As Twetailer, I want to provide both Consumers and Retailers an end-to-end Demand demo, so they can better experience Twetailer. |
+                <seg>#Demo (story): As AnotherSocialEconomy, I want to provide both Consumers and Retailers an end-to-end Demand demo, so they can better experience AnotherSocialEconomy. |
                 #Demo (usage): Include #demo in your Demand Tags and Twetailer will automatically Propose and eventually Close the Demand. |
                 #Demo (rules): Reserved keyword |
                 #Demo (see also): hash |
@@ -40,7 +40,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>140 (glossary): Retailers supply goods/services via tags. Consumers demand tags within their locale. Twetailer matches demand &amp; supply for free/fee |
+                <seg>140 (glossary): Retailers supply goods/services via tags. Consumers demand tags within their locale. Twetailer matches demand &amp;amp; supply for free/fee |
                 140 (since): v0.0</seg>
             </tuv>
         </tu>
@@ -316,7 +316,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Free (glossary): Twetailer matches tags between Consumer's Demands &amp; Retailer's Supply, confirms availability and provides retailer's store location for free.  However, the Retailer is only asked to hold the item &amp; therefore its availability is not guaranteed. |
+                <seg>Free (glossary): Twetailer matches tags between Consumer's Demands &amp;amp; Retailer's Supply, confirms availability and provides retailer's store location for free.  However, the Retailer is only asked to hold the item &amp;amp; therefore its availability is not guaranteed. |
                     Free (see also): fee |
                     Free (since): v0.0</seg>
             </tuv>
@@ -712,7 +712,7 @@
                 Reserve (usage): Send "reserve proposal:[proposal-number] total:dollar-value" |
                 Reserve (example): Send "reserve proposal:23456 total:430.14" |
                 Reserve (rules): Twetailer Fee Service. Consumers accept terms and conditions. Twetailer will respond with the Amazon web site address.  Consumer will have to open that address in a browser and complete transaction |
-                Reserve (see also): proposed, state, state-flow, &lt;a href="http://docs.amazonwebservices.com/AmazonFPS/2008-09-17/FPSMarketplaceGuide/index.html?ReservingaPayment.html"&gt;Amazon's Reserve Payment&lt;/a&gt;, action |
+                Reserve (see also): proposed, state, state-flow, <a href="http://docs.amazonwebservices.com/AmazonFPS/2008-09-17/FPSMarketplaceGuide/index.html?ReservingaPayment.html">Amazon's Reserve Payment</a>, action |
                 Reserve (since): Future release</seg>
             </tuv>
         </tu>
@@ -789,7 +789,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>State-flow (glossary): State-Flow: Opened / Invalid -&gt; Published -&gt; Proposed -&gt; Confirmed -&gt; Reserved (fee) -&gt; Fulfilled (Fee) -&gt; Settled (Fee) -&gt; Closed / Flagged. See also: opened, invalid, published, proposed, confirmed, reserved, fee, free, fulfilled, settled, closed, flagged. |
+                <seg>State-flow (glossary): State-Flow: Opened / Invalid -> Published -> Proposed -> Confirmed -> Reserved (fee) -> Fulfilled (Fee) -> Settled (Fee) -> Closed / Flagged. See also: opened, invalid, published, proposed, confirmed, reserved, fee, free, fulfilled, settled, closed, flagged. |
                 State-flow (see also): state, attribute |
                 State-flow (since): v0.0</seg>
             </tuv>
@@ -870,7 +870,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>WWW (story):  |
-                WWW (usage): http://twetailer.com |
+                WWW (usage): http://anothersocialeconomy.com |
                 WWW (rules):  |
                 WWW (see also): action |
                 WWW (AKA): url |

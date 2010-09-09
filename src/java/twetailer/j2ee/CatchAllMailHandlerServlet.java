@@ -20,9 +20,9 @@ import twetailer.connector.MailConnector;
 /**
  * Servlet receiving all unexpected e-mails. Do triage them in
  * order to dispatch the useful ones, and forward the remaining
- * ones to "catch-all@twetailer.com".
+ * ones to "catch-all@anothersocialeconomy.com".
  *
- * The ability to compose e-mails to "catch-all@twetailer.com"
+ * The ability to compose e-mails to "catch-all@anothersocialeconomy.com"
  * is also used by the system to forward information about unexpected
  * errors (with stack traces).
  *
@@ -119,11 +119,11 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
         MimeMessage messageToForward = new MimeMessage(session);
         messageToForward.setFrom(MailConnector.twetailer);
-        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("catch-all@twetailer.com"));
+        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("catch-all@anothersocialeconomy.com"));
         messageToForward.setSubject("Fwd: (" + from + ") " + subject);
         MailConnector.setContentAsPlainTextAndHtml(messageToForward, body);
 
-        log.warning("Reporting to catch-all@twetailer.com (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
+        log.warning("Reporting to catch-all@anothersocialeconomy.com (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
 
         Transport.send(messageToForward);
     }

@@ -22,7 +22,7 @@ import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
 
 /**
- * Define the task with is invoked by the task "/maezel/validateOpenProposal"
+ * Define the task with is invoked by the task "/maelzel/validateOpenProposal"
  * in order to broadcast the valid Proposal to the corresponding Demand
  * owner.
  *

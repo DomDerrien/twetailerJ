@@ -69,21 +69,21 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 
-public class TestMaezelServlet {
+public class TestMaelzelServlet {
 
-    MaezelServlet servlet;
+    MaelzelServlet servlet;
 
     private static LocalServiceTestHelper  helper;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        MaezelServlet.setLogger(new MockLogger("test", null));
+        MaelzelServlet.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
     @Before
     public void setUp() throws Exception {
-        servlet = new MaezelServlet();
+        servlet = new MaelzelServlet();
         BaseSteps.resetOperationControllers(true);
         BaseSteps.setMockBaseOperations(new MockBaseOperations());
         helper.setUp();
@@ -97,7 +97,7 @@ public class TestMaezelServlet {
 
     @Test
     public void testConstructor() {
-        new MaezelServlet();
+        new MaelzelServlet();
     }
 
     @Test
@@ -781,7 +781,7 @@ public class TestMaezelServlet {
         String identifier = "unit@test.ca";
         String openId = "http://openId";
 
-        MaezelServlet.getCode(topic, identifier, openId);
+        MaelzelServlet.getCode(topic, identifier, openId);
     }
 
     @Test
@@ -790,9 +790,9 @@ public class TestMaezelServlet {
         String identifier = "unit@test.ca";
         String openId = "http://openId";
 
-        long code = MaezelServlet.getCode(topic, identifier, openId);
+        long code = MaelzelServlet.getCode(topic, identifier, openId);
 
-        assertEquals(code, MaezelServlet.getCode(topic, identifier, openId));
+        assertEquals(code, MaelzelServlet.getCode(topic, identifier, openId));
     }
 
     @Test
@@ -801,9 +801,9 @@ public class TestMaezelServlet {
         String identifier = "unit@test.ca";
         String openId = "http://openId";
 
-        long code = MaezelServlet.getCode(topic, identifier, openId);
+        long code = MaelzelServlet.getCode(topic, identifier, openId);
 
-        assertEquals(code, MaezelServlet.getCode(topic, identifier, openId));
+        assertEquals(code, MaelzelServlet.getCode(topic, identifier, openId));
     }
 
     @Test
@@ -812,9 +812,9 @@ public class TestMaezelServlet {
         String identifier = "unit_test_ca";
         String openId = "http://openId";
 
-        long code = MaezelServlet.getCode(topic, identifier, openId);
+        long code = MaelzelServlet.getCode(topic, identifier, openId);
 
-        assertEquals(code, MaezelServlet.getCode(topic, identifier, openId));
+        assertEquals(code, MaelzelServlet.getCode(topic, identifier, openId));
     }
 
     @Test
@@ -823,9 +823,9 @@ public class TestMaezelServlet {
         String identifier2 = "unit_test_ca";
         String openId = "http://openId";
 
-        long codeEmail = MaezelServlet.getCode(Consumer.EMAIL, identifier1, openId);
-        long codeJabber = MaezelServlet.getCode(Consumer.JABBER_ID, identifier1, openId);
-        long codeTwitter = MaezelServlet.getCode(Consumer.TWITTER_ID, identifier2, openId);
+        long codeEmail = MaelzelServlet.getCode(Consumer.EMAIL, identifier1, openId);
+        long codeJabber = MaelzelServlet.getCode(Consumer.JABBER_ID, identifier1, openId);
+        long codeTwitter = MaelzelServlet.getCode(Consumer.TWITTER_ID, identifier2, openId);
 
         assertNotSame(codeEmail, codeJabber);
         assertNotSame(codeEmail, codeTwitter);
@@ -836,8 +836,8 @@ public class TestMaezelServlet {
     public void testGetVerificationCodeVI() throws IOException, ClientException {
         String openId = "http://openId";
 
-        long codeNull = MaezelServlet.getCode("Not important", null, openId);
-        long codeEmpty = MaezelServlet.getCode("Not important", "", openId);
+        long codeNull = MaelzelServlet.getCode("Not important", null, openId);
+        long codeEmpty = MaelzelServlet.getCode("Not important", "", openId);
 
         assertNotSame(9999999999L, codeNull);
         assertNotSame(9999999999L, codeEmpty);
@@ -849,7 +849,7 @@ public class TestMaezelServlet {
         String identifier = "invalid e-mail address";
         String openId = "http://openId";
 
-        MaezelServlet.getCode(Consumer.EMAIL, identifier, openId);
+        MaelzelServlet.getCode(Consumer.EMAIL, identifier, openId);
     }
 
     @Test(expected=ClientException.class)
@@ -857,7 +857,7 @@ public class TestMaezelServlet {
         String identifier = "@invalid +Twitter+ identifier (format)";
         String openId = "http://openId";
 
-        MaezelServlet.getCode(Consumer.TWITTER_ID, identifier, openId);
+        MaelzelServlet.getCode(Consumer.TWITTER_ID, identifier, openId);
     }
 
     @Test
@@ -1020,7 +1020,7 @@ public class TestMaezelServlet {
         };
 
         // Expected messages
-        final long code = MaezelServlet.getCode(topic, identifier, openId);
+        final long code = MaelzelServlet.getCode(topic, identifier, openId);
         final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
         final String msg2 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, Locale.ENGLISH);
 
@@ -1279,7 +1279,7 @@ public class TestMaezelServlet {
         final String openId = "http://openId";
         final String identifier = "unit@test.ca";
         final String topic = Consumer.EMAIL;
-        final long code = MaezelServlet.getCode(topic, identifier, openId);
+        final long code = MaelzelServlet.getCode(topic, identifier, openId);
 
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -1334,7 +1334,7 @@ public class TestMaezelServlet {
         final String openId = "http://openId";
         final String identifier = "unit@test.ca";
         final String topic = Consumer.JABBER_ID;
-        final long code = MaezelServlet.getCode(topic, identifier, openId);
+        final long code = MaelzelServlet.getCode(topic, identifier, openId);
 
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
@@ -1389,7 +1389,7 @@ public class TestMaezelServlet {
         final String openId = "http://openId";
         final String identifier = "unit_test_ca";
         final String topic = Consumer.TWITTER_ID;
-        final long code = MaezelServlet.getCode(topic, identifier, openId);
+        final long code = MaelzelServlet.getCode(topic, identifier, openId);
 
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
