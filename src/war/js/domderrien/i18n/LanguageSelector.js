@@ -6,16 +6,16 @@
      */
     var module = dojo.provide("domderrien.i18n.LanguageSelector");
 
-    dojo.require("dojox.form.DropDownSelect");
+    dojo.require("dijit.form.Select");
 
     /**
-     * Attach a <code>DropDownSelect</code> widget to the identified
+     * Attach a <code>Select</code> widget to the identified
      * DOM node. The widget <code>onChange</code> is connected to a
      * function refreshing the page with the identifier of the newly
      * selected language.
      *
      * @param {String} placeHolderId Identifier of the DOM that will be
-     * replaced by the <code>DropDownSelect</code> widget.
+     * replaced by the <code>Select</code> widget.
      *
      * @param {String} formFieldName Value of the attribute <code>name</code>
      * for the underneath HTML element <code>&lt;select/&gt;</code>.
@@ -37,7 +37,7 @@
      */
     module.createSelector = function(placeHolderId, formFieldName, options, currentLanguageId, className, onChangeHandler){
         _currentLanguageId = currentLanguageId;
-        var _selector = new dojox.form.DropDownSelect({
+        var _selector = new dijit.form.Select({
                 autoComplete: false,
                 'class': className || "",
                 id: placeHolderId,

@@ -2,10 +2,11 @@
 
     var module = dojo.provide("twetailer.Consumer");
 
-    dojo.require("domderrien.i18n.LabelExtractor");
+    dojo.require("twetailer.Common");
 
     module._labelExtractor = null; // Made accessible only for test purposes
-    var  _masterBundleName = "master",
+    var _common = twetailer.Common,
+        _masterBundleName = "master",
         _consoleBundleName = "console",
         _getLabel,
         _consumer,

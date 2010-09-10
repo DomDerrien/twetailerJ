@@ -116,7 +116,7 @@
                     ><%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_createDemand", locale) %></button>
                 </div>
                 <div style="float:right;">
-                    <select dojoType="dojox.form.DropDownSelect" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
+                    <select dojoType="dijit.form.Select" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
                         <option value="*" selected="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_stateSelector_anyState", locale) %></option>
                         <option value="<%= State.opened %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_opened", locale) %></option>
                         <option value="<%= State.invalid %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_invalid", locale) %></option>
@@ -231,7 +231,7 @@
                                 <td align="right"><label for="demand.countryCode"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCountryCode", locale) %></label></td>
                                 <td>
                                     <select
-                                        dojoType="dojox.form.DropDownSelect"
+                                        dojoType="dijit.form.Select"
                                         id="demand.countryCode"
                                         name="countryCode"
                                         onchange="twetailer.golf.Common.updatePostalCodeFieldConstraints(this.value, 'demand.postalCode');"
@@ -257,7 +257,7 @@
                                 <td align="right"><label for="demand.range"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandRange", locale) %></label></td>
                                 <td>
                                     <input constraints="{min:5,max:100,places:2}" dojoType="dijit.form.NumberSpinner" id="demand.range" name="range" required="true" style="width:7em;" type="text" value="25" />
-                                    <select dojoType="dojox.form.DropDownSelect" id="demand.rangeUnit" name="rangeUnit" required="true" style="width:5em;">
+                                    <select dojoType="dijit.form.Select" id="demand.rangeUnit" name="rangeUnit" required="true" style="width:5em;">
                                         <option value="<%= LocaleValidator.KILOMETER_UNIT %>" selected="true"><%= LocaleValidator.KILOMETER_UNIT %></option>
                                         <option value="<%= LocaleValidator.MILE_UNIT %>"><%= LocaleValidator.MILE_UNIT %></option>
                                     </select>
@@ -468,12 +468,12 @@
         // dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.NumberSpinner");
         // dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.Select");
         dojo.require("dijit.form.Textarea");
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.TimeTextBox");
         dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dojox.form.BusyButton");
-        dojo.require("dojox.form.DropDownSelect");
         // dojo.require("dojox.form.Rating");
         dojo.require("dojox.grid.EnhancedGrid");
         // dojo.require("dojox.grid.enhanced.plugins.NestedSorting");

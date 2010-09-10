@@ -111,7 +111,7 @@
         <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center">
             <div dojoType="dijit.layout.ContentPane" region="top" style="margin:10px 10px 0 10px;">
                 <div style="float:right;">
-                    <select dojoType="dojox.form.DropDownSelect" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
+                    <select dojoType="dijit.form.Select" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
                         <option value="*" selected="true"><%= LabelExtractor.get(ResourceFileId.third, "ga_stateSelector_anyState", locale) %></option>
                         <option value="<%= State.opened %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_opened", locale) %></option>
                         <option value="<%= State.invalid %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_invalid", locale) %></option>
@@ -288,11 +288,11 @@
         dojo.require("dijit.form.DateTextBox");
         dojo.require("dijit.form.NumberSpinner");
         dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.Select");
         // dojo.require("dijit.form.Textarea");
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.TimeTextBox");
         dojo.require("dojox.form.BusyButton");
-        dojo.require("dojox.form.DropDownSelect");
         dojo.require("dojox.form.Rating");
         dojo.require("dojox.grid.EnhancedGrid");
         // dojo.require("dojox.layout.ExpandoPane");

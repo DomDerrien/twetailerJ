@@ -256,7 +256,7 @@
                         style="width:6em;font-size:larger;"
                         type="text"
                     />
-                    <select dojoType="dojox.form.DropDownSelect" name="countryCode" id="countryCode" hasDownArrow="true" style="width:14em;font-size:larger;">
+                    <select dojoType="dijit.form.Select" name="countryCode" id="countryCode" hasDownArrow="true" style="width:14em;font-size:larger;">
                         <option value="<%= Locale.CANADA.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                         <option value="<%= Locale.US.getCountry() %>"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
                     </select>
@@ -284,7 +284,7 @@
                         value="10"
                     />
                     <select
-                        dojoType="dojox.form.DropDownSelect"
+                        dojoType="dijit.form.Select"
                         hasDownArrow="true"
                         id="rangeUnit"
                         name="rangeUnit"
@@ -412,13 +412,13 @@
         dojo.require("dijit.form.HorizontalSlider");
         dojo.require("dijit.form.NumberSpinner");
         dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.Select");
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dijit.layout.BorderContainer");
         dojo.require("dijit.layout.ContentPane");
         // dojo.require("dojox.layout.ExpandoPane");
         dojo.require("dijit.layout.TabContainer");
-        dojo.require("dojox.form.DropDownSelect");
         dojo.require("twetailer.Directory");
         dojo.addOnLoad(function(){
             dojo.parser.parse();

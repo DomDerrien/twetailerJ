@@ -167,7 +167,7 @@
                         </div>
                         <div style="float:left;margin-right:1em;">
                             <label for="consumerCountry"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_label_country", locale) %></label><br/>
-                            <select dojoType="dojox.form.DropDownSelect" id="consumerCountry" name="<%= Location.COUNTRY_CODE %>">
+                            <select dojoType="dijit.form.Select" id="consumerCountry" name="<%= Location.COUNTRY_CODE %>">
                                 <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                                 <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
                                 <!--option value="FR"><%= LabelExtractor.get(ResourceFileId.master, "country_FR", locale) %></option-->
@@ -344,12 +344,12 @@
         dojo.require("dijit.form.Button");
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.NumberTextBox");
+        dojo.require("dijit.form.Select");
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dijit.layout.BorderContainer");
         dojo.require("dijit.layout.ContentPane");
         dojo.require("dijit.layout.TabContainer");
-        dojo.require("dojox.form.DropDownSelect");
         dojo.require("twetailer.Consumer");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
