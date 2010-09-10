@@ -19,6 +19,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twitter4j.DirectMessage;
+import twitter4j.MockDirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
@@ -156,37 +157,37 @@ public class TestBaseConnector {
 
     @Test
     public void testCommunicateToConsumerI() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[0]);
+        BaseConnector.communicateToConsumer(Source.simulated, "", new Consumer(), new String[0]);
     }
 
     @Test
     public void testCommunicateToConsumerII() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.twitter), new Consumer(), new String[0]);
+        BaseConnector.communicateToConsumer(Source.twitter, "", new Consumer(), new String[0]);
     }
 
     @Test
     public void testCommunicateToConsumerIII() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.jabber), new Consumer(), new String[0]);
+        BaseConnector.communicateToConsumer(Source.jabber, "", new Consumer(), new String[0]);
     }
 
     @Test
     public void testCommunicateToConsumerIV() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.mail), new Consumer(), new String[0]);
+        BaseConnector.communicateToConsumer(Source.mail, "", new Consumer(), new String[0]);
     }
 
     @Test
     public void testCommunicateToConsumerV() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.mail), new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
+        BaseConnector.communicateToConsumer(Source.mail, "", new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
     }
 
     @Test
     public void testCommunicateToConsumerVI() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.widget), new Consumer(), new String[0]);
+        BaseConnector.communicateToConsumer(Source.widget, "", new Consumer(), new String[0]);
     }
 
     @Test
     public void testCommunicateToConsumerVII() throws CommunicationException {
-        BaseConnector.communicateToConsumer(new RawCommand(Source.widget), new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
+        BaseConnector.communicateToConsumer(Source.widget, "", new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
     }
 
     @Test
@@ -199,14 +200,14 @@ public class TestBaseConnector {
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1000));
 
         String first = "first";
-        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[] { first });
+        BaseConnector.communicateToConsumer(Source.simulated, "", new Consumer(), new String[] { first });
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(first, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
         assertNull(BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1));
 
         String second = "second";
-        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[] { second });
+        BaseConnector.communicateToConsumer(Source.simulated, "", new Consumer(), new String[] { second });
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
@@ -225,7 +226,7 @@ public class TestBaseConnector {
 
         String first = "first";
         String second = "second";
-        BaseConnector.communicateToConsumer(new RawCommand(Source.simulated), new Consumer(), new String[] { first, second });
+        BaseConnector.communicateToConsumer(Source.simulated, "", new Consumer(), new String[] { first, second });
         assertNotNull(BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getLastCommunicationInSimulatedMode());
         assertEquals(second, BaseConnector.getCommunicationForRetroIndexInSimulatedMode(0));
@@ -405,11 +406,36 @@ public class TestBaseConnector {
     }
 
     @Test(expected=CommunicationException.class)
+    public void testGetCommunicationchannelI() throws CommunicationException {
+        final String coordinate = null;
+        BaseConnector.getCCedCommunicationChannel(coordinate);
+    }
+
+    @Test(expected=CommunicationException.class)
+    public void testGetCommunicationchannelII() throws CommunicationException {
+        final String coordinate = "";
+        BaseConnector.getCCedCommunicationChannel(coordinate);
+    }
+
+    @Test
+    public void testGetCommunicationchannelIII() throws CommunicationException {
+        final String coordinate = "jack@crusher";
+        assertEquals(Source.mail, BaseConnector.getCCedCommunicationChannel(coordinate));
+    }
+
+    @Test
+    public void testGetCommunicationchannelIV() throws CommunicationException {
+        final String coordinate = "@jack_crusher";
+        assertEquals(Source.twitter, BaseConnector.getCCedCommunicationChannel(coordinate)); // With the leading @
+        assertEquals(Source.twitter, BaseConnector.getCCedCommunicationChannel(coordinate.substring(1))); // Without the leading @
+    }
+
+    @Test(expected=CommunicationException.class)
     public void testCommunicateToCCedI() throws CommunicationException {
         final String mailAddress = "jack@@@crusher";
         final String message = "test";
         final String subject = "subject";
-        BaseConnector.communicateToCCed(mailAddress, subject, message, Locale.ENGLISH);
+        BaseConnector.communicateToCCed(null, mailAddress, subject, message, Locale.ENGLISH); // Source == null to let the method calling getCCedCommunicationChannel()
     }
 
     @Test(expected=CommunicationException.class)
@@ -425,7 +451,7 @@ public class TestBaseConnector {
             }
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-        BaseConnector.communicateToCCed(twitterId, subject, message, Locale.ENGLISH);
+        BaseConnector.communicateToCCed(Source.twitter, twitterId, subject, message, Locale.ENGLISH);
     }
 
     @Test(expected=CommunicationException.class)
@@ -441,6 +467,22 @@ public class TestBaseConnector {
             }
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-        BaseConnector.communicateToCCed(twitterId, subject, message, Locale.ENGLISH);
+        BaseConnector.communicateToCCed(Source.mail, twitterId, subject, message, Locale.ENGLISH);
+    }
+
+    @Test
+    @SuppressWarnings({ "deprecation", "serial" })
+    public void testCommunicateToCCedIV() throws CommunicationException {
+        final String twitterId = "@jack_crusher";
+        final String message = "test";
+        final String subject = "subject";
+        final Twitter mockTwitterAccount = (new Twitter() {
+            @Override
+            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
+                return new MockDirectMessage("ds", "ds", "ds");
+            }
+        });
+        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
+        BaseConnector.communicateToCCed(Source.twitter, twitterId, subject, message, Locale.ENGLISH);
     }
 }

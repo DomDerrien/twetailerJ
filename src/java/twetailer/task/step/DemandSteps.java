@@ -371,7 +371,8 @@ public class DemandSteps extends BaseSteps {
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
                     communicateToConsumer(
-                            new RawCommand(demand.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            demand.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            "To be fixed!", // FIXME
                             owner,
                             new String[] { msgGen.getMessage(MessageId.demandClosingAck) }
                     );
@@ -395,7 +396,8 @@ public class DemandSteps extends BaseSteps {
 
                     try {
                         communicateToConsumer(
-                                new RawCommand(saConsumerRecord.getPreferredConnection()),
+                                saConsumerRecord.getPreferredConnection(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                                "To be fixed!", // FIXME
                                 saConsumerRecord,
                                 new String[] { msgGen.getMessage(MessageId.demandClosingNot) }
                         );
@@ -437,7 +439,8 @@ public class DemandSteps extends BaseSteps {
                     String tags = proposal.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
                     try {
                         communicateToConsumer(
-                                rawCommand,
+                                rawCommand.getSource(),
+                                rawCommand.getSubject(),
                                 saConsumerRecord,
                                 new String[] { LabelExtractor.get("cp_command_cancel_demand_canceled_proposal_to_be_canceled", new Object[] { demandRef, proposalRef, tags }, locale) }
                         );

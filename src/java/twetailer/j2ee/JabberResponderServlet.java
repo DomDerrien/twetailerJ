@@ -131,7 +131,8 @@ public class JabberResponderServlet extends HttpServlet {
                 try {
                     // Useful because it has a fallback mechanism on e-mail
                     BaseConnector.communicateToConsumer(
-                            rawCommand,
+                            rawCommand.getSource(),
+                            null, // No subject required
                             consumer,
                             new String[] { rawCommand.getErrorMessage() }
                     );

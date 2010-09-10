@@ -3,8 +3,10 @@ package twetailer.task.step;
 import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
@@ -128,7 +130,12 @@ public class BaseSteps {
                     parameters,
                     locale
             );
-            communicateToConsumer(rawCommand, associate, new String[] { message });
+            communicateToConsumer(
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
+                    associate,
+                    new String[] { message }
+            );
         }
     }
 
@@ -172,6 +179,8 @@ public class BaseSteps {
                     "0" // 28
             };
 
+            String subject = null;
+
             // Send the proposal details to the owner
             if (!Source.api.equals(demand.getSource())) {
                 String message = MessageGenerator.getMessage(
@@ -181,7 +190,17 @@ public class BaseSteps {
                         parameters,
                         locale
                 );
-                communicateToConsumer(new RawCommand(consumer.getPreferredConnection()), consumer, new String[] { message });
+
+                Map<String, Object> cmdPrm = new HashMap<String, Object>();
+                cmdPrm.put("demand>key", demand.getKey());
+                // subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20"); // FIXME
+
+                communicateToConsumer(
+                        consumer.getPreferredConnection(),
+                        subject,
+                        consumer,
+                        new String[] { message }
+                );
             }
 
             // Send the proposal details to the CC'ed users
@@ -193,7 +212,7 @@ public class BaseSteps {
                         parameters,
                         locale
                 );
-                notifyMessageToCCed(cc, "Copy of Twetailer Notification",  message, locale);
+                notifyMessageToCCed(cc, subject,  message, locale);
             }
         }
     }
@@ -328,7 +347,7 @@ public class BaseSteps {
     public static void notifyMessageToCCed(List<String> coordinates, String subject, String message, Locale locale) {
         for (String coordinate: coordinates) {
             try {
-                communicateToCCed(coordinate, subject, message, locale);
+                communicateToCCed(Source.mail, coordinate, subject, message, locale);
             }
             catch (ClientException e) { } // Too bad, cannot contact the CC-ed person... Don't block the next sending!
         }

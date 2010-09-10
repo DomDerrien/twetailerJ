@@ -59,7 +59,8 @@ public class CloseCommandProcessor {
             }
             if (message != null) {
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         consumer,
                         new String[] { message }
                 );
@@ -89,7 +90,8 @@ public class CloseCommandProcessor {
             }
             if (message != null) {
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         consumer,
                         new String[] { message }
                 );
@@ -98,7 +100,8 @@ public class CloseCommandProcessor {
         }
 
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 new String[] { LabelExtractor.get("cp_command_close_invalid_parameters", consumer.getLocale()) }
         );

@@ -371,7 +371,8 @@ public class ProposalSteps extends BaseSteps {
                             locale
                     );
                     communicateToConsumer(
-                            new RawCommand(proposal.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            proposal.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            "To be fixed!", // FIXME
                             saConsumerRecord,
                             new String[] { message }
                     );
@@ -395,7 +396,8 @@ public class ProposalSteps extends BaseSteps {
                     );
                     try {
                         communicateToConsumer(
-                                new RawCommand(demandOwner.getPreferredConnection()),
+                                demandOwner.getPreferredConnection(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                                "To be fixed!", // FIXME
                                 demandOwner,
                                 new String[] { message }
                         );
@@ -431,7 +433,8 @@ public class ProposalSteps extends BaseSteps {
                     String tags = proposal.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
                     try {
                         communicateToConsumer(
-                                rawCommand,
+                                rawCommand.getSource(),
+                                rawCommand.getSubject(),
                                 demandOwner,
                                 new String[] { LabelExtractor.get("cp_command_cancel_proposal_canceled_demand_to_be_published", new Object[] { proposalRef, demandRef, tags }, locale) }
                         );
@@ -593,7 +596,8 @@ public class ProposalSteps extends BaseSteps {
                         demandOwner.getLocale()
                 );
                 communicateToConsumer(
-                        new RawCommand(demand.getSource()), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                        demand.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                        "To be fixed!", // FIXME
                         demandOwner,
                         new String[] { message }
                 );
@@ -621,7 +625,8 @@ public class ProposalSteps extends BaseSteps {
                         saConsumerRecord.getLocale()
                 );
                 communicateToConsumer(
-                        new RawCommand(saConsumerRecord.getPreferredConnection()),
+                        saConsumerRecord.getPreferredConnection(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                        "To be fixed!", // FIXME
                         saConsumerRecord,
                         new String[] { message }
                 );

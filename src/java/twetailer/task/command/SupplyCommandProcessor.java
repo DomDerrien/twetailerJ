@@ -78,7 +78,8 @@ public class SupplyCommandProcessor {
             }
         }
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 messages.toArray(new String[messages.size()])
 

@@ -61,7 +61,8 @@ public class DeclineCommandProcessor {
                 message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );
@@ -69,7 +70,8 @@ public class DeclineCommandProcessor {
         }
 
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 new String[] { LabelExtractor.get("cp_command_decline_invalid_parameters", consumer.getLocale()) }
         );

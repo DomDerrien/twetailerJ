@@ -59,7 +59,8 @@ public class ConfirmCommandProcessor {
                 message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );
@@ -67,7 +68,8 @@ public class ConfirmCommandProcessor {
         }
 
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 new String[] { LabelExtractor.get("cp_command_confirm_missing_proposal_id", consumer.getLocale()) }
         );

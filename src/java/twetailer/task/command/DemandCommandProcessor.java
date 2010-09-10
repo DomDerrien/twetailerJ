@@ -57,7 +57,8 @@ public class DemandCommandProcessor {
         // Inform the demand owner
         if (message != null) {
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );

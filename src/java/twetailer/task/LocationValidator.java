@@ -97,7 +97,8 @@ public class LocationValidator {
                 Locale locale = consumer.getLocale();
                 try {
                     communicateToConsumer(
-                            rawCommand,
+                            rawCommand.getSource(),
+                            rawCommand.getSubject(),
                             consumer,
                             new String[] {
                                     LabelExtractor.get(

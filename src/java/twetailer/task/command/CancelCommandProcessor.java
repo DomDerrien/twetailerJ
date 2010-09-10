@@ -65,7 +65,8 @@ public class CancelCommandProcessor {
                 message = LabelExtractor.get("cp_command_cancel_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );
@@ -96,7 +97,8 @@ public class CancelCommandProcessor {
                 message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );
@@ -104,7 +106,8 @@ public class CancelCommandProcessor {
         }
 
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 new String[] { LabelExtractor.get("cp_command_cancel_missing_demand_id", consumer.getLocale()) }
         );

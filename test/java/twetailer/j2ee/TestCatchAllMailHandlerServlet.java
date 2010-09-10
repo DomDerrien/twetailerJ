@@ -64,7 +64,7 @@ public class TestCatchAllMailHandlerServlet {
             }
             @Override
             public String getPathInfo() {
-                return MailResponderServlet.responderEndpoints.get(0);
+                return MailResponderServlet.getResponderEndpoints().get(0);
             }
         };
 
@@ -87,7 +87,7 @@ public class TestCatchAllMailHandlerServlet {
             }
             @Override
             public String getPathInfo() {
-                return MailResponderServlet.responderEndpoints.get(0);
+                return MailResponderServlet.getResponderEndpoints().get(0);
             }
         };
 
@@ -110,7 +110,7 @@ public class TestCatchAllMailHandlerServlet {
             }
             @Override
             public String getPathInfo() {
-                return MailResponderServlet.responderEndpoints.get(0);
+                return MailResponderServlet.getResponderEndpoints().get(0);
             }
         };
 
@@ -133,7 +133,7 @@ public class TestCatchAllMailHandlerServlet {
             }
             @Override
             public String getPathInfo() {
-                return MailResponderServlet.responderEndpoints.get(0);
+                return MailResponderServlet.getResponderEndpoints().get(0);
             }
         };
 

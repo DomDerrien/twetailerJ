@@ -50,7 +50,8 @@ public class DeleteCommandProcessor {
                 message = LabelExtractor.get("cp_command_delete_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );
@@ -81,7 +82,8 @@ public class DeleteCommandProcessor {
                 message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );
@@ -89,7 +91,8 @@ public class DeleteCommandProcessor {
         }
 
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 new String[] { LabelExtractor.get("cp_command_delete_invalid_parameters", consumer.getLocale()) }
         );

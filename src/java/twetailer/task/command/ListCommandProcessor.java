@@ -67,7 +67,8 @@ public class ListCommandProcessor {
                     message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
                 }
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         consumer,
                         new String[] { message }
                 );
@@ -103,7 +104,8 @@ public class ListCommandProcessor {
                     message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
                 }
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         consumer,
                         new String[] { message }
                 );
@@ -126,7 +128,8 @@ public class ListCommandProcessor {
                     message = LabelExtractor.get("cp_command_list_invalid_store_id", locale);
                 }
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         consumer,
                         new String[] { message }
                 );
@@ -175,7 +178,12 @@ public class ListCommandProcessor {
                         new Object[] { LabelExtractor.get( "cp_tweet_store_reference_part", new Object[] { "*" }, locale) },
                         locale
                 );
-                communicateToConsumer(rawCommand, consumer, new String[] { messageForMissingLocation });
+                communicateToConsumer(
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
+                        consumer,
+                        new String[] { messageForMissingLocation }
+                );
                 return;
             }
 
@@ -194,7 +202,8 @@ public class ListCommandProcessor {
                 }
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     messages.toArray(new String[0])
             );
@@ -209,7 +218,12 @@ public class ListCommandProcessor {
                         new Object[] { LabelExtractor.get( "cp_tweet_proposal_reference_part", new Object[] { "*" }, locale) },
                         locale
                 );
-                communicateToConsumer(rawCommand, consumer, new String[] { messageForMissingLocation });
+                communicateToConsumer(
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
+                        consumer,
+                        new String[] { messageForMissingLocation }
+                );
                 return;
             }
 
@@ -238,7 +252,8 @@ public class ListCommandProcessor {
                 }
             }
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     messages.toArray(new String[0])
             );
@@ -252,7 +267,12 @@ public class ListCommandProcessor {
                     new Object[] { LabelExtractor.get( "cp_tweet_demand_reference_part", new Object[] { "*" }, locale) },
                     locale
             );
-            communicateToConsumer(rawCommand, consumer, new String[] { messageForMissingLocation });
+            communicateToConsumer(
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
+                    consumer,
+                    new String[] { messageForMissingLocation }
+            );
             return;
         }
 
@@ -281,7 +301,8 @@ public class ListCommandProcessor {
             }
         }
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 messages.toArray(new String[0])
         );
@@ -296,7 +317,12 @@ public class ListCommandProcessor {
         // Inform the user about a possible delay
         String localePart = LabelExtractor.get("cp_tweet_locale_part", new Object[] { postalCode, countryCode }, locale);
         String message = LabelExtractor.get("cp_command_list_with_new_location", new String[] { localePart }, locale);
-        communicateToConsumer(rawCommand, consumer, new String[] { message });
+        communicateToConsumer(
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
+                consumer,
+                new String[] { message }
+        );
 
         // Schedule the validation task that will resolve the location geo-coordinates
         Queue queue = BaseSteps.getBaseOperations().getQueue();

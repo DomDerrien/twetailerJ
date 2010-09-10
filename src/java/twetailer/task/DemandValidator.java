@@ -1,12 +1,15 @@
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
+import static twetailer.connector.BaseConnector.communicateToCCed;
+import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -34,6 +37,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
  * Define the task with is invoked by methods in DemandSteps
@@ -192,7 +196,8 @@ public class DemandValidator {
 
                     if (!Source.api.equals(demand.getSource())) {
                         communicateToConsumer(
-                            rawCommand,
+                            rawCommand.getSource(),
+                            rawCommand.getSubject(),
                             consumer,
                             new String[] { message }
                         );
@@ -246,7 +251,8 @@ public class DemandValidator {
                     String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                     String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { serializedHashTags.trim() }, locale);
                     communicateToConsumer(
-                            new RawCommand(demand.getSource()),
+                            demand.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            "To be fixed!", // FIXME
                             consumer,
                             new String[] { LabelExtractor.get("dv_report_hashtag_warning", new Object[] { demandRef, tags }, locale) }
                     );
@@ -276,51 +282,79 @@ public class DemandValidator {
             boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
             Locale locale = owner.getLocale();
 
-            MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
-            msgGen.
-                put("demand>owner>name", owner.getName()).
-                fetch(demand).
-                fetch(location, "demand").
-                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+            MessageGenerator msgGen = null;
+            String message = null;
+            String subject = null;
 
             if (!Source.api.equals(demand.getSource())) {
-                final String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
-                final String cancelDemand = "cancel demand:" + demand.getKey().toString();
-                final String updateDemand = "update demand:" + demand.getKey().toString();
+                msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                msgGen.
+                    put("demand>owner>name", owner.getName()).
+                    fetch(demand).
+                    fetch(location, "demand").
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                Map<String, Object> cmdPrm = new HashMap<String, Object>();
+                cmdPrm.put("demand>key", demand.getKey());
+                cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+                String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", cmdPrm, locale);
+                // String updateDemand = "update demand:" + demand.getKey().toString();
+
+                if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
+                    subject = rawCommand.getSubject();
+                }
+                else {
+                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                }
 
                 msgGen.
-                    put("control>threadSubject", msgGen.put("control.threadSubject", "ezToff Notification about Request:" + demand.getKey())).
-                    put("control>cancelDemand", (cancelDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A")).
-                    put("control>updateDemand", (updateDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                    put("control>threadSubject", subject).
+                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                    // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
                 if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
                     msgGen.put("control>threadSubject", rawCommand.getSubject());
                 }
 
-                // TODO: place 'automatedResponseFooter' loaded by msgGen.getRawMessage()
-                // TODO: load default 'threadSubject' and inject a the demand key
-                // TODO: add 'long_command_cancel_demand' in the TMX
-                // TODO: add 'long_command_update_demand' in the TMX
+                message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
 
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         owner,
-                        new String[] { msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck) }
+                        new String[] { message }
                 );
             }
 
             // Send a notification to the CC'ed users
             if (cc != null && 0 < cc.size()) {
-                msgGen.
-                    remove("control>threadSubject").
-                    remove("control>cancelDemand").
-                    remove("control>updateDemand");
-                String message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationCpy: MessageId.demandUpdateCpy);
-
                 for (String coordinate: cc) {
                     try {
+                        Source source = getCCedCommunicationChannel(coordinate);
+
+                        if (msgGen == null || !source.equals(msgGen.getCommunicationChannel())) {
+                            //
+                            // TODO: cache the MessageGenerator instance per Source value to avoid unnecessary re-creation!
+                            //
+                            msgGen = new MessageGenerator(Source.mail, demand.getHashTags(), locale);
+                            msgGen.
+                                put("demand>owner>name", owner.getName()).
+                                fetch(demand).
+                                fetch(location, "demand").
+                                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                            message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationCpy: MessageId.demandUpdateCpy);
+                        }
+
+                        if (subject == null) {
+                            Map<String, Object> cmdPrm = new HashMap<String, Object>();
+                            cmdPrm.put("demand>key", demand.getKey());
+                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                        }
+
                         communicateToCCed(
+                                source,
                                 coordinate,
-                                "Copy of ezToff Notification about Request:" + demand.getKey(),
+                                subject,
                                 message,
                                 locale
                         );

@@ -194,7 +194,8 @@ public class DemandProcessor {
                         RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                         String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                         communicateToConsumer(
-                                rawCommand,
+                                rawCommand.getSource(),
+                                rawCommand.getSubject(),
                                 owner,
                                 new String[] {
                                     LabelExtractor.get(
@@ -212,7 +213,8 @@ public class DemandProcessor {
                     else if (cronJob && initialNumberOfSaleAssociatesContacted == 0) {
                         RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                         communicateToConsumer(
-                                rawCommand,
+                                rawCommand.getSource(),
+                                rawCommand.getSubject(),
                                 owner,
                                 new String[] {
                                     LabelExtractor.get(
@@ -345,7 +347,7 @@ public class DemandProcessor {
 
         Locale locale = associate.getLocale();
         final String proposedDate = DateUtils.dateToYMD(demand.getDueDate());
-        final String mailSubject = "ezToff Notification about Request:" + demand.getKey();
+        final String subject = "ezToff Notification about Request:" + demand.getKey();
         final String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
         final String createProposal = "propose demand:" + demand.getKey().toString() + " players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}";
         final String declineDemand = "decline demand:" + demand.getKey().toString();
@@ -355,7 +357,7 @@ public class DemandProcessor {
             put("proposal>owner>name", associate.getName()).
             fetch(demand).
             put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
-            put("control>threadSubject", msgGen.put("control.threadSubject", mailSubject)).
+            put("control>threadSubject", msgGen.put("control.threadSubject", subject)).
             put("control>createProposal", (createProposal + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A")).
             put("control>declineDemand", (declineDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
 
@@ -365,9 +367,10 @@ public class DemandProcessor {
         // TODO: add 'long_command_decline_demand' in the TMX
 
         RawCommand rawCommand = new RawCommand(associate.getPreferredConnection());
-        rawCommand.setSubject(mailSubject);
+        rawCommand.setSubject(subject);
         communicateToConsumer(
-                rawCommand,
+                associate.getPreferredConnection(),
+                subject,
                 associate,
                 new String[] { msgGen.getMessage(MessageId.demandCreationNot) }
         );

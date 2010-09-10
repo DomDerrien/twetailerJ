@@ -64,7 +64,8 @@ public class LanguageCommandProcessor {
         }
 
         communicateToConsumer(
-                rawCommand,
+                rawCommand.getSource(),
+                rawCommand.getSubject(),
                 consumer,
                 new String[] { LabelExtractor.get( messageId, messageParams, locale) }
         );

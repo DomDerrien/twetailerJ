@@ -40,20 +40,38 @@ public class BaseConnector {
     /**
      * Send the specified message to the RawCommand emitter, using the same communication channel
      *
+     * @param source (Optional) Type of communication channel to use
      * @param coordinate Identifier of a CC-ed contact
-     * @param e-mail subject, for thread-aware mail readers
      * @param message Text to forward to the CC-ed contact
      * @param locale recipient's locale (expects it's good for the CC-ed contact too)
      *
+     * @param e-mail subject, for thread-aware mail readers
      * @throws CommunicationException If the communication fails
      */
-    public static void communicateToCCed(String coordinate, String subject, String message, Locale locale) throws CommunicationException {
-        Source source = Source.mail;
-        int arobasIdx = coordinate.indexOf('@');
-        if (arobasIdx == -1 || arobasIdx == 0) { // No arobas, or at the leading character
-            source = Source.twitter;
+    public static void communicateToCCed(Source source, String coordinate, String subject, String message, Locale locale) throws CommunicationException {
+        if (source == null) {
+            source = getCCedCommunicationChannel(coordinate);
         }
         communicateToUser(source, true, coordinate, null, subject, new String[] { message }, locale);
+    }
+
+    /**
+     * Determine the communication channel to use for the given coordinate
+     *
+     * @param coordinate Communication identifier (e-mail address, Twitter Id, etc.)
+     * @return The communication channel identifier, with <code>Source.mail</code> as default
+     *
+     * @throws CommunicationException If the coordinate is invalid
+     */
+    public static Source getCCedCommunicationChannel(String coordinate) throws CommunicationException {
+        if (coordinate == null || coordinate.length() < 2) {
+            throw new CommunicationException("Invalid coordinate!");
+        }
+        int arobasIdx = coordinate.indexOf('@');
+        if (arobasIdx == -1 || arobasIdx == 0) { // No arobas, or at the leading character
+            return Source.twitter;
+        }
+        return Source.mail;
     }
 
     /**
@@ -73,15 +91,20 @@ public class BaseConnector {
      * Send the specified message to the identified consumer, using the suggested communication channel.
      * If the suggested communication fails, the System can try to use another channel if the Consumer profile contains alternatives.
      *
-     * @param rawCommand Message triggering this response
+     * @param source Identifier of the suggested communication channel
+     * @param subject Subject of the discussion, will be prefixed by "Re:" for a message to owner, by "Fwd:" for a message to a CC'ed, by nothing when it's a notification
      * @param consumer targeted user
      * @param messages Array of messages to send back
      *
      * @throws CommunicationException If all communication attempts fail
      */
-    public static void communicateToConsumer(RawCommand rawCommand, Consumer consumer, String[] messages) throws CommunicationException {
+    public static void communicateToConsumer(Source source, String subject, Consumer consumer, String[] messages) throws CommunicationException {
+        //
+        // Pass "source" & "subject" as arguments in place of "rawCommand", especially because the rawCommand mainly convey the source!
+        // Then the caller will have to rely decide which subject to send, in the user's locale and with possibly arguments related to the order
+        //
+
         // TODO: implement the fall back mechanism
-        Source source = rawCommand.getSource();
         String userId =
             Source.twitter.equals(source) ? consumer.getTwitterId() :
                 Source.jabber.equals(source) ? consumer.getJabberId() :
@@ -90,7 +113,7 @@ public class BaseConnector {
                             null;
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, false, userId, userName, rawCommand.getSubject(), messages, consumer.getLocale());
+            communicateToUser(source, false, userId, userName, subject, messages, consumer.getLocale());
         }
     }
 
@@ -105,7 +128,7 @@ public class BaseConnector {
      * @param useCcAccount Indicates that the message should be sent from a CC account, which is going to ignore unexpected replies
      * @param userId User identifier (can be Jabber ID, Twitter screen name, etc.)
      * @param userName User display name
-     * @param subject TODO
+     * @param subject Subject of the discussion, will be prefixed by "Re:" for a message to owner, by "Fwd:" for a message to a CC'ed, by nothing when it's a notification
      * @param messages Array of messages to send back
      * @param locale recipient's locale
      *

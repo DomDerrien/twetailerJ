@@ -14,7 +14,6 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Store;
 import twetailer.dto.HashTag.RegisteredHashTag;
-import twetailer.task.CommandLineParser;
 import twetailer.validator.CommandSettings;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
@@ -42,10 +41,12 @@ public class MessageGenerator {
      * Identifiers of the message the class can handle transparently
      */
     public enum MessageId {
-        messageFooter("message_footer"),
-        emptyListIndicator("emptyListIndicator"),
         dateFormat("dateFormat"),
         dateTimeFormat("dateTimeFormat"),
+        emptyListIndicator("emptyListIndicator"),
+
+        messageSubject("message_subject"),
+        messageFooter("message_footer"),
 
         /** For message sent to the demand owner to confirm the demand creation */
         demandCreationAck("demand_creation_ackToOwner"),
@@ -177,6 +178,7 @@ public class MessageGenerator {
         return out;
     }
 
+    private Source communicationChannel;
     private String channelPrefix;
     private String verticalPrefix;
     private Locale userLocale;
@@ -184,6 +186,12 @@ public class MessageGenerator {
     private String dateTimeFormat;
     private Map<String, Object> parameters = new HashMap<String, Object>();
 
+    /** Accessor */
+    public Source getCommunicationChannel() {
+        return communicationChannel;
+    }
+
+    /** Accessor */
     protected Map<String, Object> getParameters() {
         return parameters;
     }
@@ -197,6 +205,7 @@ public class MessageGenerator {
      * @param locale End-user's locale
      */
     public MessageGenerator(Source communicationChannel, List<String> hashTags, Locale locale) {
+        this.communicationChannel = communicationChannel;
         channelPrefix = getChannelPrefix(communicationChannel);
         verticalPrefix = getVerticalPrefix(hashTags);
         userLocale = locale;

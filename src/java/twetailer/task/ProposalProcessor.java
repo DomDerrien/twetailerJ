@@ -105,7 +105,12 @@ public class ProposalProcessor {
                             locale
                     );
                     RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
-                    communicateToConsumer(rawCommand, saConsumerRecord, new String[] { message });
+                    communicateToConsumer(
+                            rawCommand.getSource(),
+                            rawCommand.getSubject(),
+                            saConsumerRecord,
+                            new String[] { message }
+                    );
                 }
             }
             catch (InvalidIdentifierException ex) {

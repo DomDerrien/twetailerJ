@@ -132,7 +132,8 @@ public class ProposalValidator {
 
                     if (!Source.api.equals(proposal.getSource())) {
                         communicateToConsumer(
-                                rawCommand,
+                                rawCommand.getSource(),
+                                rawCommand.getSubject(),
                                 saConsumerRecord,
                                 new String[] { message }
                         );
@@ -186,7 +187,8 @@ public class ProposalValidator {
                     String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                     String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { serializedHashTags.trim() }, locale);
                     communicateToConsumer(
-                            new RawCommand(proposal.getSource()),
+                            proposal.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
+                            "To be fixed!", // FIXME
                             saConsumerRecord,
                             new String[] { LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, locale) }
                     );

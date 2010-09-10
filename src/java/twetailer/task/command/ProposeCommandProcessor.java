@@ -81,7 +81,8 @@ public class ProposeCommandProcessor {
         // Inform the proposal owner
         if (message != null) {
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { message }
             );

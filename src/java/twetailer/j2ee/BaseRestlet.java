@@ -284,15 +284,17 @@ public abstract class BaseRestlet extends HttpServlet {
             else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource update");
             }
-            Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
-            if (keyMatcher.matches()) {
-                // Get the key
-                String key = keyMatcher.group(1);
-                // Update the identified resource
-                out.put("resource", updateResource(in, key, loggedUser));
-            }
             else {
-                throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+                Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
+                if (keyMatcher.matches()) {
+                    // Get the key
+                    String key = keyMatcher.group(1);
+                    // Update the identified resource
+                    out.put("resource", updateResource(in, key, loggedUser));
+                }
+                else {
+                    throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
+                }
             }
         }
         catch (ReservedOperationException ex) {

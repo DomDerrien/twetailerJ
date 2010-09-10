@@ -274,7 +274,8 @@ public class CommandProcessor {
             boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
             // Report the error to the raw command emitter
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { LabelExtractor.get("error_unexpected", new Object[] { rawCommand.getKey(), exposeInfo ? additionalInfo + ". " : "" }, senderLocale) }
             );
@@ -435,7 +436,8 @@ public class CommandProcessor {
             }
             else {
                 communicateToConsumer(
-                        rawCommand,
+                        rawCommand.getSource(),
+                        rawCommand.getSubject(),
                         consumer,
                         new String[] { LabelExtractor.get("cp_command_parser_unsupported_action", new Object[] { action }, locale) }
                 );
@@ -443,7 +445,8 @@ public class CommandProcessor {
         }
         catch(ReservedOperationException ex) {
             communicateToConsumer(
-                    rawCommand,
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
                     consumer,
                     new String[] { LabelExtractor.get("cp_command_parser_reserved_action", new Object[] { action }, locale) }
             );
