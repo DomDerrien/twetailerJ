@@ -47,14 +47,19 @@
         value="http://anothersocialeconomy.com/"
     />
 
-    <property name="app.productShortName"
-        description="Short name of the company used for the JavaScript namespace"
+    <property name="app.appEngineId"
+        description="Application identifier for Google App Engine"
+        value="anothersocialeconomy"
+    />
+
+    <property name="app.packageName"
+        description="Namespace for th Java and JavaScript classes"
         value="twetailer"
     />
 
     <property name="app.contextRoot"
         description="Application context root for the containers"
-        value="${app.productShortName}"
+        value="${app.packageName}"
     />
 
     <property name="app.servletApiPath"
@@ -94,7 +99,7 @@
 
     <property name="app.dbName"
         description="Database name"
-        value="${app.productShortName}"
+        value="${app.packageName}"
     />
 
     <property name="app.dbURL"
@@ -164,7 +169,7 @@
     />
     <property name="javadoc.docs.window.title"
         description="Piece of information inserted as the title page of all HTML pages produced by JavaDoc."
-        value="Twetailer API and Console"
+        value="AnotherSocialEconomy API and Console"
     />
 	
     <!-- ============== -->
@@ -183,7 +188,7 @@
                 <include name="docs/test-reports/**/*" />
                 <exclude name="src" />
                 <include name="src/war/js/dojo/**/*" />
-                <include name="src/war/js/${app.productShortName}/nls/**/*" />
+                <include name="src/war/js/${app.packageName}/nls/**/*" />
                 <include name="src/war/WEB-INF/classes/com/**/*" />
                 <include name="src/war/WEB-INF/classes/org/**/*" />
                 <include name="src/war/WEB-INF/classes/${app.masterLocalizedLabelBaseFilename}*.properties" />
@@ -383,7 +388,8 @@
             <token key="app.productWebsite" value="${app.productWebsite}" />
             <token key="app.productName" value="${app.productName}" />
             <token key="app.productEmailDomain" value="${app.productEmailDomain}" />
-            <token key="app.productShortName" value="${app.productShortName}" />
+            <token key="app.appEngineId" value="${app.appEngineId}" />
+            <token key="app.packageName" value="${app.packageName}" />
             <token key="app.contextRoot" value="${app.contextRoot}" />
             <token key="app.servletApiPath" value="${app.servletApiPath}" />
             <token key="dd2tu.languageListFilename" value="${app.languageListFilename}" />
@@ -712,7 +718,7 @@
     </target>
 
     <target name="step-tmx-convert">
-        <mkdir dir="src/war/js/${app.productShortName}/nls" />
+        <mkdir dir="src/war/js/${app.packageName}/nls" />
         <java
             classname="domderrien.build.TMXConverter"
             failonerror="true"
@@ -725,7 +731,7 @@
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.packageName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
@@ -743,10 +749,10 @@
             file="src/war/WEB-INF/classes/${app.masterLocalizedLabelBaseFilename}.properties"
             tofile="src/war/WEB-INF/classes/${app.masterLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.packageName}/nls/en" />
         <copy
-            file="src/war/js/${app.productShortName}/nls/${app.masterLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${app.productShortName}/nls/en"
+            file="src/war/js/${app.packageName}/nls/${app.masterLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.packageName}/nls/en"
         />
         <java
             classname="domderrien.build.TMXConverter"
@@ -759,7 +765,7 @@
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.packageName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
@@ -777,10 +783,10 @@
             file="src/war/WEB-INF/classes/${app.secondLocalizedLabelBaseFilename}.properties"
             tofile="src/war/WEB-INF/classes/${app.secondLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.packageName}/nls/en" />
         <copy
-            file="src/war/js/${app.productShortName}/nls/${app.secondLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${app.productShortName}/nls/en"
+            file="src/war/js/${app.packageName}/nls/${app.secondLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.packageName}/nls/en"
         />
         <java
             classname="domderrien.build.TMXConverter"
@@ -793,7 +799,7 @@
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.packageName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
@@ -811,10 +817,10 @@
             file="src/war/WEB-INF/classes/${app.thirdLocalizedLabelBaseFilename}.properties"
             tofile="src/war/WEB-INF/classes/${app.thirdLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.packageName}/nls/en" />
         <copy
-            file="src/war/js/${app.productShortName}/nls/${app.thirdLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${app.productShortName}/nls/en"
+            file="src/war/js/${app.packageName}/nls/${app.thirdLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.packageName}/nls/en"
         />
         <java
             classname="domderrien.build.TMXConverter"
@@ -827,7 +833,7 @@
             <arg value="-sourcePath" />
             <arg value="${basedir}${file.separator}src${file.separator}resources" />
             <arg value="-jsDestPath" />
-            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.productShortName}${file.separator}nls" />
+            <arg value="${basedir}${file.separator}src${file.separator}war${file.separator}js${file.separator}${app.packageName}${file.separator}nls" />
             <arg value="-javaDestPath" />
             <arg value="${temp.dir}" />
             <arg value="-languageFilenameBase" />
@@ -845,10 +851,10 @@
             file="src/war/WEB-INF/classes/${app.fourthLocalizedLabelBaseFilename}.properties"
             tofile="src/war/WEB-INF/classes/${app.fourthLocalizedLabelBaseFilename}_en.properties"
         />
-        <mkdir dir="src/war/js/${app.productShortName}/nls/en" />
+        <mkdir dir="src/war/js/${app.packageName}/nls/en" />
         <copy
-            file="src/war/js/${app.productShortName}/nls/${app.fourthLocalizedLabelBaseFilename}.js"
-            todir="src/war/js/${app.productShortName}/nls/en"
+            file="src/war/js/${app.packageName}/nls/${app.fourthLocalizedLabelBaseFilename}.js"
+            todir="src/war/js/${app.packageName}/nls/en"
         />
     </target>
 
@@ -901,7 +907,7 @@
     
     <target name="step-package-jar">
         <mkdir dir="bin/distribution" />
-        <delete file="bin/distribution/${app.productShortName}-${app.release}.jar" />
+        <delete file="bin/distribution/${app.packageName}-${app.release}.jar" />
         <copy todir="src/war/WEB-INF/classes" overwrite="yes">
             <fileset dir="src/resources">
                 <include name="**/*.x*" />
@@ -910,7 +916,7 @@
             </fileset>
             <filterchain refid="genericFilterChain" />
         </copy>
-        <jar destfile="bin/distribution/${app.productShortName}-${app.release}.jar">
+        <jar destfile="bin/distribution/${app.packageName}-${app.release}.jar">
             <fileset dir="src/war/WEB-INF/classes">
                 <include name="**/*" />
                 <exclude name="**/build/**" />
@@ -927,7 +933,7 @@
 
     <target name="step-package-src-jar">
         <mkdir dir="bin/distribution" />
-        <jar destfile="bin/distribution/${app.productShortName}-${app.release}-src.jar">
+        <jar destfile="bin/distribution/${app.packageName}-${app.release}-src.jar">
             <fileset dir="src" excludes="**/package.html,**/*.db,**/*.keep*,**/*.contrib*"/>
         </jar>
         </target>
@@ -936,7 +942,7 @@
             <mkdir dir="bin/distribution" />
             <mkdir dir="${temp.dir}/stage" />
             <war
-                destfile="bin/distribution/${app.productShortName}-${app.release}.war"
+                destfile="bin/distribution/${app.packageName}-${app.release}.war"
                 webxml="src/war/WEB-INF/web.xml"
                 compress="true"
             >
@@ -1008,12 +1014,12 @@
         <mkdir dir="bin/distribution" />
         <copy todir="${temp.dir}/stage/WEB-INF/lib" flatten="true" overwrite="yes">
             <fileset dir="bin/distribution">
-                <include name="${app.productShortName}-${app.release}.jar" />
+                <include name="${app.packageName}-${app.release}.jar" />
             </fileset>
             <fileset refid="runtime.deps" />
         </copy>
         <war
-            destfile="bin/distribution/${app.productShortName}-${app.release}.war"
+            destfile="bin/distribution/${app.packageName}-${app.release}.war"
             webxml="${temp.dir}/stage/WEB-INF/web.xml"
             compress="true"
         >
@@ -1032,7 +1038,7 @@
     <target name="step-package-ear">
         <delete verbose="true" failonerror="false">
             <fileset dir="bin/distribution">
-                <include name="${app.productShortName}-${app.release}.ear" />
+                <include name="${app.packageName}-${app.release}.ear" />
             </fileset>
         </delete>
         <copy file="src/resources/application.xml.tmpl" tofile="${temp.dir}/stage/application.xml" overwrite="yes">
@@ -1040,12 +1046,12 @@
         </copy>
         <mkdir dir="bin/distribution" />
         <ear
-            destfile="bin/distribution/${app.productShortName}-${app.release}.ear"
+            destfile="bin/distribution/${app.packageName}-${app.release}.ear"
             appxml="${temp.dir}/stage/application.xml"
             compress="true"
         >
             <fileset dir="bin/distribution">
-                <include name="${app.productShortName}-${app.release}.war" />
+                <include name="${app.packageName}-${app.release}.war" />
             </fileset>
             <manifest>
                 <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
@@ -1168,7 +1174,7 @@
             <sysproperty key="resourceBase" value="${basedir}" />
             <sysproperty key="timeoutSeconds" value="${jsunit.timeout.seconds}" />
             <!-- See: http://www.jsunit.net/documentation/standardQueryStrings.html -->
-            <sysproperty key="url" value="file:///${basedir}/bin/jsunit/testRunner.html?testPage=${basedir}/test/war/JSUnitSuite.html&amp;resultId=${app.productShortName}" />
+            <sysproperty key="url" value="file:///${basedir}/bin/jsunit/testRunner.html?testPage=${basedir}/test/war/JSUnitSuite.html&amp;resultId=${app.packageName}" />
 
             <test name="net.jsunit.StandaloneTest" todir="${basedir}/docs/test-reports/jsunit-xml" />
         </junit>
@@ -1196,10 +1202,10 @@
             <!--arg value="- -exclude=dojo/util" /-->
             <!--arg value="- -no-instrument=dojo" /-->
             <!--arg value="- -no-instrument=domderrien/i18n/nls" /-->
-            <!--arg value="- -no-instrument=${app.productShortName}/nls" /-->
+            <!--arg value="- -no-instrument=${app.packageName}/nls" /-->
             <arg value="--exclude=dojo" />
             <arg value="--exclude=domderrien/i18n/nls" />
-            <arg value="--exclude=${app.productShortName}/nls" />
+            <arg value="--exclude=${app.packageName}/nls" />
             <arg value="${basedir}/src/war/js" />
             <arg value="temp" />
         </exec>
@@ -1221,9 +1227,9 @@
         <copy todir="docs/test-reports/jscoverage-html/js/domderrien/i18n/nls" includeemptydirs="no" overwrite="yes">
             <fileset dir="src/war/js/domderrien/i18n/nls" />
         </copy>
-        <mkdir dir="docs/test-reports/jscoverage-html/js/${app.productShortName}/nls" />
-        <copy todir="docs/test-reports/jscoverage-html/js/${app.productShortName}/nls" includeemptydirs="no" overwrite="yes">
-            <fileset dir="src/war/js/${app.productShortName}/nls" />
+        <mkdir dir="docs/test-reports/jscoverage-html/js/${app.packageName}/nls" />
+        <copy todir="docs/test-reports/jscoverage-html/js/${app.packageName}/nls" includeemptydirs="no" overwrite="yes">
+            <fileset dir="src/war/js/${app.packageName}/nls" />
         </copy>
         <!-- Copy the test files -->
         <copy todir="docs/test-reports/jscoverage-html/js" includeemptydirs="no" overwrite="yes">
@@ -1249,7 +1255,7 @@
             destdir="docs/generated-doc/javadoc"
             author="true"
             version="true"
-            packagenames="com.${app.productShortName}.*,domderrien.*"
+            packagenames="com.${app.packageName}.*,domderrien.*"
             sourcepath="src/java"
             windowtitle="${javadoc.docs.window.title}"
         >
@@ -1269,9 +1275,9 @@
             <arg value="-t=templates/jsdoc" />
             <arg value="-d=${basedir}/docs/generated-doc/jsdoc" />
             <arg value="-r=2" />
-            <arg value="${basedir}/src/war/js/${app.productShortName}/" />
+            <arg value="${basedir}/src/war/js/${app.packageName}/" />
             <!-- List all files deeper than depth 2 -->
-                <!--arg value="${basedir}/src/war/js/${app.productShortName}/util/sample/sample.js" /-->
+                <!--arg value="${basedir}/src/war/js/${app.packageName}/util/sample/sample.js" /-->
         </java>
     </target>
 
