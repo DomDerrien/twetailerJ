@@ -319,7 +319,7 @@ public class DemandValidator {
 
                 communicateToConsumer(
                         rawCommand.getSource(),
-                        rawCommand.getSubject(),
+                        subject,
                         owner,
                         new String[] { message }
                 );

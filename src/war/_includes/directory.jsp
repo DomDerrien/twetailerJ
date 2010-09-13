@@ -436,7 +436,7 @@
 
     <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 
-    <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
+    <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);
     _gaq.push(['_trackPageview']);

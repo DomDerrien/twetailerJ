@@ -61,7 +61,7 @@
         @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
         } // endif (useCDN)
         %>
-        @import "/css/golf/widget.css";
+        @import "/css/eztoff/widget.css";
         body { <%
         if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %>
         label, .title, .comment { <%
@@ -333,7 +333,7 @@
             </div>
             <div class="content">
                 <div class="title">Thank you!</div>
-                <div class="comment">You should receive an email at joe.blow@somewhere.moon shortly.</div>
+                <div class="comment">You should receive an email at <span id="sender.email" style="font-weight:bold;">[tbd]</span> shortly.</div>
                 <div class="comment">If you have not receive an email from ezToff after 20 minutes, please check our <a href="http://ezToff.com/faq-<%= localeId %>">FAQ</a> or contact <a href="mailto:support@eztoff.com">support@eztoff.com</a>.</div>
                 <table cellpadding="0" cellspacing="0" width="100%">
                     <tr>
@@ -482,7 +482,7 @@
             <%= Demand.RANGE_UNIT %>: "<%= LocaleValidator.DEFAULT_RANGE_UNIT %>",
             <%= Demand.QUANTITY %>: dijit.byId("quantity").get("value"),
             <%= Demand.HASH_TAGS %>: ["<%= RegisteredHashTag.golf.toString() %>"],
-            <%= Demand.META_DATA %>:"{pullCart:" + dijit.byId("pullCart").get("value") + ",golfCart:" + dijit.byId("motorCart").get("value") + "}"
+            <%= Demand.META_DATA %>:"{'pullCart':" + dijit.byId("pullCart").get("value") + ",'golfCart':" + dijit.byId("motorCart").get("value") + "}"
         };
         var cc = [];
         for (var i=1; i<=localModule._friendRowNb; i++) {
@@ -501,6 +501,11 @@
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
+                    // Update pane content
+                    var placeHolder = dojo.byId("sender.email");
+                    placeHolder.innerHTML = ""; // Reset content
+                    placeHolder.appendChild(dojo.doc.createTextNode(dijit.byId("email0").get("value"))); // Safe insert
+                    // Switch to pane
                     localModule.switchPane(3, 4);
                 }
                 else {

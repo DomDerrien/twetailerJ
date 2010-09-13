@@ -237,8 +237,7 @@ public class MessageGenerator {
     public MessageGenerator fetch(Demand demand) {
         if (demand != null) {
             final String prefix = "demand" + FIELD_SEPARATOR;
-            // Entity & Command
-            fetchEntity(demand, prefix);
+            // Command
             fetchCommand(demand, prefix);
             // Demand
             parameters.put(prefix + Demand.EXPIRATION_DATE, serializeDate(demand.getExpirationDate(), userLocale));
@@ -258,8 +257,7 @@ public class MessageGenerator {
     public MessageGenerator fetch(Proposal proposal) {
         if (proposal != null) {
             final String prefix = "proposal" + FIELD_SEPARATOR;
-            // Entity & Command
-            fetchEntity(proposal, prefix);
+            // Command
             fetchCommand(proposal, prefix);
             // Proposal
             parameters.put(prefix + Proposal.CURRENCY_CODE, LabelExtractor.get(ResourceFileId.fourth, "common_currencySymbol_" + proposal.getCurrencyCode(), (String) null, userLocale));
@@ -317,6 +315,8 @@ public class MessageGenerator {
      */
     public MessageGenerator fetchCommand(Command command, String prefix) {
         final String emptyListIndicator = getAlternateMessage(MessageId.emptyListIndicator);
+        // Entity
+        fetchEntity(command, prefix);
         // Command
         // Command.ACTION
         // TODO: Proposal.CC

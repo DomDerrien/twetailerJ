@@ -432,7 +432,7 @@
                         <tr>
                             <td colspan="2" style="text-align:center;">
                                 <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button">Resolve</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();">Resolve</button>
                                 <button disabled="true" dojoType="dijit.form.Button">View Map</button>
                             </td>
                         </tr>
@@ -942,12 +942,10 @@
                             for (var idx = 0; idx < limit; idx++) {
                                 options.newItem({ name: value [idx] });
                             }
-                            console.log("attr: " + prefix + "." + attr + " -- store: " + value);
                             dijit.byId(prefix + "." + attr).set("store", options);
                             dijit.byId(prefix + "." + attr).set("value", value[0]);
                         }
                         else {
-                            console.log("attr: " + prefix + "." + attr + " -- value: " + value);
                             dijit.byId(prefix + "." + attr).set("value", value);
                         }
                         if (attr == "state" && (entityName == "Demand" || entityName == "Proposal")) {
@@ -1094,9 +1092,20 @@
             url: "/shortcut/" + entityName + "?shortId=" + ownerKey + "&anyState=true&onlyKeys=true"
         });
     };
+    localModule.resolveLocation = function() {
+        dojo.xhrGet({
+            content: null,
+            handleAs: "json",
+            load: function(response, ioArgs) {
+        	    localModule.fetchEntity('location.key', 'Location');
+            },
+            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
+            url: "/API/maelzel/validateLocation?countryCode=" + dijit.byId("location.countryCode").get("value") + "&postalCode=" + dijit.byId("location.postalCode").get("value") + "&consumerKey=0&key=0"
+        });
+    };
     </script>
 
-    <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
+    <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);
     _gaq.push(['_trackPageview']);

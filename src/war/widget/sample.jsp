@@ -41,7 +41,7 @@
 </head>
 <body class="tundra">
     <iframe
-        src="/widget/golf.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=000-000"
+        src="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=000-000"
         style="width:<%= width %>px;height:<%= height %>px;float:right;border:0 none;"
         frameborder="0"
         type="text/html"
@@ -86,18 +86,16 @@
         <li><code>font-family</code>: name of the text font (optional, default: <code>Tahoma, Verdana, arial</code>).</li>
     </ul>
     <h1>Code snippet</h1>
-    <p>
-        <pre
-            style="border:1px solid gray; padding:15px;float:left;"
+    <pre
+        style="border:1px solid gray; padding:15px;float:left;"
 >&lt;iframe
-    src="http://twetailer.appspot.com/widget/golf.jsp?<span class="n">languageId</span>=<span class="v">fr_CA</span>&<span class="n">postalCode</span>=<span class="v">H3C2N6</span>&<span class="n">countryCode</span>=<span class="v">CA</span>&<span class="n">referralId</span>=<span class="v">6456TRT435454-6878</span>"
+    src="http://twetailer.appspot.com/widget/eztoff.jsp?<span class="n">languageId</span>=<span class="v">fr_CA</span>&<span class="n">postalCode</span>=<span class="v">H3C2N6</span>&<span class="n">countryCode</span>=<span class="v">CA</span>&<span class="n">referralId</span>=<span class="v">6456TRT435454-6878</span>"
     style="width:200px;height:400px;border:0 none;"
     frameborder="0"
     type="text/html"
 &gt;&lt;/iframe&gt;</pre>
-    </p>
 
-    <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
+    <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);
     _gaq.push(['_trackPageview']);
@@ -111,5 +109,11 @@
     })();
     </script><% } %>
 
+    <br clear="all" />
+    <ul>
+        <li>Sample page: <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/sample.jsp">Local version</a>.</li>
+        <li>ASE widget alone: <a href="http://anothersocialeconomy.appspot.com/widget/ase.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/ase.jsp">Local version</a>.</li>
+        <li>ezToff page alone: <a href="http://anothersocialeconomy.appspot.com/widget/eztoff.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/eztoff.jsp">Local version</a>.</li>
+    </ul>
 </body>
 </html>

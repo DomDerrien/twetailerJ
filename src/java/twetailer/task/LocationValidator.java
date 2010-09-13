@@ -90,7 +90,7 @@ public class LocationValidator {
         }
         if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
             location = LocaleValidator.getGeoCoordinates(location);
-            if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
+            if (Location.INVALID_COORDINATE.equals(location.getLongitude()) && commandKey != null && commandKey != 0L) {
                 log.warning("Invalid location for the command: " + commandKey + " -- [" + postalCode + " " + countryCode + "]");
                 RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, commandKey);
                 Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
@@ -121,13 +121,16 @@ public class LocationValidator {
                 location = BaseSteps.getLocationOperations().updateLocation(pm, location);
             }
         }
+
         // Create a task to re-process the raw command
-        Queue queue = BaseSteps.getBaseOperations().getQueue();
-        log.warning("Preparing the task: /maelzel/processCommand?key=" + commandKey.toString());
-        queue.add(
-                url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
-                    param(Command.KEY, commandKey.toString()).
-                    method(Method.GET)
-        );
+        if (commandKey != null && commandKey != 0L) {
+            Queue queue = BaseSteps.getBaseOperations().getQueue();
+            log.warning("Preparing the task: /maelzel/processCommand?key=" + commandKey.toString());
+            queue.add(
+                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
+                        param(Command.KEY, commandKey.toString()).
+                        method(Method.GET)
+            );
+        }
     }
 }

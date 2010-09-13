@@ -62,7 +62,7 @@
         @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
         } // endif (useCDN)
         %>
-        @import "/css/ase/widget.css";
+        @import "/css/widget.css";
         body { <%
         if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %>
         label, .title, .comment { <%

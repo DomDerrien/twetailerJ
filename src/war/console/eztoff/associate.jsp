@@ -72,7 +72,7 @@
         } // endif (useCDN)
         %>
         @import "/css/console.css";
-        @import "/css/golf/console.css";
+        @import "/css/eztoff/console.css";
     </style>
 </head>
 <body class="tundra">
@@ -315,7 +315,7 @@
     });
     </script>
 
-    <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
+    <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);
     _gaq.push(['_trackPageview']);
