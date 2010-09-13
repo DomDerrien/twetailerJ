@@ -71,7 +71,11 @@
 
     <target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
 
-    <target name="webserver-start" description="start the configured webserver" depends="step-datanucleus-enhance, step-appengine-start" />
+    <target name="webserver-start" description="start the configured webserver">
+    	<property name="compile-for-run-only" value="true" />
+        <antcall target="step-datanucleus-enhance" />
+        <antcall target="step-appengine-start" />
+	</target>
 
     <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-datanucleus-enhance, step-appengine-start-debug" />
 

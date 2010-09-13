@@ -288,7 +288,7 @@
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    dijit.byId("<%= Store.LOCATION_KEY %>").attr("value", response.resource.<%= Location.KEY %>);
+                    dijit.byId("<%= Store.LOCATION_KEY %>").set("value", response.resource.<%= Location.KEY %>);
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
@@ -307,7 +307,7 @@
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    dijit.byId("<%= SaleAssociate.STORE_KEY %>").attr("value", response.resource.<%= Store.KEY %>);
+                    dijit.byId("<%= SaleAssociate.STORE_KEY %>").set("value", response.resource.<%= Store.KEY %>);
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
@@ -318,7 +318,7 @@
         });
     };
     localModule.getStores = function() {
-        var locationKey = parseInt(dijit.byId("<%= Store.LOCATION_KEY %>").attr("value"));
+        var locationKey = parseInt(dijit.byId("<%= Store.LOCATION_KEY %>").get("value"));
         if (locationKey.length == 0 || isNaN(locationKey)) {
             alert("You need to specify a valid Location key");
             dijit.byId("<%= Store.LOCATION_KEY %>").focus();
@@ -335,7 +335,7 @@
                         var listItem = dojo.doc.createElement("li");
                         var onclickHandler =
                             "var saKeyField = dijit.byId(\"<%= SaleAssociate.STORE_KEY %>\");" +
-                            "saKeyField.attr(\"value\", \"" + store.<%= Store.KEY %> + "\");" +
+                            "saKeyField.set(\"value\", \"" + store.<%= Store.KEY %> + "\");" +
                             "saKeyField.focus();" +
                             "wizard.forward();" +
                             "return false;";
@@ -381,7 +381,7 @@
         });
     };
     localModule.getSaleAssociates = function() {
-        var storeKey = parseInt(dijit.byId("<%= SaleAssociate.STORE_KEY %>").attr("value"));
+        var storeKey = parseInt(dijit.byId("<%= SaleAssociate.STORE_KEY %>").get("value"));
         if (storeKey.length == 0 || isNaN(storeKey)) {
             alert("You need to specify a valid Store key");
             dijit.byId("<%= SaleAssociate.STORE_KEY %>").focus();
@@ -410,7 +410,7 @@
         });
     };
     localModule.getConsumer = function() {
-        var consumerKey = dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").attr("value");
+        var consumerKey = dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").get("value");
         if (consumerKet.length == 0) {
             alert("You need to specify a consumer key!");
             dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").focus();
@@ -427,7 +427,7 @@
                     var consumer = response.resource;
                     var listItem = dojo.doc.createElement("li");
                     listItem.innerHTML =
-                        "Key: <a href='#' onclick='javascript:dijit.byId(\"<%= SaleAssociate.CONSUMER_KEY %>\").attr(\"value\"," + consumer.<%= Consumer.KEY %> + ");return false;'>" + consumer.<%= Consumer.KEY %> + "</a>, " +
+                        "Key: <a href='#' onclick='javascript:dijit.byId(\"<%= SaleAssociate.CONSUMER_KEY %>\").set(\"value\"," + consumer.<%= Consumer.KEY %> + ");return false;'>" + consumer.<%= Consumer.KEY %> + "</a>, " +
                         "Name: " + consumer.<%= Consumer.NAME %> + ", " +
                         "E-mail Address: <a href='mailto:" + consumer.<%= Consumer.EMAIL %> + "'>" + consumer.<%= Consumer.EMAIL %> + "</a>, " +
                         "Jabber Id: <a href='xmpp:" + consumer.<%= Consumer.JABBER_ID %> + "'>" + consumer.<%= Consumer.JABBER_ID %> + "</a>, " +

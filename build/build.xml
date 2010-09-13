@@ -664,6 +664,10 @@
         >
             <classpath refid="java.compile.classpath" />
         </javac>
+		<antcall target="step-java-compile-test" />
+	</target>
+	
+    <target name="step-java-compile-test" unless="compile-for-run-only">
         <javac
             destdir="src/war/WEB-INF/classes"
             deprecation="false"

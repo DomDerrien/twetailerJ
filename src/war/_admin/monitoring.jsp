@@ -899,7 +899,7 @@
     <script type="text/javascript">
     var localModule = new Object();
     localModule.fetchEntity = function(keyFieldId, entityName, ownerKey) {
-        var key = dijit.byId(keyFieldId).attr("value");
+        var key = dijit.byId(keyFieldId).get("value");
         if (isNaN(key)) {
             alert("The key in the field '" + keyFieldId + "' is not a number!");
             return;
@@ -907,7 +907,7 @@
         if (entityName == "Consumer" || entityName == "SaleAssociate") {
             key = "current";
         }
-        var ownrKey = dijit.byId("consumer.key").attr("value");
+        var ownrKey = dijit.byId("consumer.key").get("value");
         if (isNaN(ownrKey)) {
             alert("The key in the field 'consumer.key' is not a number!");
             return;
@@ -943,16 +943,16 @@
                                 options.newItem({ name: value [idx] });
                             }
                             console.log("attr: " + prefix + "." + attr + " -- store: " + value);
-                            dijit.byId(prefix + "." + attr).attr("store", options);
-                            dijit.byId(prefix + "." + attr).attr("value", value[0]);
+                            dijit.byId(prefix + "." + attr).set("store", options);
+                            dijit.byId(prefix + "." + attr).set("value", value[0]);
                         }
                         else {
                             console.log("attr: " + prefix + "." + attr + " -- value: " + value);
-                            dijit.byId(prefix + "." + attr).attr("value", value);
+                            dijit.byId(prefix + "." + attr).set("value", value);
                         }
                         if (attr == "state" && (entityName == "Demand" || entityName == "Proposal")) {
                             var isNonModifiable = value == "closed" || value == "cancelled" || value == "markedForDeletion";
-                            dijit.byId(prefix + ".updateButton").attr("disabled", isNonModifiable);
+                            dijit.byId(prefix + ".updateButton").set("disabled", isNonModifiable);
                         }
                     }
                 }
@@ -970,7 +970,7 @@
     };
     localModule.saveEntity = function(entityName) {
         var prefix = entityName.toLowerCase();
-        var key = dijit.byId(prefix + ".key").attr("value");
+        var key = dijit.byId(prefix + ".key").get("value");
         if (isNaN(key)) {
             alert("The key in the field '" + keyFieldId + "' is not a number!");
             return;
@@ -978,7 +978,7 @@
         if (entityName == "Consumer" || entityName == "SaleAssociate") {
             key = "current";
         }
-        var ownrKey = dijit.byId("consumer.key").attr("value");
+        var ownrKey = dijit.byId("consumer.key").get("value");
         if (isNaN(ownrKey)) {
             alert("The key in the field 'consumer.key' is not a number!");
             return;
@@ -1023,7 +1023,7 @@
                     data[_in] = true;
                 }
                 else {
-                    var _iv = item.attr("value");
+                    var _iv = item.get("value");
                     if (_in && _iv) {
                         if (_iv instanceof Date) {
                             _iv = dojo.date.stamp.toISOString(_iv, {});
@@ -1037,7 +1037,7 @@
     };
     localModule.decorationOfEntityLinks = [
                 "<a href='javascript:dijit.byId(\"entityKeysDialog\").hide();dijit.byId(\"", // entity class name, lower case
-                ".key\").attr(\"value\",",      // entity key
+                ".key\").set(\"value\",",      // entity key
                 ");localModule.fetchEntity(\"", // entity class name, lower case
                 ".key\",\"",                    // entity class name
                 "\");' title='Get the ",        // entity class name
@@ -1046,13 +1046,13 @@
                 "</a>, "
             ];
     localModule.loadEntityKeys = function(keyFieldId, entityName) {
-        var ownerKey = dijit.byId(keyFieldId).attr("value");
+        var ownerKey = dijit.byId(keyFieldId).get("value");
         if (isNaN(ownerKey)) {
             alert("The key in the field '" + keyFieldId + "' is not a number!");
             return;
         }
         var dialog = dijit.byId("entityKeysDialog");
-        dialog.attr("title", entityName + " identifiers");
+        dialog.set("title", entityName + " identifiers");
         dialog.show();
 
         dojo.animateProperty({

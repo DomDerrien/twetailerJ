@@ -73,7 +73,7 @@ public class StoreRestlet extends BaseRestlet {
                     pm,
                     parameters,
                     LoginServlet.getConsumer(loggedUser, pm),
-                    LoginServlet.getSaleAssociate(loggedUser, pm),
+                    isAPrivilegedUser ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
                     isAPrivilegedUser
             );
             return store.toJson();
