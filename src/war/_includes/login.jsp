@@ -37,13 +37,13 @@
     String verticalId = null;
     String forwardedUriAttribute = (String) request.getAttribute("javax.servlet.forward.servlet_path");
     if (forwardedUriAttribute != null) {
-        List<String> hashTags = HashTag.getSupportedHashTags();
-        for (String hashTag: hashTags) {
-            verticalId = hashTag;
-            if (forwardedUriAttribute.startsWith("/console/" + verticalId)) {
-                useVertical = true;
-                break;
+        // Extract the hash tag
+        if (forwardedUriAttribute.startsWith("/console/")) {
+            verticalId = forwardedUriAttribute.substring("/console/".length());
+            if (verticalId.indexOf('/') != -1) {
+                verticalId = verticalId.substring(0, verticalId.indexOf('/'));
             }
+            useVertical = HashTag.isSupportedHashTag(verticalId);
         }
     }
     if (!useVertical) {

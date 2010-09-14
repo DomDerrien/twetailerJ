@@ -126,7 +126,7 @@
                     <p>--<br />
                     Please see our <a href="http://anothersocialeconomy.com/terms/">terms</a>, <a href="http://anothersocialeconomy.com/privacy-policy/">privacy policy</a>
                     and don't forget, you can always email <a href="mailto:Support@anothersocialeconomy.com?subject=Inquiry from {0}">Support</a>.
-                    In the meantime, <strong>thanks for buying locally</strong> with <a href="http://anothersocialeconomy.com/">Twetailer</a>,
+                    In the meantime, <strong>thanks for buying locally</strong> with <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>,
                     a member of <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
                 </seg>
@@ -273,9 +273,9 @@
                         <li>Request reference #: {demand>key}</li>
                     </ul>
                     <p>You CC'ed: {demand>cc}.</p>
-                    <p>Your demand is going to be broadcasted to relevant stores. Twetailer will notify you as soon as proposals are received.</p>
+                    <p>Your demand is going to be broadcasted to relevant stores. AnotherSocialEconomy.com will notify you as soon as proposals are received.</p>
                     <p>Click here to cancel your demand: <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">cancel demand # {1}</a>.</p>
-                    <p>Thanks for using Twetailer to shop online in your local area.</p>
+                    <p>Thanks for using AnotherSocialEconomy.com to shop online in your local area.</p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
                 </seg>

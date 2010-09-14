@@ -94,7 +94,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Name of the entire application</note>
             <tuv xml:lang="en">
-                <seg>!twetailer</seg>
+                <seg>AnotherSocialEconomy.com</seg>
             </tuv>
         </tu>
 
@@ -114,7 +114,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Lusanga mantra</note>
             <tuv xml:lang="en">
-                <seg>Powered by <a href="http://anothersocialeconomy.com">Another Social Economy</a></seg>
+                <seg>Powered by <a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a></seg>
             </tuv>
         </tu>
 
@@ -878,7 +878,7 @@
                 {0} is the sender screen name.
             </note>
             <tuv xml:lang="en">
-                <seg>@{0} To protect your privacy, Follow Twetailer and then send your request via Direct Messages - like requesting help with "d twetailer ?"</seg>
+                <seg>@{0} To protect your privacy, Follow ASEconomy and then send your request via Direct Messages - like requesting help with "d ASEconomy ?"</seg>
             </tuv>
         </tu>
 
@@ -1015,7 +1015,7 @@
                 {0}: demand reference part as defined by entry "cp_tweet_demand_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Thanks for Closing {0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Thanks for Closing {0} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.</seg>
             </tuv>
         </tu>
 
@@ -1029,7 +1029,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. {0} has been closed by the Consumer. |
-                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
                 </seg>
             </tuv>
         </tu>
@@ -1062,7 +1062,7 @@
                 {0}: proposal reference part as defined by entry "cp_tweet_proposal_reference_part"
             </note>
             <tuv xml:lang="en">
-                <seg>:-) Thanks for Closing {0} - which will be reflected in your Twetailer Rating shortly.</seg>
+                <seg>:-) Thanks for Closing {0} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.</seg>
             </tuv>
         </tu>
 
@@ -1076,7 +1076,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. {0} has been closed by the Retailer. |
-                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your Twetailer Rating.
+                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
                 </seg>
 
             </tuv>
@@ -1464,7 +1464,7 @@
                 {0}: locale part (postal code + country code) as defined by the entry "cp_tweet_locale_part"
             </note>
             <tuv xml:lang="en">
-                <seg>You've just submitted {0} which the system does not know yet. Twetailer will attempt to validate it &amp; will contact you shortly.</seg>
+                <seg>You've just submitted {0} which the system does not know yet. AnotherSocialEconomy.com will attempt to validate it &amp; will contact you shortly.</seg>
             </tuv>
         </tu>
 
@@ -2246,11 +2246,11 @@
         <tu tuid="dp_inform_consumer_about_no_store" datatype="Text">
             <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
-            <note>Inform the consumer that twetailer has found no stores to serve his demand</note>
+            <note>Inform the consumer that AnotherSocialEconomy.com has found no stores to serve his demand</note>
             <tuv xml:lang="en">
                 <seg>
                     1/2 FYI. I currently don't have any Stores supplying those tags but will keep checking until the expiration date.|
-                    2/2 Please ask any potential Stores you may visit to register with Twetailer so we may improve our service in your community.
+                    2/2 Please ask any potential Stores you may visit to register with AnotherSocialEconomy.com so we may improve our service in your community.
                 </seg>
             </tuv>
         </tu>
@@ -2259,7 +2259,7 @@
             <prop type="x-version">3</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Inform the consumer that twetailer has contacted new stores.|
+                Inform the consumer that AnotherSocialEconomy.com has contacted new stores.|
                 {0}: demand reference part as defined by the entry "cp_tweet_demand_reference_part"}
                 {1}: total number of sale associates contacted so far|
                 {2}: number of sale associates just contacted
@@ -2443,7 +2443,7 @@
             <tuv xml:lang="en">
                 <seg>
                     If you have received this message in error, or, prefer not to be CC'ed on future messages from this, or,
-                    any other Demand Owner, then please notify Twetailer by sending an email to support@anothersocialeconomy.com
+                    any other Demand Owner, then please notify AnotherSocialEconomy.com by sending an email to support@anothersocialeconomy.com
                 </seg>
             </tuv>
         </tu>
@@ -2471,7 +2471,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Default subject for e-mail sent to end-users</note>
             <tuv xml:lang="en">
-                <seg>Twetailer notification</seg>
+                <seg>AnotherSocialEconomy.com notification</seg>
             </tuv>
         </tu>
 

@@ -44,6 +44,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
  * Define the task with is invoked by the task "/maelzel/validateOpenDemand"
@@ -73,14 +74,14 @@ public class DemandProcessor {
      */
     public static void batchProcess() throws DataSourceException {
         //
-        // Warning: Keep the frequency specified in the cron.xml.tmpl file in sync with the delay used in the function body
+        // Warning: Keep the frequency specified in the src/resources/cron.xml file in sync with the delay used in the function body
         //
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            // Get the date 9 hours (8 hours as the cron job plus 1 hour for security) in the past
+            // Get the date 25 hours (24 hours as the cron job plus 1 hour for security) in the past
             Calendar now = DateUtils.getNowCalendar();
             Calendar past = now;
-            past.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY) - 9);
+            past.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY) - 25);
             // Prepare the query with: state == published && modificationDate > past
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("=" + Command.STATE, State.published.toString());
@@ -346,25 +347,21 @@ public class DemandProcessor {
         // TODO: check if it's worth caching the MessageGenerator instance for the associate's locale, so we can save on the time to serialize the demand and the commands -- Note the associate name field will have to be updated
 
         Locale locale = associate.getLocale();
-        final String proposedDate = DateUtils.dateToYMD(demand.getDueDate());
-        final String subject = "ezToff Notification about Request:" + demand.getKey();
-        final String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
-        final String createProposal = "propose demand:" + demand.getKey().toString() + " players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}";
-        final String declineDemand = "decline demand:" + demand.getKey().toString();
 
         MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
         msgGen.
             put("proposal>owner>name", associate.getName()).
             fetch(demand).
             put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
-            put("control>threadSubject", msgGen.put("control.threadSubject", subject)).
-            put("control>createProposal", (createProposal + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A")).
-            put("control>declineDemand", (declineDemand + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+            put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
-        // TODO: place 'automatedResponseFooter' loaded by msgGen.getRawMessage()
-        // TODO: load default 'threadSubject' and inject a the demand key
-        // TODO: add 'long_command_create_proposal' in the TMX
-        // TODO: add 'long_command_decline_demand' in the TMX
+        String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", msgGen.getParameters(), locale); // "propose demand:" + demand.getKey().toString() + " players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}";
+        String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", msgGen.getParameters(), locale);
+        String subject = msgGen.getAlternateMessage(MessageId.messageSubject);
+        msgGen.
+            put("control>threadSubject", subject.replaceAll(" ", "%20")).
+            put("control>createProposal", createProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
+            put("control>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
 
         RawCommand rawCommand = new RawCommand(associate.getPreferredConnection());
         rawCommand.setSubject(subject);

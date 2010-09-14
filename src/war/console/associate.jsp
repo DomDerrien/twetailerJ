@@ -98,7 +98,7 @@
 
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
         <jsp:include page="/_includes/banner_protected.jsp">
-            <jsp:param name="verticalId" value="twetailer" />
+            <jsp:param name="verticalId" value="" />
             <jsp:param name="localeId" value="<%= localeId %>" />
             <jsp:param name="pageForAssociate" value="<%= Boolean.TRUE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />

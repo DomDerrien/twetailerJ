@@ -72,23 +72,9 @@ body {
     margin: 0;
     padding: 0.7em 1em;
     font-size: 3em;
-}
-
-#brand>h1 .bang, .twBang {
     font-family: "Arial Rounded MT Bold", arial, sans-serif;
-    color: #9966cc; /* PurpleChalk (aka Magenta 4)*/
+    color: #696969; /* DimGray */
     text-shadow: 0 0 0.2em #fff, 0 0 0.2em #fff;
-}
-#brand>h1 .tw, .twTw {
-    font-family: "Arial Rounded MT", arial, sans-serif;
-    color: #696969; /* DimGray */
-    letter-spacing: -.1em;
-    text-shadow: 0 0 0.2em #fff;
-}
-#brand>h1 .etailer, .twEtailer {
-    font-family: "Arial Rounded MT Bold", arial, sans-serif;
-    color: #696969; /* DimGray */
-    text-shadow: 0 0 0.2em #fff;
 }
 
 #brand>h1>a {

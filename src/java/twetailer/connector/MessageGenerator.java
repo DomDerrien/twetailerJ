@@ -192,7 +192,7 @@ public class MessageGenerator {
     }
 
     /** Accessor */
-    protected Map<String, Object> getParameters() {
+    public Map<String, Object> getParameters() {
         return parameters;
     }
 

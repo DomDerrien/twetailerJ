@@ -47,7 +47,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Name of the entire application</note>
             <tuv xml:lang="en">
-                <seg>Twetailer Console</seg>
+                <seg>AnotherSocialEconomy.com Console</seg>
             </tuv>
         </tu>
 
@@ -327,11 +327,11 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Twetailer users (consumers and retailers) can privately use the
-                    Twetailer Console to manage their orders. You can access your data with
+                    AnotherSocialEconomy.com users (consumers and retailers) can privately use the
+                    AnotherSocialEconomy.com Console to manage their orders. You can access your data with
                     exisiting credentials (your identity provided will do the verification
-                    for us, Twetailer does not keep passwords) and consolidate accounts to
-                    communicate with Twetailer over many channels (Twitter, E-mail, GTalk, etc.).
+                    for us, AnotherSocialEconomy.com does not keep passwords) and consolidate accounts to
+                    communicate with AnotherSocialEconomy.com over many channels (Twitter, E-mail, GTalk, etc.).
                 </seg>
             </tuv>
         </tu>
@@ -368,8 +368,8 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    In order to use the Twetailer console, you &lt;u&gt;need to be authenticated first&lt;/u&gt;.
-                    To eliminate the management of yet another set of credentials, Twetailer relies on OpenID,
+                    In order to use the AnotherSocialEconomy.com console, you &lt;u&gt;need to be authenticated first&lt;/u&gt;.
+                    To eliminate the management of yet another set of credentials, AnotherSocialEconomy.com relies on OpenID,
                     so you can log in with one of your existing electronic identities.
                     Consult &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; website for more information on that technology.
                 </seg>
@@ -496,7 +496,7 @@
                 See also segment with tuid="sep_other_locations_introduction"
             </note>
             <tuv xml:lang="en">
-                <seg>Twetailer maintains the list of the top active cities (refreshed once a day). Use the following links to see the most used keywords by retailers per city:</seg>
+                <seg>AnotherSocialEconomy.com maintains the list of the top active cities (refreshed once a day). Use the following links to see the most used keywords by retailers per city:</seg>
             </tuv>
         </tu>
 
@@ -508,7 +508,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>About Twetailer</seg>
+                <seg>About AnotherSocialEconomy.com</seg>
             </tuv>
         </tu>
 
@@ -518,11 +518,11 @@
             <tuv xml:lang="en">
                 <seg>
                     &lt;p&gt;
-                    Twetailer is a creation of Steven Milstein and Dom Derrien.
-                    Twetailer is operated by Milstein &amp; Associates inc.
+                    AnotherSocialEconomy.com is a creation of Steven Milstein and Dom Derrien.
+                    AnotherSocialEconomy.com is operated by Milstein &amp; Associates inc.
                     &lt;/p&gt;
                     &lt;p&gt;
-                    For more information, you can join the Twetailer
+                    For more information, you can join the AnotherSocialEconomy.com
                     community at &lt;a href="http://twetailer.cyn.in/"&gt;twetailer.cyn.in&lt;/a&gt;.
                     &lt;/p&gt;
                 </seg>
@@ -716,7 +716,7 @@
         <tu tuid="consumer_info_hint_jabber" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://twetailer@appspot.com"&gt;twetailer@appspot.com&lt;/a&gt; with your account.</seg></tuv>
+            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://anothersocialeconomy@appspot.com"&gt;anothersocialeconomy@appspot.com&lt;/a&gt; with your account.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_twitter" datatype="Text">
@@ -730,8 +730,8 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    Hint: to attach direct messages exchanged with &lt;a href="http://twitter.com/twetailer" target="_blank"&gt;twitter.com/twetailer&lt;/a&gt; with your account.&lt;br/&gt;
-                    Note: you need to &lt;b&gt;follow @twetailer&lt;/b&gt; on Twitter in order to be able to get direct messages from us.
+                    Hint: to attach direct messages exchanged with &lt;a href="http://twitter.com/ASEconomy" target="_blank"&gt;twitter.com/ASEconomy&lt;/a&gt; with your account.&lt;br/&gt;
+                    Note: you need to &lt;b&gt;follow @ASEconomy&lt;/b&gt; on Twitter in order to be able to get direct messages from us.
                 </seg>
             </tuv>
         </tu>
@@ -746,7 +746,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Confirmation code for the Twetailer registration process</seg>
+                <seg>Confirmation code for the AnotherSocialEconomy.com registration process</seg>
             </tuv>
         </tu>
 
@@ -756,7 +756,7 @@
             <tuv xml:lang="en">
                 <seg>
                     Here is the confirmation code: {0}.
-                    You have to reported it into the Welcome page for new Twetailer users.|
+                    You have to reported it into the Welcome page for new AnotherSocialEconomy.com users.|
                     |
                     Thanks for shopping with AnotherSocialEconomy.|
                     |
@@ -836,9 +836,9 @@
             <tuv xml:lang="en">
                 <seg>
                     Unexpected error while processing a request response.
-                    The incident is going to be reported to Twetailer analytics system.\n\n
+                    The incident is going to be reported to AnotherSocialEconomy.com analytics system.\n\n
                     You can send an e-mail to incident@anothersocialeconomy.appspotmail.com if the issue is crucial to you.\n\n
-                    Follow our communication on Twitter (@twetailer) for our open tracking of the critical issues.
+                    Follow our communication on Twitter (@ASEconomy) for our open tracking of the critical issues.
                 </seg>
             </tuv>
         </tu>
@@ -868,7 +868,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Twetailer experiences issues while trying to communicate over Twitter. Please try when Twitter server is back online.</seg>
+                <seg>AnotherSocialEconomy.com experiences issues while trying to communicate over Twitter. Please try when Twitter server is back online.</seg>
             </tuv>
         </tu>
 
@@ -877,7 +877,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Twetailer cannot send direct messages to users who are not following it. You must follow @twetailer (http://twitter.com/twetailer) in order to use it from Twitter.</seg>
+                <seg>AnotherSocialEconomy.com cannot send direct messages to users who are not following it. You must follow @ASEcononmy (http://twitter.com/ASEconomy) in order to use it from Twitter.</seg>
             </tuv>
         </tu>
 
@@ -946,7 +946,7 @@
                 {0}: name of the city listed on this page
             </note>
             <tuv xml:lang="en">
-                <seg>Twetailer Directory - {0}</seg>
+                <seg>AnotherSocialEconomy.com Directory - {0}</seg>
             </tuv>
         </tu>
 
@@ -960,10 +960,10 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    This is the Twetailer directory for the city of {0}.
-                    It lists the top provided keywords for the Twetailer retailers participating in the area.
+                    This is the AnotherSocialEconomy.com directory for the city of {0}.
+                    It lists the top provided keywords for the AnotherSocialEconomy.com retailers participating in the area.
                     Use the form on the top to post a demand about a product or service you are looking for.
-                    Twetailer will convey it to the corresponding retailers and they'll return to you if they can help.
+                    AnotherSocialEconomy.com will convey it to the corresponding retailers and they'll return to you if they can help.
                 </seg>
             </tuv>
         </tu>
@@ -1059,7 +1059,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Twetailer</seg>
+                <seg>AnotherSocialEconomy.com</seg>
             </tuv>
         </tu>
 
@@ -1247,7 +1247,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>SMS setup for Twetailer</seg>
+                <seg>SMS setup for AnotherSocialEconomy.com</seg>
             </tuv>
         </tu>
 
@@ -1258,12 +1258,12 @@
             <tuv xml:lang="en">
                 <seg>
                     The Short Message Service (SMS) is a system that allows cellphone users to send simple text messages to others.<br/>
-                    In Canada and United States of America, you can exchange with Twetailer via SMS through its Twitter connector.
+                    In Canada and United States of America, you can exchange with AnotherSocialEconomy.com via SMS through its Twitter connector.
                     <ul>
                         <li>In Canada, send your message to the short code: <b>21212</b>.</li>
                         <li>In United States of America, send your message to the short code: <b>40404</b>.</li>
                     </ul>
-                    Twetailer is open only in Canada and USA for now, but if folks want to try from another place covered by Twitter,<br/>
+                    AnotherSocialEconomy.com is open only in Canada and USA for now, but if folks want to try from another place covered by Twitter,<br/>
                     check this <a href="http://help.twitter.com/entries/14014-twitter-phone-faqs"
                     target="_blank">Twitter resource</a> for an up-to-date list of short codes.
                     <p>
@@ -1271,7 +1271,7 @@
                     <a href="http://help.twitter.com/entries/14606-what-is-a-direct-message-dm"
                     target="_blank">Direct Message</a>.<br/>
                     So don't forget to prefix you messages with <span onfocus="this.select();"
-                    style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">twetailer@appspot.com</span>
+                    style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">anothersocialeconomy@appspot.com</span>
                     </p>
                     <p>
                     With the demand tags you have specified, your message should be: <span onfocus="this.select();"
@@ -1287,7 +1287,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>GTalk setup for Twetailer</seg>
+                <seg>GTalk setup for AnotherSocialEconomy.com</seg>
             </tuv>
         </tu>
 
@@ -1313,7 +1313,7 @@
                     Once you have GTalk running:
                     </p>
                     <ol>
-                        <li>Invite <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">twetailer@appspot.com</span>, and</li>
+                        <li>Invite <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" tabindex="0">anothersocialeconomy@appspot.com</span>, and</li>
                         <li>Send the text of your demand: <span onfocus="this.select();" style="padding:2px 5px;border:1px solid lightgrey;" id="demand_repetition_for_gtalk" tabindex="0"></span>!</li>
                     </ol>
                     Happy shopping with AnotherSocialEconomy.
@@ -1352,7 +1352,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Twetailer &#38; Golf - Reservation Desk</seg>
+                <seg>AnotherSocialEconomy.com &#38; Golf - Reservation Desk</seg>
             </tuv>
         </tu>
 
