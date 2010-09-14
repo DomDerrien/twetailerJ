@@ -95,6 +95,17 @@
             id="centerZone"
             region="center"
         >
+            <p align="center">
+                Administrative console:
+                <a href="http://appengine.google.com/">hosted</a> --
+                <a href="http://127.0.0.1:9999/_ah/admin">local</a>;
+                Registration console:
+                <a href="http://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
+                <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;
+                Monitoring console:
+                <a href="http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
+                <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.
+            </p>
             <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;">
                 <div dojoType="dijit.layout.ContentPane" jsId="step0">
                     <fieldset class="entityInformation">
@@ -109,7 +120,7 @@
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step1" style="display:hidden;">
-                    <fieldset class="entityInformation">
+                    <fieldset class="entityInformation" id="innerStep1">
                         <legend>Location Creation/Retrieval</legend>
                         <form id="locationInformation">
                             <div>
@@ -126,12 +137,12 @@
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createLocation();dijit.byId('<%= Store.LOCATION_KEY %>').focus();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.createLocation();">Next >></button>
                         </p>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step2" style="display:hidden;">
-                    <fieldset class="entityInformation">
+                    <fieldset class="entityInformation" id="innerStep2">
                         <legend>Store Creation</legend>
                         <form id="storeInformation">
                             <div>
@@ -166,7 +177,7 @@
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step3" style="display:hidden;">
-                    <fieldset class="entityInformation">
+                    <fieldset class="entityInformation" id="innerStep3">
                         <legend>Sale Associate Creation</legend>
                         <form id="saleAssociateInformation">
                             <div>
@@ -201,7 +212,7 @@
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step4" style="display:hidden;">
-                    <fieldset class="entityInformation">
+                    <fieldset class="entityInformation" id="innerStep4">
                         <legend>Seed Creation</legend>
                         <form id="seedInformation">
                             <div>
@@ -236,7 +247,7 @@
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step5" style="display:hidden;">
-                    <fieldset class="entityInformation">
+                    <fieldset class="entityInformation" id="innerStep5">
                         <legend>Repeat Again ;)</legend>
                         <p>The Sale Associate can now tweet to @twetailer to supply his/her own tags.</p>
                         <p>
@@ -282,23 +293,37 @@
     <script type="text/javascript">
     var localModule = new Object();
     localModule.createLocation = function() {
+        dojo.animateProperty({
+            node: "innerStep1",
+            properties: { backgroundColor: { end: "yellow" } }
+        }).play();
         dojo.xhrPost({
             headers: { "content-type": "application/json" },
             putData: dojo.formToJson("locationInformation"),
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
+                    dijit.byId('<%= Store.LOCATION_KEY %>').focus();
                     dijit.byId("<%= Store.LOCATION_KEY %>").set("value", response.resource.<%= Location.KEY %>);
+                    wizard.forward();
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
                 }
+                dojo.animateProperty({
+                    node: "innerStep1",
+                    properties: { backgroundColor: { end: "transparent" } }
+                }).play();
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Location/"
         });
     };
     localModule.createStore = function() {
+        dojo.animateProperty({
+            node: "innerStep2",
+            properties: { backgroundColor: { end: "yellow" } }
+        }).play();
         var data = dojo.formToObject("storeInformation");
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
         dojo.xhrPost({
@@ -307,11 +332,17 @@
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
+                    dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();
                     dijit.byId("<%= SaleAssociate.STORE_KEY %>").set("value", response.resource.<%= Store.KEY %>);
+                    wizard.forward();
                 }
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
                 }
+                dojo.animateProperty({
+                    node: "innerStep2",
+                    properties: { backgroundColor: { end: "transparent" } }
+                }).play();
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Store/"
@@ -355,6 +386,10 @@
         });
     };
     localModule.createSaleAssociate = function() {
+        dojo.animateProperty({
+            node: "innerStep3",
+            properties: { backgroundColor: { end: "yellow" } }
+        }).play();
         var data = dojo.formToObject("saleAssociateInformation");
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
         if (data.consumerKey == null || isNaN(data.consumerKey) || data.consumerKey.length == 0) {
@@ -373,8 +408,11 @@
                 }
                 else {
                     alert(response.exceptionMessage+"\nurl: "+ioArgs.url+"\n\n"+response.originalExceptionMessage);
-                    wizard.back();
                 }
+                dojo.animateProperty({
+                    node: "innerStep3",
+                    properties: { backgroundColor: { end: "transparent" } }
+                }).play();
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/SaleAssociate/"
@@ -443,6 +481,10 @@
         });
     };
     localModule.createSeed = function() {
+        dojo.animateProperty({
+            node: "innerStep4",
+            properties: { backgroundColor: { end: "yellow" } }
+        }).play();
         var data = dojo.formToObject("seedInformation");
         if (data.storeKey == null || isNaN(data.storeKey) || data.storeKey.length == 0) {
             delete data.storeKey;
@@ -466,6 +508,10 @@
                 else {
                     alert(response.message+"\nurl: "+ioArgs.url);
                 }
+                dojo.animateProperty({
+                    node: "innerStep4",
+                    properties: { backgroundColor: { end: "transparent" } }
+                }).play();
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Seed/"

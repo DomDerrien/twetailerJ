@@ -368,7 +368,7 @@ public class LocationOperations extends BaseOperations {
         try {
             query.setFilter(
                     Location.COUNTRY_CODE + " == givenCountryCode && " +
-                    (withStore ? Location.HAS_STORE + " == hasStoreRegistered && " : "") +
+                    Location.HAS_STORE + " == hasStoreRegistered && " +
                     Location.LATITUDE + " > bottomLatitude && " +
                     Location.LATITUDE + " < topLatitude"
             );
@@ -378,7 +378,7 @@ public class LocationOperations extends BaseOperations {
             }
 
             // Execute the query
-            List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.TRUE, topLatitude, bottomLatitude);
+            List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.valueOf(withStore), topLatitude, bottomLatitude);
             locations.size(); // FIXME: remove workaround for a bug in DataNucleus
 
             List<Location> selection = new ArrayList<Location>();

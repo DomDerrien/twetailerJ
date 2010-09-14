@@ -304,11 +304,11 @@ public class DemandValidator {
                     subject = rawCommand.getSubject();
                 }
                 else {
-                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
                 }
 
                 msgGen.
-                    put("control>threadSubject", subject).
+                    put("control>threadSubject", subject.replaceAll(" ", "%20")).
                     put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
                     // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
                 if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {

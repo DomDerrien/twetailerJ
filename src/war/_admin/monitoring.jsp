@@ -101,6 +101,17 @@
             id="centerZone"
             region="center"
         >
+            <p align="center">
+                Administrative console:
+                <a href="http://appengine.google.com/">hosted</a> --
+                <a href="http://127.0.0.1:9999/_ah/admin">local</a>;
+                Registration console:
+                <a href="http://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
+                <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;
+                Monitoring console:
+                <a href="http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
+                <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.
+            </p>
             <fieldset class="entityInformation" id="consumerInformationFieldset" style="float:left;margin:5px;">
                 <legend>
                     Consumer Information
@@ -368,6 +379,7 @@
                             <td colspan="2" style="text-align:center;">
                                 <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');">Update</button>
                                 <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');">Get sale associate keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Store');">Get store keys</button>
                             </td>
                         </tr>
                     </table>
@@ -410,7 +422,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="location.countryCode">Country code:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="location.countryCode" name="countryCode" type="text" /></td>
+                            <td><select dojoType="dijit.form.Select" id="location.countryCode" name="countryCode"><option value="CA" selected="true">Canada</option><option value="US">United States of America</option></select></td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><input dojoType="dijit.form.CheckBox" id="location.hasStore" name="hasStore" readonly="true" type="checkbox" /></td>
@@ -432,6 +444,7 @@
                         <tr>
                             <td colspan="2" style="text-align:center;">
                                 <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="dijit.byId('locationFilterDialog').show();">Get location keys</button>
                                 <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();">Resolve</button>
                                 <button disabled="true" dojoType="dijit.form.Button">View Map</button>
                             </td>
@@ -867,6 +880,49 @@
         <div id="keyZone"></div>
     </div>
 
+    <div
+        dojoType="dijit.Dialog"
+        execute="localModule.getLocationKeys();"
+        id="locationFilterDialog"
+        title="Location filters"
+    >
+        <div class="dijitDialogPaneContentArea">
+            <table id="locationAttributeTable">
+                <tr>
+                    <td style="text-align:right;padding-right:10px;"><label for="locationFilter.countryCode">Country code:</label></td>
+                    <td><select dojoType="dijit.form.Select" id="locationFilter.countryCode"><option value="CA" selected="true">Canada</option><option value="US">United States of America</option></select></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;padding-right:10px;"><input dojoType="dijit.form.CheckBox" id="locationFilter.hasStore" type="checkbox" /></td>
+                    <td><label for="locationFilter.hasStore">Has store</label></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;padding-right:10px;"><label for="locationFilter.latitude">Latitude:</label></td>
+                    <td><input dojoType="dijit.form.NumberTextBox" id="locationFilter.latitude" type="text" value="-1000" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;padding-right:10px;"><label for=locationFilter.longitude>Longitude:</label></td>
+                    <td><input dojoType="dijit.form.NumberTextBox" id="locationFilter.longitude" type="text" value="-1000" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;padding-right:10px;"><label for="locationFilter.postalCode">Postal code:</label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="locationFilter.postalCode" type="text" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;padding-right:10px;"><label for="locationFilter.range">Range:</label></td>
+                    <td>
+                        <input dojoType="dijit.form.TextBox" id="locationFilter.range" style="width:4em;" type="text" value="100" />
+                        <select dojoType="dijit.form.Select" id="locationFilter.rangeUnit"><option value="km" selected="true">km</option><option value="mi">miles</option></select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="dijitDialogPaneActionBar">
+            <button dojoType="dijit.form.Button" type="submit" id="ok">Get location keys</button>
+            <button dojoType="dijit.form.Button" type="button" onClick="dijit.byId('locationFilterDialog').onCancel();">Cancel</button>
+        </div>
+    </div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require("dojo.data.ItemFileWriteStore");
@@ -1043,7 +1099,7 @@
                 "'>",                           // entity key
                 "</a>, "
             ];
-    localModule.loadEntityKeys = function(keyFieldId, entityName) {
+    localModule.loadEntityKeys = function(keyFieldId, entityName, parameters) {
         var ownerKey = dijit.byId(keyFieldId).get("value");
         if (isNaN(ownerKey)) {
             alert("The key in the field '" + keyFieldId + "' is not a number!");
@@ -1089,7 +1145,7 @@
                 }).play();
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/shortcut/" + entityName + "?shortId=" + ownerKey + "&anyState=true&onlyKeys=true"
+            url: "/shortcut/" + entityName + "?shortId=" + ownerKey + "&anyState=true&onlyKeys=true&" + parameters
         });
     };
     localModule.resolveLocation = function() {
@@ -1097,11 +1153,27 @@
             content: null,
             handleAs: "json",
             load: function(response, ioArgs) {
-        	    localModule.fetchEntity('location.key', 'Location');
+                localModule.fetchEntity('location.key', 'Location');
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/maelzel/validateLocation?countryCode=" + dijit.byId("location.countryCode").get("value") + "&postalCode=" + dijit.byId("location.postalCode").get("value") + "&consumerKey=0&key=0"
         });
+    };
+    localModule.getLocationKeys = function() {
+        var parameters =
+            "maximumResults=0" +
+            "&hasStore=" + (dijit.byId("locationFilter.hasStore").get("value") == "on") +
+            "&countryCode=" + dijit.byId("locationFilter.countryCode").get("value") +
+            "&range=" + dijit.byId("locationFilter.range").get("value") +
+            "&rangeUnit=" + dijit.byId("locationFilter.rangeUnit").get("value");
+        var postalCode = dijit.byId("locationFilter.postalCode").get("value");
+        if (0 < postalCode.length) {
+            parameters += "&postalCode=" + postalCode;
+        }
+        else {
+            parameters += "&latitude=" + dijit.byId("locationFilter.latitude").get("value") + "&longitude=" + dijit.byId("locationFilter.longitude").get("value");
+        }
+        localModule.loadEntityKeys('consumer.key','Location', parameters);
     };
     </script>
 

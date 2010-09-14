@@ -83,7 +83,7 @@ public class LocationSteps extends BaseSteps {
 
         List<Location> output = null;
         if (center == null) {
-            // Nothing to deduce the selection area: selection rejected
+            output = new ArrayList<Location>();
         }
         else if (!withBounds || !parameters.containsKey(Demand.RANGE)) {
             output = new ArrayList<Location>(1);
@@ -92,7 +92,7 @@ public class LocationSteps extends BaseSteps {
         else {
             Double range = parameters.getDouble(Demand.RANGE);
             String rangeUnit = parameters.getString(Demand.RANGE_UNIT);
-            boolean hasStore = true; // parameters.containsKey(Location.HAS_STORE); // TODO: allow to select any location
+            boolean hasStore = !parameters.containsKey(Location.HAS_STORE) || parameters.getBoolean(Location.HAS_STORE);
 
             output = getLocationOperations().getLocations(pm, center, range, rangeUnit, hasStore, maximumResults);
         }

@@ -5,12 +5,14 @@ import javax.jdo.PersistenceManager;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.dto.Location;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonUtils;
@@ -44,7 +46,12 @@ public class LocationRestlet extends BaseRestlet {
 
             JsonArray resources;
             if (onlyKeys) {
-                throw new ClientException("Not implemented!");
+                // As the selection needs the entire Location instances to filter within a geo-box,
+                // the corresponding instances are asked even if only their identifiers is forwarded to the users 
+                resources = new GenericJsonArray();
+                for (Location location: LocationSteps.getLocations(pm, parameters, true)) {
+                    resources.add(location.getKey());
+                }
             }
             else { // full detail
                 // Get the locations
