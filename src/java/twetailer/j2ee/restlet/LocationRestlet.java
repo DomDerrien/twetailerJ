@@ -47,7 +47,7 @@ public class LocationRestlet extends BaseRestlet {
             JsonArray resources;
             if (onlyKeys) {
                 // As the selection needs the entire Location instances to filter within a geo-box,
-                // the corresponding instances are asked even if only their identifiers is forwarded to the users 
+                // the corresponding instances are asked even if only their identifiers is forwarded to the users
                 resources = new GenericJsonArray();
                 for (Location location: LocationSteps.getLocations(pm, parameters, true)) {
                     resources.add(location.getKey());
