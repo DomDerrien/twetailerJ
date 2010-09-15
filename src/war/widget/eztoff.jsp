@@ -486,7 +486,7 @@
         };
         var cc = [];
         for (var i=1; i<=localModule._friendRowNb; i++) {
-            var email = dijit.byId("email" + i);
+            var email = dijit.byId("email" + i).get("value");
             if (0 < email.length) {
                 cc.push(email);
             }

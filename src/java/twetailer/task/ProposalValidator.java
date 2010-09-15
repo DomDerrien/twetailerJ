@@ -4,16 +4,22 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MailConnector;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
 import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
@@ -28,6 +34,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
  * Define the task with is invoked by methods in ProposalSteps
@@ -152,7 +159,7 @@ public class ProposalValidator {
                                 countdownMillis(5000)
                     );
 
-                    BaseSteps.confirmUpdate(pm, rawCommand, proposal, saleAssociate, saConsumerRecord);
+                    confirmUpdate(rawCommand, proposal, saleAssociate, saConsumerRecord);
                 }
             }
             catch (DataSourceException ex) {
@@ -197,6 +204,59 @@ public class ProposalValidator {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Prepare the messages sent to the proposal owner about the new proposal state.
+     *
+     * @param rawCommand rawCommand at the origin of the demand creation or update
+     * @param proposal Proposal instance just validate after its creation or update
+     * @param owner Proposal owner
+     * @param associate Proposal owner
+     *
+     * @throws CommunicationException If the communication with the demand owner fails
+     */
+    public static void confirmUpdate(RawCommand rawCommand, Proposal proposal, SaleAssociate owner, Consumer associate) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+
+        if (!Source.api.equals(proposal.getSource())) {
+            boolean isNewProposal = proposal.getCreationDate().getTime() == proposal.getModificationDate().getTime();
+            Locale locale = associate.getLocale();
+
+            MessageGenerator msgGen = new MessageGenerator(proposal.getSource(), proposal.getHashTags(), locale);
+            msgGen.
+                put("proposal>owner>name", associate.getName()).
+                fetch(proposal).
+                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+            Map<String, Object> cmdPrm = new HashMap<String, Object>();
+            cmdPrm.put("proposal>key", proposal.getKey());
+            cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+            String cancelProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_cancel", cmdPrm, locale);
+            // String updateProposal = "update proposal:" + proposal.getKey().toString();
+
+            String subject = null;
+            if (Source.mail.equals(proposal.getSource()) && rawCommand.getSubject() != null) {
+                subject = rawCommand.getSubject();
+            }
+            else {
+                subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
+            }
+            subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+            msgGen.
+                put("control>threadSubject", subject.replaceAll(" ", "%20")).
+                put("control>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                // put("control>updateProposal", updateProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+
+            String message = msgGen.getMessage(isNewProposal ? MessageId.proposalCreationAck: MessageId.proposalUpdateAck);
+
+            communicateToConsumer(
+                    proposal.getSource(),
+                    subject,
+                    associate,
+                    new String[] { message }
+            );
         }
     }
 }

@@ -27,7 +27,7 @@ public class ConsumerSteps extends BaseSteps {
     public static List<Consumer> getConsumers(PersistenceManager pm, JsonObject parameters) throws ReservedOperationException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Consumer> output = getConsumerOperations().getConsumers(pm, queryParameters, maximumResults);
         return output;
@@ -36,7 +36,7 @@ public class ConsumerSteps extends BaseSteps {
     public static List<Long> getConsumerKeys(PersistenceManager pm, JsonObject parameters) throws ReservedOperationException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Long> output = getConsumerOperations().getConsumerKeys(pm, queryParameters, maximumResults);
         return output;

@@ -10,7 +10,6 @@
         <!-- =================== -->
         <!-- Default definitions -->
         <!-- =================== -->
-
         <tu tuid="bundle_language" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
@@ -52,6 +51,24 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>American (USA) Dollars</seg></tuv>
+        </tu>
+
+        <tu tuid="common_message_subject_default" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>AnotherSocialEconomy.com notification </seg></tuv>
+        </tu>
+
+        <tu tuid="common_message_subject_response_prefix" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Re: {0}</seg></tuv>
+        </tu>
+
+        <tu tuid="common_message_subject_forward_prefix" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Fw: {0}</seg></tuv>
         </tu>
 
         <!-- ======================================== -->
@@ -224,7 +241,7 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    propose demand:{demand>key} qty:[] tags:[] unit-price:[] total-cost:[] due-date:[] {command>footer}
+                    propose demand:{demand>key} qty:{demand>quantity} unit-price:? total-cost:? due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -288,10 +305,10 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Hi {demand>owner>name}, listing newly created {demand>key}...|
+                    :-) Hi {demand>owner>name}, listing newly created demand:{demand>key}...|
                     demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    quantity:{demand>quantity} tags:{demand>criteria} {demand>hashTags} {demand>metadata}
+                    quantity:{demand>quantity} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata}
                     proposals:{demand>proposalKeys} {demand>cc}
                 </seg>
             </tuv>
@@ -311,10 +328,10 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Hi {demand>owner>name}, listing newly created {demand>key}...|
+                    :-) Hi {demand>owner>name}, listing newly created demand:{demand>key}...|
                     request:{demand>key} tee-time:{demand>dueDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode}
-                    players:{demand>quantity} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart)
+                    players:{demand>quantity} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
                     tags:{demand>criteria} {demand>cc}
                 </seg>
             </tuv>
@@ -345,10 +362,11 @@
                         <li>Range: {demand>range} {demand>rangeUnit};</li>
                         <li>Request reference #: {demand>key}.</li>
                     </ul>
-                    <p>You CC'ed: {demand>cc}.</p>
-                    <p>Your demand is going to be broadcasted to relevant stores. AnotherSocialEconomy.com will notify you as soon as proposals are received.</p>
-                    <p>Click here to cancel your demand: <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">cancel demand # {1}</a>.</p>
-                    <p>Thanks for using AnotherSocialEconomy.com to shop online in your local area.</p>
+                    <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant stores
+                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    </p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
                 </seg>
@@ -385,7 +403,7 @@
                     <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant golf courses
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>threadSubject}&amp;subject={control>cancelDemand}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -426,8 +444,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand creation ...|
-                    {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metada} players:{demand>quantity} tee-time:{demand>dueDate}.
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following tee-off request creation ...|
+                    {demand>key} tags:{demand>criteria} {demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart} players:{demand>quantity} tee-time:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -457,7 +475,7 @@
                         <li>Tags: <strong>{demand>criteria}</strong></li>
                         <li>Metadata: {demand>metadata}</li>
                     </ul>
-                    <p>The new request - reference# {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible, to the demand owner and to you on their behalf.</p>
+                    <p>The new request - reference# {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible.</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -492,7 +510,7 @@
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{demand>cc}</strong> on their behalf.</p>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:support@ezToff.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -540,8 +558,8 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    FYI. Can you supply {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metada} players:{demand>quantity} tee-time:{demand>dueDate}?|
-                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:? metadata:{pullCart:{demand>metadata>pullCart},golfCart:{demand>metada>golfCart}} round-price:? total-cost:? tee-time:{demand>dueDate}'.
+                    FYI. Can you supply {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata} players:{demand>quantity} tee-time:{demand>dueDate}?|
+                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:? metadata:{demand>metadata} round-price:? total-cost:? tee-time:{demand>dueDate}'.
                 </seg>
             </tuv>
         </tu>
@@ -575,7 +593,7 @@
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp">Associate Console</a>
                         and click "Create Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a Proposal by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>createProposal}.&amp;subject={control>threadSubject}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
@@ -588,7 +606,6 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing sale associates about the demand creation.|
                 Message informing sale associates about the demand creation.|
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
@@ -613,9 +630,94 @@
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp">ezToff Reservation Desk</a>
                         and click "Create Tee-time Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a tee-off Proposal by clicking
-                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>createProposal}.&amp;subject={control>threadSubject}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand update.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, listing your updated demand:{demand>key}...|
+                    demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
+                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
+                    quantity:{demand>quantity} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata}
+                    proposals:{demand>proposalKeys} {demand>cc}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_demand_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand update.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, listing your updated demand:{demand>key}...|
+                    demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
+                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
+                    players:{demand>quantity} tags:{demand>criteria} {demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    proposals:{demand>proposalKeys} {demand>cc}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>
+                        We're confirming your <strong>update</strong> of the request within <strong>{demand>range} {demand>rangeUnit}</strong> of
+                        <strong>{demand>location>postalCode} {demand>location>countryCode</strong>,
+                        on <strong>{demand>dueDate}</strong>. You've also requested:
+                    </p>
+                    <ul>
+                        <li>Quantity: <strong>{demand>quantity}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Metadata: <strong>{demand>metadata}</strong></li>
+                    </ul>
+                    <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant stores
+                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    </p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
                 </seg>
@@ -626,42 +728,106 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message confirming a successful demand update.|
-                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: state
-                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {4}: expiration date, can be equals to the due date
-                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
-                {6}: quantity
-                {7}: tags
-                {8}: hashtags
-                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
-                {10}: number of stores pinged
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
-                {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart asked
-                {15}: number of golf cart asked
-                {16}: locale
-                {17}: range
+                Message confirming a successful demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {control>threadSubject}
+                {control>cancelDemand}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p>We're confirming your <strong>update</strong> to tee-off within <strong>{17}</strong> of  <strong>{16}</strong>, on <strong>(3)</strong>. You've also requested:</p>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>
+                        We're confirming your <strong>update</strong> to tee-off within <strong>{demand>range} {demand>rangeUnit}</strong> of
+                        <strong>{demand>location>postalCode} {demand>location>countryCode</strong>,
+                        on <strong>{demand>dueDate}</strong>. You've also requested:
+                    </p>
                     <ul>
-                        <li>Players: <strong>{6}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{7}</strong></li>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting your request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to you and <strong>{9}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
+                    <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant golf courses
+                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_update_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand update.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand update ...|
+                    {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} dueDate:{demand>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_demand_update_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand update.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following tee-off request update ...|
+                    {demand>key} tags:{demand>criteria} {demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart} players:{demand>quantity} tee-time:{demand>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_update_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> request
+                    within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                    on <strong>{demand>dueDate}</strong>. Also requested:</p>
+                    <ul>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Metadata: <strong>{demand>metadata}</strong></li>
+                    </ul>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant stores
+                    and will communicate their proposals, as soon as possible.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -670,42 +836,106 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing CC'ed users about the demand update.|
-                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: state
-                {3}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {4}: expiration date, can be equals to the due date
-                {5}: locale (postal and country codes) and range as defined by entry "long_golf_location_area_details"
-                {6}: quantity
-                {7}: tags
-                {8}: hashtags
-                {9}: cc-ed ids as defined by the entry "short_golf_demand_cced"
-                {10}: number of stores pinged
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the demand, as defined by yhe entry "long_golf_demand_cancelCommand"
-                {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart asked
-                {15}: number of golf cart asked
-                {16}: locale
-                {17}: range
+                Message informing CC'ed users about the demand creation.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>location>*}: demand's location attributes
+                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p><strong>{0}</strong> has chosen to keep you notified regarding their <strong>updated</strong> desire to tee-off within <strong>{17}</strong> of <strong>{16}</strong>, on <strong>(3)</strong>. Also requested:</p>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> desire to tee-off
+                    within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                    on <strong>{demand>dueDate}</strong>. Also requested:</p>
                     <ul>
-                        <li>Players: <strong>{6}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{7}</strong></li>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{9}</strong> on their behalf.</p>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses
+                    and will communicate their proposals, as soon as possible.</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_proposal_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_creation_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>We're confirming your proposal on <strong>{proposal>dueDate}</strong> for:</p>
+                    <ul>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                    </ul>
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {13}
+                    <p>Request#: {proposal>demandKey}, Proposal#: {proposal>key}.</p>
+               </seg>
             </tuv>
         </tu>
 
@@ -714,41 +944,105 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
-                {0}: proposal owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: proposal reference
-                {2}: demand reference
-                {3}: state
-                {4}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {5}: quantity
-                {6}: tags
-                {7}: hashtags
-                {8}: currency sign
-                {9}: unit price
-                (10}: total price
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the proposal, as defined by yhe entry "long_golf_proposal_cancelCommand"
-                {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart proposed
-                {15}: number of golf cart proposed
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p>We're confirming your <strong>{4}</strong> tee-off proposal for:</p>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>We're confirming your tee-off proposal on <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
-                        <li>Players: <strong>{5}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{6}</strong></li>
-                        <li>Round price: <strong>{8}{9}</strong> per player</li>
-                        <li>Total cost: <strong>{8}{10}</strong></li>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
                     </p>
                     {13}
-                    <p>Request#: {2}, Proposal#: {1}.</p>
+                    <p>Request#: {proposal>demandKey}, Proposal#: {proposal>key}.</p>
                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal update.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_proposal_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal update.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_update_ackToOwner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal update.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>We're confirming your <strong>updated</strong> proposal on <strong>{proposal>dueDate}</strong> for:</p>
+                    <ul>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                    </ul>
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {proposal>demandKey}, Proposal#: {proposal>key}.</p>
+                </seg>
             </tuv>
         </tu>
 
@@ -756,41 +1050,114 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message confirming a successful proposal creation.|
-                {0}: proposal owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: proposal reference
-                {2}: demand reference
-                {3}: state
-                {4}: due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {5}: quantity
-                {6}: tags
-                {7}: hashtags
-                {8}: currency sign
-                {9}: unit price
-                (10}: total price
-                {11}: email thread subject
-                {12}: content of the automatic response cancelling the proposal, as defined by yhe entry "long_golf_proposal_cancelCommand"
-                {13}: message footer as defined by the entry "long_golf_footer"
-                {14}: number of pull cart proposed
-                {15}: number of golf cart proposed
+                Message confirming a successful proposal update.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p>We're confirming your <strong>updated {4}</strong> tee-off proposal for:</p>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>We're confirming your <strong>updated</strong> tee-off proposal on <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
-                        <li>Players: <strong>{5}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{6}</strong></li>
-                        <li>Round price: <strong>{8}{9}</strong> per player</li>
-                        <li>Total cost: <strong>{8}{10}</strong></li>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
                     </p>
-                    {13}
-                    <p>Request#: {2}, Proposal#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {proposal>demandKey}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_creation_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, your demand:{demand>key} received the proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_proposal_creation_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, your tee-off request:{demand>key} received the proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_creation_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has prepared the proposal on <strong>{proposal>dueDate}</strong>  for:</p>
+                    <ul>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Unit price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                    </ul>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>More store information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -800,58 +1167,162 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message informing the demand owner about a proposal creation.|
-                {0}: demand owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
-                {1}: demand reference
-                {2}: demand due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {3}: demand expiration date, can be equals to the due date
-                {4}: demand quantity
-                {5}: demand tags
-                {6}: demand hashtags
-                {7}: proposal reference
-                {8}: proposal due date in the format "EEEE, MMMM d, yyyy at h:mm ap"
-                {9}: proposal quantity
-                {10}: proposal tags
-                {11}: proposal hashtags
-                {12}: currency sign
-                {13}: unit price
-                (14}: total price
-                {15}: store reference
-                {16}: store name
-                {17}: store address
-                {18}: store website
-                {19}: store phone number
-                {20}: store postal code
-                {21}: store country code
-                {22}: email thread subject
-                {23}: content of the automatic response to confirm the proposal, as defined by the entry "long_golf_proposal_confirmCommand"
-                {24}: content of the automatic response to decline the proposal, as defined by the entry "long_golf_proposal_declineCommand"
-                {25}: content of the automatic response to cancel the demand, as defined by the entry "long_golf_demand_cancelCommand"
-                {26}: message footer as defined by the entry "long_golf_footer"
-                {27}: number of pull cart asked
-                {28}: number of golf cart asked
+                {proposal>*}: proposal attributes
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p><strong><a href="{18}">{16}</a></strong> has proposed a <strong>{8}</strong> tee-off off for:</p>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has proposed a tee-off on <strong>{proposal>dueDate}</strong>  for:</p>
                     <ul>
-                        <li>Players: <strong>{9}</strong></li>
-                        <li>Pull carts: <strong>{27}</strong></li>
-                        <li>Golf carts: <strong>{28}</strong></li>
-                        <li>Options: <strong>{10}</strong></li>
-                        <li>Round price: <strong>{12}{13}</strong> per player</li>
-                        <li>Total cost: <strong>{12}{14}</strong></li>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={23}&amp;subject={22}">confirm this proposal# {7}</a></strong>, <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={24}&amp;subject={22}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
-                     Address: {17}, {20} {21}<br/>
-                     Telephone: {19}</p>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
                     </p>
-                    {26}
-                    <p>Request#: {1}, Proposal#: {7}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_creation_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following proposal:{proposal>key} reception ...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_proposal_creation_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, your tee-off request:{demand>key} received the proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_creation_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
+                    the request:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
+                    has been received with:</p>
+                    <ul>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Unit price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                    </ul>
+                    <p>More store information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_creation_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about a proposal creation.|
+                {proposal>*}: proposal attributes
+                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {control>threadSubject}
+                {control>cancelProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
+                    the request:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
+                    has been received with:</p>
+                    <ul>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                    </ul>
+                    <p>More course information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -955,7 +1426,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
-                Message informing the demand owner about a proposal confirmation.|
+                Message informing the proposal owner about a proposal confirmation.|
                 {0}: proposal owner name (can be just the name, just an email address, a combination of both, a twitter id, etc.)
                 {1}: proposal reference
                 {2}: demand reference

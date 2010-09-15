@@ -18,6 +18,7 @@ import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
@@ -284,8 +285,8 @@ public class DemandValidator {
 
             MessageGenerator msgGen = null;
             String message = null;
-            String subject = null;
 
+            // Send a notification to the Owner
             if (!Source.api.equals(demand.getSource())) {
                 msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
                 msgGen.
@@ -300,25 +301,24 @@ public class DemandValidator {
                 String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", cmdPrm, locale);
                 // String updateDemand = "update demand:" + demand.getKey().toString();
 
+                String subject = null;
                 if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
                     subject = rawCommand.getSubject();
                 }
                 else {
                     subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
                 }
+                subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
                     put("control>threadSubject", subject.replaceAll(" ", "%20")).
                     put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
                     // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
-                if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
-                    msgGen.put("control>threadSubject", rawCommand.getSubject());
-                }
 
                 message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
 
                 communicateToConsumer(
-                        rawCommand.getSource(),
+                        demand.getSource(),
                         subject,
                         owner,
                         new String[] { message }
@@ -327,6 +327,7 @@ public class DemandValidator {
 
             // Send a notification to the CC'ed users
             if (cc != null && 0 < cc.size()) {
+                String subject = null;
                 for (String coordinate: cc) {
                     try {
                         Source source = getCCedCommunicationChannel(coordinate);
@@ -335,7 +336,7 @@ public class DemandValidator {
                             //
                             // TODO: cache the MessageGenerator instance per Source value to avoid unnecessary re-creation!
                             //
-                            msgGen = new MessageGenerator(Source.mail, demand.getHashTags(), locale);
+                            msgGen = new MessageGenerator(source, demand.getHashTags(), locale);
                             msgGen.
                                 put("demand>owner>name", owner.getName()).
                                 fetch(demand).
@@ -349,6 +350,7 @@ public class DemandValidator {
                             Map<String, Object> cmdPrm = new HashMap<String, Object>();
                             cmdPrm.put("demand>key", demand.getKey());
                             subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                            subject = MailConnector.prepareSubjectAsForward(subject, locale);
                         }
 
                         communicateToCCed(

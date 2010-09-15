@@ -29,8 +29,6 @@ import twetailer.dto.HashTag.RegisteredHashTag;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
-import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.JsonArray;
 
 public class TestMessageGenerator {
 
@@ -178,6 +176,7 @@ public class TestMessageGenerator {
     @Test
     public void testPutAndRemove() {
         MessageGenerator msgGen = new MessageGenerator(Source.mail, null, Locale.ENGLISH);
+        assertEquals(Source.mail, msgGen.getCommunicationChannel());
         assertEquals(0, msgGen.getParameters().size());
         assertEquals(1, msgGen.put("key", "value").getParameters().size());
         assertEquals(0, msgGen.remove("key").getParameters().size());

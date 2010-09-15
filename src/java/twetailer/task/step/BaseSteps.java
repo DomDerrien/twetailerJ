@@ -32,8 +32,6 @@ import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.RawCommand;
-import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import domderrien.i18n.DateUtils;
@@ -97,125 +95,6 @@ public class BaseSteps {
     public static void setMockStoreOperations(StoreOperations storeOperations) { BaseSteps.storeOperations = storeOperations; }
 
     public static String automatedResponseFooter = "%0A--%0AThis email will be sent to ezToff's automated mail reader.";
-
-    public static void confirmUpdate(PersistenceManager pm, RawCommand rawCommand, Proposal proposal, SaleAssociate owner, Consumer associate) throws DataSourceException, InvalidIdentifierException, CommunicationException {
-
-        if (!Source.api.equals(proposal.getSource())) {
-            boolean isNewProposal = proposal.getCreationDate().getTime() == proposal.getModificationDate().getTime();
-            Locale locale = Locale.ENGLISH; // owner.getLocale(); // TODO
-
-            String[] parameters = new String[] {
-                    associate.getName(), // 0
-                    proposal.getKey().toString(), // 1
-                    proposal.getDemandKey().toString(), // 2
-                    proposal.getState().toString(), // 3
-                    proposal.getDueDate().toString(), // 4
-                    proposal.getQuantity().toString(), // 5
-                    proposal.getSerializedCriteria("none"), // 6
-                    proposal.getSerializedHashTags("none"), // 7
-                    "$", // 8
-                    proposal.getPrice().toString(), // 9
-                    proposal.getTotal().toString(), // 10
-                    Source.widget.equals(proposal.getSource()) ? LabelExtractor.get("mc_mail_subject_response_default", locale) : rawCommand.getSubject(), // 11
-                    ("cancel proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 12
-                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 13
-                    "0", //14
-                    "0" // 15
-            };
-
-            String message = MessageGenerator.getMessage(
-                    proposal.getSource(),
-                    proposal.getHashTags(),
-                    isNewProposal ? MessageId.proposalCreationAck: MessageId.proposalUpdateAck,
-                    parameters,
-                    locale
-            );
-            communicateToConsumer(
-                    rawCommand.getSource(),
-                    rawCommand.getSubject(),
-                    associate,
-                    new String[] { message }
-            );
-        }
-    }
-
-    public static void notifyAvailability(PersistenceManager pm, Proposal proposal, Demand demand, Consumer consumer) throws DataSourceException, InvalidIdentifierException, CommunicationException {
-
-        List<String> cc = demand.getCC();
-        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
-            Locale locale = consumer.getLocale();
-            Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
-            Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
-
-            String[] parameters = new String[] {
-                    consumer.getName(), // 0
-                    demand.getKey().toString(), // 1
-                    demand.getDueDate().toString(), // 2
-                    demand.getExpirationDate().toString(), // 3
-                    demand.getQuantity().toString(), // 4
-                    demand.getSerializedCriteria("none"), // 5
-                    demand.getSerializedHashTags("none"), // 6
-                    proposal.getKey().toString(), // 7
-                    proposal.getDueDate().toString(), // 8
-                    proposal.getQuantity().toString(), // 9
-                    proposal.getSerializedCriteria("none"), // 10
-                    proposal.getSerializedHashTags("none"), // 11
-                    "$", // 12
-                    proposal.getPrice().toString(), // 13
-                    proposal.getTotal().toString(), // 14
-                    store.getKey().toString(), // 15
-                    store.getName(), // 16
-                    store.getAddress(), // 17
-                    store.getUrl().startsWith("http://") ? store.getUrl() : "http://" + store.getUrl(), // 18
-                    store.getPhoneNumber(), // 19
-                    location.getPostalCode(), // 20
-                    location.getCountryCode(), // 21
-                    LabelExtractor.get("mc_mail_subject_response_default", locale), // 22
-                    ("confirm proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 23
-                    ("decline proposal:" + proposal.getKey().toString()  +automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 24
-                    ("cancel demand:" + proposal.getDemandKey().toString()  +automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"), // 25
-                    LabelExtractor.get(ResourceFileId.fourth, "long_golf_footer", locale), // 26
-                    "0", // 27
-                    "0" // 28
-            };
-
-            String subject = null;
-
-            // Send the proposal details to the owner
-            if (!Source.api.equals(demand.getSource())) {
-                String message = MessageGenerator.getMessage(
-                        consumer.getPreferredConnection(),
-                        demand.getHashTags(),
-                        MessageId.proposalCreationNot,
-                        parameters,
-                        locale
-                );
-
-                Map<String, Object> cmdPrm = new HashMap<String, Object>();
-                cmdPrm.put("demand>key", demand.getKey());
-                // subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20"); // FIXME
-
-                communicateToConsumer(
-                        consumer.getPreferredConnection(),
-                        subject,
-                        consumer,
-                        new String[] { message }
-                );
-            }
-
-            // Send the proposal details to the CC'ed users
-            if (cc != null && 0 < cc.size()) {
-                String message = MessageGenerator.getMessage(
-                        consumer.getPreferredConnection(),
-                        demand.getHashTags(),
-                        MessageId.proposalCreationCpy,
-                        parameters,
-                        locale
-                );
-                notifyMessageToCCed(cc, subject,  message, locale);
-            }
-        }
-    }
 
     public static void notifyCreationToCCed(PersistenceManager pm, Demand demand, Consumer owner) throws DataSourceException {
     }

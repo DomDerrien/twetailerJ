@@ -58,7 +58,7 @@ public class LocationSteps extends BaseSteps {
     public static List<Location> getLocations(PersistenceManager pm, JsonObject parameters, boolean withBounds) throws InvalidIdentifierException, DataSourceException {
 
         // Map<String, Object> queryParameters = prepareQueryForSelection(parameters); // Parameters processed individually
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         // Get the center
         Location center = null;

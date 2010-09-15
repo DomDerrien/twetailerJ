@@ -21,6 +21,7 @@ import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
@@ -344,32 +345,30 @@ public class DemandProcessor {
      */
     public static void notifyAvailability(Demand demand, Consumer associate) throws CommunicationException {
 
-        // TODO: check if it's worth caching the MessageGenerator instance for the associate's locale, so we can save on the time to serialize the demand and the commands -- Note the associate name field will have to be updated
+        if (!Source.api.equals(demand.getSource())) {
+            Locale locale = associate.getLocale();
 
-        Locale locale = associate.getLocale();
+            MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+            msgGen.
+                put("proposal>owner>name", associate.getName()).
+                fetch(demand).
+                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
-        MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
-        msgGen.
-            put("proposal>owner>name", associate.getName()).
-            fetch(demand).
-            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
-            put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+            String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", msgGen.getParameters(), locale);
+            String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", msgGen.getParameters(), locale);
+            String subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+            msgGen.
+                put("control>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
+                put("control>createProposal", createProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
+                put("control>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
 
-        String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", msgGen.getParameters(), locale); // "propose demand:" + demand.getKey().toString() + " players:" + demand.getQuantity().toString() + " due:" + proposedDate + "T??:?? price:$? total:$? infos:? meta:{pull:?,buggy:?}";
-        String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", msgGen.getParameters(), locale);
-        String subject = msgGen.getAlternateMessage(MessageId.messageSubject);
-        msgGen.
-            put("control>threadSubject", subject.replaceAll(" ", "%20")).
-            put("control>createProposal", createProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
-            put("control>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
-
-        RawCommand rawCommand = new RawCommand(associate.getPreferredConnection());
-        rawCommand.setSubject(subject);
-        communicateToConsumer(
-                associate.getPreferredConnection(),
-                subject,
-                associate,
-                new String[] { msgGen.getMessage(MessageId.demandCreationNot) }
-        );
+            communicateToConsumer(
+                    associate.getPreferredConnection(),
+                    subject,
+                    associate,
+                    new String[] { msgGen.getMessage(MessageId.demandCreationNot) }
+            );
+        }
     }
 }

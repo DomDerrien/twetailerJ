@@ -1,25 +1,37 @@
 package twetailer.task;
 
+import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
+import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MailConnector;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
  * Define the task with is invoked by the task "/maelzel/validateOpenProposal"
@@ -83,8 +95,11 @@ public class ProposalProcessor {
 
                     // Prepare the notification only if worth it
                     if (!Source.api.equals(demand.getSource()) || 0 < demand.getCC().size()) {
+                        Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
+                        Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
+                        RawCommand rawCommand = Source.mail.equals(demand.getSource()) ? BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId()) : null;
                         Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
-                        BaseSteps.notifyAvailability(pm, proposal, demand, consumer);
+                        notifyAvailability(proposal, store, location, demand, rawCommand, consumer);
                     }
                 }
                 else {
@@ -104,20 +119,143 @@ public class ProposalProcessor {
                             },
                             locale
                     );
-                    RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
+                    String subject = null;
+                    if (Source.mail.equals(proposal.getSource())) {
+                        RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
+                        subject = rawCommand.getSubject();
+                    }
+                    if (subject == null ){
+                        subject = MessageGenerator.getMessage(
+                                proposal.getSource(),
+                                proposal.getHashTags(),
+                                MessageId.messageSubject,
+                                new String[] { demand.getKey().toString() },
+                                locale
+                        );
+                    }
                     communicateToConsumer(
-                            rawCommand.getSource(),
-                            rawCommand.getSubject(),
+                            proposal.getSource(),
+                            MailConnector.prepareSubjectAsResponse(subject, locale),
                             saConsumerRecord,
                             new String[] { message }
                     );
                 }
             }
             catch (InvalidIdentifierException ex) {
-                log.warning("Cannot get information retaled to proposal: " + proposal.getKey() + " -- ex: " + ex.getMessage());
+                log.warning("Cannot get information related to proposal: " + proposal.getKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
                 log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Send a message to the identified consumer for him to review the proposal.
+     * CC'ed users will be notified too.
+     *
+     * @param proposal New or updated proposal to be presented to the consumer
+     * @param store Record of the store which produced the proposal
+     * @param location Place where the store is located
+     * @param demand Original demand for this proposal
+     * @param rawCommand To be able to get the initial mail subject if it has been sent by e-mail
+     * @param consumer Record of the demand owner
+     *
+     * @throws CommunicationException If the communication with the demand owner fails
+     */
+    public static void notifyAvailability(Proposal proposal, Store store, Location location, Demand demand, RawCommand rawCommand, Consumer consumer) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+
+        List<String> cc = demand.getCC();
+        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
+            Locale locale = consumer.getLocale();
+
+            MessageGenerator msgGen = null;
+            String message = null;
+
+            // Send a message to the demand Owner
+            if (!Source.api.equals(demand.getSource())) {
+                msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                msgGen.
+                    put("demand>owner>name", consumer.getName()).
+                    fetch(proposal).
+                    fetch(store).
+                    fetch(location, "store").
+                    fetch(demand).
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                Map<String, Object> cmdPrm = new HashMap<String, Object>();
+                cmdPrm.put("proposal>key", demand.getKey());
+                cmdPrm.put("demand>key", demand.getKey());
+                cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+                String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", cmdPrm, locale);
+                String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", cmdPrm, locale);
+                String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", cmdPrm, locale);
+
+                String subject = null;
+                if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
+                    subject = rawCommand.getSubject();
+                }
+                else {
+                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
+                }
+                subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                msgGen.
+                    put("control>threadSubject", subject.replaceAll(" ", "%20")).
+                    put("control>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
+                    put("control>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
+                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+
+                message = msgGen.getMessage(MessageId.proposalCreationNot);
+
+                communicateToConsumer(
+                        consumer.getPreferredConnection(),
+                        subject,
+                        consumer,
+                        new String[] { message }
+                );
+            }
+
+            // Send the proposal details to the CC'ed users
+            if (cc != null && 0 < cc.size()) {
+                String subject = null;
+                for (String coordinate: cc) {
+                    try {
+                        Source source = getCCedCommunicationChannel(coordinate);
+
+                        if (msgGen == null || !source.equals(msgGen.getCommunicationChannel())) {
+                            //
+                            // TODO: cache the MessageGenerator instance per Source value to avoid unnecessary re-creation!
+                            //
+                            msgGen = new MessageGenerator(source, demand.getHashTags(), locale);
+                            msgGen.
+                                put("demand>owner>name", consumer.getName()).
+                                fetch(proposal).
+                                fetch(store).
+                                fetch(location, "store").
+                                fetch(demand).
+                                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                            message = msgGen.getMessage(MessageId.proposalCreationCpy);
+                        }
+
+                        if (subject == null) {
+                            Map<String, Object> cmdPrm = new HashMap<String, Object>();
+                            cmdPrm.put("demand>key", demand.getKey());
+                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                            subject = MailConnector.prepareSubjectAsForward(subject, locale);
+                        }
+
+                        communicateToCCed(
+                                source,
+                                coordinate,
+                                subject,
+                                message,
+                                locale
+                        );
+                    }
+                    catch (ClientException e) { } // Too bad, cannot contact the CC-ed person... Don't block the next sending!
+                }
             }
         }
     }

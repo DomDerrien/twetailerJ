@@ -105,7 +105,7 @@ public class ProposalSteps extends BaseSteps {
     public static List<Proposal> getProposals(PersistenceManager pm, JsonObject parameters, Long ownerKey, QueryPointOfView pointOfView, Long saleAssociateKey) throws ReservedOperationException, InvalidIdentifierException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Proposal> output = null;
 
@@ -136,7 +136,7 @@ public class ProposalSteps extends BaseSteps {
     public static List<Long> getProposalKeys(PersistenceManager pm, JsonObject parameters, Long ownerKey, QueryPointOfView pointOfView, Long saleAssociateKey) throws ReservedOperationException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Long> output = null;
 

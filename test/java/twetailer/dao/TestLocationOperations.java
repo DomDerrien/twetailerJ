@@ -538,6 +538,7 @@ public class TestLocationOperations {
         source.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         source.setLatitude(45.0D);
         source.setLongitude(-27.5D);
+        source.setHasStore(Boolean.TRUE);
         source = ops.createLocation(source);
 
         Location target = new Location();
@@ -550,7 +551,7 @@ public class TestLocationOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         try {
-            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, false, 0);
+            List<Location> selection = ops.getLocations(pm, source, 100.0D, LocaleValidator.KILOMETER_UNIT, true, 0);
             assertNotNull(selection);
             assertEquals(2, selection.size());
             assertTrue(source.getKey().equals(selection.get(0).getKey()) || source.getKey().equals(selection.get(1).getKey()));

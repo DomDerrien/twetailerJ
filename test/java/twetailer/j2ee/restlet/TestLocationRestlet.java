@@ -1,5 +1,13 @@
 package twetailer.j2ee.restlet;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.jdo.PersistenceManager;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,12 +19,14 @@ import twetailer.InvalidIdentifierException;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Location;
+import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MockLoginServlet;
 import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestLocationRestlet {
@@ -61,9 +71,42 @@ public class TestLocationRestlet {
         ops.getResource(null, "resourceId", user);
     }
 
-    @Test(expected=RuntimeException.class)
-    public void testSelectResources() throws DataSourceException, ClientException {
-        ops.selectResources(new GenericJsonObject(), null);
+    @Test
+    public void testSelectResourcesI() throws DataSourceException, ClientException {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                fail("Call not expected");
+                return null;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+                fail("Call not expected");
+                return null;
+            }
+        });
+        JsonArray response = ops.selectResources(new GenericJsonObject(), null);
+        assertEquals(0, response.size());
+    }
+
+    @Test
+    public void testSelectResourcesII() throws DataSourceException, ClientException {
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) {
+                fail("Call not expected");
+                return null;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+                fail("Call not expected");
+                return null;
+            }
+        });
+        JsonObject parameters = new GenericJsonObject();
+        parameters.put(BaseRestlet.ONLY_KEYS_PARAMETER_KEY, Boolean.TRUE);
+        JsonArray response = ops.selectResources(parameters, null);
+        assertEquals(0, response.size());
     }
 
     @Test(expected=RuntimeException.class)

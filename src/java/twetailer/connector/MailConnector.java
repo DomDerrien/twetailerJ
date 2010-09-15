@@ -21,6 +21,7 @@ import twetailer.j2ee.MailResponderServlet;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
  * Definition of the methods specific to communication over IMAP
@@ -96,6 +97,48 @@ public class MailConnector {
     }
 
     /**
+     * Helper appending the conventional "re:" prefix is not detected
+     *
+     * @param subject Information to check
+     * @param locale In order to load the right prefix
+     * @return Prefixed information or a default one
+     */
+    public static String prepareSubjectAsResponse(String subject, Locale locale) {
+        if (subject != null) {
+            subject = subject.trim();
+        }
+        if (subject == null || subject.length() == 0) {
+            return LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_default", locale);
+        }
+        String responsePrefix = LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_response_prefix", locale);
+        if (!subject.startsWith(responsePrefix.substring(0,3))) {
+            return LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_response_prefix", new Object[] { subject }, locale);
+        }
+        return subject;
+    }
+
+    /**
+     * Helper appending the conventional "fwd:" prefix is not detected
+     *
+     * @param subject Information to check
+     * @param locale In order to load the right prefix
+     * @return Prefixed information or a default one
+     */
+    public static String prepareSubjectAsForward(String subject, Locale locale) {
+        if (subject != null) {
+            subject = subject.trim();
+        }
+        if (subject == null || subject.length() == 0) {
+            return LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_default", locale);
+        }
+        String responsePrefix = LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_forward_prefix", locale);
+        if (!subject.startsWith(responsePrefix.substring(0,3))) {
+            return LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_forward_prefix", new Object[] { subject }, locale);
+        }
+        return subject;
+    }
+
+    /**
      * Use the Google App Engine API to send an mail message to the identified e-mail address
      *
      * @param useCcAccount Indicates that the message should be sent from a CC account, which is going to ignore unexpected replies
@@ -117,16 +160,7 @@ public class MailConnector {
         MimeMessage mailMessage = new MimeMessage(session);
         mailMessage.setFrom(useCcAccount ? twetailer_cc : twetailer);
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
-        String responsePrefix = LabelExtractor.get("mc_mail_subject_response_prefix", locale);
-        if (subject == null || subject.length() == 0) {
-            mailMessage.setSubject(LabelExtractor.get("mc_mail_subject_response_default", locale), "UTF-8");
-        }
-        else if (subject.startsWith(responsePrefix)) {
-            mailMessage.setSubject(subject, "UTF-8");
-        }
-        else {
-            mailMessage.setSubject(responsePrefix + subject, "UTF-8");
-        }
+        mailMessage.setSubject(subject, "UTF-8");
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);
     }

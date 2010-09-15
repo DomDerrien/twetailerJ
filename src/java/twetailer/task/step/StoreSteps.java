@@ -29,7 +29,7 @@ public class StoreSteps extends BaseSteps {
     public static List<Store> getStores(PersistenceManager pm, JsonObject parameters) throws InvalidIdentifierException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Location> locations = LocationSteps.getLocations(pm, parameters, true);
 
@@ -39,7 +39,7 @@ public class StoreSteps extends BaseSteps {
     public static List<Long> getStoreKeys(PersistenceManager pm, JsonObject parameters) throws InvalidIdentifierException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Location> locations = LocationSteps.getLocations(pm, parameters, true);
 

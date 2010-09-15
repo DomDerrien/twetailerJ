@@ -32,6 +32,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 public class TestMailConnector {
 
@@ -637,5 +638,49 @@ public class TestMailConnector {
 
         assertEquals("", test.getPersonal());
         assertEquals(email, test.getAddress());
+    }
+
+    @Test
+    public void testPrepareSubjectAsResponseI() {
+        assertEquals("Re: test", MailConnector.prepareSubjectAsResponse("test", Locale.ENGLISH));
+        assertEquals("Re: test", MailConnector.prepareSubjectAsResponse("   test   ", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testPrepareSubjectAsResponseII() {
+        assertEquals("Re:test", MailConnector.prepareSubjectAsResponse("Re:test", Locale.ENGLISH));
+        assertEquals("Re:\ttest", MailConnector.prepareSubjectAsResponse("Re:\ttest", Locale.ENGLISH));
+        assertEquals("Re:  test", MailConnector.prepareSubjectAsResponse("Re:  test", Locale.ENGLISH));
+        assertEquals("Re:  test", MailConnector.prepareSubjectAsResponse("   Re:  test   ", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testPrepareSubjectAsResponseIII() {
+        String defaultSubject = LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_default", Locale.ENGLISH);
+        assertEquals(defaultSubject, MailConnector.prepareSubjectAsResponse(null, Locale.ENGLISH));
+        assertEquals(defaultSubject, MailConnector.prepareSubjectAsResponse("", Locale.ENGLISH));
+        assertEquals(defaultSubject, MailConnector.prepareSubjectAsResponse("     ", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testPrepareSubjectAsForwardI() {
+        assertEquals("Fw: test", MailConnector.prepareSubjectAsForward("test", Locale.ENGLISH));
+        assertEquals("Fw: test", MailConnector.prepareSubjectAsForward("   test   ", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testPrepareSubjectAsForwardII() {
+        assertEquals("Fw:test", MailConnector.prepareSubjectAsForward("Fw:test", Locale.ENGLISH));
+        assertEquals("Fw:\ttest", MailConnector.prepareSubjectAsForward("Fw:\ttest", Locale.ENGLISH));
+        assertEquals("Fw:  test", MailConnector.prepareSubjectAsForward("Fw:  test", Locale.ENGLISH));
+        assertEquals("Fw:  test", MailConnector.prepareSubjectAsForward("   Fw:  test   ", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testPrepareSubjectAsForwardIII() {
+        String defaultSubject = LabelExtractor.get(ResourceFileId.fourth, "common_message_subject_default", Locale.ENGLISH);
+        assertEquals(defaultSubject, MailConnector.prepareSubjectAsForward(null, Locale.ENGLISH));
+        assertEquals(defaultSubject, MailConnector.prepareSubjectAsForward("", Locale.ENGLISH));
+        assertEquals(defaultSubject, MailConnector.prepareSubjectAsForward("     ", Locale.ENGLISH));
     }
 }

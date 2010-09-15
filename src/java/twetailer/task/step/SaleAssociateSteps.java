@@ -34,7 +34,7 @@ public class SaleAssociateSteps extends BaseSteps {
     public static List<SaleAssociate> getSaleAssociates(PersistenceManager pm, JsonObject parameters) throws ReservedOperationException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<SaleAssociate> output = getSaleAssociateOperations().getSaleAssociates(pm, queryParameters, maximumResults);
         return output;
@@ -43,7 +43,7 @@ public class SaleAssociateSteps extends BaseSteps {
     public static List<Long> getSaleAssociateKeys(PersistenceManager pm, JsonObject parameters) throws ReservedOperationException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
-        int maximumResults = (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY);
+        int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
         List<Long> output = getSaleAssociateOperations().getSaleAssociateKeys(pm, queryParameters, maximumResults);
         return output;

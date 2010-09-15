@@ -111,9 +111,11 @@
 
     <br clear="all" />
     <ul>
-        <li>Sample page: <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/sample.jsp">Local version</a>.</li>
+        <li>Widget sample page: <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/sample.jsp">Local version</a>.</li>
         <li>ASE widget alone: <a href="http://anothersocialeconomy.appspot.com/widget/ase.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/ase.jsp">Local version</a>.</li>
         <li>ezToff page alone: <a href="http://anothersocialeconomy.appspot.com/widget/eztoff.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/eztoff.jsp">Local version</a>.</li>
+        <li>ASE console: <a href="http://anothersocialeconomy.appspot.com/console/">Hosted version</a> -- <a href="http://127.0.0.1:9999/console/">Local version</a>.</li>
+        <li>ezToff console: <a href="http://anothersocialeconomy.appspot.com/console/eztoff/">Hosted version</a> -- <a href="http://127.0.0.1:9999/console/eztoff/">Local version</a>.</li>
     </ul>
 </body>
 </html>
