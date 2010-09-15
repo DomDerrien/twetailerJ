@@ -21,6 +21,7 @@ import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
@@ -360,8 +361,8 @@ public class DemandProcessor {
             String subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
             msgGen.
                 put("control>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                put("control>createProposal", createProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
-                put("control>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                put("control>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D")).
+                put("control>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
             communicateToConsumer(
                     associate.getPreferredConnection(),

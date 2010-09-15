@@ -293,7 +293,7 @@ public class ConsumerOperations extends BaseOperations {
                     existingConsumer.setOpenID(openID);
                     String existingName = existingConsumer.getName();
                     if (existingName == null) { // setName("") reset the field to <code>null</code>
-                        existingConsumer.setName(name);
+                        existingConsumer.setName(name.length() == 0 ? email : name);
                     }
                     existingConsumer = updateConsumer(pm, existingConsumer);
                     return existingConsumer;
@@ -308,8 +308,13 @@ public class ConsumerOperations extends BaseOperations {
         newConsumer.setEmail(email);
         newConsumer.setOpenID(openID);
         newConsumer.setLanguage(language);
-        if (newConsumer.getName() == null && newConsumer.getEmail() != null) {
-            newConsumer.setName(newConsumer.getEmail());
+        if (newConsumer.getName() == null) {
+            if (newConsumer.getEmail() != null) {
+                newConsumer.setName(newConsumer.getEmail());
+            }
+            else {
+                newConsumer.setName(openID);
+            }
         }
         newConsumer.setPreferredConnection(Source.mail);
         return createConsumer(pm, newConsumer);

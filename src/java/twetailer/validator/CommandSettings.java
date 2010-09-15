@@ -29,6 +29,7 @@ public class CommandSettings {
         hash,
         help,
         locale,
+        metadata,
         name,
         phoneNumber,
         pointOfView,

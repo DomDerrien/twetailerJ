@@ -1304,6 +1304,7 @@
         </tu>
         <tu tuid="ga_demandForm_formTitle_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Préparer une nouvelle demande de départ</seg>
@@ -1311,6 +1312,7 @@
         </tu>
         <tu tuid="ga_demandForm_formTitle_edition" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Mettre à jour la demande de départ</seg>
@@ -1402,6 +1404,7 @@
         </tu>
         <tu tuid="ga_proposalForm_formTitle_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Proposer un départ libre</seg>
@@ -1409,6 +1412,7 @@
         </tu>
         <tu tuid="ga_proposalForm_formTitle_edition" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Mettre à jour la proposition</seg>
@@ -1416,6 +1420,7 @@
         </tu>
         <tu tuid="ga_proposalForm_formTitle_view" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Voir les détails de la proposition</seg>
@@ -1447,6 +1452,20 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Nombre de joueurs :</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_proposalPullCart" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Number of Pull Carts:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="ga_proposalForm_proposalGolfCart" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Number of Golf Carts:</seg>
             </tuv>
         </tu>
         <tu tuid="ga_proposalForm_proposalPrice" dataType="text">

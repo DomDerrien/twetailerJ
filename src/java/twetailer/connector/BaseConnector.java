@@ -222,6 +222,7 @@ public class BaseConnector {
     /** If found into a message, this separator is used as a suggestion to break a message in many parts */
     public static final char SUGGESTED_MESSAGE_SEPARATOR = '|';
     public static final String SUGGESTED_MESSAGE_SEPARATOR_STR = "|";
+    public static final String ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR = "\\|";
     public static final String SENTENCE_SEPARATOR_STR = ".";
     public static final String MANY_SPACES_REGEXP = "\\s+";
 

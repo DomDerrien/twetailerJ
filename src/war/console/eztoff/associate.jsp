@@ -178,27 +178,7 @@
         id="proposalForm"
         title="<%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_formTitle_creation", locale) %>"
     >
-        <fieldset class="entityInformation">
-            <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_demandInfo", locale) %></legend>
-            <table class="demandForm" width="100%">
-                <tr>
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandKey", locale) %></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="demand.key" name="demandKey" readonly="true" style="width:6em;" type="text" /> </td>
-                </tr>
-                <tr>
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandState", locale) %></td>
-                    <td><input dojoType="dijit.form.TextBox" id="demand.state" readonly="true" type="text" /> </td>
-                </tr>
-                <tr>
-                    <td align="right"><label for="demand.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandQuantity", locale) %></label></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="demand.quantity" readonly="true" style="width:3em;" type="text" /> </td>
-                </tr>
-                <tr>
-                    <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCriteria", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="demand.criteria" readonly="true" style="width:25em;" type="text" /></td>
-                </tr>
-            </table>
-        </fieldset>
+        <input dojoType="dijit.form.TextBox" type="hidden" name="demandKey" value="26" />
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalInfo", locale) %></legend>
             <table class="demandForm" width="100%">
@@ -206,9 +186,17 @@
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalKey", locale) %></td>
                     <td><input dojoType="dijit.form.NumberTextBox" id="proposal.key" name="key" readonly="true" style="width:6em;" type="text" /> </td>
                 </tr>
-                <tr class="existingAttribute">
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalState", locale) %></td>
-                    <td><input dojoType="dijit.form.TextBox" id="proposal.state" readonly="true" type="text" /> </td>
+                <tr>
+                    <td align="right"><label for="proposal.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalQuantity", locale) %></label></td>
+                    <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.quantity" name="quantity" style="width:3em;" type="text" /> </td>
+                </tr>
+                <tr>
+                    <td align="right"><label for="proposal.metadata.pullCart"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalPullCart", locale) %></label></td>
+                    <td><input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.metadata.pullCart" name="pullCart" style="width:3em;" type="text" value="0" /> </td>
+                </tr>
+                <tr>
+                    <td align="right"><label for="proposal.metadata.golfCart"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalGolfCart", locale) %></label></td>
+                    <td><input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.metadata.golfCart" name="golfCart" style="width:3em;" type="text" value="0" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalTime", locale) %></label></td>
@@ -216,10 +204,6 @@
                         <input dojoType="dijit.form.DateTextBox" id="proposal.date" name="date" required="true" type="text" />
                         <input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T07:00:00" />
                     </td>
-                </tr>
-                <tr>
-                    <td align="right"><label for="proposal.quantity"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalQuantity", locale) %></label></td>
-                    <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.quantity" name="quantity" style="width:3em;" type="text" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalPrice", locale) %></label></td>
@@ -230,6 +214,10 @@
                     <td>$<input constraints="{min:5.00,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" required="true" style="width:7em;" type="text" value="0.00" /></td>
                 </tr>
                 <tr>
+                    <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_demandCriteria", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="demand.criteria" readonly="true" style="width:25em;" type="text" /></td>
+                </tr>
+                <tr>
                     <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalCriteria", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.criteria" name="criteria" style="width:25em;" type="text" /></td>
                 </tr>
@@ -237,16 +225,12 @@
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_proposalModificationDate", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
                 </tr>
-                <tr>
-                    <td colspan="2" align="center">
-                        <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').isValid();" type="submit"></button>
-                        <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.golf.Associate.cancelProposal();"></button>
-                        <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Associate.closeProposal();"></button>
-                    </td>
-                </tr>
             </table>
         </fieldset>
         <div style="text-align:center;">
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').isValid();" type="submit"></button>
+            <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.golf.Associate.cancelProposal();"></button>
+            <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Associate.closeProposal();"></button>
             <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "ga_closeDialog_button", locale) %></button>
         </div>
     </div>

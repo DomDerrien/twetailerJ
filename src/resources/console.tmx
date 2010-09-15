@@ -1675,6 +1675,7 @@
         <tu tuid="ga_demandForm_formTitle_creation" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
                 <seg>Prepare your Round Demand</seg>
@@ -1684,6 +1685,7 @@
         <tu tuid="ga_demandForm_formTitle_edition" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
                 <seg>Update your Round Demand</seg>
@@ -1776,7 +1778,7 @@
             <prop type="x-tier">javarb</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Demand Details:</seg>
+                <seg>Request Details:</seg>
             </tuv>
         </tu>
 
@@ -1801,27 +1803,30 @@
         <tu tuid="ga_proposalForm_formTitle_creation" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Propose an open time slot</seg>
+                <seg>Propose an open time slot to request {0}</seg>
             </tuv>
         </tu>
 
         <tu tuid="ga_proposalForm_formTitle_edition" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>Update your proposal</seg>
+                <seg>Update your proposal {0} for request {1}</seg>
             </tuv>
         </tu>
 
         <tu tuid="ga_proposalForm_formTitle_view" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
             <note/>
             <tuv xml:lang="en">
-                <seg>View proposal details</seg>
+                <seg>View proposal {0} details</seg>
             </tuv>
         </tu>
 
@@ -1858,6 +1863,24 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>Number of Players:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_proposalForm_proposalPullCart" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Number of Pull Carts:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_proposalForm_proposalGolfCart" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Number of Golf Carts:</seg>
             </tuv>
         </tu>
 

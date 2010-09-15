@@ -92,6 +92,7 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
             preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
             // FIXME: use DecimalFormatSymbols.getInstance(locale).getCurrencySymbol() in the following expression
+            preparePattern(prefixes, patterns, Prefix.metadata, "\\s*\\{[\\s\\'\\\"\\w\\:\\,\\-\\+\\.]*\\}\\s*", "");
             preparePattern(prefixes, patterns, Prefix.name, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.phoneNumber, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.pointOfView, "\\s*\\w+", separatorFromNonAlpha);
@@ -170,6 +171,7 @@ public class CommandLineParser {
         String keywordKey = keyword.toString();
         StringBuilder pattern = assembleModularPrefixes(keywords.getJsonArray(keywordKey), keywordKey);
         pattern = pattern.insert(0, "((?:").append(")").append(expression).append(")").append(separator);
+        if (keyword.equals(Prefix.metadata)) { System.err.println(" ***** " + pattern.toString()); }
         patterns.put(keywordKey, Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE));
     }
 
@@ -270,6 +272,14 @@ public class CommandLineParser {
             String currentGroup = matcher.group(1).trim();
             command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase(locale));
             command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase(locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+        }
+        // Metadata
+        matcher = patterns.get(Prefix.metadata.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Command.META_DATA, getValue(currentGroup));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
         }

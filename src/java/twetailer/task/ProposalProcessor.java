@@ -16,6 +16,7 @@ import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
@@ -184,7 +185,7 @@ public class ProposalProcessor {
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
                 Map<String, Object> cmdPrm = new HashMap<String, Object>();
-                cmdPrm.put("proposal>key", demand.getKey());
+                cmdPrm.put("proposal>key", proposal.getKey());
                 cmdPrm.put("demand>key", demand.getKey());
                 cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
                 String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", cmdPrm, locale);
@@ -202,9 +203,9 @@ public class ProposalProcessor {
 
                 msgGen.
                     put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("control>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
-                    put("control>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A")).
-                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                    put("control>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("control>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 message = msgGen.getMessage(MessageId.proposalCreationNot);
 

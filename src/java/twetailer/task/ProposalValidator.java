@@ -16,6 +16,7 @@ import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
@@ -246,8 +247,8 @@ public class ProposalValidator {
 
             msgGen.
                 put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                put("control>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
-                // put("control>updateProposal", updateProposal.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                put("control>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                // put("control>updateProposal", updateProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
             String message = msgGen.getMessage(isNewProposal ? MessageId.proposalCreationAck: MessageId.proposalUpdateAck);
 

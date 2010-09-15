@@ -1343,4 +1343,28 @@ public class TestCommandLineParser {
         assertEquals("b.b@b.bb", data.getJsonArray(Demand.CC).getString(1));
         assertEquals("d.d@d.dd", data.getJsonArray(Demand.CC).getString(2));
     }
+
+    @Test
+    public void testParseMetadataI() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 metadata:{'name':'marcelus'} qty:1", Locale.ENGLISH);
+        assertEquals("{'name':'marcelus'}", data.getString(Command.META_DATA));
+    }
+
+    @Test
+    public void testParseMetadataII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 metadata:{'age':12.43} qty:1", Locale.ENGLISH);
+        assertEquals("{'age':12.43}", data.getString(Command.META_DATA));
+    }
+
+    @Test
+    public void testParseMetadataIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 metadata: { 'name' : 'marcelus junior','age' : 12.43 } qty:1", Locale.ENGLISH);
+        assertEquals("{ 'name' : 'marcelus junior','age' : 12.43 }", data.getString(Command.META_DATA));
+    }
+
+    @Test
+    public void testParseMetadataIV() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 metadata:{} qty:1", Locale.ENGLISH);
+        assertEquals("{}", data.getString(Command.META_DATA));
+    }
 }

@@ -241,7 +241,7 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    propose demand:{demand>key} qty:{demand>quantity} unit-price:? total-cost:? due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata} {command>footer}
+                    propose demand:{demand>key} qty:{demand>quantity} unit-price:? total-cost:? due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -927,8 +927,8 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
@@ -960,8 +960,8 @@
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
@@ -1034,8 +1034,8 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
@@ -1067,8 +1067,8 @@
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {2}">There's been some kind of mistake</a> :-(
@@ -1144,8 +1144,8 @@
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Unit price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
@@ -1186,8 +1186,8 @@
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
@@ -1270,8 +1270,8 @@
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Unit price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
@@ -1311,8 +1311,8 @@
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>

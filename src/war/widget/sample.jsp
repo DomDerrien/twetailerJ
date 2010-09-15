@@ -20,6 +20,10 @@
     if (height == null) { height = "400"; }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
+    <title>AnotherSocialEconomy.com - HowTo embed the ASE widget</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <style type="text/css"><%
         if (useCDN) {
         %>
@@ -40,18 +44,19 @@
    </style>
 </head>
 <body class="tundra">
-    <iframe
-        src="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=000-000"
-        style="width:<%= width %>px;height:<%= height %>px;float:right;border:0 none;"
-        frameborder="0"
-        type="text/html"
-    ></iframe>
-    <iframe
-        src="/widget/ase.jsp?lg=<%= localeId %>&referralId=000-000"
-        style="width:<%= width %>px;height:<%= height %>px;float:right;border:0 none;"
-        frameborder="0"
-        type="text/html"
-    ></iframe>
+    <div style="float:right;">
+        Select your widget: <select onchange="document.getElementById('aseWidget').src=this.value;">
+            <option value="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=000-000" selected>ezToff</option>
+            <option value="/widget/ase.jsp?lg=<%= localeId %>&referralId=000-000">Generic ASE</option>
+        </select><br/>
+        <iframe
+            id="aseWidget"
+            src="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=000-000"
+            style="width:<%= width %>px;height:<%= height %>px;border:0 none;"
+            frameborder="0"
+            type="text/html"
+        ></iframe>
+    </div>
     <h1>ezToff widget context</h1>
     <p><a href="http://eztoff.com/"><b>ezToff</b></a> is a golf specific implementation of the <a href="http://anothersocialeconomy.com/">Another Social Economy</a> (ASE) engine.</p>
     <p>

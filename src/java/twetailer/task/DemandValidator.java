@@ -18,6 +18,7 @@ import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
@@ -312,8 +313,8 @@ public class DemandValidator {
 
                 msgGen.
                     put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
-                    // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
 

@@ -118,8 +118,6 @@
         var proposalForm = dijit.byId("proposalForm");
         proposalForm.reset();
 
-        dijit.byId("demand.key").set("value", item.key[0]);
-        dijit.byId("demand.state").set("value", _getLabel("master", "cl_state_" + item.state[0]));
         var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
         dijit.byId("proposal.date").set("value", dueDate);
         dijit.byId("proposal.date").constraints.min = new Date();
@@ -127,19 +125,28 @@
         if (dojo.isArray(item.criteria)) {
             dijit.byId("demand.criteria").set("value", item.criteria.join(" "));
         }
-        dijit.byId("demand.quantity").set("value", item.quantity[0]);
         dijit.byId("proposal.quantity").set("value", item.quantity[0]);
 
         if (proposalKey == null) {
-            proposalForm.set("title", _getLabel("console", "ga_cmenu_createProposal"));
+            proposalForm.set("title", _getLabel("console", "ga_proposalForm_formTitle_creation", [item.key[0]]));
             dijit.byId("proposalFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_createProposal"));
+
+            if (item.metadata != null) {
+                var metadata = dojo.fromJson(item.metadata[0]);
+                if (metadata.pullCart != null) {
+                    dijit.byId("proposal.metadata.pullCart").set("value", metadata.pullCart);
+                }
+                if (metadata.golfCart != null) {
+                    dijit.byId("proposal.metadata.golfCart").set("value", metadata.golfCart);
+                }
+            }
 
             dojo.query(".updateButton").style("display", "");
             dojo.query(".existingAttribute").style("display", "none");
             dojo.query(".closeButton").style("display", "none");
         }
         else {
-            proposalForm.set("title", _getLabel("console", "ga_cmenu_viewProposal", [proposalKey]));
+            proposalForm.set("title", _getLabel("console", "ga_proposalForm_formTitle_edition", [proposalKey, item.key[0]]));
             dijit.byId("proposalFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_updateProposal", [proposalKey]));
             dijit.byId("proposalFormCancelButton").set("label", _getLabel("console", "ga_cmenu_cancelProposal", [proposalKey]));
             dijit.byId("proposalFormCloseButton").set("label", _getLabel("console", "ga_cmenu_closeProposal", [proposalKey]));
@@ -147,8 +154,8 @@
 
             _loadProposal(proposalKey);
         }
+        dijit.byId('proposal.criteria').focus();
         proposalForm.show();
-        dijit.byId('proposal.total').focus();
     };
 
     /**
@@ -175,10 +182,18 @@
      */
     var _fetchProposal = function(proposal) {
         dijit.byId("proposal.key").set("value", proposal.key);
-        dijit.byId("proposal.state").set("value", _getLabel("master", "cl_state_" + proposal.state));
         dijit.byId("proposal.price").set("value", proposal.price);
         dijit.byId("proposal.total").set("value", proposal.total);
         dijit.byId("proposal.quantity").set("value", proposal.quantity);
+        if (proposal.metadata != null) {
+            var metadata = dojo.fromJson(proposal.metadata);
+            if (metadata.pullCart != null) {
+                dijit.byId("proposal.metadata.pullCart").set("value", metadata.pullCart);
+            }
+            if (metadata.golfCart != null) {
+                dijit.byId("proposal.metadata.golfCart").set("value", metadata.golfCart);
+            }
+        }
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId("proposal.date").set("value", dateObject);
         dijit.byId("proposal.time").set("value", dateObject);
@@ -215,6 +230,7 @@
         data.quantity = parseInt(data.quantity);
         data.dueDate = _common.toISOString(data.date, data.time);
         data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
+        data.metadata = dojo.toJson({pullCart:parseInt(data.pullCart),golfCart:parseInt(data.golfCart)});
 
         var dfd = _common.updateRemoteProposal(data, data.key);
         dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });

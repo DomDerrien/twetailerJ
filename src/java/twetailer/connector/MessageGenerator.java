@@ -280,6 +280,10 @@ public class MessageGenerator {
             // Entity
             fetchEntity(store, prefix);
             // Store
+            parameters.put(prefix + Store.ADDRESS, store.getAddress());
+            parameters.put(prefix + Store.EMAIL, store.getEmail());
+            parameters.put(prefix + Store.NAME, store.getName());
+            parameters.put(prefix + Store.PHONE_NUMBER, store.getPhoneNumber());
         }
         return this;
     }
@@ -298,9 +302,9 @@ public class MessageGenerator {
             fetchEntity(location, prefix);
             // Location
             parameters.put(prefix + Location.COUNTRY_CODE, location.getCountryCode());
-            // Location.HAS_STORE
-            // Location.LATITUDE
-            // Location.LONGITUDE
+            parameters.put(prefix + Location.HAS_STORE, location.getHasStore());
+            parameters.put(prefix + Location.LATITUDE, location.getLatitude());
+            parameters.put(prefix + Location.LONGITUDE, location.getLongitude());
             parameters.put(prefix + Location.POSTAL_CODE, location.getPostalCode());
         }
         return this;
