@@ -391,8 +391,8 @@ public class DemandSteps extends BaseSteps {
                         fetch(demand).
                         fetch(proposal).
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
-                        put("control>threadSubject", "ezToff Notification about Request:" + proposal.getDemandKey()).
-                        put("control>closeProposal", ("close proposal:" + proposal.getKey().toString() + "\n\nFIXME").replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                        put("command>threadSubject", "ezToff Notification about Request:" + proposal.getDemandKey()).
+                        put("command>closeProposal", ("close proposal:" + proposal.getKey().toString() + "\n\nFIXME").replaceAll(" ", "%20").replaceAll("\n", "%0A"));
 
                     try {
                         communicateToConsumer(

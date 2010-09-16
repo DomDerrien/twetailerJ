@@ -310,9 +310,9 @@ public class DemandValidator {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
-                    // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
+                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    // put("command>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 String message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
 
@@ -350,7 +350,7 @@ public class DemandValidator {
                         if (subject == null) {
                             Map<String, Object> cmdPrm = new HashMap<String, Object>();
                             cmdPrm.put("demand>key", demand.getKey());
-                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
                             subject = MailConnector.prepareSubjectAsForward(subject, locale);
                         }
 

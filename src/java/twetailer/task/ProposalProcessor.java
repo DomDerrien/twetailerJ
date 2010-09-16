@@ -204,10 +204,10 @@ public class ProposalProcessor {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("control>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("control>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
+                    put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 String message = msgGen.getMessage(MessageId.proposalCreationNot);
 
@@ -247,7 +247,7 @@ public class ProposalProcessor {
                         if (subject == null) {
                             Map<String, Object> cmdPrm = new HashMap<String, Object>();
                             cmdPrm.put("demand>key", demand.getKey());
-                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
                             subject = MailConnector.prepareSubjectAsForward(subject, locale);
                         }
 

@@ -299,8 +299,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -322,8 +322,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -346,8 +346,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -364,7 +364,7 @@
                     </ul>
                     <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant stores
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -382,8 +382,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -403,7 +403,7 @@
                     <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant golf courses
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -530,9 +530,9 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
-                {control>threadSubject}
-                {control>createProposal}
-                {control>declineDemand}
+                {command>threadSubject}
+                {command>createProposal}
+                {command>declineDemand}
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -552,9 +552,9 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
-                {control>threadSubject}
-                {control>createProposal}
-                {control>declineDemand}
+                {command>threadSubject}
+                {command>createProposal}
+                {command>declineDemand}
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -574,9 +574,9 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
-                {control>threadSubject}
-                {control>createProposal}
-                {control>declineDemand}
+                {command>threadSubject}
+                {command>createProposal}
+                {command>declineDemand}
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -593,7 +593,7 @@
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp">Associate Console</a>
                         and click "Create Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a Proposal by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>createProposal}.&amp;subject={control>threadSubject}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}.&amp;subject={command>threadSubject}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
@@ -612,9 +612,9 @@
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
-                {control>threadSubject}
-                {control>createProposal}
-                {control>declineDemand}
+                {command>threadSubject}
+                {command>createProposal}
+                {command>declineDemand}
             </note>
             <tuv xml:lang="en">
                 <seg>
@@ -630,7 +630,7 @@
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp">ezToff Reservation Desk</a>
                         and click "Create Tee-time Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a tee-off Proposal by clicking
-                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>createProposal}.&amp;subject={control>threadSubject}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>createProposal}.&amp;subject={command>threadSubject}">Create Proposal</a> and replacing the ? place holders.
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
@@ -648,8 +648,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -672,8 +672,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -696,8 +696,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -715,7 +715,7 @@
                     </ul>
                     <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant stores
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -733,8 +733,8 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -753,7 +753,7 @@
                     </ul>
                     <p>We're anonymously broadcasting your request - reference# {demand>key}, to relevant golf courses
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -821,8 +821,7 @@
                         <li>Options: <strong>{demand>criteria}</strong></li>
                         <li>Metadata: <strong>{demand>metadata}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant stores
-                    and will communicate their proposals, as soon as possible.</p>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant stores and will communicate their proposals, as soon as possible.</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -854,8 +853,7 @@
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses
-                    and will communicate their proposals, as soon as possible.</p>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -873,8 +871,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -894,8 +892,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -915,8 +913,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -930,7 +928,7 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -947,8 +945,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -963,7 +961,7 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -980,8 +978,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1001,8 +999,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1022,8 +1020,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1037,7 +1035,7 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1054,8 +1052,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1070,7 +1068,7 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1087,8 +1085,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1108,8 +1106,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1132,8 +1130,8 @@
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1147,13 +1145,13 @@
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNumber}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1173,8 +1171,8 @@
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1189,13 +1187,13 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNumber}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1212,8 +1210,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1233,8 +1231,8 @@
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1257,8 +1255,8 @@
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1276,8 +1274,7 @@
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNumber}</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1297,8 +1294,8 @@
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1317,9 +1314,8 @@
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNumber}</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -1339,9 +1335,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1364,9 +1360,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1389,9 +1385,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1400,12 +1396,12 @@
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved the <strong>Proposal# {proposal>key}</strong> due <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp; enjoy your purchase!</p>
                     <p>Don't forget to send an email to
-                    <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>closeDemand}&amp;subject={control>threadSubject}">close</a></strong> your request after your pickup, so we can better your Rating.</p>
+                    <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your request after your pickup, so we can better your Rating.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNumber}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
                     <a href="mailto:Support@AnotherSocialEcomony.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1426,9 +1422,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1437,12 +1433,12 @@
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved your tee-off under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp; have a great game!</p>
                     <p>Don't forget to send an email to
-                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>closeDemand}&amp;subject={control>threadSubject}">close</a></strong> your request after your game, so we can better your Rating.</p>
+                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your request after your game, so we can better your Rating.</p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNumber}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
                     <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1463,9 +1459,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1489,9 +1485,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1515,9 +1511,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1548,9 +1544,9 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {control>threadSubject}
-                {control>cancelDemand}
-                {control>closeDemand}
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>closeDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1579,9 +1575,9 @@
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
-                {control>closeProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
+                {command>closeProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1601,9 +1597,9 @@
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
-                {control>closeProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
+                {command>closeProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1614,7 +1610,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_proposal_confirmation_associateNotif" datatype="Text">
+        <tu tuid="long_core_proposal_confirmation_associateNotif" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -1623,9 +1619,9 @@
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
-                {control>closeProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
+                {command>closeProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1636,14 +1632,14 @@
                         <li>Quantitiy: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={control>threadSubject}">close</a></strong>
+                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong>
                     this Proposal {proposal>key} once the purchase is complete in order to better your Rating.</p>
                     <p>Thanks for managing your consumer requests with AnotherSocialEconomy.com.</p>
                     <p>If for any reason, you can longer serve this request, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@AnotherSocialEconomy.com?body=I should not have been emailed. Please remove my mail address.&amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1661,9 +1657,9 @@
                 {proposal>owner>name}: name of the proposal owner
                 {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
-                {control>threadSubject}
-                {control>cancelProposal}
-                {control>closeProposal}
+                {command>threadSubject}
+                {command>cancelProposal}
+                {command>closeProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1678,11 +1674,11 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={control>threadSubject}">close</a></strong> this Proposal {proposal>key}
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> this Proposal {proposal>key}
                     once the Golfer has teed-off in order to better your Rating.</p>
                     <p>Thanks for managing your tee-off requests with ezToff.</p>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my mail address.&amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}

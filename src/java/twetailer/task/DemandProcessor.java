@@ -360,9 +360,9 @@ public class DemandProcessor {
             String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", msgGen.getParameters(), locale);
             String subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
             msgGen.
-                put("control>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                put("control>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D")).
-                put("control>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
+                put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D")).
+                put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
             communicateToConsumer(
                     associate.getPreferredConnection(),

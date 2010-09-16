@@ -95,21 +95,11 @@
             id="centerZone"
             region="center"
         >
-            <p align="center">
-                Administrative console:
-                <a href="http://appengine.google.com/">hosted</a> --
-                <a href="http://127.0.0.1:9999/_ah/admin">local</a>;
-                Registration console:
-                <a href="http://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
-                <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;
-                Monitoring console:
-                <a href="http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
-                <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.
-            </p>
             <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;">
                 <div dojoType="dijit.layout.ContentPane" jsId="step0">
                     <fieldset class="entityInformation">
                         <legend>Action Selection</legend>
+                        <p style="font-weight:bold;">Direct accesses:</p>
                         <p>
                             <button disabled="true" dojoType="dijit.form.Button"><< Previous</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();">New Location >></button>
@@ -117,6 +107,18 @@
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">New Sale Associate >></button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step4);dijit.byId('s<%= Seed.STORE_KEY %>').focus();">New Seed >></button>
                         </p>
+                        <p style="font-weight:bold;">Other tools:</p>
+                        <ul>
+                            <li>Administrative console:
+                            <a href="https://appengine.google.com/dashboard?app_id=anothersocialeconomy">hosted</a> --
+                            <a href="http://127.0.0.1:9999/_ah/admin">local</a>;</li>
+                            <li>Registration console:
+                            <a href="http://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
+                            <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;</li>
+                            <li>Monitoring console:
+                            <a href="http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
+                            <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.</li>
+                        </ul>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step1" style="display:hidden;">

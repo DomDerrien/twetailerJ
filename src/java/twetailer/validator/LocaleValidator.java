@@ -197,7 +197,7 @@ public class LocaleValidator {
         throw new MalformedURLException("Unsupported coutry code: " + countryCode);
     }
 
-    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final Locale DEFAULT_LOCALE = Locale.US;
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
     public static final String DEFAULT_DISPLAY_LANGUAGE = DEFAULT_LOCALE.getDisplayLanguage(DEFAULT_LOCALE);
 

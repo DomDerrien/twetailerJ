@@ -37,7 +37,7 @@ public class Proposal extends Command {
     public static final String CONSUMER_KEY = "consumerKey";
 
     @Persistent
-    private String currencyCode = DecimalFormatSymbols.getInstance(LocaleValidator.DEFAULT_LOCALE).getCurrencySymbol();
+    private String currencyCode = DecimalFormatSymbols.getInstance(LocaleValidator.DEFAULT_LOCALE).getInternationalCurrencySymbol();
 
     public static final String CURRENCY_CODE = "currencyCode";
 
@@ -114,6 +114,9 @@ public class Proposal extends Command {
         this.consumerKey = consumerKey;
     }
 
+    /**
+     * Returns the ISO 4217 currency code of the currency for this proposal
+     */
     public String getCurrencyCode() {
         return currencyCode;
     }

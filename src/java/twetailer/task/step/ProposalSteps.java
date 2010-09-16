@@ -589,9 +589,9 @@ public class ProposalSteps extends BaseSteps {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("control>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
+                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 String message = msgGen.getMessage(MessageId.proposalConfirmationAck);
 
@@ -621,7 +621,8 @@ public class ProposalSteps extends BaseSteps {
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
                 Map<String, Object> cmdPrm = new HashMap<String, Object>();
-                cmdPrm.put("proposal>key", demand.getKey());
+                cmdPrm.put("demand>key", demand.getKey());
+                cmdPrm.put("proposal>key", proposal.getKey());
                 cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
                 String cancelProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_cancel", cmdPrm, locale);
                 String closeProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_close", cmdPrm, locale);
@@ -637,9 +638,9 @@ public class ProposalSteps extends BaseSteps {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("control>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("control>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("control>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
+                    put("command>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 String message = msgGen.getMessage(MessageId.proposalConfirmationNot);
 
@@ -680,7 +681,7 @@ public class ProposalSteps extends BaseSteps {
                         if (subject == null) {
                             Map<String, Object> cmdPrm = new HashMap<String, Object>();
                             cmdPrm.put("demand>key", demand.getKey());
-                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm).replaceAll(" ", "%20");
+                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
                             subject = MailConnector.prepareSubjectAsForward(subject, locale);
                         }
 
