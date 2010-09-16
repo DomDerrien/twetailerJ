@@ -118,6 +118,8 @@
         var proposalForm = dijit.byId("proposalForm");
         proposalForm.reset();
 
+        dijit.byId("demand.key").set("value", item.key[0]); // hidden field generating "proposal.demandKey"
+
         var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
         dijit.byId("proposal.date").set("value", dueDate);
         dijit.byId("proposal.date").constraints.min = new Date();
@@ -226,6 +228,7 @@
         if (isNaN(data.total)) {
             delete data.total;
         }
+        data.demandKey = parseInt(data.demandKey);
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.quantity = parseInt(data.quantity);
         data.dueDate = _common.toISOString(data.date, data.time);

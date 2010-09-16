@@ -45,7 +45,7 @@
 %>
         <div dojoType="dijit.layout.ContentPane" id="headerZone" region="top">
             <div id="brand"><%
-                if (verticalId.length() == 0) {
+                if (verticalId == null || verticalId.length() == 0) {
                     %><jsp:include page="/_includes/brands/default.jsp"><jsp:param name="localeId" value="<%= localeId %>" /></jsp:include><%
                 }
                 else if (RegisteredHashTag.golf.toString().equals(HashTag.getSupportedHashTag(verticalId))) {

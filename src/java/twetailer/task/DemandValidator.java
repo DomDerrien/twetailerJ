@@ -284,12 +284,10 @@ public class DemandValidator {
             boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
             Locale locale = owner.getLocale();
 
-            MessageGenerator msgGen = null;
-            String message = null;
 
             // Send a notification to the Owner
             if (!Source.api.equals(demand.getSource())) {
-                msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
                 msgGen.
                     put("demand>owner>name", owner.getName()).
                     fetch(demand).
@@ -316,7 +314,7 @@ public class DemandValidator {
                     put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
                     // put("control>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
+                String message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
 
                 communicateToConsumer(
                         demand.getSource(),
@@ -328,6 +326,8 @@ public class DemandValidator {
 
             // Send a notification to the CC'ed users
             if (cc != null && 0 < cc.size()) {
+                MessageGenerator msgGen = null;
+                String message = null;
                 String subject = null;
                 for (String coordinate: cc) {
                     try {

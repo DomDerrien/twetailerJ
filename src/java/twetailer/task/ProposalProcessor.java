@@ -107,6 +107,11 @@ public class ProposalProcessor {
                     SaleAssociate saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                     Locale locale = saConsumerRecord.getLocale();
+                    Source source = proposal.getSource();
+                    if (Source.api.equals(source) || Source.widget.equals(source)) {
+                        source = saConsumerRecord.getPreferredConnection();
+                    }
+
                     String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                     String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                     String stateLabel = CommandSettings.getStates(locale).getString(demand.getState().toString());
@@ -127,7 +132,7 @@ public class ProposalProcessor {
                     }
                     if (subject == null ){
                         subject = MessageGenerator.getMessage(
-                                proposal.getSource(),
+                                source,
                                 proposal.getHashTags(),
                                 MessageId.messageSubject,
                                 new String[] { demand.getKey().toString() },
@@ -135,7 +140,7 @@ public class ProposalProcessor {
                         );
                     }
                     communicateToConsumer(
-                            proposal.getSource(),
+                            source,
                             MailConnector.prepareSubjectAsResponse(subject, locale),
                             saConsumerRecord,
                             new String[] { message }
@@ -170,12 +175,9 @@ public class ProposalProcessor {
         if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
             Locale locale = consumer.getLocale();
 
-            MessageGenerator msgGen = null;
-            String message = null;
-
             // Send a message to the demand Owner
             if (!Source.api.equals(demand.getSource())) {
-                msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
                 msgGen.
                     put("demand>owner>name", consumer.getName()).
                     fetch(proposal).
@@ -207,7 +209,7 @@ public class ProposalProcessor {
                     put("control>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                message = msgGen.getMessage(MessageId.proposalCreationNot);
+                String message = msgGen.getMessage(MessageId.proposalCreationNot);
 
                 communicateToConsumer(
                         consumer.getPreferredConnection(),
@@ -219,6 +221,8 @@ public class ProposalProcessor {
 
             // Send the proposal details to the CC'ed users
             if (cc != null && 0 < cc.size()) {
+                MessageGenerator msgGen = null;
+                String message = null;
                 String subject = null;
                 for (String coordinate: cc) {
                     try {

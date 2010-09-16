@@ -562,11 +562,8 @@ public class ProposalSteps extends BaseSteps {
             Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
             Locale locale = demandOwner.getLocale();
 
-            MessageGenerator msgGen = null;
-            String message = null;
-
             if (!Source.api.equals(demand.getSource())) {
-                msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
                 msgGen.
                     put("demand>owner>name", demandOwner.getName()).
                     fetch(proposal).
@@ -596,7 +593,7 @@ public class ProposalSteps extends BaseSteps {
                     put("control>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("control>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                message = msgGen.getMessage(MessageId.proposalConfirmationAck);
+                String message = msgGen.getMessage(MessageId.proposalConfirmationAck);
 
                 communicateToConsumer(
                         demand.getSource(),
@@ -616,7 +613,7 @@ public class ProposalSteps extends BaseSteps {
                 SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
                 Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
 
-                msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), proposal.getHashTags(), locale);
+                MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), proposal.getHashTags(), locale);
                 msgGen.
                     put("proposal>owner>name", saConsumerRecord.getName()).
                     fetch(proposal).
@@ -644,7 +641,7 @@ public class ProposalSteps extends BaseSteps {
                     put("control>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("control>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                message = msgGen.getMessage(MessageId.proposalConfirmationNot);
+                String message = msgGen.getMessage(MessageId.proposalConfirmationNot);
 
                 communicateToConsumer(
                         saConsumerRecord.getPreferredConnection(),
@@ -657,6 +654,8 @@ public class ProposalSteps extends BaseSteps {
             // Notify CC-ed
             List<String> cc = demand.getCC();
             if (cc != null && 0 < cc.size()) {
+                MessageGenerator msgGen = null;
+                String message = null;
                 String subject = null;
                 for (String coordinate: cc) {
                     try {

@@ -178,7 +178,7 @@
         id="proposalForm"
         title="<%= LabelExtractor.get(ResourceFileId.third, "ga_proposalForm_formTitle_creation", locale) %>"
     >
-        <input dojoType="dijit.form.TextBox" type="hidden" name="demandKey" value="26" />
+        <input dojoType="dijit.form.TextBox" type="hidden" id="demand.key" name="demandKey" />
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "ga_proposalInfo", locale) %></legend>
             <table class="demandForm" width="100%">
