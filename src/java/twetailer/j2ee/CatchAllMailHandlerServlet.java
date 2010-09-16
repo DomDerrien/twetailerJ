@@ -47,7 +47,6 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         if (pathInfo != null && 0 < pathInfo.length()) {
             pathInfo = pathInfo.substring(1); // To remove the leading '/'
         }
-        System.err.println("pathInfo: " + pathInfo);
 
         if (TwitterMailNotificationHandlerServlet.getResponderEndpoints().contains(pathInfo)) {
             TwitterMailNotificationHandlerServlet.processTwitterNotification(request, response);

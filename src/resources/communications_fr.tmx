@@ -891,6 +891,48 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="short_core_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {demand>owner>name}. Thank you for confirming proposal:{proposal>key} for demand:{demand>key} |
+                    The store:{store>key} {store>name} will be asked to mark and hold demand:{demand>key}.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {demand>owner>name}. Thank you for confirming proposal:{proposal>key} for tee-off request:{demand>key} |
+                    The golf course {store>name} will be asked to reserve the tee-off time {demand>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi {demand>owner>name},</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved the <strong>Proposal# {proposal>key}</strong> due <strong>{proposal>dueDate}</strong>.</p>
+                    <p>Thank you for the confirmation &amp;amp; enjoy your purchase!</p>
+                    <p>Don't forget to send an email to
+                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>closeDemand}&amp;subject={control>threadSubject}">close</a></strong> your request after your pickup, so we can better your Rating.</p>
+                    <p>More store information: <br />
+                    Address: {store>address}<br />
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="long_golf_proposal_confirmation_ackToConsumer" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -913,6 +955,46 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="short_core_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the confirmation of the proposal:{proposal>key} ...|
+                    tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata} quantity:{proposal>quantity} dueDate:{proposal>dueDate}|
+                    store:{store>key} {store>name} {store>phoneNumber} {store>address}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the confirmation of the tee-off proposal:{proposal>key} ...|
+                    tee-time:{proposal>dueDate} players:{proposal>quantity} pullCart:{proposal>metadata>pullCart} golfCart:{proposal>metadata>golfCart} info:{proposal>criteria}|
+                    golf course:{store>key} {store>name} {store>phoneNumber} {store>address}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>confirmed Proposal# {proposal>key}</strong>
+                    at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
+                    <p>More course information: <br />
+                    Address: {store>address}<br />
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="long_golf_proposal_confirmation_ackToCCed" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -929,6 +1011,54 @@
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">There's been some kind of mistake</a> :-(
                     </p>
                     {20}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {proposal>owner>name}, proposal:{proposal>key} for request:{demand>key} has been confirmed.|
+                    Please mark, hold for Consumer with request:{demand>key} and then 'close proposal:{proposal>key}', or, 'flag proposal:{proposal>key} note:your-note-here'.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {proposal>owner>name}, proposal:{proposal>key} on {proposal>dueDate} has been confirmed.|
+                    Please mark, schedule the tee-off request:{demand>key} and then 'close proposal:{proposal>key}', or, 'flag proposal:{proposal>key} note:your-note-here'.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi {0},</p>
+                    <p>Please reserve the <strong>{3}</strong> tee-off under <strong>ezToff Proposal# {1}</strong> for:</p>
+                    <ul>
+                        <li>Players: <strong>{4}</strong></li>
+                        <li>Pull carts: <strong>{21}</strong></li>
+                        <li>Golf carts: <strong>{22}</strong></li>
+                        <li>Options: <strong>{5}</strong></li>
+                        <li>Round price: <strong>{7}{8}</strong> per player</li>
+                        <li>Total cost: <strong>{7}{9}</strong></li>
+                    </ul>
+
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> this Proposal {1} once the Golfer has teed-off in order to better your Rating.</p>
+
+                    <p>Thanks for managing your tee-off requests with ezToff.</p>
+                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">Cancel proposal</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {1}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {20}
+                    <p>Reference#: {2}, Proposal#: {1}.</p>
                 </seg>
             </tuv>
         </tu>

@@ -171,7 +171,6 @@ public class CommandLineParser {
         String keywordKey = keyword.toString();
         StringBuilder pattern = assembleModularPrefixes(keywords.getJsonArray(keywordKey), keywordKey);
         pattern = pattern.insert(0, "((?:").append(")").append(expression).append(")").append(separator);
-        if (keyword.equals(Prefix.metadata)) { System.err.println(" ***** " + pattern.toString()); }
         patterns.put(keywordKey, Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE));
     }
 

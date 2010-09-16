@@ -392,7 +392,7 @@ public class DemandSteps extends BaseSteps {
                         fetch(proposal).
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                         put("control>threadSubject", "ezToff Notification about Request:" + proposal.getDemandKey()).
-                        put("control>closeProposal", ("close proposal:" + proposal.getKey().toString() + automatedResponseFooter).replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                        put("control>closeProposal", ("close proposal:" + proposal.getKey().toString() + "\n\nFIXME").replaceAll(" ", "%20").replaceAll("\n", "%0A"));
 
                     try {
                         communicateToConsumer(
@@ -459,9 +459,6 @@ public class DemandSteps extends BaseSteps {
                     demand.resetProposalKeys();
                     demand.resetSaleAssociateKeys();
                 }
-
-                // Notify CC-ed
-                notifyCancellationToCCed(pm, demand, owner);
             }
             else {
                 throw new InvalidStateException("Invalid state change attempt to: " + proposedState, currentState.toString(), proposedState);
@@ -503,7 +500,6 @@ public class DemandSteps extends BaseSteps {
             demand = getDemandOperations().updateDemand(pm, demand);
 
             // Related workflow step
-            notifyUpdateToCCed(pm, demand, owner);
             MaelzelServlet.triggerValidationTask(demand);
         }
         else {

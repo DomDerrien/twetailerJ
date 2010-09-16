@@ -368,7 +368,6 @@ public class ShortcutServlet extends HttpServlet {
                         if(character == -1) break;
                         extractedString.append((char) character);
                     }
-                    System.err.println("### Input stream: " + extractedString.toString());
                 }
                 catch (IOException ex) {
                     throw new RuntimeException("Cannot extract the input stream...", ex);
