@@ -16,7 +16,6 @@
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Location"
     import="twetailer.dto.SaleAssociate"
-    import="twetailer.dto.Seed"
     import="twetailer.dto.Store"
     import="twetailer.j2ee.BaseRestlet"
     import="twetailer.j2ee.LoginServlet"
@@ -105,7 +104,6 @@
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();">New Location >></button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();">New Store >></button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">New Sale Associate >></button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step4);dijit.byId('s<%= Seed.STORE_KEY %>').focus();">New Seed >></button>
                         </p>
                         <p style="font-weight:bold;">Other tools:</p>
                         <ul>
@@ -193,7 +191,7 @@
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createSaleAssociate();dijit.byId('s<%= Seed.STORE_KEY %>').focus();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createSaleAssociate();">Next >></button>
                         </p>
                     </fieldset>
                     <fieldset class="entityInformation">
@@ -213,41 +211,6 @@
                         </p>
                     </fieldset>
                 </div>
-                <div dojoType="dijit.layout.ContentPane" jsId="step4" style="display:hidden;">
-                    <fieldset class="entityInformation" id="innerStep4">
-                        <legend>Seed Creation</legend>
-                        <form id="seedInformation">
-                            <div>
-                                <label for="s<%= Seed.STORE_KEY %>">Store Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="s<%= Seed.STORE_KEY %>" name="<%= Seed.STORE_KEY %>" style="width:10em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= Seed.LOCATION_KEY %>">Location Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Seed.LOCATION_KEY %>" style="width:10em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= Seed.COUNTRY %>">Country (2-letters)</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Seed.COUNTRY %>" style="width:20em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= Seed.REGION %>">Region (2-letters)</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Seed.REGION %>" style="width:30em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= Seed.CITY %>">City</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Seed.CITY %>" style="width:10em;" type="text" value="" />
-                            </div>
-                            <div>
-                                <label for="<%= Seed.LABEL %>">Label</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Seed.LABEL %>" style="width:10em;" type="text" value="" />
-                            </div>
-                        </form>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createSeed();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
-                        </p>
-                    </fieldset>
-                </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step5" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep5">
                         <legend>Repeat Again ;)</legend>
@@ -256,7 +219,6 @@
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();"><< Another Location</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Another Store</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();"><< Another Sale Associate</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step4);dijit.byId('<%= Seed.STORE_KEY %>').focus();"><< Another Seed</button>
                             <button disabled="true" dojoType="dijit.form.Button">Next >></button>
                         </p>
                     </fieldset>
@@ -480,43 +442,6 @@
             },
             error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
             url: "/API/Consumer/" + consumerKey
-        });
-    };
-    localModule.createSeed = function() {
-        dojo.animateProperty({
-            node: "innerStep4",
-            properties: { backgroundColor: { end: "yellow" } }
-        }).play();
-        var data = dojo.formToObject("seedInformation");
-        if (data.storeKey == null || isNaN(data.storeKey) || data.storeKey.length == 0) {
-            delete data.storeKey;
-        }
-        else {
-            data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
-        }
-        if (data.locationKey == null || isNaN(data.locationKey) || data.locationKey.length == 0) {
-            delete data.locationKey;
-        }
-        else {
-            data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
-        }
-        dojo.xhrPost({
-            headers: { "content-type": "application/json" },
-            putData: dojo.toJson(data),
-            handleAs: "json",
-            load: function(response, ioArgs) {
-                if (response !== null && response.success) {
-                }
-                else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
-                }
-                dojo.animateProperty({
-                    node: "innerStep4",
-                    properties: { backgroundColor: { end: "transparent" } }
-                }).play();
-            },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Seed/"
         });
     };
     </script>

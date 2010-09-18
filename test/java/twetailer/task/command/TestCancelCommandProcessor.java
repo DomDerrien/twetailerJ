@@ -74,6 +74,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelI() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
         final Long consumerKey = 73824L;
@@ -115,6 +116,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelII() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
         final Long locationKey = 3333L;
@@ -217,6 +219,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelV() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 2222L;
         final Long saConsumerRecordKey = 76325L;
@@ -418,6 +421,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelXII() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
         final State state = State.cancelled;
@@ -557,6 +561,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelXV() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
         final State state = State.cancelled;
@@ -717,6 +722,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelXXI() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
         final State state = State.published;
@@ -842,6 +848,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelXXIII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
         final State state = State.declined;

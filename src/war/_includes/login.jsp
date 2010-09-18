@@ -29,9 +29,6 @@
     Locale locale = LocaleController.detectLocale(request);
     String localeId = LocaleController.getLocaleId(request);
 
-    // Try to get the seed city list
-    String seedCityList = (String) BaseSteps.getSettingsOperations().getFromCache("/suppliesTagCloud/seedCityList");
-
     // Detects the vertical context
     boolean useVertical = false;
     String verticalId = null;
@@ -211,29 +208,7 @@
                 </tr>
             </table>
         </div>
-        <%
-        if (!useVertical && seedCityList != null && 0 < seedCityList.length()) {
-            JsonArray citiesNearby = new JsonParser(seedCityList).getJsonArray();
-        %><div
-            dojoType="dijit.layout.ContentPane"
-            region="right"
-            style="width:240px;margin:10px;background-color:lightgrey;"
-            title="<%= LabelExtractor.get(ResourceFileId.third, "login_other_locations_title", locale) %>"
-        >
-            <div style="color:white;background-color:black;font-weight:bold;padding:2px 5px;">
-                <%= LabelExtractor.get(ResourceFileId.third, "login_other_locations_title", locale) %>
-            </div>
-            <div style="border:1px lightgrey solid;padding:10px;">
-                <%= LabelExtractor.get(ResourceFileId.third, "login_other_locations_introduction", locale) %>
-                <ul>
-                    <% for(int cityIdx=0; cityIdx < citiesNearby.size(); cityIdx ++) {
-                        JsonObject city = citiesNearby.getJsonObject(cityIdx);
-                    %><li><a href="/directory<%= city.getString("key") + (request.getQueryString() == null ? "" : "?" + request.getQueryString()) %>"><%= city.getString("label") %></a></li><% } %>
-                </ul>
-            </div>
-        </div>
-        <% } // endif (seedCityList != null && 0 < seedCityList.length())
-        %><div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get("product_copyright", locale) %>
         </div>
     </div>

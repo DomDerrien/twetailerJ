@@ -1,117 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
-      <loc>http://anothersocialeconomy.appspot.com/</loc>
-      <lastmod>2010-08-01</lastmod>
+      <loc>http://anothersocialeconomy.appspot.com/console/</loc>
+      <lastmod>2010-10-10</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>http://anothersocialeconomy.appspot.com/console/eztoff/</loc>
+      <lastmod>2010-10-10</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>http://anothersocialeconomy.appspot.com/widget/ase.jsp</loc>
+      <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
       <loc>http://anothersocialeconomy.appspot.com/widget/eztoff.jsp</loc>
-      <lastmod>2010-08-01</lastmod>
+      <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
       <loc>http://anothersocialeconomy.appspot.com/widget/sample.jsp</loc>
-      <lastmod>2010-08-01</lastmod>
+      <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-      <priority>0.8</priority>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/ca/on/toronto</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/ca/qc/montreal</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/ca/los_angeles</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/ca/san_diego</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/ca/san_francisco</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/dc/washington</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/fl/miami</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/ga/atlanta</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/il/chicago</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/ma/boston</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/nv/las_vegas</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/ny/new_york</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/or/portland</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/pa/philadelphia</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/tx/dallas</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/tx/houston</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/directory/us/wa/seattle</loc>
-      <lastmod>2010-04-15</lastmod>
-      <changefreq>weekly</changefreq>
    </url>
 </urlset>

@@ -1,22 +1,13 @@
 <html>
 <body>
     <p>
-        We are sorry, we cannot serve the page you are asking for!
+        Too bad, you're looking for a page that does not exist!
     </p>
     <ul>
        <li><script type="text/javascript">document.write(window.location);</script></li>
     </ul>
     <p>
-       Please, check the <a href="/console/">general Console</a> or the <a href="/console/eztoff/">ezToff console</a>.
-   </p>
-   <p>
-       You can also visit the <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a> website
-       for general information about our services, as a consumer, a retailers, a reseller or as an influencer.
-       If you are only about the Golf domain, please visit <a href="http://eztoff.com">ezToff.com</a>.
-    </p>
-    <p>
-        I hope it helps.<br/>
-        A+, Dom
+       Please, check the <a href="/console/">Console</a> or the <a href="/directory/">directory with the supplied products and services per big city</a>.
     </p>
 
     <script type="text/javascript">

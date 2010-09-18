@@ -25,7 +25,6 @@ import twetailer.dao.PaymentOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
-import twetailer.dao.SeedOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
@@ -48,7 +47,6 @@ public class BaseSteps {
     private static ProposalOperations proposalOperations;
     private static RawCommandOperations rawCommandOperations;
     private static SaleAssociateOperations saleAssociateOperations;
-    private static SeedOperations seedOperations;
     private static SettingsOperations settingsOperations;
     private static StoreOperations storeOperations;
 
@@ -61,7 +59,6 @@ public class BaseSteps {
         proposalOperations = forUnitTests ? null : new ProposalOperations();
         rawCommandOperations = forUnitTests ? null : new RawCommandOperations();
         saleAssociateOperations = forUnitTests ? null : new SaleAssociateOperations();
-        seedOperations = forUnitTests ? null : new SeedOperations();
         settingsOperations = forUnitTests ? null : new SettingsOperations();
         storeOperations = forUnitTests ? null : new StoreOperations();
     }
@@ -78,7 +75,6 @@ public class BaseSteps {
     public static ProposalOperations getProposalOperations() { return proposalOperations; }
     public static RawCommandOperations getRawCommandOperations() { return rawCommandOperations; }
     public static SaleAssociateOperations getSaleAssociateOperations() { return saleAssociateOperations; }
-    public static SeedOperations getSeedOperations() { return seedOperations; }
     public static SettingsOperations getSettingsOperations() { return settingsOperations; }
     public static StoreOperations getStoreOperations() { return storeOperations; }
 
@@ -90,7 +86,6 @@ public class BaseSteps {
     public static void setMockProposalOperations(ProposalOperations proposalOperations) { BaseSteps.proposalOperations = proposalOperations; }
     public static void setMockRawCommandOperations(RawCommandOperations rawCommandOperations) { BaseSteps.rawCommandOperations = rawCommandOperations; }
     public static void setMockSaleAssociateOperations(SaleAssociateOperations saleAssociateOperations) { BaseSteps.saleAssociateOperations = saleAssociateOperations; }
-    public static void setMockSeedOperations(SeedOperations seedOperations) { BaseSteps.seedOperations = seedOperations; }
     public static void setMockSettingsOperations(SettingsOperations settingsOperations) { BaseSteps.settingsOperations = settingsOperations; }
     public static void setMockStoreOperations(StoreOperations storeOperations) { BaseSteps.storeOperations = storeOperations; }
 }

@@ -16,7 +16,6 @@
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Location"
     import="twetailer.dto.SaleAssociate"
-    import="twetailer.dto.Seed"
     import="twetailer.dto.Store"
     import="twetailer.j2ee.BaseRestlet"
     import="twetailer.j2ee.LoginServlet"

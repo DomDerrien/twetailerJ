@@ -16,7 +16,7 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 /**
- * Base class for all Twetailer entities (Seed excepted) stored in the back-end infrastructure
+ * Base class for all Twetailer entities stored in the back-end infrastructure
  *
  * @see twetailer.dto.Command
  * @see twetailer.dto.Consumer
@@ -24,7 +24,6 @@ import domderrien.jsontools.TransferObject;
  * @see twetailer.dto.Payment
  * @see twetailer.dto.RawCommand
  * @see twetailer.dto.SaleAssociate
- * @see twetailer.dto.Seed
  * @see twetailer.dto.Settings
  * @see twetailer.dto.Store
  *

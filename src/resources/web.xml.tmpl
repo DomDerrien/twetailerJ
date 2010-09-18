@@ -31,7 +31,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>appstats</filter-name>
-        <url-pattern>/directory/*</url-pattern>
+        <url-pattern>/3rdParty/*</url-pattern>
     </filter-mapping>
 
     <filter>
@@ -84,16 +84,6 @@
     <servlet-mapping>
         <servlet-name>maelzel</servlet-name>
         <url-pattern>@app.servletApiPath@/maelzel/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>directory</servlet-name>
-        <servlet-class>twetailer.j2ee.DirectoryServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>directory</servlet-name>
-        <url-pattern>/directory/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -174,16 +164,6 @@
     <servlet-mapping>
         <servlet-name>saleassociate</servlet-name>
         <url-pattern>@app.servletApiPath@/SaleAssociate/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>seed</servlet-name>
-        <servlet-class>twetailer.j2ee.restlet.SeedRestlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>seed</servlet-name>
-        <url-pattern>@app.servletApiPath@/Seed/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
