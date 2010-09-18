@@ -41,69 +41,83 @@ public class MessageGenerator {
      * Identifiers of the message the class can handle transparently
      */
     public enum MessageId {
-        dateFormat("dateFormat"),
-        dateTimeFormat("dateTimeFormat"),
-        emptyListIndicator("emptyListIndicator"),
+        dateFormat,
+        dateTimeFormat,
+        emptyListIndicator,
 
-        messageSubject("message_subject"),
-        messageFooter("message_footer"),
+        messageSubject ("message_subject"),
+        messageFooter ("message_footer"),
 
+        /// C1. Consumer creates a demand -- CC'ed and associates are notified
         /** For message sent to the demand owner to confirm the demand creation */
-        demandCreationAck("demand_creation_ackToOwner"),
+        DEMAND_CREATION_OK_TO_CONSUMER ("demand_creation_ackToConsumer"),
         /** For message sent to CC'ed users to inform about the demand creation */
-        demandCreationCpy("demand_creation_ackToCCed"),
+        DEMAND_CREATION_OK_TO_CCED ("demand_creation_ackToCCed"),
         /** For message sent to sale associates located in the demand zone to inform about the new demand */
-        demandCreationNot("demand_creation_associateNotif"),
-        /** For message sent to the demand owner to confirm the demand update */
-        demandUpdateAck("demand_update_ackToOwner"),
-        /** For message sent to CC'ed users to inform about the demand update */
-        demandUpdateCpy("demand_update_ackToCCed"),
-        /** For message sent to the demand owner to confirm the demand cancellation */
-        demandCancellationAck("demand_cancellation_ackToOwner"),
-        /** For message sent to CC'ed users to inform about the demand cancellation */
-        demandCancellationCpy("demand_cancellation_ackToCCed"),
-        /** For message sent to the demand owner to confirm the demand deletion */
-        demandDeletionAck("demand_deletion_ackToOwner"),
-        /** For message sent to the demand owner to confirm the proposal confirmation */
-        proposalConfirmationAck("proposal_confirmation_ackToConsumer"),
-        /** For message sent to CC'ed users to inform about the proposal confirmation */
-        proposalConfirmationCpy("proposal_confirmation_ackToCCed"),
-        /** For message sent to the proposal owner to inform about the proposal confirmation */
-        proposalConfirmationNot("proposal_confirmation_associateNotif"),
-        /** For message sent to the demand owner to confirm the proposal declination */
-        proposalDeclinationAck("zzz"),
-        /** For message sent to CC'ed users to inform about the proposal declination */
-        proposalDeclinationCpy("zzz"),
-        /** For message sent to the demand owner to confirm the demand closing */
-        demandClosingAck("demand_closing_ackToOwner"),
-        /** For message sent to the owner of the proposal attached to the demand, to invite him to close it too */
-        demandClosingNot("demand_closing_associateNotif"),
+        DEMAND_CREATION_OK_TO_ASSOCIATE ("demand_creation_associateNotif"),
 
+        /// C2. Consumer updates his demand -- CC'ed are notified
+        /** For message sent to the demand owner to confirm the demand update */
+        DEMAND_UPDATE_OK_TO_CONSUMER ("demand_update_ackToConsumer"),
+        /** For message sent to CC'ed users to inform about the demand update */
+        DEMAND_UPDATE_OK_TO_CCED ("demand_update_ackToCCed"),
+        // An update is presented as a notification of a new demand to sale associates
+
+        /// C3. Consumer cancels his demand -- Only the associate of the confirmed proposal (if any) is notified
+        /** For message sent to the demand owner to confirm the demand cancellation */
+        DEMAND_CANCELLATION_OK_TO_CONSUMER ("demand_cancellation_ackToConsumer"),
+        /** For message sent to the owner of the proposal attached to the demand, to inform him the demand has been canceled with the side-effect of canceling the proposal too */
+        DEMAND_CONFIRMED_CANCELLATION_OK_TO_ASSOCIATE ("demand_confirmed_cancellation_associateNotif"),
+
+        /// C4. Consumer confirms a proposal -- CC'ed and associate are notified
+        /** For message sent to the demand owner to confirm the proposal confirmation */
+        PROPOSAL_CONFIRMATION_OK_TO_CONSUMER ("proposal_confirmation_ackToConsumer"),
+        /** For message sent to CC'ed users to inform about the proposal confirmation */
+        PROPOSAL_CONFIRMATION_OK_TO_CCED ("proposal_confirmation_ackToCCed"),
+        /** For message sent to the proposal owner to inform about the proposal confirmation */
+        PROPOSAL_CONFIRMATION_OK_TO_ASSOCIATE ("proposal_confirmation_associateNotif"),
+
+        /// C5. Consumer closes his demand -- Only associate who has not closed his proposal is notified
+        /** For message sent to the demand owner to confirm the demand closing */
+        DEMAND_CLOSING_OK_TO_CONSUMER ("demand_closing_ackToConsumer"),
+        /** For message sent to the owner of the proposal attached to the demand, to invite him to close it too */
+        DEMAND_CLOSING_OK_TO_ASSOCIATE ("demand_closing_associateNotif"),
+
+        /// A1. Associate creates a proposal -- Consumer and CC'ed are notified
         /** For message sent to the proposal owner to confirm the proposal creation */
-        proposalCreationAck("proposal_creation_ackToOwner"),
+        PROPOSAL_CREATION_OK_TO_ASSOCIATE ("proposal_creation_ackToAssociate"),
         /** For message sent to the demand owner to inform about the proposal creation */
-        proposalCreationNot("proposal_creation_consumerNotif"),
+        PROPOSAL_CREATION_OK_TO_CONSUMER ("proposal_creation_consumerNotif"),
         /** For message sent to the CC'ed users to inform about the proposal creation */
-        proposalCreationCpy("proposal_creation_ccedNotif"),
+        PROPOSAL_CREATION_OK_TO_CCED("proposal_creation_ccedNotif"),
+
+        /// A2. Associate updates a proposal -- Consumer and CC'ed are notified
         /** For message sent to the proposal owner to confirm the proposal update */
-        proposalUpdateAck("proposal_update_ackToOwner"),
+        PROPOSAL_UPDATE_OK_TO_ASSOCIATE ("proposal_update_ackToAssociate"),
         /** For message sent to the demand owner to inform about the proposal update */
-        proposalUpdateNot("zzz"),
+        PROPOSAL_UPDATE_OK_TO_CONSUMER ("proposal_update_consumerNotif"),
         /** For message sent to the CC'ed users to inform about the proposal update */
-        proposalUpdateCpy("zzz"),
+        PROPOSAL_UPDATE_OK_TO_CCED ("proposal_update_ccedNotif"),
+
+        /// A3. Associate cancels a proposal -- Only the consumer of the confirmed demand is notified (demand placed back in 'published' state)
         /** For message sent to the proposal owner to confirm the proposal cancellation */
-        proposalCancellationAck("zzz"),
-        /** For message sent to the demand owner to inform about the proposal cancellation */
-        proposalCancellationNot("zzz"),
-        /** For message sent to the CC'ed users to inform about the proposal cancellation */
-        proposalCancellationCpy("zzz"),
+        PROPOSAL_CANCELLATION_OK_TO_ASSOCIATE ("proposal_cancellation_ackToAssociate"),
+        /** For message sent to the owner of the proposal attached to the demand, to inform him the demand has been canceled with the side-effect of canceling the proposal too */
+        PROPOSAL_CONFIRMED_CANCELLATION_OK_TO_CONSUMER ("proposal_confirmed_cancellation_consumerNotif"),
+
+        /// A4. Associate closes his demand -- Only consumer who has not closed his demand is notified
         /** For message sent to the proposal owner to confirm the proposal closing*/
-        proposalClosingAck("proposal_closing_ackToOwner"),
+        PROPOSAL_CLOSING_OK_TO_ASSOCIATE ("proposal_closing_ackToAssociate"),
         /** For message sent to the owner of the demand attached to the proposal, to invite him to close it too */
-        proposalClosingNot("proposal_closing_consumerNotif");
+        PROPOSAL_CLOSING_OK_TO_CONSUMER ("proposal_closing_consumerNotif"),
+
+        nop; // Just to simplify the manipulation of the list entries :-)
 
         private String tmxSuffix;
 
+        MessageId () {
+            this.tmxSuffix = name();
+        }
         MessageId (String tmxSuffix) {
             this.tmxSuffix = tmxSuffix;
         }

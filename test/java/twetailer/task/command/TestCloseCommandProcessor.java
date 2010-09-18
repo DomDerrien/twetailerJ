@@ -15,6 +15,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -180,6 +181,7 @@ public class TestCloseCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCloseIII() throws TwitterException, DataSourceException, ClientException {
         final Long demandKey = 5555L;
         final State demandState = State.confirmed;
@@ -431,6 +433,7 @@ public class TestCloseCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCloseVI() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 5555L;
         final Long consumerKey = 6666L;

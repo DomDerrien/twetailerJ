@@ -172,10 +172,10 @@ public class ProposalRestlet extends BaseRestlet {
             Long proposalKey = Long.valueOf(resourceId);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.SALE_ASSOCIATE);
             if (QueryPointOfView.CONSUMER.equals(pointOfView)) {
-                proposal = ProposalSteps.updateProposal(pm, proposalKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
+                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
             }
             else {
-                proposal = ProposalSteps.updateProposal(pm, proposalKey, parameters, LoginServlet.getSaleAssociate(loggedUser, pm), LoginServlet.getConsumer(loggedUser, pm));
+                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getSaleAssociate(loggedUser, pm), LoginServlet.getConsumer(loggedUser, pm));
             }
 
             return proposal.toJson();

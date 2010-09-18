@@ -91,6 +91,7 @@ public class ProposalProcessor {
                 if (State.published.equals(demand.getState())) {
 
                     // Update the demand
+                    boolean newlyProposed = !demand.getProposalKeys().contains(proposalKey);
                     demand.addProposalKey(proposalKey);
                     demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
@@ -100,7 +101,7 @@ public class ProposalProcessor {
                         Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
                         RawCommand rawCommand = Source.mail.equals(demand.getSource()) ? BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId()) : null;
                         Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
-                        notifyAvailability(proposal, store, location, demand, rawCommand, consumer);
+                        notifyAvailability(proposal, store, location, newlyProposed, demand, rawCommand, consumer);
                     }
                 }
                 else {
@@ -163,43 +164,40 @@ public class ProposalProcessor {
      * @param proposal New or updated proposal to be presented to the consumer
      * @param store Record of the store which produced the proposal
      * @param location Place where the store is located
+     * @param initialProposal <code>true</code> only if this process occurs after an initial creation, is <code>false</code> after all subsequent updates
      * @param demand Original demand for this proposal
      * @param rawCommand To be able to get the initial mail subject if it has been sent by e-mail
      * @param consumer Record of the demand owner
      *
      * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void notifyAvailability(Proposal proposal, Store store, Location location, Demand demand, RawCommand rawCommand, Consumer consumer) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+    public static void notifyAvailability(Proposal proposal, Store store, Location location, boolean initialProposal, Demand demand, RawCommand rawCommand, Consumer consumer) throws DataSourceException, InvalidIdentifierException, CommunicationException {
 
         List<String> cc = demand.getCC();
-        if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
+        if (!Source.api.equals(consumer.getPreferredConnection()) || cc != null && 0 < cc.size()) {
             Locale locale = consumer.getLocale();
 
             // Send a message to the demand Owner
-            if (!Source.api.equals(demand.getSource())) {
-                MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+            if (!Source.api.equals(consumer.getPreferredConnection())) {
+                MessageGenerator msgGen = new MessageGenerator(consumer.getPreferredConnection(), demand.getHashTags(), locale);
                 msgGen.
                     put("demand>owner>name", consumer.getName()).
                     fetch(proposal).
                     fetch(store).
                     fetch(location, "store").
                     fetch(demand).
-                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                    put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
-                Map<String, Object> cmdPrm = new HashMap<String, Object>();
-                cmdPrm.put("proposal>key", proposal.getKey());
-                cmdPrm.put("demand>key", demand.getKey());
-                cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
-                String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", cmdPrm, locale);
-                String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", cmdPrm, locale);
-                String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", cmdPrm, locale);
-
+                String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", msgGen.getParameters(), locale);
+                String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", msgGen.getParameters(), locale);
+                String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
                 String subject = null;
-                if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
+                if (rawCommand != null) { // Can be only null if its source == api -- see caller context
                     subject = rawCommand.getSubject();
                 }
-                else {
-                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
+                if (subject == null) {
+                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
                 }
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
@@ -209,10 +207,10 @@ public class ProposalProcessor {
                     put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                String message = msgGen.getMessage(MessageId.proposalCreationNot);
+                String message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CONSUMER : MessageId.PROPOSAL_UPDATE_OK_TO_CONSUMER);
 
                 communicateToConsumer(
-                        consumer.getPreferredConnection(),
+                        msgGen.getCommunicationChannel(),
                         subject,
                         consumer,
                         new String[] { message }
@@ -241,7 +239,7 @@ public class ProposalProcessor {
                                 fetch(demand).
                                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
-                            message = msgGen.getMessage(MessageId.proposalCreationCpy);
+                            message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CCED : MessageId.PROPOSAL_UPDATE_OK_TO_CCED);
                         }
 
                         if (subject == null) {

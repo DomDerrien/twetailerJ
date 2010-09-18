@@ -18,6 +18,8 @@ import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.InvalidStateException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.BaseConnector;
+import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
@@ -29,6 +31,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MaelzelServlet;
@@ -36,6 +39,7 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -333,6 +337,7 @@ public class DemandSteps extends BaseSteps {
      * Utility method update a demand with the given parameters and triggering the associated workflow steps
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param rawCommand Reference of the command which initiated the process, is <code>null</code> if initiated by a REST API call
      * @param demandKey Resource identifier
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
      * @param owner Consumer who owns the demand to be updated
@@ -343,7 +348,7 @@ public class DemandSteps extends BaseSteps {
      * @throws InvalidStateException if the Demand is not update-able
      * @throws CommunicationException if the notification of a successful closing fails
      */
-    public static Demand updateDemand(PersistenceManager pm, Long demandKey, JsonObject parameters, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
+    public static Demand updateDemand(PersistenceManager pm, RawCommand rawCommand, Long demandKey, JsonObject parameters, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
         Demand demand = getDemandOperations().getDemand(pm, demandKey, owner.getKey());
         State currentState = demand.getState();
@@ -354,52 +359,75 @@ public class DemandSteps extends BaseSteps {
 
             // Close
             if (State.confirmed.equals(currentState) && State.closed.toString().equals(proposedState)) {
-                // Only one Proposal is still associated with the Demand
-                Long saleAssociateKey = demand.getSaleAssociateKeys().get(0);
-                Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), saleAssociateKey, null);
+                // Get the associated proposal
+                Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), null, null);
 
-                if (!Source.api.equals(demand.getSource())) {
-                    Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
-
+                if (rawCommand != null) {
                     Locale locale = owner.getLocale();
-                    MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+
+                    MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
                     msgGen.
                         put("demand>owner>name", owner.getName()).
                         fetch(demand).
-                        fetch(location, "demand").
                         fetch(proposal).
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+                        subject = rawCommand.getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
                     communicateToConsumer(
-                            demand.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
-                            "To be fixed!", // FIXME
+                            msgGen.getCommunicationChannel(),
+                            subject,
                             owner,
-                            new String[] { msgGen.getMessage(MessageId.demandClosingAck) }
+                            new String[] { msgGen.getMessage(MessageId.DEMAND_CLOSING_OK_TO_CONSUMER) }
                     );
                 }
 
                 if (!State.closed.equals(proposal.getState())) {
                     // Only one SaleAssociate is still associated with the Demand
-                    SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
+                    SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, demand.getSaleAssociateKeys().get(0));
                     Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
+                    Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
+                    Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
 
                     // Inform Proposal owner about the closing
                     Locale locale = saConsumerRecord.getLocale();
-                    MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                    MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), demand.getHashTags(), locale);
                     msgGen.
                         put("proposal>owner>name", saConsumerRecord.getName()).
                         fetch(demand).
                         fetch(proposal).
+                        fetch(store).
+                        fetch(location, "store").
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
-                        put("command>threadSubject", "ezToff Notification about Request:" + proposal.getDemandKey()).
-                        put("command>closeProposal", ("close proposal:" + proposal.getKey().toString() + "\n\nFIXME").replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+                        put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+
+                    String closeProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_close", msgGen.getParameters(), locale);
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel()) && Source.mail.equals(proposal.getSource())) {
+                        subject = BaseSteps.getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId()).getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                    msgGen.
+                        put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
+                        put("command>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                     try {
                         communicateToConsumer(
-                                saConsumerRecord.getPreferredConnection(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
-                                "To be fixed!", // FIXME
+                                msgGen.getCommunicationChannel(),
+                                subject,
                                 saConsumerRecord,
-                                new String[] { msgGen.getMessage(MessageId.demandClosingNot) }
+                                new String[] { msgGen.getMessage(MessageId.DEMAND_CLOSING_OK_TO_ASSOCIATE) }
                         );
                     }
                     catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process
@@ -416,15 +444,33 @@ public class DemandSteps extends BaseSteps {
                     Long saleAssociateKey = demand.getSaleAssociateKeys().get(0);
                     SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
                     Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
-
-                    // Only one Proposal is still associated with the Demand
                     Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), saleAssociateKey, null);
-                    RawCommand rawCommand = null;
-                    if (Source.api.equals(proposal.getSource())) {
-                        rawCommand = new RawCommand(saConsumerRecord.getPreferredConnection());
-                    }
-                    else {
-                        rawCommand = getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
+
+                    // Confirm the demand canceling to the owner
+                    if (rawCommand != null) {
+                        Locale locale = owner.getLocale();
+
+                        MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
+                        msgGen.
+                            put("demand>owner>name", owner.getName()).
+                            fetch(demand).
+                            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                        String subject = null;
+                        if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+                            subject = rawCommand.getSubject();
+                        }
+                        if (subject == null) {
+                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                        }
+                        subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                        communicateToConsumer(
+                                msgGen.getCommunicationChannel(),
+                                subject,
+                                owner,
+                                new String[] { msgGen.getMessage(MessageId.DEMAND_CANCELLATION_OK_TO_CONSUMER) }
+                        );
                     }
 
                     // Cancel the associated Proposal
@@ -434,15 +480,29 @@ public class DemandSteps extends BaseSteps {
 
                     // Notify SaleAssociate about the confirmed Demand cancellation
                     Locale locale = saConsumerRecord.getLocale();
-                    String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
-                    String tags = proposal.getCriteria().size() == 0 ? "" : LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale);
+                    MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), demand.getHashTags(), locale);
+                    msgGen.
+                        put("proposal>owner>name", saConsumerRecord.getName()).
+                        fetch(demand).
+                        fetch(proposal).
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                        put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel()) && Source.mail.equals(proposal.getSource())) {
+                        subject = getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId()).getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
                     try {
                         communicateToConsumer(
-                                rawCommand.getSource(),
-                                rawCommand.getSubject(),
+                                msgGen.getCommunicationChannel(),
+                                subject,
                                 saConsumerRecord,
-                                new String[] { LabelExtractor.get("cp_command_cancel_demand_canceled_proposal_to_be_canceled", new Object[] { demandRef, proposalRef, tags }, locale) }
+                                new String[] { msgGen.getMessage(MessageId.DEMAND_CONFIRMED_CANCELLATION_OK_TO_ASSOCIATE) }
                         );
                     }
                     catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process
@@ -484,7 +544,7 @@ public class DemandSteps extends BaseSteps {
                 demand.setLocationKey(null);
             }
 
-            // Neutralise read-only parameters
+            // Neutralize read-only parameters
             parameters.remove(Demand.SALE_ASSOCIATE_KEYS);
             parameters.remove(Demand.PROPOSAL_KEYS);
 

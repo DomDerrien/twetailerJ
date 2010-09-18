@@ -292,32 +292,29 @@ public class DemandValidator {
                     put("demand>owner>name", owner.getName()).
                     fetch(demand).
                     fetch(location, "demand").
-                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                    put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
-                Map<String, Object> cmdPrm = new HashMap<String, Object>();
-                cmdPrm.put("demand>key", demand.getKey());
-                cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
-                String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", cmdPrm, locale);
-                // String updateDemand = "update demand:" + demand.getKey().toString();
-
+                String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
+                String updateDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_update", msgGen.getParameters(), locale);
                 String subject = null;
-                if (Source.mail.equals(demand.getSource()) && rawCommand.getSubject() != null) {
+                if (Source.mail.equals(msgGen.getCommunicationChannel())) {
                     subject = rawCommand.getSubject();
                 }
-                else {
-                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
+                if (subject == null) {
+                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
                 }
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
                     put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
-                    // put("command>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
 
-                String message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationAck: MessageId.demandUpdateAck);
+                String message = msgGen.getMessage(isNewDemand ? MessageId.DEMAND_CREATION_OK_TO_CONSUMER: MessageId.DEMAND_UPDATE_OK_TO_CONSUMER);
 
                 communicateToConsumer(
-                        demand.getSource(),
+                        msgGen.getCommunicationChannel(),
                         subject,
                         owner,
                         new String[] { message }
@@ -344,7 +341,7 @@ public class DemandValidator {
                                 fetch(location, "demand").
                                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
-                            message = msgGen.getMessage(isNewDemand ? MessageId.demandCreationCpy: MessageId.demandUpdateCpy);
+                            message = msgGen.getMessage(isNewDemand ? MessageId.DEMAND_CREATION_OK_TO_CCED: MessageId.DEMAND_UPDATE_OK_TO_CCED);
                         }
 
                         if (subject == null) {

@@ -143,7 +143,7 @@ public class DemandRestlet extends BaseRestlet {
         try {
             // Update the Demand
             Long demandKey = Long.valueOf(resourceId);
-            Demand demand = DemandSteps.updateDemand(pm, demandKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
+            Demand demand = DemandSteps.updateDemand(pm, null, demandKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
 
             return demand.toJson();
         }

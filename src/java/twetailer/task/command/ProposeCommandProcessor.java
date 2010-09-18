@@ -60,7 +60,7 @@ public class ProposeCommandProcessor {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.propose, Demand.class.getName());
 
                 // Update specified proposal
-                ProposalSteps.updateProposal(pm, proposalKey, command, saleAssociate, consumer);
+                ProposalSteps.updateProposal(pm, rawCommand, proposalKey, command, saleAssociate, consumer);
 
                 // Update confirmation message will be sent by the ProposalValidator being given it's a valid proposal
             }

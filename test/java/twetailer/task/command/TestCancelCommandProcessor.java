@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
@@ -1132,6 +1133,7 @@ public class TestCancelCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandCancelWithConsumerNotificationI() throws TwitterException, DataSourceException, ClientException {
         final Long consumerKey = 11L;
         final Long saleAssociateKey = 222L;

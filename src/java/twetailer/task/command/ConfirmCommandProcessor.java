@@ -43,7 +43,7 @@ public class ConfirmCommandProcessor {
             String message = null;
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
-                ProposalSteps.updateProposal(pm, entityKey, getFreshConfirmParameters(), consumer);
+                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshConfirmParameters(), consumer);
                 return;
             }
             catch(InvalidIdentifierException ex) {

@@ -10,6 +10,7 @@ import javax.jdo.PersistenceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.ClientException;
@@ -72,6 +73,7 @@ public class TestDeclineCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandDeclineIII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long consumerKey = 6666L;
@@ -103,6 +105,7 @@ public class TestDeclineCommandProcessor {
     }
 
     @Test
+    @Ignore
     public void testProcessCommandDeclineIV() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long demandKey = 5555L;

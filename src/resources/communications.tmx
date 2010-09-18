@@ -216,6 +216,26 @@
             </tuv>
         </tu>
 
+        <tu tuid="command_message_body_demand_create" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    demand qty:? due-date:? tags:?
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_demand_update" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    demand demand:{demand>key} qty:{demand>quantity} due-date:{demand>dueDate} locale:{demand>location>postalCode} {demand>location>countryCode} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="command_message_body_demand_cancel" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -242,6 +262,16 @@
             <tuv xml:lang="en">
                 <seg>
                     propose demand:{demand>key} qty:{demand>quantity} unit-price:? total-cost:? due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_proposal_update" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    propose proposal:{proposal>key} qty:{demand>quantity} unit-price:? total-cost:? due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -290,7 +320,7 @@
         <!-- Customizable feedback messages -->
         <!-- ============================== -->
 
-        <tu tuid="short_core_demand_creation_ackToOwner" datatype="Text">
+        <tu tuid="short_core_demand_creation_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -298,7 +328,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -314,14 +344,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_golf_demand_creation_ackToOwner" datatype="Text">
+        <tu tuid="short_golf_demand_creation_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -331,13 +361,13 @@
                     :-) Hi {demand>owner>name}, listing newly created demand:{demand>key}...|
                     request:{demand>key} tee-time:{demand>dueDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode}
-                    players:{demand>quantity} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{demand>quantity} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                     tags:{demand>criteria} {demand>cc}
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="long_core_demand_creation_ackToOwner" datatype="Text">
+        <tu tuid="long_core_demand_creation_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -345,7 +375,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -373,7 +403,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_demand_creation_ackToOwner" datatype="Text">
+        <tu tuid="long_golf_demand_creation_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -381,7 +411,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -420,7 +450,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -439,7 +469,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -458,7 +488,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -493,7 +523,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -528,7 +558,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
                 {command>threadSubject}
                 {command>createProposal}
@@ -550,7 +580,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
                 {command>threadSubject}
                 {command>createProposal}
@@ -572,7 +602,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
                 {command>threadSubject}
                 {command>createProposal}
@@ -610,7 +640,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
                 {command>threadSubject}
                 {command>createProposal}
@@ -639,7 +669,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_core_demand_update_ackToOwner" datatype="Text">
+        <tu tuid="short_core_demand_update_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -647,7 +677,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -663,7 +693,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_golf_demand_update_ackToOwner" datatype="Text">
+        <tu tuid="short_golf_demand_update_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -671,7 +701,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -687,7 +717,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_core_demand_update_ackToOwner" datatype="Text">
+        <tu tuid="long_core_demand_update_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -695,7 +725,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -724,7 +754,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_demand_update_ackToOwner" datatype="Text">
+        <tu tuid="long_golf_demand_update_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
@@ -732,7 +762,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -770,7 +800,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -789,7 +819,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -808,7 +838,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -839,7 +869,7 @@
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -863,14 +893,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_core_proposal_creation_ackToOwner" datatype="Text">
+        <tu tuid="short_core_proposal_creation_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -884,14 +914,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_golf_proposal_creation_ackToOwner" datatype="Text">
+        <tu tuid="short_golf_proposal_creation_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -900,19 +930,19 @@
                 <seg>
                     :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="long_core_proposal_creation_ackToOwner" datatype="Text">
+        <tu tuid="long_core_proposal_creation_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -937,14 +967,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_proposal_creation_ackToOwner" datatype="Text">
+        <tu tuid="long_golf_proposal_creation_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal creation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -970,14 +1000,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_core_proposal_update_ackToOwner" datatype="Text">
+        <tu tuid="short_core_proposal_update_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal update.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -991,14 +1021,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="short_golf_proposal_update_ackToOwner" datatype="Text">
+        <tu tuid="short_golf_proposal_update_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal update.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -1007,19 +1037,19 @@
                 <seg>
                     :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="long_core_proposal_update_ackToOwner" datatype="Text">
+        <tu tuid="long_core_proposal_update_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal update.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -1044,14 +1074,14 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_proposal_update_ackToOwner" datatype="Text">
+        <tu tuid="long_golf_proposal_update_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming a successful proposal update.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
                 {message>footer}
@@ -1084,9 +1114,11 @@
                 Message informing the demand owner about the new proposal.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
-                {command>cancelProposal}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1105,16 +1137,18 @@
                 Message informing the demand owner about the new proposal.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
-                {command>cancelProposal}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {demand>owner>name}, your tee-off request:{demand>key} received the proposal:{proposal>key}...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1125,13 +1159,15 @@
             <note>
                 Message informing the demand owner about the new proposal.|
                 {proposal>*}: proposal attributes
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {command>threadSubject}
-                {command>cancelProposal}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1166,13 +1202,15 @@
             <note>
                 Message informing the demand owner about a proposal creation.|
                 {proposal>*}: proposal attributes
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {command>threadSubject}
-                {command>cancelProposal}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1209,9 +1247,7 @@
                 Message informing the demand owner about the new proposal.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {command>threadSubject}
-                {command>cancelProposal}
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1230,16 +1266,14 @@
                 Message informing the demand owner about the new proposal.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
-                {command>threadSubject}
-                {command>cancelProposal}
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Hi {demand>owner>name}, your tee-off request:{demand>key} received the proposal:{proposal>key}...|
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off request:{demand>key} which received a new proposal:{proposal>key} ...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1250,13 +1284,11 @@
             <note>
                 Message informing the demand owner about the new proposal.|
                 {proposal>*}: proposal attributes
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
-                {command>threadSubject}
-                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1289,13 +1321,11 @@
             <note>
                 Message informing the demand owner about a proposal creation.|
                 {proposal>*}: proposal attributes
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
-                {command>threadSubject}
-                {command>cancelProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1303,6 +1333,252 @@
                     <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
                     the request:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
                     has been received with:</p>
+                    <ul>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                    </ul>
+                    <p>More course information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_update_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the updated proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {command>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, the proposal:{proposal>key} for your demand:{demand>key} has been updated...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_proposal_update_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the updated proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {command>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, the proposal:{proposal>key} for your tee-off request:{demand>key} has been updated...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_update_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the new proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {command>threadSubject}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {command>cancelDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has updated the <strong>Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  for:</p>
+                    <ul>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                    </ul>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>More store information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_update_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about a proposal update.|
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {command>threadSubject}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {command>cancelRequest}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has update the tee-off <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  for:</p>
+                    <ul>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                    </ul>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>More course information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_update_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the updated proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the reception of an update of proposal:{proposal>key} ...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_proposal_update_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the updated proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off request:{demand>key} which received an update of proposal:{proposal>key} ...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_update_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about the updated proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
+                    the request:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
+                    has been updated with:</p>
+                    <ul>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                    </ul>
+                    <p>More store information: <br/>
+                    Address: {store>address}<br/>
+                    Telephone: {store>phoneNumber}</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_update_ccedNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing the demand owner about a proposal update.|
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {store>location>*}: location attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>*}: demand attributes
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
+                    the tee-off request:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
+                    has been updated with:</p>
                     <ul>
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
@@ -1334,7 +1610,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {command>closeDemand}
@@ -1359,7 +1635,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {command>closeDemand}
@@ -1384,7 +1660,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {command>closeDemand}
@@ -1421,7 +1697,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {command>closeDemand}
@@ -1458,7 +1734,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {command>closeDemand}
@@ -1484,7 +1760,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
                 {command>closeDemand}
@@ -1510,10 +1786,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {command>threadSubject}
-                {command>cancelDemand}
-                {command>closeDemand}
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1543,10 +1816,7 @@
                 {store>location>*}: store location attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
-                {demand.metadata>*}: optional meta data from the demand (vertical dependent)
-                {command>threadSubject}
-                {command>cancelDemand}
-                {command>closeDemand}
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1573,7 +1843,7 @@
                 Message informing the proposal owner about a proposal confirmation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {command>threadSubject}
                 {command>cancelProposal}
@@ -1595,7 +1865,7 @@
                 Message informing the proposal owner about a proposal confirmation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {command>threadSubject}
                 {command>cancelProposal}
@@ -1617,7 +1887,7 @@
                 Message informing the proposal owner about a proposal confirmation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {command>threadSubject}
                 {command>cancelProposal}
@@ -1655,7 +1925,7 @@
                 Message informing the proposal owner about a proposal confirmation.|
                 {proposal>*}: proposal attributes
                 {proposal>owner>name}: name of the proposal owner
-                {proposal.metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {command>threadSubject}
                 {command>cancelProposal}
@@ -1687,44 +1957,113 @@
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_demand_closing_ackToOwner" datatype="Text">
+        <tu tuid="short_core_demand_closing_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming the demand closing.|
-                {0}: owner name
-                {1}: demand key
-                {2}: demand state
-                {3}: demand due date
-                {4}: demand modification date
-                {5}: demand quantity
-                {6}: demand tag list
-                {7}: demand hash tag list
-                {8}: demand CC'ed user list
-                {9}: proposal key
-                {10}: proposal demand key
-                {11}: proposal due date
-                {12}: proposal quantity
-                {13}: proposal tag list
-                {14}: proposal hash tag list
-                {15}: proposal currency
-                {16}: proposal unit price
-                {17}: proposal total cost
-                {18}: demand location postal code
-                {19}: demand location country code
-                {20}: mail message subject for the embedded command
-                {21}: mail message body for the "close proposal" command
-                {22}: message footer
-                {23}: number of pull carts
-                {24}: number of golf carts
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi {0},</p>
-                    <p>The reservation under <strong>ezToff Proposal# {9}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
+                    :-) Hi {demand>owner>name}, Thanks for closing demand:{demand>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_closing_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand closing.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {demand>owner>name},</p>
+                    <p>The <strong>Request# {demand>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
+                    <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your fellow golfers, or, simply CC them next time.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_demand_closing_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand closing.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {demand>owner>name},</p>
+                    <p>The <strong>ezToff Request# {demand>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
                     <p>If you enjoyed using ezToff, please recommend us to your fellow golfers, or, simply CC them next time.</p>
-                    {22}
-                    <p>Reference#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_closing_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message inviting the associate to close its proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI. demand:{demand>key} associated to proposal:{proposal>key} has been closed by the Consumer. |
+                    Hint: Send "close proposal:{proposal>key}", or, "flag proposal:{proposal>key} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_closing_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message inviting the associate to close its proposal.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+                {command>threadSubject}
+                {command>closeProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>The Request# {demand>key} for the reservation under <strong>Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong> has been <strong>closed</strong>.
+                    Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> your matching proposal {proposal>key} in order to better your Rating.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1734,80 +2073,139 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message inviting the associate to close its proposal.|
-                {0}: owner name
-                {1}: demand key
-                {2}: demand state
-                {3}: demand due date
-                {4}: demand modification date
-                {5}: demand quantity
-                {6}: demand tag list
-                {7}: demand hash tag list
-                {8}: demand CC'ed user list
-                {9}: proposal key
-                {10}: proposal demand key
-                {11}: proposal due date
-                {12}: proposal quantity
-                {13}: proposal tag list
-                {14}: proposal hash tag list
-                {15}: proposal currency
-                {16}: proposal unit price
-                {17}: proposal total cost
-                {18}: demand location postal code
-                {19}: demand location country code
-                {20}: mail message subject for the embedded command
-                {21}: mail message body for the "close proposal" command
-                {22}: message footer as defined by long_golf_footer
-                {23}: number of pull carts
-                {24}: number of golf carts
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+                {command>threadSubject}
+                {command>closeProposal}
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi {0},</p>
-                    <p>The Request# {1} for the <strong>{11}</strong> reservation under <strong>ezToff Proposal# {9}</strong> has been <strong>closed</strong>.
-                    Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={21}&amp;subject={20}">close</a></strong> your matching proposal {9} in order to better your Rating.</p>
-                    {22}
-                    <p>Reference#: {1}, Proposal#: {9}.</p>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>The Request# {demand>key} for the reservation under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  has been <strong>closed</strong>.
+                    Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> your matching proposal {proposal>key} in order to better your Rating.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
 
-        <tu tuid="long_golf_proposal_closing_ackToOwner" datatype="Text">
+        <tu tuid="short_core_proposal_closing_ackToAssociate" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand closing.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the demand owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, Thanks for closing proposal:{proposal>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_closing_ackToAssociate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <note>
                 Message confirming the proposal closing.|
-                {0}: owner name
-                {1}: demand key
-                {2}: demand state
-                {3}: demand due date
-                {4}: demand modification date
-                {5}: demand quantity
-                {6}: demand tag list
-                {7}: demand hash tag list
-                {8}: demand CC'ed user list
-                {9}: proposal key
-                {10}: proposal demand key
-                {11}: proposal due date
-                {12}: proposal quantity
-                {13}: proposal tag list
-                {14}: proposal hash tag list
-                {15}: proposal currency
-                {16}: proposal unit price
-                {17}: proposal total cost
-                {18}: demand location postal code
-                {19}: demand location country code
-                {20}: mail message subject for the embedded command
-                {21}: mail message body for the "close proposal" command
-                {22}: message footer
-                {23}: number of pull carts
-                {24}: number of golf carts
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the demand owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi {0},</p>
-                    <p>The proposal under the <strong>ezToff Reference# {9}</strong> has been closed.</p>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>The <strong>Proposal# {proposal>key}</strong> has been closed.</p>
                     <p>Your score is going to be updated accordingly.</p>
-                    {22}
+                    {message>footer}
+                    <p>Reference#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_golf_proposal_closing_ackToAssociate" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the proposal closing.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the demand owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>The reservation under the <strong>ezToff Proposal# {proposal>key}</strong> has been closed.</p>
+                    <p>Your score is going to be updated accordingly.</p>
+                    {message>footer}
+                    <p>Reference#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_closing_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message inviting the consumer to close its demand.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {message>footer}
+                {command>threadSubject}
+                {command>closeDemand}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI. proposal:{proposal>key} for your demand:{demand>key} has been closed by the store:{store>key} {store>name}. |
+                    Hint: Send "close demand:{demand>key}", or, "flag demand:{demand>key} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_closing_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message inviting the consumer to close its demand.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {message>footer}
+                {command>threadSubject}
+                {command>closeDemand}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {demand>owner>name},</p>
+                    <p>
+                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>closed their Proposal# {proposal>key}</strong>.
+                        Please <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close your corresponding Request {demand>key}</a> to better your Rating.
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1817,42 +2215,202 @@
             <prop type="x-tier">javarb</prop>
             <note>
                 Message inviting the consumer to close its demand.|
-                {0}: owner name
-                {1}: demand key
-                {2}: demand state
-                {3}: demand due date
-                {4}: demand modification date
-                {5}: demand quantity
-                {6}: demand tag list
-                {7}: demand hash tag list
-                {8}: demand CC'ed user list
-                {9}: proposal key
-                {10}: proposal demand key
-                {11}: proposal due date
-                {12}: proposal quantity
-                {13}: proposal tag list
-                {14}: proposal hash tag list
-                {15}: proposal currency
-                {16}: proposal unit price
-                {17}: proposal total cost
-                {18}: demand location postal code
-                {19}: demand location country code
-                {20}: mail message subject for the embedded command
-                {21}: mail message body for the "close proposal" command
-                {22}: message footer
-                {23}: number of pull carts
-                {24}: number of golf carts
-                {25}: store name
-                {26}: store website
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {message>footer}
+                {command>threadSubject}
+                {command>closeDemand}
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p>Hi {0},</p>
+                    <p>Hi {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{26}">{25}</a></strong> has <strong>closed their Proposal# {9}</strong>.
-                        Please <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={21}&amp;subject={20}">close your corresponding Request {1}</a> to better your Rating.
+                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>closed their ezToff Proposal# {proposal>key}</strong>.
+                        Please <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close your corresponding tee-off Request {demand>key}</a> to better your Rating.
                     </p>
-                    {22}
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_cancellation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand canceling to the consumer.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, your demand:{demand>key} has been successfully canceled.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_cancellation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand canceling to the consumer.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {demand>owner>name},</p>
+                    <p>Your <strong>Request# {demand>key}</strong> has been <strong>canceled</strong>.</p>
+                    <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your fellow golfers, or, simply CC them next time.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_confirmed_cancellation_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the proposal canceling to the sale associate.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, owner of demand:{demand>key} canceled it.|
+                    Your confirmed proposal:{proposal>key} has been canceled as a side effect without impacting your rating.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_confirmed_cancellation_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the proposal canceling to the sale associate.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {demand>*}: demand attributes
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>The owner of the <strong>Request# {demand>key}</strong> has canceled it even if your <strong>Proposal# {proposal>key}</strong>
+                    have been confirmed! The corresponding reservation has been canceled by side-effect. This is not going to impact negatively your Rating.</p>
+                    <p>The proposal was due on <strong>{proposal>dueDate}</strong> with:</p>
+                    <ul>
+                        <li>Quantitiy: <strong>{proposal>quantity}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                    </ul>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_cancellation_ackToAssociate" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the proposal canceling to the sale associate.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, your proposal:{proposal>key} has been successfully canceled.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_cancellation_ackToAssociate" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the proposal canceling to the sale associate.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>Your <strong>Proposal# {proposal>key}</strong> for <strong>Request# {demand>key}</strong> has been <strong>canceled</strong>.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_confirmed_cancellation_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand canceling to the consumer.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>updateDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, the proposal:{proposal>key} you confirmed has been canceled.|
+                    Your demand:{demand>key} has been re-broadcasted to stores around. Send "cancel demand:{demand>key}" to stop the process.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_confirmed_cancellation_consumerNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the demand canceling to the consumer.|
+                {demand>*}: demand attributes
+                {demand>owner>name}: name of the proposal owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {store>*}: store attributes
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>updateDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {demand>owner>name},</p>
+                    <p>
+                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>canceled their Proposal# {proposal>key}</strong>.
+                        As the result, your Request# {demand>key} has been forwarded to stores in your area.
+                    </p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>

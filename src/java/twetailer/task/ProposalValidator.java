@@ -4,13 +4,12 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.security.auth.Subject;
 
 import twetailer.ClientException;
 import twetailer.CommunicationException;
@@ -228,20 +227,17 @@ public class ProposalValidator {
             msgGen.
                 put("proposal>owner>name", associate.getName()).
                 fetch(proposal).
-                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
-            Map<String, Object> cmdPrm = new HashMap<String, Object>();
-            cmdPrm.put("proposal>key", proposal.getKey());
-            cmdPrm.put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
-            String cancelProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_cancel", cmdPrm, locale);
+            String cancelProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_cancel", msgGen.getParameters(), locale);
             // String updateProposal = "update proposal:" + proposal.getKey().toString();
-
             String subject = null;
-            if (Source.mail.equals(proposal.getSource()) && rawCommand.getSubject() != null) {
+            if (Source.mail.equals(msgGen.getCommunicationChannel())) {
                 subject = rawCommand.getSubject();
             }
-            else {
-                subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
+            if (subject == null) {
+                subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
             }
             subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
@@ -250,10 +246,10 @@ public class ProposalValidator {
                 put("command>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
                 // put("command>updateProposal", updateProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-            String message = msgGen.getMessage(isNewProposal ? MessageId.proposalCreationAck: MessageId.proposalUpdateAck);
+            String message = msgGen.getMessage(isNewProposal ? MessageId.PROPOSAL_CREATION_OK_TO_ASSOCIATE: MessageId.PROPOSAL_UPDATE_OK_TO_ASSOCIATE);
 
             communicateToConsumer(
-                    proposal.getSource(),
+                    msgGen.getCommunicationChannel(),
                     subject,
                     associate,
                     new String[] { message }

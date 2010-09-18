@@ -50,10 +50,8 @@ public class CancelCommandProcessor {
             String message = null;
             Long entityKey = command.getLong(Demand.REFERENCE);
             try {
-                Demand demand = DemandSteps.updateDemand(pm, entityKey, getFreshCancelParameters(), consumer);
-                // Echo back the specified demand
-                Location location = LocationSteps.getLocation(pm, demand);
-                message = CommandProcessor.generateTweet(demand, location, false, locale);
+                DemandSteps.updateDemand(pm, rawCommand, entityKey, getFreshCancelParameters(), consumer);
+                return;
             }
             catch(InvalidIdentifierException ex) {
                 message = LabelExtractor.get("cp_command_cancel_invalid_demand_id", locale);
@@ -79,10 +77,8 @@ public class CancelCommandProcessor {
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.cancel, Demand.class.getName());
-                Proposal proposal = ProposalSteps.updateProposal(pm, entityKey, getFreshCancelParameters(), saleAssociate, consumer);
-                // Echo back the specified proposal
-                Store store = StoreSteps.getStore(pm, proposal.getStoreKey());
-                message = CommandProcessor.generateTweet(proposal, store, false, locale);
+                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshCancelParameters(), saleAssociate, consumer);
+                return;
             }
             catch(InvalidIdentifierException ex) {
                 message = LabelExtractor.get("cp_command_cancel_invalid_proposal_id", locale);

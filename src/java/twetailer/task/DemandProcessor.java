@@ -340,18 +340,18 @@ public class DemandProcessor {
      * Send a message to the identified sale associate about the demand ready to be proposed
      *
      * @param demand New or updated demand to be presented to the sale associate
-     * @param associate Associate record of the sale associate to be contacted
+     * @param saConsumerRecord Associate record of the sale associate to be contacted
      *
      * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void notifyAvailability(Demand demand, Consumer associate) throws CommunicationException {
+    public static void notifyAvailability(Demand demand, Consumer saConsumerRecord) throws CommunicationException {
 
-        if (!Source.api.equals(demand.getSource())) {
-            Locale locale = associate.getLocale();
+        if (!Source.api.equals(saConsumerRecord.getPreferredConnection())) {
+            Locale locale = saConsumerRecord.getLocale();
 
-            MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+            MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), demand.getHashTags(), locale);
             msgGen.
-                put("proposal>owner>name", associate.getName()).
+                put("proposal>owner>name", saConsumerRecord.getName()).
                 fetch(demand).
                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                 put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
@@ -359,16 +359,17 @@ public class DemandProcessor {
             String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", msgGen.getParameters(), locale);
             String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", msgGen.getParameters(), locale);
             String subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+
             msgGen.
                 put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D")).
-                put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
 
             communicateToConsumer(
-                    associate.getPreferredConnection(),
+                    msgGen.getCommunicationChannel(),
                     subject,
-                    associate,
-                    new String[] { msgGen.getMessage(MessageId.demandCreationNot) }
+                    saConsumerRecord,
+                    new String[] { msgGen.getMessage(MessageId.DEMAND_CREATION_OK_TO_ASSOCIATE) }
             );
         }
     }
