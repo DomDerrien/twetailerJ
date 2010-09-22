@@ -31,11 +31,13 @@
         // _grid.setSortIndex(10, false); // 10 == position of the column 'modificationDate'
 
         // Fetch
-        var dfd = _common.loadRemoteDemands(null, _queryPointOfView); // No modificationDate means "load all active Demands"
+        var dfd = _common.loadRemoteDemands(null, _queryPointOfView, "golf"); // No modificationDate means "load all active Demands"
         dfd.addCallback(function(response) { _common.processDemandList(response.resources, _grid); });
     };
 
-    var _demandUpdateDecoration = "<a href='#' onclick='twetailer.golf.Consumer.displayDemandForm(false,${0});return false;' title='${1}'><span class='dijitReset dijitInline silkIcon silkIconDemandUpdate'></span>${2}</a>";
+    var _demandUpdateDecoration =
+           "<a href='#' onclick='twetailer.golf.Consumer.displayDemandForm(false,${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconDemandUpdate'></span>${1}</a>" +
+           " / <a href='#' onclick='if (confirm(\"${3}\")){twetailer.golf.Consumer.cancelDemand(null,${1});}return false;' title='${3}'><span class='dijitReset dijitInline silkIcon silkIconDemandCancel'></span>${1}</a>";
 
     /**
      * Override of the formatter to be able to place the "Update Demand" link around the demand key
@@ -48,7 +50,7 @@
         // TODO: check the demand state in order to use the classname silkIconDemandConfirmed
         var updateLabel = dojo.string.substitute(
             _demandUpdateDecoration,
-            [rowIndex, _getLabel("console", "ga_cmenu_updateDemand", [demandKey]), demandKey]
+            [rowIndex, demandKey, _getLabel("console", "ga_cmenu_updateDemand", [demandKey]), _getLabel("console", "ga_cmenu_cancelDemand", [demandKey])]
         );
         return updateLabel;
     };
@@ -125,9 +127,23 @@
                 dijit.byId("demand.criteria").set("value", item.criteria.join(" "));
             }
             if (dojo.isArray(item.cc)) {
-                dijit.byId("demand.cc").set("value", item.cc.join("\n"));
+                var idx = 0, limit = item.cc.length, coordinate;
+                while (idx < limit) {
+                    coordinate = item.cc[idx]; // 0-based index
+                    idx ++;
+                    twetailer.Common.getFriendInputField(idx).set("value", coordinate); // 1-based index
+                }
             }
             dijit.byId("demand.quantity").set("value", item.quantity[0]);
+            if (item.metadata != null) {
+                var metadata = dojo.fromJson(item.metadata[0]);
+                if (metadata.pullCart != null) {
+                    dijit.byId("demand.metadata.pullCart").set("value", metadata.pullCart);
+                }
+                if (metadata.golfCart != null) {
+                    dijit.byId("demand.metadata.golfCart").set("value", metadata.golfCart);
+                }
+            }
             var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
             dijit.byId("demand.date").set("value", dueDate);
             dijit.byId("demand.date").constraints.min = new Date();
@@ -167,8 +183,12 @@
             delete data.key;
         }
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
-        data.cc = data.cc.split(/(?:\s|\n|,|;)+/);
+        var cc = twetailer.Common.getFriendCoordinates();
+        if (0 < cc.length) {
+            data.cc = cc;
+        }
         data.dueDate = _common.toISOString(data.date, data.time);
+        data.metadata = dojo.toJson({pullCart:parseInt(data.pullCart),golfCart:parseInt(data.golfCart)});
         data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
 
         var dfd = _common.updateRemoteDemand(data, data.key);
@@ -182,9 +202,12 @@
      * @param {Object} keyFieldId Identifier of the field, in that dialog box, containing the demand key
      */
     module.cancelDemand = function(formId, keyFieldId) {
-        dijit.byId(formId).hide();
+        if (formId != null) {
+            dijit.byId(formId).hide();
+        }
 
-        var demandKey = dijit.byId(keyFieldId).get("value");
+        var demandKey = isNaN(keyFieldId) ? dijit.byId(keyFieldId).get("value") : keyFieldId;
+        alert(demandKey);
         var demand = _common.getCachedDemand(demandKey);
 
         if(demand.state == _common.STATES.CONFIRMED) {
@@ -209,7 +232,9 @@
      * @param {Object} keyFieldId Identifier of the field, in that dialog box, containing the demand key
      */
     module.closeDemand = function(formId, keyFieldId) {
-        dijit.byId(formId).hide();
+        if (formId != null) {
+            dijit.byId(formId).hide();
+        }
 
         var demandKey = dijit.byId(keyFieldId).get("value");
         var data = { state: _common.STATES.CLOSED };
@@ -353,7 +378,7 @@
     module.loadNewDemands = function() {
         var lastDemand = _common.getLastDemand();
         var lastModificationDate = lastDemand == null ? null : lastDemand.modificationDate;
-        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView);
+        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView, "golf");
         dfd.addCallback(function(response) { dijit.byId("refreshButton").resetTimeout(); _common.processDemandList(response.resources, _grid); });
     };
 })(); // End of the function limiting the scope of the private variables

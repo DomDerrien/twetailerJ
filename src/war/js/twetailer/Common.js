@@ -14,7 +14,8 @@
         _geoCache = {},
         _lastBrowserLocation,
         _browserLocationOverlayId,
-        _getPostalCountryEventName;
+        _getPostalCountryEventName,
+        _friendRowNb = 1;
 
     /**
      * List of possible command states (command being a Demand or a Proposal).
@@ -122,6 +123,7 @@
             var pcField = dijit.byId(postalCodeFieldId);
             if (pcField != null) {
                 pcField.set("regExp", _getLabel("console", "location_postalCode_regExp_" + countryCode));
+                pcField.set("placeHolder", _getLabel("console", "location_postalCode_placeHolder_" + countryCode));
                 pcField.set("invalidMessage", _getLabel("console", "location_postalCode_invalid_" + countryCode));
                 pcField.focus();
             }
@@ -363,5 +365,153 @@
         if (_browserLocationOverlayId != null) {
             dijit.byId(_browserLocationOverlayId).hide();
         }
+    }
+
+    /**
+     * Handles a click on a [+] or [-] button placed near an &lt;input/&gt; which is going to receive
+     * the coordinate of someone to be cc'ed for the corresponding demand.
+     *
+     * @param {Number} rowIdx index of the &lt;input/&gt; field (starts at 1)
+     * @param {String} fieldLabel label of the field to be inserted in a cell before the &lt;input/&gt; field
+     *
+     * The HTML code should define the following tags. Note that the ellipsis (...)
+     * replace labels or values that depend on the final implementation details.<pre>
+     *   &lt;table style="..."&gt;
+     *       &lt;tbody id="friendList"&gt;         // All new rows are appended as child to this element
+     *           &lt;tr&gt;
+     *               &lt;td&gt;                    // Optional raw with the label to be receive the &lt;input/&gt; label
+     *                   &lt;label for="email1"&gt;
+     *                       ...
+     *                   &lt;/label&gt;
+     *               &lt;/td&gt;
+     *               &lt;td&gt;
+     *                   &lt;input
+     *                       dojoType="dijit.form.ValidationTextBox"
+     *                       id="email1"           // This identifier allows to use this widget as the master copy to others
+     *                       invalidMessage="..."  // Value copied in cloned rows
+     *                       name="email1"         // This identifier is used when the form is submitted
+     *                       placeHolder="..."     // Value copied in cloned rows
+     *                       regExp="..."          // Value copied in cloned rows
+     *                       required="false"
+     *                       style="width:100%;"
+     *                       trim="true"
+     *                       type="text"
+     *                 /&gt;
+     *               &lt;/td&gt;
+     *               &lt;td style="width:20px;padding-right:0px !important;"&gt;
+     *                   &lt;button
+     *                       dojoType="dijit.form.Button"
+     *                       iconClass="silkIcon silkIconAdd"
+     *                       id="friendButton1"    // This value is used to retrieve the button and to change its meaning if it's the last visible one
+     *                       onclick="twetailer.Common.manageFriendRow(1);"
+     *                       showLabel="false"
+     *                       title="..."           // Value copied in cloned rows
+     *                   &gt;&lt;/button&gt;
+     *               &lt;/td&gt;
+     *           &lt;/tr&gt;
+     *       &lt;/tbody&gt;
+     *   &lt;/table&gt;</pre>
+     *
+     */
+    module.manageFriendRow = function(rowIdx, fieldLabel) {
+        if (_friendRowNb == 1 && dijit.byId("email1") == null) {
+            alert ("The HTML is misconfigured! Please check the documentation to verify the requirements.");
+            return;
+        }
+        if (rowIdx == _friendRowNb) {
+            // Add a row with a new <input/> field
+            var button = dijit.byId("friendButton" + rowIdx);
+            button.set("iconClass", "silkIcon silkIconDelete");
+            button.set("title", _getLabel("console", "ga_demandForm_removeCCButtonLabel"));
+            _friendRowNb ++;
+            var fIdx = _friendRowNb;
+            var firstField = dijit.byId('email1');
+            var row = dojo.create("tr", { id: "friendRow" + fIdx }, dojo.byId("friendList"));
+            if (fieldLabel != null) {
+                dojo.create("label", { forAttr: "email" + fIdx, innerHTML: fieldLabel }, dojo.create("td", null, row));
+            }
+            dojo.create("td", null, row).appendChild(
+                new dijit.form.ValidationTextBox({
+                    id: "email" + fIdx,
+                    invalidMessage: firstField.get("invalidMessage"),
+                    name: "email" + fIdx,
+                    placeHolder: firstField.get("placeHolder"),
+                    required: false,
+                    style: "width:100%",
+                    trim: true }).domNode
+            );
+            dojo.create("td", { style: "width:20px;padding-right:0px !important;" }, row).appendChild(
+                new dijit.form.Button({
+                    iconClass: "silkIcon silkIconAdd",
+                    id: "friendButton" + fIdx,
+                    onClick: function() { module.manageFriendRow(fIdx, fieldLabel); },
+                    showLabel: false,
+                    title: firstField.get("title") }).domNode
+            );
+            dijit.byId("email" + fIdx).set("regExp", dijit.byId('email1').get("regExp")); // Work-around: otherwise, it seems the regExp value is misinterpreted!
+        }
+        else {
+            // Remove the identified row
+            var fIdx = _friendRowNb;
+            for (var i=rowIdx; i < fIdx; i++) {
+                dijit.byId("email" + i).set("value", dijit.byId("email" + (i + 1)).get("value"));
+            }
+            dijit.byId("email" + fIdx).destroy();
+            dijit.byId("friendButton" + fIdx).destroy();
+            dojo.destroy("friendRow" + fIdx);
+            _friendRowNb --;
+            fIdx --;
+            var button = dijit.byId("friendButton" + fIdx);
+            button.set("iconClass", "silkIcon silkIconAdd");
+            button.set("title", _getLabel("console", "ga_demandForm_addCCButtonLabel"));
+        }
+    }
+
+    /**
+     * Return the Dijit field for the identified CC'ed friend field.
+     * If the field does not yet exist, it will be created by simulating
+     * user action on the [+] button up to have the corresponding field.
+     *
+     * @param {Number} rowIdx index of the &lt;input/&gt; field (starts at 1)
+     * @param {String} fieldLabel label of the field to be inserted in a cell before the &lt;input/&gt; field
+     * @return {Object} Dijit field instance
+     *
+     * @see twetailer.Console#manageFriendRow(Number, String)
+     */
+    module.getFriendInputField = function(rowIdx, fieldLabel){
+        var field = dijit.byId("email" + rowIdx);
+        if (field == null) {
+            console.log("byId(rowIdx) == null")
+            var i = _friendRowNb, limit =  rowIdx;
+            while (i < limit) {
+                console.log(i)
+                module.manageFriendRow(i);
+                i ++;
+            }
+            field = dijit.byId("email" + rowIdx);
+        }
+        return field;
+    }
+
+    /**
+     * Scan the friend fields to stack their values in an array
+     *
+     * @return {Array} Documented friend coordinates
+     *
+     * @see twetailer.Console#manageFriendRow(Number, String)
+     */
+    module.getFriendCoordinates = function(){
+        var coordinates = [], idx = 0;
+        while (idx < _friendRowNb) {
+            idx ++; // Increment now because the field index starts at 1
+            var field = dijit.byId("email" + idx);
+            if (field != null) {
+                var coordinate = field.get("value");
+                if (0 < coordinate.length) {
+                    coordinates.push(coordinate);
+                }
+            }
+        }
+        return coordinates;
     }
 })(); // End of the function limiting the scope of the private variables

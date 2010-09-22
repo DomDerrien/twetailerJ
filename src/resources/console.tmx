@@ -281,6 +281,19 @@
             </tuv>
         </tu>
 
+        <tu tuid="location_postalCode_placeHolder_CA" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                DO NOT TRANSLATE!
+                Regular expression used to determine a valid Canadian postal code
+            </note>
+            <tuv xml:lang="en">
+                <seg>A0A 0A0</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="location_postalCode_invalid_CA" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -301,6 +314,19 @@
             </note>
             <tuv xml:lang="en">
                 <seg>[0-9][0-9][0-9][0-9][0-9]</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="location_postalCode_placeHolder_US" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>
+                DO NOT TRANSLATE!
+                Regular expression used to determine a valid US zipcode
+            </note>
+            <tuv xml:lang="en">
+                <seg>00000</seg>
             </tuv>
         </tu>
 
@@ -1026,6 +1052,24 @@
             </tuv>
         </tu>
 
+        <tu tuid="ga_theader_metadata_pullCart" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label of a column header in the table of Demands</note>
+            <tuv xml:lang="en">
+                <seg>Pull Cart #</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_theader_metadata_golfCart" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>Label of a column header in the table of Demands</note>
+            <tuv xml:lang="en">
+                <seg>Golf Cart #</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="ga_theader_ccList" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -1308,6 +1352,24 @@
             </tuv>
         </tu>
 
+        <tu tuid="ga_demandForm_demandPullCart" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Number of Pull Carts:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_demandGolfCart" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Number of Golf Carts:</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="ga_demandForm_demandTime" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -1386,6 +1448,46 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>One coordinate per line, can be an email address or a Twitter ID (starting with '@')</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_ccInvalidMessage" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Invalid Email Address</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_ccPlaceHolder" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>email@example.com</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_addCCButtonLabel" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Add another email address</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="ga_demandForm_removeCCButtonLabel" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note/>
+            <tuv xml:lang="en">
+                <seg>Remove this email address</seg>
             </tuv>
         </tu>
 

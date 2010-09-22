@@ -144,12 +144,19 @@
                     <tr>
                            <!-- IMPORTANT: update the call to _grid.setSortIndex() in GolfConsumer.js if you change the place of the column 'modificationDate' -->
                            <th field="<%= Demand.KEY %>" formatter="twetailer.golf.Associate.displayDemandKey" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_demandKey", locale) %></th>
+                           <th field="<%= Demand.LOCATION_KEY %>" formatter="twetailer.golf.Common.displayLocale" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
                            <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.golf.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_dueDate", locale) %></th>
                            <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.golf.Common.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_expirationDate", locale) %></th>
-                           <th field="<%= Demand.LOCATION_KEY %>" formatter="twetailer.golf.Common.displayLocale" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_locale", locale) %></th>
-                           <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.golf.Associate.displayProposalKeys" styles="padding:2px 5px;" width="200px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_proposalKeys", locale) %></th>
-                           <th fields="<%= Demand.CRITERIA %>" formatter="twetailer.golf.Common.displayCriteria" styles="padding:2px 5px;" width="40%"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
+                           <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_quantity", locale) %></th>
+                           <th field="<%= Demand.META_DATA %>" formatter="twetailer.golf.Common.displayPullCartNb" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_metadata_pullCart", locale) %></th>
+                           <th field="<%= Demand.META_DATA %>" formatter="twetailer.golf.Common.displayGolfCartNb" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_metadata_golfCart", locale) %></th>
+                           <th
+                               fields="<%= Demand.CRITERIA %>"
+                               formatter="twetailer.golf.Common.displayCriteria"
+                               styles="padding:2px 5px;"
+                               width="auto"
+                           ><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_criteria", locale) %></th>
                            <th field="<%= Demand.STATE %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_state", locale) %></th>
                            <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.golf.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_modificationDate", locale) %></th>
                            <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.golf.Common.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "ga_theader_creationDate", locale) %></th>
@@ -256,6 +263,14 @@
        target="proposalForm"
     ></div>
 
+    <div
+        dojoType="dijit.Dialog"
+        id="locationMapDialog"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "shared_map_preview_dialog_title", locale) %>"
+    >
+        <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
+    </div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require("dojo.data.ItemFileWriteStore");
@@ -297,6 +312,8 @@
         // http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/image/tests/test_SlideShow.html
     });
     </script>
+
+    <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 
     <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];

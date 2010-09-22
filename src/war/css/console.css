@@ -209,6 +209,10 @@ body {
     background-image:url(/images/page_white_come_cancel.png);
 }
 
+.silkIconDelete {
+    background-image:url(/images/delete.png);
+}
+
 .silkIconUpdate {
     background-image:url(/images/page_white_edit.png);
 }

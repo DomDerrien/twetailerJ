@@ -31,7 +31,7 @@
         // _grid.setSortIndex(9, false); // 9 == position of the column 'modificationDate'
 
         // Fetch
-        var dfd = _common.loadRemoteDemands(null, _queryPointOfView); // No modificationDate means "load all active Demands"
+        var dfd = _common.loadRemoteDemands(null, _queryPointOfView, "golf"); // No modificationDate means "load all active Demands"
         dfd.addCallback(function(response) { _common.processDemandList(response.resources, _grid); });
     };
 
@@ -284,7 +284,7 @@
     module.loadNewDemands = function() {
         var lastDemand = _common.getLastDemand();
         var lastModificationDate = lastDemand == null ? null : lastDemand.modificationDate;
-        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView);
+        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView, "golf");
         dfd.addCallback(function(response) { dijit.byId("refreshButton").resetTimeout(); _common.processDemandList(response.resources, _grid); });
     };
 })(); // End of the function limiting the scope of the private variables

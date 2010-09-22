@@ -88,8 +88,8 @@
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
 
-    var _ccTwitterDecoration = ["<a href='http://twitter.com/", "' target='twTwitter'>", "</a> "];
-    var _ccEmailDecoration = ["<a href='mailto:", "'>", "</a> "];
+    var _ccTwitterDecoration = ["<a href='http://twitter.com/", null, "' target='twTwitter'>", null, "</a>"];
+    var _ccEmailDecoration = ["<a href='mailto:", null, "'>", null, "</a>"];
 
     /**
      * CC formatter
@@ -115,17 +115,47 @@
                 else if (cc.indexOf('@') == -1) {
                     decorationRef = _ccTwitterDecoration;
                 }
-                value.push(decorationRef[0]);
-                value.push(ccLinked);
-                value.push(decorationRef[1]);
-                value.push(cc);
-                value.push(decorationRef[2]);
+                decorationRef[1] = ccLinked;
+                decorationRef[3] = cc;
+                value.push(decorationRef.join(""));
             }
-            return value.join("");
+            return value.join(", ");
         }
         console.log("displayCC(" + ccList + ") is not an Array");
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_array") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
+
+    /**
+     * Formatter extracting the number of pull cart from the metadata conveyed with the #golf demand
+     *
+     * @param {Object} metadata Serialized JSON bag
+     * return {Number} The number of pull carts stored in the JSON bag, or 0
+     */
+    module.displayPullCartNb = function(metadata) {
+        try {
+            if (metadata != null) {
+                return dojo.fromJson(metadata).pullCart;
+            }
+        }
+        catch(ex) { alert(ex); }
+        return 0;
+    }
+
+    /**
+     * Formatter extracting the number of golf cart from the metadata conveyed with the #golf demand
+     *
+     * @param {Object} metadata Serialized JSON bag
+     * return {Number} The number of golf carts stored in the JSON bag, or 0
+     */
+    module.displayGolfCartNb = function(metadata) {
+        try {
+            if (metadata != null) {
+                return dojo.fromJson(metadata).golfCart;
+            }
+        }
+        catch(ex) { alert(ex); }
+        return 0;
+    }
 
     /**
      * Formatter for the list of attached proposal keys
@@ -173,7 +203,7 @@
         }
         var location = _locations[locationKey];
         if (location != null) {
-            return location.postalCode + " " + location.countryCode;
+            return "<a href='javascript:twetailer.Common.showMap(\"" + location.postalCode + "\",\"" + location.countryCode + "\")'>" + location.postalCode + " " + location.countryCode + "</a>";
         }
         return "<span class='invalidData' title='" + _getLabel("console", "error_invalid_locale") + "'>" + _getLabel("console", "error_invalid_data") + "</span>";
     };
@@ -193,16 +223,21 @@
      *
      * @param {Date} lastModificationDate (Optional) Date to considered before returning the demands (ISO formatted)
      * @param {String} pointOfView (Optional) operation initiator point of view, default to CONSUMER server-side
+     * @param {String} hashTag (Optional) hash tag used to filter out the demands
      * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks
      */
-    module.loadRemoteDemands = function(lastModificationISODate, pointOfView) {
+    module.loadRemoteDemands = function(lastModificationISODate, pointOfView, hashTag) {
         dijit.byId("demandListOverlay").show();
+        var data = {
+            pointOfView: pointOfView || _common.POINT_OF_VIEWS.CONSUMER,
+            lastModificationDate: lastModificationISODate,
+            related: ["Location"]
+        };
+        if (hashTag != null) {
+            data.hashTags = [hashTag];
+        }
         var dfd = dojo.xhrGet({
-            content: {
-                pointOfView: pointOfView || _common.POINT_OF_VIEWS.CONSUMER,
-                lastModificationDate: lastModificationISODate,
-                related: ["Location"]
-            },
+            content: data,
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {

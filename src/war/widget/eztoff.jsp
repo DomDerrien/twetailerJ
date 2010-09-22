@@ -118,6 +118,7 @@
                                 dojoType="dijit.form.ValidationTextBox"
                                 id="postalCode"
                                 name="postalCode"
+                                placeholder="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_placeHolder_CA", locale) %>"
                                 regExp="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_regExp_CA", locale) %>"
                                 required="true"
                                 style="width:100%;"
@@ -175,7 +176,7 @@
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
-                                onclick="javascript:localModule.switchPane(1, 2);"
+                                onclick="localModule.switchPane(1, 2);"
                                 style="color:black;"
                                 title="Share your contact details"
                             >Next &raquo;</button>
@@ -208,9 +209,9 @@
                             <input
                                 dojoType="dijit.form.ValidationTextBox"
                                 id="email0"
-                                invalidMessage="Invalid Email Address"
+                                invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccInvalidMessage", locale) %>"
                                 name="email0"
-                                placeHolder="email@example.com"
+                                placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccPlaceHolder", locale) %>"
                                 regExp="<%= emailRegExp %>"
                                 required="true"
                                 style="width:100%;"
@@ -231,9 +232,9 @@
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email1"
-                                    invalidMessage="Invalid Email Address"
+                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccInvalidMessage", locale) %>"
                                     name="email1"
-                                    placeHolder="email@example.com"
+                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccPlaceHolder", locale) %>"
                                     regExp="<%= emailRegExp %>"
                                     required="false"
                                     style="width:100%;"
@@ -246,9 +247,9 @@
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
                                     id="friendButton1"
-                                    onclick="javascript:localModule.manageFriendRow(1);"
+                                    onclick="twetailer.Common.manageFriendRow(1, 'Email:');"
                                     showLabel="false"
-                                    title="Add another email address"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_addCCButtonLabel", locale) %>"
                                 ></button>
                             </td>
                         </tr>
@@ -260,11 +261,11 @@
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(2, 1);">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(2, 1);">&laquo; back</a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
-                                onclick="javascript:localModule.switchPane(2, 3);"
+                                onclick="localModule.switchPane(2, 3);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %>"
                             >Next &raquo;</button>
@@ -302,12 +303,12 @@
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(3, 2);">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(3, 2);">&laquo; back</a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconAccept"
-                                onclick="javascript:localModule.sendRequest();"
+                                onclick="localModule.sendRequest();"
                                 style="color:black;"
                                 title="Send tee-off reservation request"
                             >Send request</button>
@@ -337,7 +338,7 @@
                 <div class="comment">If you have not receive an email from ezToff after 20 minutes, please check our <a href="http://ezToff.com/faq-<%= localeId %>">FAQ</a> or contact <a href="mailto:support@eztoff.com">support@eztoff.com</a>.</div>
                 <table cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                        <td style="text-align:left;"><a href="javascript:localModule.switchPane(4, 1);">&laquo; Schedule another tee-off</a></td>
+                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(4, 1);">&laquo; Schedule another tee-off</a></td>
                     </tr>
                 </table>
             </div>
@@ -441,36 +442,13 @@
         })
         twetailer.Common.getBrowserLocation(eventName, "widgetOverlay");
     }
-    localModule._friendRowNb = 1;
-    localModule.manageFriendRow = function(rowIdx) {
-        if (rowIdx == localModule._friendRowNb) {
-            var button = dijit.byId("friendButton" + rowIdx);
-            button.set("iconClass", "silkIcon silkIconDelete");
-            button.set("title", "Remove this email address");
-            localModule._friendRowNb ++;
-            var fIdx = localModule._friendRowNb;
-            var row = dojo.create("tr", { id: "friendRow" + fIdx }, dojo.byId("friendList"));
-            dojo.create("label", { forAttr: "email" + fIdx, innerHTML: "Email:" }, dojo.create("td", null, row));
-            dojo.create("td", null, row).appendChild(new dijit.form.ValidationTextBox({ id: "email" + fIdx, invalidMessage: "Invalid Email Address", name: "email" + fIdx, placeHolder: "email@example.com", required: false, style: "width:100%", trim: true }).domNode);
-            dojo.create("td", { style: "width:20px;padding-right:0px !important;" }, row).appendChild(new dijit.form.Button({ iconClass: "silkIcon silkIconAdd", id: "friendButton" + fIdx, onClick: function() { localModule.manageFriendRow(fIdx); }, showLabel: false, title: "Add another email address" }).domNode);
-            dijit.byId("email" + fIdx).set("regExp", dijit.byId('email1').get("regExp")); // Workaroud: otherwise, it seems the regExp value is missinterpreted!
-        }
-        else {
-            var fIdx = localModule._friendRowNb;
-            for (var i=rowIdx; i < fIdx; i++) {
-                dijit.byId("email" + i).set("value", dijit.byId("email" + (i + 1)).get("value"));
-            }
-            dijit.byId("email" + fIdx).destroy();
-            dijit.byId("friendButton" + fIdx).destroy();
-            dojo.destroy("friendRow" + fIdx);
-            localModule._friendRowNb --;
-            fIdx --;
-            var button = dijit.byId("friendButton" + fIdx);
-            button.set("iconClass", "silkIcon silkIconAdd");
-            button.set("title", "Add another email address");
-        }
-    }
     localModule.sendRequest = function() {
+        // Last form validation
+        var form = dijit.byId("form3");
+        if (!form.isValid()) {
+            return;
+        }
+        // Request preparation
         var parameters = {
             referralId: "<%= referralId %>",
             <%= Consumer.LANGUAGE %>: "<%= localeId %>",
@@ -484,13 +462,7 @@
             <%= Demand.HASH_TAGS %>: ["<%= RegisteredHashTag.golf.toString() %>"],
             <%= Demand.META_DATA %>:"{'pullCart':" + dijit.byId("pullCart").get("value") + ",'golfCart':" + dijit.byId("motorCart").get("value") + "}"
         };
-        var cc = [];
-        for (var i=1; i<=localModule._friendRowNb; i++) {
-            var email = dijit.byId("email" + i).get("value");
-            if (0 < email.length) {
-                cc.push(email);
-            }
-        }
+        var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             parameters.<%= Demand.CC %> = cc;
         }

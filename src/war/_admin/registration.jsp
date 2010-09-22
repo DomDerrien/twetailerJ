@@ -164,7 +164,7 @@
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
                         </p>
                     </fieldset>
                     <fieldset class="entityInformation">
@@ -191,7 +191,7 @@
                         </form>
                         <p>
                             <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.forward();localModule.createSaleAssociate();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.createSaleAssociate();">Next >></button>
                         </p>
                     </fieldset>
                     <fieldset class="entityInformation">
@@ -369,6 +369,7 @@
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     // No visual feedback
+                    wizard.forward();
                 }
                 else {
                     alert(response.exceptionMessage+"\nurl: "+ioArgs.url+"\n\n"+response.originalExceptionMessage);
