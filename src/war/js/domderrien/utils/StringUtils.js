@@ -2,18 +2,17 @@
 
     /**
      * @author dom.derrien
-     * @maintainer dom.derrien
      */
     var module = dojo.provide("domderrien.utils.StringUtils");
 
-    /** Helper returning <code>true</code> if the given character is an digit, <code>false</code> otherwise.
-     *  @return <code>true</code> if the character is a digit
+    /**
+     * Helper returning <code>true</code> if the given character is an digit, <code>false</code> otherwise.
+     *
+     *  @return {Boolean} <code>true</code> if the character is a digit.
      *  @type Boolean
-     *  @public
-     *  @static
      */
     module.isDigit = function(character) {
-        if (character == null) {
+        if (!character) {
             return false;
         }
         if (typeof character == 'number') {
@@ -29,14 +28,13 @@
         return false;
     };
 
-    /** Helper returning <code>true</code> if the given character is a valid hexadecimal digit, <code>false</code> otherwise.
-     *  @return <code>true</code> if the character is a hexadecimal digit
-     *  @type Boolean
-     *  @public
-     *  @static
+    /**
+     * Helper returning <code>true</code> if the given character is a valid hexadecimal digit, <code>false</code> otherwise.
+     *
+     *  @return {Boolean} <code>true</code> if the character is a hexadecimal digit.
      */
     module.isHexaDigit = function(character) {
-        if (character == null) {
+        if (!character) {
             return false;
         }
         if (typeof character == 'string' || character instanceof String) {
@@ -49,14 +47,13 @@
         return false;
     };
 
-    /** Helper returning <code>true</code> if the given character is a non-alphanumeric character, <code>false</code> otherwise.
-     *  @return <code>true</code> if the character is a non-alphanumeric character
-     *  @type Boolean
-     *  @public
-     *  @static
+    /**
+     * Helper returning <code>true</code> if the given character is a non-alphanumeric character, <code>false</code> otherwise.
+     *
+     *  @return {Boolean} <code>true</code> if the character is a non-alphanumeric character.
      */
     module.isNonAlpha = function(character) {
-        if (character == null) {
+        if (!character) {
             return true;
         }
         if (typeof character == 'string' || character instanceof String) {
@@ -73,11 +70,11 @@
         return true;
     };
 
-    /** Transcript the given number in its hexadecimal string representation
-     *  @param {Number} number data to be converted
-     *  @return Hexadecimal representation
-     *  @type String
-     *  @static
+    /**
+     * Transcript the given number in its hexadecimal string representation.
+     *
+     *  @param {Number} number data to be converted.
+     *  @return {String} Hexadecimal representation.
      */
     module.convertToHexa = function(number) {
         number = Number(number);
@@ -87,7 +84,7 @@
         var output = number == 0 ? "0" : "";
         while (1 <= number) {
             var digit = number % 16;
-            switch(digit) {
+            switch (digit) {
                 case 10: output = 'a' + output; break;
                 case 11: output = 'b' + output; break;
                 case 12: output = 'c' + output; break;
@@ -101,23 +98,22 @@
         return output;
     };
 
-    /** Optimized startsWith function
-     *  @param {String} source String to evaluate
-     *  @param {String} start Pattern to look for
+    /**
+     * Optimized startsWith function.
+     *
+     *  @param {String} source String to evaluate.
+     *  @param {String} start Pattern to look for.
      *  @param {Boolean} ignoreCase If <code>true</code>, the function ignores the given strings' case
      *                              otherwise the match verification is exact. This is an optional
-     *                              parameter with the default value <code>false</code>
-     *  @return <code>true</code> if the <code>start</code> string starts the <code>source</code> string,
-     *          <code>false</code> otherwise.
-     *  @type Boolean
-     *  @public
-     *  @static
+     *                              parameter with the default value <code>false</code>.
+     *  @return {Boolean} <code>true</code> if the <code>start</code> string starts the
+     *          <code>source</code> string, <code>false</code> otherwise.
      */
     module.startsWith = function(source, start, ignoreCase) {
-        if (source == null) {
+        if (!source) {
             return false;
         }
-        if (start == null) {
+        if (!start) {
             return true;
         }
         var startLength = start.length;

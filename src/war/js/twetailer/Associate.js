@@ -1,8 +1,8 @@
 (function() { // To limit the scope of the private variables
 
-    var module = dojo.provide("twetailer.Associate");
+    var module = dojo.provide('twetailer.Associate');
 
-    dojo.require("twetailer.Common");
+    dojo.require('twetailer.Common');
 
     /* Set of local variables */
     var _common = twetailer.Common,
@@ -12,7 +12,7 @@
     /**
      * Initializer
      *
-     * @param {String} locale Identifier of the chosen locale
+     * @param {String} locale Identifier of the chosen locale.
      */
     module.init = function(locale) {
         _getLabel = _common.init(locale);

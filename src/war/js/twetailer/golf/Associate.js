@@ -1,8 +1,8 @@
 (function() { // To limit the scope of the private variables
 
-    var module = dojo.provide("twetailer.golf.Associate");
+    var module = dojo.provide('twetailer.golf.Associate');
 
-    dojo.require("twetailer.golf.Common");
+    dojo.require('twetailer.golf.Common');
 
     /* Set of local variables */
     var _common = twetailer.golf.Common,
@@ -15,15 +15,15 @@
     /**
      * Initializer
      *
-     * @param {String} locale Identifier of the chosen locale
+     * @param {String} locale Identifier of the chosen locale.
      */
     module.init = function(locale) {
         _getLabel = _common.init(locale);
 
         // Attach the contextual menu to the DataGrid instance
         // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
-        _grid = dijit.byId("demandList");
-        dijit.byId("demandListCellMenu").bindDomNode(_grid.domNode);
+        _grid = dijit.byId('demandList');
+        dijit.byId('demandListCellMenu').bindDomNode(_grid.domNode);
         _grid.onCellContextMenu = function(e) {
             _gridCellNode = e.cellNode;
             _gridRowIndex = e.rowIndex;
@@ -31,7 +31,7 @@
         // _grid.setSortIndex(9, false); // 9 == position of the column 'modificationDate'
 
         // Fetch
-        var dfd = _common.loadRemoteDemands(null, _queryPointOfView, "golf"); // No modificationDate means "load all active Demands"
+        var dfd = _common.loadRemoteDemands(null, _queryPointOfView, 'golf'); // No modificationDate means "load all active Demands"
         dfd.addCallback(function(response) { _common.processDemandList(response.resources, _grid); });
     };
 
@@ -44,50 +44,50 @@
     /**
      * Override of the formatter to be able to place the Demand icon before demand key
      *
-     * @param {Number[]} demandKey identifier of the demand
-     * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane
-     * @return {String} Formatter with the Demand icon before the demand key
+     * @param {Number[]} demandKey identifier of the demand.
+     * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane.
+     * @return {String} Formatter with the Demand icon before the demand key.
      */
     module.displayDemandKey = function(demandKey, rowIndex) {
         // TODO: check the demand state in order to use the classname silkIconDemandConfirmed
         try {
             return dojo.string.substitute(_demandViewDecoration, [demandKey]);
         }
-        catch(ex) { alert(ex);}
+        catch (ex) { alert(ex);}
         return demandKey;
     };
 
     /**
      * Formatter to be able to place the "Create Proposal" link in front of the proposal key list
      *
-     * @param {Number[]} proposalKeys List of proposal keys
-     * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane
-     * @return {String} Formatter list of one link per proposal key, a link opening a dialog with the proposal detail
+     * @param {Number[]} proposalKeys List of proposal keys.
+     * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane.
+     * @return {String} Formatter list of one link per proposal key, a link opening a dialog with the proposal detail.
      */
     module.displayProposalKeys = function(proposalKeys, rowIndex) {
         // TODO: check the demand state in order to use the classname silkIconProposalConfirmed
         var item = _grid.getItem(rowIndex);
-        if (item === null) {
+        if (!item) {
             return;
         }
-        var cellContent = "";
+        var cellContent = '';
         var modifiableDemand = item.state == _common.STATES.PUBLISHED;
         if (modifiableDemand) {
             var createLabel = dojo.string.substitute(
                 _proposalCreateDecoration,
-                [rowIndex, _getLabel("console", "ga_cmenu_createProposal")]
+                [rowIndex, _getLabel('console', 'ga_cmenu_createProposal')]
             );
             cellContent = createLabel;
         }
-        if (proposalKeys == null || proposalKeys.length == 0) {
+        if (!proposalKeys || proposalKeys.length == 0) {
             return cellContent;
         }
         var updateLabel = dojo.string.substitute(
             modifiableDemand ? _proposalUpdateDecoration : _proposalViewDecoration,
-            ["${0}", "${1}", _getLabel("console", modifiableDemand ? "ga_cmenu_updateProposal" : "ga_cmenu_viewProposal")]
+            ['${0}', '${1}', _getLabel('console', modifiableDemand ? 'ga_cmenu_updateProposal' : 'ga_cmenu_viewProposal')]
         );
         if (modifiableDemand) {
-            cellContent += "<br/>";
+            cellContent += '<br/>';
         }
         return cellContent + _common.displayProposalKeys(proposalKeys, rowIndex, updateLabel);
     };
@@ -98,61 +98,61 @@
      * is used to identified a selected grid row and to propose a dialog for a new
      * proposal creation.
      *
-     * @param {Number} proposedRowIndex (Optional) index given when a link on the proposal key is activated
-     * @param {Number} proposalKey (Optional) index given when a link on the proposal key is activated
+     * @param {Number} proposedRowIndex (Optional) index given when a link on the proposal key is activated.
+     * @param {Number} proposalKey (Optional) index given when a link on the proposal key is activated.
      */
     module.displayProposalForm = function(proposedRowIndex, proposalKey) {
         // rowIndex bind to the handler
-        if (proposedRowIndex == null) {
-            if (_gridRowIndex === null) {
+        if (!proposedRowIndex) {
+            if (!_gridRowIndex) {
                 return;
             }
             proposedRowIndex = _gridRowIndex;
         }
 
         var item = _grid.getItem(proposedRowIndex);
-        if (item === null) {
+        if (!item) {
             return;
         }
 
-        var proposalForm = dijit.byId("proposalForm");
+        var proposalForm = dijit.byId('proposalForm');
         proposalForm.reset();
 
-        dijit.byId("demand.key").set("value", item.key[0]); // hidden field generating "proposal.demandKey"
+        dijit.byId('demand.key').set('value', item.key[0]); // hidden field generating "proposal.demandKey"
 
         var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
-        dijit.byId("proposal.date").set("value", dueDate);
-        dijit.byId("proposal.date").constraints.min = new Date();
-        dijit.byId("proposal.time").set("value", dueDate);
+        dijit.byId('proposal.date').set('value', dueDate);
+        dijit.byId('proposal.date').constraints.min = new Date();
+        dijit.byId('proposal.time').set('value', dueDate);
         if (dojo.isArray(item.criteria)) {
-            dijit.byId("demand.criteria").set("value", item.criteria.join(" "));
+            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
         }
-        dijit.byId("proposal.quantity").set("value", item.quantity[0]);
+        dijit.byId('proposal.quantity').set('value', item.quantity[0]);
 
-        if (proposalKey == null) {
-            proposalForm.set("title", _getLabel("console", "ga_proposalForm_formTitle_creation", [item.key[0]]));
-            dijit.byId("proposalFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_createProposal"));
+        if (!proposalKey) {
+            proposalForm.set('title', _getLabel('console', 'ga_proposalForm_formTitle_creation', [item.key[0]]));
+            dijit.byId('proposalFormSubmitButton').set('label', _getLabel('console', 'ga_cmenu_createProposal'));
 
-            if (item.metadata != null) {
+            if (item.metadata) {
                 var metadata = dojo.fromJson(item.metadata[0]);
-                if (metadata.pullCart != null) {
-                    dijit.byId("proposal.metadata.pullCart").set("value", metadata.pullCart);
+                if (metadata.pullCart) {
+                    dijit.byId('proposal.metadata.pullCart').set('value', metadata.pullCart);
                 }
-                if (metadata.golfCart != null) {
-                    dijit.byId("proposal.metadata.golfCart").set("value", metadata.golfCart);
+                if (metadata.golfCart) {
+                    dijit.byId('proposal.metadata.golfCart').set('value', metadata.golfCart);
                 }
             }
 
-            dojo.query(".updateButton").style("display", "");
-            dojo.query(".existingAttribute").style("display", "none");
-            dojo.query(".closeButton").style("display", "none");
+            dojo.query('.updateButton').style('display', '');
+            dojo.query('.existingAttribute').style('display', 'none');
+            dojo.query('.closeButton').style('display', 'none');
         }
         else {
-            proposalForm.set("title", _getLabel("console", "ga_proposalForm_formTitle_edition", [proposalKey, item.key[0]]));
-            dijit.byId("proposalFormSubmitButton").set("label", _getLabel("console", "ga_cmenu_updateProposal", [proposalKey]));
-            dijit.byId("proposalFormCancelButton").set("label", _getLabel("console", "ga_cmenu_cancelProposal", [proposalKey]));
-            dijit.byId("proposalFormCloseButton").set("label", _getLabel("console", "ga_cmenu_closeProposal", [proposalKey]));
-            dojo.query(".existingAttribute").style("display", "");
+            proposalForm.set('title', _getLabel('console', 'ga_proposalForm_formTitle_edition', [proposalKey, item.key[0]]));
+            dijit.byId('proposalFormSubmitButton').set('label', _getLabel('console', 'ga_cmenu_updateProposal', [proposalKey]));
+            dijit.byId('proposalFormCancelButton').set('label', _getLabel('console', 'ga_cmenu_cancelProposal', [proposalKey]));
+            dijit.byId('proposalFormCloseButton').set('label', _getLabel('console', 'ga_cmenu_closeProposal', [proposalKey]));
+            dojo.query('.existingAttribute').style('display', '');
 
             _loadProposal(proposalKey);
         }
@@ -165,7 +165,7 @@
      * The control is passed to the <code>_fetchProposal()</code> for the update of dialog box
      * with the Proposal attributes.
      *
-     * @param {String} proposalKey Identifier of the proposal to load
+     * @param {String} proposalKey Identifier of the proposal to load.
      */
     var _loadProposal = function(proposalKey) {
         if (_common.isProposalCached(proposalKey)) {
@@ -180,46 +180,46 @@
     /**
      * Use the given Proposal to fetch the corresponding dialog box
      *
-     * @param {Proposal} proposal Object to represent
+     * @param {Proposal} proposal Object to represent.
      */
     var _fetchProposal = function(proposal) {
-        dijit.byId("proposal.key").set("value", proposal.key);
-        dijit.byId("proposal.price").set("value", proposal.price);
-        dijit.byId("proposal.total").set("value", proposal.total);
-        dijit.byId("proposal.quantity").set("value", proposal.quantity);
-        if (proposal.metadata != null) {
+        dijit.byId('proposal.key').set('value', proposal.key);
+        dijit.byId('proposal.price').set('value', proposal.price);
+        dijit.byId('proposal.total').set('value', proposal.total);
+        dijit.byId('proposal.quantity').set('value', proposal.quantity);
+        if (proposal.metadata) {
             var metadata = dojo.fromJson(proposal.metadata);
-            if (metadata.pullCart != null) {
-                dijit.byId("proposal.metadata.pullCart").set("value", metadata.pullCart);
+            if (metadata.pullCart) {
+                dijit.byId('proposal.metadata.pullCart').set('value', metadata.pullCart);
             }
-            if (metadata.golfCart != null) {
-                dijit.byId("proposal.metadata.golfCart").set("value", metadata.golfCart);
+            if (metadata.golfCart) {
+                dijit.byId('proposal.metadata.golfCart').set('value', metadata.golfCart);
             }
         }
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
-        dijit.byId("proposal.date").set("value", dateObject);
-        dijit.byId("proposal.time").set("value", dateObject);
+        dijit.byId('proposal.date').set('value', dateObject);
+        dijit.byId('proposal.time').set('value', dateObject);
         if (dojo.isArray(proposal.criteria)) {
-            dijit.byId("proposal.criteria").set("value", proposal.criteria.join(" "));
+            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
         }
-        dijit.byId("proposal.modificationDate").set("value", _common.displayDateTime(proposal.modificationDate));
+        dijit.byId('proposal.modificationDate').set('value', _common.displayDateTime(proposal.modificationDate));
 
         var closeableState = proposal.state == _common.STATES.CONFIRMED;
         if (closeableState) {
-            dojo.query(".updateButton").style("display", "none");
-            dojo.query(".closeButton").style("display", "");
+            dojo.query('.updateButton').style('display', 'none');
+            dojo.query('.closeButton').style('display', '');
         }
         else {
-            dojo.query(".updateButton").style("display", "");
-            dojo.query(".closeButton").style("display", "none");
+            dojo.query('.updateButton').style('display', '');
+            dojo.query('.closeButton').style('display', 'none');
         }
-        dijit.byId("proposalFormSubmitButton").set("disabled", proposal.state == _common.STATES.DECLINED);
+        dijit.byId('proposalFormSubmitButton').set('disabled', proposal.state == _common.STATES.DECLINED);
     };
 
     /**
      * Call the back-end to create or update a Proposal with the given attribute
      *
-     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box
+     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box.
      */
     module.updateProposal = function(data) {
         if (isNaN(data.key)) {
@@ -232,8 +232,8 @@
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.quantity = parseInt(data.quantity);
         data.dueDate = _common.toISOString(data.date, data.time);
-        data.hashTags = ["golf"]; // TODO: offer a checkbox to allow the #demo mode
-        data.metadata = dojo.toJson({pullCart:parseInt(data.pullCart),golfCart:parseInt(data.golfCart)});
+        data.hashTags = ['golf']; // TODO: offer a checkbox to allow the #demo mode
+        data.metadata = dojo.toJson({pullCart: parseInt(data.pullCart), golfCart: parseInt(data.golfCart)});
 
         var dfd = _common.updateRemoteProposal(data, data.key);
         dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });
@@ -242,20 +242,20 @@
     /**
      * Call the back-end to create or update a Proposal with the given attribute
      *
-     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box
+     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box.
      */
     module.cancelProposal = function() {
-        dijit.byId("proposalForm").hide();
+        dijit.byId('proposalForm').hide();
 
-        var proposalKey = dijit.byId("proposal.key").get("value");
+        var proposalKey = dijit.byId('proposal.key').get('value');
         var proposal = _common.getCachedProposal(proposalKey);
 
         var messageId = proposal.state == _common.STATES.CONFIRMED ?
-              "ga_alert_cancelConfirmedProposal" :
-              "ga_alert_cancelPublishedProposal";
+              'ga_alert_cancelConfirmedProposal' :
+              'ga_alert_cancelPublishedProposal';
 
         var demandKey = proposal.demandKey;
-        if (!confirm(_getLabel("console", messageId, [proposalKey, demandKey]))) {
+        if (!confirm(_getLabel('console', messageId, [proposalKey, demandKey]))) {
             return;
         }
 
@@ -269,9 +269,9 @@
      * Call the back-end to close the proposal displayed in the property pane
      */
     module.closeProposal = function() {
-        dijit.byId("proposalForm").hide();
+        dijit.byId('proposalForm').hide();
 
-        var proposalKey = dijit.byId("proposal.key").get("value");
+        var proposalKey = dijit.byId('proposal.key').get('value');
         var data = { state: _common.STATES.CLOSED };
 
         var dfd = _common.updateRemoteProposal(data, proposalKey);
@@ -283,8 +283,8 @@
      */
     module.loadNewDemands = function() {
         var lastDemand = _common.getLastDemand();
-        var lastModificationDate = lastDemand == null ? null : lastDemand.modificationDate;
-        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView, "golf");
-        dfd.addCallback(function(response) { dijit.byId("refreshButton").resetTimeout(); _common.processDemandList(response.resources, _grid); });
+        var lastModificationDate = lastDemand ? lastDemand.modificationDate : null;
+        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView, 'golf');
+        dfd.addCallback(function(response) { dijit.byId('refreshButton').resetTimeout(); _common.processDemandList(response.resources, _grid); });
     };
 })(); // End of the function limiting the scope of the private variables
