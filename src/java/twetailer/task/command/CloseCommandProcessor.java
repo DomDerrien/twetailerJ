@@ -47,6 +47,7 @@ public class CloseCommandProcessor {
             Long entityKey = command.getLong(Demand.REFERENCE);
             try {
                 DemandSteps.updateDemand(pm, rawCommand, entityKey, getFreshCloseParameters(), consumer);
+                return;
             }
             catch(InvalidIdentifierException ex) {
                 message = LabelExtractor.get("cp_command_close_invalid_demand_id", locale);
@@ -57,14 +58,12 @@ public class CloseCommandProcessor {
                 stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
                 message = LabelExtractor.get("cp_command_close_invalid_demand_state", new Object[] { demandRef, stateLabel },  locale);
             }
-            if (message != null) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        rawCommand.getSubject(),
-                        consumer,
-                        new String[] { message }
-                );
-            }
+            communicateToConsumer(
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
+                    consumer,
+                    new String[] { message }
+            );
             return;
         }
 
@@ -75,6 +74,7 @@ public class CloseCommandProcessor {
             try {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.close, Demand.class.getName());
                 ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshCloseParameters(), saleAssociate, consumer);
+                return;
             }
             catch(InvalidIdentifierException ex) {
                 message = LabelExtractor.get("cp_command_close_invalid_proposal_id", locale);
@@ -88,14 +88,12 @@ public class CloseCommandProcessor {
             catch(ReservedOperationException ex) {
                 message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
             }
-            if (message != null) {
-                communicateToConsumer(
-                        rawCommand.getSource(),
-                        rawCommand.getSubject(),
-                        consumer,
-                        new String[] { message }
-                );
-            }
+            communicateToConsumer(
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
+                    consumer,
+                    new String[] { message }
+            );
             return;
         }
 

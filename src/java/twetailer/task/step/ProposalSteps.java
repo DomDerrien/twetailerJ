@@ -415,37 +415,37 @@ public class ProposalSteps extends BaseSteps {
                 Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), null);
                 demand.removeProposalKey(proposalKey);
 
+                // Confirm the proposal canceling to the owner
+                if (rawCommand != null) {
+                    Locale locale = saConsumerRecord.getLocale();
+
+                    MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
+                    msgGen.
+                        put("proposal>owner>name", saConsumerRecord.getName()).
+                        fetch(demand).
+                        fetch(proposal).
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+                        subject = rawCommand.getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                    communicateToConsumer(
+                            msgGen.getCommunicationChannel(),
+                            subject,
+                            saConsumerRecord,
+                            new String[] { msgGen.getMessage(MessageId.PROPOSAL_CANCELLATION_OK_TO_ASSOCIATE) }
+                    );
+                }
+
                 if (State.confirmed.equals(currentState)) {
                     Consumer demandOwner = getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
                     Location location = getLocationOperations().getLocation(pm, demand.getLocationKey());
-
-                    // Confirm the proposal canceling to the owner
-                    if (rawCommand != null) {
-                        Locale locale = saConsumerRecord.getLocale();
-
-                        MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
-                        msgGen.
-                            put("proposal>owner>name", saConsumerRecord.getName()).
-                            fetch(demand).
-                            fetch(proposal).
-                            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
-
-                        String subject = null;
-                        if (Source.mail.equals(msgGen.getCommunicationChannel())) {
-                            subject = rawCommand.getSubject();
-                        }
-                        if (subject == null) {
-                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
-                        }
-                        subject = MailConnector.prepareSubjectAsResponse(subject, locale);
-
-                        communicateToConsumer(
-                                msgGen.getCommunicationChannel(),
-                                subject,
-                                saConsumerRecord,
-                                new String[] { msgGen.getMessage(MessageId.PROPOSAL_CANCELLATION_OK_TO_ASSOCIATE) }
-                        );
-                    }
 
                     // FIXME: Place the associated demand in the published state again if not expired
                     demand.setState(State.published);

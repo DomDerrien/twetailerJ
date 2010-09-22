@@ -25,7 +25,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Canadian Dollars</seg>
+                <seg>Dollars canadiens</seg>
             </tuv>
         </tu>
         <tu tuid="common_currencySymbol_USD" dataType="text">
@@ -39,7 +39,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>American (USA) Dollars</seg>
+                <seg>Dollars américains</seg>
             </tuv>
         </tu>
         <tu tuid="common_message_subject_default" dataType="text">
@@ -53,14 +53,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Re: </seg>
+                <seg>Re: {0}</seg>
             </tuv>
         </tu>
         <tu tuid="common_message_subject_forward_prefix" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fw: </seg>
+                <seg>Tr: {0}</seg>
             </tuv>
         </tu>
         <tu tuid="short_core_dateFormat" dataType="text">
@@ -95,14 +95,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>EEE, MMMM d yyyy at h:mm:ss a</seg>
+                <seg>EEE, MMMM d yyyy 'à' HH:mm:ss</seg>
             </tuv>
         </tu>
         <tu tuid="long_golf_dateTimeFormat" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>EEE, MMMM d yyyy at h:mm a</seg>
+                <seg>EEE, MMMM d yyyy 'à' HH:mm</seg>
             </tuv>
         </tu>
         <tu tuid="short_core_emptyListIndicator" dataType="text">
@@ -124,8 +124,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Additional information: AnotherSocialEconomy.com.|
-                    Report issues at: support@anothersocialeconomy.com..
+                    |Informations complémentaires: AnotherSocialEconomy.com. Rapportez les problèmes à : support@anothersocialeconomy.com.
                 </seg>
             </tuv>
         </tu>
@@ -134,8 +133,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Source of additional information: ezToff.com, ezToff.com/terms, and ezToff.com/privacy-policy.|
-                    Report issues at: support@ezToff.com. ezToff is a member of AnotherSocialEconomy.com.
+                    |Informations complémentaires: ezToff.com. Rapportez les problèmes à : support@ezToff.com. ezToff.com is est un membre de AnotherSocialEconomy.com.
                 </seg>
             </tuv>
         </tu>
@@ -146,7 +144,7 @@
                 <seg>
                     <p>--<br />
                     Please see our <a href="http://anothersocialeconomy.com/terms/">terms</a>, <a href="http://anothersocialeconomy.com/privacy-policy/">privacy policy</a>
-                    and don't forget, you can always email <a href="mailto:Support@anothersocialeconomy.com?subject=Inquiry from {0}">Support</a>.
+                    and don't forget, you can always email <a href="mailto:Support@anothersocialeconomy.com?subject=Inquiry on AnotherSocialEconomy.com">Support</a>.
                     In the meantime, <strong>thanks for buying locally</strong> with <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>,
                     a member of <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
@@ -160,7 +158,7 @@
                 <seg>
                     <p>--<br />
                     Please see our <a href="http://eztoff.com/terms/">terms</a>, <a href="http://eztoff.com/privacy-policy/">privacy policy</a>
-                    and don't forget, you can always email <a href="mailto:Support@ezToff.com?subject=Inquiry from {0}">Support</a>.
+                    and don't forget, you can always email <a href="mailto:Support@ezToff.com?subject=Inquiry ezToff.com">Support</a>.
                     In the meantime, <strong>thanks for booking locally</strong> with <a href="http://ezToff.com/">ezToff</a>,
                     a member of <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
@@ -231,7 +229,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    propose demand:{demand>key} qty:[] tags:[] unit-price:[] total-cost:[] due-date:[] {command>footer}
+                    propose demand:{demand>key} qty:{demand>quantity} unit-price:? total-cost:? due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -374,8 +372,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand creation ...|
-                    {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metada} players:{demand>quantity} tee-time:{demand>dueDate}.
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the following tee-off request creation ...|
+                    {demand>key} tags:{demand>criteria} {demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart} players:{demand>quantity} tee-time:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -396,9 +394,9 @@
                         <li>Tags: <strong>{demand>criteria}</strong></li>
                         <li>Metadata: {demand>metadata}</li>
                     </ul>
-                    <p>The new request - reference# {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible, to the demand owner and to you on their behalf.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {demand>key}">There's been some kind of mistake</a> :-(
+                    <p>The new request - reference# {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
@@ -410,19 +408,24 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{0}</strong> has chosen to keep you notified regarding their desire to tee-off within <strong>{17}</strong> of <strong>{16}</strong>, on <strong>(3)</strong>. Also requested:</p>
-                    <ul>
-                        <li>Players: <strong>{6}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{7}</strong></li>
-                    </ul>
-                    <p>We're anonymously broadcasting their request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{9}</strong> on their behalf.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    <p>
+                        <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their desire to tee-off
+                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        on <strong>{demand>dueDate}</strong>.
+                        Also requested:
                     </p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    <ul>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
+                    </ul>
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:support@ezToff.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -441,8 +444,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. Can you supply {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metada} players:{demand>quantity} tee-time:{demand>dueDate}?|
-                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:? metadata:{pullCart:{demand>metadata>pullCart},golfCart:{demand>metada>golfCart}} round-price:? total-cost:? tee-time:{demand>dueDate}'.
+                    FYI. Can you supply {demand>key} tags:{demand>criteria} {demand>hashTags} metadata:{demand>metadata} players:{demand>quantity} tee-time:{demand>dueDate}?|
+                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:? metadata:{demand>metadata} round-price:? total-cost:? tee-time:{demand>dueDate}'.
                 </seg>
             </tuv>
         </tu>
@@ -464,9 +467,9 @@
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp">Associate Console</a>
                         and click "Create Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a Proposal by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>threadSubject}.&amp;subject={control>createProposal}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}.&amp;subject={command>threadSubject}">Create Proposal</a> and replacing the ? place holders.
                     </p>
-                    <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
+                    <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
                 </seg>
@@ -477,23 +480,23 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p>A new tee-off request for <strong>{2}</strong> has been posted in your area. Can you accommodate:</p>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>A new tee-off request for <strong>{demand>dueDate}</strong> has been posted in your area. Can you accommodate:</p>
                     <ul>
-                        <li>Players: <strong>{4}</strong></li>
-                        <li>Pull carts: <strong>{11}</strong></li>
-                        <li>Golf carts: <strong>{12}</strong></li>
-                        <li>Options: <strong>{5}</strong></li>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the request, then launch the <a href="http://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp">ezToff Reservation Desk</a>
-                        and click "Create Tee-time Proposal" for <strong>Reference {1}</strong>.
+                        and click "Create Tee-time Proposal" for <strong>Reference {demand>key}</strong>.
                         Alternatively, you can also send an email to create a tee-off Proposal by clicking
-                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={8}.&amp;subject={7}">Create Proposal</a> and replacing the ? place holders.
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>createProposal}.&amp;subject={command>threadSubject}">Create Proposal</a> and replacing the ? place holders.
                     </p>
-                    <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Request Reference {1}">There's been some kind of mistake</a> :-(</p>
-                    {10}
-                    <p>Request#: {1}.</p>
+                    <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -609,10 +612,9 @@
                         <li>Options: <strong>{demand>criteria}</strong></li>
                         <li>Metadata: <strong>{demand>metadata}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant stores
-                    and will communicate their proposals, as soon as possible.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant stores and will communicate their proposals, as soon as possible.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}.</p>
@@ -624,19 +626,21 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{0}</strong> has chosen to keep you notified regarding their <strong>updated</strong> desire to tee-off within <strong>{17}</strong> of <strong>{16}</strong>, on <strong>(3)</strong>. Also requested:</p>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> desire to tee-off
+                    within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                    on <strong>{demand>dueDate}</strong>. Also requested:</p>
                     <ul>
-                        <li>Players: <strong>{6}</strong></li>
-                        <li>Pull carts: <strong>{14}</strong></li>
-                        <li>Golf carts: <strong>{15}</strong></li>
-                        <li>Options: <strong>{7}</strong></li>
+                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their request - reference# {1}, to <strong>{10}</strong> relevant golf courses and will communicate their proposals, as soon as possible, to them and <strong>{9}</strong> on their behalf.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    <p>We're anonymously broadcasting their request - reference# {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
-                    {13}
-                    <p>Request#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -792,7 +796,7 @@
                 <seg>
                     :-) Hi {demand>owner>name}, your tee-off request:{demand>key} received the proposal:{proposal>key}...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -807,17 +811,17 @@
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Unit price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>confirmProposal}&amp;subject={control>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>declineProposal}&amp;subject={control>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -829,26 +833,27 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{0}</strong>,</p>
-                    <p><strong><a href="{18}">{16}</a></strong> has proposed a <strong>{8}</strong> tee-off off for:</p>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has proposed a tee-off on <strong>{proposal>dueDate}</strong>  for:</p>
                     <ul>
-                        <li>Players: <strong>{9}</strong></li>
-                        <li>Pull carts: <strong>{27}</strong></li>
-                        <li>Golf carts: <strong>{28}</strong></li>
-                        <li>Options: <strong>{10}</strong></li>
-                        <li>Round price: <strong>{12}{13}</strong> per player</li>
-                        <li>Total cost: <strong>{12}{14}</strong></li>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={23}&amp;subject={22}">confirm this proposal# {7}</a></strong>, <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={24}&amp;subject={22}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br />
-                     Address: {17}, {20} {21}<br />
-                     Telephone: {19}</p>
+                    Address: {store>address}<br />
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={12}&amp;subject={11}">Cancel Request</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
-                    {26}
-                    <p>Request#: {1}, Proposal#: {7}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -868,9 +873,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, your tee-off request:{demand>key} received the proposal:{proposal>key}...|
+                    FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off request:{demand>key} which received a new proposal:{proposal>key} ...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand.metadata.golfCart}
+                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -886,15 +891,14 @@
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Unit price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>More store information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    Telephone: {store>phoneNb}</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -914,15 +918,14 @@
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currency}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currency}{proposal>total}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>More course information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
-                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">Cancel Request</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {1}">There's been some kind of mistake</a> :-(
+                    Telephone: {store>phoneNb}</p>
+                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -965,13 +968,13 @@
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
+                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -998,7 +1001,7 @@
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Request</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1047,7 +1050,7 @@
                     </ul>
                     <p>More store information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -1074,7 +1077,7 @@
                     </ul>
                     <p>More course information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -1112,13 +1115,13 @@
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved the <strong>Proposal# {proposal>key}</strong> due <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp;amp; enjoy your purchase!</p>
                     <p>Don't forget to send an email to
-                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>closeDemand}&amp;subject={control>threadSubject}">close</a></strong> your request after your pickup, so we can better your Rating.</p>
+                    <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your request after your pickup, so we can better your Rating.</p>
                     <p>More store information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={control>cancelDemand}&amp;subject={control>threadSubject}">cancel</a>, or, if you've received this message in error, click
-                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:Support@AnotherSocialEcomony.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -1130,20 +1133,20 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {0},</p>
-                    <p><strong><a href="{13}">{11}</a></strong> has reserved your <strong>{3}</strong> tee-off under <strong>ezToff Proposal# {1}</strong>.</p>
+                    <p>Hi {demand>owner>name},</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved your tee-off under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp;amp; have a great game!</p>
                     <p>Don't forget to send an email to
-                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> your request after your game, so we can better your Rating.</p>
+                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your request after your game, so we can better your Rating.</p>
                     <p>More course information: <br />
-                     Address: {12}, {15} {16}<br />
-                     Telephone: {14}</p>
-                   <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={18}&amp;subject={17}">cancel</a>, or, if you've received this message in error, click
-                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding reference {1}">There's been some kind of mistake</a> :-(
+                    Address: {store>address}<br />
+                    Telephone: {store>phoneNb}</p>
+                    <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
-                    {20}
-                    <p>Request#: {2}, Proposal#: {1}.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1154,7 +1157,7 @@
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the confirmation of the proposal:{proposal>key} ...|
                     tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata} quantity:{proposal>quantity} dueDate:{proposal>dueDate}|
-                    store:{store>key} {store>name} {store>phoneNumber} {store>address}
+                    store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
             </tuv>
         </tu>
@@ -1165,7 +1168,7 @@
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the confirmation of the tee-off proposal:{proposal>key} ...|
                     tee-time:{proposal>dueDate} players:{proposal>quantity} pullCart:{proposal>metadata>pullCart} golfCart:{proposal>metadata>golfCart} info:{proposal>criteria}|
-                    golf course:{store>key} {store>name} {store>phoneNumber} {store>address}
+                    golf course:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
             </tuv>
         </tu>
@@ -1178,10 +1181,10 @@
                     at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
                     <p>More course information: <br />
                     Address: {store>address}<br />
-                    Telephone: {store>phoneNumber}</p>
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
+                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                 </seg>
@@ -1192,17 +1195,17 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{0}</strong> has chosen to keep you notified regarding their <strong>confirmed {3} tee-off</strong> at <strong><a href="{13}">{11}</a></strong>.</p>
-                    <p>The reservation is under <strong>ezToff Proposal# {1}</strong>.</p>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>confirmed</strong> tee-off under <strong>ezToff Proposal# {proposal>key}</strong>
+                    on <strong>{proposal>dueDate}</strong> at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
                     <p>Have a great game!</p>
                     <p>More course information: <br />
-                    Address: {12}, {15} {16}<br />
-                    Telephone: {14}</p>
+                    Address: {store>address}<br />
+                    Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Reference {2}">There's been some kind of mistake</a> :-(
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">Please remove</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
-                    {20}
+                    {message>footer}
                 </seg>
             </tuv>
         </tu>
@@ -1240,11 +1243,11 @@
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={control>threadSubject}">close</a></strong>
+                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong>
                     this Proposal {proposal>key} once the purchase is complete in order to better your Rating.</p>
                     <p>Thanks for managing your consumer requests with AnotherSocialEconomy.com.</p>
                     <p>If for any reason, you can longer serve this request, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={control>cancelProposal}&amp;subject={control>threadSubject}">Cancel proposal</a>, or,
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@AnotherSocialEconomy.com?body=I should not have been emailed. Please remove my mail address.&amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
@@ -1257,26 +1260,25 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {0},</p>
-                    <p>Please reserve the <strong>{3}</strong> tee-off under <strong>ezToff Proposal# {1}</strong> for:</p>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>Please reserve tee-off under <strong>ezToff Proposal# {proposal>key}</strong> scheduled on <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
-                        <li>Players: <strong>{4}</strong></li>
-                        <li>Pull carts: <strong>{21}</strong></li>
-                        <li>Golf carts: <strong>{22}</strong></li>
-                        <li>Options: <strong>{5}</strong></li>
-                        <li>Round price: <strong>{7}{8}</strong> per player</li>
-                        <li>Total cost: <strong>{7}{9}</strong></li>
+                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">close</a></strong> this Proposal {1} once the Golfer has teed-off in order to better your Rating.</p>
-
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> this Proposal {proposal>key}
+                    once the Golfer has teed-off in order to better your Rating.</p>
                     <p>Thanks for managing your tee-off requests with ezToff.</p>
                     <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={19}&amp;subject={17}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding Proposal {1}">There's been some kind of mistake</a> :-(
+                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
+                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my mail address.&amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
-                    {20}
-                    <p>Reference#: {2}, Proposal#: {1}.</p>
+                    {message>footer}
+                    <p>request#: {proposal>demandKey}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1285,7 +1287,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, Thanks for closing {demand>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
+                    :-) Hi {demand>owner>name}, Thanks for closing demand:{demand>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
                 </seg>
             </tuv>
         </tu>
@@ -1295,7 +1297,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>Hi {demand>owner>name},</p>
-                    <p>The reservation under <strong>Proposal# {proposal>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
+                    <p>The <strong>Request# {demand>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
                     <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your fellow golfers, or, simply CC them next time.</p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -1308,7 +1310,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>Hi {demand>owner>name},</p>
-                    <p>The reservation under <strong>ezToff Proposal# {proposal>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
+                    <p>The <strong>ezToff Request# {demand>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
                     <p>If you enjoyed using ezToff, please recommend us to your fellow golfers, or, simply CC them next time.</p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -1343,11 +1345,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {0},</p>
-                    <p>The Request# {1} for the <strong>{11}</strong> reservation under <strong>ezToff Proposal# {9}</strong> has been <strong>closed</strong>.
-                    Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={21}&amp;subject={20}">close</a></strong> your matching proposal {9} in order to better your Rating.</p>
-                    {22}
-                    <p>Reference#: {1}, Proposal#: {9}.</p>
+                    <p>Hi {proposal>owner>name},</p>
+                    <p>The Request# {demand>key} for the reservation under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  has been <strong>closed</strong>.
+                    Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> your matching proposal {proposal>key} in order to better your Rating.</p>
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1356,7 +1358,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, Thanks for closing {proposal>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
+                    :-) Hi {proposal>owner>name}, Thanks for closing proposal:{proposal>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
                 </seg>
             </tuv>
         </tu>
@@ -1379,7 +1381,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>Hi {proposal>owner>name},</p>
-                    <p>The proposal under the <strong>ezToff Reference# {proposal>key}</strong> has been closed.</p>
+                    <p>The reservation under the <strong>ezToff Proposal# {proposal>key}</strong> has been closed.</p>
                     <p>Your score is going to be updated accordingly.</p>
                     {message>footer}
                     <p>Reference#: {demand>key}, Proposal#: {proposal>key}.</p>
@@ -1416,12 +1418,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {0},</p>
+                    <p>Hi {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{26}">{25}</a></strong> has <strong>closed their Proposal# {9}</strong>.
-                        Please <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={21}&amp;subject={20}">close your corresponding Request {1}</a> to better your Rating.
+                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>closed their ezToff Proposal# {proposal>key}</strong>.
+                        Please <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close your corresponding tee-off Request {demand>key}</a> to better your Rating.
                     </p>
-                    {22}
+                    {message>footer}
+                    <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1520,8 +1523,8 @@
                         As the result, your Request# {demand>key} has been forwarded to stores in your area.
                     </p>
                     <p>If for any reason, you're no longer interested in this request, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
-                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
+                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
+                    <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address.&amp;subject=Theres's been some kind of mistake regarding tee-off request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
                     <p>Request#: {demand>key}, Proposal#: {proposal>key}.</p>

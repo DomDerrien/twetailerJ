@@ -279,6 +279,10 @@ public class DemandSteps extends BaseSteps {
             catch (ParseException e) { } // Date not set, too bad.
         }
 
+        if (parameters.containsKey(Command.HASH_TAGS)) {
+            queryFilters.put(Command.HASH_TAGS, parameters.getString(Command.HASH_TAGS));
+        }
+
         return queryFilters;
     }
 
@@ -439,39 +443,39 @@ public class DemandSteps extends BaseSteps {
             else if (!State.closed.equals(currentState) && State.cancelled.toString().equals(proposedState)) {
                 demand.setCancelerKey(owner.getKey());
 
+                // Confirm the demand canceling to the owner
+                if (rawCommand != null) {
+                    Locale locale = owner.getLocale();
+
+                    MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
+                    msgGen.
+                        put("demand>owner>name", owner.getName()).
+                        fetch(demand).
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+                        subject = rawCommand.getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                    communicateToConsumer(
+                            msgGen.getCommunicationChannel(),
+                            subject,
+                            owner,
+                            new String[] { msgGen.getMessage(MessageId.DEMAND_CANCELLATION_OK_TO_CONSUMER) }
+                    );
+                }
+
                 if (State.confirmed.equals(currentState)) {
                     // Only one SaleAssociate is still associated with the Demand
                     Long saleAssociateKey = demand.getSaleAssociateKeys().get(0);
                     SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
                     Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                     Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), saleAssociateKey, null);
-
-                    // Confirm the demand canceling to the owner
-                    if (rawCommand != null) {
-                        Locale locale = owner.getLocale();
-
-                        MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
-                        msgGen.
-                            put("demand>owner>name", owner.getName()).
-                            fetch(demand).
-                            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
-
-                        String subject = null;
-                        if (Source.mail.equals(msgGen.getCommunicationChannel())) {
-                            subject = rawCommand.getSubject();
-                        }
-                        if (subject == null) {
-                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
-                        }
-                        subject = MailConnector.prepareSubjectAsResponse(subject, locale);
-
-                        communicateToConsumer(
-                                msgGen.getCommunicationChannel(),
-                                subject,
-                                owner,
-                                new String[] { msgGen.getMessage(MessageId.DEMAND_CANCELLATION_OK_TO_CONSUMER) }
-                        );
-                    }
 
                     // Cancel the associated Proposal
                     proposal.setState(State.cancelled);
