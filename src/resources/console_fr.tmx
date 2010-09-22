@@ -56,7 +56,7 @@
                 <seg>Fermer</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_closeDialog_button" dataType="text">
+        <tu tuid="closeDialog_button" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -780,364 +780,344 @@
                 <seg>Expects the identifier of an existing locale</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_localized_page_name" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>AnotherSocialEconomy.com &amp;amp; Golf - Bureau de réservation</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_dataGrid_loading" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Patientez s'il vous plaît...</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_dataGrid_loadingError" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Veuillez nous excuser, une erreur s'est produite durant le chargement des données...</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_demandInfo" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Informations sur la Demande de départ</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_proposalInfo" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Informations sur la Proposition</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_storeInfo" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Informations sur le Club de golf</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_stateSelector_anyState" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>N'importe quel état</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_demandKey" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Identifiant de Demande</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_locale" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Localisation</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_criteria" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Description</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_metadata_pullCart" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Pull Cart #</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_metadata_golfCart" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Golf Cart #</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_ccList" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Participants copiés</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_quantity" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Nombre de joueurs</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_dueDate" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Date du départ</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_state" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>État</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_proposalKeys" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Identifiants de Proposition</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_creationDate" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Date de création</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_modificationDate" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Date de dernière modification</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_theader_expirationDate" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Date d'expiration</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_cmenu_createDemand" dataType="text">
+        <tu tuid="error_invalid_metadata" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Créer une nouvelle Demande</seg>
+                <seg>Expects metadata to be formatted as a JSON baf</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_updateDemand" dataType="text">
+        <tu tuid="core_dataGrid_loading" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Please, wait...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_dataGrid_loadingError" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Sorry, an error occured during the data loading...</seg>
+            </tuv>
+        </tu>
+        <tu tuid="coreConsu_localized_page_name" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>AnotherSocialEconomy.com - Reservation Desk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="coreAssoc_localized_page_name" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>AnotherSocialEconomy.com - Reservation Desk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_demandInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Demand Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Product or Service Proposal Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Store Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_stateSelector_anyState" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Any state</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_demandKey" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Demand Id</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_locale" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Locale</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_criteria" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Details</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_ccList" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>CC-ed friends</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_quantity" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Quantity</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_dueDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Due Date</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>State</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_proposalKeys" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Proposal Ids</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_creationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Creation Date</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_modificationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Modification Date</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_expirationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Expiration Date</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_cmenu_createDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mettre à jour la Demande</seg>
+                <seg>Prepare new Demand</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_createProposal" dataType="text">
+        <tu tuid="core_cmenu_updateDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Créer une Proposition</seg>
+                <seg>Update Demand {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_updateProposal" dataType="text">
+        <tu tuid="core_cmenu_cancelDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mettre à jour la Proposition</seg>
+                <seg>Cancel Demand {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_viewProposal" dataType="text">
+        <tu tuid="core_cmenu_closeDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Voir la Proposition {0}</seg>
+                <seg>Close Demand {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_declineDemand" dataType="text">
+        <tu tuid="core_cmenu_declineDemand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Décliner la Demande</seg>
+                <seg>Decline Round Demand {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_declineProposal" dataType="text">
+        <tu tuid="core_cmenu_viewProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Décliner la Proposition {0}</seg>
+                <seg>View Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_confirmProposal" dataType="text">
+        <tu tuid="core_cmenu_createProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Confirmer la Proposition {0}</seg>
+                <seg>Create Tee-time Proposal</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_cancelDemand" dataType="text">
+        <tu tuid="core_cmenu_updateProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Annuler la Demande {0}</seg>
+                <seg>Update Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_cancelProposal" dataType="text">
+        <tu tuid="core_cmenu_declineProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Annuler la Propoosition {0}</seg>
+                <seg>Decline Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_closeDemand" dataType="text">
+        <tu tuid="core_cmenu_confirmProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fermer la Demande {0}</seg>
+                <seg>Confirm Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_closeProposal" dataType="text">
+        <tu tuid="core_cmenu_cancelProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fermer la Proposition {0}</seg>
+                <seg>Cancel Tee-time Proposal {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_cmenu_detectLocale" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Détecter votre localisation</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_demandForm_formTitle_creation" dataType="text">
+        <tu tuid="core_cmenu_closeProposal" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Préparer une nouvelle demande de départ</seg>
+                <seg>Close Round Proposal {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_formTitle_edition" dataType="text">
+        <tu tuid="core_cmenu_detectLocale" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Guess your postal code from the geo-coordinates offered by your browser</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_demandForm_formTitle_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mettre à jour la demande de départ</seg>
+                <seg>Prepare a new Demand</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandKey" dataType="text">
+        <tu tuid="core_demandForm_formTitle_edition" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Update your Demand</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_demandForm_demandKey" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Identifiant de la demande :</seg>
+                <seg>Demand Id:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandState" dataType="text">
+        <tu tuid="core_demandForm_demandState" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>État :</seg>
+                <seg>State:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandQuantity" dataType="text">
+        <tu tuid="core_demandForm_demandQuantity" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Nombre de golfers :</seg>
+                <seg>Quantity:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandPullCart" dataType="text">
+        <tu tuid="core_demandForm_demandDueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Number of Pull Carts:</seg>
+                <seg>Due Date:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandGolfCart" dataType="text">
+        <tu tuid="core_demandForm_demandRegion" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Number of Golf Carts:</seg>
+                <seg>Region:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandTime" dataType="text">
+        <tu tuid="core_demandForm_demandPostalCode" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Heure du départ :</seg>
+                <seg>Postal code:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandRegion" dataType="text">
+        <tu tuid="core_demandForm_demandCountryCode" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Région :</seg>
+                <seg>Country:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandPostalCode" dataType="text">
+        <tu tuid="core_demandForm_demandRange" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Code postal</seg>
+                <seg>Distance around:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandCountryCode" dataType="text">
+        <tu tuid="core_demandForm_demandModificationDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Pays :</seg>
+                <seg>Last modification date:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandRange" dataType="text">
+        <tu tuid="core_demandForm_demandCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Distance autour du point de chute :</seg>
+                <seg>Details:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandModificationDate" dataType="text">
+        <tu tuid="core_demandForm_demandCC" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Date de dernière modification :</seg>
+                <seg>CC-ed Friends:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_demandCriteria" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Détails de la demande :</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_demandForm_demandCC" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Participants copiés :</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_demandForm_demandCC_hint" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Une seule coordonnée par ligne; peut-être une adresse de courriel ou un identifiant Twitter (commençant par '@')</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_demandForm_ccInvalidMessage" dataType="text">
+        <tu tuid="core_demandForm_ccInvalidMessage" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
@@ -1145,7 +1125,7 @@
                 <seg>Invalid Email Address</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_ccPlaceHolder" dataType="text">
+        <tu tuid="core_demandForm_ccPlaceHolder" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
@@ -1153,7 +1133,7 @@
                 <seg>email@example.com</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_addCCButtonLabel" dataType="text">
+        <tu tuid="core_demandForm_addCCButtonLabel" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
@@ -1161,7 +1141,7 @@
                 <seg>Add another email address</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_demandForm_removeCCButtonLabel" dataType="text">
+        <tu tuid="core_demandForm_removeCCButtonLabel" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
@@ -1169,168 +1149,465 @@
                 <seg>Remove this email address</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_formTitle_creation" dataType="text">
+        <tu tuid="core_proposalForm_formTitle_view" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Proposer un départ libre</seg>
+                <seg>View proposal {0} details</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_formTitle_edition" dataType="text">
+        <tu tuid="core_proposalForm_formTitle_creation" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mettre à jour la proposition</seg>
+                <seg>Prepare a proposal for demand {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_formTitle_view" dataType="text">
+        <tu tuid="core_proposalForm_formTitle_edition" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Voir les détails de la proposition</seg>
+                <seg>Update your proposal {0} for demand {1}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalKey" dataType="text">
+        <tu tuid="core_proposalForm_proposalKey" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Identifiant de la Proposition :</seg>
+                <seg>Proposal Id:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalState" dataType="text">
+        <tu tuid="core_proposalForm_proposalState" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>État :</seg>
+                <seg>State:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalCriteria" dataType="text">
+        <tu tuid="core_proposalForm_proposalCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Informations supplémentaires :</seg>
+                <seg>Details:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalQuantity" dataType="text">
+        <tu tuid="core_proposalForm_proposalQuantity" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Nombre de joueurs :</seg>
+                <seg>Quantity:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalPullCart" dataType="text">
+        <tu tuid="core_proposalForm_proposalMetadata" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Metadata:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalPrice" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Unit Price:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalTotal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Total (tax included):</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalTime" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Proposed Time:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalCreationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Creation Date:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalModificationDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Last Modification Date:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_alert_cancelPublishedProposal" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposal:{0} has already been communicated to the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_alert_cancelConfirmedDemand" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You have already confirmed the Demand:{0} with the Proposal:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_alert_cancelConfirmedProposal" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Proposal:{0} has already been accepted by the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_storeKey" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Store Id:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_storeName" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Name:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_storeAddress" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Address:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_storeEmail" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>E-mail:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_storePhoneNumber" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Phone #:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_storeUrl" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Website:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golfConsu_localized_page_name" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>ezToff.com - Reservation Desk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golfAssoc_localized_page_name" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>ezToff.com - Reservation Desk</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_demandInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Round Demand Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_proposalInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Tee-time Proposal Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_storeInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Golf Course Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_theader_criteria" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Additional Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_theader_quantity" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Player #</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_theader_dueDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Game Date</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_theader_metadata_pullCart" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Pull Cart #</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_theader_metadata_golfCart" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Golf Cart #</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_createDemand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Schedule a new Round</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_updateDemand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Update Round Request {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_cancelDemand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Cancel Round Request {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_closeDemand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Close Round Request {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_declineDemand" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Decline Round Demand {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_viewProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>View Tee-time Proposal {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_createProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Create Tee-time Proposal</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_updateProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Update Tee-time Proposal {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_declineProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Decline Tee-time Proposal {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_confirmProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Confirm Tee-time Proposal {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_cancelProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Cancel Tee-time Proposal {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_cmenu_closeProposal" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Close Round Proposal {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_demandForm_formTitle_creation" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Prepare your Round Request</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_demandForm_formTitle_edition" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Update your Round Request</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_demandForm_demandQuantity" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Number of Players:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_demandForm_demandPullCart" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Number of Pull Carts:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalGolfCart" dataType="text">
+        <tu tuid="golf_demandForm_demandGolfCart" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Number of Golf Carts:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalPrice" dataType="text">
+        <tu tuid="gol_demandForm_demandDueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Coût d'un départ :</seg>
+                <seg>Tee-off time:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalTotal" dataType="text">
+        <tu tuid="golf_demandForm_demandCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Total (taxes incluses) :</seg>
+                <seg>Additional Information:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_proposalForm_proposalTime" dataType="text">
+        <tu tuid="golf_proposalForm_formTitle_view" dataType="text">
             <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Horaire proposé :</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_proposalForm_proposalCreationDate" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Date de création :</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_proposalForm_proposalModificationDate" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Date de dernière modification :</seg>
-            </tuv>
-        </tu>
-        <tu tuid="ga_alert_cancelPublishedProposal" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>La proposition de départ {0} a déjà été transmise à l'organisateur de la demande {1}.\n\nConfirmez-vous l'annulation?</seg>
+                <seg>View proposal {0} details</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_alert_cancelConfirmedDemand" dataType="text">
+        <tu tuid="golf_proposalForm_formTitle_creation" dataType="text">
+            <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Vous avez déjà confirmé la demande {0} pour la proposition de départ {1}.\n\nConfirmez-vous l'annulation ?</seg>
+                <seg>Propose an open time slot to request {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_alert_cancelConfirmedProposal" dataType="text">
+        <tu tuid="golf_proposalForm_formTitle_edition" dataType="text">
+            <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>La proposition de départ {0} a déjà été acceptée par l'organisateur de la demande {1}.\n\nConfirmez-vous l'annulation ?</seg>
+                <seg>Update your proposal {0} for request {1}</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_storeForm_storeKey" dataType="text">
+        <tu tuid="golf_proposalForm_proposalCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Identifiant du club :</seg>
+                <seg>Additional Information:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_storeForm_storeName" dataType="text">
+        <tu tuid="golf_proposalForm_proposalQuantity" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Nom :</seg>
+                <seg>Number of Players:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_storeForm_storeAddress" dataType="text">
+        <tu tuid="golf_proposalForm_proposalPullCart" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Adresse :</seg>
+                <seg>Number of Pull Carts:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_storeForm_storeEmail" dataType="text">
+        <tu tuid="golf_proposalForm_proposalGolfCart" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Courriel :</seg>
+                <seg>Number of Golf Carts:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_storeForm_storePhoneNumber" dataType="text">
+        <tu tuid="golf_proposalForm_proposalPrice" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Numéro de téléphone :</seg>
+                <seg>Round Price:</seg>
             </tuv>
         </tu>
-        <tu tuid="ga_storeForm_storeUrl" dataType="text">
+        <tu tuid="golf_alert_cancelPublishedProposal" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Tee-time Proposal:{0} has already been communicated to the owner of the Request:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_alert_cancelConfirmedDemand" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>You have already confirmed the Round Demand:{0} with the Proposal:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_alert_cancelConfirmedProposal" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The Tee-time Proposal:{0} has already been accepted by the owner of the Request:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_storeForm_storeKey" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Site Web :</seg>
+                <seg>Course Id:</seg>
             </tuv>
         </tu>
         <tu tuid="gw_step_1_title" dataType="text">

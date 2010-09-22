@@ -4,35 +4,24 @@
 
     dojo.require('twetailer.Common');
 
-    module._labelExtractor = null; // Made accessible only for test purposes
-    var _common = twetailer.Common,
+    var _globalCommon = twetailer.Common,
         _masterBundleName = 'master',
         _consoleBundleName = 'console',
         _getLabel,
         _consumer,
-        _queryPointOfView = _common.POINT_OF_VIEWS.CONSUMER;
+        _queryPointOfView = _globalCommon.POINT_OF_VIEWS.CONSUMER;
 
     /**
-     * Module initializer
+     * Module initializer.
      *
      * @param {String} ISO locale identifier.
      */
     module.init = function(locale) {
-        // Get the localized resource bundle
-        domderrien.i18n.LabelExtractor.init('twetailer', _masterBundleName, locale);
-        module._labelExtractor = domderrien.i18n.LabelExtractor.init('twetailer', _consoleBundleName, locale);
-        _getLabel = module._labelExtractor.getFrom;
-
-        // Get debug parameters
-        // var requestParameters = dojo.queryToObject(window.location.search.slice(1));
-        // _debugMode = requestParameters["debugMode"];
-
-        // TODO:
-        // - hide the sale associate link if the consumer is not a sale associate
+        _getLabel = _globalCommon.init(locale);
     };
 
     /**
-     * Error message handler
+     * Error message handler.
      *
      * @param {String} message As reported by the JavaScript or the Dojo system.
      * @param {Object} XHR object as composed to send a request server-side.
@@ -45,7 +34,7 @@
     };
 
     /**
-     * Error message handler
+     * Error message handler.
      *
      * @param {Object} response As reported by the server-side business logic.
      * @param {Object} XHR object as composed to send a request server-side.
@@ -70,7 +59,7 @@
     };
 
     /**
-     * Hook for the server-code (induced by the JSP processor) to store the logged user information
+     * Hook for the server-code (induced by the JSP processor) to store the logged user information.
      */
     module.registerConsumer = function(json) {
         _consumer = json;
@@ -211,4 +200,13 @@
         }
     }
 
+    /**
+     * Call the back-end to get the new Demands.
+     */
+    module.loadNewDemands = function() {
+        var lastDemand = _globalCommon.getLastDemand();
+        var lastModificationDate = lastDemand ? lastDemand.modificationDate : null;
+        var dfd = _globalCommon.loadRemoteDemands(lastModificationDate, 'demandListOverlay', _queryPointOfView, null);
+        dfd.addCallback(function(response) { dijit.byId('refreshButton').resetTimeout(); _globalCommon.processDemandList(response.resources, _grid); });
+    };
 })(); // End of the function limiting the scope of the private variables

@@ -54,6 +54,14 @@
                 <seg>Droits réservés \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp;amp; associates inc.</a></seg>
             </tuv>
         </tu>
+        <tu tuid="product_rich_copyright" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Copyright \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp;amp; associates inc.</a></seg>
+            </tuv>
+        </tu>
         <tu tuid="display_name_pattern" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>

@@ -209,7 +209,7 @@
             </table>
         </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
-            <%= LabelExtractor.get("product_copyright", locale) %>
+            <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
 

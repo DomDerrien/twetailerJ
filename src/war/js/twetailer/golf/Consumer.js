@@ -5,20 +5,21 @@
     dojo.require('twetailer.golf.Common');
 
     /* Set of local variables */
-    var _common = twetailer.golf.Common,
+    var _globalCommon = twetailer.Common,
+        _localCommon = twetailer.golf.Common,
         _getLabel,
         _grid,
         _gridCellNode,
         _gridRowIndex;
-        _queryPointOfView = _common.POINT_OF_VIEWS.CONSUMER;
+        _queryPointOfView = _globalCommon.POINT_OF_VIEWS.CONSUMER;
 
     /**
-     * Initializer
+     * Initializer.
      *
      * @param {String} locale Identifier of the chosen locale.
      */
     module.init = function(locale) {
-        _getLabel = _common.init(locale);
+        _getLabel = _localCommon.init(locale);
 
         // Attach the contextual menu to the DataGrid instance
         // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
@@ -28,11 +29,10 @@
             _gridCellNode = e.cellNode;
             _gridRowIndex = e.rowIndex;
         };
-        // _grid.setSortIndex(10, false); // 10 == position of the column 'modificationDate'
 
         // Fetch
-        var dfd = _common.loadRemoteDemands(null, _queryPointOfView, 'golf'); // No modificationDate means "load all active Demands"
-        dfd.addCallback(function(response) { _common.processDemandList(response.resources, _grid); });
+        var dfd = _globalCommon.loadRemoteDemands(null, 'demandListOverlay', _queryPointOfView, 'golf'); // No modificationDate means "load all active Demands"
+        dfd.addCallback(function(response) { _globalCommon.processDemandList(response.resources, _grid); });
     };
 
     var _demandUpdateDecoration =
@@ -40,7 +40,7 @@
            " / <a href='#' onclick='if (confirm(\"${3}\")){twetailer.golf.Consumer.cancelDemand(null,${1});}return false;' title='${3}'><span class='dijitReset dijitInline silkIcon silkIconDemandCancel'></span>${1}</a>";
 
     /**
-     * Override of the formatter to be able to place the "Update Demand" link around the demand key
+     * Override of the formatter to be able to place the "Update Demand" link around the demand key.
      *
      * @param {Number[]} demandKey identifier of the demand.
      * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane.
@@ -50,7 +50,7 @@
         // TODO: check the demand state in order to use the classname silkIconDemandConfirmed
         var updateLabel = dojo.string.substitute(
             _demandUpdateDecoration,
-            [rowIndex, demandKey, _getLabel('console', 'ga_cmenu_updateDemand', [demandKey]), _getLabel('console', 'ga_cmenu_cancelDemand', [demandKey])]
+            [rowIndex, demandKey, _getLabel('console', 'golf_cmenu_updateDemand', [demandKey]), _getLabel('console', 'core_cmenu_cancelDemand', [demandKey])]
         );
         return updateLabel;
     };
@@ -58,7 +58,7 @@
     var _proposalViewDecoration = "<a href='#' onclick='twetailer.golf.Consumer.displayProposalForm(${1},${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconProposalView'></span>${0}</a>";
 
     /**
-     * Override of the formatter to be able to place the "Create Proposal" link in front of the proposal key list
+     * Override of the formatter to be able to place the "Create Proposal" link in front of the proposal key list.
      *
      * @param {Number[]} proposalKeys List of proposal keys.
      * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane.
@@ -71,9 +71,9 @@
         }
         var viewLabel = dojo.string.substitute(
             _proposalViewDecoration,
-            ['${0}', '${1}', _getLabel('console', 'ga_cmenu_viewProposal')]
+            ['${0}', '${1}', _getLabel('console', 'golf_cmenu_viewProposal')]
         );
-        return _common.displayProposalKeys(proposalKeys, rowIndex, viewLabel);
+        return _localCommon.displayProposalKeys(proposalKeys, rowIndex, viewLabel);
     };
 
     /**
@@ -95,13 +95,15 @@
             dateField.set('value', tomorrow);
             dateField.constraints.min = yesterday;
 
-            var lastDemand = _common.getLastDemand();
+            var lastDemand = _globalCommon.getLastDemand();
             if (lastDemand) {
-                _common.setLocation(lastDemand.locationKey[0], dijit.byId('demand.postalCode'), dijit.byId('demand.countryCode'));
+                _globlaCommon.setLocation(lastDemand.locationKey[0], dijit.byId('demand.postalCode'), dijit.byId('demand.countryCode'));
                 dijit.byId('demand.range').set('value', lastDemand.range[0]);
                 dijit.byId('demand.rangeUnit').set('value', lastDemand.rangeUnit[0]);
             }
-            dijit.byId('demandFormSubmitButton').set('label', _getLabel('console', 'ga_cmenu_createDemand'));
+            dijit.byId('demandFormSubmitButton').set('label', _getLabel('console', 'golf_cmenu_createDemand'));
+
+            demandForm.set('title', _getLabel('console', 'ga_demandForm_formTitle_creation', [lastDemand.key[0]]));
 
             dojo.query('.updateButton').style('display', '');
             dojo.query('.existingAttribute').style('display', 'none');
@@ -148,16 +150,18 @@
             dijit.byId('demand.date').set('value', dueDate);
             dijit.byId('demand.date').constraints.min = new Date();
             dijit.byId('demand.time').set('value', dueDate);
-            _common.setLocation(item.locationKey[0], dijit.byId('demand.postalCode'), dijit.byId('demand.countryCode'));
+            _globalCommon.setLocation(item.locationKey[0], dijit.byId('demand.postalCode'), dijit.byId('demand.countryCode'));
             dijit.byId('demand.range').set('value', item.range[0]);
             dijit.byId('demand.rangeUnit').set('value', item.rangeUnit[0]);
-            dijit.byId('demand.modificationDate').set('value', _common.displayDateTime(item.modificationDate));
-            dijit.byId('demandFormSubmitButton').set('label', _getLabel('console', 'ga_cmenu_updateDemand', [item.key]));
-            dijit.byId('demandFormCancelButton').set('label', _getLabel('console', 'ga_cmenu_cancelDemand', [item.key]));
-            dijit.byId('demandFormCloseButton').set('label', _getLabel('console', 'ga_cmenu_closeDemand', [item.key]));
+            dijit.byId('demand.modificationDate').set('value', _globalCommon.displayDateTime(item.modificationDate));
+            dijit.byId('demandFormSubmitButton').set('label', _getLabel('console', 'golf_cmenu_updateDemand', [item.key]));
+            dijit.byId('demandFormCancelButton').set('label', _getLabel('console', 'golf_cmenu_cancelDemand', [item.key]));
+            dijit.byId('demandFormCloseButton').set('label', _getLabel('console', 'golf_cmenu_closeDemand', [item.key]));
+
+            demandForm.set('title', _getLabel('console', 'ga_demandForm_formTitle_edition', [lastDemand.key[0]]));
 
             dojo.query('.existingAttribute').style('display', '');
-            var closeableState = item.state == _common.STATES.CONFIRMED;
+            var closeableState = item.state == _globalCommon.STATES.CONFIRMED;
             if (closeableState) {
                 dojo.query('.updateButton').style('display', 'none');
                 dojo.query('.closeButton').style('display', '');
@@ -166,7 +170,7 @@
                 dojo.query('.updateButton').style('display', '');
                 dojo.query('.closeButton').style('display', 'none');
             }
-            dijit.byId('demandFormSubmitButton').set('disabled', item.state == _common.STATES.DECLINED);
+            dijit.byId('demandFormSubmitButton').set('disabled', item.state == _globalCommon.STATES.DECLINED);
         }
 
         demandForm.show();
@@ -174,7 +178,7 @@
     };
 
     /**
-     * Call the back-end to create or update a Demand with the given attribute
+     * Call the back-end to create or update a Demand with the given attribute.
      *
      * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box.
      */
@@ -187,16 +191,16 @@
         if (0 < cc.length) {
             data.cc = cc;
         }
-        data.dueDate = _common.toISOString(data.date, data.time);
+        data.dueDate = _globalCommon.toISOString(data.date, data.time);
         data.metadata = dojo.toJson({pullCart: parseInt(data.pullCart), golfCart: parseInt(data.golfCart)});
         data.hashTags = ['golf']; // TODO: offer a checkbox to allow the #demo mode
 
-        var dfd = _common.updateRemoteDemand(data, data.key);
+        var dfd = _localCommon.updateRemoteDemand(data, data.key, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     };
 
     /**
-     * Call the back-end to cancel the demand displayed in the property pane
+     * Call the back-end to cancel the demand displayed in the property pane.
      *
      * @param {Object} formId Identifier of the dialog box to close.
      * @param {Object} keyFieldId Identifier of the field, in that dialog box, containing the demand key.
@@ -207,11 +211,10 @@
         }
 
         var demandKey = isNaN(keyFieldId) ? dijit.byId(keyFieldId).get('value') : keyFieldId;
-        alert(demandKey);
-        var demand = _common.getCachedDemand(demandKey);
+        var demand = _globalCommon.getCachedDemand(demandKey);
 
-        if (demand.state == _common.STATES.CONFIRMED) {
-            var messageId = 'ga_alert_cancelConfirmedDemand';
+        if (demand.state == _globalCommon.STATES.CONFIRMED) {
+            var messageId = 'golf_alert_cancelConfirmedDemand';
 
             var proposalKey = demand.proposalKeys[0];
             if (!confirm(_getLabel('console', messageId, [demandKey, proposalKey]))) {
@@ -219,14 +222,14 @@
             }
         }
 
-        var data = { state: _common.STATES.CANCELLED };
+        var data = { state: _globalCommon.STATES.CANCELLED };
 
-        var dfd = _common.updateRemoteDemand(data, demandKey);
+        var dfd = _localCommon.updateRemoteDemand(data, demandKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     }
 
     /**
-     * Call the back-end to close a demand displayed in the property pane
+     * Call the back-end to close a demand displayed in the property pane.
      *
      * @param {Object} formId Identifier of the dialog box to close.
      * @param {Object} keyFieldId Identifier of the field, in that dialog box, containing the demand key.
@@ -236,10 +239,10 @@
             dijit.byId(formId).hide();
         }
 
-        var demandKey = dijit.byId(keyFieldId).get('value');
-        var data = { state: _common.STATES.CLOSED };
+        var demandKey = isNaN(keyFieldId) ? dijit.byId(keyFieldId).get('value') : keyFieldId;
+        var data = { state: _globalCommon.STATES.CLOSED };
 
-        var dfd = _common.updateRemoteDemand(data, demandKey);
+        var dfd = _localCommon.updateRemoteDemand(data, demandKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     }
 
@@ -267,16 +270,16 @@
         proposalForm.reset();
 
         dijit.byId('associatedDemand.key').set('value', item.key);
-        dijit.byId('associatedDemand.modificationDate').set('value', _common.displayDateTime(item.modificationDate));
+        dijit.byId('associatedDemand.modificationDate').set('value', _globalCommon.displayDateTime(item.modificationDate));
 
         dijit.byId('proposal.key').set('value', proposalKey);
 
-        dijit.byId('proposalFormConfirmButton').set('label', _getLabel('console', 'ga_cmenu_confirmProposal', [proposalKey]));
-        dijit.byId('proposalFormDeclineButton').set('label', _getLabel('console', 'ga_cmenu_declineProposal', [proposalKey]));
-        dijit.byId('proposalFormCancelButton').set('label', _getLabel('console', 'ga_cmenu_cancelDemand', [item.key]));
-        dijit.byId('proposalFormCloseButton').set('label', _getLabel('console', 'ga_cmenu_closeDemand', [item.key]));
+        dijit.byId('proposalFormConfirmButton').set('label', _getLabel('console', 'golf_cmenu_confirmProposal', [proposalKey]));
+        dijit.byId('proposalFormDeclineButton').set('label', _getLabel('console', 'golf_cmenu_declineProposal', [proposalKey]));
+        dijit.byId('proposalFormCancelButton').set('label', _getLabel('console', 'golf_cmenu_cancelDemand', [item.key]));
+        dijit.byId('proposalFormCloseButton').set('label', _getLabel('console', 'golf_cmenu_closeDemand', [item.key]));
 
-        var closeableState = item.state == _common.STATES.CONFIRMED;
+        var closeableState = item.state == _globalCommon.STATES.CONFIRMED;
         if (closeableState) {
             dojo.query('.updateButton').style('display', 'none');
             dojo.query('.closeButton').style('display', '');
@@ -299,17 +302,17 @@
      * @param {String} proposalKey Identifier of the proposal to load.
      */
     var _loadProposal = function(proposalKey) {
-        if (_common.isProposalCached(proposalKey)) {
-            _fetchProposal(_common.getCachedProposal(proposalKey));
+        if (_globalCommon.getCachedProposal(proposalKey)) {
+            _fetchProposal(_globalCommon.getCachedProposal(proposalKey));
         }
         else {
-            var dfd = _common.loadRemoteProposal(proposalKey, _queryPointOfView);
-            dfd.addCallback(function(response) { _fetchProposal(_common.getCachedProposal(proposalKey)); });
+            var dfd = _localCommon.loadRemoteProposal(proposalKey, 'proposalFormOverlay', _queryPointOfView);
+            dfd.addCallback(function(response) { _fetchProposal(_globalCommon.getCachedProposal(proposalKey)); });
         }
     };
 
     /**
-     * Use the given Proposal to fetch the corresponding dialog box
+     * Use the given Proposal to fetch the corresponding dialog box.
      *
      * @param {Proposal} proposal Object to represent.
      */
@@ -324,10 +327,10 @@
         if (dojo.isArray(proposal.criteria)) {
             dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
         }
-        dijit.byId('proposal.modificationDate').set('value', _common.displayDateTime(proposal.modificationDate));
+        dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
 
-        var modifiableState = proposal.state == _common.STATES.PUBLISHED;
-        var closeableState = proposal.state == _common.STATES.CONFIRMED;
+        var modifiableState = proposal.state == _globalCommon.STATES.PUBLISHED;
+        var closeableState = proposal.state == _globalCommon.STATES.CONFIRMED;
         dijit.byId('proposalFormConfirmButton').set('disabled', !modifiableState);
         dijit.byId('proposalFormDeclineButton').set('disabled', !modifiableState);
 
@@ -341,44 +344,44 @@
     };
 
     /**
-     * Call the back-end to confirm the proposal displayed in the property pane
+     * Call the back-end to confirm the proposal displayed in the property pane.
      */
     module.confirmProposal = function() {
         dijit.byId('proposalForm').hide();
 
         var proposalKey = dijit.byId('proposal.key').get('value');
         var data = {
-            state: _common.STATES.CONFIRMED,
+            state: _globalCommon.STATES.CONFIRMED,
             pointOfView: _queryPointOfView
         };
 
-        var dfd = _common.updateRemoteProposal(data, proposalKey);
+        var dfd = _localCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     }
 
     /**
-     * Call the back-end to decline the proposal displayed in the property pane
+     * Call the back-end to decline the proposal displayed in the property pane.
      */
     module.declineProposal = function() {
         dijit.byId('proposalForm').hide();
 
         var proposalKey = dijit.byId('proposal.key').get('value');
         var data = {
-            state: _common.STATES.DECLINED,
+            state: _globalCommon.STATES.DECLINED,
             pointOfView: _queryPointOfView
         };
 
-        var dfd = _common.updateRemoteProposal(data, proposalKey);
+        var dfd = _localCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     }
 
     /**
-     * Call the back-end to get the new Demands
+     * Call the back-end to get the new Demands.
      */
     module.loadNewDemands = function() {
-        var lastDemand = _common.getLastDemand();
+        var lastDemand = _globalCommon.getLastDemand();
         var lastModificationDate = lastDemand ? lastDemand.modificationDate : null;
-        var dfd = _common.loadRemoteDemands(lastModificationDate, _queryPointOfView, 'golf');
-        dfd.addCallback(function(response) { dijit.byId('refreshButton').resetTimeout(); _common.processDemandList(response.resources, _grid); });
+        var dfd = _globalCommon.loadRemoteDemands(lastModificationDate, 'demandListOverlay', _queryPointOfView, 'golf');
+        dfd.addCallback(function(response) { dijit.byId('refreshButton').resetTimeout(); _globalCommon.processDemandList(response.resources, _grid); });
     };
 })(); // End of the function limiting the scope of the private variables

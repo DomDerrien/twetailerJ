@@ -49,6 +49,12 @@
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
+    <title><%= LabelExtractor.get(ResourceFileId.third, "golfConsu_localized_page_name", locale) %></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="content-language" content="<%= localeId %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <style type="text/css"><%
         if (useCDN) {
         %>
@@ -209,9 +215,9 @@
                             <input
                                 dojoType="dijit.form.ValidationTextBox"
                                 id="email0"
-                                invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccInvalidMessage", locale) %>"
+                                invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                 name="email0"
-                                placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccPlaceHolder", locale) %>"
+                                placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
                                 regExp="<%= emailRegExp %>"
                                 required="true"
                                 style="width:100%;"
@@ -232,9 +238,9 @@
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email1"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccInvalidMessage", locale) %>"
+                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                     name="email1"
-                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccPlaceHolder", locale) %>"
+                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
                                     regExp="<%= emailRegExp %>"
                                     required="false"
                                     style="width:100%;"
@@ -249,7 +255,7 @@
                                     id="friendButton1"
                                     onclick="twetailer.Common.manageFriendRow(1, 'Email:');"
                                     showLabel="false"
-                                    title="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_addCCButtonLabel", locale) %>"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_addCCButtonLabel", locale) %>"
                                 ></button>
                             </td>
                         </tr>

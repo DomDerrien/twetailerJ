@@ -4,22 +4,26 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     import="java.util.Enumeration"
+    import="java.util.List"
     import="java.util.Locale"
+    import="java.util.Map"
     import="java.util.ResourceBundle"
     import="com.dyuproject.openid.OpenIdUser"
     import="com.dyuproject.openid.RelyingParty"
     import="domderrien.i18n.LabelExtractor"
-    import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="domderrien.i18n.LocaleController"
     import="javamocks.io.MockOutputStream"
+    import="twetailer.connector.BaseConnector.Source"
     import="twetailer.dto.Consumer"
+    import="twetailer.dto.Demand"
     import="twetailer.dto.Location"
-    import="twetailer.dao.BaseOperations"
-    import="twetailer.dao.ConsumerOperations"
-    import="twetailer.dao.LocationOperations"
-    import="twetailer.j2ee.LoginServlet"
+    import="twetailer.dto.Store"
+    import="twetailer.dto.SaleAssociate"
     import="twetailer.j2ee.BaseRestlet"
+    import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
+    import="twetailer.validator.CommandSettings.State"
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
@@ -49,10 +53,10 @@
     Long saleAssociateKey = consumer.getSaleAssociateKey();
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
-    <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
+    <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
-    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.third, "product_copyright", locale) %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <style type="text/css"><%
@@ -111,6 +115,10 @@
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
         </jsp:include>
+        <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center" style="margin: 0 10px;">
+            <blockquote style="text-align: center; font-size: xx-large;">Under construction!</blockquote>
+        </div>
+        <!--
         <div
             dojoType="dijit.layout.TabContainer"
             id="centerZone"
@@ -170,7 +178,7 @@
                             <select dojoType="dijit.form.Select" id="consumerCountry" name="<%= Location.COUNTRY_CODE %>">
                                 <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                                 <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
-                                <!--option value="FR"><%= LabelExtractor.get(ResourceFileId.master, "country_FR", locale) %></option-->
+                                <option value="FR"><%= LabelExtractor.get(ResourceFileId.master, "country_FR", locale) %></option>
                             </select><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_country", locale) %></span>
                         </div>
@@ -297,26 +305,6 @@
                     </div>
                 </form>
             </div>
-            <!--
-            <div
-                dojoType="dijit.layout.ContentPane"
-                id="saleAssociateListDemandPane"
-                title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_saleAssociate_listDemand", locale) %>"
-            >
-            </div>
-            <div
-                dojoType="dijit.layout.ContentPane"
-                id="saleAssociateListProposalPane"
-                title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_saleAssociate_listDemand", locale) %>"
-            >
-            </div>
-            <div
-                dojoType="dijit.layout.ContentPane"
-                id="saleAssociateProfilePane"
-                title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_saleAssociate_listDemand", locale) %>"
-            >
-            </div>
-            -->
             <div
                 dojoType="dijit.layout.ContentPane"
                 iconClass="silkIcon silkIconHelp"
@@ -324,8 +312,9 @@
             >
             </div>
         </div>
+        -->
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
-            <%= LabelExtractor.get("product_copyright", locale) %>
+            <%= LabelExtractor.get(ResourceFileId.master, "product_rich_copyright", locale) %>
         </div>
     </div>
 
