@@ -36,7 +36,9 @@
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Sale Associate Registration Page</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-language" content="<%= localeId %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <%
@@ -226,7 +228,7 @@
             </div>
         </div>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
-            <%= LabelExtractor.get("product_copyright", locale) %>
+            <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
 

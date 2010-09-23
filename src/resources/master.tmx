@@ -123,6 +123,15 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
+                <seg>Copyright \u00a9 2009-2010 Milstein &amp; associates inc.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="product_rich_copyright" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
                 <seg>Copyright \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
             </tuv>
         </tu>

@@ -2,7 +2,6 @@
 
     /**
      * @author dom.derrien
-     * @maintainer dom.derrien
      */
     var module = dojo.provide("domderrien.i18n.LanguageSelector");
 
@@ -25,9 +24,9 @@
      * identify the language ISO code and the localized language label.
      *
      * @param {String} currentLanguageId ISO code of the language
-     * to be initially selected
+     * to be initially selected.
      *
-     * @param {String} className Optional CSS class name for the widget to be created
+     * @param {String} className Optional CSS class name for the widget to be created.
      *
      * @param {Function} onChangeHandler Optional event handler attached
      * to the <code>onChange</code> event that the selector can generate. If
@@ -35,7 +34,7 @@
      * with the attribute <code>lang=&ltselected-value&gt;</code>.
      *
      */
-    module.createSelector = function(placeHolderId, formFieldName, options, currentLanguageId, className, onChangeHandler){
+    module.createSelector = function(placeHolderId, formFieldName, options, currentLanguageId, className, onChangeHandler) {
         _currentLanguageId = currentLanguageId;
         var _selector = new dijit.form.Select({
                 autoComplete: false,
@@ -56,14 +55,14 @@
 
     /**
      * Event handler attach to the selector language and which is updating the
-     * page URL with the identifier of the selected language ISO code
+     * page URL with the identifier of the selected language ISO code.
      *
      * @private
      */
     var _switchLanguage = function() {
         // Not testable because it's going to change the window content and then will break the test environment
         var out = module._replaceLanguage(window.location.search, this.attr("value"));
-        if (out !== null) {
+        if (out) {
             window.location.search = out;
         }
     };

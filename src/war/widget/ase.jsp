@@ -49,6 +49,13 @@
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="content-language" content="<%= localeId %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <style type="text/css">
         @import url(http://fonts.googleapis.com/css?family=Droid+Sans);<%
         if (useCDN) {
@@ -190,7 +197,7 @@
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconGPS"
                                 id="detectLocationButton"
-                                onclick="localModule.getBrowserLocation();"
+                                onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', 'widgetOverlay');"
                                 showLabel="false"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_detectLocale", locale) %>"
                             ></button>
@@ -306,9 +313,9 @@
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email0"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccInvalidMessage", locale) %>"
+                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                     name="email0"
-                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccPlaceHolder", locale) %>"
+                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
                                     regExp="<%= emailRegExp %>"
                                     required="true"
                                     style="width:100%;"
@@ -323,9 +330,9 @@
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email1"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccInvalidMessage", locale) %>"
+                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                     name="email1"
-                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_ccPlaceHolder", locale) %>"
+                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
                                     regExp="<%= emailRegExp %>"
                                     required="false"
                                     style="width:100%;"
@@ -340,7 +347,7 @@
                                     id="friendButton1"
                                     onclick="twetailer.Common.manageFriendRow(1, 'CC others:');"
                                     showLabel="false"
-                                    title="<%= LabelExtractor.get(ResourceFileId.third, "ga_demandForm_addCCButtonLabel", locale) %>"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
                                 ></button>
                             </td>
                         </tr>
@@ -467,7 +474,7 @@
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
             var form = dijit.byId("form" + sourceIdx);
-            if (!form.isValid()) {
+            if (!form.validate()) {
                 return;
             }
         }
@@ -483,20 +490,10 @@
         case 4: dijit.byId("email0").focus(); break;
         }
     }
-    localModule.getBrowserLocation = function() {
-        var eventName = "browserLocationCodeAvailable";
-        var handle = dojo.subscribe(eventName, function(postalCode, countryCode) {
-            dijit.byId("postalCode").set("value", postalCode);
-            dijit.byId("countryCode").set("value", countryCode);
-            dijit.byId("postalCode").focus();
-            dojo.unsubscribe(handle);
-        })
-        twetailer.Common.getBrowserLocation(eventName, "widgetOverlay");
-    }
     localModule.sendRequest = function() {
         // Last form validation
         var form = dijit.byId("form4");
-        if (!form.isValid()) {
+        if (!form.validate()) {
             return;
         }
         // Request preparation
