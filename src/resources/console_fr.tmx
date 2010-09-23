@@ -1299,6 +1299,21 @@
                 <seg>The Proposal:{0} has already been accepted by the owner of the Demand:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
             </tuv>
         </tu>
+        <tu tuid="core_alert_invalidMetadata" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>The content of the Metadata field MUST have a valid JSON format or can be left empty.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_storeForm_formTitle_view" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>View store {0} coordinates</seg>
+            </tuv>
+        </tu>
         <tu tuid="core_storeForm_storeKey" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1643,6 +1658,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>The Tee-time Proposal:{0} has already been accepted by the owner of the Request:{1}.\n\nDo you want to confirm the cancelling operation?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_storeForm_formTitle_view" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>View Golf Course {0} coordinates</seg>
             </tuv>
         </tu>
         <tu tuid="golf_storeForm_storeKey" dataType="text">

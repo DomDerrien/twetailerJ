@@ -36,8 +36,10 @@
     };
 
     var _demandUpdateDecoration =
+           "<span style='white-space:nowrap;'>" +
            "<a href='#' onclick='twetailer.golf.Consumer.displayDemandForm(false,${0});return false;' title='${2}'><span class='dijitReset dijitInline silkIcon silkIconDemandUpdate'></span>${1}</a>" +
-           " / <a href='#' onclick='if (confirm(\"${3}\")){twetailer.golf.Consumer.cancelDemand(null,${1});}return false;' title='${3}'><span class='dijitReset dijitInline silkIcon silkIconDemandCancel'></span>${1}</a>";
+           " (<a href='#' onclick='if (confirm(\"${3}\")){twetailer.golf.Consumer.cancelDemand(null,${1});}return false;' title='${3}'><span class='dijitReset dijitInline silkIcon silkIconDemandCancel'></span></a>)" +
+           "</span>";
 
     /**
      * Override of the formatter to be able to place the "Update Demand" link around the demand key.
@@ -103,7 +105,7 @@
             }
             dijit.byId('demandFormSubmitButton').set('label', _getLabel('console', 'golf_cmenu_createDemand'));
 
-            demandForm.set('title', _getLabel('console', 'golf_demandForm_formTitle_creation', [lastDemand.key[0]]));
+            demandForm.set('title', _getLabel('console', 'golf_demandForm_formTitle_creation'));
 
             dojo.query('.updateButton').style('display', '');
             dojo.query('.existingAttribute').style('display', 'none');
@@ -184,6 +186,15 @@
     module.updateDemand = function(data) {
         if (isNaN(data.key)) {
             delete data.key;
+
+            var cachedDemand = _globalCommon.getCachedDemand(data.key);
+            if (cachedDemand) {
+                var now = new Date();
+                var expirationDate = dojo.date.stamp.fromISOString(cachedDemand.expirationDate);
+                if (expirationDate.getTime() < now.getTime()) {
+                    data.expirationDate = data.dueDate;
+                }
+            }
         }
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         var cc = twetailer.Common.getFriendCoordinates();
@@ -193,13 +204,6 @@
         data.dueDate = _globalCommon.toISOString(data.date, data.time);
         data.metadata = dojo.toJson({pullCart: parseInt(data.pullCart), golfCart: parseInt(data.golfCart)});
         data.hashTags = ['golf']; // TODO: offer a checkbox to allow the #demo mode
-
-        var now = new Date();
-        var cachedDemand = _globalCommon.getCachedDemand(data.key);
-        var expirationDate = dojo.date.stamp.fromISOString(cachedDemand.expirationDate);
-        if (expirationDate.getTime() < now.getTime()) {
-            data.expirationDate = data.dueDate;
-        }
 
         var dfd = _globalCommon.updateRemoteDemand(data, data.key, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
@@ -275,14 +279,12 @@
         var proposalForm = dijit.byId('proposalForm');
         proposalForm.reset();
 
-        dijit.byId('associatedDemand.key').set('value', item.key);
-        dijit.byId('associatedDemand.modificationDate').set('value', _globalCommon.displayDateTime(item.modificationDate));
+        proposalForm.set('title', _getLabel('console', 'golf_proposalForm_formTitle_view', [proposalKey]));
 
         dijit.byId('proposal.key').set('value', proposalKey);
 
         dijit.byId('proposalFormConfirmButton').set('label', _getLabel('console', 'golf_cmenu_confirmProposal', [proposalKey]));
         dijit.byId('proposalFormDeclineButton').set('label', _getLabel('console', 'golf_cmenu_declineProposal', [proposalKey]));
-        dijit.byId('proposalFormCancelButton').set('label', _getLabel('console', 'golf_cmenu_cancelDemand', [item.key]));
         dijit.byId('proposalFormCloseButton').set('label', _getLabel('console', 'golf_cmenu_closeDemand', [item.key]));
 
         var closeableState = item.state == _globalCommon.STATES.CONFIRMED;
@@ -312,8 +314,18 @@
      * @param {Proposal} proposal Object to represent.
      */
     var _fetchProposal = function(proposal) {
+        dijit.byId('proposal.demandKey').set('value', proposal.demandKey);
         dijit.byId('proposal.state').set('value', _getLabel('master', 'cl_state_' + proposal.state));
         dijit.byId('proposal.quantity').set('value', proposal.quantity);
+        if (proposal.metadata) {
+            var metadata = dojo.fromJson(proposal.metadata);
+            if (metadata.pullCart) {
+                dijit.byId('proposal.metadata.pullCart').set('value', metadata.pullCart);
+            }
+            if (metadata.golfCart) {
+                dijit.byId('proposal.metadata.golfCart').set('value', metadata.golfCart);
+            }
+        }
         dijit.byId('proposal.price').set('value', proposal.price);
         dijit.byId('proposal.total').set('value', proposal.total);
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
@@ -330,12 +342,15 @@
         dijit.byId('proposalFormDeclineButton').set('disabled', !modifiableState);
 
         var store = proposal.related.Store;
-        dijit.byId('store.key').set('value', store.key);
         dijit.byId('store.name').set('value', store.name);
         dijit.byId('store.address').set('value', store.address);
         dijit.byId('store.phoneNb').set('value', store.phoneNb);
         dijit.byId('store.email').set('value', store.email);
         dijit.byId('store.url').set('value', store.url);
+
+        var storeFormTitle = _getLabel('console', 'golf_storeForm_formTitle_view', [store.key]);
+        dijit.byId('storeForm').set('title', storeFormTitle);
+        dojo.byId('proposal.viewStoreInfo').innerHTML = storeFormTitle;
     };
 
     /**

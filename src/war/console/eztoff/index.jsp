@@ -342,25 +342,7 @@
         id="proposalForm"
         title="<%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_formTitle_view", locale) %>"
     >
-        <fieldset class="entityInformation">
-            <legend><%= LabelExtractor.get(ResourceFileId.third, "golf_demandInfo", locale) %></legend>
-            <table class="demandForm" width="100%">
-                <tr>
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandKey", locale) %></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="associatedDemand.key" readonly="true" style="width:6em;" type="text" /> </td>
-                </tr>
-                <tr>
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandModificationDate", locale) %></td>
-                    <td><input dojoType="dijit.form.TextBox" id="associatedDemand.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center">
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandCancel" id="proposalFormCancelButton" onclick="twetailer.golf.Consumer.cancelDemand('proposalForm', 'associatedDemand.key');"></button>
-                        <button class="closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('proposalForm', 'associatedDemand.key');"></button>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
+        <input dojoType="dijit.form.TextBox" type="hidden" id="proposal.demandKey" />
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalInfo", locale) %></legend>
             <table class="demandForm" width="100%">
@@ -373,7 +355,7 @@
                     <td><input dojoType="dijit.form.TextBox" id="proposal.state" readonly="true" type="text" /> </td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalTime", locale) %></label></td>
+                    <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalDueDate", locale) %></label></td>
                     <td>
                         <input dojoType="dijit.form.DateTextBox" id="proposal.date" readonly="true" type="text" />
                         <input dojoType="dijit.form.TimeTextBox" id="proposal.time" readonly="true" type="text" />
@@ -382,6 +364,14 @@
                 <tr>
                     <td align="right"><label for="proposal.quantity"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalQuantity", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.quantity" readonly="true" style="width:5em;" type="text" /> </td>
+                </tr>
+                <tr>
+                    <td align="right"><label for="proposal.metadata.pullCart"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalPullCart", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.metadata.pullCart" readonly="true" style="width:3em;" type="text" /> </td>
+                </tr>
+                <tr>
+                    <td align="right"><label for="proposal.metadata.golfCart"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalGolfCart", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.metadata.golfCart" readonly="true" style="width:3em;" type="text"" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalPrice", locale) %></label></td>
@@ -399,21 +389,28 @@
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalModificationDate", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
                 </tr>
-                <tr class="updateButton">
-                    <td colspan="2" align="center">
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormConfirmButton" onclick="twetailer.golf.Consumer.confirmProposal();"></button>
-                        <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormDeclineButton" onclick="twetailer.golf.Consumer.declineProposal();"></button>
-                    </td>
+                <tr>
+                    <td align="right"></td>
+                    <td><a href="#" id="proposal.viewStoreInfo" onclick="dijit.byId('storeForm').show();return false;"><%= LabelExtractor.get(ResourceFileId.third, "golf_storeInfo", locale) %></a></td>
                 </tr>
             </table>
         </fieldset>
+        <div style="text-align:center;">
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormConfirmButton" onclick="twetailer.golf.Consumer.confirmProposal();"></button>
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormDeclineButton" onclick="twetailer.golf.Consumer.declineProposal();"></button>
+            <button class="closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('proposalForm', 'proposal.demandKey');"></button>
+            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
+        </div>
+    </div>
+
+    <div
+        dojoType="dijit.Dialog"
+        id="storeForm"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_formTitle_view", locale) %>"
+    >
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "golf_storeInfo", locale) %></legend>
             <table class="demandForm" width="100%">
-                <tr>
-                    <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "golf_storeForm_storeKey", locale) %></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="store.key" readonly="true" style="width:6em;" type="text" /> </td>
-                </tr>
                 <tr>
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_storeForm_storeName", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="store.name" readonly="true" style="width:10em;" type="text" /> </td>
@@ -452,9 +449,6 @@
                 </tr>
             </table>
         </fieldset>
-        <div style="text-align:center;">
-            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
-        </div>
     </div>
 
     <div

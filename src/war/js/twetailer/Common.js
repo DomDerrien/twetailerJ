@@ -231,7 +231,8 @@
             return '';
         }
         try {
-            return dojo.toJson(dojo.fromJson(metadata), true);
+            return dojo.toJson(dojo.fromJson(metadata), false);
+            // return dojo.toJson(dojo.fromJson(metadata), true);
         }
         catch(ex) {
             return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_metadata') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
@@ -351,7 +352,7 @@
             dijit.byId(overlayId).show();
         }
         var data = {
-            pointOfView: pointOfView || _globalCommon.POINT_OF_VIEWS.CONSUMER,
+            pointOfView: pointOfView || module.POINT_OF_VIEWS.CONSUMER,
             lastModificationDate: lastModificationISODate,
             related: ['Location']
         };
@@ -405,7 +406,7 @@
                 if (overlayId) {
                     dijit.byId(overlayId).hide();
                 }
-                _globalCommon.handleError(message, ioArgs);
+                module.handleError(message, ioArgs);
             },
             preventCache: true,
             url: '/API/Demand/'
@@ -434,7 +435,7 @@
                 grid.setStore(demandStore);
             },
             error: function(message, ioArgs) {
-                _globalCommon.handleError(message, ioArgs);
+                module.handleError(message, ioArgs);
             },
             sort: [{attribute: 'modificationDate', descending: true}]
         });
@@ -472,7 +473,7 @@
                 if (overlayId) {
                     dijit.byId(overlayId).hide();
                 }
-                _globalCommon.handleError(message, ioArgs);
+                module.handleError(message, ioArgs);
             },
             url: '/API/Demand/' + (demandKey ? demandKey : '')
         });
@@ -493,7 +494,7 @@
         }
         var dfd = dojo.xhrGet({
             content: {
-                pointOfView: pointOfView || _globalCommon.POINT_OF_VIEWS.SALE_ASSOCIATE,
+                pointOfView: pointOfView || module.POINT_OF_VIEWS.SALE_ASSOCIATE,
                 related: ['Store']
             },
             handleAs: 'json',
@@ -514,7 +515,7 @@
                 if (overlayId) {
                     dijit.byId(overlayId).hide();
                 }
-                _globalCommon.handleError(message, ioArgs);
+                module.handleError(message, ioArgs);
             },
             url: '/API/Proposal/' + proposalKey
         });
@@ -555,7 +556,7 @@
                 if (overlayId) {
                     dijit.byId(overlayId).hide();
                 }
-                _globalCommon.handleError(message, ioArgs);
+                module.handleError(message, ioArgs);
             },
             url: '/API/Proposal/' + (proposalKey ? proposalKey : '')
         });

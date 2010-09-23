@@ -118,6 +118,7 @@
         proposalForm.reset();
 
         dijit.byId('demand.key').set('value', item.key[0]); // hidden field generating "proposal.demandKey"
+        dijit.byId('demand.hashTags').set('value', item.hashTags); // hidden field generating "proposal.hashTags"
 
         var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
         dijit.byId('proposal.date').set('value', dueDate);
@@ -130,7 +131,8 @@
             dijit.byId('demand.metadata').set('value', _globalCommon.displayMetadata(item.metadata[0]));
         }
         if (item.hashTags) {
-            dijit.byId('demand.hashTags').set('value', _globalCommon.displayHashTags(item.hashTags));
+            // Regular hash tags placed in a hidden field
+            dijit.byId('demand.visibleHashTags').set('value', _globalCommon.displayHashTags(item.hashTags));
         }
         dijit.byId('proposal.quantity').set('value', item.quantity[0]);
 
@@ -170,7 +172,150 @@
         dijit.byId('proposal.price').set('value', proposal.price);
         dijit.byId('proposal.total').set('value', proposal.total);
         dijit.byId('proposal.quantity').set('value', proposal.quantity);
+        if (proposal.metadata) {
+            // dijit.byId('proposal.metadata').set('value', proposal.metadata);
+            dijit.byId('proposal.metadata').set('value', dojo.toJson(dojo.fromJson(proposal.metadata), true));
+        }
+        var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
+        dijit.byId('proposal.date').set('value', dateObject);
+        dijit.byId('proposal.time').set('value', dateObject);
+        if (dojo.isArray(proposal.criteria)) {
+            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
+        }
+        dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
+
+        var closeableState = proposal.state == _globalCommon.STATES.CONFIRMED;
+        if (closeableState) {
+            dojo.query('.updateButton').style('display', 'none');
+            dojo.query('.closeButton').style('display', '');
+        }
+        else {
+            dojo.query('.updateButton').style('display', '');
+            dojo.query('.closeButton').style('display', 'none');
+        }
+        dijit.byId('proposalFormSubmitButton').set('disabled', proposal.state == _globalCommon.STATES.DECLINED);
     };
+
+    /**
+     * Call the back-end to create or update a Proposal with the given attribute.
+     *
+     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box.
+     */
+    module.updateProposal = function(data) {
+        if (isNaN(data.key)) {
+            delete data.key;
+
+            var cachedProposal = _globalCommon.getCachedProposal(data.key);
+            if (cachedProposal) {
+                var now = new Date();
+                var expirationDate = dojo.date.stamp.fromISOString(cachedProposal.expirationDate);
+                if (expirationDate.getTime() < now.getTime()) {
+                    data.expirationDate = data.dueDate;
+                }
+            }
+        }
+        if (isNaN(data.price)) {
+            delete data.price;
+        }
+        if (isNaN(data.total)) {
+            delete data.total;
+        }
+        data.demandKey = parseInt(data.demandKey);
+        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+        data.quantity = parseInt(data.quantity);
+        data.dueDate = _globalCommon.toISOString(data.date, data.time);
+        data.metadata = data.metadata.trim();
+
+        data.hashTags = data.hashTags.split(','); // Standard array delimiter
+        if (data.demoMode) {
+            data.hashTags.push('demo');
+        }
+
+        var dfd = _globalCommon.updateRemoteProposal(data, data.key, 'demandListOverlay');
+        dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });
+    };
+
+    /**
+     * Verify if the data hosted by the identified field is correctly JSON formatted.
+     *
+     * @param {String} metadataId Identifier of the field to check.
+     * @param {Boolean} autoFormat (Optional) Indicates if the field content should be updated with clean JSON information.
+     * @return {Boolean} <code>true</code> if the data represent a valid JSON bag (can be empty), <code>false</code> otherwise.
+     */
+    module.validateMetadata = function(metadataId, autoFormat) {
+        if (!metadataId) {
+            return true;
+        }
+        var metadataField = dijit.byId(metadataId);
+        if (!metadataField) {
+            return true;
+        }
+        var metadata = metadataField.get("value");
+        if (!metadata) {
+            return true;
+        }
+        try {
+            metadata = dojo.toJson(dojo.fromJson(metadata), false);
+            if (autoFormat === null || autoFormat === true) {
+                metadataField.set("value", metadata);
+            }
+            return true;
+        }
+        catch(ex) {
+            alert(_getLabel('console', 'core_alert_invalidMetadata'));
+            dojo.addClass(metadataField.domNode, 'dijitError');
+            var handle = dojo.connect(
+                metadataField,
+                "onKeyPress",
+                null, // no context required
+                function() {
+                    dojo.removeClass(metadataField.domNode, 'dijitError');
+                    dojo.disconnect(handle);
+                }
+            );
+            metadataField.focus();
+            return false;
+        }
+    };
+
+    /**
+     * Call the back-end to create or update a Proposal with the given attribute.
+     *
+     * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box.
+     */
+    module.cancelProposal = function() {
+        dijit.byId('proposalForm').hide();
+
+        var proposalKey = dijit.byId('proposal.key').get('value');
+        var proposal = _globalCommon.getCachedProposal(proposalKey);
+
+        var messageId = proposal.state == _globalCommon.STATES.CONFIRMED ?
+              'core_alert_cancelConfirmedProposal' :
+              'core_alert_cancelPublishedProposal';
+
+        var demandKey = proposal.demandKey;
+        if (!confirm(_getLabel('console', messageId, [proposalKey, demandKey]))) {
+            return;
+        }
+
+        var data = { state: _globalCommon.STATES.CANCELLED };
+
+        var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
+        dfd.addCallback(function(response) { module.loadNewDemands() });
+    };
+
+    /**
+     * Call the back-end to close the proposal displayed in the property pane.
+     */
+    module.closeProposal = function() {
+        dijit.byId('proposalForm').hide();
+
+        var proposalKey = dijit.byId('proposal.key').get('value');
+        var data = { state: _globalCommon.STATES.CLOSED };
+
+        var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
+        dfd.addCallback(function(response) { module.loadNewDemands() });
+    }
 
     /**
      * Call the back-end to get the new Demands.

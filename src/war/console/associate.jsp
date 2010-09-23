@@ -186,12 +186,13 @@
         title="<%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_formTitle_creation", locale) %>"
     >
         <input dojoType="dijit.form.TextBox" type="hidden" id="demand.key" name="demandKey" />
+        <input dojoType="dijit.form.TextBox" type="hidden" id="demand.hashTags" name="hashTags" />
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "core_demandInfo", locale) %></legend>
             <table width="100%">
                 <tr>
                     <td align="right"><label for="demand.hashTags"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandHashTags", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="demand.hashTags" readonly="true" style="width:25em;" type="text" /></td>
+                    <td><input dojoType="dijit.form.TextBox" id="demand.visibleHashTags" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCriteria", locale) %></label></td>
@@ -231,7 +232,15 @@
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalCriteria", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="proposal.criteria" name="criteria" style="width:25em;" type="text" /></td>
+                    <td>
+                        <textarea
+                            dojoType="dijit.form.Textarea"
+                            id="proposal.criteria"
+                            name="criteria"
+                            rows="3"
+                            style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;"
+                        ></textarea><br/>
+                    </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.metadata"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalMetadata", locale) %></label></td>
@@ -252,7 +261,7 @@
             </table>
         </fieldset>
         <div style="text-align:center;">
-            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').validate();" type="submit"></button>
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return twetailer.Associate.validateMetadata('proposal.metadata') && dijit.byId('proposalForm').validate();" type="submit"></button>
             <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.Associate.cancelProposal();"></button>
             <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.Associate.closeProposal();"></button>
             <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>

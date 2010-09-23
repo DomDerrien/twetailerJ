@@ -195,6 +195,18 @@
     module.updateProposal = function(data) {
         if (isNaN(data.key)) {
             delete data.key;
+
+            var cachedProposal = _globalCommon.getCachedProposal(data.key);
+            if (cachedProposal) {
+                var now = new Date();
+                var expirationDate = dojo.date.stamp.fromISOString(cachedProposal.expirationDate);
+                if (expirationDate.getTime() < now.getTime()) {
+                    data.expirationDate = data.dueDate;
+                }
+            }
+        }
+        if (isNaN(data.price)) {
+            delete data.price;
         }
         if (isNaN(data.total)) {
             delete data.total;
@@ -205,13 +217,6 @@
         data.dueDate = _globalCommon.toISOString(data.date, data.time);
         data.hashTags = ['golf']; // TODO: offer a checkbox to allow the #demo mode
         data.metadata = dojo.toJson({pullCart: parseInt(data.pullCart), golfCart: parseInt(data.golfCart)});
-
-        var now = new Date();
-        var cachedProposal = _globalCommon.getCachedProposal(data.key);
-        var expirationDate = dojo.date.stamp.fromISOString(cachedProposal.expirationDate);
-        if (expirationDate.getTime() < now.getTime()) {
-            data.expirationDate = data.dueDate;
-        }
 
         var dfd = _globalCommon.updateRemoteProposal(data, data.key, 'demandListOverlay');
         dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });
@@ -242,19 +247,6 @@
         var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     };
-
-    /**
-     * Call the back-end to close the proposal displayed in the property pane.
-     */
-    module.closeProposal = function() {
-        dijit.byId('proposalForm').hide();
-
-        var proposalKey = dijit.byId('proposal.key').get('value');
-        var data = { state: _globalCommon.STATES.CLOSED };
-
-        var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
-        dfd.addCallback(function(response) { module.loadNewDemands() });
-    }
 
     /**
      * Call the back-end to get the new Demands.
