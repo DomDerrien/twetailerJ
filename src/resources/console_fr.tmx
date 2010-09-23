@@ -130,6 +130,22 @@
                 <seg>Décliner</seg>
             </tuv>
         </tu>
+        <tu tuid="add_ccInfo_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Add another email address</seg>
+            </tuv>
+        </tu>
+        <tu tuid="remove_ccInfo_button" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Remove this email address</seg>
+            </tuv>
+        </tu>
         <tu tuid="shared_locale_view_map_link" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -886,6 +902,20 @@
                 <seg>Due Date</seg>
             </tuv>
         </tu>
+        <tu tuid="core_theader_hashTags" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Hash Tags</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_theader_metadata" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Hash Tags</seg>
+            </tuv>
+        </tu>
         <tu tuid="core_theader_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1068,6 +1098,13 @@
                 <seg>Due Date:</seg>
             </tuv>
         </tu>
+        <tu tuid="core_demandForm_demandHashTags" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Hash Tags:</seg>
+            </tuv>
+        </tu>
         <tu tuid="core_demandForm_demandRegion" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1103,6 +1140,13 @@
                 <seg>Last modification date:</seg>
             </tuv>
         </tu>
+        <tu tuid="core_demandForm_demandMetadata" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Metadata:</seg>
+            </tuv>
+        </tu>
         <tu tuid="core_demandForm_demandCriteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1131,22 +1175,6 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>email@example.com</seg>
-            </tuv>
-        </tu>
-        <tu tuid="core_demandForm_addCCButtonLabel" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-tier">dojotk</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Add another email address</seg>
-            </tuv>
-        </tu>
-        <tu tuid="core_demandForm_removeCCButtonLabel" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-tier">dojotk</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Remove this email address</seg>
             </tuv>
         </tu>
         <tu tuid="core_proposalForm_formTitle_view" dataType="text">
@@ -1222,11 +1250,18 @@
                 <seg>Total (tax included):</seg>
             </tuv>
         </tu>
-        <tu tuid="core_proposalForm_proposalTime" dataType="text">
+        <tu tuid="core_proposalForm_proposalDueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Proposed Time:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalHashTags" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Hash Tags:</seg>
             </tuv>
         </tu>
         <tu tuid="core_proposalForm_proposalCreationDate" dataType="text">
@@ -1509,7 +1544,7 @@
                 <seg>Number of Golf Carts:</seg>
             </tuv>
         </tu>
-        <tu tuid="gol_demandForm_demandDueDate" dataType="text">
+        <tu tuid="golf_demandForm_demandDueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -1580,6 +1615,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Round Price:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="golf_proposalForm_proposalDueDate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Proposed Tee-off Time:</seg>
             </tuv>
         </tu>
         <tu tuid="golf_alert_cancelPublishedProposal" dataType="text">

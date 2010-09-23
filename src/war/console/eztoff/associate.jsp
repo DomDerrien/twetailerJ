@@ -44,6 +44,7 @@
     }
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "golfAssoc_localized_page_name", locale) %></title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
@@ -124,7 +125,7 @@
                         dojoType="dojox.form.BusyButton"
                         iconClass="silkIcon silkIconRefresh"
                         id="refreshButton"
-                        onclick="twetailer.golf.Associate.loadNewDemands('<%= twetailer.dto.Command.QueryPointOfView.SALE_ASSOCIATE %>', 'refreshButton', 'demandListOverlay');"
+                        onclick="twetailer.golf.Associate.loadNewDemands();"
                     ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
                 </div>
             </div>
@@ -147,7 +148,7 @@
                            <th field="<%= Demand.KEY %>" formatter="twetailer.Associate.displayDemandKey" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_demandKey", locale) %></th>
                            <th field="<%= Demand.LOCATION_KEY %>" formatter="twetailer.Common.displayLocale" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_locale", locale) %></th>
                            <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_dueDate", locale) %></th>
-                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.Common.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_expirationDate", locale) %></th>
+                           <%--th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_expirationDate", locale) %></th--%>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.golf.Associate.displayProposalKeys" styles="padding:2px 5px;" width="50%"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_proposalKeys", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_quantity", locale) %></th>
                            <th field="<%= Demand.META_DATA %>" formatter="twetailer.golf.Common.displayPullCartNb" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_metadata_pullCart", locale) %></th>
@@ -160,8 +161,8 @@
                            ><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_criteria", locale) %></th>
                            <th field="<%= Demand.STATE %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_state", locale) %></th>
                            <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_modificationDate", locale) %></th>
-                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.Common.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_creationDate", locale) %></th>
-                           <!--th
+                           <%--th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_creationDate", locale) %></th--%>
+                           <%--th
                                cellType="dojox.grid.cells.Select"
                                editable="true"
                                field="status"
@@ -169,7 +170,7 @@
                                options="Not Set,Excluded,Always Included,Cache Bypasser"
                                values="NotSet,Excluded,Included,CacheBypasser"
                                width="20%"
-                           >Status</th-->
+                           >Status</th--%>
                     </tr>
                 </thead>
             </table>
@@ -206,7 +207,7 @@
                     <td><input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.metadata.golfCart" name="golfCart" style="width:3em;" type="text" value="0" /> </td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalTime", locale) %></label></td>
+                    <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalDueDate", locale) %></label></td>
                     <td>
                         <input dojoType="dijit.form.DateTextBox" id="proposal.date" name="date" required="true" type="text" />
                         <input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T07:00:00" />
@@ -235,7 +236,7 @@
             </table>
         </fieldset>
         <div style="text-align:center;">
-            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').isValid();" type="submit"></button>
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').validate();" type="submit"></button>
             <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.golf.Associate.cancelProposal();"></button>
             <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Associate.closeProposal();"></button>
             <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>

@@ -43,6 +43,7 @@
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "golfConsu_localized_page_name", locale) %></title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta http-equiv="content-language" content="<%= localeId %>" />
@@ -131,7 +132,7 @@
                         dojoType="dojox.form.BusyButton"
                         iconClass="silkIcon silkIconRefresh"
                         id="refreshButton"
-                        onclick="twetailer.golf.Consumer.loadNewDemands('<%= twetailer.dto.Command.QueryPointOfView.CONSUMER %>', 'refreshButton', 'demandListOverlay');"
+                        onclick="twetailer.golf.Consumer.loadNewDemands();"
                     ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
                 </div>
             </div>
@@ -156,7 +157,7 @@
                            <th field="<%= Demand.KEY %>" formatter="twetailer.golf.Consumer.displayDemandKey" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_demandKey", locale) %></th>
                            <th field="<%= Demand.LOCATION_KEY %>" formatter="twetailer.Common.displayLocale" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_locale", locale) %></th>
                            <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_dueDate", locale) %></th>
-                           <th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.Common.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_expirationDate", locale) %></th>
+                           <%--th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_expirationDate", locale) %></th--%>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.golf.Consumer.displayProposalKeys" styles="padding:2px 5px;" width="200px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_proposalKeys", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_quantity", locale) %></th>
                            <th field="<%= Demand.META_DATA %>" formatter="twetailer.golf.Common.displayPullCartNb" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_metadata_pullCart", locale) %></th>
@@ -170,7 +171,7 @@
                            <th fields="<%= Demand.CC %>" formatter="twetailer.Common.displayCCList" styles="padding:2px 5px;" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_ccList", locale) %></th>
                            <th field="<%= Demand.STATE %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_state", locale) %></th>
                            <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_modificationDate", locale) %></th>
-                           <th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.Common.displayDateTime" hidden="true" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_creationDate", locale) %></th>
+                           <%--th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_creationDate", locale) %></th--%>
                     </tr>
                 </thead>
             </table>
@@ -231,7 +232,7 @@
                                         dojoType="dijit.form.Button"
                                         iconClass="silkIcon silkIconGPS"
                                         id="detectLocationButton"
-                                        onclick="twetailer.golf.Common.getBrowserLocation('demandFormOverlay');"
+                                        onclick="twetailer.Common.fetchBrowserLocation('demand.postalCode', 'demand.countryCode', 'demandFormOverlay');"
                                         showLabel="false"
                                         title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
                                     ></button>
@@ -249,7 +250,6 @@
                                     >
                                             <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                                             <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
-                                            <!--option value="FR"><%= LabelExtractor.get(ResourceFileId.master, "country_FR", locale) %></option-->
                                     </select>
                                 </td>
                             </tr>
@@ -259,7 +259,7 @@
                                     <button
                                         dojoType="dijit.form.Button"
                                         iconClass="silkIcon silkIconGMaps"
-                                        onclick="twetailer.Common.showDemandLocaleMap(dijit.byId('demand.postalCode').get('value'), dijit.byId('demand.countryCode').get('value'));"
+                                        onclick="twetailer.Common.showMap(dijit.byId('demand.postalCode').get('value'), dijit.byId('demand.countryCode').get('value'));"
                                     ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
                                 </td>
                             </tr>
@@ -315,7 +315,7 @@
                                             id="friendButton1"
                                             onclick="twetailer.Common.manageFriendRow(1);"
                                             showLabel="false"
-                                            title="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_addCCButtonLabel", locale) %>"
+                                            title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
                                         ></button>
                                     </td>
                                 </tr>
@@ -330,7 +330,7 @@
             </table>
         </fieldset>
         <div style="text-align:center;">
-            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="demandFormSubmitButton" onclick="return dijit.byId('demandForm').isValid();" type="submit"></button>
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="demandFormSubmitButton" onclick="return dijit.byId('demandForm').validate();" type="submit"></button>
             <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandCancel" id="demandFormCancelButton" onclick="twetailer.golf.Consumer.cancelDemand('demandForm', 'demand.key');"></button>
             <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="demandFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('demandForm', 'demand.key');"></button>
             <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('demandForm').hide();"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
@@ -426,7 +426,7 @@
                             disabled="true"
                             dojoType="dijit.form.Button"
                             iconClass="silkIcon silkIconGMaps"
-                            onclick="twetailer.Common.showDemandLocaleMap(dijit.byId('store.postalCode').get('value'), dijit.byId('store.countryCode').get('value'));"
+                            onclick="twetailer.Common.showMap(dijit.byId('store.postalCode').get('value'), dijit.byId('store.countryCode').get('value'));"
                         ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
                     </td>
                 </tr>

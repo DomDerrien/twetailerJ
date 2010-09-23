@@ -72,7 +72,7 @@
         if (modifiableDemand) {
             cellContent += '<br/>';
         }
-        return cellContent + _localCommon.displayProposalKeys(proposalKeys, rowIndex, updateLabel);
+        return cellContent + _globalCommon.displayProposalKeys(proposalKeys, rowIndex, updateLabel);
     };
 
     /**
@@ -86,8 +86,8 @@
      */
     module.displayProposalForm = function(proposedRowIndex, proposalKey) {
         // rowIndex bind to the handler
-        if (!proposedRowIndex) {
-            if (!_gridRowIndex) {
+        if (proposedRowIndex == null) {
+            if (_gridRowIndex == null) {
                 return;
             }
             proposedRowIndex = _gridRowIndex;
@@ -116,7 +116,7 @@
             proposalForm.set('title', _getLabel('console', 'golf_proposalForm_formTitle_creation', [item.key[0]]));
             dijit.byId('proposalFormSubmitButton').set('label', _getLabel('console', 'golf_cmenu_createProposal'));
 
-            if (item.metadata) {
+            if (item.metadata && item.metadata[0]) {
                 var metadata = dojo.fromJson(item.metadata[0]);
                 if (metadata.pullCart) {
                     dijit.byId('proposal.metadata.pullCart').set('value', metadata.pullCart);
@@ -137,27 +137,15 @@
             dijit.byId('proposalFormCloseButton').set('label', _getLabel('console', 'golf_cmenu_closeProposal', [proposalKey]));
             dojo.query('.existingAttribute').style('display', '');
 
-            _loadProposal(proposalKey);
+            if (_globalCommon.getCachedProposal(proposalKey)) {
+                _fetchProposal(_globalCommon.getCachedProposal(proposalKey));
+            }
+            else {
+                var dfd = _globalCommon.loadRemoteProposal(proposalKey, 'proposalFormOverlay', _queryPointOfView);
+                dfd.addCallback(function(response) { _fetchProposal(_globalCommon.getCachedProposal(proposalKey)); });
+            }
         }
-        dijit.byId('proposal.criteria').focus();
         proposalForm.show();
-    };
-
-    /**
-     * Load the identified proposal by its key from a local cache or from the remote back-end.
-     * The control is passed to the <code>_fetchProposal()</code> for the update of dialog box
-     * with the Proposal attributes.
-     *
-     * @param {String} proposalKey Identifier of the proposal to load.
-     */
-    var _loadProposal = function(proposalKey) {
-        if (_globalCommon.getCachedProposal(proposalKey)) {
-            _fetchProposal(_globalCommon.getCachedProposal(proposalKey));
-        }
-        else {
-            var dfd = _globalCommon.loadRemoteProposal(proposalKey, 'proposalFormOverlay', _queryPointOfView);
-            dfd.addCallback(function(response) { _fetchProposal(_globalCommon.getCachedProposal(proposalKey)); });
-        }
     };
 
     /**
@@ -218,7 +206,14 @@
         data.hashTags = ['golf']; // TODO: offer a checkbox to allow the #demo mode
         data.metadata = dojo.toJson({pullCart: parseInt(data.pullCart), golfCart: parseInt(data.golfCart)});
 
-        var dfd = _localCommon.updateRemoteProposal(data, data.key, 'demandListOverlay');
+        var now = new Date();
+        var cachedProposal = _globalCommon.getCachedProposal(data.key);
+        var expirationDate = dojo.date.stamp.fromISOString(cachedProposal.expirationDate);
+        if (expirationDate.getTime() < now.getTime()) {
+            data.expirationDate = data.dueDate;
+        }
+
+        var dfd = _globalCommon.updateRemoteProposal(data, data.key, 'demandListOverlay');
         dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });
     };
 
@@ -244,7 +239,7 @@
 
         var data = { state: _globalCommon.STATES.CANCELLED };
 
-        var dfd = _localCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
+        var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     };
 
@@ -257,7 +252,7 @@
         var proposalKey = dijit.byId('proposal.key').get('value');
         var data = { state: _globalCommon.STATES.CLOSED };
 
-        var dfd = _localCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
+        var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
         dfd.addCallback(function(response) { module.loadNewDemands() });
     }
 

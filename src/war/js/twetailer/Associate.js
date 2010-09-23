@@ -88,7 +88,88 @@
         if (modifiableDemand) {
             cellContent += '<br/>';
         }
-        return cellContent + _localCommon.displayProposalKeys(proposalKeys, rowIndex, updateLabel);
+        return cellContent + _globalCommon.displayProposalKeys(proposalKeys, rowIndex, updateLabel);
+    };
+
+    /**
+     * Open a dialog box with the attributes of the identified proposal. If there's no
+     * proposalKey, the variable set by the contextual menu handler for the Demand grid
+     * is used to identified a selected grid row and to propose a dialog for a new
+     * proposal creation.
+     *
+     * @param {Number} proposedRowIndex (Optional) index given when a link on the proposal key is activated.
+     * @param {Number} proposalKey (Optional) index given when a link on the proposal key is activated.
+     */
+    module.displayProposalForm = function(proposedRowIndex, proposalKey){
+        // rowIndex bind to the handler
+        if (proposedRowIndex == null) {
+            if (_gridRowIndex == null) {
+                return;
+            }
+            proposedRowIndex = _gridRowIndex;
+        }
+
+        var item = _grid.getItem(proposedRowIndex);
+        if (!item) {
+            return;
+        }
+
+        var proposalForm = dijit.byId('proposalForm');
+        proposalForm.reset();
+
+        dijit.byId('demand.key').set('value', item.key[0]); // hidden field generating "proposal.demandKey"
+
+        var dueDate = dojo.date.stamp.fromISOString(item.dueDate[0]);
+        dijit.byId('proposal.date').set('value', dueDate);
+        dijit.byId('proposal.date').constraints.min = new Date();
+        dijit.byId('proposal.time').set('value', dueDate);
+        if (dojo.isArray(item.criteria)) {
+            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
+        }
+        if (item.metadata && item.metadata[0]) {
+            dijit.byId('demand.metadata').set('value', _globalCommon.displayMetadata(item.metadata[0]));
+        }
+        if (item.hashTags) {
+            dijit.byId('demand.hashTags').set('value', _globalCommon.displayHashTags(item.hashTags));
+        }
+        dijit.byId('proposal.quantity').set('value', item.quantity[0]);
+
+        if (!proposalKey) {
+            proposalForm.set('title', _getLabel('console', 'core_proposalForm_formTitle_creation', [item.key[0]]));
+            dijit.byId('proposalFormSubmitButton').set('label', _getLabel('console', 'core_cmenu_createProposal'));
+
+            dojo.query('.updateButton').style('display', '');
+            dojo.query('.existingAttribute').style('display', 'none');
+            dojo.query('.closeButton').style('display', 'none');
+        }
+        else {
+            proposalForm.set('title', _getLabel('console', 'core_proposalForm_formTitle_edition', [proposalKey, item.key[0]]));
+            dijit.byId('proposalFormSubmitButton').set('label', _getLabel('console', 'core_cmenu_updateProposal', [proposalKey]));
+            dijit.byId('proposalFormCancelButton').set('label', _getLabel('console', 'core_cmenu_cancelProposal', [proposalKey]));
+            dijit.byId('proposalFormCloseButton').set('label', _getLabel('console', 'core_cmenu_closeProposal', [proposalKey]));
+            dojo.query('.existingAttribute').style('display', '');
+
+            if (_globalCommon.getCachedProposal(proposalKey)) {
+                _fetchProposal(_globalCommon.getCachedProposal(proposalKey));
+            }
+            else {
+                var dfd = _globalCommon.loadRemoteProposal(proposalKey, 'proposalFormOverlay', _queryPointOfView);
+                dfd.addCallback(function(response) { _fetchProposal(_globalCommon.getCachedProposal(proposalKey)); });
+            }
+        }
+        proposalForm.show();
+    };
+
+    /**
+     * Use the given Proposal to fetch the corresponding dialog box.
+     *
+     * @param {Proposal} proposal Object to represent.
+     */
+    var _fetchProposal = function(proposal) {
+        dijit.byId('proposal.key').set('value', proposal.key);
+        dijit.byId('proposal.price').set('value', proposal.price);
+        dijit.byId('proposal.total').set('value', proposal.total);
+        dijit.byId('proposal.quantity').set('value', proposal.quantity);
     };
 
     /**

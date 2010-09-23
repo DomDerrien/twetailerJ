@@ -53,6 +53,7 @@
     Long saleAssociateKey = consumer.getSaleAssociateKey();
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
 <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
@@ -118,7 +119,7 @@
         <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center" style="margin: 0 10px;">
             <blockquote style="text-align: center; font-size: xx-large;">Under construction!</blockquote>
         </div>
-        <!--
+        <%--
         <div
             dojoType="dijit.layout.TabContainer"
             id="centerZone"
@@ -178,7 +179,6 @@
                             <select dojoType="dijit.form.Select" id="consumerCountry" name="<%= Location.COUNTRY_CODE %>">
                                 <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                                 <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
-                                <option value="FR"><%= LabelExtractor.get(ResourceFileId.master, "country_FR", locale) %></option>
                             </select><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_country", locale) %></span>
                         </div>
@@ -312,7 +312,7 @@
             >
             </div>
         </div>
-        -->
+        --%>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get(ResourceFileId.master, "product_rich_copyright", locale) %>
         </div>

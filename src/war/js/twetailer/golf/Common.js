@@ -52,30 +52,4 @@
         catch (ex) { alert(ex); }
         return 0;
     }
-
-    /**
-     * Formatter for the list of attached proposal keys.
-     *
-     * @param {Number[]} proposalKeys List of proposal keys.
-     * @param {Number} rowIndex index of the data in the grid, used by the trigger launching the Proposal properties pane.
-     * @param {Array} decoration Link definition wrapping a proposal key with:
-     *                   ${0}: place holder for the proposalKey
-     *                   ${1}: place holder for the rowIndex.
-     * @return {String} Formatter list of one link per proposal key, a link opening a dialog with the proposal detail.
-     */
-    module.displayProposalKeys = function(proposalKeys, rowIndex, decoration) {
-        if (!proposalKeys) {
-            return '';
-        }
-        if (dojo.isArray(proposalKeys)) {
-            var value = [], pK;
-            var limit = proposalKeys.length;
-            for (var idx = 0; idx < limit; idx++) {
-                pK = proposalKeys[idx];
-                value.push(dojo.string.substitute(decoration || '${0}', [pK, rowIndex]));
-            }
-            return value.join(' ');
-        }
-        return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_array') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
-    };
 })(); // End of the function limiting the scope of the private variables
