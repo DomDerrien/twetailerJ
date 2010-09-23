@@ -961,7 +961,7 @@
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p></p>
+                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p>
                </seg>
             </tuv>
         </tu>
@@ -994,7 +994,7 @@
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p></p>
+                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p>
                </seg>
             </tuv>
         </tu>
@@ -1068,7 +1068,7 @@
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p></p>
+                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1101,7 +1101,7 @@
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p></p>
+                    <p>Request: {proposal>demandKey},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1910,7 +1910,7 @@
                     if you've received this message in error, click <a href="mailto:Support@AnotherSocialEconomy.com?body=I should not have been emailed. Please remove my mail address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>request: {proposal>demandKey},  Proposal: {proposal>key}.</p></p>
+                    <p>request: {proposal>demandKey},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1949,7 +1949,7 @@
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my mail address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Request: {demand>key},  Proposal: {proposal>key}.</p></p>
+                    <p>Request: {demand>key},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -2128,7 +2128,7 @@
                     <p>The <strong>Proposal# {proposal>key}</strong> has been closed.</p>
                     <p>Your score is going to be updated accordingly.</p>
                     {message>footer}
-                    <p>Reference#: {demand>key},  Proposal: {proposal>key}.</p></p>
+                    <p>Reference#: {demand>key},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -2151,7 +2151,7 @@
                     <p>The reservation under the <strong>ezToff Proposal# {proposal>key}</strong> has been closed.</p>
                     <p>Your score is going to be updated accordingly.</p>
                     {message>footer}
-                    <p>Reference#: {demand>key},  Proposal: {proposal>key}.</p></p>
+                    <p>Reference#: {demand>key},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -2407,7 +2407,7 @@
                     <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Request:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Request: {demand>key},  Proposal: {proposal>key}.</p></p>
+                    <p>Request: {demand>key},  Proposal: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
