@@ -78,10 +78,10 @@
         Note that some values should be <a href="http://en.wikipedia.org/wiki/Percent-encoding">encoded for URLs</a> to avoid collisions with others.
     </p>
     <ul>
+        <li><code>lg</code>:  ISO code of the interface language (optional, default: <code><%= LocaleValidator.DEFAULT_LANGUAGE %></code>).</li>
         <li><code>referralId</code>: golf course identifier (mandatory).</li>
         <li><code>postalCode</code>: postal code from the golf course address (mandatory).</li>
         <li><code>countryCode</code>:  ISO code of the golf course location (optional, default: <code><%= LocaleValidator.DEFAULT_COUNTRY_CODE %></code>).</li>
-        <li><code>languageId</code>:  ISO code of the interface language (optional, default: <code><%= LocaleValidator.DEFAULT_LANGUAGE %></code>).</li>
         <li><code>color</code>: text color of the input fields' label (optional, default: <code>white</code>).</li>
         <li><code>color-title</code>: text color of the wizard panes' title (optional, default: <code>green</code>).</li>
         <li><code>background-color</code>: color of the wizard panes' background (optional, default: <code>#5ddc1e</code>).</li>
@@ -94,7 +94,7 @@
     <pre
         style="border:1px solid gray; padding:15px;float:left;"
 >&lt;iframe
-    src="http://twetailer.appspot.com/widget/eztoff.jsp?<span class="n">languageId</span>=<span class="v">fr_CA</span>&<span class="n">postalCode</span>=<span class="v">H3C2N6</span>&<span class="n">countryCode</span>=<span class="v">CA</span>&<span class="n">referralId</span>=<span class="v">6456TRT435454-6878</span>"
+    src="http://twetailer.appspot.com/widget/eztoff.jsp?<span class="n">lg</span>=<span class="v">fr_CA</span>&<span class="n">postalCode</span>=<span class="v">H3C2N6</span>&<span class="n">countryCode</span>=<span class="v">CA</span>&<span class="n">referralId</span>=<span class="v">6456TRT435454-6878</span>"
     style="width:200px;height:400px;border:0 none;"
     frameborder="0"
     type="text/html"

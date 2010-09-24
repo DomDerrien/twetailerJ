@@ -300,7 +300,7 @@
                                             id="email1"
                                             invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                             name="email1"
-                                            placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
+                                            placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "shared_email_sample", locale) %>"
                                             regExp="<%= emailRegExp %>"
                                             required="false"
                                             style="width:100%;"

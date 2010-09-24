@@ -150,7 +150,7 @@
                            <%--th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_expirationDate", locale) %></th--%>
                            <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.Associate.displayProposalKeys" styles="padding:2px 5px;" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_proposalKeys", locale) %></th>
                            <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_quantity", locale) %></th>
-                           <th fields="<%= Demand.HASH_TAGS %>" formatter="twetailer.Common.displayHashTags" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_metadata", locale) %></th>
+                           <th fields="<%= Demand.HASH_TAGS %>" formatter="twetailer.Common.displayHashTags" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_hashTags", locale) %></th>
                            <th
                                fields="<%= Demand.CRITERIA %>"
                                formatter="twetailer.Common.displayCriteria"

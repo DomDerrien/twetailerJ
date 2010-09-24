@@ -24,7 +24,7 @@
     String cdnBaseURL = appSettings.getCdnBaseURL();
 
     // Locale detection
-    String localeId = request.getParameter("languageId");
+    String localeId = request.getParameter("lg");
     if (localeId == null) {
         localeId = LocaleValidator.DEFAULT_LANGUAGE;
     }
@@ -109,11 +109,11 @@
     <div id="centerZone">
         <div id="pane1">
             <div dojoType="dijit.form.Form" id="form1" class="content">
-                <div class="brand">Community Buying Network</div>
-                <div class="title">What are you going to buy?</div>
+                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
+                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
-                        <td style="vertical-align:top; padding-top:7px;"><label for="tags">Details:</label></td>
+                        <td style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
                         <td>
                             <textarea
                                 dojoType="dijit.form.Textarea"
@@ -127,25 +127,20 @@
                                 dojoType="dijit.form.DropDownButton"
                                 style="float:right;margin-right:-1px;"
                             >
-                                <span>Samples</span>
+                                <span><%= LabelExtractor.get(ResourceFileId.third, "cw_helper_title", locale) %></span>
                                 <div
                                     dojoType="dijit.TooltipDialog"
-                                    title="<%= LabelExtractor.get(ResourceFileId.third, "sep_demand_samples_button", locale) %>"
-                                >
-                                    <li>Samsung HDTV UN46C9000</li>
-                                    <li>Jonas Brothers CD album </li>
-                                </div>
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "cw_helper_title", locale) %>"
+                                ><%= LabelExtractor.get(ResourceFileId.third, "cw_helper_text", locale) %></div>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="quantity">Quantity:</label></td>
+                        <td><label for="quantity"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_quantity", locale) %></label></td>
                         <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="1" /></td>
                     </tr>
                 </table>
-                <div class="comment">
-                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
-                </div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
                         <td style="text-align:right;">
@@ -154,31 +149,31 @@
                                 id="next1"
                                 onclick="localModule.switchPane(1, 2);"
                                 style="color:black;"
-                                title="Where abouts?"
-                            >Next &raquo;</button>
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep2_hint", locale) %>"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
-                            <span class="hint">Where abouts?</span>
+                            <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep2_hint", locale) %></span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
                 <div class="progressBar">
-                    <div class="step active">What</div>
-                    <div class="step inactive">Where</div>
-                    <div class="step inactive">When</div>
-                    <div class="step inactive">Who</div>
+                    <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_progressBarItem", locale) %></div>
                 </div>
-                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+                <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
             </div>
         </div>
         <div id="pane2" style="display:none;">
             <div dojoType="dijit.form.Form" id="form2" class="content">
-                <div class="brand">Community Buying Network</div>
-                <div class="title">Where abouts?</div>
+                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
+                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
-                        <td><label for="postalCode">Postal code:</label></td>
+                        <td><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
                         <td>
                             <input
                                 dojoType="dijit.form.ValidationTextBox"
@@ -199,12 +194,12 @@
                                 id="detectLocationButton"
                                 onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', 'widgetOverlay');"
                                 showLabel="false"
-                                title="<%= LabelExtractor.get(ResourceFileId.third, "ga_cmenu_detectLocale", locale) %>"
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
                             ></button>
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="countryCode">Country:</label></td>
+                        <td><label for="countryCode"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
                         <td colspan="2">
                             <select
                                 dojoType="dojox.form.DropDownSelect"
@@ -221,101 +216,97 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="countryCode">Within:</label></td>
+                        <td><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_range", locale) %></label></td>
                         <td colspan="2">
                             <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" /> km
                         </td>
                     </tr>
                 </table>
-                <div class="comment">
-                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
-                </div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(2, 1);">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(2, 1);"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_previous", locale) %></a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
                                 id="next2"
                                 onclick="localModule.switchPane(2, 3);"
                                 style="color:black;"
-                                title="When would you like it by?"
-                            >Next &raquo;</button>
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep3_hint", locale) %>"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
-                            <span class="hint">When would you like it by?</span>
+                            <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep3_hint", locale) %></span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
                 <div class="progressBar">
-                    <div class="step inactive">What</div>
-                    <div class="step active">Where</div>
-                    <div class="step inactive">When</div>
-                    <div class="step inactive">Who</div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_progressBarItem", locale) %></div>
+                    <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_progressBarItem", locale) %></div>
                 </div>
-                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+                <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
             </div>
         </div>
         <div id="pane3" style="display:none;">
             <div dojoType="dijit.form.Form" id="form3" class="content">
-                <div class="brand">Community Buying Network</div>
-                <div class="title">When would you like it by?</div>
+                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
+                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
-                        <td><label for="date">Expires:</label></td>
+                        <td><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_date", locale) %></label></td>
                         <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
                     </tr>
                     <tr>
-                        <td><label for="time">Time:</label></td>
+                        <td><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
                         <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T00:00" /></td>
                     </tr>
                 </table>
-                <div class="comment">
-                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
-                </div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(3, 2);">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(3, 2);"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_previous", locale) %></a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
                                 id="next3"
                                 onclick="localModule.switchPane(3, 4);"
                                 style="color:black;"
-                                title="Who should we contact?"
-                            >Next &raquo;</button>
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep4_hint", locale) %>"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
-                            <span class="hint">Who should we contact?</span>
+                            <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep4_hint", locale) %></span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
                 <div class="progressBar">
-                    <div class="step inactive">What</div>
-                    <div class="step inactive">Where</div>
-                    <div class="step active">When</div>
-                    <div class="step inactive">Who</div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_progressBarItem", locale) %></div>
+                    <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_progressBarItem", locale) %></div>
                 </div>
-                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+                <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
             </div>
         </div>
         <div id="pane4" style="display:none;">
             <div dojoType="dijit.form.Form" id="form4" class="content">
-                <div class="brand">Community Buying Network</div>
-                <div class="title">Who should we contact?</div>
+                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
+                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tbody id="friendList">
                         <tr id="friendRow0">
-                            <td style="vertical-align:top;"><label for="email0">Email address:</label></td>
+                            <td style="vertical-align:top;"><label for="email0"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_owner_email", locale) %></label></td>
                             <td style="text-align: right;" colspan="2">
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email0"
                                     invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                     name="email0"
-                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
+                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "shared_email_sample", locale) %>"
                                     regExp="<%= emailRegExp %>"
                                     required="true"
                                     style="width:100%;"
@@ -325,14 +316,14 @@
                             </td>
                         </tr>
                         <tr id="friendRow1">
-                            <td><label for="email1">CC others:</label></td>
+                            <td><label for="email1"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %></label></td>
                             <td style="text-align: right;">
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email1"
                                     invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
                                     name="email1"
-                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccPlaceHolder", locale) %>"
+                                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "shared_email_sample", locale) %>"
                                     regExp="<%= emailRegExp %>"
                                     required="false"
                                     style="width:100%;"
@@ -345,7 +336,7 @@
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
                                     id="friendButton1"
-                                    onclick="twetailer.Common.manageFriendRow(1, 'CC others:');"
+                                    onclick="twetailer.Common.manageFriendRow(1, '<%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale).replaceAll("\\'", "\\\\'") %>');"
                                     showLabel="false"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
                                 ></button>
@@ -353,45 +344,39 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="comment">
-                    Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.
-                </div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
-                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(4, 3);">&laquo; back</a></td>
+                        <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(4, 3);"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_previous", locale) %></a></td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
                                 id="next4"
                                 onclick="localModule.sendRequest();"
                                 style="color:black;"
-                                title="Post request"
-                            >Next &raquo;</button>
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_send_hint", locale) %>"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_send", locale) %></button>
                             <br/>
-                            <span class="hint">Post request</span>
+                            <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_send_hint", locale) %></span>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
                 <div class="progressBar">
-                    <div class="step inactive">What</div>
-                    <div class="step inactive">Where</div>
-                    <div class="step inactive">When</div>
-                    <div class="step active">Who</div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_progressBarItem", locale) %></div>
+                    <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_progressBarItem", locale) %></div>
                 </div>
-                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+                <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
             </div>
         </div>
         <div id="pane5" style="display:none;">
             <div class="content">
-                <div class="brand">Community Buying Network</div>
-                <div class="title">Check your email</div>
-                <div class="comment">
-                    Thanks for shopping on the Community Buying Network.
-                    We'll be sending you an email shortly to confirm your request and
-                    hope to follow-up shortly with Proposals from local retailers.
-                </div>
+                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
+                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_5_title", locale) %></div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_5_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td style="text-align:center;">
@@ -399,20 +384,20 @@
                                 dojoType="dijit.form.Button"
                                 onclick="localModule.switchPane(5, 1);"
                                 style="color:black;"
-                                title="Make another request"
-                            >&laquo; Make another request</button>
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset_hint", locale) %>"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset", locale) %></button>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="footer">
                 <div class="progressBar">
-                    <div class="step inactive">What</div>
-                    <div class="step inactive">Where</div>
-                    <div class="step inactive">When</div>
-                    <div class="step inactive">Who</div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_progressBarItem", locale) %></div>
                 </div>
-                <div class="poweredBy">Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></div>
+                <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
             </div>
         </div>
     </div>
@@ -522,6 +507,13 @@
             handleAs: "json",
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
+                    // Update pane content
+                    var placeHolder = dojo.byId("sender.email");
+                    if (placeHolder) {
+                        placeHolder.innerHTML = ""; // Reset content
+                        placeHolder.appendChild(dojo.doc.createTextNode(dijit.byId("email0").get("value"))); // Safe insert
+                    }
+                    // Switch to pane
                     localModule.switchPane(4, 5);
                 }
                 else {

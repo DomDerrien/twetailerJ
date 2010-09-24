@@ -384,7 +384,7 @@
             <prop type="x-tier">javarb</prop>
             <note>For the command line arguments, accepted labels for the reference attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
-                <seg>demand,reference,identifier,id,demandKey,dk</seg>
+                <seg>demand,reference,identifier,id,demandKey,dk,request</seg>
             </tuv>
         </tu>
 

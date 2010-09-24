@@ -51,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Droits réservés \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp;amp; associates inc.</a></seg>
+                <seg>Droits réservés \u00a9 2009-2010 Milstein &amp;amp; associates inc.</seg>
             </tuv>
         </tu>
         <tu tuid="product_rich_copyright" dataType="text">
@@ -249,7 +249,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>demande,référence,identifiant,id</seg>
+                <seg>demande,référence,identifiant,id,requête</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_range" dataType="text">
