@@ -187,6 +187,15 @@
             </tuv>
         </tu>
 
+        <tu tuid="demoMode_checkbox" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>Demo mode</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="shared_email_sample" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -2425,7 +2434,16 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li></seg>
+                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li><li>KitchenAid Artisan Empire Red</li><li>4 Michelin Aplin tires 215/50 R17</li></seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cw_alert_tag_missing" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>You need to describe your request with few keywords. See proposed Samples.</seg>
             </tuv>
         </tu>
 

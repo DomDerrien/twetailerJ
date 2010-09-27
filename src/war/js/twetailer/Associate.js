@@ -3,6 +3,7 @@
     var module = dojo.provide('twetailer.Associate');
 
     dojo.require('twetailer.Common');
+    dojo.require('dijit.Tooltip');
 
     /* Set of local variables */
     var _globalCommon = twetailer.Common,
@@ -262,13 +263,25 @@
             return true;
         }
         catch(ex) {
-            alert(_getLabel('console', 'core_alert_invalidMetadata'));
+            var ttId = metadataId + 'tootipId';
+            var tooltip = dijit.byId(ttId);
+            if (!tooltip) {
+                tooltip = new dijit.Tooltip({
+                    id: ttId,
+                    connectId: [metadataId],
+                    label: _getLabel('console', 'core_alert_invalidMetadata'),
+                    position: ["above", "below"],
+                    showDelay: 0
+                });
+            }
+            dojo.style(tooltip.domNode, "visibility", "visible");
             dojo.addClass(metadataField.domNode, 'dijitError');
             var handle = dojo.connect(
                 metadataField,
                 "onKeyPress",
                 null, // no context required
                 function() {
+                    dijit.byId(ttId).destroy();
                     dojo.removeClass(metadataField.domNode, 'dijitError');
                     dojo.disconnect(handle);
                 }

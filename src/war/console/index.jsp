@@ -93,18 +93,32 @@
 
     <%
     if (useCDN) {
-    %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
-        src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
-        type="text/javascript"
-    ></script><%
+    %><script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: './',
+        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: '<%= localeId %>'
+    };
+    </script>
+    <script src="<%= cdnBaseURL %>/dojo/dojo.xd.js" type="text/javascript"></script><%
     }
     else { // elif (!useCDN)
-    %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
-        src="/js/dojo/dojo/dojo.js"
-        type="text/javascript"
-    ></script><%
+    %><script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: '/js/dojo/dojo/',
+        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: '<%= localeId %>'
+    };
+    </script>
+    <script src="/js/dojo/dojo/dojo.js" type="text/javascript"></script><%
     } // endif (useCDN)
     %>
 

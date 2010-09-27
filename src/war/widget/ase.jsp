@@ -91,18 +91,32 @@
 
     <%
     if (useCDN) {
-    %><script
-        djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
-        src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
-        type="text/javascript"
-    ></script><%
+    %><script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: './',
+        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: '<%= localeId %>'
+    };
+    </script>
+    <script src="<%= cdnBaseURL %>/dojo/dojo.xd.js" type="text/javascript"></script><%
     }
     else { // elif (!useCDN)
-    %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
-        src="/js/dojo/dojo/dojo.js"
-        type="text/javascript"
-    ></script><%
+    %><script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: '/js/dojo/dojo/',
+        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: '<%= localeId %>'
+    };
+    </script>
+    <script src="/js/dojo/dojo/dojo.js" type="text/javascript"></script><%
     } // endif (useCDN)
     %>
 
@@ -136,8 +150,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="quantity"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_quantity", locale) %></label></td>
+                        <td><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_quantity", locale) %></label></td>
                         <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="1" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
+                            <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
+                        </td>
                     </tr>
                 </table>
                 <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
@@ -199,7 +219,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="countryCode"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
+                        <td><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
                         <td colspan="2">
                             <select
                                 dojoType="dojox.form.DropDownSelect"
@@ -415,6 +435,7 @@
         dojo.require("dojo.fx.easing");
         dojo.require("dojo.parser");
         dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.CheckBox");
         dojo.require("dijit.form.DateTextBox");
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.NumberSpinner");
@@ -456,10 +477,48 @@
 
         dijit.byId("tags").focus();
     };
+    localModule.controlTagField = function() {
+        var tagField = dijit.byId("tags");
+        var criteria = tagField.get("value").trim();
+        if (0 < criteria.length) {
+            return true;
+        }
+        var ttId = 'tooltipId';
+        var tooltip = dijit.byId(ttId);
+        if (!tooltip) {
+            tooltip = new dijit.Tooltip({
+                id: ttId,
+                connectId: ["tags"],
+                label: localModule._getLabel('console', 'cw_alert_tag_missing'),
+                position: ["below", "above"],
+                showDelay: 0
+            });
+        }
+        dojo.style(tooltip.domNode, "visibility", "visible");
+        dojo.addClass(tagField.domNode, 'dijitError');
+        var handle = dojo.connect(
+            tagField,
+            "onKeyPress",
+            null, // no context required
+            function() {
+                var tooltip = dijit.byId(ttId);
+                if (tooltip) {
+                tooltip.destroy();
+                }
+                dojo.removeClass(tagField.domNode, 'dijitError');
+                dojo.disconnect(handle);
+            }
+        );
+        tagField.focus();
+        return false;
+    };
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
             var form = dijit.byId("form" + sourceIdx);
             if (!form.validate()) {
+                return;
+            }
+            if (sourceIdx == 1 && !localModule.controlTagField()) {
                 return;
             }
         }
@@ -474,7 +533,7 @@
         case 3: dijit.byId("next3").focus(); break;
         case 4: dijit.byId("email0").focus(); break;
         }
-    }
+    };
     localModule.sendRequest = function() {
         // Last form validation
         var form = dijit.byId("form4");
@@ -496,6 +555,10 @@
             // <%= Demand.META_DATA %>: "{}", // No metadata to communicate
             <%= Demand.CRITERIA %>: dijit.byId("tags").get("value").split(/\s+/)
         };
+        if (dijit.byId("demoMode").get("value") !== false) {
+            console.log("demo mode: true");
+            parameters.<%= Demand.HASH_TAGS %> = ["<%= RegisteredHashTag.demo %>"];
+        }
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             parameters.<%= Demand.CC %> = cc;
@@ -527,7 +590,7 @@
             },
             url: "/3rdParty/Demand"
         });
-    }
+    };
     </script>
 
     <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>

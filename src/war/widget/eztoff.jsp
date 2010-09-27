@@ -89,18 +89,32 @@
 
     <%
     if (useCDN) {
-    %><script
-        djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
-        src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
-        type="text/javascript"
-    ></script><%
+    %><script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: './',
+        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: '<%= localeId %>'
+    };
+    </script>
+    <script src="<%= cdnBaseURL %>/dojo/dojo.xd.js" type="text/javascript"></script><%
     }
     else { // elif (!useCDN)
-    %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
-        src="/js/dojo/dojo/dojo.js"
-        type="text/javascript"
-    ></script><%
+    %><script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: '/js/dojo/dojo/',
+        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: '<%= localeId %>'
+    };
+    </script>
+    <script src="/js/dojo/dojo/dojo.js" type="text/javascript"></script><%
     } // endif (useCDN)
     %>
 
@@ -142,7 +156,7 @@
                         </td>
                     </tr>
                     <tr id="countryCodeRow" style="display:none;">
-                        <td><label for="countryCode"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
+                        <td><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
                         <td colspan="2">
                             <select
                                 dojoType="dojox.form.DropDownSelect"
@@ -167,10 +181,10 @@
                         <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T07:00"/></td>
                     </tr>
                     <tr>
-                        <td><label for="quantity"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity", locale) %></label></td>
+                        <td><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity", locale) %></label></td>
                         <td colspan="2" style="vertical-align:top;">
                             <input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="4" />
-                            <label for="quantity"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity_extra", locale) %></label>
+                            <label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity_extra", locale) %></label>
                         </td>
                     </tr>
                 </table>
@@ -178,6 +192,10 @@
                     <%= LabelExtractor.get(ResourceFileId.third, "gw_label_range", locale) %>
                     <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" />
                     km.
+                </div>
+                <div class="comment" style="text-align:center;">
+                    <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
+                    <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
@@ -250,7 +268,7 @@
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
                                     id="friendButton1"
-                                    onclick="twetailer.Common.manageFriendRow(1, '<%= LabelExtractor.get(ResourceFileId.third, "gw_label_cced_email", locale) %>');"
+                                    onclick="twetailer.Common.manageFriendRow(1, '<%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %>');"
                                     showLabel="false"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
                                 ></button>
@@ -355,6 +373,7 @@
         dojo.require("dojo.fx.easing");
         dojo.require("dojo.parser");
         dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.CheckBox");
         dojo.require("dijit.form.DateTextBox");
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.NumberSpinner");
@@ -425,7 +444,7 @@
         case 2: dijit.byId("email0").focus(); break;
         case 3: dijit.byId("pullCart").focus(); break;
         }
-    }
+    };
     localModule.sendRequest = function() {
         // Last form validation
         var form = dijit.byId("form3");
@@ -446,6 +465,10 @@
             <%= Demand.HASH_TAGS %>: ["<%= RegisteredHashTag.golf.toString() %>"],
             <%= Demand.META_DATA %>:"{'pullCart':" + dijit.byId("pullCart").get("value") + ",'golfCart':" + dijit.byId("motorCart").get("value") + "}"
         };
+        if (dijit.byId("demoMode").get("value") !== false) {
+            console.log("demo mode: true");
+            parameters.<%= Demand.HASH_TAGS %>.push("<%= RegisteredHashTag.demo %>");
+        }
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             parameters.<%= Demand.CC %> = cc;
@@ -477,7 +500,7 @@
             },
             url: "/3rdParty/Demand"
         });
-    }
+    };
     </script>
 
     <% if (postalCode == null || postalCode.length() == 0) {

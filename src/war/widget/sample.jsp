@@ -36,7 +36,6 @@
         @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
         } // endif (useCDN)
         %>
-        @import "/css/golf/widget.css";
 
         body { margin: 10px; }
         .name, .n, code { color: green; }

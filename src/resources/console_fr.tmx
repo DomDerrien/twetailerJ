@@ -146,6 +146,14 @@
                 <seg>Retirer cette adresse de courriel</seg>
             </tuv>
         </tu>
+        <tu tuid="demoMode_checkbox" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="fr">
+                <seg>Mode démo</seg>
+            </tuv>
+        </tu>
         <tu tuid="shared_email_sample" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
@@ -1951,7 +1959,15 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li></seg>
+                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li><li>Mixeur KitchenAid rouge empire</li><li>4 pneus Michelin Aplin 215/50 R17</li></seg>
+            </tuv>
+        </tu>
+        <tu tuid="cw_alert_tag_missing" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Vous devez décrire la requête avec des mots-clés. Voir les Exemples proposés.</seg>
             </tuv>
         </tu>
         <tu tuid="gw_step_1_title" dataType="text">
