@@ -1204,7 +1204,7 @@
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li> 
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
