@@ -49,7 +49,7 @@ public class TwitterConnector {
      * Username: ASEconomy
      * Password: s4kprgX2QFp7SQ
      */
-    public static final String ASE_TWITTER_SCREEN_NAME = "aseconomy";
+    // public static final String ASE_TWITTER_SCREEN_NAME = "ASEconomy";
     // private static final String TWETAILER_TWITTER_PASSWORD = "s4kprgX2QFp7SQ";
 
     /* Information for OAuth authentication
@@ -62,11 +62,33 @@ public class TwitterConnector {
      * Access token key:      190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE
      * Access token secret:   5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw
      */
+    // public static final String ASE_TWITTER_CONSUMER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
+    // public static final String ASE_TWITTER_CONSUMER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
+    // public static final String ASE_TWITTER_ACCESS_KEY = "190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE";
+    // public static final String ASE_TWITTER_ACCESS_SECRET = "5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw";
+
+    /* Information for basic authentication -- to be depreciated on June 30, 2010
+     * Username: ASEconomyHub
+     * Password: 6j2rwEzqrHFQKi
+     */
+    public static final String ASE_TWITTER_SCREEN_NAME = "ASEconomyHub";
+    // private static final String TWETAILER_TWITTER_PASSWORD = "6j2rwEzqrHFQKi";
+
+    /* Information for OAuth authentication
+     * Consumer key:          Yiyh4b0BJpAGcEP8f08ug
+     * Consumer secret:       S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs
+     *
+     * Request token key:     Twitter instance dependent
+     * Request token secret:  Twitter instance dependent
+     *
+     * Access token key:      190053886-Gum2P28u55Mz4QG5P8up6RizzMYmkRuUvO7shJKs
+     * Access token secret:   oWb6781Tg9sAucrvBV5KLVSTSFmpd7RCkejX0rgNU8
+     */
     public static final String ASE_TWITTER_CONSUMER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
     public static final String ASE_TWITTER_CONSUMER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
 
-    public static final String ASE_TWITTER_ACCESS_KEY = "190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE";
-    public static final String ASE_TWITTER_ACCESS_SECRET = "5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw";
+    public static final String ASE_TWITTER_ACCESS_KEY = "190053886-Gum2P28u55Mz4QG5P8up6RizzMYmkRuUvO7shJKs";
+    public static final String ASE_TWITTER_ACCESS_SECRET = "oWb6781Tg9sAucrvBV5KLVSTSFmpd7RCkejX0rgNU8";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 

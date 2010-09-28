@@ -130,20 +130,23 @@
                         try {
                             // Step 1: Retrieve a request token
                             boolean inSession = session.getAttribute("requestToken") != null; // && request.getParameter("ignoreSession") != null;
+                            String fromPageURL = request.getRequestURL().toString();
                             if (inSession) {
                                 requestToken = (RequestToken) session.getAttribute("requestToken");
                             }
                             else {
-                                String fromPageURL = request.getRequestURI();
+                                fromPageURL += "?";
                                 String queryString = request.getQueryString();
                                 if (queryString != null) {
-                                    fromPageURL += "?" + queryString;
+                                    fromPageURL += queryString + "&";
                                 }
+                                fromPageURL += "source=twitterForRequestToken";
 
-                                requestToken = twitter.getOAuthRequestToken(fromPageURL + "&source=twitterForRequestToken");
+                                requestToken = twitter.getOAuthRequestToken(fromPageURL);
                                 session.setAttribute("requestToken", requestToken);
                             }
                             out.write(inSession ? "From session:<br />" : "Live:<br />");
+                            out.write("Return URL: " + fromPageURL + "<br/>");
                             out.write("Request token key: " + requestToken.getToken() + "<br />");
                             out.write("Request token secret: " + requestToken.getTokenSecret() + "<br />");
                         }
@@ -191,7 +194,7 @@
                                 twitter.setOAuthAccessToken(accessToken);
                                 out.write("Account id: " + accessToken.getUserId() + " / " + twitter.getId() + "<br />");
                                 twitter4j.User twetailer = twitter.showUser("aseconomy");
-                                out.write("Status: <span style='color:green;'>" + twetailer.getStatus().getText() + "</span<<br />");
+                                out.write("Status: <span style='color:green;'>" + twetailer.getStatus().getText() + "</span><br />");
                                 out.write("Followers #: " + twetailer.getFollowersCount() + " -- ");
                                 out.write("Friends #: " + twetailer.getFriendsCount() + " -- ");
                                 out.write("DMs #: " + twitter.getDirectMessages().size() + "<br />");
