@@ -415,7 +415,7 @@
                         <li>Where: {demand>location>postalCode} {demand>location>countryCode};</li>
                         <li>Range: {demand>range} {demand>rangeUnit};</li>
                     </ul>
-                    <p>We're anonymously broadcasting your demand {demand>key}, to relevant stores
+                    <p>We're anonymously broadcasting your demand# {demand>key}, to relevant stores
                     and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1195,15 +1195,16 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong>, as of, <strong>{proposal>dueDate}</strong>, has proposed:</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has proposed:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li> 
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
@@ -1247,7 +1248,7 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
@@ -1447,7 +1448,7 @@
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
@@ -1491,7 +1492,7 @@
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal# {proposal>key}</a></strong>,
+                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
@@ -1689,7 +1690,7 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi {demand>owner>name},</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved <strong>Proposal# {proposal>key}</strong> due <strong>{proposal>dueDate}</strong>.</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved <strong>Proposal# {proposal>key}</strong>, due <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp; enjoy your purchase!</p>
                     <p>Don't forget to send an email to
                     <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your demand after your pickup, so we can better your Rating.</p>
