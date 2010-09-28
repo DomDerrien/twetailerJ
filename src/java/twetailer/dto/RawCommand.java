@@ -1,5 +1,7 @@
 package twetailer.dto;
 
+import java.util.Locale;
+
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -62,7 +64,8 @@ public class RawCommand extends Entity {
     public void setCommand(String text) {
         if (text != null) {
             text = text.trim();
-            if (text.startsWith(TweetLoader.HARMFULL_D_TWETAILER_PREFIX)) {
+            String copy = text.toLowerCase(Locale.ENGLISH);
+            if (copy.startsWith(TweetLoader.HARMFULL_D_TWETAILER_PREFIX)) {
                 text = text.substring(TweetLoader.HARMFULL_D_TWETAILER_PREFIX.length()).trim();
             }
         }

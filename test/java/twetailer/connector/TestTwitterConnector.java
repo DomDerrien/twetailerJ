@@ -43,7 +43,7 @@ public class TestTwitterConnector {
     @Test
     public void testSendPublicMessageI() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME));
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME));
 
         Status response = TwitterConnector.sendPublicMessage("test 12345");
         assertEquals("test 12345", response.getText());
@@ -53,7 +53,7 @@ public class TestTwitterConnector {
     @Test(expected=TwitterException.class)
     public void testSendPublicMessageII() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
             @Override
             public Status updateStatus(String text) throws TwitterException {
                 throw new TwitterException("Done in purpose!");
@@ -66,7 +66,7 @@ public class TestTwitterConnector {
     @Test
     public void testSendDirectMessageI() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME));
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME));
 
         DirectMessage response = TwitterConnector.sendDirectMessage("target", "test");
         assertEquals("target", response.getRecipientScreenName());
@@ -77,7 +77,7 @@ public class TestTwitterConnector {
     @Test(expected=TwitterException.class)
     public void testSendDirectMessageII() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String to, String text) throws TwitterException {
                 throw new TwitterException("Done in purpose!");

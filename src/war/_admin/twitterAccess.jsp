@@ -107,10 +107,10 @@
             region="center"
         >
             <fieldset class="entityInformation" style="margin:5px;">
-                <legend>Twetailer Account</legend>
-                <button dojoType="dijit.form.Button" style="float:right;">Get Application OAuth Token</button>
-                Consumer Key: <%= TwitterConnector.TWETAILER_TWITTER_CONSUMER_KEY %><br />
-                Consumer Secret: <%= TwitterConnector.TWETAILER_TWITTER_CONSUMER_SECRET %><br />
+                <legend>AnotherSocialEconomy Account</legend>
+                <button dojoType="dijit.form.Button" style="float:right;" onclick="location+='?getOAuthToken=true'">Get Application OAuth Token</button>
+                Consumer Key: <%= TwitterConnector.ASE_TWITTER_CONSUMER_KEY %><br />
+                Consumer Secret: <%= TwitterConnector.ASE_TWITTER_CONSUMER_SECRET %><br />
                 <br />
                 <%@page
                     import="twitter4j.Twitter"
@@ -124,7 +124,7 @@
                 <% if (request.getParameter("getOAuthToken") != null) {
                     try {
                         Twitter twitter = new TwitterFactory().getInstance();
-                        twitter.setOAuthConsumer(TwitterConnector.TWETAILER_TWITTER_CONSUMER_KEY, TwitterConnector.TWETAILER_TWITTER_CONSUMER_SECRET);
+                        twitter.setOAuthConsumer(TwitterConnector.ASE_TWITTER_CONSUMER_KEY, TwitterConnector.ASE_TWITTER_CONSUMER_SECRET);
 
                         RequestToken requestToken = null;
                         try {
@@ -190,7 +190,7 @@
                                 // 3. Get the user information
                                 twitter.setOAuthAccessToken(accessToken);
                                 out.write("Account id: " + accessToken.getUserId() + " / " + twitter.getId() + "<br />");
-                                twitter4j.User twetailer = twitter.showUser("twetailer");
+                                twitter4j.User twetailer = twitter.showUser("aseconomy");
                                 out.write("Status: <span style='color:green;'>" + twetailer.getStatus().getText() + "</span<<br />");
                                 out.write("Followers #: " + twetailer.getFollowersCount() + " -- ");
                                 out.write("Friends #: " + twetailer.getFriendsCount() + " -- ");
@@ -214,25 +214,25 @@
                 }
                 else {
                     try {
-                        out.write("Acces Key: " + TwitterConnector.TWETAILER_TWITTER_ACCESS_KEY + "<br />");
-                        out.write("Access Secret: " + TwitterConnector.TWETAILER_TWITTER_ACCESS_SECRET + "<br />");
+                        out.write("Acces Key: " + TwitterConnector.ASE_TWITTER_ACCESS_KEY + "<br />");
+                        out.write("Access Secret: " + TwitterConnector.ASE_TWITTER_ACCESS_SECRET + "<br />");
                         out.write("<br />");
                         // 1. Build the Twitter accessor
                         Twitter twitter = new TwitterFactory().getInstance(
                                 new OAuthAuthorization(
                                         ConfigurationContext.getInstance(), //Configuration conf,
-                                        TwitterConnector.TWETAILER_TWITTER_CONSUMER_KEY,
-                                        TwitterConnector.TWETAILER_TWITTER_CONSUMER_SECRET,
+                                        TwitterConnector.ASE_TWITTER_CONSUMER_KEY,
+                                        TwitterConnector.ASE_TWITTER_CONSUMER_SECRET,
                                         new AccessToken(
-                                                TwitterConnector.TWETAILER_TWITTER_ACCESS_KEY,
-                                                TwitterConnector.TWETAILER_TWITTER_ACCESS_SECRET
+                                                TwitterConnector.ASE_TWITTER_ACCESS_KEY,
+                                                TwitterConnector.ASE_TWITTER_ACCESS_SECRET
                                         )
                                 )
                         );
                         try {
                             // 2. Get the user information
                             out.write("Account id: " + twitter.getId() + "<br />");
-                            twitter4j.User twetailer = twitter.showUser("twetailer");
+                            twitter4j.User twetailer = twitter.showUser("aseconomy");
                             out.write("Status: <span style='color:green;'>" + twetailer.getStatus().getText() + "</span><br />");
                             out.write("Followers #: " + twetailer.getFollowersCount() + " -- ");
                             out.write("Friends #: " + twetailer.getFriendsCount() + " -- ");
