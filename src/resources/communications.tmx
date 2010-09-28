@@ -869,7 +869,7 @@
                     within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
                     on <strong>{demand>dueDate}</strong>. Also requested:</p>
                     <ul>
-                        <li>Players: <strong>{demand>quantity}</strong></li>
+                        <li>Quantity: <strong>{demand>quantity}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                         <li>Metadata: <strong>{demand>metadata}</strong></li>
                     </ul>
@@ -972,13 +972,14 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>We're confirming your proposal on <strong>{proposal>dueDate}</strong> for:</p>
+                    <p>We're confirming your proposal for:</p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this proposal, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
@@ -1079,13 +1080,14 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>We're confirming your <strong>updated</strong> proposal on <strong>{proposal>dueDate}</strong> for:</p>
+                    <p>We're confirming your <strong>updated</strong> proposal for:</p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>If for any reason, you can longer offer this proposal, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
@@ -1316,13 +1318,14 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their Demand:{demand>key}, which has received the following Proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>, from <strong><a href="{store>url}">{store>name}</a></strong>:</p>
+                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their Demand:{demand>key}, which has received the following Proposal:{proposal>key}, from <strong><a href="{store>url}">{store>name}</a></strong>:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
@@ -1440,13 +1443,14 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has updated the <strong>Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  for:</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> has updated the <strong>Proposal# {proposal>key}</strong> for:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
@@ -1561,14 +1565,14 @@
             <tuv xml:lang="en">
                 <seg>
                     <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
-                    the Demand:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
-                    has been updated with:</p>
+                    the Demand:{demand>key}. The proposal:{proposal>key} has been updated with:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
@@ -1927,6 +1931,7 @@
                         <li>Quantitiy: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong>
                     this Proposal {proposal>key} once the purchase is complete in order to better your Rating.</p>
@@ -2083,7 +2088,7 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi {proposal>owner>name},</p>
-                    <p>The Demand# {demand>key} for <strong>Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong> has been <strong>closed</strong>.
+                    <p>The Demand# {demand>key} for <strong>Proposal# {proposal>key}</strong>, due on <strong>{proposal>dueDate}</strong> has been <strong>closed</strong>.
                     Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> your matching proposal {proposal>key} in order to better your Rating.</p>
                     {message>footer}
                     <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
@@ -2331,14 +2336,14 @@
                 <seg>
                     <p>Hi {proposal>owner>name},</p>
                     <p>The owner of the <strong>Demand# {demand>key}</strong> has canceled it even if your <strong>Proposal# {proposal>key}</strong>
-                    have been confirmed! The corresponding reservation has been canceled by side-effect. This is not going to impact negatively your Rating.</p>
-                    <p>The proposal was due on <strong>{proposal>dueDate}</strong> with:</p>
+                    have been confirmed! The corresponding reservation has been canceled but will not have a negative impact on your Rating.</p>
                     <ul>
                         <li>Quantitiy: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
                         <li>Metadata: <strong>{proposal>metadata}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     {message>footer}
                     <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
