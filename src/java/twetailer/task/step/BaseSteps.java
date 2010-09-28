@@ -1,22 +1,5 @@
 package twetailer.task.step;
 
-import static twetailer.connector.BaseConnector.communicateToCCed;
-import static twetailer.connector.BaseConnector.communicateToConsumer;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.jdo.PersistenceManager;
-
-import twetailer.ClientException;
-import twetailer.CommunicationException;
-import twetailer.DataSourceException;
-import twetailer.InvalidIdentifierException;
-import twetailer.connector.MessageGenerator;
-import twetailer.connector.BaseConnector.Source;
-import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -27,15 +10,6 @@ import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
-import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
-import twetailer.dto.Location;
-import twetailer.dto.Proposal;
-import twetailer.dto.Store;
-import twetailer.task.CommandProcessor;
-import domderrien.i18n.DateUtils;
-import domderrien.i18n.LabelExtractor;
-import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 public class BaseSteps {
 

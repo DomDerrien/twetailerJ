@@ -141,33 +141,6 @@ public class DemandProcessor {
         int initialNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
         if (CommandSettings.State.published.equals(demand.getState())) {
             Consumer owner = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
-            // Try to contact regular sale associates
-            List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
-            for(SaleAssociate saleAssociate: saleAssociates) {
-                Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
-                // Communicate with the sale associate
-                try {
-                    notifyAvailability(demand, saConsumerRecord);
-
-                    // Keep track of the notification to not ping him/her another time
-                    demand.addSaleAssociateKey(saleAssociate.getKey());
-                }
-                catch (ClientException ex) {
-                    // Send an e-mail to out catch-all list
-                    MockOutputStream stackTrace = new MockOutputStream();
-                    ex.printStackTrace(new PrintStream(stackTrace));
-                    try {
-                        CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                                "error-notifier",
-                                "Unexpected error caught in " + DemandProcessor.class.getName(),
-                                "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saConsumerRecord.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
-                        );
-                    }
-                    catch (MessagingException e) {
-                        log.severe("Failure while trying to report an unexpected by e-mail!");
-                    }
-                }
-            }
 
             // Special treatment for demand with a tag #demo
             if (demand.getHashTags().contains(RobotResponder.ROBOT_DEMO_HASH_TAG)) {
@@ -183,8 +156,37 @@ public class DemandProcessor {
                     demand.addSaleAssociateKey(RobotResponder.getRobotSaleAssociateKey(pm));
                 }
             }
+            else {
+                // Try to contact regular sale associates
+                List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
+                for(SaleAssociate saleAssociate: saleAssociates) {
+                    Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
+                    // Communicate with the sale associate
+                    try {
+                        notifyAvailability(demand, saConsumerRecord);
 
-            // Push the updated demand into the datastore
+                        // Keep track of the notification to not ping him/her another time
+                        demand.addSaleAssociateKey(saleAssociate.getKey());
+                    }
+                    catch (ClientException ex) {
+                        // Send an e-mail to out catch-all list
+                        MockOutputStream stackTrace = new MockOutputStream();
+                        ex.printStackTrace(new PrintStream(stackTrace));
+                        try {
+                            CatchAllMailHandlerServlet.composeAndPostMailMessage(
+                                    "error-notifier",
+                                    "Unexpected error caught in " + DemandProcessor.class.getName(),
+                                    "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saConsumerRecord.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
+                            );
+                        }
+                        catch (MessagingException e) {
+                            log.severe("Failure while trying to report an unexpected by e-mail!");
+                        }
+                    }
+                }
+            }
+
+            // Push the updated demand into the data store
             demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
             // Notify the consumer about how many sale associates have been successfully contacted this time

@@ -45,7 +45,6 @@ public class TestConsumerOperations {
     @BeforeClass
     public static void setUpBeforeClass() {
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-        ;
     }
 
     @Before

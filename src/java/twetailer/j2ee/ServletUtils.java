@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,8 @@ public class ServletUtils {
         try {
             request.setCharacterEncoding("UTF-8");
         }
-        catch (UnsupportedEncodingException e) {
+        catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(ServletUtils.class.getName()).warning("Cannot set the encoding of the request! -- message " + ex.getMessage());
             // Ignore the exception
         }
 

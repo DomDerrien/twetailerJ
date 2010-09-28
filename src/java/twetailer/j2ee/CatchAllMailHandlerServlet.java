@@ -67,6 +67,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
     }
 
     protected void forwardUnexpectedMailMessage(HttpServletRequest request, HttpServletResponse response) {
+        String fromName = null;
         try {
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
@@ -75,27 +76,28 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             if (mailMessage.getSender() == null) {
                 from = mailMessage.getFrom()[0];
             }
+            fromName = from.toString();
             Address[] to = mailMessage.getRecipients(Message.RecipientType.TO);
             Address[] cc = mailMessage.getRecipients(Message.RecipientType.CC);
             String subject = mailMessage.getSubject();
             StringBuilder body = new StringBuilder();
 
-            body.append("From: ").append(from.toString()).append("\n");
+            body.append("From: ").append(from.toString()).append('\n');
             for (int idx = 0; idx < to.length; idx ++) {
-                body.append("To: ").append(to[idx].toString()).append("\n");
+                body.append("To: ").append(to[idx].toString()).append('\n');
             }
             for (int idx = 0; idx < cc.length; idx ++) {
-                body.append("Cc: ").append(cc[idx].toString()).append("\n");
+                body.append("Cc: ").append(cc[idx].toString()).append('\n');
             }
-            body.append("Subject: ").append(subject).append("\n");
-            body.append("\n").append(MailConnector.getText(mailMessage));
+            body.append("Subject: ").append(subject).append('\n');
+            body.append('\n').append(MailConnector.getText(mailMessage));
 
             composeAndPostMailMessage(from.toString(), "Unexpected e-mail!", body.toString());
         }
         // catch (MessagingException ex) {
         // catch (IOException ex) {
         catch (Exception ex) {
-            log.severe("Error while processing e-mail from");
+            log.severe("Error while processing e-mail from: " + fromName + " -- message: " + ex.getMessage());
         }
     }
 

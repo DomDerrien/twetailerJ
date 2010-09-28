@@ -115,7 +115,6 @@ public abstract class BaseRestlet extends HttpServlet {
     abstract protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser)
             throws DataSourceException, ClientException;
 
-    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
@@ -374,8 +373,8 @@ public abstract class BaseRestlet extends HttpServlet {
                     "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
             );
         }
-        catch (MessagingException e) {
-            Logger.getLogger(BaseRestlet.class.getName()).severe("Failure while trying to report an unexpected by e-mail!");
+        catch (MessagingException ex2) {
+            Logger.getLogger(BaseRestlet.class.getName()).severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex.getMessage());
         }
         return out;
     }

@@ -128,9 +128,11 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             // Nothing to do with a corrupted message...
+            Logger.getLogger(TwitterMailNotificationHandlerServlet.class.getName()).warning("Issue while composing the message -- message " + ex.getMessage());
         }
         catch (IOException ex) {
             // Nothing to do with a corrupted message...
+            Logger.getLogger(TwitterMailNotificationHandlerServlet.class.getName()).warning("Issue while sending the message -- message " + ex.getMessage());
         }
     }
 }

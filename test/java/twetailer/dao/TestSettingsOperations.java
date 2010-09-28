@@ -150,9 +150,10 @@ public class TestSettingsOperations {
     @Test
     public void testUpdateSettingsInCacheI() throws DataSourceException {
         Settings settings = new Settings();
+        settings.setRobotConsumerKey(12345L);
         SettingsOperations ops = new SettingsOperations();
-        Settings settingsAfterUpdate = ops.updateSettingsInCache(settings);
-        assertEquals(settings, settingsAfterUpdate);
+        Settings settingsAfterUpdate = ops.updateSettingsInCache(settings).getSettingsFromCache();
+        assertEquals(settings.getRobotConsumerKey(), settingsAfterUpdate.getRobotConsumerKey());
     }
 
     @Test
@@ -164,8 +165,7 @@ public class TestSettingsOperations {
                 throw new CacheException("done in purpose");
             }
         };
-        Settings settingsAfterUpdate = ops.updateSettingsInCache(settings);
-        assertEquals(settings, settingsAfterUpdate);
+        ops.updateSettingsInCache(settings); // No side effect
     }
 
     @Test

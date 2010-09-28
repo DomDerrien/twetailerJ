@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
@@ -197,13 +198,15 @@ public class LoginServlet extends HttpServlet {
             }
         }
         catch (UnknownHostException uhe) {
+            Logger.getLogger(LoginServlet.class.getName()).warning("Issue while trying to contact the authentication server -- message " + uhe.getMessage());
             errorMsg = OpenIdServletFilter.ID_NOT_FOUND_MSG;
         }
         catch (FileNotFoundException fnfe) {
+            Logger.getLogger(LoginServlet.class.getName()).warning("Issue while accessing a file (?) -- message " + fnfe.getMessage());
             errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         }
-        catch (Exception e) {
-            // e.printStackTrace();
+        catch (Exception ex) {
+            Logger.getLogger(LoginServlet.class.getName()).warning("Unexpected error -- message " + ex.getMessage());
             errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         }
         request.setAttribute(OpenIdServletFilter.ERROR_MSG_ATTR, errorMsg);
@@ -219,7 +222,7 @@ public class LoginServlet extends HttpServlet {
      */
     protected static void attachConsumerToSession(OpenIdUser user) {
         // Create only if does not yet exist, otherwise return the existing instance
-        Consumer consumer = BaseSteps.getConsumerOperations().createConsumer((OpenIdUser) user);
+        Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(user);
         // TODO: put this Consumer record in MemCache
         // Attached the consumer identifier to the OpenID user record
         user.setAttribute(AUTHENTICATED_CONSUMER_ID, consumer.getKey());

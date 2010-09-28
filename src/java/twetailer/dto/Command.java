@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
@@ -54,8 +55,11 @@ public class Command extends Entity {
                 }
                 return defaultValue;
             }
-            catch(Exception ex) { } // Will fallback on the default value ;)
-            return defaultValue;
+            catch(Exception ex) {
+                // Will fall-back on the default value ;)
+                Logger.getLogger(QueryPointOfView.class.getName()).warning("Cannot get a QueryPointOfView value from: " + parameters.toString() + " -- message: " + ex.getMessage());
+                return defaultValue;
+            }
         }
     }
 
@@ -511,7 +515,8 @@ public class Command extends Entity {
                 Date dueDate = DateUtils.isoToDate(in.getString(DUE_DATE));
                 setDueDate(dueDate);
             }
-            catch (ParseException e) {
+            catch (ParseException ex) {
+                Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(DUE_DATE) + ", for command.key=" + getKey() + " -- message: " + ex.getMessage());
                 setDueDate(null);
             }
         }

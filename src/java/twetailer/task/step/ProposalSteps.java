@@ -335,7 +335,7 @@ public class ProposalSteps extends BaseSteps {
                 // Get the associated demand
                 Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), null);
 
-                if (rawCommand != null) {
+                if (rawCommand != null && !Source.robot.equals(rawCommand.getSource())) {
                     Locale locale = saConsumerRecord.getLocale();
 
                     MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);

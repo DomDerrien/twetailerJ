@@ -72,9 +72,11 @@ public class MailComposerServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             // Nothing to do with a corrupted message...
+            Logger.getLogger(MailComposerServlet.class.getName()).warning("During the message composition -- message " + ex.getMessage());
         }
         catch (IOException ex) {
             // Nothing to do with a corrupted message...
+            Logger.getLogger(MailComposerServlet.class.getName()).warning("During the message sending -- message " + ex.getMessage());
         }
     }
 }

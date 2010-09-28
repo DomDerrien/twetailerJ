@@ -25,7 +25,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import twetailer.j2ee.MailResponderServlet;
 import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;

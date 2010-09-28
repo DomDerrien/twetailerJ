@@ -2,14 +2,15 @@ package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
@@ -25,8 +26,8 @@ import twetailer.validator.CommandSettings.State;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
-import domderrien.i18n.DateUtils;
-import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonParser;
 
 /**
  * Define the logic that process Demand instances
@@ -53,11 +54,7 @@ public class RobotResponder {
     public final static String ROBOT_DEMO_HASH_TAG = RegisteredHashTag.demo.toString();
 
     public static void processDemand(PersistenceManager pm, Long demandKey) throws DataSourceException, InvalidIdentifierException {
-        //
-        // TODO: add the robot sale associate key into the setting table
-        // TODO: always load the robot from that key
-        // TODO: try to put the key in memcached
-        //
+
         Long robotKey = getRobotSaleAssociateKey(pm);
         if (robotKey != null) {
             SaleAssociate robot = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, robotKey);
@@ -67,35 +64,32 @@ public class RobotResponder {
             Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
             if (CommandSettings.State.published.equals(demand.getState())) {
                 // Create a new and valid proposal
-                Proposal proposal = new Proposal();
-                proposal.setDemandKey(demandKey);
-                proposal.setOwnerKey(robot.getKey());
-                proposal.setPrice(0.01D);
-                proposal.setQuantity(4L);
-                Calendar tomorrow = DateUtils.getNowCalendar();
-                tomorrow.set(Calendar.DATE, tomorrow.get(Calendar.DATE) + 1);
-                proposal.setDueDate(tomorrow.getTime());
-                proposal.setSource(Source.simulated);
-                proposal.addHashTag(ROBOT_DEMO_HASH_TAG);
-                proposal.setState(State.published);
-                proposal.setStoreKey(store.getKey());
-                proposal.setTotal(1.15D);
-                // Prepare the automated response
-                String message = LabelExtractor.get("rr_robot_automatic_proposition", consumer.getLocale());
-                String[] parts = message.split(" ");
-                for (String part: parts) {
-                    proposal.addCriterion(part);
+                String automatedResponse = MessageGenerator.getMessage(Source.mail, demand.getHashTags(), MessageId.robotAutomatedResponse, null, consumer.getLocale());
+                try {
+                    Proposal proposal = new Proposal(new JsonParser(automatedResponse).getJsonObject());
+                    proposal.setDemandKey(demandKey);
+                    proposal.setDueDate(demand.getDueDate());
+                    proposal.setHashTags(demand.getHashTags());
+                    proposal.setMetadata(demand.getMetadata());
+                    proposal.setOwnerKey(robot.getKey());
+                    proposal.setQuantity(demand.getQuantity());
+                    proposal.setSource(Source.simulated);
+                    proposal.setState(State.published);
+                    proposal.setStoreKey(store.getKey());
+                    // Persist the newly created proposal
+                    proposal = BaseSteps.getProposalOperations().createProposal(pm, proposal);
+                    // Schedule a task to transmit the proposal to the demand owner
+                    Queue queue = BaseSteps.getBaseOperations().getQueue();
+                    queue.add(
+                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedProposal").
+                                param(Proposal.KEY, proposal.getKey().toString()).
+                                method(Method.GET).
+                                countdownMillis(30*1000)
+                    );
                 }
-                // Persist the newly created proposal
-                proposal = BaseSteps.getProposalOperations().createProposal(pm, proposal);
-                // Schedule a task to transmit the proposal to the demand owner
-                Queue queue = BaseSteps.getBaseOperations().getQueue();
-                queue.add(
-                        url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedProposal").
-                            param(Proposal.KEY, proposal.getKey().toString()).
-                            method(Method.GET).
-                            countdownMillis(30*1000)
-                );
+                catch(JsonException ex) {
+                    throw new DataSourceException("Issue while processing the automated response", ex);
+                }
             }
         }
     }
@@ -111,6 +105,7 @@ public class RobotResponder {
         if (robotConsumerKey == null) {
             Settings settings = BaseSteps.getSettingsOperations().getSettings(pm);
             robotConsumerKey = settings.getRobotConsumerKey();
+            // robotConsumerKey = 1L;
         }
         return robotConsumerKey;
     }
@@ -126,6 +121,7 @@ public class RobotResponder {
         if (robotSaleAssociateKey == null) {
             Settings settings = BaseSteps.getSettingsOperations().getSettings(pm, true);
             robotSaleAssociateKey = settings.getRobotSaleAssociateKey();
+            // robotSaleAssociateKey = 4L;
         }
         return robotSaleAssociateKey;
     }

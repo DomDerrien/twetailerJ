@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
@@ -44,9 +45,11 @@ public class MessageGenerator {
         dateFormat,
         dateTimeFormat,
         emptyListIndicator,
+        noCCIndicator,
 
         messageSubject ("message_subject"),
         messageFooter ("message_footer"),
+        robotAutomatedResponse ("robot_automatedResponse"),
 
         /// C1. Consumer creates a demand -- CC'ed and associates are notified
         /** For message sent to the demand owner to confirm the demand creation */
@@ -333,11 +336,12 @@ public class MessageGenerator {
      */
     public MessageGenerator fetchCommand(Command command, String prefix) {
         final String emptyListIndicator = getAlternateMessage(MessageId.emptyListIndicator);
+        final String noCCIndicator = getAlternateMessage(MessageId.noCCIndicator);
         // Entity
         fetchEntity(command, prefix);
         // Command
         // Command.ACTION
-        // TODO: Proposal.CC
+        parameters.put(prefix + Command.CC, command.getSerializedCC(noCCIndicator)); // Default setting
         parameters.put(prefix + Command.CRITERIA, command.getSerializedCriteria(emptyListIndicator));
         if (command.getDueDate() != null) { parameters.put(prefix + Command.DUE_DATE, serializeDate(command.getDueDate(), userLocale)); }
         parameters.put(prefix + Command.HASH_TAGS, command.getSerializedHashTags(emptyListIndicator));
@@ -354,7 +358,10 @@ public class MessageGenerator {
                     }
                 }
             }
-            catch(JsonException ex) { } // Malformed metadata are just not echoed back
+            catch(JsonException ex) {
+                // Malformed metadata are just not echoed back
+                Logger.getLogger(MessageGenerator.class.getName()).info("Malformed metadata in " + prefix + ".key=" + command.getKey() + ": " + metadata + " -- message: " + ex.getMessage());
+            }
         }
         parameters.put(prefix + Command.QUANTITY, command.getQuantity());
         parameters.put(prefix + Command.STATE, CommandSettings.getStates(userLocale).getString(command.getState().toString()));

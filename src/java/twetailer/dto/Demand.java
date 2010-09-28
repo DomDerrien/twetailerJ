@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -263,7 +264,8 @@ public class Demand extends Command {
                     setDueDate(getExpirationDate());
                 }
             }
-            catch (ParseException e) {
+            catch (ParseException ex) {
+                Logger.getLogger(Demand.class.getName()).warning("Invalid format in expiration date: " + in.getString(EXPIRATION_DATE) + ", for command.key=" + getKey() + " -- message: " + ex.getMessage());
                 setExpirationDate(DEFAULT_EXPIRATION_DELAY); // Default to an expiration 30 days in the future
             }
         }

@@ -78,9 +78,9 @@ public class TestHelpCommandProcessor {
                 return data;
             }
             @Override
-            public Object setInCache(String key, Object value) {
+            public SettingsOperations setInCache(String key, Object value) {
                 assertEquals(data, (String) value);
-                return value;
+                return this;
             }
         });
 
@@ -111,8 +111,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -143,8 +143,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -175,8 +175,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -207,8 +207,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -239,8 +239,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -271,8 +271,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -309,8 +309,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -350,8 +350,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -378,8 +378,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -406,8 +406,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -434,8 +434,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -462,8 +462,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 
@@ -490,8 +490,8 @@ public class TestHelpCommandProcessor {
                 return null;
             }
             @Override
-            public Object setInCache(String key, Object value) {
-                return value;
+            public SettingsOperations setInCache(String key, Object value) {
+                return this;
             }
         });
 

@@ -102,10 +102,12 @@ public class JabberResponderServlet extends HttpServlet {
         }
         catch (DatastoreTimeoutException ex) {
             exception = ex;
+            log.warning("Datastore timeout -- message: " + ex.getMessage());
             rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", new Locale(language)));
         }
         catch (Exception ex) {
             exception = ex;
+            log.warning("Unexpected error -- message: " + ex.getMessage());
             rawCommand.setErrorMessage(
                     LabelExtractor.get(
                             "error_unexpected",
@@ -129,7 +131,7 @@ public class JabberResponderServlet extends HttpServlet {
             // Communicate the error to the communication initiator
             if (consumer != null) {
                 try {
-                    // Useful because it has a fallback mechanism on e-mail
+                    // Useful because it has a fall-back mechanism on e-mail
                     BaseConnector.communicateToConsumer(
                             rawCommand.getSource(),
                             null, // No subject required
@@ -137,16 +139,18 @@ public class JabberResponderServlet extends HttpServlet {
                             new String[] { rawCommand.getErrorMessage() }
                     );
                 }
-                catch (ClientException e) {
+                catch (ClientException ex) {
                     // Ignored because we can't do much now
+                    log.warning("Cannot communicate with the user -- message: " + ex.getMessage());
                 }
             }
             else {
                 try {
                     JabberConnector.sendInstantMessage(jabberId, rawCommand.getErrorMessage());
                 }
-                catch (ClientException e) {
+                catch (ClientException ex) {
                     // Ignored because we can't do much now
+                    log.warning("Cannot communicate with the user -- message: " + ex.getMessage());
                 }
             }
         }
@@ -163,8 +167,8 @@ public class JabberResponderServlet extends HttpServlet {
                         "IM sender: " + jabberId + "\nIM content: " + command + "\n\n--\n\n" + stackTrace.toString()
                 );
             }
-            catch (MessagingException e) {
-                log.severe("Failure while trying to report an unexpected by IM!");
+            catch (MessagingException ex) {
+                log.severe("Failure while trying to report an unexpected by IM! -- message: " + ex.getMessage());
 
                 // Note for the testers:
                 //   Don't know how to generate a MessagingException by just

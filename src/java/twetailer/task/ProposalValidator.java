@@ -9,7 +9,6 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.security.auth.Subject;
 
 import twetailer.ClientException;
 import twetailer.CommunicationException;

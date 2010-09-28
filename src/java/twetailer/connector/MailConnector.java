@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -84,8 +85,9 @@ public class MailConnector {
             try {
                 address.setPersonal(name, charsetEncoding);
             }
-            catch (UnsupportedEncodingException e) {
+            catch (UnsupportedEncodingException ex) {
                 // Too bad! The recipient will only see the e-mail address
+                Logger.getLogger(MailConnector.class.getName()).warning("Invalid email user name: " + name + " -- message: " + ex.getMessage());
 
                 // Note for the testers:
                 //   Don't know how to generate a UnsupportedEncodingException by just

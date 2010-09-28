@@ -199,14 +199,17 @@ public class MailResponderServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             exception = ex;
+            log.warning("During the message composition -- message " + ex.getMessage());
             rawCommand.setErrorMessage(LabelExtractor.get("error_mail_messaging", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (DatastoreTimeoutException ex) {
             exception = ex;
+            log.warning("During trying to manage data with the back store -- message " + ex.getMessage());
             rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (Exception ex) {
             exception = ex;
+            log.warning("Unexpected issue -- message " + ex.getMessage());
             rawCommand.setErrorMessage(
                     LabelExtractor.get(
                             "error_unexpected",
@@ -241,8 +244,9 @@ public class MailResponderServlet extends HttpServlet {
                 }
                 // catch (MessagingException e) {
                 // catch (UnsupportedEncodingException e) {
-                catch (Exception e) {
+                catch (Exception ex) {
                     // Ignored because we can't do much now
+                    log.warning("Unexpected error -- message " + ex.getMessage());
 
                     // Note for the testers:
                     //   Don't know how to generate a UnsupportedEncodingException by just
@@ -263,8 +267,8 @@ public class MailResponderServlet extends HttpServlet {
                         "Mail sender: " + name + "<" + email + ">" + "\nMail subject: " + subject + "\nMail filtered content: " + command + "\n\n--\n\n" + stackTrace.toString()
                 );
             }
-            catch (MessagingException e) {
-                log.severe("Failure while trying to report an unexpected by e-mail!");
+            catch (MessagingException ex) {
+                log.severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex.getMessage());
 
                 // Note for the testers:
                 //   Don't know how to generate a MessagingException by just

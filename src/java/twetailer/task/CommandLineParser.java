@@ -132,7 +132,7 @@ public class CommandLineParser {
     private static StringBuilder createPatternWithOptionalEndingCharacters(String prefix) {
         StringBuilder pattern = new StringBuilder();
         if (prefix.length() == 1) {
-            return pattern.append("\\").append(prefix); // To be sure to escape potential RegExp commands
+            return pattern.append('\\').append(prefix); // To be sure to escape potential RegExp commands
         }
         int prefixEnd = prefix.length();
         while(3 < prefixEnd) {
@@ -152,7 +152,7 @@ public class CommandLineParser {
     private static StringBuilder assembleModularPrefixes(JsonArray equivalents, String keyword) {
         StringBuilder pattern = createPatternWithOptionalEndingCharacters(equivalents.getString(0));
         for(int i = 1; i < equivalents.size(); i++) {
-            pattern.append("|").append(createPatternWithOptionalEndingCharacters(equivalents.getString(i)));
+            pattern.append('|').append(createPatternWithOptionalEndingCharacters(equivalents.getString(i)));
         }
         return pattern;
     }
@@ -170,7 +170,7 @@ public class CommandLineParser {
     private static void preparePattern(JsonObject keywords, Map<String, Pattern> patterns, Prefix keyword, String expression, String separator) {
         String keywordKey = keyword.toString();
         StringBuilder pattern = assembleModularPrefixes(keywords.getJsonArray(keywordKey), keywordKey);
-        pattern = pattern.insert(0, "((?:").append(")").append(expression).append(")").append(separator);
+        pattern = pattern.insert(0, "((?:").append(')').append(expression).append(')').append(separator);
         patterns.put(keywordKey, Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE));
     }
 

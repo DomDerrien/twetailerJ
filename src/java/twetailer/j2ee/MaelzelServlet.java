@@ -335,8 +335,8 @@ public class MaelzelServlet extends HttpServlet {
                         "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request.getParameterMap()).toString() + "\n\n--\n\n" + stackTrace.toString()
                 );
             }
-            catch (MessagingException e) {
-                log.severe("Failure while trying to report an unexpected by e-mail!");
+            catch (MessagingException ex2) {
+                log.severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
             }
         }
 
@@ -473,8 +473,8 @@ public class MaelzelServlet extends HttpServlet {
                         "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
                 );
             }
-            catch (MessagingException e) {
-                log.severe("Failure while trying to report an unexpected by e-mail!");
+            catch (MessagingException ex2) {
+                log.severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
             }
         }
 
@@ -610,7 +610,7 @@ public class MaelzelServlet extends HttpServlet {
                         proposal.setCancelerKey(cancellerKey);
                         proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
                     }
-                    catch (InvalidIdentifierException e) {
+                    catch (InvalidIdentifierException ex) {
                         // Not an issue, process the next one
                     }
                 }

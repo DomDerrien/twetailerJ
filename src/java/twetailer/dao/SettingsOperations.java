@@ -2,6 +2,7 @@ package twetailer.dao;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -79,6 +80,8 @@ public class SettingsOperations extends BaseOperations {
         return getSettings(pm);
     }
 
+    private Cache localCache;
+
     /**
      * Accessor for the unit tests
      *
@@ -87,7 +90,10 @@ public class SettingsOperations extends BaseOperations {
      * @throws CacheException If the cache instance creation fails
      */
     protected Cache getCache() throws CacheException {
-        return CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+        if (localCache == null) {
+            localCache = CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());
+        }
+        return localCache;
     }
 
     /**
@@ -107,10 +113,12 @@ public class SettingsOperations extends BaseOperations {
      */
     public Object getFromCache(String entryId) {
         try {
-            return getCache().get(entryId);
+            return getCache().get(entryId); // Can be null
         }
-        catch(CacheException ex) {}
-        return null;
+        catch(CacheException ex) {
+            Logger.getLogger(SettingsOperations.class.getName()).warning("Cannot get entry: " + entryId + " -- message: " + ex.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -118,15 +126,17 @@ public class SettingsOperations extends BaseOperations {
      *
      * @param entryId identifier of the cached data
      * @param object data to store
-     * @return Proposed data, for operation chaining
+     * @return The object itself, for operation chaining
      */
     @SuppressWarnings("unchecked")
-    public Object setInCache(String entryId, Object data) {
+    public SettingsOperations setInCache(String entryId, Object data) {
         try {
             getCache().put(entryId, data);
         }
-        catch(CacheException ex) {}
-        return data;
+        catch(CacheException ex) {
+            Logger.getLogger(SettingsOperations.class.getName()).warning("Cache addition failed with the data identified by: " + entryId + " -- message: " + ex.getMessage());
+        }
+        return this;
     }
 
     /**
@@ -182,14 +192,12 @@ public class SettingsOperations extends BaseOperations {
 
     /**
      * Update transparently the cache with the new settings
+     *
+     * @param settings updated settings
+     * @return The object itself, for operation chaining
      */
-    @SuppressWarnings("unchecked")
-    public Settings updateSettingsInCache(Settings update) {
-        try {
-            getCache().put(Settings.APPLICATION_SETTINGS_ID, update);
-        }
-        catch(CacheException ex) {}
-        return update;
+    public SettingsOperations updateSettingsInCache(Settings update) {
+        return setInCache(Settings.APPLICATION_SETTINGS_ID, update);
     }
 
     /**
