@@ -26,7 +26,7 @@ public class TwitterConnector {
      * Username: twetailer
      * Password: 6GmeM3FJzPOy-zNJ
      */
-    public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
+    // public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
     // private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
 
     /* Information for OAuth authentication
@@ -39,11 +39,34 @@ public class TwitterConnector {
      * Access token key:      18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4
      * Access token secret:   GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk
      */
-    public static final String TWETAILER_TWITTER_CONSUMER_KEY = "Kxo0DAP1ImQ1PV1pAAZkQ";
-    public static final String TWETAILER_TWITTER_CONSUMER_SECRET = "8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o";
+    // public static final String TWETAILER_TWITTER_CONSUMER_KEY = "Kxo0DAP1ImQ1PV1pAAZkQ";
+    // public static final String TWETAILER_TWITTER_CONSUMER_SECRET = "8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o";
 
-    public static final String TWETAILER_TWITTER_ACCESS_KEY = "18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4";
-    public static final String TWETAILER_TWITTER_ACCESS_SECRET = "GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk";
+    // public static final String TWETAILER_TWITTER_ACCESS_KEY = "18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4";
+    // public static final String TWETAILER_TWITTER_ACCESS_SECRET = "GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk";
+
+    /* Information for basic authentication -- to be depreciated on June 30, 2010
+     * Username: ASEconomy
+     * Password: s4kprgX2QFp7SQ
+     */
+    public static final String ASE_TWITTER_SCREEN_NAME = "aseconomy";
+    // private static final String TWETAILER_TWITTER_PASSWORD = "s4kprgX2QFp7SQ";
+
+    /* Information for OAuth authentication
+     * Consumer key:          Yiyh4b0BJpAGcEP8f08ug
+     * Consumer secret:       S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs
+     *
+     * Request token key:     Twitter instance dependent
+     * Request token secret:  Twitter instance dependent
+     *
+     * Access token key:      190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE
+     * Access token secret:   5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw
+     */
+    public static final String ASE_TWITTER_CONSUMER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
+    public static final String ASE_TWITTER_CONSUMER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
+
+    public static final String ASE_TWITTER_ACCESS_KEY = "190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE";
+    public static final String ASE_TWITTER_ACCESS_SECRET = "5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
 
@@ -66,11 +89,11 @@ public class TwitterConnector {
             return new TwitterFactory().getInstance(
                     new OAuthAuthorization(
                             ConfigurationContext.getInstance(),
-                            TwitterConnector.TWETAILER_TWITTER_CONSUMER_KEY,
-                            TwitterConnector.TWETAILER_TWITTER_CONSUMER_SECRET,
+                            TwitterConnector.ASE_TWITTER_CONSUMER_KEY,
+                            TwitterConnector.ASE_TWITTER_CONSUMER_SECRET,
                             new AccessToken(
-                                    TwitterConnector.TWETAILER_TWITTER_ACCESS_KEY,
-                                    TwitterConnector.TWETAILER_TWITTER_ACCESS_SECRET
+                                    TwitterConnector.ASE_TWITTER_ACCESS_KEY,
+                                    TwitterConnector.ASE_TWITTER_ACCESS_SECRET
                             )
                     )
             );

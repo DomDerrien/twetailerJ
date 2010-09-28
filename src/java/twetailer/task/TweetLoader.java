@@ -4,6 +4,7 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -74,7 +75,7 @@ public class TweetLoader {
         return -1L;
     }
 
-    public static final String HARMFULL_D_TWETAILER_PREFIX = "d " + TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME;
+    public static final String HARMFULL_D_TWETAILER_PREFIX = "d " + TwitterConnector.ASE_TWITTER_SCREEN_NAME.toLowerCase(Locale.ENGLISH);
 
     /**
      * Extract commands from the pending Direct Messages and save them into the command table

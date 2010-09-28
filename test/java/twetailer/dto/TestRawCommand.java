@@ -138,17 +138,17 @@ public class TestRawCommand {
         assertEquals(expected, command.getCommand());
 
         expected = "";
-        given = "d twetailer " + expected;
+        given = "d aseconomy " + expected;
         command.setCommand(given);
         assertEquals(expected, command.getCommand());
 
         expected = "";
-        given = "   d twetailer   " + expected;
+        given = "   d aseconomy   " + expected;
         command.setCommand(given);
         assertEquals(expected, command.getCommand());
 
         expected = "wii console";
-        given = "   d twetailer   " + expected;
+        given = "   d ASEconomy   " + expected;
         command.setCommand(given);
         assertEquals(expected, command.getCommand());
     }

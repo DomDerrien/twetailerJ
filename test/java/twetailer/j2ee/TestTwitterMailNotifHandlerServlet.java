@@ -77,7 +77,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -131,7 +131,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -188,7 +188,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -239,7 +239,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.TWETAILER_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);

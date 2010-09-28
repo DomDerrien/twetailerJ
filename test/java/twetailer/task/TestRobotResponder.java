@@ -40,6 +40,9 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
+import domderrien.jsontools.JsonException;
+import domderrien.jsontools.JsonParser;
 
 public class TestRobotResponder {
 
@@ -220,13 +223,17 @@ public class TestRobotResponder {
             public Proposal createProposal(PersistenceManager pm, Proposal proposal) {
                 assertEquals(demandKey, proposal.getDemandKey());
                 assertEquals(storeKey, proposal.getStoreKey());
-                StringBuilder message = new StringBuilder();
-                for (String tag : proposal.getCriteria()) {
-                    message.append(tag).append(Command.SPACE);
+                // "long_" because Source.mail is the default Demand source
+                // "core_" because Demand has no default hash tag
+                String jsonBag = LabelExtractor.get(ResourceFileId.fourth, "long_" + "core_" + "robot_automatedResponse", Locale.ENGLISH);
+                try {
+                    assertEquals(new Proposal(new JsonParser(jsonBag).getJsonObject()).getSerializedCriteria(), proposal.getSerializedCriteria());
+                    proposal.setKey(proposalKey);
+                    return proposal;
                 }
-                assertEquals(LabelExtractor.get("rr_robot_automatic_proposition", Locale.ENGLISH).trim(), message.toString().trim());
-                proposal.setKey(proposalKey);
-                return proposal;
+                catch(JsonException ex) {
+                    return null;
+                }
             }
         });
 
