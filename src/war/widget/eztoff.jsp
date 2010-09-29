@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!doctype html>
 <%@page
     language="java"
     contentType="text/html; charset=UTF-8"
@@ -32,7 +32,7 @@
 
     // Regular expression for e-mail address validation
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
-%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+%><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "golfConsu_localized_page_name", locale) %></title>
@@ -439,9 +439,9 @@
         if (!form.validate()) {
             return;
         }
-        // Request preparation<%
-        String referralId = request.getParameter("referralId"); %>
-        var parameters = {
+        // Request preparation
+        <% String referralId = request.getParameter("referralId");
+        %>var parameters = {
             referralId: "<%= referralId %>",
             <%= Consumer.LANGUAGE %>: "<%= localeId %>",
             <%= Consumer.EMAIL %>: dijit.byId("email0").get("value"),

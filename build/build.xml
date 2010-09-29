@@ -4,8 +4,8 @@
 
 <project
     basedir=".."
-	default="test"
-	name="base_build_control"
+    default="test"
+    name="base_build_control"
 >
 
     <description>
@@ -171,7 +171,7 @@
         description="Piece of information inserted as the title page of all HTML pages produced by JavaDoc."
         value="AnotherSocialEconomy API and Console"
     />
-	
+
     <!-- ============== -->
     <!-- Public targets -->
     <!-- ============== -->
@@ -442,25 +442,13 @@
         <resourcecount property="html.source.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="src/war" includes="**/*.html,**/*.jsp" excludes="**/dojo/**,**/domderrien/**" />
+                <fileset dir="src/war" includes="**/*.html,**/*.jsp,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**" />
             </tokens>
         </resourcecount>
         <resourcecount property="html.test.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="test/war" includes="**/*.html" excludes="**/dojo/**,**/domderrien/**" />
-            </tokens>
-        </resourcecount>
-        <resourcecount property="javascript.source.line.count">
-            <tokens>
-                <linetokenizer includedelims="yes" />
-                <fileset dir="src/war/js" includes="**/*.js" excludes="**/dojo/**,**/domderrien/**" />
-            </tokens>
-        </resourcecount>
-        <resourcecount property="javascript.test.line.count">
-            <tokens>
-                <linetokenizer includedelims="yes" />
-                <fileset dir="test/war" includes="**/*.js" excludes="**/dojo/**,**/domderrien/**" />
+                <fileset dir="test/war" includes="**/*.html,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**" />
             </tokens>
         </resourcecount>
         <resourcecount property="xml.line.count">
@@ -473,8 +461,7 @@
             --
             Statistics:
                Java source/test files: ${java.source.line.count} lines / ${java.test.line.count} lines
-               HTML source/test files: ${html.source.line.count} lines / ${html.test.line.count} lines
-               Javacript source/test files: ${javascript.source.line.count} lines / ${javascript.test.line.count} lines
+               HTML/JS/CSS source/test files: ${html.source.line.count} lines / ${html.test.line.count} lines
                Resource (XML, XSL, TMX) files: ${xml.line.count} lines
         </echo>
     </target>
@@ -484,7 +471,7 @@
             eof="remove"
             eol="crlf"
             excludes="**/dojo/**/*.*"
-            includes="**/*.java,**/*.jsp,**/*.html,**/*.js"
+            includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             srcdir="src"
             tab="remove"
             tablength="4"
@@ -493,7 +480,7 @@
             eof="remove"
             eol="crlf"
             excludes="**/dojo/**/*.*"
-            includes="**/*.java,**/*.jsp,**/*.html,**/*.js"
+            includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             srcdir="test"
             tab="remove"
             tablength="4"
@@ -523,7 +510,7 @@
             <fileset
                 dir="src"
                 excludes="**/dojo/**/*.*"
-                includes="**/*.java,**/*.jsp,**/*.html,**/*.js"
+                includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             />
         </replaceregexp>
         <replaceregexp byline="true" flags="gm">
@@ -532,7 +519,7 @@
             <fileset
                 dir="test"
                 excludes="**/dojo/**/*.*"
-                includes="**/*.java,**/*.jsp,**/*.html,**/*.js"
+                includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             />
         </replaceregexp>
         <replaceregexp byline="true" flags="gm">
@@ -657,16 +644,16 @@
             destdir="src/war/WEB-INF/classes"
             deprecation="true"
             debug="true"
-			includeantruntime="false"
+            includeantruntime="false"
             optimize="false"
             excludes=""
             srcdir="src/java"
         >
             <classpath refid="java.compile.classpath" />
         </javac>
-		<antcall target="step-java-compile-test" />
-	</target>
-	
+        <antcall target="step-java-compile-test" />
+    </target>
+
     <target name="step-java-compile-test" unless="compile-for-run-only">
         <javac
             destdir="src/war/WEB-INF/classes"

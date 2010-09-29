@@ -500,7 +500,7 @@ public class ProposalSteps extends BaseSteps {
         }
         // Normal attribute update
         else if (State.opened.equals(currentState) || State.published.equals(currentState) || State.invalid.equals(currentState)) {
-            // Neutralise read-only parameters
+            // Neutralize read-only parameters
             parameters.remove(Proposal.DEMAND_KEY);
             parameters.remove(Proposal.CONSUMER_KEY);
 

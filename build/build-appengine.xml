@@ -4,8 +4,8 @@
 
 <project
     basedir=".."
-	default="webserver-start"
-	name="build_control_for_google_appengine"
+    default="webserver-start"
+    name="build_control_for_google_appengine"
 >
 
     <description>
@@ -72,10 +72,10 @@
     <target name="test" description="run the unit tests for the Java and the JavaScript code" depends="step-datanucleus-enhance-for-tests, base_build_control.test" />
 
     <target name="webserver-start" description="start the configured webserver">
-    	<property name="compile-for-run-only" value="true" />
+        <property name="compile-for-run-only" value="true" />
         <antcall target="step-datanucleus-enhance" />
         <antcall target="step-appengine-start" />
-	</target>
+    </target>
 
     <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-datanucleus-enhance, step-appengine-start-debug" />
 
@@ -194,12 +194,63 @@
         <copy todir="${temp.dir}/appengine-stage" overwrite="yes" includeemptydirs="false">
             <fileset dir="src/war">
                 <include name="**/*" />
+                <exclude name="**/*.legacy" />
                 <exclude name="js/dojo/**/*"/>
                 <exclude name="WEB-INF/appengine-generated/**" />
                 <exclude name="WEB-INF/classes/**/Test*.*" />
                 <exclude name="WEB-INF/classes/**/Mock*.*" />
             </fileset>
         </copy>
+        <!-- Technics inspired by http://www.webapp-performance.com/general-tips/removing-unused-css-whitespace-with-ant-replaceregexp -->
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="\s+" />
+            <substitution expression=" "/>
+            <fileset
+                dir="${temp.dir}/appengine-stage"
+                excludes=""
+                includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
+            />
+        </replaceregexp>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="\s+//.*" />
+            <substitution expression=""/>
+            <fileset
+                dir="${temp.dir}/appengine-stage"
+                excludes=""
+                includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
+            />
+        </replaceregexp>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="^\s" />
+            <substitution expression=""/>
+            <fileset
+                dir="${temp.dir}/appengine-stage"
+                excludes=""
+                includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
+            />
+        </replaceregexp>
+        <replaceregexp match="/\*.+?\*/" replace="" flags="gs" byline="false">
+            <fileset
+                dir="${temp.dir}/appengine-stage"
+                excludes=""
+                includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
+            />
+        </replaceregexp>
+        <replaceregexp byline="false" flags="gm">
+            <regexp pattern="^\r\n" />
+            <substitution expression=""/>
+            <fileset
+                dir="${temp.dir}/appengine-stage"
+                excludes=""
+                includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
+            />
+        </replaceregexp>
+        <!--
+        To measure the size of the folders with files to be conveyed over HTTP:
+            du src/war/ - -exclude=WEB-INF - -exclude=images
+            du /tmp/webapp/appengine-stage/ - -exclude=WEB-INF - -exclude=images
+       (note: one extra space between the dash sequences otherwise the XML compiler complains
+        -->
     </target>
 
     <target name="step-stage-deploy">

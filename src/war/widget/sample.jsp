@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!doctype html>
 <%@page
     language="java"
     contentType="text/html; charset=UTF-8"
@@ -18,7 +18,7 @@
     if (localeId == null) { localeId = "en"; }
     if (width == null) { width = "200"; }
     if (height == null) { height = "400"; }
-%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+%><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>AnotherSocialEconomy.com - HowTo embed the ASE widget</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">

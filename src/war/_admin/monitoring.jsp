@@ -33,7 +33,7 @@
     // Consumer attributes
     OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
     Consumer consumer = LoginServlet.getConsumer(loggedUser);
-%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+%><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Monitoring Console</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />

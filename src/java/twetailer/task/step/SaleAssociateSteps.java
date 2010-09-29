@@ -152,7 +152,7 @@ public class SaleAssociateSteps extends BaseSteps {
             parameters.remove(SaleAssociate.CRITERIA_REMOVE);
         }
 
-        // Neutralise some updates
+        // Neutralize some updates
         parameters.remove(SaleAssociate.CONSUMER_KEY);
         if (!isPrivileged) {
             parameters.remove(SaleAssociate.LOCATION_KEY);

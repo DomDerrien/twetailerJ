@@ -41,7 +41,7 @@
 
     // Regular expression for e-mail address validation
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
-%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+%><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "golfConsu_localized_page_name", locale) %></title>

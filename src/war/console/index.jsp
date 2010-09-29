@@ -51,7 +51,7 @@
 
     // Get the logged user SaleAssociate key
     Long saleAssociateKey = consumer.getSaleAssociateKey();
-%><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
+%><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>

@@ -134,7 +134,7 @@ public class ConsumerSteps extends BaseSteps {
         }
          */
 
-        // Neutralise some updates
+        // Neutralize some updates
         parameters.remove(Consumer.SALE_ASSOCIATE_KEY);
 
         // Merge updates and persist them
