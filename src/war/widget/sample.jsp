@@ -82,12 +82,15 @@
         <li><code>postalCode</code>: postal code from the golf course address (mandatory).</li>
         <li><code>countryCode</code>:  ISO code of the golf course location (optional, default: <code><%= LocaleValidator.DEFAULT_COUNTRY_CODE %></code>).</li>
         <li><code>color</code>: text color of the input fields' label (optional, default: <code>white</code>).</li>
-        <li><code>color-title</code>: text color of the wizard panes' title (optional, default: <code>green</code>).</li>
-        <li><code>background-color</code>: color of the wizard panes' background (optional, default: <code>#5ddc1e</code>).</li>
+        <li><code>color-odd-row</code>: text color of the wizard panes' title (optional, default: <code>white</code>).</li>
+        <li><code>color-link</code>: text color of links (like '« back') (optional, default: <code>blue</code>).</li>
+        <li><code>color-title</code>: text color of the wizard panes' title (optional, default: <code>darkred</code>).</li>
         <li><code>background-image</code>: image url of the wizard panes' background (optional, default: &lt;none&gt;).</li>
+        <li><code>background-color</code>: color of the wizard panes' background (optional, default: <code>#5ddc1e</code>).</li>
+        <li><code>background-color-odd-row</code>: color of the wizard panes' background (optional, default: <code>#5ddc1e</code>).</li>
         <li><code>font-size</code>: text size of the input fields' label (optional, default: <code>10px</code>).</li>
         <li><code>font-size-title</code>: text size of the wizard pane's title (optional, default: <code>12px</code>).</li>
-        <li><code>font-family</code>: name of the text font (optional, default: <code>Tahoma, Verdana, arial</code>).</li>
+        <li><code>font-family</code>: name of the text font (optional, default: <code>'Droid Sans', tahoma, verdana, arial, serif</code>).</li>
     </ul>
     <h1>Code snippet</h1>
     <pre
@@ -98,6 +101,15 @@
     frameborder="0"
     type="text/html"
 &gt;&lt;/iframe&gt;</pre>
+
+    <br clear="all" />
+    <ul>
+        <li>This sample page on <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
+        <li>ASE widget alone: <a href="/widget/ase.jsp">normal</a> -- <a href="/widget/ase.jsp?color=yellow&color-title=green&color-link=yellow&&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
+        <li>ezToff page alone: <a href="/widget/eztoff.jsp">normal</a> -- <a href="/widget/eztoff.jsp?color=yellow&color-title=green&color-link=yellow&&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg#">custom</a>.</li>
+        <li>ASE console: <a href="/console/">Consumer</a> -- <a href="/console/associate.jsp">Associate</a>.</li>
+        <li>ezToff console: <a href="/console/eztoff/">Consumer</a> -- <a href="/console/eztoff/associate.jsp">Associate</a>.</li>
+    </ul>
 
     <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
@@ -112,14 +124,5 @@
         s.parentNode.insertBefore(ga, s);
     })();
     </script><% } %>
-
-    <br clear="all" />
-    <ul>
-        <li>Widget sample page: <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/sample.jsp">Local version</a>.</li>
-        <li>ASE widget alone: <a href="http://anothersocialeconomy.appspot.com/widget/ase.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/ase.jsp">Local version</a>.</li>
-        <li>ezToff page alone: <a href="http://anothersocialeconomy.appspot.com/widget/eztoff.jsp">Hosted version</a> -- <a href="http://127.0.0.1:9999/widget/eztoff.jsp">Local version</a>.</li>
-        <li>ASE console: <a href="http://anothersocialeconomy.appspot.com/console/">Hosted version</a> -- <a href="http://127.0.0.1:9999/console/">Local version</a>.</li>
-        <li>ezToff console: <a href="http://anothersocialeconomy.appspot.com/console/eztoff/">Hosted version</a> -- <a href="http://127.0.0.1:9999/console/eztoff/">Local version</a>.</li>
-    </ul>
 </body>
 </html>

@@ -1,76 +1,6 @@
 /**
  * Override settings for the Golf widget
  */
-body, th, td {
-}
-
-#introFlash {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    border: 0 none;
-    padding: 0;
-    background: white url('/images/loading.gif') no-repeat center center;
-    z-index: 999;
-}
-
-#introFlash>div {
-    position: absolute;
-    top: 40%;
-    width: 100%;
-    text-align: center;
-}
-
-#introFlash>div>span {
-    background-color: #F9F9F9;
-    border: 1px solid #BFBFBF;
-    padding: 4px;
-    line-height: 30px;
-}
-
-#centerZone {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 5px;
-    background-color: #5ddc1e;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-}
-
-.silkIcon {
-    background-repeat:no-repeat;
-    text-align:center;
-    height:18px;
-    width:18px;
-}
-
-.silkIconAccept {
-    background-image:url(/images/accept.png);
-}
-
-.silkIconAdd {
-    background-image:url(/images/add.png);
-}
-
-.silkIconDelete {
-    background-image:url(/images/delete.png);
-}
-
-.silkIconGPS {
-    background-image:url(/images/gps.png);
-}
-
-.silkIconGMaps {
-    background-image:url(/images/icons/GMaps.png);
-}
-
 .progressBar {
     height: 30px;
     padding: 0 0 0 7px;
@@ -81,9 +11,7 @@ body, th, td {
 .progressBar .step {
     padding-top: 6px;
     color: green;
-    width: 24px;
     height: 24px;
-    float: left;
     width: 14%;
     vertical-align: middle;
     text-align:center;
@@ -113,28 +41,12 @@ body, th, td {
     background-image: url('/images/golf/flag-small.png'), url('/images/golf/ball-green-small.png');
 }
 
-.content>table {
-    width: 100%;
-}
-
-.content>table>tbody>tr>td {
-    vertical-align: middle;
-}
-
-.content>table>tbody>tr>td, label, .comment {
-    padding: 5px 0;
-}
-
-input {
-    height: 20px;
+#centerZone {
+    background-color: #5ddc1e;
 }
 
 label, .title, .comment {
     color: white;
-}
-
-.comment input {
-    color: black;
 }
 
 label, .title {
@@ -149,6 +61,18 @@ label, .title {
 .hint {
     font-size: smaller;
     color: darkgreen;
+}
+
+.form>tbody>tr:nth-child(2n+1) {
+    background-color: #00aa00;
+}
+
+.form>tbody>tr:nth-child(2n+1) label {
+    color: white;
+}
+
+.form>tbody>tr>td:first-child {
+    width:1%;
 }
 
 .footer {

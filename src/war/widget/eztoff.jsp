@@ -30,21 +30,6 @@
     }
     Locale locale = LocaleValidator.getLocale(localeId);
 
-    // Get the widget parameters
-    String referralId = request.getParameter("referralId");
-    String postalCode = request.getParameter("postalCode");
-    String countryCode = request.getParameter("countryCode");
-    if (countryCode == null || countryCode.length() == 0) {
-        countryCode = LocaleValidator.DEFAULT_COUNTRY_CODE;
-    }
-    String color = request.getParameter("color");
-    String colorTitle = request.getParameter("color-title");
-    String backgroundColor = request.getParameter("background-color");
-    String backgroundImage = request.getParameter("background-image");
-    String fontSize = request.getParameter("font-size");
-    String fontSizeTitle = request.getParameter("font-size-title");
-    String fontFamily = request.getParameter("font-family");
-
     // Regular expression for e-mail address validation
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<%= localeId %>">
@@ -56,7 +41,8 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <style type="text/css"><%
+    <style type="text/css">
+        @import url(http://fonts.googleapis.com/css?family=Droid+Sans);<%
         if (useCDN) {
         %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
@@ -68,18 +54,9 @@
         @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
         } // endif (useCDN)
         %>
+        @import "/css/widget.css";
         @import "/css/eztoff/widget.css";
-        body { <%
-        if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %>
-        label, .title, .comment { <%
-        if (fontFamily != null && 0 < fontFamily.length()) { %>font-family:<%= fontFamily.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #content { <%
-        if (fontSize != null && 0 < fontSize.length()) { %>font-size:<%= fontSize.replaceAll(";|<|>|\\:", "") %>;<% }
-        if (backgroundColor != null && 0 < backgroundColor.length()) { %>background-color:<%= backgroundColor.replaceAll(";|<|>|\\:", "") %>;<% }
-        if (backgroundImage != null && 0 < backgroundImage.length()) { %>background-image: <%= backgroundImage.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #content .title { <%
-        if (colorTitle != null && 0 < colorTitle.length()) { %>color:<%= colorTitle.replaceAll(";|<|>|\\:", "") %>;<% }
-        if (fontSizeTitle != null && 0 < fontSizeTitle.length()) { %>font-size:<%= fontSizeTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
+        <jsp:include page="/_includes/widget_css_parameters.jsp" />
     </style>
 </head>
 <body class="tundra">
@@ -128,7 +105,7 @@
             </div>
             <div dojoType="dijit.form.Form" id="form1" class="content">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_1_title", locale) %></div>
-                <table cellpadding="0" cellspacing="0">
+                <table cellpadding="0" cellspacing="0" class="form">
                     <tr id="postalCodeRow" style="display:none;">
                         <td><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
                         <td>
@@ -225,7 +202,7 @@
             </div>
             <div dojoType="dijit.form.Form" id="form2" class="content">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_2_title", locale) %></div>
-                <table cellpadding="0" cellspacing="0">
+                <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
                         <td style="vertical-align:top;"><label for="email0"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_owner_email", locale) %></label></td>
                         <td style="text-align: right;">
@@ -245,7 +222,7 @@
                     </tr>
                 </table>
                 <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_2_contextualInfo", locale) %></div>
-                <table>
+                <table cellpadding="0" cellspacing="0" class="form">
                     <tbody id="friendList">
                         <tr id="friendRow1">
                             <td><label for="email1"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %></label></td>
@@ -386,6 +363,9 @@
         dojo.require("dojox.widget.Standby");
         dojo.require("twetailer.Common");
         dojo.addOnLoad(function(){
+            dojo.extend(dijit._TimePicker,{
+                visibleRange: "T02:00:00",
+            });
             dojo.parser.parse();
             dojo.fadeOut({
                 node: "introFlash",
@@ -411,16 +391,21 @@
         dateField.set("value", tomorrow);
         dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
 
-        <% if (postalCode == null || postalCode.length() == 0) {
+        <%
+        String postalCode = request.getParameter("postalCode");
+        if (postalCode == null || postalCode.length() == 0) {
         %>dojo.style("postalCodeRow", "display", "");
         dijit.byId("postalCode").focus();
-        dojo.style("countryCodeRow", "display", "");<%
-        }
+        dojo.style("countryCodeRow", "display", "");
+        <% }
         else {
         %>dijit.byId("postalCode").set("value", "<%= postalCode %>");
-        dijit.byId("quantity").focus();<%
+        dijit.byId("quantity").focus();
+        <% }
+        String countryCode = request.getParameter("countryCode");
+        if (countryCode != null && 0 < countryCode.length()) {
+        %>dijit.byId("countryCode").set("value", "<%= countryCode %>");<%
         } %>
-        dijit.byId("countryCode").set("value", "<%= countryCode %>");
     };
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
@@ -451,7 +436,8 @@
         if (!form.validate()) {
             return;
         }
-        // Request preparation
+        // Request preparation<%
+        String referralId = request.getParameter("referralId"); %>
         var parameters = {
             referralId: "<%= referralId %>",
             <%= Consumer.LANGUAGE %>: "<%= localeId %>",
@@ -503,10 +489,9 @@
     };
     </script>
 
-    <% if (postalCode == null || postalCode.length() == 0) {
-    %><script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
-    <% } %>
-    <% if (!"localhost".equals(request.getServerName())) { %><script type="text/javascript">
+    <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
+
+    <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-11910037-2']);
     _gaq.push(['_trackPageview']);
