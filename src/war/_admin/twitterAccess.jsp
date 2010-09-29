@@ -308,6 +308,7 @@
         // dojo.require("dijit.form.NumberTextBox");
         // dojo.require("dijit.form.Textarea");
         dojo.require("dijit.form.TextBox");
+        dojo.require("dojox.analytics.Urchin");
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({
@@ -317,26 +318,15 @@
                     dojo.style("introFlash", "display", "none");
                 }
             }).play();
-        });
+        });<%
+        if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
+        new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
+        } %>
     });
     </script>
 
     <script type="text/javascript">
     var localModule = new Object();
     </script>
-
-    <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-11910037-2']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(ga, s);
-    })();
-    </script><% } %>
 </body>
 </html>
