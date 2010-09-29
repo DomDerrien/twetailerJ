@@ -2,12 +2,12 @@
  * Shared settings
  */
 html, body {
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	margin: 0;
-	border: 0 none;
-	padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    border: 0 none;
+    padding: 0;
 }
 
 body, th, td {
@@ -15,30 +15,30 @@ body, th, td {
 }
 
 body {
-	background-color: #eee;
+    background-color: #eee;
 }
 
 #topBar {
-	z-index:20;
-	position:absolute;
-	left:0;
-	top:0;
-	right:0;
-	height:4px;
-	background-color:black;
+    z-index:20;
+    position:absolute;
+    left:0;
+    top:0;
+    right:0;
+    height:4px;
+    background-color:black;
 }
 
 #introFlash {
-	position: absolute;
-	top: 109px;
-	bottom: 44px;
-	left:20px;
-	right:20px;
-	margin: 0;
-	border: 0 none;
-	padding: 0;
-	background: white url('/images/loading.gif') no-repeat center center;
-	z-index: 999;
+    position: absolute;
+    top: 109px;
+    bottom: 44px;
+    left:20px;
+    right:20px;
+    margin: 0;
+    border: 0 none;
+    padding: 0;
+    background: white url('/images/loading.gif') no-repeat center center;
+    z-index: 999;
 }
 
 #introFlash>div {
@@ -50,19 +50,19 @@ body {
 
 #introFlash>div>span {
     background-color: #F9F9F9;
-   	border: 1px solid #BFBFBF;
-   	padding: 4px;
-   	line-height: 30px;
+    border: 1px solid #BFBFBF;
+    padding: 4px;
+    line-height: 30px;
 }
 
 #topContainer {
-	margin: 0 10px;
-	background-color: white;
+    margin: 0 10px;
+    background-color: white;
 }
 
 #headerZone {
-	background-color: #aaa;
-	margin: 0 10px;
+    background-color: #aaa;
+    margin: 0 10px;
 }
 
 #brand {
@@ -78,41 +78,41 @@ body {
 }
 
 #brand>h1>a {
-	text-decoration: none;
-	color: black;
+    text-decoration: none;
+    color: black;
 }
 
 #mantra {
-	float: left;
-	margin-top:-25px;
-	padding-left: 70px;
-	font-size: 1.2em !important;
+    float: left;
+    margin-top:-25px;
+    padding-left: 70px;
+    font-size: 1.2em !important;
     text-shadow: 1px 1px 0.2em #fff;
 }
 
 #logo {
-	float: right;
+    float: right;
 }
 
 #navigation {
-	background-color: black;
-	padding: 2px 0
+    background-color: black;
+    padding: 2px 0
 }
 
 #navigation>ul, #navigation>ul>li {
-	display: inline;
-	margin: 0;
-	padding: 0;
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
 
 #navigation>ul>li {
-	margin-left: 3em;
+    margin-left: 3em;
 }
 
 #navigation>ul>li.subItem {
-	float: right;
-	margin-left: 0;
-	margin-right: 3em;
+    float: right;
+    margin-left: 0;
+    margin-right: 3em;
 }
 
 #navigation>ul>li>a {
@@ -130,7 +130,7 @@ body {
 }
 
 #navigation>ul>li>table.dijitSelect, #widget_languageSelector {
-	margin-top: -1px;
+    margin-top: -1px;
 }
 
 #footerZone {
@@ -138,20 +138,20 @@ body {
     bottom: 0;
     left: 10px;
     right: 10px;
-	background-color: #666;
-	margin: 0 10px 10px 10px;
-	padding: 10px 30px;
-	color: #ccc;
+    background-color: #666;
+    margin: 0 10px 10px 10px;
+    padding: 10px 30px;
+    color: #ccc;
 }
 
 #footerZone>a {
-	text-decoration: none;
-	color: white;
+    text-decoration: none;
+    color: white;
 }
 
 #centerZone {
-	background-color: white;
-	margin: 0 10px;
+    background-color: white;
+    margin: 0 10px;
 }
 
 .silkIcon {
@@ -283,18 +283,18 @@ body {
 }
 
 #signInForm {
-	background-color: #ccc;
-	border: 1px solid black;
+    background-color: #ccc;
+    border: 1px solid black;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-	padding: 10px;
+    padding: 10px;
 }
 
 #openid_identifier {
-	background-image: url(/images/icons/openid.gif) !important;
-	background-position: 3px 2px;
-	background-repeat: no-repeat;
-	padding: 0.2em 0.2em 0.2em 20px;
+    background-image: url(/images/icons/openid.gif) !important;
+    background-position: 3px 2px;
+    background-repeat: no-repeat;
+    padding: 0.2em 0.2em 0.2em 20px;
 }
 
 .openidSignInButton {
@@ -306,8 +306,8 @@ body {
 }
 
 #openIdProviderList {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
     text-align: center;
 }
 
@@ -342,8 +342,8 @@ body {
 }
 
 .entityInformation legend {
-	font-weight: bold;
-	color: green;
+    font-weight: bold;
+    color: green;
 }
 
 .entityInformation>div {
@@ -361,9 +361,9 @@ body {
 }
 
 .invalidData {
-	color: red;
-	border-bottom: 2px dotted red;
-	text-shadow: #bbb 2px 2px 2px;
+    color: red;
+    border-bottom: 2px dotted red;
+    text-shadow: #bbb 2px 2px 2px;
 }
 
 .dijitTextBox .rightAlign {
@@ -374,5 +374,5 @@ body {
  * Entity Pane
  */
 .demandForm>tbody>tr>td {
-	vertical-align: top;
+    vertical-align: top;
 }

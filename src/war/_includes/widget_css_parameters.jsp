@@ -29,11 +29,17 @@
 <%
     String fontSize = request.getParameter("font-size");
     String fontSizeTitle = request.getParameter("font-size-title");
+    String fontSizeBrand = request.getParameter("font-size-brand");
     String fontFamily = request.getParameter("font-family");
+    String fontFamilyTitle = request.getParameter("font-family-title");
+    String fontFamilyBrand = request.getParameter("font-family-brand");
 %>
         body, th, td, textarea {<%
-        if (fontFamily != null && 0 < fontFamily.length()) { %>font-family:<%= fontFamily.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #centerZone, textarea {<%
+        if (fontFamily != null && 0 < fontFamily.length()) { %>font-family:<%= fontFamily.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSize != null && 0 < fontSize.length()) { %>font-size:<%= fontSize.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        .brand, .title {<%
+        .title {<%
+        if (fontFamilyTitle != null && 0 < fontFamilyTitle.length()) { %>font-family:<%= fontFamilyTitle.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSizeTitle != null && 0 < fontSizeTitle.length()) { %>font-size:<%= fontSizeTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
+        .brand {<%
+        if (fontFamilyBrand != null && 0 < fontFamilyBrand.length()) { %>font-family:<%= fontFamilyBrand.replaceAll(";|<|>|\\:", "") %>;<% }
+        if (fontSizeBrand != null && 0 < fontSizeBrand.length()) { %>font-size:<%= fontSizeBrand.replaceAll(";|<|>|\\:", "") %>;<% } %> }

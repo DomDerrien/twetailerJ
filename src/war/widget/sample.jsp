@@ -88,9 +88,12 @@
         <li><code>background-image</code>: image url of the wizard panes' background (optional, default: &lt;none&gt;).</li>
         <li><code>background-color</code>: color of the wizard panes' background (optional, default: <code>#5ddc1e</code>).</li>
         <li><code>background-color-odd-row</code>: color of the wizard panes' background (optional, default: <code>#5ddc1e</code>).</li>
-        <li><code>font-size</code>: text size of the input fields' label (optional, default: <code>10px</code>).</li>
-        <li><code>font-size-title</code>: text size of the wizard pane's title (optional, default: <code>12px</code>).</li>
-        <li><code>font-family</code>: name of the text font (optional, default: <code>'Droid Sans', tahoma, verdana, arial, serif</code>).</li>
+        <li><code>font-size</code>: text size of the input fields' label (optional, default: <code>11px</code>).</li>
+        <li><code>font-size-title</code>: text size of the wizard pane's title (optional, default: <code>11px</code>).</li>
+        <li><code>font-size-brand</code>: text size of the wizard pane's title (optional, default: <code>14px</code>).</li>
+        <li><code>font-family</code>: name of the text font (optional, default: <code>Arial, Helvetica, sans-serif</code>).</li>
+        <li><code>font-family-title</code>: name of the text font (optional, default: <code>'Arial Black', Gadget, sans-serif</code>).</li>
+        <li><code>font-family-brand</code>: name of the text font (optional, default: <code>'Arial Black', Gadget, sans-serif</code>).</li>
     </ul>
     <h1>Code snippet</h1>
     <pre
@@ -105,8 +108,8 @@
     <br clear="all" />
     <ul>
         <li>This sample page on <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
-        <li>ASE widget alone: <a href="/widget/ase.jsp">normal</a> -- <a href="/widget/ase.jsp?color=yellow&color-title=green&color-link=yellow&&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
-        <li>ezToff page alone: <a href="/widget/eztoff.jsp">normal</a> -- <a href="/widget/eztoff.jsp?color=yellow&color-title=green&color-link=yellow&&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg#">custom</a>.</li>
+        <li>ASE widget alone: <a href="/widget/ase.jsp">normal</a> -- <a href="/widget/ase.jsp?color=yellow&color-title=green&color-link=yellow&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-family-title=courier&font-family-brand=courier&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
+        <li>ezToff page alone: <a href="/widget/eztoff.jsp">normal</a> -- <a href="/widget/eztoff.jsp?color=yellow&color-title=green&color-link=yellow&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-family-title=courier&font-family-brand=courier&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
         <li>ASE console: <a href="/console/">Consumer</a> -- <a href="/console/associate.jsp">Associate</a>.</li>
         <li>ezToff console: <a href="/console/eztoff/">Consumer</a> -- <a href="/console/eztoff/associate.jsp">Associate</a>.</li>
     </ul>

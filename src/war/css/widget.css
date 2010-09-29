@@ -2,7 +2,8 @@
  * Override settings for the Golf widget
  */
 body, th, td, textarea {
-    font-family: 'Droid Sans', tahoma, verdana, arial, serif;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
 }
 
 #introFlash {
@@ -114,15 +115,15 @@ body, th, td, textarea {
 }
 
 .brand {
+    font-family: 'Arial Black', Gadget, sans-serif;
+    font-size: 14px;
     color: darkred;
-    font-size: larger;
     text-align: center;
-    text-decoration: underline;
-    padding: 10px 0 5px 0;
+    padding-top: 10px;
 }
 
 .title {
-    font-size: larger;
+    font-family: 'Arial Black', Gadget, sans-serif;
     padding: 10px 0 10px 0;
 }
 
@@ -144,7 +145,7 @@ body, th, td, textarea {
 .form>tbody>tr>td {
     border-top: 1px solid black;
     padding: 3px 0 3px 3px;
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .form>tbody>tr>td:first-child {

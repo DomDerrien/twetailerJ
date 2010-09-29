@@ -4,7 +4,7 @@
 body, th, td {
     font-size: 11pt;
 }
-	
+
 #brand {
 }
 
@@ -15,7 +15,7 @@ body, th, td {
 }
 
 #headerZone {
-	background-color: #5ddc1e;
+    background-color: #5ddc1e;
     font-size: 9pt;
 }
 
@@ -31,15 +31,15 @@ body, th, td {
 #demandList .dojoxGridScrollbox {
     background-image:  url("/images/golf/consoleTeeBall.png"), url("/images/golf/consoleBackground.png");
     background-repeat: no-repeat, repeat-x;
-	background-attachment: scroll;
+    background-attachment: scroll;
     background-position: left bottom, left bottom;
     background-color: transparent, #FFFFFF;
 }
 
 #demandForm .dijitDialogPaneContent, #proposalForm .dijitDialogPaneContent {
     background-image: url("/images/golf/18-hole-flag.png");
-	background-repeat: no-repeat;
+    background-repeat: no-repeat;
     background-attachment: scroll;
-	background-position: right bottom;
-	background-color: #FFFFFF;
+    background-position: right bottom;
+    background-color: #FFFFFF;
 }

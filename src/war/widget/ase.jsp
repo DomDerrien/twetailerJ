@@ -41,8 +41,7 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <style type="text/css">
-        @import url(http://fonts.googleapis.com/css?family=Droid+Sans);<%
+    <style type="text/css"><%
         if (useCDN) {
         %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
