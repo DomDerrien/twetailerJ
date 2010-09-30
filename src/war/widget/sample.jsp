@@ -79,6 +79,9 @@
     <ul>
         <li><code>lg</code>:  ISO code of the interface language (optional, default: <code><%= LocaleValidator.DEFAULT_LANGUAGE %></code>).</li>
         <li><code>referralId</code>: golf course identifier (mandatory).</li>
+        <li><code>hideBrand</code>: if set, the top label printing the widget brand is going stays hidden.</li>
+        <li><code>brand</code>: replaces the default widget brand.</li>
+        <li><code>criteria</code>: to be inserted in the &lt;textarea/&gt; field containing the Demand tags.</li>
         <li><code>postalCode</code>: postal code from the golf course address (mandatory).</li>
         <li><code>countryCode</code>:  ISO code of the golf course location (optional, default: <code><%= LocaleValidator.DEFAULT_COUNTRY_CODE %></code>).</li>
         <li><code>color</code>: text color of the input fields' label (optional, default: <code>white</code>).</li>

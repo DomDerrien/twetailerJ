@@ -207,7 +207,7 @@
             <substitution expression=" "/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes=""
+                excludes="_tmp/**/*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
@@ -216,7 +216,7 @@
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes=""
+                excludes="_tmp/**/*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
@@ -225,14 +225,14 @@
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes=""
+                excludes="_tmp/**/*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
         <replaceregexp match="/\*.+?\*/" replace="" flags="gs" byline="false">
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes=""
+                excludes="_tmp/**/*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
@@ -241,7 +241,7 @@
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes=""
+                excludes="_tmp/**/*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>

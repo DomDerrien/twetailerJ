@@ -97,8 +97,14 @@
     <div id="centerZone">
         <div id="pane1">
             <div dojoType="dijit.form.Form" id="form1" class="content">
-                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
-                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_title", locale) %></div>
+                <% boolean showBrand = request.getParameter("hideBrand") == null;
+                String brand = request.getParameter("brand");
+                if (brand == null) {
+                    brand = LabelExtractor.get(ResourceFileId.third, "cw_brand", locale);
+                }
+                if (showBrand) {
+                %><div class="brand"><%= brand %></div><% }
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
                         <td style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
@@ -109,7 +115,12 @@
                                 name="tags"
                                 rows="3"
                                 style="width:100%;min-height:48px;"
-                            ></textarea><br/>
+                            ><%
+                            String criteria = request.getParameter("criteria");
+                            if (criteria != null) {
+                                out.write(criteria);
+                            }
+                            %></textarea><br/>
                             <div
                                 iconClass="silkIcon silkIconHelp"
                                 dojoType="dijit.form.DropDownButton"
@@ -163,8 +174,9 @@
         </div>
         <div id="pane2" style="display:none;">
             <div dojoType="dijit.form.Form" id="form2" class="content">
-                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
-                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_title", locale) %></div>
+                <% if (showBrand) {
+                %><div class="brand"><%= brand %></div><% }
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
                         <td><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
@@ -246,8 +258,9 @@
         </div>
         <div id="pane3" style="display:none;">
             <div dojoType="dijit.form.Form" id="form3" class="content">
-                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
-                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_title", locale) %></div>
+                <% if (showBrand) {
+                %><div class="brand"><%= brand %></div><% }
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
                         <td><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_date", locale) %></label></td>
@@ -288,8 +301,9 @@
         </div>
         <div id="pane4" style="display:none;">
             <div dojoType="dijit.form.Form" id="form4" class="content">
-                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
-                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_title", locale) %></div>
+                <% if (showBrand) {
+                %><div class="brand"><%= brand %></div><% }
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tbody id="friendList">
                         <tr id="friendRow0">
@@ -368,9 +382,10 @@
         </div>
         <div id="pane5" style="display:none;">
             <div class="content">
-                <div class="brand"><%= LabelExtractor.get(ResourceFileId.third, "cw_brand", locale) %></div>
-                <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_5_title", locale) %></div>
-                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_5_contextualInfo", locale) %></div>
+                <% if (showBrand) {
+                %><div class="brand"><%= brand %></div><% }
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_5_title", locale) %></div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_5_contextualInfo", new Object[] { brand }, locale) %></div>
                 <table cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td style="text-align:center;">

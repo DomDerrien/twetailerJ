@@ -2237,9 +2237,9 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    Thanks for shopping on the <b>Community Buying Network</b>.
-                    You should receive an email at <span id="sender.email" style="font-weight:bold;">[tbd]</span> shortly.<br/>
-                    If you have not receive an email from ezToff after 20 minutes, please check our <a href="http://anothersocialeconomy.com/faq">FAQ</a> or
+                    Thanks for shopping on the <b>{0}</b>.
+                    You should receive an email at <span id="sender.email" style="font-weight:bold;">[dynamically-updated]</span> shortly.<br/>
+                    If you have not receive an email from AnotherSocialEconomy.com after 20 minutes, please check our <a href="http://anothersocialeconomy.com/faq">FAQ</a> or
                     contact <a href="mailto:support@anothersocialeconomy.com">support@anothersocialeconomy.com</a>.
                     We'll follow-up with Proposals from local retailers upon reception.
                 </seg>
@@ -2434,7 +2434,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li><li>KitchenAid Artisan Empire Red</li><li>4 Michelin Aplin tires 215/50 R17</li></seg>
+                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li><li>KitchenAid Artisan Empire Red</li><li>4 Michelin Alpin tires 215/50 R17</li></seg>
             </tuv>
         </tu>
 
@@ -2550,11 +2550,12 @@
         <tu tuid="gw_step_4_contextualInfo" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <note>{0}: brand, can be entry "cw_brand"</note>
             <tuv xml:lang="en">
                 <seg>
-                    Thanks for shopping on the <b>Community Buying Network</b>.
-                    You should receive an email at <span id="sender.email" style="font-weight:bold;">[tbd]</span> shortly.<br/>
-                    If you have not receive an email from ezToff after 20 minutes, please check our <a href="http://ezToff.com/faq">FAQ</a> or
+                    Thanks for shopping on the <b>ezToff</b> network.
+                    You should receive an email at <span id="sender.email" style="font-weight:bold;">[dynamically updated]</span> shortly.<br/>
+                    If you have not receive an email from ezToff.com after 20 minutes, please check our <a href="http://ezToff.com/faq">FAQ</a> or
                     contact <a href="mailto:support@eztoff.com">support@eztoff.com</a>.
                     We'll follow-up with Proposals from local retailers upon reception.
                 </seg>

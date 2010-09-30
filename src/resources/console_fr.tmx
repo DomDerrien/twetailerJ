@@ -1786,10 +1786,10 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Merci de magasiner avec le <b>Réseau d'achat local</b>.
-                    Nous allons vous envoyer sous peu un courriel de confirmation à <span id="sender.email" style="font-weight:bold;">[tbd]</span>.
-                    Si vous n'avez rien reçu d'ici 20 minutes, vérifier notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
-                    ou contactez nous à l'adresse <a href="mailto:support@eztoff.com">support@eztoff.com</a>.
+                    Merci de magasiner avec le <b>{0}</b>.
+                    Nous allons vous envoyer sous peu un courriel de confirmation à <span id="sender.email" style="font-weight:bold;">[dynamically updated]</span>.
+                    Si vous n'avez reçu de courriel en provenance de AnotherSocialEconomy.com d'ici 20 minutes, vérifier notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
+                    ou contactez nous à l'adresse <a href="mailto:support@anothersocialeconomy.com">support@anothersocialeconomy.com</a>.
                     Par la suite, nous vous transmettrons les propositions des vendeurs de votre région dès qu'elles nous seront communiquées.
                 </seg>
             </tuv>
@@ -1959,7 +1959,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li><li>Mixeur KitchenAid rouge empire</li><li>4 pneus Michelin Aplin 215/50 R17</li></seg>
+                <seg><li>Samsung HDTV UN46C9000</li><li>Jonas Brothers CD album </li><li>Mixeur KitchenAid rouge empire</li><li>4 pneus Michelin Alpin 215/50 R17</li></seg>
             </tuv>
         </tu>
         <tu tuid="cw_alert_tag_missing" dataType="text">
@@ -2060,8 +2060,8 @@
             <tuv xml:lang="fr">
                 <seg>
                     Merci de magasiner avec le Réseau <b>ezToff</b>.
-                    Nous allons vous envoyer sous peu un courriel de confirmation à <span id="sender.email" style="font-weight:bold;">[tbd]</span>.
-                    Si vous n'avez rien reçu d'ici 20 minutes, vérifier notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
+                    Nous allons vous envoyer sous peu un courriel de confirmation à <span id="sender.email" style="font-weight:bold;">[dynamically updated]</span>.
+                    Si vous n'avez pas reçu de courriel en provenance de ezToff.com d'ici 20 minutes, vérifier notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
                     ou contactez nous à l'adresse <a href="mailto:support@eztoff.com">support@eztoff.com</a>.
                     Par la suite, nous vous transmettrons les propositions des clubs de golf dès qu'elles nous seront communiquées.
                 </seg>
