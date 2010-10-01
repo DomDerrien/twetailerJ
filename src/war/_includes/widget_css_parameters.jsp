@@ -6,11 +6,14 @@
     String color = request.getParameter("color");
     String colorOddRow = request.getParameter("color-odd-row");
     String colorLink = request.getParameter("color-link");
-    String colorTitle = request.getParameter("color-title");%>
+    String colorTitle = request.getParameter("color-title");
+    String colorBrand = request.getParameter("color-brand");%>
         body, #centerZone, .hint, .comment, label {<%
         if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #centerZone .title, #centerZone .brand, .progressBar .active, .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {<%
+        #centerZone .title, .progressBar .active, .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {<%
         if (colorTitle != null && 0 < colorTitle.length()) { %>color:<%= colorTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
+        #centerZone .brand {<%
+        if (colorBrand != null && 0 < colorBrand.length()) { %>color:<%= colorBrand.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         a, a:hover, a:visited {<%
         if (colorLink != null && 0 < colorLink.length()) { %>color:<%= colorLink.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         .form>tbody>tr:nth-child(2n+1) label {<%

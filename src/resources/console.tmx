@@ -2240,7 +2240,7 @@
                     Thanks for shopping on the <b>{0}</b>.
                     You should receive an email at <span id="sender.email" style="font-weight:bold;">[dynamically-updated]</span> shortly.<br/>
                     If you have not receive an email from AnotherSocialEconomy.com after 20 minutes, please check our <a href="http://anothersocialeconomy.com/faq">FAQ</a> or
-                    contact <a href="mailto:support@anothersocialeconomy.com">support@anothersocialeconomy.com</a>.
+                    contact <a href="mailto:support@anothersocialeconomy.com"><span title="support@anothersocialeconomy.com">our support service</span></a>.
                     We'll follow-up with Proposals from local retailers upon reception.
                 </seg>
             </tuv>

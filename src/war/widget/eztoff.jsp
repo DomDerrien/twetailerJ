@@ -280,7 +280,7 @@
                 <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>
                 <div class="step inactive goal"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_4_progressBarItem", locale) %></div>
             </div>
-            <div dojoType="dijit.form.Form" id="form3" class="content">
+            <div dojoType="dijit.form.Form" id="form3" class="form">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_title", locale) %></div>
                 <div style="margin-left:20px;">
                     <div>

@@ -127,7 +127,7 @@ body, th, td, textarea {
     padding: 10px 0 10px 0;
 }
 
-.form input, .comment input {
+.form input, .form .dijitSelect, .form .dijitButtonText, .form .dijitTextBox, .comment input {
     color: black;
 }
 
