@@ -79,7 +79,7 @@
 
     <target name="webserver-start-debug" description="start the configured webserver in debug mode, ready to be monitor from eclipse" depends="step-datanucleus-enhance, step-appengine-start-debug" />
 
-    <target name="deploy" description="deploy the product on Google App Engine platform" depends="step-datanucleus-enhance, step-stage-prepare, step-stage-deploy" />
+    <target name="deploy" description="deploy the product on Google App Engine platform" depends="step-clean-compiled, step-datanucleus-enhance, step-stage-prepare, step-stage-deploy" />
 
     <!-- ================= -->
     <!-- Private variables -->

@@ -274,6 +274,7 @@
         <mkdir dir="docs/test-reports/junit-html" />
         <mkdir dir="docs/test-reports/cobertura-xml" />
         <mkdir dir="docs/test-reports/cobertura-html" />
+        <antcall target="step-clean-compiled" unless="testcase" />
         <antcall target="step-java-test" />
         <mkdir dir="docs/test-reports/jsunit-xml" />
         <mkdir dir="docs/test-reports/jsunit-html" />
@@ -633,6 +634,10 @@
         <move file="${temp.dir}/jsdoc_toolkit-2.1.0" tofile="${temp.dir}/jsdoc" />
     </target>
 
+    <target name="step-clean-compiled">
+        <delete dir="src/war/WEB-INF/classes" includeemptydirs="yes" failonerror="false" />
+	</target>
+	
     <target name="step-java-compile">
         <mkdir dir="src/war/WEB-INF/classes"/>
         <!--

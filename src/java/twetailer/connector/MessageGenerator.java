@@ -278,7 +278,7 @@ public class MessageGenerator {
             fetchCommand(proposal, prefix);
             // Proposal
             parameters.put(prefix + Proposal.CURRENCY_CODE, LabelExtractor.get(ResourceFileId.fourth, "common_currencySymbol_" + proposal.getCurrencyCode(), (String) null, userLocale));
-            parameters.put(prefix + Proposal.DEMAND_REFERENCE, proposal.getDemandKey());
+            parameters.put(prefix + Proposal.DEMAND_KEY, proposal.getDemandKey());
             parameters.put(prefix + Proposal.PRICE, proposal.getPrice());
             parameters.put(prefix + Proposal.TOTAL, proposal.getTotal());
         }

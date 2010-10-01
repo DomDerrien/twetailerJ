@@ -421,7 +421,7 @@
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -532,7 +532,7 @@
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -649,7 +649,7 @@
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1210,7 +1210,8 @@
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br/>
+                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1329,7 +1330,8 @@
                     </ul>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br/>
+                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
@@ -1700,7 +1702,8 @@
                     <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your demand after your pickup, so we can better your Rating.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br/>
+                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
                     <a href="mailto:Support@AnotherSocialEcomony.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1820,7 +1823,8 @@
                     at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br/>
+                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -2157,7 +2161,7 @@
                 <seg>
                     <p>Hi {proposal>owner>name},</p>
                     <p>The <strong>Proposal# {proposal>key}</strong> has been closed.</p>
-                    <p>Your score is going to be updated accordingly.</p>
+                    <p>Your rating is going to be updated accordingly.</p>
                     {message>footer}
                     <p>Demand: {demand>key},  Proposal: {proposal>key}.</p>
                 </seg>
@@ -2180,7 +2184,7 @@
                 <seg>
                     <p>Hi {proposal>owner>name},</p>
                     <p>The reservation under the <strong>ezToff Proposal# {proposal>key}</strong> has been closed.</p>
-                    <p>Your score is going to be updated accordingly.</p>
+                    <p>Your rating is going to be updated accordingly.</p>
                     {message>footer}
                     <p>Demand: {demand>key},  Proposal: {proposal>key}.</p>
                 </seg>

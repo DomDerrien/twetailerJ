@@ -45,7 +45,7 @@
         } // endif (useCDN)
         %>
 
-        body { margin: 10px; font-size: 10pt; font-family: tahoma, verdana, sans-serif; }
+        body { margin: 10px 60px; font-size: 10pt; font-family: tahoma, verdana, sans-serif; }
         h1 { font-size: 14pt; color: white; background-color: black; font-weight: bold; padding: 3px 5px; }
         .name, .n, code { color: green; }
         .value, .v { color: blue; }
@@ -57,6 +57,37 @@
         .params>tbody>tr>td>input { color: blue; border: 0 none; width: 20em; }
         .params>tbody>tr>td>input:hover { background-color: #fff000; }
         .params>tbody>tr>td:last-child { color: brown; }
+
+        .buyItButton {
+            font-family: arial,helvetica,sans-serif;
+            font-size: 22px;
+            font-weight: normal;
+            border: 1px solid #ddd000;
+            -webkit-box-shadow: -3px 3px 10px #aaa;
+            -no-moz-box-shadow: -3px 3px 10px #aaa;
+            padding: 5px;
+            position: fixed;
+            top: 35%;
+            left: -5px;
+            background-color: #fff000;
+            -webkit-transform-origin: left top;
+            -webkit-transform: rotate(-90deg);
+            -moz-transform-origin: left top;
+            -moz-transform: rotate(-90deg);
+            -o-transform-origin: left top;
+            -o-transform: rotate(-90deg);
+            transform: rotate(90deg);
+            writing-mode: tb-rl;
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+            -ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+        }
+        .buyItButton:hover {
+            left: 0px;
+        }
+        .buyItButton a, .buyItButton a:hover, .buyItButton a:visited {
+            text-decoration: none;
+            color: #222;
+        }
    </style>
 </head>
 <body class="tundra">
@@ -74,6 +105,9 @@
             frameborder="0" width="<%= width %>" height="<%= height %>" border="0"
         ></iframe>
     </div>
+    <h1 style="background-color: white; color: black; font-weight: bold; font-size: 30px; line-height: 36px; font-family: 'Helvetica Neue', Arial, Helvetica, 'Nimbus Sans L', sans-serif;">AnotherSocialEconomy</h1>
+    <p><a href="http://anothersocialeconomy.com"><img src="http://anothersocialeconomy.com/wp-content/uploads/2010/08/cropped-iStock_000006943675Small.jpg" style="border-top: 4px solid black; border-bottom: 4px solid black;"/></a></p>
+    <div class="buyItButton"><a id="bkmklt-2">Buy it locally?</a></div>
     <h1>Widget context</h1>
     <p>
         <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a> (ASE) provides a multi-channel engine (e-mail, Twitter, Facebook, SMS, Android, iPhone, Web, etc.).
@@ -212,11 +246,11 @@
         By default, the &lt;iframe/&gt; content shows a background colored and with rounded corners.
         In the example below, the &lt;iframe/&gt; background color is set to 'transparent' and color is applied to the &lt;iframe/&gt; itself, with drop-shadow.
     </p>
-    <textarea id="cdsnppt" rows="5" style="border: 1px solid gray; width: 100%;">    &lt;iframe
-        src="http://anothersocialeconomy.appspot.com/widget/ase.jsp?background-color=transparent"
-        style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"
-        frameborder="0" width="250" height="400" border="0"
-    &gt;&lt;/iframe&gt;</textarea>
+    <textarea id="cdsnppt" rows="5" style="border: 1px solid gray; width: 100%;">&nbsp;&nbsp;&lt;iframe
+&nbsp;&nbsp;&nbsp;&nbsp;src="http://anothersocialeconomy.appspot.com/widget/ase.jsp?background-color=transparent"
+&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"
+&nbsp;&nbsp;&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"
+&nbsp;&nbsp;&gt;&lt;/iframe&gt;</textarea>
     <p>
         You can also <a href="javascript:generateCodeSnippet()">update the code snippet</a> with parameters loaded from the table above
         (<a href="javascript:setupParametersForYPG();">shortcut for a YPG setup</a>).
@@ -235,7 +269,7 @@
         Then you can 'drag and drop' the updated link on your bookmark toolbar.
     </p>
     <ul>
-        <li><a id="bkmklt" style="border:1px solid grey;background-color:lightgrey;padding:3px 5px;">ASE bookmarklet</a></li>
+        <li><a id="bkmklt-1" style="border:1px solid grey;background-color:lightgrey;padding:3px 5px;">ASE bookmarklet</a></li>
     </ul>
 
     <script type="text/javascript">
@@ -301,11 +335,11 @@
         return parameters;
     };
     var generateCodeSnippet = function() {
-        var code = '    &lt;iframe\n' +
-                   '        src="http://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]"\n'+
-                   '        style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"\n' +
-                   '        frameborder="0" width="250" height="400" border="0"\n' +
-                   '    &gt;&lt;/iframe&gt;';
+        var code = '&nbsp;&nbsp;&lt;iframe\n' +
+                   '&nbsp;&nbsp;&nbsp;&nbsp;src="http://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]"\n'+
+                   '&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"\n' +
+                   '&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"\n' +
+                   '&nbsp;&nbsp;&gt;&lt;/iframe&gt;';
 
         var parameters = addParameterSequences([], false);
         code = code.replace('[plchldr]', parameters.join('&'));
@@ -347,6 +381,7 @@
             hd.innerHTML = '<a href="#" onclick="document.getElementById(\''+id+'\').style.display=\'none\';return false;" style="color:white;font-weight:bold;">Close [X]<a>';
             st = hd.style;
             st.backgroundColor = '#7f8082';
+            st.fontFamily = 'arial,sans-serif';
             px = '5px';
             st.padding = px;
             st[rad] = px;
@@ -383,12 +418,14 @@
     var compressRawCode = function() {
         var code = compressAseBkmkltCode();
         // if (prompt('Here is the compressed code (size: ' + code.length + ').\n\nIf you agree, it will be injected in the bookmarklet [href] attribute and you will be able to use it standalone.', code)) {
-            document.getElementById('bkmklt').href = 'javascript:(' + code + ')();';
+            document.getElementById('bkmklt-1').href = 'javascript:(' + code + ')();';
+            document.getElementById('bkmklt-2').href = 'javascript:(' + code + ')();';
+            console.log(code);
         // }
     };
     </script>
 
-    <h1>Live widgets & associated consoles</h1>
+    <h1>Live widgets &amp; associated consoles</h1>
 
     <ul>
         <li>This documentation on <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
