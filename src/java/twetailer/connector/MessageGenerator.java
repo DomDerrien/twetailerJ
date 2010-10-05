@@ -253,12 +253,13 @@ public class MessageGenerator {
      */
     public MessageGenerator fetch(Demand demand) {
         if (demand != null) {
+            final String emptyListIndicator = getAlternateMessage(MessageId.emptyListIndicator);
             final String prefix = "demand" + FIELD_SEPARATOR;
             // Command
             fetchCommand(demand, prefix);
             // Demand
             parameters.put(prefix + Demand.EXPIRATION_DATE, serializeDate(demand.getExpirationDate(), userLocale));
-            // TODO: Demand.PROPOSAL_KEYS;
+            parameters.put(prefix + Demand.PROPOSAL_KEYS, demand.getSerializedProposalKeys(emptyListIndicator));
             parameters.put(prefix + Demand.RANGE, demand.getRange());
             parameters.put(prefix + Demand.RANGE_UNIT, demand.getRangeUnit());
         }

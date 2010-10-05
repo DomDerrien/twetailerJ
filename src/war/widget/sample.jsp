@@ -291,7 +291,7 @@
         document.getElementById('color-odd-row').value = 'white';
         document.getElementById('color-brand').value = '#252525';
         document.getElementById('color-title').value = '#252525';
-        document.getElementById('color-link').value = '005e9d';
+        document.getElementById('color-link').value = '#005e9d';
         document.getElementById('background-image').value = '';
         document.getElementById('background-color').value = '#fff000';
         document.getElementById('background-color-odd-row').value = '#7f8082';
@@ -420,7 +420,6 @@
         // if (prompt('Here is the compressed code (size: ' + code.length + ').\n\nIf you agree, it will be injected in the bookmarklet [href] attribute and you will be able to use it standalone.', code)) {
             document.getElementById('bkmklt-1').href = 'javascript:(' + code + ')();';
             document.getElementById('bkmklt-2').href = 'javascript:(' + code + ')();';
-            console.log(code);
         // }
     };
     </script>

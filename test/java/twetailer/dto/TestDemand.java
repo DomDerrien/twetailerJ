@@ -443,6 +443,20 @@ public class TestDemand {
     }
 
     @Test
+    public void testGetSerializedPoroposalKeys() {
+        Demand demand = new Demand();
+
+        String defaultLabel = "test-default";
+        assertEquals(defaultLabel, demand.getSerializedProposalKeys(defaultLabel));
+
+        demand.addProposalKey(1111L);
+        demand.addProposalKey(2222L);
+        demand.addProposalKey(3333L);
+
+        assertEquals("1111 2222 3333", demand.getSerializedProposalKeys(defaultLabel));
+    }
+
+    @Test
     public void testGetStateCmdList() {
         Demand demand = new Demand();
         assertTrue(demand.getStateCmdList());

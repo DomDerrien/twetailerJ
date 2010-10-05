@@ -315,7 +315,7 @@
                     demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
                     quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
-                    proposals:{demand>proposalKeys} {demand>cc}
+                    tags:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -535,7 +535,7 @@
                     demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
                     quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
-                    proposals:{demand>proposalKeys} {demand>cc}
+                    tags:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -548,7 +548,7 @@
                     demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
                     players:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
-                    proposals:{demand>proposalKeys} {demand>cc}
+                    tags:{demand>cc}
                 </seg>
             </tuv>
         </tu>

@@ -137,6 +137,17 @@ public class Demand extends Command {
         return proposalKeys;
     }
 
+    public String getSerializedProposalKeys(String defaultLabel) {
+        if (getProposalKeys() == null || getProposalKeys().size() == 0) {
+            return defaultLabel;
+        }
+        return getSerializedProposalKeys();
+    }
+
+    public String getSerializedProposalKeys() {
+        return getSerializedTags(proposalKeys);
+    }
+
     public void setProposalKeys(List<Long> proposalKeys) {
         if (proposalKeys == null) {
             throw new IllegalArgumentException("Cannot nullify the attribute 'proposalKeys' of type List<Long>");
