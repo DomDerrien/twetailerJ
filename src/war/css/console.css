@@ -305,23 +305,10 @@ body {
     width:18px;
 }
 
-#openIdProviderList {
+.openIdProviderList {
     margin: 0;
     padding: 0;
     text-align: center;
-}
-
-#openIdProviderList>li {
-    display: inline;
-}
-
-#openIdProviderList>li>a>div {
-    height: 50px;
-    background-color: white;
-    border:1px black solid;
-    vertical-align: middle;
-    display: inline;
-    position: relative;
 }
 
 /**

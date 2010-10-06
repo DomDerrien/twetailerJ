@@ -425,10 +425,9 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    In order to use the AnotherSocialEconomy.com console, you &lt;u&gt;need to be authenticated first&lt;/u&gt;.
-                    To eliminate the management of yet another set of credentials, AnotherSocialEconomy.com relies on OpenID,
-                    so you can log in with one of your existing electronic identities.
-                    Consult &lt;a href="http://openid.net/" target="_blank"&gt;OpendId.net&lt;/a&gt; website for more information on that technology.
+                    AnotherSocialEconomy.com does not require its users to create yet another set of credentials.
+                    In addition of accepting connections verified by popular identity providers, ASE accepts users
+                    identified by any &lt;a href="http://openid.net/" target="_blank"&gt;OpendID&lt;/a&gt; provider.
                 </seg>
             </tuv>
         </tu>
@@ -453,8 +452,20 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>OpenID Provider Shortcuts:</seg>
+                <seg>Identity Provider Shortcuts:</seg>
             </tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_facebook" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Facebook</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_shortcut_twiter" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>Sign in with Twitter</seg></tuv>
         </tu>
 
         <tu tuid="login_provider_shortcut_google" datatype="Text">
@@ -503,6 +514,12 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with myOpenID</seg></tuv>
+        </tu>
+
+        <tu tuid="login_provider_more" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>[+] More Identity Providers</seg></tuv>
         </tu>
 
         <tu tuid="login_dialog_custom_info_prefix" datatype="Text">

@@ -158,7 +158,21 @@
                             <br/>
                             <%= LabelExtractor.get(ResourceFileId.third, "login_provider_list_message", locale) %>
                             <br/>
-                            <div id="openIdProviderList">
+                            <div class="openIdProviderList">
+                                <button
+                                    class="shortcutButton"
+                                    disabled="true"
+                                    dojoType="dijit.form.Button"
+                                    onclick="window.location='/login?loginWith=facebook&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_facebook", locale) %>"
+                                ><img src="/images/icons/FaceBook-32.png" width="32" height="32" /></button>
+                                <button
+                                    class="shortcutButton"
+                                    disabled="true"
+                                    dojoType="dijit.form.Button"
+                                    onclick="window.location='/login?loginWith=twitter&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
+                                    title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_twitter", locale) %>"
+                                ><img src="/images/icons/Twitter-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
@@ -183,6 +197,17 @@
                                     onclick="localModule.cookOpenId('http://openid.aol.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_aol", locale) %>"
                                 ><img src="/images/icons/Aol-32.png" width="32" height="32" /></button>
+                            </div>
+                            <div style="text-align: right;">
+                                <a
+                                    href="#"
+                                    id="moreProvider"
+                                    onclick="dojo.byId('moreProvider').style.display = 'none'; dojo.byId('loginForm').style.display = ''; return false;"
+                                >
+                                    <%= LabelExtractor.get(ResourceFileId.third, "login_provider_more", locale) %>
+                                </a>
+                            </div>
+                            <div class="openIdProviderList" id="loginForm" style="display: none;">
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
@@ -207,14 +232,13 @@
                                     onclick="localModule.cookOpenId('http://', '.myopenid.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myopenid", locale) %>"
                                 ><img src="/images/icons/MyOpenId-32.png" width="32" height="32" /></button>
+                                <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
+                                    <input id="fromPageURL" name="<%= LoginServlet.FROM_PAGE_URL_KEY %>" type="hidden" />
+                                    <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
+                                    <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
+                                    <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
+                                </form>
                             </div>
-                            <br/>
-                            <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
-                                <input id="fromPageURL" name="<%= LoginServlet.FROM_PAGE_URL_KEY %>" type="hidden" />
-                                <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
-                                <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
-                                <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
-                            </form>
                         </div>
                         <![endif]>
                     </td>
