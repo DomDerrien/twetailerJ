@@ -26,6 +26,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Reseller;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
@@ -101,7 +102,8 @@ public class ProposalProcessor {
                         Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
                         RawCommand rawCommand = Source.mail.equals(demand.getSource()) ? BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId()) : null;
                         Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
-                        notifyAvailability(proposal, store, location, newlyProposed, demand, rawCommand, consumer);
+                        Reseller reseller = BaseSteps.getResellerOperations().getReseller(pm, store.getResellerKey());
+                        notifyAvailability(proposal, store, location, newlyProposed, demand, rawCommand, consumer, reseller);
                     }
                 }
                 else {
@@ -168,10 +170,11 @@ public class ProposalProcessor {
      * @param demand Original demand for this proposal
      * @param rawCommand To be able to get the initial mail subject if it has been sent by e-mail
      * @param consumer Record of the demand owner
+     * @param reseller Descriptor of the entity who resells the service to the retailer (store owner)
      *
      * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void notifyAvailability(Proposal proposal, Store store, Location location, boolean initialProposal, Demand demand, RawCommand rawCommand, Consumer consumer) throws DataSourceException, InvalidIdentifierException, CommunicationException {
+    public static void notifyAvailability(Proposal proposal, Store store, Location location, boolean initialProposal, Demand demand, RawCommand rawCommand, Consumer consumer, Reseller reseller) throws DataSourceException, CommunicationException {
 
         List<String> cc = demand.getCC();
         if (!Source.api.equals(consumer.getPreferredConnection()) || cc != null && 0 < cc.size()) {
@@ -186,6 +189,7 @@ public class ProposalProcessor {
                     fetch(store).
                     fetch(location, "store").
                     fetch(demand).
+                    fetch(reseller).
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                     put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
@@ -206,6 +210,12 @@ public class ProposalProcessor {
                     put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+
+                // FIXME: get live data!
+                msgGen.
+                    put("store>publishedProposalNb", 25). // owner.getPublishedProposalNb());
+                    put("store>closedProposalNb", 18). // owner.getClosedProposalNb());
+                    put("store>closedProposalPercentage", 25.0/18.0*100.0); // owner.getClosedProposalNb());
 
                 String message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CONSUMER : MessageId.PROPOSAL_UPDATE_OK_TO_CONSUMER);
 

@@ -11,8 +11,11 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.Reseller;
+import twetailer.dto.ReviewSystem;
 import twetailer.dto.Store;
 import twetailer.dto.HashTag.RegisteredHashTag;
 import twetailer.validator.CommandSettings;
@@ -302,6 +305,7 @@ public class MessageGenerator {
             parameters.put(prefix + Store.EMAIL, store.getEmail());
             parameters.put(prefix + Store.NAME, store.getName());
             parameters.put(prefix + Store.PHONE_NUMBER, store.getPhoneNumber());
+            parameters.put(prefix + Store.URL, store.getUrl());
         }
         return this;
     }
@@ -366,6 +370,64 @@ public class MessageGenerator {
         }
         parameters.put(prefix + Command.QUANTITY, command.getQuantity());
         parameters.put(prefix + Command.STATE, CommandSettings.getStates(userLocale).getString(command.getState().toString()));
+        return this;
+    }
+
+    /**
+     * Extracts non null attributes and keeps them into the local parameter map
+     *
+     * @param influencer Object to scan
+     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     */
+    public MessageGenerator fetch(Influencer influencer) {
+        if (influencer != null) {
+            final String prefix = "influencer" + FIELD_SEPARATOR;
+            // Entity
+            fetchEntity(influencer, prefix);
+            // Influencer
+            parameters.put(prefix + Influencer.EMAIL, influencer.getEmail());
+            parameters.put(prefix + Influencer.NAME, influencer.getName());
+            parameters.put(prefix + Influencer.REFERRAL_ID, influencer.getReferralId());
+            parameters.put(prefix + Influencer.URL, influencer.getUrl());
+        }
+        return this;
+    }
+
+    /**
+     * Extracts non null attributes and keeps them into the local parameter map
+     *
+     * @param reseller Object to scan
+     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     */
+    public MessageGenerator fetch(Reseller reseller) {
+        if (reseller != null) {
+            final String prefix = "reseller" + FIELD_SEPARATOR;
+            // Entity
+            fetchEntity(reseller, prefix);
+            // Reseller
+            parameters.put(prefix + Reseller.EMAIL, reseller.getEmail());
+            parameters.put(prefix + Reseller.NAME, reseller.getName());
+            parameters.put(prefix + Reseller.URL, reseller.getUrl());
+        }
+        return this;
+    }
+
+    /**
+     * Extracts non null attributes and keeps them into the local parameter map
+     *
+     * @param reviewSystem Object to scan
+     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     */
+    public MessageGenerator fetch(ReviewSystem reviewSystem) {
+        if (reviewSystem != null) {
+            final String prefix = "reseller" + FIELD_SEPARATOR;
+            // Entity
+            fetchEntity(reviewSystem, prefix);
+            // ReviewSystem
+            parameters.put(prefix + ReviewSystem.EMAIL, reviewSystem.getEmail());
+            parameters.put(prefix + ReviewSystem.NAME, reviewSystem.getName());
+            parameters.put(prefix + ReviewSystem.URL, reviewSystem.getUrl());
+        }
         return this;
     }
 

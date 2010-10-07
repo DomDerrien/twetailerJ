@@ -166,8 +166,7 @@
                     <p>--<br/>
                     Please see our <a href="http://anothersocialeconomy.com/terms/">terms</a>, <a href="http://anothersocialeconomy.com/privacy-policy/">privacy policy</a>
                     and don't forget, you can always email <a href="mailto:Support@anothersocialeconomy.com?subject=Inquiry on AnotherSocialEconomy.com">Support</a>.
-                    In the meantime, <strong>thanks for buying locally</strong> with <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>,
-                    a member of <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
+                    In the meantime, <strong>thanks for buying locally</strong> with <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
                 </seg>
             </tuv>
@@ -400,6 +399,7 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {influencer>*}: influencer attributes
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -421,7 +421,7 @@
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a>.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -435,6 +435,7 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {influencer>*}: influencer attributes
                 {command>threadSubject}
                 {command>cancelDemand}
                 {message>footer}
@@ -460,7 +461,7 @@
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{demand>influencer>url}">{demand>influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -512,6 +513,7 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {influencer>*}: influencer attributes
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -532,7 +534,7 @@
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a>.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -546,6 +548,7 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {influencer>*}: influencer attributes
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -567,7 +570,7 @@
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -625,6 +628,7 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {influencer>*}: influencer attributes
                 {message>footer}
                 {command>threadSubject}
                 {command>createProposal}
@@ -640,6 +644,7 @@
                         <li>Expiration date: {demand>expirationDate}</li>
                         <li>Quantity: <strong>{demand>quantity}</strong></li>
                         <li>Metadata: {demand>metadata}</li>
+                        <li>Consumer's closing rate: {demand>owner>closedDemandNb} of {demand>owner>publishedDemandNb}, or, {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the demand, then launch the <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp">Associate Console</a>
@@ -649,7 +654,7 @@
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a>.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -663,6 +668,7 @@
                 {demand>owner>name}: name of the demand owner
                 {demand>location>*}: demand's location attributes
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {influencer>*}: influencer attributes
                 {message>footer}
                 {command>threadSubject}
                 {command>createProposal}
@@ -677,6 +683,7 @@
                         <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Player's closing rate: {demand>owner>closedDemandNb} of {demand>owner>publishedDemandNb}, or, {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the demand, then launch the <a href="http://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp">ezToff Reservation Desk</a>
@@ -686,7 +693,7 @@
                     </p>
                     <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(</p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1210,8 +1217,9 @@
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}<br/>
-                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
+                    Telephone: {store>phoneNb}<br />
+                    Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%<br />
+                    Store registered by <a href="{reseller>url}">{reseller>name}</a></p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1255,7 +1263,9 @@
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br />
+                    Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%<br />
+                    Golf course registered by <a href="{reseller>url}">{reseller>name}</a></p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1458,7 +1468,8 @@
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br />
+                    Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1502,7 +1513,8 @@
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
-                    Telephone: {store>phoneNb}</p>
+                    Telephone: {store>phoneNb}<br />
+                    Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1698,8 +1710,12 @@
                     <p>Hi {demand>owner>name},</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved <strong>Proposal# {proposal>key}</strong>, due <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp; enjoy your purchase!</p>
-                    <p>Don't forget to send an email to
-                    <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your demand after your pickup, so we can better your Rating.</p>
+                    <p>
+                        FYI. After closing your transaction at the Store, you should return here to
+                        <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong>
+                        your Demand. Not only will you improve <strong>your Closing Rate</strong>, you'll also be given the opportunity to later <strong>review</strong>
+                        the Store and/or Sales Associate.
+                    </p>
                     <p>More store information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNb}<br/>
@@ -1736,8 +1752,12 @@
                     <p>Hi {demand>owner>name},</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved your tee-off under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>.</p>
                     <p>Thank you for the confirmation &amp; have a great game!</p>
-                    <p>Don't forget to send an email to
-                    <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong> your demand after your game, so we can better your Rating.</p>
+                    <p>
+                        FYI. After closing your game at {store>name}, you should return here to
+                        <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong>
+                        your Demand. Not only will you improve <strong>your Closing Rate</strong>, you'll also be given the opportunity to later <strong>review</strong>
+                        the Golf course.
+                    </p>
                     <p>More course information: <br/>
                     Address: {store>address}<br/>
                     Telephone: {store>phoneNb}</p>
@@ -2023,8 +2043,10 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi {demand>owner>name},</p>
-                    <p>The <strong>Demand# {demand>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
-                    <p>If you enjoyed using AnotherSocialEconomy.com, please <strong>recommend</strong> us to your friends.</p>
+                    <p>Thank you for closing <strong>Demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
+                    In the meantime, we invite you to share your experience by writing a review with <a href="{store>reviewSystem>url}&amp;storeId={store>reviewSystemId}">{store>reviewSystem>name}</a>.</p>
+                    <p>We thank you once again for buying locally with AnotherSocialEconomy.com and hope you'll recomment us to your friends.</p>
+                    <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: Your missing link between shopping online &amp; <strong>buying offline</strong>.</p>
                     {message>footer}
                     <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
                 </seg>
@@ -2046,8 +2068,9 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi {demand>owner>name},</p>
-                    <p>The <strong>ezToff Demand# {demand>key}</strong> has been <strong>closed</strong>. We'll be updating your Rating shortly.</p>
-                    <p>If you enjoyed using ezToff, please recommend us to your fellow golfers, or, simply CC them next time.</p>
+                    <p>Thank you for closing the <strong>ezToff Demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
+                    In the meantime, we invite you to share your experience by writing a review with <a href="{store>reviewSystem>url}&amp;storeId={store>reviewSystemId}">{store>reviewSystem>name}</a>.</p>
+                    <p>We thank you once again for reserving your tee-time wth ezToff.com.com and hope you'll recomment us to your friends.</p>
                     {message>footer}
                     <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
                 </seg>

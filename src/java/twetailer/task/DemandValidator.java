@@ -1,8 +1,8 @@
 package twetailer.task;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
-import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.communicateToCCed;
+import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
 import java.util.Date;
@@ -26,6 +26,7 @@ import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.HashTag;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
@@ -218,7 +219,9 @@ public class DemandValidator {
                                 countdownMillis(5000)
                     );
 
-                    confirmUpdate(rawCommand, demand, LocationSteps.getLocation(pm, demand), consumer);
+                    Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
+
+                    confirmUpdate(rawCommand, demand, LocationSteps.getLocation(pm, demand), consumer, influencer);
                 }
             }
             catch (DataSourceException ex) {
@@ -274,10 +277,11 @@ public class DemandValidator {
      * @param demand Demand instance just validate after its creation or update
      * @param location Location attached to the demand
      * @param owner Demand owner
+     * @param influencer Descriptor of the entity who helped creating the demand
      *
      * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void confirmUpdate(RawCommand rawCommand, Demand demand, Location location, Consumer owner) throws CommunicationException {
+    public static void confirmUpdate(RawCommand rawCommand, Demand demand, Location location, Consumer owner, Influencer influencer) throws CommunicationException {
 
         List<String> cc = demand.getCC();
         if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
@@ -292,6 +296,7 @@ public class DemandValidator {
                     put("demand>owner>name", owner.getName()).
                     fetch(demand).
                     fetch(location, "demand").
+                    fetch(influencer).
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                     put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 

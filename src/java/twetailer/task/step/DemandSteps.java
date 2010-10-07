@@ -30,6 +30,7 @@ import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.ReviewSystem;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
@@ -369,11 +370,15 @@ public class DemandSteps extends BaseSteps {
                 if (rawCommand != null) {
                     Locale locale = owner.getLocale();
 
+                    Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
+                    ReviewSystem reviewSystem = getReviewSystemOperations().getReviewSystem(pm, store.getReviewSystemKey());
+
                     MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
                     msgGen.
                         put("demand>owner>name", owner.getName()).
                         fetch(demand).
                         fetch(proposal).
+                        fetch(reviewSystem).
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
                     String subject = null;

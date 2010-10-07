@@ -33,13 +33,23 @@ public class Store extends Entity {
 
     public final static String NAME = "name";
 
-    // Shortcut
-    public static final String STORE_KEY = "storeKey";
-
     @Persistent
     private String phoneNumber;
 
     public final static String PHONE_NUMBER = "phoneNb";
+
+    @Persistent
+    private Long resellerKey;
+
+    public final static String RESELLER_KEY = Reseller.RESELLER_KEY;
+
+    @Persistent
+    private Long reviewSystemKey;
+
+    public final static String REVIEW_SYSTEM_KEY = ReviewSystem.REVIEW_SYSTEM_KEY;
+
+    // Shortcut
+    public static final String STORE_KEY = "storeKey";
 
     @Persistent
     private String url;
@@ -94,6 +104,22 @@ public class Store extends Entity {
         this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
     }
 
+    public Long getResellerKey() {
+        return resellerKey;
+    }
+
+    public void setResellerKey(Long resellerKey) {
+        this.resellerKey = resellerKey;
+    }
+
+    public Long getReviewSystemKey() {
+        return reviewSystemKey;
+    }
+
+    public void setReviewSystemKey(Long reviewSystemKey) {
+        this.reviewSystemKey = reviewSystemKey;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -108,6 +134,12 @@ public class Store extends Entity {
         out.put(EMAIL, getEmail());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
+        if (getResellerKey() != null) {
+            out.put(RESELLER_KEY, getResellerKey());
+        }
+        if (getReviewSystemKey() != null) {
+            out.put(REVIEW_SYSTEM_KEY, getReviewSystemKey());
+        }
         out.put(URL, getUrl());
         return out;
     }
@@ -118,6 +150,8 @@ public class Store extends Entity {
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        // if (in.containsKey(RESELLER_KEY)) { setResellerKey(in.getLong(RESELLER_KEY)); } // Cannot be changed transparently
+        if (in.containsKey(REVIEW_SYSTEM_KEY)) { setReviewSystemKey(in.getLong(REVIEW_SYSTEM_KEY)); } // Store administrators can change it
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
 
         // Shortcut

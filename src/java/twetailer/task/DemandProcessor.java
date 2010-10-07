@@ -367,6 +367,12 @@ public class DemandProcessor {
                 put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                 put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
 
+            // FIXME: get live data!
+            msgGen.
+                put("demand>owner>publishedDemandNb", 5). // owner.getPublishedDemandNb());
+                put("demand>owner>closedDemandNb", 3). // owner.getClosedDemandNb());
+                put("demand>owner>closedDemandPercentage", 3.0/5.0*100.0); // owner.getClosedDemandNb());
+
             communicateToConsumer(
                     msgGen.getCommunicationChannel(),
                     subject,

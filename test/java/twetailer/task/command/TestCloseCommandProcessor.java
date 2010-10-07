@@ -28,7 +28,9 @@ import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.ReviewSystemOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dao.StoreOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -36,6 +38,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
 import twetailer.task.step.BaseSteps;
@@ -112,6 +115,7 @@ public class TestCloseCommandProcessor {
         final Long saleAssociateKey = 43454L;
         final Long proposalKey = 8764334L;
         final Long locationKey = 645032L;
+        final Long storeKey = 54652L;
 
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
@@ -144,6 +148,7 @@ public class TestCloseCommandProcessor {
                 proposal.setState(State.closed);
                 proposal.setDueDate(DateUtils.getNowDate());
                 proposal.setDemandKey(demandKey);
+                proposal.setStoreKey(storeKey);
                 return proposal;
             }
         });
@@ -153,12 +158,24 @@ public class TestCloseCommandProcessor {
             public Location getLocation(PersistenceManager pm, Long key) {
                 assertEquals(locationKey, key);
                 Location location = new Location();
-                location.setKey(proposalKey);
+                location.setKey(locationKey);
                 location.setCountryCode(LocaleValidator.DEFAULT_COUNTRY_CODE);
                 location.setPostalCode("H0H0H0");
                 return location;
             }
         });
+        // StoreOperations mock
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
+            @Override
+            public Store getStore(PersistenceManager pm, Long key) {
+                assertEquals(storeKey, key);
+                Store store = new Store();
+                store.setKey(proposalKey);
+                return store;
+            }
+        });
+        // ReviewSystemOperations mock
+        BaseSteps.setMockReviewSystemOperations(new ReviewSystemOperations());
 
         // Command mock
         JsonObject command = new GenericJsonObject();

@@ -38,6 +38,11 @@ public class Demand extends Command {
     public static final String EXPIRATION_DATE = "expirationDate";
 
     @Persistent
+    private Long influencerKey;
+
+    public final static String INFLUENCER_KEY = Influencer.INFLUENCER_KEY;
+
+    @Persistent
     private List<Long> proposalKeys = new ArrayList<Long>();
 
     public static final String PROPOSAL_KEYS = "proposalKeys";
@@ -131,6 +136,14 @@ public class Demand extends Command {
         Calendar limit = DateUtils.getNowCalendar();
         limit.set(Calendar.DAY_OF_MONTH, limit.get(Calendar.DAY_OF_MONTH) + delayInDays);
         this.expirationDate = limit.getTime();
+    }
+
+    public Long getInfluencerKey() {
+        return influencerKey;
+    }
+
+    public void setInfluencerKey(Long influencerKey) {
+        this.influencerKey = influencerKey;
     }
 
     public List<Long> getProposalKeys() {
@@ -245,6 +258,9 @@ public class Demand extends Command {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
+        if (getInfluencerKey() != null) {
+            out.put(INFLUENCER_KEY, getInfluencerKey());
+        }
         if (getProposalKeys() != null && 0 < getProposalKeys().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(Long key: getProposalKeys()) {
@@ -284,6 +300,7 @@ public class Demand extends Command {
             // To push the given dueDate as the default expirationDate if the exchange is about a demand to be created
             setExpirationDate(getDueDate());
         }
+        // if (in.containsKey(INFLUENCER_KEY)) { setInfluencerKey(in.getLong(INFLUENCER_KEY)); } // Cannot be changed transparently
         if (in.containsKey(PROPOSAL_KEYS)) {
             resetProposalKeys();
             JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);

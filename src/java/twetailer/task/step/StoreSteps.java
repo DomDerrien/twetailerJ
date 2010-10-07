@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
@@ -77,12 +78,14 @@ public class StoreSteps extends BaseSteps {
         return queryFilters;
     }
 
-    public static Store createStore(PersistenceManager pm, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws ReservedOperationException, InvalidIdentifierException {
+    public static Store createStore(PersistenceManager pm, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws ClientException {
         // Verify the logged user rights
         if (!isPrivileged) {
             throw new ReservedOperationException("Store instances can only be created by admins");
         }
-        parameters.put(SaleAssociate.CREATOR_KEY, loggedConsumer.getKey());
+        if (!parameters.containsKey(Store.RESELLER_KEY)) {
+            throw new ClientException("Missing reseller key");
+        }
 
         Store store = getStoreOperations().createStore(pm, parameters);
 
@@ -100,7 +103,10 @@ public class StoreSteps extends BaseSteps {
         if (!isPrivileged && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getStoreKey().equals(storeKey)) {
             throw new ReservedOperationException("Store instances can only be created by Store admins");
         }
-        parameters.put(SaleAssociate.CREATOR_KEY, loggedConsumer.getKey());
+        if (!isPrivileged) {
+            // Prevent any unexpected update
+            parameters.remove(Store.RESELLER_KEY);
+        }
 
         Store store = getStoreOperations().getStore(pm, storeKey);
         Long initialLocationKey = store.getLocationKey();
