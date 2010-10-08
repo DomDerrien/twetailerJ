@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -364,6 +365,10 @@ public class DemandSteps extends BaseSteps {
 
             // Close
             if (State.confirmed.equals(currentState) && State.closed.toString().equals(proposedState)) {
+                // Update the user's statistics
+                owner.setClosedDemandNb(owner.getClosedDemandNb() == null ? 1 : owner.getClosedDemandNb() + 1);
+                owner = BaseSteps.getConsumerOperations().updateConsumer(pm, owner);
+
                 // Get the associated proposal
                 Proposal proposal = getProposalOperations().getProposal(pm, demand.getProposalKeys().get(0), null, null);
 

@@ -24,6 +24,11 @@ public class Store extends Entity {
     public final static String ADDRESS = "address";
 
     @Persistent
+    private Long closedProposalNb;
+
+    public final static String CLOSED_PROPOSAL_NB = "closedProposalNb";
+
+    @Persistent
     private String email;
 
     public final static String EMAIL = Consumer.EMAIL;
@@ -37,6 +42,11 @@ public class Store extends Entity {
     private String phoneNumber;
 
     public final static String PHONE_NUMBER = "phoneNb";
+
+    @Persistent
+    private Long publishedProposalNb;
+
+    public final static String PUBLISHED_PROPOSAL_NB = "publishedProposalNb";
 
     @Persistent
     private Long resellerKey;
@@ -79,6 +89,14 @@ public class Store extends Entity {
         this.address = address == null || address.length() == 0 ? null : address;
     }
 
+    public Long getClosedProposalNb() {
+        return closedProposalNb;
+    }
+
+    public void setClosedProposalNb(Long closedProposalNb) {
+        this.closedProposalNb = closedProposalNb;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -102,6 +120,14 @@ public class Store extends Entity {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber == null || phoneNumber.length() == 0 ? null : phoneNumber;
+    }
+
+    public Long getPublishedProposalNb() {
+        return publishedProposalNb;
+    }
+
+    public void setPublishedProposalNb(Long publishedProposalNb) {
+        this.publishedProposalNb = publishedProposalNb;
     }
 
     public Long getResellerKey() {
@@ -131,9 +157,11 @@ public class Store extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
+        out.put(CLOSED_PROPOSAL_NB, getClosedProposalNb() == null ? 0L : getClosedProposalNb());
         out.put(EMAIL, getEmail());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
+        out.put(PUBLISHED_PROPOSAL_NB, getPublishedProposalNb() == null ? 0L : getPublishedProposalNb());
         if (getResellerKey() != null) {
             out.put(RESELLER_KEY, getResellerKey());
         }
@@ -147,9 +175,11 @@ public class Store extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
+        // if (in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
+        // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
         // if (in.containsKey(RESELLER_KEY)) { setResellerKey(in.getLong(RESELLER_KEY)); } // Cannot be changed transparently
         if (in.containsKey(REVIEW_SYSTEM_KEY)) { setReviewSystemKey(in.getLong(REVIEW_SYSTEM_KEY)); } // Store administrators can change it
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }

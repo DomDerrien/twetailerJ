@@ -176,6 +176,14 @@ public class TestCloseCommandProcessor {
         });
         // ReviewSystemOperations mock
         BaseSteps.setMockReviewSystemOperations(new ReviewSystemOperations());
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer update) {
+                assertEquals(1, update.getClosedDemandNb().longValue());
+                return update;
+            }
+        });
 
         // Command mock
         JsonObject command = new GenericJsonObject();
@@ -364,6 +372,11 @@ public class TestCloseCommandProcessor {
                 saleAssociate.setConsumerKey(saConsumerRecordKey);
                 return saleAssociate;
             }
+            @Override
+            public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate update) {
+                assertEquals(1, update.getClosedProposalNb().longValue());
+                return update;
+            }
         });
         // ConsumerOperations mock
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
@@ -421,6 +434,13 @@ public class TestCloseCommandProcessor {
                 location.setCountryCode(LocaleValidator.DEFAULT_COUNTRY_CODE);
                 location.setPostalCode("H0H0H0");
                 return location;
+            }
+        });
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
+            @Override
+            public Store updateStore(PersistenceManager pm, Store update) {
+                assertEquals(1, update.getClosedProposalNb().longValue());
+                return update;
             }
         });
 

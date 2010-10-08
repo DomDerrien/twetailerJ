@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -332,6 +333,15 @@ public class ProposalSteps extends BaseSteps {
 
             // Close
             if (State.confirmed.equals(currentState) && State.closed.toString().equals(proposedState)) {
+                // Update the user's statistics
+                owner.setClosedProposalNb(owner.getClosedProposalNb() == null ? 1 : owner.getClosedProposalNb() + 1);
+                owner = BaseSteps.getSaleAssociateOperations().updateSaleAssociate(pm, owner);
+
+                // Update the store's statistics
+                Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
+                store.setClosedProposalNb(store.getClosedProposalNb() == null ? 1 : store.getClosedProposalNb() + 1);
+                store = BaseSteps.getStoreOperations().updateStore(pm, store);
+
                 // Get the associated demand
                 Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), null);
 
@@ -365,7 +375,6 @@ public class ProposalSteps extends BaseSteps {
                 if (!State.closed.equals(demand.getState())) {
                     // Get demand owner
                     Consumer demandOwner = getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
-                    Store store = getStoreOperations().getStore(pm, proposal.getStoreKey());
                     Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
 
                     // Inform Proposal owner about the closing

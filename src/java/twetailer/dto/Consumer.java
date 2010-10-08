@@ -55,6 +55,11 @@ public class Consumer extends Entity {
 
     public final static String AUTOMATIC_LOCALE_UPDATE = "automaticLocaleUpdate";
 
+    @Persistent
+    private Long closedDemandNb;
+
+    public final static String CLOSED_DEMAND_NB = "closedDemandNb";
+
     // Shortcut
     public final static String CONSUMER_KEY = "consumerKey";
 
@@ -96,6 +101,11 @@ public class Consumer extends Entity {
     public final static String PREFERRED_CONNECTION = "preferredConnection";
 
     @Persistent
+    private Long publishedDemandNb;
+
+    public final static String PUBLISHED_DEMAND_NB = "publishedDemandNb";
+
+    @Persistent
     private Long saleAssociateKey;
 
     public final static String SALE_ASSOCIATE_KEY = "saleAssociateKey";
@@ -134,6 +144,14 @@ public class Consumer extends Entity {
 
     public void setAutomaticLocaleUpdate(Boolean automaticLocaleUpdate) {
         this.automaticLocaleUpdate = automaticLocaleUpdate;
+    }
+
+    public Long getClosedDemandNb() {
+        return closedDemandNb;
+    }
+
+    public void setClosedDemandNb(Long closedDemandNb) {
+        this.closedDemandNb = closedDemandNb;
     }
 
     public String getEmail() {
@@ -206,6 +224,14 @@ public class Consumer extends Entity {
         this.preferredConnection = Source.valueOf(preferredConnection);
     }
 
+    public Long getPublishedDemandNb() {
+        return publishedDemandNb;
+    }
+
+    public void setPublishedDemandNb(Long publishedDemandNb) {
+        this.publishedDemandNb = publishedDemandNb;
+    }
+
     public Long getSaleAssociateKey() {
         return saleAssociateKey;
     }
@@ -227,6 +253,7 @@ public class Consumer extends Entity {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
         out.put(AUTOMATIC_LOCALE_UPDATE, getAutomaticLocaleUpdate());
+        out.put(CLOSED_DEMAND_NB, getClosedDemandNb() == null ? 0L : getClosedDemandNb());
         out.put(EMAIL, getEmail());
         out.put(JABBER_ID, getJabberId());
         out.put(LANGUAGE, getLanguage());
@@ -234,6 +261,7 @@ public class Consumer extends Entity {
         out.put(OPEN_ID, getOpenID());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(PREFERRED_CONNECTION, getPreferredConnection().toString());
+        out.put(PUBLISHED_DEMAND_NB, getPublishedDemandNb() == null ? 0L : getPublishedDemandNb());
         if (getSaleAssociateKey() != null) { out.put(SALE_ASSOCIATE_KEY, getSaleAssociateKey()); }
         out.put(TWITTER_ID, getTwitterId());
         return out;
@@ -243,6 +271,7 @@ public class Consumer extends Entity {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
+        // if (in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); } // Cannot be updated remotely
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
@@ -253,6 +282,7 @@ public class Consumer extends Entity {
         }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
+        // if (in.containsKey(PUBLISHED_DEMAND_NB)) { setPublishedDemandNb(in.getLong(PUBLISHED_DEMAND_NB)); } // Cannot be updated remotely
         if (getKey() == null && in.containsKey(SALE_ASSOCIATE_KEY)) {
             // Cannot change once set at creation time
             setSaleAssociateKey(in.getLong(SALE_ASSOCIATE_KEY));

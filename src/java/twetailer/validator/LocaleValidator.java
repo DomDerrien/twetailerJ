@@ -8,7 +8,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.Collator;
+import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import twetailer.dto.Location;
@@ -318,5 +321,26 @@ public class LocaleValidator {
         Collator collator = Collator.getInstance(locale);
         collator.setStrength(Collator.PRIMARY);
         return collator;
+    }
+
+    private static Map<Locale, NumberFormat> numberFormats = new HashMap<Locale, NumberFormat>();
+
+    /**
+     * Helper formatting the given floating point number into a string with
+     * two fractional digits
+     *
+     * @param number Entity to generate
+     * @param locale Recipient's locale
+     * @return Number with two fractional digits and separator in the user's locale
+     */
+    public static String formatFloatWith2Digits(double number, Locale locale) {
+        NumberFormat numberFormat = numberFormats.get(locale);
+        if (numberFormat == null) {
+            numberFormat = NumberFormat.getNumberInstance(locale);
+            numberFormat.setMaximumFractionDigits(2);
+            numberFormat.setMinimumFractionDigits(2);
+            numberFormats.put(locale, numberFormat);
+        }
+        return numberFormat.format(number);
     }
 }

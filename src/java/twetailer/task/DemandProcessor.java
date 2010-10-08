@@ -30,6 +30,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
@@ -39,6 +40,7 @@ import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 
 import com.google.appengine.api.labs.taskqueue.Queue;
@@ -157,13 +159,14 @@ public class DemandProcessor {
                 }
             }
             else {
+                Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
                 // Try to contact regular sale associates
                 List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
                 for(SaleAssociate saleAssociate: saleAssociates) {
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                     // Communicate with the sale associate
                     try {
-                        notifyAvailability(demand, saConsumerRecord);
+                        notifyAvailability(demand, owner, saConsumerRecord, influencer);
 
                         // Keep track of the notification to not ping him/her another time
                         demand.addSaleAssociateKey(saleAssociate.getKey());
@@ -342,11 +345,13 @@ public class DemandProcessor {
      * Send a message to the identified sale associate about the demand ready to be proposed
      *
      * @param demand New or updated demand to be presented to the sale associate
+     * @param demandOwner Record of the demand owner, used to expose the closing rate
      * @param saConsumerRecord Associate record of the sale associate to be contacted
+     * @param influencer Descriptor of the entity who helped creating the demand
      *
      * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void notifyAvailability(Demand demand, Consumer saConsumerRecord) throws CommunicationException {
+    public static void notifyAvailability(Demand demand, Consumer demandOwner, Consumer saConsumerRecord, Influencer influencer) throws CommunicationException {
 
         if (!Source.api.equals(saConsumerRecord.getPreferredConnection())) {
             Locale locale = saConsumerRecord.getLocale();
@@ -355,6 +360,7 @@ public class DemandProcessor {
             msgGen.
                 put("proposal>owner>name", saConsumerRecord.getName()).
                 fetch(demand).
+                fetch(influencer).
                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                 put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
@@ -367,11 +373,15 @@ public class DemandProcessor {
                 put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                 put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
 
-            // FIXME: get live data!
+            double publishedNb = demandOwner.getPublishedDemandNb(); // Cannot be 0 as this message is triggered by a published demand!
+            double closedNb = demandOwner.getClosedDemandNb() == null ? 0 : demandOwner.getClosedDemandNb();
             msgGen.
-                put("demand>owner>publishedDemandNb", 5). // owner.getPublishedDemandNb());
-                put("demand>owner>closedDemandNb", 3). // owner.getClosedDemandNb());
-                put("demand>owner>closedDemandPercentage", 3.0/5.0*100.0); // owner.getClosedDemandNb());
+                put("demand>owner>publishedDemandNb", (long) publishedNb).
+                put("demand>owner>closedDemandNb", (long) closedNb).
+                put(
+                        "demand>owner>closedDemandPercentage",
+                        LocaleValidator.formatFloatWith2Digits(100.0D * closedNb / publishedNb, locale)
+                );
 
             communicateToConsumer(
                     msgGen.getCommunicationChannel(),

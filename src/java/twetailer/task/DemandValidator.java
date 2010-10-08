@@ -209,6 +209,8 @@ public class DemandValidator {
                 else {
                     demand.setState(CommandSettings.State.published);
                     demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
+                    consumer.setPublishedDemandNb(consumer.getPublishedDemandNb() == null ? 1 : consumer.getPublishedDemandNb() + 1);
+                    consumer = BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
 
                     // Create a task for that demand
                     Queue queue = BaseSteps.getBaseOperations().getQueue();

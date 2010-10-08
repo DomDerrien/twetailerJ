@@ -24,6 +24,7 @@ import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
+import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
@@ -148,6 +149,11 @@ public class ProposalValidator {
                 else {
                     proposal.setState(CommandSettings.State.published);
                     proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
+                    saleAssociate.setPublishedProposalNb(saleAssociate.getPublishedProposalNb() == null ? 1 : saleAssociate.getPublishedProposalNb() + 1);
+                    saleAssociate = BaseSteps.getSaleAssociateOperations().updateSaleAssociate(pm, saleAssociate);
+                    Store store = BaseSteps.getStoreOperations().getStore(pm, saleAssociate.getStoreKey());
+                    store.setPublishedProposalNb(store.getPublishedProposalNb() == null ? 1 : store.getPublishedProposalNb() + 1);
+                    BaseSteps.getStoreOperations().updateStore(pm, store);
 
                     // Create a task for that proposal
                     Queue queue = BaseSteps.getBaseOperations().getQueue();

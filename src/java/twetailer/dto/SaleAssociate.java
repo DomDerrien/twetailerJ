@@ -27,6 +27,11 @@ public class SaleAssociate extends Entity {
 
     /*** SaleAssociate ***/
     @Persistent
+    private Long closedProposalNb;
+
+    public final static String CLOSED_PROPOSAL_NB = "closedProposalNb";
+
+    @Persistent
     private Long consumerKey;
 
     public final static String CONSUMER_KEY = Consumer.CONSUMER_KEY;
@@ -54,6 +59,11 @@ public class SaleAssociate extends Entity {
     private Boolean isStoreAdmin;
 
     public final static String IS_STORE_ADMIN = "isStoreAdmin";
+
+    @Persistent
+    private Long publishedProposalNb;
+
+    public final static String PUBLISHED_PROPOSAL_NB = "publishedProposalNb";
 
     // Shortcut
     public final static String SALEASSOCIATE_KEY = "saleAssociateKey";
@@ -92,6 +102,14 @@ public class SaleAssociate extends Entity {
         criteria = null;
         hashTags = null;
         return this;
+    }
+
+    public Long getClosedProposalNb() {
+        return closedProposalNb;
+    }
+
+    public void setClosedProposalNb(Long closedProposalNb) {
+        this.closedProposalNb = closedProposalNb;
     }
 
     public Long getConsumerKey() {
@@ -241,6 +259,14 @@ public class SaleAssociate extends Entity {
         return Boolean.TRUE.equals(isStoreAdmin);
     }
 
+    public Long getPublishedProposalNb() {
+        return publishedProposalNb;
+    }
+
+    public void setPublishedProposalNb(Long publishedProposalNb) {
+        this.publishedProposalNb = publishedProposalNb;
+    }
+
     public Long getStoreKey() {
         return storeKey;
     }
@@ -266,6 +292,7 @@ public class SaleAssociate extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(CONSUMER_KEY, getConsumerKey());
+        out.put(CLOSED_PROPOSAL_NB, getClosedProposalNb() == null ? 0L : getClosedProposalNb());
         out.put(CREATOR_KEY, getCreatorKey());
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -284,6 +311,7 @@ public class SaleAssociate extends Entity {
         if (isStoreAdmin()) {
             out.put(IS_STORE_ADMIN, Boolean.TRUE);
         }
+        out.put(PUBLISHED_PROPOSAL_NB, getPublishedProposalNb() == null ? 0L : getPublishedProposalNb());
         out.put(STORE_KEY, getStoreKey());
         out.put(SCORE, getScore());
         return out;
@@ -291,6 +319,7 @@ public class SaleAssociate extends Entity {
 
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
+        // if (in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
         if (getKey() == null && in.containsKey(CONSUMER_KEY)) {
             // Cannot change once set at creation time
             setConsumerKey(in.getLong(CONSUMER_KEY));
@@ -323,6 +352,7 @@ public class SaleAssociate extends Entity {
             }
         }
         if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
+        // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         // if (in.containsKey(SCORE)) { ... } // Cannot be set manually
 

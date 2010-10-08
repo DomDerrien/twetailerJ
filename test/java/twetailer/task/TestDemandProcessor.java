@@ -30,6 +30,7 @@ import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.InfluencerOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
@@ -1357,6 +1358,8 @@ public class TestDemandProcessor {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setPreferredConnection(Source.simulated);
+        consumer.setPublishedDemandNb(36L);
+        consumer.setClosedDemandNb(3L);
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
@@ -1383,6 +1386,8 @@ public class TestDemandProcessor {
                 return consumerDemand;
             }
         });
+
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
@@ -1469,6 +1474,8 @@ public class TestDemandProcessor {
         final Consumer consumer = new Consumer();
         consumer.setKey(consumerKey);
         consumer.setPreferredConnection(Source.simulated);
+        consumer.setPublishedDemandNb(36L);
+        consumer.setClosedDemandNb(3L);
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
             public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
@@ -1495,6 +1502,8 @@ public class TestDemandProcessor {
                 return consumerDemand;
             }
         });
+
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
@@ -1977,6 +1986,8 @@ public class TestDemandProcessor {
             }
         });
 
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
+
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
@@ -2049,6 +2060,8 @@ public class TestDemandProcessor {
                 return consumerDemand;
             }
         });
+
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override

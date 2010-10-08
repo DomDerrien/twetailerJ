@@ -849,7 +849,7 @@
                     <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%<br />
                     Store registered by <a href="{reseller>url}">{reseller>name}</a></p>
@@ -880,7 +880,7 @@
                     <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%<br />
                     Golf course registered by <a href="{reseller>url}">{reseller>name}</a></p>
@@ -930,7 +930,7 @@
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>More store information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
@@ -958,7 +958,7 @@
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>More course information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1008,7 +1008,7 @@
                     <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
                     <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More store information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -1038,7 +1038,7 @@
                     <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
                     <p>More course information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -1088,7 +1088,7 @@
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>More store information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1115,7 +1115,7 @@
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>More course information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
                     if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
@@ -1160,7 +1160,7 @@
                         the Store and/or Sales Associate.
                     </p>
                     <p>More store information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -1187,7 +1187,7 @@
                         the Golf course.
                     </p>
                     <p>More course information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
@@ -1228,7 +1228,7 @@
                     <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>confirmed Proposal# {proposal>key}</strong>
                     at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
                     <p>More store information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}<br />
                     Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
@@ -1249,7 +1249,7 @@
                     on <strong>{proposal>dueDate}</strong> at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
                     <p>Have a great game!</p>
                     <p>More course information: <br />
-                    Address: {store>address}<br />
+                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
                     Telephone: {store>phoneNb}</p>
                     <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
                     <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">Please remove</a>, or,
@@ -1350,7 +1350,7 @@
                 <seg>
                     <p>Hi {demand>owner>name},</p>
                     <p>Thank you for closing <strong>Demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
-                    In the meantime, we invite you to share your experience by writing a review with <a href="{store>reviewSystem>url}&amp;storeId={store>reviewSystemId}">{store>reviewSystem>name}</a>.</p>
+                    In the meantime, we invite you to share your experience by writing a review with <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.</p>
                     <p>We thank you once again for buying locally with AnotherSocialEconomy.com and hope you'll recomment us to your friends.</p>
                     <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: Your missing link between shopping online &amp;amp; <strong>buying offline</strong>.</p>
                     {message>footer}
@@ -1365,7 +1365,7 @@
                 <seg>
                     <p>Hi {demand>owner>name},</p>
                     <p>Thank you for closing the <strong>ezToff Demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
-                    In the meantime, we invite you to share your experience by writing a review with <a href="{store>reviewSystem>url}&amp;storeId={store>reviewSystemId}">{store>reviewSystem>name}</a>.</p>
+                    In the meantime, we invite you to share your experience by writing a review with <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.</p>
                     <p>We thank you once again for reserving your tee-time wth ezToff.com.com and hope you'll recomment us to your friends.</p>
                     {message>footer}
                     <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
